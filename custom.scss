@@ -1,0 +1,154 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,400;0,700;1,400;1,700&display=swap');
+
+/* HEC color palette */
+$noir:  #000000 !default;
+$blanc:  #FFFFFF !default;
+$bleuhec:  #002855 !default;
+$grisf: #888b8d !default;
+$grisp: #d9d9d6 !default;
+$bleuf: #0072ce !default;
+$bleup: #92c1e9 !default;
+$aquaf: #00aec7 !default;
+$aquap: #88dbdf !default;
+$vertf: #26d07c !default;
+$vertp: #8fe2b0 !default;
+$rougef:  #ff585d !default;
+$rougep:  #ffb1bb !default;
+$rosef: #eb6fbd !default;
+$rosep: #eab8e4 !default;
+$jaunef: #f3d03e !default;
+$jaunep: #f2f0a1 !default;
+
+$primary:       $bleuhec !default;
+$secondary:     $vertf !default;
+$success:       $aquaf !default;
+$info:          $aquap !default;
+$warning:       $jaunef !default;
+$danger:        $rougef !default;
+$light:         $grisp !default;
+$dark:          $grisf !default;
+
+$font-family-sans-serif:      Helvetica Neue, sans-serif !default;
+$font-family-serif:           Inter, serif !default;  /* Not actually a serif font but whatever */
+
+$font-size-base:              1.25rem !default;
+$headings-font-weight:        700 !default;
+
+$h1-font-size: $font-size-base * 2;
+$h2-font-size: $font-size-base * 1.75;
+$h3-font-size: $font-size-base * 1.5;
+$h4-font-size: $font-size-base * 1.25;
+$h5-font-size: $font-size-base * 1;
+$h6-font-size: $font-size-base * 0.8;
+
+$toc-font-size: 1rem;
+$sidebar-font-size: 0.95rem;
+$sidebar-font-size-section: 0.9rem;
+$sidebar-link-color: $jaunef; 
+$link-color: $jaunef;
+$link-hover-color: $jaunep;
+
+$monokai-bg: #2e3440;
+
+
+/*-- scss:rules --*/
+h2 {
+  border-bottom: none;
+}
+
+ul,
+ol {
+  font-family: $font-family-serif;
+}
+
+// Home page stuff
+.title-block {
+  margin: 1em 0;
+  border-bottom: 3px solid $gray-200;
+  padding-bottom: 1em;
+  style: none;
+}
+
+// No space after lists-within-lists
+main {
+  ol ol,
+  ul ul,
+  ol ul,
+  ul ol {
+    margin-bottom: 0em;
+  }
+}
+
+// Make callout text and icon bigger
+.callout.callout-style-default {
+  > div.callout-header,
+  > .callout-body {
+    font-size: 1.2rem;
+  }
+
+  .callout-icon::before {
+    height: 1.2rem;
+    width: 1.2rem;
+    background-size: 1.2rem 1.2rem;
+  }
+}
+
+// Increase font size in sidebar
+.sidebar-navigation .sidebar-section .sidebar-item,
+.sidebar-navigation .sidebar-item{
+  line-height: 1.2;
+  padding-bottom: 0.4rem;
+}
+
+.sidebar-item .sidebar-item-toggle .bi {
+  // The dongle for opening and closing sections
+  font-size: 1rem;
+  text-align: center;
+}
+
+// Increase font size in TOC
+#TOC {
+  padding-bottom: 0.1em;
+  margin-left: 0;
+}
+
+#toc-title {
+  font-weight: 500;
+}
+
+.sidebar nav[role="doc-toc"] > ul li a {
+  padding-top: 0.3rem;
+  padding-bottom: 0.3rem;
+}
+
+
+// Code stuff
+// Shrink blocks of code
+pre.text, pre.sourceCode, .cell-output pre {
+  font-size: 0.775em;
+}
+
+// Slight bottom margin to output
+.cell-output {
+  margin: 0 0 1em;
+}
+
+
+// Remove margin on pre in output
+.cell-output pre {
+  margin-bottom: 0;
+  color: $gray-900;
+}
+
+// Format output and plain text blocks like code
+.cell-output, pre.text {
+  border: none;
+  padding: .4em;
+  background-color: $gray-100;
+  border: 1px solid $gray-200;
+  border-radius: .25rem;
+}
+
+pre.text {
+  color: #000;
+}

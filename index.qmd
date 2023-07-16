@@ -1,0 +1,16 @@
+
+# Welcome {-}
+
+This book is a web complement to MATH 80601A *Bayesian modelling*, a graduate course offered at HEC Montréal.
+
+```{r}
+#| eval: true
+#| include: false
+Sys.setlocale("LC_TIME", "en_CA.UTF-8")
+```
+
+
+These notes are licensed under a [Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License](http://creativecommons.org/licenses/by-nc-sa/4.0/) and were last compiled on `r format(Sys.Date(), format = "%A, %B %d %Y")`.
+
+The objective of the course is to provide a hands on introduction to Bayesian data analysis. The course will cover the formulation, evaluation and comparison of Bayesian models through examples and real-data applications.
+

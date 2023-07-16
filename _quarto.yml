@@ -1,0 +1,68 @@
+project:
+  type: book
+  output-dir: docs
+execute: 
+  cache: true
+  freeze: true
+  echo: false
+  eval: true
+bibliography: MATH80601A.bib
+highlight: tango
+split_bib: no
+title-block-style: none
+preview:
+  port: 3200
+  browser: true
+  watch-inputs: true
+  navigate: true
+
+book:
+  title: Bayesian modelling
+  output-file: MATH80601A-bayesmod
+  author: Léo Belzile
+  chapters:
+  - index.qmd
+  - references.qmd
+  site-url: https://lbelzile.github.io/math80601a/
+  repo-url: https://github.com/lbelzile/math80601a/
+  repo-branch: main
+  repo-actions: [edit]
+  search: true
+  downloads: [pdf]
+format:
+  html:
+    title-block-style: none
+    theme: custom.scss
+    toc-author: Léo Belzile
+    template-partials:
+      - title-block.html 
+    sidebar: 
+      header: "###Léo Belzile"
+    css: style.css
+    reader-mode: true
+    fig-align: center
+    toc-location: right
+    code-fold: false
+    code-summary: "Code"
+    code-overflow: wrap
+    code-block-border-left: true
+    code-copy: true
+    engine: knitr
+    default-image-extension: png
+  pdf:
+    documentclass: scrbook
+    latex_documents:
+       targetname: MATH80601A-Bayesian_modelling.tex
+    fontsize: 11pt
+    fig-pos: "ht!"
+    papersize: letter
+    # template-partials: 
+    #   - before-body.tex
+    include-in-header: preamble.tex
+    # include-before-body: coverpage.tex
+    pdf-engine: pdflatex
+    citation-package: natbib
+    keep-tex: true
+    biblio-style: apalike2
+    link-citations: true
+
