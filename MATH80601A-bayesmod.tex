@@ -238,6 +238,13 @@
 \@ifundefined{c@chapter}{\newfloat{codelisting}{h}{lop}}{\newfloat{codelisting}{h}{lop}[chapter]}
 \floatname{codelisting}{Listing}
 \newcommand*\listoflistings{\listof{codelisting}{List of Listings}}
+\usepackage{amsthm}
+\theoremstyle{definition}
+\newtheorem{example}{Example}[chapter]
+\theoremstyle{remark}
+\AtBeginDocument{\renewcommand*{\proofname}{Proof}}
+\newtheorem*{remark}{Remark}
+\newtheorem*{solution}{Solution}
 \makeatother
 \makeatletter
 \@ifpackageloaded{caption}{}{\usepackage{caption}}
@@ -272,7 +279,7 @@
 \begin{document}
 \frontmatter
 \maketitle
-\ifdefined\Shaded\renewenvironment{Shaded}{\begin{tcolorbox}[interior hidden, borderline west={3pt}{0pt}{shadecolor}, enhanced, frame hidden, sharp corners, breakable, boxrule=0pt]}{\end{tcolorbox}}\fi
+\ifdefined\Shaded\renewenvironment{Shaded}{\begin{tcolorbox}[frame hidden, interior hidden, sharp corners, enhanced, borderline west={3pt}{0pt}{shadecolor}, breakable, boxrule=0pt]}{\end{tcolorbox}}\fi
 
 \renewcommand*\contentsname{Table of contents}
 {
@@ -303,6 +310,193 @@ real-data applications.
 
 \bookmarksetup{startatroot}
 
+\hypertarget{introduction}{%
+\chapter{Introduction}\label{introduction}}
+
+\hypertarget{probability-and-frequency}{%
+\section{Probability and frequency}\label{probability-and-frequency}}
+
+In classical (frequentist) parametric statistic, we treat observations
+\(\boldsymbol{Y}\) as realizations of a distribution whose parameters
+\(\boldsymbol{\theta}\) are unknown. The \emph{likelihood principle}
+states that all information about parameters is encoded by the
+likelihood function, which is optimized numerically or analytically to
+find the maximum likelihood estimator. This gives a single value for the
+parameter, and large-sample theory shows that the resulting estimator is
+asymptotically normal under regularity conditions.
+
+The interpretation of probability in the classical statistic is somewhat
+counterintuitive and is understood in terms of long run frequency, which
+is why we call this approach frequentist statistic. Think of a fair die:
+when we state that values \(\{1, \ldots, 6\}\) are equiprobable, what we
+mean is that repeatedly tossing the die should result, in large sample,
+in each outcome being realized roughly \(1/6\) of the time (the symmetry
+of the object also implies they should equally likely). This
+interpretation also carries over to confidence intervals. A
+\((1-\alpha)\) confidence interval either contains the true parameter
+value or it doesn't, so the probability level is only the long-run
+proportion of intervals created by the procedure that should contain the
+true fixed value, not the probability that a single interval contains
+the true value. This is counterintuitive to most.
+
+In practice, the true value of the parameter \(\boldsymbol{\theta}\)
+vector is unknown to the practitionner, thus uncertain: Bayesians would
+argue that we should treat the latter as a random quantity rather than a
+fixed constant to reflect this lack of knowledge. Since different people
+may have different knowledge about these potential values, the prior
+knowledge is a form of subjective probabilities, meaning they are
+individual specific. For example, if you play cards, one person may have
+recorded the previous cards that were played, whereas other may not.
+They then assign different probability of certain cards being played.
+
+In Bayesian inference, we consider \(\boldsymbol{\theta}\) as random
+variables to reflect our lack of knowledge about potential values taken.
+Italian scientist Bruno de Finetti, who is famous for the claim
+``Probability does not exist'\,', stated in the preface of Finetti
+(\protect\hyperlink{ref-deFinetti:1974}{1974}):
+
+\begin{quote}
+Probabilistic reasoning --- always to be understood as subjective ---
+merely stems from our being uncertain about something. It makes no
+difference whether the uncertainty relates to an unforseeable future, or
+to an unnoticed past, or to a past doubtfully reported or forgotten: it
+may even relate to something more or less knowable (by means of a
+computation, a logical deduction, etc.) but for which we are not willing
+or able tho make the effort; and so on {[}\ldots{]} The only relevant
+thing is uncertainty --- the extent of our knowledge and ignorance. The
+actual fact of whether or not the events considered are in some sense
+\emph{determined}, or known by other people, and so on, is of no
+consequence.
+\end{quote}
+
+On page 3, de Finetti continues
+(\protect\hyperlink{ref-deFinetti:1974}{Finetti 1974})
+
+\begin{quote}
+only subjective probabilities exist --- i.e., the degree of belief in
+the occurrence of an event attributed by a given person at a given
+instant and with a given set of information.
+\end{quote}
+
+The likelihood
+\(\mathcal{L}(\boldsymbol{\theta}; \boldsymbol{y}) \equiv p(\boldsymbol{y} \mid \boldsymbol{\theta})\)
+is the starting point for Bayesian inference. However, we adjoin to it a
+\textbf{prior} distribution \(p(\boldsymbol{\theta})\) that reflects the
+prior knowledge about potential values taken by the \(p\)-dimensional
+parameter vector, before observing the data \(\boldsymbol{y}\). We thus
+seek \(p(\boldsymbol{\theta} \mid \boldsymbol{y})\): the observations
+are random variables but inference is performed conditional on the
+observed sample. By Bayes' theorem, the posterior distribution
+\(p(\boldsymbol{\Theta} \mid \boldsymbol{Y})\) is
+
+\begin{equation}\protect\hypertarget{eq-posterior}{}{
+p(\boldsymbol{\Theta} \mid \boldsymbol{Y}) = \frac{p(\boldsymbol{Y} \mid \boldsymbol{\Theta}) p(\boldsymbol{\Theta})}{\int p(\boldsymbol{Y} \mid \boldsymbol{\theta}) p(\boldsymbol{\theta}) \mathrm{d}\ \boldsymbol{\theta}},
+}\label{eq-posterior}\end{equation}
+
+so the posterior \(p(\boldsymbol{\theta} \mid \boldsymbol{y})\) is
+proportional, as a function of \(\theta\), to the product of the
+likelihood and the prior function. The integral in the denominator,
+termed marginal likelihood and denoted
+\(p(\boldsymbol{Y}) = \mathsf{E}_{\boldsymbol{\theta}}\{p(\boldsymbol{Y} \mid \boldsymbol{\theta})\}\),
+is a normalizing constant that makes the right hand side integrate to
+unity.
+
+For the posterior to be \textbf{proper}, we need the product on the
+right hand side to be integrable. The denominator of
+Equation~\ref{eq-posterior} is a normalizing constant so that the
+posterior is a distribution. If \(\boldsymbol{\theta}\) is low
+dimensional, numerical integration such as quadrature methods can be
+used to compute the latter. To obtain the marginal posterior
+\(p(\theta_j \mid \boldsymbol{y}) = \int p(\boldsymbol{\theta} \mid \boldsymbol{y}) \mathrm{d} \boldsymbol{\theta}_{-j}\),
+additional integration is needed.
+
+When \(\boldsymbol{\theta}\) is high-dimensional, the marginal
+likelihood is untractable. This is one of the main challenges of
+Bayesian statistics and the popularity and applicability has grown
+drastically with the development and popularity of numerical algorithms
+Gelfand and Smith (\protect\hyperlink{ref-Gelfand.Smith:1990}{1990}).
+Markov chain Monte Carlo methods circumvent the calculation of the
+denominator by drawing approximate samples from the posterior.
+
+\hypertarget{bayesian-updating}{%
+\subsection{Bayesian updating}\label{bayesian-updating}}
+
+Subjective probabilities imply that different people with different
+prior beliefs would arrive at different conclusions. However, as more
+data are gathered, we can use Bayes theorem to update these prior
+beliefs and update the posterior. In most instances, the relative weight
+of the prior relative to the likelihood becomes negligible: if we
+consider independent data \(\boldsymbol{y}_1, \boldsymbol{y}_n\)
+observed sequentially, then \begin{align*}
+p(\boldsymbol{\theta} \mid \boldsymbol{y}_1, \ldots, \boldsymbol{y}_k) &\stackrel{\boldsymbol{\theta}}{\propto} p(\boldsymbol{y}_k \mid \boldsymbol{\theta}) p(\boldsymbol{\theta} \mid \boldsymbol{y}_1, \ldots, \boldsymbol{y}_{k-1})
+\\ & \stackrel{\boldsymbol{\theta}}{\propto} \prod_{i=1}^k p(\boldsymbol{y}_i \mid \boldsymbol{\theta}) p(\boldsymbol{\theta})
+\end{align*} If data are exchangeable, the order in which observations
+are collected and the order of the belief updating is irrelevant to the
+full posterior
+\(p(\boldsymbol{\theta} \mid \boldsymbol{y}_1, \ldots \boldsymbol{y}_n)\).
+
+\begin{example}[]\protect\hypertarget{exm-covidrapidtest}{}\label{exm-covidrapidtest}
+
+Back in January 2021, the Quebec government was debating whether or not
+to distribute antigen rapid test, with
+\href{https://www.cbc.ca/news/canada/montreal/quebec-avoids-relying-on-rapid-covid-19-tests-as-pressure-mounts-to-follow-ontario-s-lead-1.5896738}{strong
+reluctance} from authorities given the paucity of available resources
+and the poor sensitivity.
+
+A Swiss study analyse the efficiency of rapid antigen tests, comparing
+them to repeated polymerase chain reaction (PCR) test output, taken as
+benchmark (\protect\hyperlink{ref-Jegerlehner:2021}{Jegerlehner et al.
+2021}). The results are presented in Table~\ref{tbl-covid19}
+
+\hypertarget{tbl-covid19}{}
+\begin{longtable}[]{@{}lrr@{}}
+\caption{\label{tbl-covid19}Confusion matrix of Covid test results for
+PCR tests versus rapid antigen tests, from Jegerlehner et al.
+(\protect\hyperlink{ref-Jegerlehner:2021}{2021}).}\tabularnewline
+\toprule\noalign{}
+& PCR \(+\) & PCR \(-\) \\
+\midrule\noalign{}
+\endfirsthead
+\toprule\noalign{}
+& PCR \(+\) & PCR \(-\) \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+rapid \(+\) & 92 & 2 \\
+rapid \(-\) & 49 & 1319 \\
+total & 141 & 1321 \\
+\end{longtable}
+
+Estimated seropositivity at the end of January 2021 according to
+projections of the Institute for Health Metrics and Evaluation (IHME) of
+8.18M out of 38M inhabitants
+(\protect\hyperlink{ref-owidcoronavirus}{Mathieu et al. 2020}), a
+prevalence of 21.4\%. Assuming the latter holds uniformly over the
+country, what is the probability of having Covid if I get a negative
+result to a rapid test?
+
+Let \(\text{rapid} -\) (\(\text{rapid} +\)) denote a negative (positive)
+rapid test result and \(\mathrm{C}+\) (\(\mathrm{C}-\)) Covid positivity
+(negativity). Bayes' formula gives \begin{align*}
+\Pr(\text{C}+ \mid \text{rapid} -) & = \frac{\Pr(\text{rapid} - \mid \text{C}+)\Pr(\text{C}+)}{\Pr(\text{rapid} - \mid \text{C}+)\Pr(\text{C}+) + \Pr(\text{rapid} - \mid \text{C}-)\Pr(\text{C}-)} \\&=
+\frac{49/141 \cdot 0.214}{49/141 \cdot 0.214 + 1319/1321 \cdot 0.786} \\&\approx 0.0866
+\end{align*} so there is a small, but non-negligeable probability that
+the rapid test result is misleading. Jegerlehner et al.
+(\protect\hyperlink{ref-Jegerlehner:2021}{2021}) indeed found that the
+sensitivity was 65.3\% among symptomatic individuals, but dropped down
+to 44\% for asymptomatic cases. This may have fueled government experts
+scepticism.
+
+\end{example}
+
+\bookmarksetup{startatroot}
+
+\hypertarget{priors}{%
+\chapter{Priors}\label{priors}}
+
+\bookmarksetup{startatroot}
+
 \hypertarget{references}{%
 \chapter*{References}\label{references}}
 \addcontentsline{toc}{chapter}{References}
@@ -310,7 +504,35 @@ real-data applications.
 \markboth{References}{References}
 
 \hypertarget{refs}{}
-\begin{CSLReferences}{0}{0}
+\begin{CSLReferences}{1}{0}
+\leavevmode\vadjust pre{\hypertarget{ref-deFinetti:1974}{}}%
+Finetti, Bruno de. 1974. \emph{Theory of Probability: A Critical
+Introductory Treatment}. Vol. 1. New York: Wiley.
+
+\leavevmode\vadjust pre{\hypertarget{ref-Gelfand.Smith:1990}{}}%
+Gelfand, Alan E., and Adrian F. M. Smith. 1990. {``Sampling-Based
+Approaches to Calculating Marginal Densities.''} \emph{Journal of the
+American Statistical Association} 85 (410): 398--409.
+\url{https://doi.org/10.1080/01621459.1990.10476213}.
+
+\leavevmode\vadjust pre{\hypertarget{ref-Geman.Geman:1984}{}}%
+Geman, Stuart, and Donald Geman. 1984. {``Stochastic Relaxation, {G}ibbs
+Distributions, and the {B}ayesian Restoration of Images.''} \emph{IEEE
+Transactions on Pattern Analysis and Machine Intelligence} PAMI-6 (6):
+721--41. \url{https://doi.org/10.1109/TPAMI.1984.4767596}.
+
+\leavevmode\vadjust pre{\hypertarget{ref-Jegerlehner:2021}{}}%
+Jegerlehner, Sabrina, Franziska Suter-Riniker, Philipp Jent, Pascal
+Bittel, and Michael Nagler. 2021. {``Diagnostic Accuracy of a
+{SARS-CoV-2} Rapid Antigen Test in Real-Life Clinical Settings.''}
+\emph{International Journal of Infectious Diseases} 109 (August):
+118--22. \url{https://doi.org/10.1016/j.ijid.2021.07.010}.
+
+\leavevmode\vadjust pre{\hypertarget{ref-owidcoronavirus}{}}%
+Mathieu, Edouard, Hannah Ritchie, Lucas Rodés-Guirao, Cameron Appel,
+Charlie Giattino, Joe Hasell, Bobbie Macdonald, et al. 2020.
+{``Coronavirus Pandemic (COVID-19).''} \emph{Our World in Data}.
+
 \end{CSLReferences}
 
 

@@ -1,0 +1,65 @@
+# 1: Introduction
+
+Subjective probability [@Villani:2023]
+
+Bayes formula (example with Covid rapid tests, sensitivity vs specificity) +  Bayesian updating
+Posterior distribution reflects our lack of knowledge of parameters
+
+What changes in a Bayesian analysis? Posterior distribution and summary.
+The object of inference is the whole distribution, from which we can extract any summary of interest or draw samples.
+
+Hypothesis testing? Marginal likelihood and Bayes factors for model comparison (dos and dont's)
+
+Comparing posterior median, mode and mean (watch out for correlated samples)
+
+High posterior density regions and credible intervals + rant about 95%
+
+
+
+Posterior predictive distribution: example with a linear regression model and Student-t predictions
+
+
+Why bother? insights gained from using the Bayesian approach, uncertainty quantification and computational challenges. Extensions to hierarchical models.
+
+Application: Canadian wildfire counts and area burnt
+
+Example derivation: [dynamic linear model, hidden Markov model and Kalman recursions](https://en.wikipedia.org/wiki/Kalman_filter#Relationship_to_recursive_Bayesian_estimation)
+
+# 2: Priors
+
+Arbitrariness of both the prior and the likelihood
+
+Likelihood principle
+
+May be chosen due to mathematical convenience (e.g., conjugacy)
+
+Units, scaling and standardized priors
+
+gamma/Poisson model with A/B testing, hierarchical linear model with half-t prior
+
+Prior elicitation may require [expert knowledge](https://arxiv.org/abs/2112.01380).
+
+
+Quantile priors of [Coles and Tawn](http://www.jstor.org/stable/2986068) (using `revdbayes`)
+
+Setting parameters of priors is often done by reparametrizing the latter in terms of moments 
+
+Example with beta prior
+
+Are my priors reasonable? Use prior predictive distribution to assess the plausibility
+comparing prior to posterior standard deviations, e.g., Nott et al. (2020)
+
+Example: simple linear regression slope (height/weight) of Figure 4.5 in McElreath
+
+Priors are not invariant to reparametrization and Jeffrey's prior
+
+
+Improper priors may lead to improper posterior: stick with proper distributions unless you know what you are doing
+
+Penalized complexity prior
+
+Maximum domain information
+
+Sensivity analysis and asymptotic effect
+
+Consensus of opinion: expert opinion and mixture

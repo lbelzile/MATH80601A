@@ -22,6 +22,8 @@ book:
   author: Léo Belzile
   chapters:
   - index.qmd
+  - introduction.qmd
+  - priors.qmd
   - references.qmd
   site-url: https://lbelzile.github.io/math80601a/
   repo-url: https://github.com/lbelzile/math80601a/

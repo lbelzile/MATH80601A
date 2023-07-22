@@ -152,3 +152,12 @@ pre.text, pre.sourceCode, .cell-output pre {
 pre.text {
   color: #000;
 }
+
+
+.math.inline {
+  font-size: 100%  !important;
+}
+
+.math.display .MathJax {
+  font-size: 80%  !important;
+}
