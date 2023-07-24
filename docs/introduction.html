@@ -20,6 +20,40 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
 /* CSS for citations */
 div.csl-bib-body { }
 div.csl-entry {
@@ -159,9 +193,10 @@ div.csl-indent {
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#probability-and-frequency" id="toc-probability-and-frequency" class="nav-link active" data-scroll-target="#probability-and-frequency"><span class="header-section-number">1.1</span> Probability and frequency</a>
+  <li><a href="#bayes-theorem" id="toc-bayes-theorem" class="nav-link active" data-scroll-target="#bayes-theorem"><span class="header-section-number">1.1</span> Bayes theorem</a></li>
+  <li><a href="#probability-and-frequency" id="toc-probability-and-frequency" class="nav-link" data-scroll-target="#probability-and-frequency"><span class="header-section-number">1.2</span> Probability and frequency</a>
   <ul class="collapse">
-  <li><a href="#bayesian-updating" id="toc-bayesian-updating" class="nav-link" data-scroll-target="#bayesian-updating"><span class="header-section-number">1.1.1</span> Bayesian updating</a></li>
+  <li><a href="#bayesian-updating" id="toc-bayesian-updating" class="nav-link" data-scroll-target="#bayesian-updating"><span class="header-section-number">1.2.1</span> Bayesian updating</a></li>
   </ul></li>
   </ul>
 <div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/lbelzile/math80601a/edit/main/introduction.qmd" class="toc-action">Edit this page</a></p></div></div></nav>
@@ -173,32 +208,12 @@ div.csl-indent {
 <h1 class="title display-7"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Introduction</span></h1>
 </header>
 
-<section id="probability-and-frequency" class="level2" data-number="1.1">
-<h2 data-number="1.1" class="anchored" data-anchor-id="probability-and-frequency"><span class="header-section-number">1.1</span> Probability and frequency</h2>
-<p>In classical (frequentist) parametric statistic, we treat observations <span class="math inline">\(\boldsymbol{Y}\)</span> as realizations of a distribution whose parameters <span class="math inline">\(\boldsymbol{\theta}\)</span> are unknown. The <em>likelihood principle</em> states that all information about parameters is encoded by the likelihood function, which is optimized numerically or analytically to find the maximum likelihood estimator. This gives a single value for the parameter, and large-sample theory shows that the resulting estimator is asymptotically normal under regularity conditions.</p>
-<p>The interpretation of probability in the classical statistic is somewhat counterintuitive and is understood in terms of long run frequency, which is why we call this approach frequentist statistic. Think of a fair die: when we state that values <span class="math inline">\(\{1, \ldots, 6\}\)</span> are equiprobable, what we mean is that repeatedly tossing the die should result, in large sample, in each outcome being realized roughly <span class="math inline">\(1/6\)</span> of the time (the symmetry of the object also implies they should equally likely). This interpretation also carries over to confidence intervals. A <span class="math inline">\((1-\alpha)\)</span> confidence interval either contains the true parameter value or it doesn’t, so the probability level is only the long-run proportion of intervals created by the procedure that should contain the true fixed value, not the probability that a single interval contains the true value. This is counterintuitive to most.</p>
-<p>In practice, the true value of the parameter <span class="math inline">\(\boldsymbol{\theta}\)</span> vector is unknown to the practitionner, thus uncertain: Bayesians would argue that we should treat the latter as a random quantity rather than a fixed constant to reflect this lack of knowledge. Since different people may have different knowledge about these potential values, the prior knowledge is a form of subjective probabilities, meaning they are individual specific. For example, if you play cards, one person may have recorded the previous cards that were played, whereas other may not. They then assign different probability of certain cards being played.</p>
-<p>In Bayesian inference, we consider <span class="math inline">\(\boldsymbol{\theta}\)</span> as random variables to reflect our lack of knowledge about potential values taken. Italian scientist Bruno de Finetti, who is famous for the claim ``Probability does not exist’’, stated in the preface of <span class="citation" data-cites="deFinetti:1974">Finetti (<a href="references.html#ref-deFinetti:1974" role="doc-biblioref">1974</a>)</span>:</p>
-<blockquote class="blockquote">
-<p>Probabilistic reasoning — always to be understood as subjective — merely stems from our being uncertain about something. It makes no difference whether the uncertainty relates to an unforseeable future, or to an unnoticed past, or to a past doubtfully reported or forgotten: it may even relate to something more or less knowable (by means of a computation, a logical deduction, etc.) but for which we are not willing or able tho make the effort; and so on […] The only relevant thing is uncertainty — the extent of our knowledge and ignorance. The actual fact of whether or not the events considered are in some sense <em>determined</em>, or known by other people, and so on, is of no consequence.</p>
-</blockquote>
-<p>On page 3, de Finetti continues <span class="citation" data-cites="deFinetti:1974">(<a href="references.html#ref-deFinetti:1974" role="doc-biblioref">Finetti 1974</a>)</span></p>
-<blockquote class="blockquote">
-<p>only subjective probabilities exist — i.e., the degree of belief in the occurrence of an event attributed by a given person at a given instant and with a given set of information.</p>
-</blockquote>
-<p>The likelihood <span class="math inline">\(\mathcal{L}(\boldsymbol{\theta}; \boldsymbol{y}) \equiv p(\boldsymbol{y} \mid \boldsymbol{\theta})\)</span> is the starting point for Bayesian inference. However, we adjoin to it a <strong>prior</strong> distribution <span class="math inline">\(p(\boldsymbol{\theta})\)</span> that reflects the prior knowledge about potential values taken by the <span class="math inline">\(p\)</span>-dimensional parameter vector, before observing the data <span class="math inline">\(\boldsymbol{y}\)</span>. We thus seek <span class="math inline">\(p(\boldsymbol{\theta} \mid \boldsymbol{y})\)</span>: the observations are random variables but inference is performed conditional on the observed sample. By Bayes’ theorem, the posterior distribution <span class="math inline">\(p(\boldsymbol{\Theta} \mid \boldsymbol{Y})\)</span> is</p>
-<p><span id="eq-posterior"><span class="math display">\[
-p(\boldsymbol{\Theta} \mid \boldsymbol{Y}) = \frac{p(\boldsymbol{Y} \mid \boldsymbol{\Theta}) p(\boldsymbol{\Theta})}{\int p(\boldsymbol{Y} \mid \boldsymbol{\theta}) p(\boldsymbol{\theta}) \mathrm{d}\ \boldsymbol{\theta}},
-\tag{1.1}\]</span></span></p>
-<p>so the posterior <span class="math inline">\(p(\boldsymbol{\theta} \mid \boldsymbol{y})\)</span> is proportional, as a function of <span class="math inline">\(\theta\)</span>, to the product of the likelihood and the prior function. The integral in the denominator, termed marginal likelihood and denoted <span class="math inline">\(p(\boldsymbol{Y}) = \mathsf{E}_{\boldsymbol{\theta}}\{p(\boldsymbol{Y} \mid \boldsymbol{\theta})\}\)</span>, is a normalizing constant that makes the right hand side integrate to unity.</p>
-<p>For the posterior to be <strong>proper</strong>, we need the product on the right hand side to be integrable. The denominator of <a href="#eq-posterior">Equation&nbsp;<span>1.1</span></a> is a normalizing constant so that the posterior is a distribution. If <span class="math inline">\(\boldsymbol{\theta}\)</span> is low dimensional, numerical integration such as quadrature methods can be used to compute the latter. To obtain the marginal posterior <span class="math inline">\(p(\theta_j \mid \boldsymbol{y}) = \int p(\boldsymbol{\theta} \mid \boldsymbol{y}) \mathrm{d} \boldsymbol{\theta}_{-j}\)</span>, additional integration is needed.</p>
-<p>When <span class="math inline">\(\boldsymbol{\theta}\)</span> is high-dimensional, the marginal likelihood is untractable. This is one of the main challenges of Bayesian statistics and the popularity and applicability has grown drastically with the development and popularity of numerical algorithms <span class="citation" data-cites="Geman.Geman:1984">Gelfand and Smith (<a href="references.html#ref-Gelfand.Smith:1990" role="doc-biblioref">1990</a>)</span>. Markov chain Monte Carlo methods circumvent the calculation of the denominator by drawing approximate samples from the posterior.</p>
-<section id="bayesian-updating" class="level3" data-number="1.1.1">
-<h3 data-number="1.1.1" class="anchored" data-anchor-id="bayesian-updating"><span class="header-section-number">1.1.1</span> Bayesian updating</h3>
-<p>Subjective probabilities imply that different people with different prior beliefs would arrive at different conclusions. However, as more data are gathered, we can use Bayes theorem to update these prior beliefs and update the posterior. In most instances, the relative weight of the prior relative to the likelihood becomes negligible: if we consider independent data <span class="math inline">\(\boldsymbol{y}_1, \boldsymbol{y}_n\)</span> observed sequentially, then <span class="math display">\[\begin{align*}
-p(\boldsymbol{\theta} \mid \boldsymbol{y}_1, \ldots, \boldsymbol{y}_k) &amp;\stackrel{\boldsymbol{\theta}}{\propto} p(\boldsymbol{y}_k \mid \boldsymbol{\theta}) p(\boldsymbol{\theta} \mid \boldsymbol{y}_1, \ldots, \boldsymbol{y}_{k-1})
-\\ &amp; \stackrel{\boldsymbol{\theta}}{\propto} \prod_{i=1}^k p(\boldsymbol{y}_i \mid \boldsymbol{\theta}) p(\boldsymbol{\theta})
-\end{align*}\]</span> If data are exchangeable, the order in which observations are collected and the order of the belief updating is irrelevant to the full posterior <span class="math inline">\(p(\boldsymbol{\theta} \mid \boldsymbol{y}_1, \ldots \boldsymbol{y}_n)\)</span>.</p>
+<section id="bayes-theorem" class="level2" data-number="1.1">
+<h2 data-number="1.1" class="anchored" data-anchor-id="bayes-theorem"><span class="header-section-number">1.1</span> Bayes theorem</h2>
+<p>Denote by <span class="math inline">\(p(X) \equiv\Pr(X)\)</span> denotes the marginal density of <span class="math inline">\(X\)</span>, <span class="math inline">\(p(X \mid Y)\)</span> the conditional of <span class="math inline">\(X\)</span> given <span class="math inline">\(Y\)</span> and <span class="math inline">\(p(X, Y)\)</span> the joint density. Bayes’ theorem states that <span class="math display">\[\begin{align*}
+p(X = x \mid Y=y) = \frac{p(Y = y \mid X = x)p(X=x)}{p(Y=y)}
+\end{align*}\]</span></p>
+<p>In the case of discrete random variable <span class="math inline">\(X\)</span> with support <span class="math inline">\(\mathcal{X},\)</span> the denominator can be evaluated using the law of total probability as <span class="math display">\[\Pr(Y=y) = \sum_{x \in \mathcal{X}}\Pr(Y =y \mid X=x)\Pr(X=x).\]</span></p>
 <div id="exm-covidrapidtest" class="theorem example">
 <p><span class="theorem-title"><strong>Example 1.1 </strong></span>Back in January 2021, the Quebec government was debating whether or not to distribute antigen rapid test, with <a href="https://www.cbc.ca/news/canada/montreal/quebec-avoids-relying-on-rapid-covid-19-tests-as-pressure-mounts-to-follow-ontario-s-lead-1.5896738">strong reluctance</a> from authorities given the paucity of available resources and the poor sensitivity.</p>
 <p>A Swiss study analyse the efficiency of rapid antigen tests, comparing them to repeated polymerase chain reaction (PCR) test output, taken as benchmark <span class="citation" data-cites="Jegerlehner:2021">(<a href="references.html#ref-Jegerlehner:2021" role="doc-biblioref">Jegerlehner et al. 2021</a>)</span>. The results are presented in <a href="#tbl-covid19">Table&nbsp;<span>1.1</span></a></p>
@@ -232,11 +247,87 @@ p(\boldsymbol{\theta} \mid \boldsymbol{y}_1, \ldots, \boldsymbol{y}_k) &amp;\sta
 </table>
 </div>
 <p>Estimated seropositivity at the end of January 2021 according to projections of the Institute for Health Metrics and Evaluation (IHME) of 8.18M out of 38M inhabitants <span class="citation" data-cites="owidcoronavirus">(<a href="references.html#ref-owidcoronavirus" role="doc-biblioref">Mathieu et al. 2020</a>)</span>, a prevalence of 21.4%. Assuming the latter holds uniformly over the country, what is the probability of having Covid if I get a negative result to a rapid test?</p>
-<p>Let <span class="math inline">\(\text{rapid} -\)</span> (<span class="math inline">\(\text{rapid} +\)</span>) denote a negative (positive) rapid test result and <span class="math inline">\(\mathrm{C}+\)</span> (<span class="math inline">\(\mathrm{C}-\)</span>) Covid positivity (negativity). Bayes’ formula gives <span class="math display">\[\begin{align*}
-\Pr(\text{C}+ \mid \text{rapid} -) &amp; = \frac{\Pr(\text{rapid} - \mid \text{C}+)\Pr(\text{C}+)}{\Pr(\text{rapid} - \mid \text{C}+)\Pr(\text{C}+) + \Pr(\text{rapid} - \mid \text{C}-)\Pr(\text{C}-)} \\&amp;=
-\frac{49/141 \cdot 0.214}{49/141 \cdot 0.214 + 1319/1321 \cdot 0.786} \\&amp;\approx 0.0866
-\end{align*}\]</span> so there is a small, but non-negligeable probability that the rapid test result is misleading. <span class="citation" data-cites="Jegerlehner:2021">Jegerlehner et al. (<a href="references.html#ref-Jegerlehner:2021" role="doc-biblioref">2021</a>)</span> indeed found that the sensitivity was 65.3% among symptomatic individuals, but dropped down to 44% for asymptomatic cases. This may have fueled government experts scepticism.</p>
+<p>Let <span class="math inline">\(R^{-}\)</span> (<span class="math inline">\(R^{+}\)</span>) denote a negative (positive) rapid test result and <span class="math inline">\(C^{+}\)</span> (<span class="math inline">\(C^{-}\)</span>) Covid positivity (negativity). Bayes’ formula gives <span class="math display">\[\begin{align*}
+\Pr(C^{+} \mid R^{-}) &amp; = \frac{\Pr(R^{-} \mid C^{+})\Pr(C^{+})}{\Pr(R^{-} \mid C^{+})\Pr(C^{+}) + \Pr(R^{-} \mid C^{-})\Pr(C^{-})} \\&amp;=
+\frac{49/141 \cdot 0.214}{49/141 \cdot 0.214 + 1319/1321 \cdot 0.786}
+\end{align*}\]</span> so there is a small, but non-negligible probability of 8.66% that the rapid test result is misleading. <span class="citation" data-cites="Jegerlehner:2021">Jegerlehner et al. (<a href="references.html#ref-Jegerlehner:2021" role="doc-biblioref">2021</a>)</span> indeed found that the sensitivity was 65.3% among symptomatic individuals, but dropped down to 44% for asymptomatic cases. This may have fueled government experts skepticism.</p>
 </div>
+</section>
+<section id="probability-and-frequency" class="level2" data-number="1.2">
+<h2 data-number="1.2" class="anchored" data-anchor-id="probability-and-frequency"><span class="header-section-number">1.2</span> Probability and frequency</h2>
+<p>In classical (frequentist) parametric statistic, we treat observations <span class="math inline">\(\boldsymbol{Y}\)</span> as realizations of a distribution whose parameters <span class="math inline">\(\boldsymbol{\theta}\)</span> are unknown. All of the information about parameters is encoded by the likelihood function, which is optimized numerically or analytically to find the maximum likelihood estimator. Large-sample theory shows that the resulting estimator is asymptotically normal under regularity conditions.</p>
+<p>The interpretation of probability in the classical statistic is understood in terms of long run frequency, which is why we call this approach frequentist statistic. Think of a fair die: when we state that values <span class="math inline">\(\{1, \ldots, 6\}\)</span> are equiprobable, we mean that repeatedly tossing the die should result, in large sample, in each outcome being realized roughly <span class="math inline">\(1/6\)</span> of the time (the symmetry of the object also implies that each facet should be equally likely to lie face up). This interpretation also carries over to confidence intervals: a <span class="math inline">\((1-\alpha)\)</span> confidence interval either contains the true parameter value or it doesn’t, so the probability level <span class="math inline">\((1-\alpha)\)</span> is only the long-run proportion of intervals created by the procedure that should contain the true fixed value, not the probability that a single interval contains the true value. This is counter-intuitive to most.</p>
+<p>In practice, the true value of the parameter <span class="math inline">\(\boldsymbol{\theta}\)</span> vector is unknown to the practitioner, thus uncertain: Bayesians would argue that we should treat the latter as a random quantity rather than a fixed constant. Since different people may have different knowledge about these potential values, the prior knowledge is a form of subjective probability. For example, if you play cards, one person may have recorded the previous cards that were played, whereas other may not. They thus assign different probability of certain cards being played. In Bayesian inference, we consider <span class="math inline">\(\boldsymbol{\theta}\)</span> as random variables to reflect our lack of knowledge about potential values taken. Italian scientist Bruno de Finetti, who is famous for the claim ``Probability does not exist’’, stated in the preface of <span class="citation" data-cites="deFinetti:1974">Finetti (<a href="references.html#ref-deFinetti:1974" role="doc-biblioref">1974</a>)</span>:</p>
+<blockquote class="blockquote">
+<p>Probabilistic reasoning — always to be understood as subjective — merely stems from our being uncertain about something. It makes no difference whether the uncertainty relates to an unforseeable future, or to an unnoticed past, or to a past doubtfully reported or forgotten: it may even relate to something more or less knowable (by means of a computation, a logical deduction, etc.) but for which we are not willing or able tho make the effort; and so on […] The only relevant thing is uncertainty — the extent of our knowledge and ignorance. The actual fact of whether or not the events considered are in some sense <em>determined</em>, or known by other people, and so on, is of no consequence.</p>
+</blockquote>
+<p>On page 3, de Finetti continues <span class="citation" data-cites="deFinetti:1974">(<a href="references.html#ref-deFinetti:1974" role="doc-biblioref">Finetti 1974</a>)</span></p>
+<blockquote class="blockquote">
+<p>only subjective probabilities exist — i.e., the degree of belief in the occurrence of an event attributed by a given person at a given instant and with a given set of information.</p>
+</blockquote>
+<p>The likelihood <span class="math inline">\(\mathcal{L}(\boldsymbol{\theta}; \boldsymbol{y}) \equiv p(\boldsymbol{y} \mid \boldsymbol{\theta})\)</span> is the starting point for Bayesian inference. However, we adjoin to it a <strong>prior</strong> distribution <span class="math inline">\(p(\boldsymbol{\theta})\)</span> that reflects the prior knowledge about potential values taken by the <span class="math inline">\(p\)</span>-dimensional parameter vector, before observing the data <span class="math inline">\(\boldsymbol{y}\)</span>. We thus seek <span class="math inline">\(p(\boldsymbol{\theta} \mid \boldsymbol{y})\)</span>: the observations are random variables but inference is performed conditional on the observed sample. By Bayes’ theorem, the posterior distribution <span class="math inline">\(p(\boldsymbol{\Theta} \mid \boldsymbol{Y})\)</span> is</p>
+<p><span id="eq-posterior"><span class="math display">\[
+p(\boldsymbol{\Theta} \mid \boldsymbol{Y}) = \frac{p(\boldsymbol{Y} \mid \boldsymbol{\Theta}) p(\boldsymbol{\Theta})}{\int p(\boldsymbol{Y} \mid \boldsymbol{\theta}) p(\boldsymbol{\theta}) \mathrm{d} \boldsymbol{\theta}},
+\tag{1.1}\]</span></span></p>
+<p>so the posterior <span class="math inline">\(p(\boldsymbol{\theta} \mid \boldsymbol{y})\)</span> is proportional, as a function of <span class="math inline">\(\theta\)</span>, to the product of the likelihood and the prior function. The integral in the denominator, termed marginal likelihood and denoted <span class="math inline">\(p(\boldsymbol{Y}) = \mathsf{E}_{\boldsymbol{\theta}}\{p(\boldsymbol{Y} \mid \boldsymbol{\theta})\}\)</span>, is a normalizing constant that makes the right hand side integrate to unity.</p>
+<p>For the posterior to be <strong>proper</strong>, we need the product on the right hand side to be integrable. The denominator of <a href="#eq-posterior">Equation&nbsp;<span>1.1</span></a> is a normalizing constant so that the posterior is a distribution. If <span class="math inline">\(\boldsymbol{\theta}\)</span> is low dimensional, numerical integration such as quadrature methods can be used to compute the latter. To obtain the marginal posterior, <span class="math display">\[p(\theta_j \mid \boldsymbol{y}) = \int p(\boldsymbol{\theta} \mid \boldsymbol{y}) \mathrm{d} \boldsymbol{\theta}_{-j},\]</span> additional integration is needed.</p>
+<div class="{exm-betabinomconjugate}">
+<p>Consider a binomial likelihood with probability of success <span class="math inline">\(p\)</span> and <span class="math inline">\(n\)</span> trials, <span class="math inline">\(Y \sim \mathsf{Bin}(n, p)\)</span>. If we take a beta prior, <span class="math inline">\(p \sim \mathsf{Be}(\alpha, \beta)\)</span> and observe <span class="math inline">\(k\)</span> successes, the posterior is <span class="math display">\[\begin{align*}
+p(\theta \mid y = k) &amp;\propto \binom{n}{k} p^k (1-p)^{n-k} \frac{\Gamma(\alpha + \beta)}{\Gamma(\alpha) \Gamma(\beta)}p^{\alpha-1} (1-p)^{\beta-1}
+\\&amp;\stackrel{p}{\propto} p^{k+\alpha-1}(1-p)^{n-k+\beta-1}
+\end{align*}\]</span> and the normalizing constant is <span class="math display">\[\int_{0}^{1} p^{k+\alpha-1}(1-p)^{n-k+\beta-1}\mathrm{d} p = \frac{\Gamma(k+\alpha)\Gamma(n-k+\beta)}{\Gamma(n+\alpha+\beta)},\]</span> a Beta function. Since we need only to keep track of the terms that are function of the parameter <span class="math inline">\(p\)</span>, we could recognize directly that the posterior distribution is <span class="math inline">\(\mathsf{Be}(k+\alpha, n-k+\beta)\)</span>.</p>
+<p>If the sample size <span class="math inline">\(n\)</span> grows, then the number of success should be roughly <span class="math inline">\(np\)</span> and the number of failures <span class="math inline">\(n(1-p)\)</span> and so the likelihood contribution, relative to the prior, will dominate. The Beta distribution, whose density is <span class="math inline">\(f(x; \alpha, \beta) \propto x^{\alpha-1} (1-x)^{\beta-1}\)</span>, has expectation <span class="math inline">\(\alpha/(\alpha+\beta)\)</span> and variance <span class="math inline">\(\alpha\beta/\{(\alpha+\beta)^2(\alpha+\beta+1)\}\)</span>. An alternative parametrization takes <span class="math inline">\(\alpha=\mu \kappa\)</span>, <span class="math inline">\(\beta = (1-\mu)\kappa\)</span> for <span class="math inline">\(\mu \in (0,1)\)</span> and <span class="math inline">\(\kappa&gt;0\)</span>, so that the model is parametrized directly in terms of mean <span class="math inline">\(\mu\)</span>.</p>
+<div class="cell" data-hash="introduction_cache/html/fig-betabinom_9b91bd128424b7e59d15dc9a9990b565">
+<div class="cell-output-display">
+<div id="fig-betabinom" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="introduction_files/figure-html/fig-betabinom-1.png" class="img-fluid figure-img" width="672"></p>
+<figcaption class="figure-caption">Figure&nbsp;1.1: Binomial likelihood for six successes out of 14 trials, <span class="math inline">\(\mathsf{Beta}(3/2, 3/2)\)</span> prior and posterior distribution from a beta-binomial model. The posterior curve is much closer to the likelihood than it is to the prior, even with a relatively small sample size.</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<div class="keyidea" name="The likelihood isn't a probability density function">
+<p>While a density integrates to 1 over the range of possible outcomes, the likelihood function does not when we integrate over the range of the parameters.</p>
+</div>
+<div class="keyidea" name="Improper priors">
+<p>We call a prior <em>proper</em> if it’s integral is finite: the best example is priors that arise from probability density function. We can still employ this rule for improper priors: for example, taking <span class="math inline">\(\alpha, \beta \to 0\)</span> in the Beta prior leads to a prior proportional to <span class="math inline">\(x^{-1}(1-x)^{-1}\)</span>, the integral of which diverges on the unit interval <span class="math inline">\([0,1]\)</span>. However, as long as the number of success and the number of failures is larger than 1, meaning <span class="math inline">\(k \geq 1, n-k \geq 1\)</span>, the posterior distribution would be proper, i.e., integrable. To find the posterior, normalizing constants are also superfluous.</p>
+</div>
+<div class="{exm-numericalintegration}">
+<p>The beta-binomial model is an example of conjugate model, meaning the posterior distribution is from the same family as the prior.<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a> While we could calculate analytically the value of the normalizing constant, we could also in more complicated models use numerical integration in the event the parameter vector <span class="math inline">\(\boldsymbol{\theta}\)</span> is low-dimensional. For a single scalar <span class="math inline">\(p\)</span> on the unit interval, numerical integration or Monte Carlo integration yield nearly identical results.</p>
+<div class="cell" data-hash="introduction_cache/html/unnamed-chunk-2_591e46c866647f736c805230405369f1">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>k <span class="ot">&lt;-</span> 6L <span class="co"># number of successes </span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>n <span class="ot">&lt;-</span> 14L <span class="co"># number of trials</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>alpha <span class="ot">&lt;-</span> beta <span class="ot">&lt;-</span> <span class="fl">1.5</span> <span class="co"># prior parameters</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>unnormalized_posterior <span class="ot">&lt;-</span> <span class="cf">function</span>(p){</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>  p<span class="sc">^</span>(k<span class="sc">+</span>alpha<span class="dv">-1</span>) <span class="sc">*</span> (<span class="dv">1</span><span class="sc">-</span>p)<span class="sc">^</span>(n<span class="sc">-</span>k <span class="sc">+</span> beta <span class="sc">-</span> <span class="dv">1</span>)</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="fu">integrate</span>(<span class="at">f =</span> unnormalized_posterior,</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>          <span class="at">lower =</span> <span class="dv">0</span>,</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>          <span class="at">upper =</span> <span class="dv">1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>1.066906e-05 with absolute error &lt; 1e-12</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Compare with known constant</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="fu">beta</span>(k <span class="sc">+</span> alpha, n <span class="sc">-</span> k <span class="sc">+</span> beta)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 1.066906e-05</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Monte Carlo integration</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="fu">mean</span>(<span class="fu">unnormalized_posterior</span>(<span class="fu">runif</span>(<span class="fl">1e5</span>)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 1.064055e-05</code></pre>
+</div>
+</div>
+</div>
+<p>When <span class="math inline">\(\boldsymbol{\theta}\)</span> is high-dimensional, the marginal likelihood is untractable. This is one of the main challenges of Bayesian statistics and the popularity and applicability has grown drastically with the development and popularity of numerical algorithms <span class="citation" data-cites="Geman.Geman:1984">Gelfand and Smith (<a href="references.html#ref-Gelfand.Smith:1990" role="doc-biblioref">1990</a>)</span>. Markov chain Monte Carlo methods circumvent the calculation of the denominator by drawing approximate samples from the posterior.</p>
+<section id="bayesian-updating" class="level3" data-number="1.2.1">
+<h3 data-number="1.2.1" class="anchored" data-anchor-id="bayesian-updating"><span class="header-section-number">1.2.1</span> Bayesian updating</h3>
+<p>Subjective probabilities imply that different people with different prior beliefs would arrive at different conclusions. However, as more data are gathered, we can use Bayes theorem to update these prior beliefs and update the posterior. In most instances, the relative weight of the prior relative to the likelihood becomes negligible: if we consider independent data <span class="math inline">\(\boldsymbol{y}_1, \boldsymbol{y}_n\)</span> observed sequentially, then <span class="math display">\[\begin{align*}
+p(\boldsymbol{\theta} \mid \boldsymbol{y}_1, \ldots, \boldsymbol{y}_k) &amp;\stackrel{\boldsymbol{\theta}}{\propto} p(\boldsymbol{y}_k \mid \boldsymbol{\theta}) p(\boldsymbol{\theta} \mid \boldsymbol{y}_1, \ldots, \boldsymbol{y}_{k-1})
+\\ &amp; \stackrel{\boldsymbol{\theta}}{\propto} \prod_{i=1}^k p(\boldsymbol{y}_i \mid \boldsymbol{\theta}) p(\boldsymbol{\theta})
+\end{align*}\]</span> If data are exchangeable, the order in which observations are collected and the order of the belief updating is irrelevant to the full posterior <span class="math inline">\(p(\boldsymbol{\theta} \mid \boldsymbol{y}_1, \ldots \boldsymbol{y}_n)\)</span>.</p>
 
 
 <div id="refs" class="references csl-bib-body hanging-indent" role="list" style="display: none">
@@ -257,6 +348,12 @@ Mathieu, Edouard, Hannah Ritchie, Lucas Rodés-Guirao, Cameron Appel, Charlie Gi
 </div>
 </div>
 </section>
+</section>
+<section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes">
+<hr>
+<ol>
+<li id="fn1"><p>This is a property of exponential families that will be revisited in the next chapter.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol>
 </section>
 
 </main> <!-- /main -->

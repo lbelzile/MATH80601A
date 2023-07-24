@@ -48,7 +48,7 @@ pre code {
     background-position: 15px center;
     min-height: 120px;
     background-color: #FFFFFF;
-    border: dashed 5px #3DB5E6;
+    border: dashed 5px #ff585d;
     background-image: url("figures/list_c.png")
   }
 .codingex{
@@ -97,3 +97,6 @@ pre code {
   width: 50%;
 }
 
+.justify {
+  text-align: justify !important
+}
