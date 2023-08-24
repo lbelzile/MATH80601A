@@ -3,7 +3,7 @@ project:
   output-dir: docs
 execute: 
   cache: true
-  freeze: true
+  freeze: false
   echo: false
   eval: true
 bibliography: MATH80601A.bib

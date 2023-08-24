@@ -43,7 +43,7 @@ In classical (frequentist) parametric statistic, we treat observations $\boldsym
 
 The interpretation of probability in the classical statistic is understood in terms of long run frequency, which is why we call this approach frequentist statistic. Think of a fair die: when we state that values $\{1, \ldots, 6\}$ are equiprobable, we mean that repeatedly tossing the die should result, in large sample, in each outcome being realized roughly $1/6$ of the time (the symmetry of the object also implies that each facet should be equally likely to lie face up). This interpretation also carries over to confidence intervals: a $(1-\alpha)$ confidence interval either contains the true parameter value or it doesn't, so the probability level $(1-\alpha)$ is only the long-run proportion of intervals created by the procedure that should contain the true fixed value, not the probability that a single interval contains the true value. This is counter-intuitive to most.
 
-In practice, the true value of the parameter $\boldsymbol{\theta}$ vector is unknown to the practitioner, thus uncertain: Bayesians would argue that we should treat the latter as a random quantity rather than a fixed constant. Since different people may have different knowledge about these potential values, the prior knowledge is a form of subjective probability. For example, if you play cards, one person may have recorded the previous cards that were played, whereas other may not. They thus assign different probability of certain cards being played. In Bayesian inference, we consider $\boldsymbol{\theta}$ as random variables to reflect our lack of knowledge about potential values taken. Italian scientist Bruno de Finetti, who is famous for the claim ``Probability does not exist'', stated in the preface of @deFinetti:1974:
+In practice, the true value of the parameter $\boldsymbol{\theta}$ vector is unknown to the practitioner, thus uncertain: Bayesians would argue that we should treat the latter as a random quantity rather than a fixed constant. Since different people may have different knowledge about these potential values, the prior knowledge is a form of **subjective probability**. For example, if you play cards, one person may have recorded the previous cards that were played, whereas other may not. They thus assign different probability of certain cards being played. In Bayesian inference, we consider $\boldsymbol{\theta}$ as random variables to reflect our lack of knowledge about potential values taken. Italian scientist Bruno de Finetti, who is famous for the claim ``Probability does not exist'', stated in the preface of @deFinetti:1974:
 
 > Probabilistic reasoning --- always to be understood as subjective --- merely stems from our being uncertain about something. It makes no difference whether the uncertainty relates to an unforseeable future, or to an unnoticed past, or to a past doubtfully reported or forgotten: it may even relate to something more or less knowable (by means of a computation, a logical deduction, etc.) but for which we are not willing or able tho make the effort; and so on [...]
  The only relevant thing is uncertainty --- the extent of our knowledge and ignorance. The actual fact of whether or not the events considered are in some sense *determined*, or known by other people, and so on, is of no consequence.
@@ -61,7 +61,7 @@ $$
 p(\boldsymbol{\Theta} \mid \boldsymbol{Y}) = \frac{p(\boldsymbol{Y} \mid \boldsymbol{\Theta}) p(\boldsymbol{\Theta})}{\int p(\boldsymbol{Y} \mid \boldsymbol{\theta}) p(\boldsymbol{\theta}) \mathrm{d} \boldsymbol{\theta}},
 $$ {#eq-posterior}
 
-so the posterior $p(\boldsymbol{\theta} \mid \boldsymbol{y})$ is proportional, as a function of $\theta$, to the product of the likelihood and the prior function. The integral in the denominator, termed marginal likelihood and denoted $p(\boldsymbol{Y}) = \mathsf{E}_{\boldsymbol{\theta}}\{p(\boldsymbol{Y} \mid \boldsymbol{\theta})\}$, is a normalizing constant that makes the right hand side integrate to unity. 
+so the posterior $p(\boldsymbol{\theta} \mid \boldsymbol{y})$ is proportional, as a function of $\theta,$ to the product of the likelihood and the prior function. The integral in the denominator, termed marginal likelihood and denoted $p(\boldsymbol{Y}) = \mathsf{E}_{\boldsymbol{\theta}}\{p(\boldsymbol{Y} \mid \boldsymbol{\theta})\}$, is a normalizing constant that makes the right hand side integrate to unity. 
 
 For the posterior to be **proper**, we need the product on the right hand side to be integrable. The denominator of @eq-posterior is a normalizing constant so that the posterior is a distribution. If $\boldsymbol{\theta}$ is low dimensional, numerical integration such as quadrature methods can be used to compute the latter. To obtain the marginal posterior, $$p(\theta_j \mid \boldsymbol{y}) = \int p(\boldsymbol{\theta} \mid \boldsymbol{y}) \mathrm{d} \boldsymbol{\theta}_{-j},$$ additional integration is needed. 
 
@@ -72,9 +72,12 @@ Consider a binomial likelihood with probability of success $p$ and $n$ trials, $
 p(\theta \mid y = k) &\propto \binom{n}{k} p^k (1-p)^{n-k} \frac{\Gamma(\alpha + \beta)}{\Gamma(\alpha) \Gamma(\beta)}p^{\alpha-1} (1-p)^{\beta-1}
 \\&\stackrel{p}{\propto} p^{k+\alpha-1}(1-p)^{n-k+\beta-1}
 \end{align*}
-and the normalizing constant is $$\int_{0}^{1} p^{k+\alpha-1}(1-p)^{n-k+\beta-1}\mathrm{d} p = \frac{\Gamma(k+\alpha)\Gamma(n-k+\beta)}{\Gamma(n+\alpha+\beta)},$$ a Beta function. Since we need only to keep track of the terms that are function of the parameter $p$, we could recognize directly that the posterior distribution is $\mathsf{Be}(k+\alpha, n-k+\beta)$.
+and is $$\int_{0}^{1} p^{k+\alpha-1}(1-p)^{n-k+\beta-1}\mathrm{d} p = \frac{\Gamma(k+\alpha)\Gamma(n-k+\beta)}{\Gamma(n+\alpha+\beta)},$$ a Beta function. Since we need only to keep track of the terms that are function of the parameter $p$, we could recognize directly that the posterior distribution is $\mathsf{Be}(k+\alpha, n-k+\beta)$ and deduce the normalizing constant from there.
 
-If the sample size $n$ grows, then the number of success should be roughly $np$ and the number of failures $n(1-p)$ and so the likelihood contribution, relative to the prior, will dominate. The Beta distribution, whose density is $f(x; \alpha, \beta) \propto x^{\alpha-1} (1-x)^{\beta-1}$, has expectation $\alpha/(\alpha+\beta)$ and variance $\alpha\beta/\{(\alpha+\beta)^2(\alpha+\beta+1)\}$. An alternative parametrization takes $\alpha=\mu \kappa$, $\beta = (1-\mu)\kappa$ for $\mu \in (0,1)$ and $\kappa>0$, so that the model is parametrized directly in terms of mean $\mu$.
+The number of success should be roughly $np$ and the number of failures $n(1-p)$ and so the likelihood contribution, relative to the prior, will dominate as the sample size $n$ grows. 
+
+Another way to see this is to track moments (expectation, variance, etc.)
+The Beta distribution, whose density is $f(x; \alpha, \beta) \propto x^{\alpha-1} (1-x)^{\beta-1}$, has expectation $\alpha/(\alpha+\beta)$ and variance $\alpha\beta/\{(\alpha+\beta)^2(\alpha+\beta+1)\}$ and so as $n \to \infty$, the mean of the posterior will be dominated by information from the likelihood. An alternative parametrization takes $\alpha=\mu \kappa$, $\beta = (1-\mu)\kappa$ for $\mu \in (0,1)$ and $\kappa>0$, so that the model is parametrized directly in terms of mean $\mu$.
 
 ```{r}
 #| label: fig-betabinom
@@ -139,17 +142,11 @@ While a density integrates to 1 over the range of possible outcomes, the likelih
 :::
 
 
-::: {.keyidea name="Improper priors"}
-
-We call a prior *proper* if it's integral is finite: the best example is priors that arise from probability density function. We can still employ this rule for improper priors: for example, taking $\alpha, \beta \to 0$ in the Beta prior leads to a prior proportional to $x^{-1}(1-x)^{-1}$, the integral of which diverges on the unit interval $[0,1]$. However, as long as the number of success and the number of failures is larger than 1, meaning $k \geq 1, n-k \geq 1$, the posterior distribution would be proper, i.e., integrable. To find the posterior, normalizing constants are also superfluous.
-
-:::
-
 
 
 :::{exm-numericalintegration}
 
-The beta-binomial model is an example of conjugate model, meaning the posterior distribution is from the same family as the prior.^[This is a property of exponential families that will be revisited in the next chapter.] While we could calculate analytically the value of the normalizing constant, we could also in more complicated models use numerical integration in the event the parameter vector $\boldsymbol{\theta}$ is low-dimensional. For a single scalar $p$ on the unit interval, numerical integration or Monte Carlo integration yield nearly identical results.
+The beta-binomial model is an example of conjugate model, meaning the posterior distribution is from the same family as the prior.^[This is a property of exponential families that will be revisited in the next chapter.] While we could calculate analytically the value of the normalizing constant, we could also for arbitrary priors use numerical integration in the event the parameter vector $\boldsymbol{\theta}$ is low-dimensional. For a single scalar $p$ on the unit interval, numerical integration or Monte Carlo integration yield nearly identical results.
 
 ```{r}
 #| eval: true
@@ -168,13 +165,19 @@ integrate(f = unnormalized_posterior,
 beta(k + alpha, n - k + beta)
 # Monte Carlo integration
 mean(unnormalized_posterior(runif(1e5)))
+# Alternative approach, sampling from the prior
+# This is less efficient
+mean(dbinom(x = k, 
+            size = n, 
+            prob = rbeta(n = 1e6, alpha, beta))) *
+  beta(alpha, beta) / choose(n, k)
 ```
 
 
 :::
 
 
-When $\boldsymbol{\theta}$ is high-dimensional, the marginal likelihood is untractable. This is one of the main challenges of Bayesian statistics and the popularity and applicability has grown drastically with the development and popularity of numerical algorithms [@Geman.Geman:1984,@Gelfand.Smith:1990]. Markov chain Monte Carlo methods circumvent the calculation of the denominator by drawing approximate samples from the posterior. 
+When $\boldsymbol{\theta}$ is high-dimensional, the marginal likelihood is untractable. This is one of the main challenges of Bayesian statistics and the popularity and applicability has grown drastically with the development and popularity of numerical algorithms, following th publication of @Geman.Geman:1984 and @Gelfand.Smith:1990. Markov chain Monte Carlo methods circumvent the calculation of the denominator by drawing approximate samples from the posterior. 
 
 
 
