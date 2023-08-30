@@ -31,17 +31,10 @@ The binomial log density with $y$ successes out of $n$ trials  is proportional t
 \begin{align*}
 y \log(p) + (n-y) \log(1-p) = y\log\left( \frac{p}{1-p}\right) + n \log(1-p)
 \end{align*}
-with canonical parameter $\mathrm{logit}(p)$, which is the natural link function for Bernoulli, giving rise to logistic regresion model.
+with canonical parameter $\mathrm{logit}(p)$, which is the natural link function for Bernoulli, giving rise to logistic regression model. The binomial distribution is thus an exponential family.
 
-Since the density of the binomial is of the form $p^y(1-p)^{n-y}$, the beta distribution $\mathsf{Be}(\alpha, \beta)$ with density $f(x) \propto x^{\alpha-1} (1-x)^{\beta-1}$ is the conjugate prior.
- 
- The posterior mean 
- \begin{align*}
- \mathsf{E}(p \mid y) = w\frac{y}{n} + (1-w) \frac{a}{a+b}, 
- \qquad w = \frac{n}{n+a+b}
- \end{align*} 
- is therefore a weighted average of the maximum likelihood estimator and the prior mean. We can think of the parameter $\alpha$ (respectively $\beta$) as representing the prior number of success (resp. failures).
- 
+Since the density of the binomial is of the form $p^y(1-p)^{n-y}$, the beta distribution $\mathsf{Be}(\alpha, \beta)$ with density $$f(x) \propto x^{\alpha-1} (1-x)^{\beta-1}$$ is the conjugate prior.
+
 :::
 
 :::{#exm-conjugatepriors-poisson}
@@ -49,7 +42,8 @@ Since the density of the binomial is of the form $p^y(1-p)^{n-y}$, the beta dist
 ## Conjugate prior for the Poisson model
 
 The Poisson distribution with mean $\mu$ has log density proportional to $f(y; \mu) \propto y\log(\mu) -\mu$, so is an exponential family with natural parameter $\log(\mu)$. 
-The gamma distribution, $p(x) \propto \beta^{\alpha}/\Gamma(\alpha)x^{\alpha-1} \exp(-\beta x)$ with shape $\alpha$ and rate $\beta$ is the conjugate prior for the Poisson. For an $n$-sample of independent observations $\mathsf{Po}(\mu)$ observations with $\mu \sim \mathsf{Ga}(\alpha, \beta)$, the posterior is $\mathsf{Ga}(\sum_{i=1}^n y_i + \alpha, \beta + n)$.
+The gamma density, 
+$$ f(x) \propto \beta^{\alpha}/\Gamma(\alpha)x^{\alpha-1} \exp(-\beta x)$$ with shape $\alpha$ and rate $\beta$ is the conjugate prior for the Poisson. For an $n$-sample of independent observations $\mathsf{Po}(\mu)$ observations with $\mu \sim \mathsf{Ga}(\alpha, \beta)$, the posterior is $\mathsf{Ga}(\sum_{i=1}^n y_i + \alpha, \beta + n)$.
 
 
 :::
@@ -210,7 +204,8 @@ The priors $p(\nu) \propto 1$ and $p(\tau) \propto \tau^{-1}$ are both improper 
 
 ## Jeffrey's prior
 
-In single parameter models, taking a prior function for $\theta$ proportional to the square root of the determinant of the information matrix $p(\theta) \propto \imath(\theta)$ yields a prior that is invariant to parametrization, so that inferences conducted in different parametrizations are equivalent.
+In single parameter models, taking a prior function for $\theta$ proportional to the square root of the determinant of the information matrix $p(\theta) \propto \imath(\theta)$ yields a prior that is invariant to parametrization, so that inferences conducted in different parametrizations are equivalent.^[The Fisher information is linear in the sample size for independent and identically distributed data so we can derive the result for $n=1$ without loss of generality.]
+
 
 
 <!--
@@ -233,8 +228,7 @@ Most of the times, Jeffrey's prior is improper. For the binomial model, it can b
 :::
 
 :::{#exm-jeffreysbinom}
-Consider the binomial distribution $f(y; \theta, n) \propto  \theta^y(1-\theta)^{n-y}\mathsf{I}_{\theta \in [0,1]}$. The negative of the second derivative of the log likelihood with respect to $p$ is $\jmath(\theta) = - \partial^2 \ell(\theta; y) / \partial \theta^2 = y/\theta^2 + (1-y)/(1-\theta)^2$ and since $\mathsf{E}(Y)=n\theta$, thus the Fisher information is $\imath = \mathsf{E}\{\jmath(\theta)\}=n/\theta + n/(1-\theta) = n/\{\theta(1-\theta)\}$.^[The Fisher information is linear in the sample size for independent and identically distributed data.]
-
+Consider the binomial distribution $f(y; \theta, n) \propto  \theta^y(1-\theta)^{n-y}\mathsf{I}_{\theta \in [0,1]}$. The negative of the second derivative of the log likelihood with respect to $p$ is $$\jmath(\theta) = - \partial^2 \ell(\theta; y) / \partial \theta^2 = y/\theta^2 + (1-y)/(1-\theta)^2$$ and since $\mathsf{E}(Y)=n\theta$, the Fisher information is $$\imath = \mathsf{E}\{\jmath(\theta)\}=n/\theta + n/(1-\theta) = n/\{\theta(1-\theta)\}$$
 Jeffrey's prior is thus $p(\theta) \propto \theta^{-1}(1-\theta)^{-1}$.
 
 :::
@@ -261,7 +255,7 @@ Setting parameters of priors is often done by reparametrizing the latter in term
 
 The generalized extreme value distribution arises as the limiting distribution for the maximum of $m$ independent observations. The $\mathsf{GEV}(\mu, \sigma, \xi)$ distribution is a location-scale with distribution function
 \begin{align*}
-F(x) = \exp\left\{ - \left(1+\xi(x-\mu)/\sigma\right)^{-1/\xi}_{+}\right\}
+F(x) = \exp\left[ - \left\{1+\xi(x-\mu)/\sigma\right\}^{-1/\xi}_{+}\right]
 \end{align*}
 where $x_{+} = \max\{0, x\}$. 
 

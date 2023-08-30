@@ -1,0 +1,38 @@
+# Complementary material
+
+## Bayes theorem
+
+Denote by $p(X) \equiv\Pr(X)$ denotes the marginal density of $X$, $p(X \mid Y)$ the conditional of $X$ given $Y$ and $p(X, Y)$ the joint density. Bayes' theorem states that
+\begin{align*}
+p(X = x \mid Y=y) = \frac{p(Y = y \mid X = x)p(X=x)}{p(Y=y)}
+\end{align*}
+
+In the case of discrete random variable $X$ with support $\mathcal{X},$ the denominator can be evaluated using the law of total probability  as $$\Pr(Y=y) = \sum_{x \in \mathcal{X}}\Pr(Y =y \mid X=x)\Pr(X=x).$$
+
+::: {#exm-covidrapidtest}
+
+Back in January 2021, the Quebec government was debating whether or not to distribute antigen rapid test, with [strong reluctance](https://www.cbc.ca/news/canada/montreal/quebec-avoids-relying-on-rapid-covid-19-tests-as-pressure-mounts-to-follow-ontario-s-lead-1.5896738) from authorities given the paucity of available resources and the poor sensitivity.
+
+A Swiss study analyse the efficiency of rapid antigen tests, comparing them to repeated  polymerase chain reaction (PCR) test output, taken as benchmark [@Jegerlehner:2021]. The results are presented in @tbl-covid19
+
+|                | PCR $+$ |  PCR $-$ |
+|----------------|--------:|---------:|
+| rapid $+$      |      92 |        2 |
+| rapid $-$      |      49 |     1319 |
+| total          |     141 |     1321 |
+
+: Confusion matrix of Covid test results for PCR tests versus rapid antigen tests, from @Jegerlehner:2021. {#tbl-covid19}
+
+
+Estimated seropositivity at the end of January 2021 according to projections of the Institute for Health Metrics and Evaluation (IHME) of 8.18M out of 38M inhabitants [@owidcoronavirus], a prevalence of 21.4%. Assuming the latter holds uniformly over the country, what is the probability of having Covid if I get a negative result to a rapid test?
+
+Let $R^{-}$ ($R^{+}$) denote a negative (positive) rapid test result and $C^{+}$ ($C^{-}$) Covid positivity (negativity). Bayes' formula gives
+\begin{align*}
+\Pr(C^{+} \mid R^{-}) & = \frac{\Pr(R^{-} \mid C^{+})\Pr(C^{+})}{\Pr(R^{-} \mid C^{+})\Pr(C^{+}) + \Pr(R^{-} \mid C^{-})\Pr(C^{-})} \\&=
+\frac{49/141 \cdot 0.214}{49/141 \cdot 0.214 + 1319/1321 \cdot 0.786}
+\end{align*}
+so there is a small, but non-negligible probability of 8.66% that the rapid test result is misleading.  @Jegerlehner:2021 indeed found that the sensitivity was 65.3% among symptomatic individuals, but dropped down to 44% for asymptomatic cases. This may have fueled government experts skepticism.
+
+
+:::
+

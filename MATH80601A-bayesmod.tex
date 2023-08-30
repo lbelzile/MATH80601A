@@ -141,6 +141,7 @@
 \newcommand{\CSLIndent}[1]{\hspace{\cslhangindent}#1}
 
 % \usepackage{amsmath,amssymb,mathtools}
+\usepackage{mathtools}
 \usepackage{enumerate}
 \usepackage{geometry}
 \geometry{hmargin=1.2in}
@@ -280,9 +281,11 @@
 \newcommand*\listoflistings{\listof{codelisting}{List of Listings}}
 \usepackage{amsthm}
 \theoremstyle{definition}
-\newtheorem{definition}{Definition}[chapter]
-\theoremstyle{definition}
 \newtheorem{example}{Example}[chapter]
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}[chapter]
+\theoremstyle{plain}
+\newtheorem{proposition}{Proposition}[chapter]
 \theoremstyle{remark}
 \AtBeginDocument{\renewcommand*{\proofname}{Proof}}
 \newtheorem*{remark}{Remark}
@@ -321,7 +324,7 @@
 \begin{document}
 \frontmatter
 \maketitle
-\ifdefined\Shaded\renewenvironment{Shaded}{\begin{tcolorbox}[borderline west={3pt}{0pt}{shadecolor}, frame hidden, interior hidden, sharp corners, boxrule=0pt, enhanced, breakable]}{\end{tcolorbox}}\fi
+\ifdefined\Shaded\renewenvironment{Shaded}{\begin{tcolorbox}[interior hidden, boxrule=0pt, breakable, enhanced, borderline west={3pt}{0pt}{shadecolor}, sharp corners, frame hidden]}{\end{tcolorbox}}\fi
 
 \renewcommand*\contentsname{Table of contents}
 {
@@ -343,7 +346,7 @@ a graduate course offered at HEC Montréal.
 These notes are licensed under a
 \href{http://creativecommons.org/licenses/by-nc-sa/4.0/}{Creative
 Commons Attribution-NonCommercial-ShareAlike 4.0 International License}
-and were last compiled on Thursday, August 24 2023.
+and were last compiled on Tuesday, August 29 2023.
 
 The objective of the course is to provide a hands on introduction to
 Bayesian data analysis. The course will cover the formulation,
@@ -352,77 +355,39 @@ real-data applications.
 
 \bookmarksetup{startatroot}
 
-\hypertarget{introduction}{%
-\chapter{Introduction}\label{introduction}}
+\hypertarget{bayesics}{%
+\chapter{Bayesics}\label{bayesics}}
 
-\hypertarget{bayes-theorem}{%
-\section{Bayes theorem}\label{bayes-theorem}}
+The Bayesian paradigm is an inferential framework that is used
+widespread in data science. Numerical challenges that prevented it's
+widespread adoption until the 90's, when the Markov chain Monte Carlo
+revolution allowed models estimation.
 
-Denote by \(p(X) \equiv\Pr(X)\) denotes the marginal density of \(X\),
-\(p(X \mid Y)\) the conditional of \(X\) given \(Y\) and \(p(X, Y)\) the
-joint density. Bayes' theorem states that \begin{align*}
-p(X = x \mid Y=y) = \frac{p(Y = y \mid X = x)p(X=x)}{p(Y=y)}
-\end{align*}
+Bayesian inference, which builds on likelihood-based inference, offers a
+natural framework for prediction and for uncertainty quantification. The
+interpretation is more natural than that of classical frequentists
+methods, and it is more easy to generalized models to complex settings,
+using notably hierarchical constructions. The main source of controversy
+is the role of the prior distribution, which allows one to incorporate
+subject-matter expertise but leads to different inferences being drawn
+by different practitioners; this subjectivity is not to the taste of
+many and has been the subject of many controversies.
 
-In the case of discrete random variable \(X\) with support
-\(\mathcal{X},\) the denominator can be evaluated using the law of total
-probability as
-\[\Pr(Y=y) = \sum_{x \in \mathcal{X}}\Pr(Y =y \mid X=x)\Pr(X=x).\]
-
-\begin{example}[]\protect\hypertarget{exm-covidrapidtest}{}\label{exm-covidrapidtest}
-
-Back in January 2021, the Quebec government was debating whether or not
-to distribute antigen rapid test, with
-\href{https://www.cbc.ca/news/canada/montreal/quebec-avoids-relying-on-rapid-covid-19-tests-as-pressure-mounts-to-follow-ontario-s-lead-1.5896738}{strong
-reluctance} from authorities given the paucity of available resources
-and the poor sensitivity.
-
-A Swiss study analyse the efficiency of rapid antigen tests, comparing
-them to repeated polymerase chain reaction (PCR) test output, taken as
-benchmark (\protect\hyperlink{ref-Jegerlehner:2021}{Jegerlehner et al.
-2021}). The results are presented in Table~\ref{tbl-covid19}
-
-\hypertarget{tbl-covid19}{}
-\begin{longtable}[]{@{}lrr@{}}
-\caption{\label{tbl-covid19}Confusion matrix of Covid test results for
-PCR tests versus rapid antigen tests, from Jegerlehner et al.
-(\protect\hyperlink{ref-Jegerlehner:2021}{2021}).}\tabularnewline
-\toprule\noalign{}
-& PCR \(+\) & PCR \(-\) \\
-\midrule\noalign{}
-\endfirsthead
-\toprule\noalign{}
-& PCR \(+\) & PCR \(-\) \\
-\midrule\noalign{}
-\endhead
-\bottomrule\noalign{}
-\endlastfoot
-rapid \(+\) & 92 & 2 \\
-rapid \(-\) & 49 & 1319 \\
-total & 141 & 1321 \\
-\end{longtable}
-
-Estimated seropositivity at the end of January 2021 according to
-projections of the Institute for Health Metrics and Evaluation (IHME) of
-8.18M out of 38M inhabitants
-(\protect\hyperlink{ref-owidcoronavirus}{Mathieu et al. 2020}), a
-prevalence of 21.4\%. Assuming the latter holds uniformly over the
-country, what is the probability of having Covid if I get a negative
-result to a rapid test?
-
-Let \(R^{-}\) (\(R^{+}\)) denote a negative (positive) rapid test result
-and \(C^{+}\) (\(C^{-}\)) Covid positivity (negativity). Bayes' formula
-gives \begin{align*}
-\Pr(C^{+} \mid R^{-}) & = \frac{\Pr(R^{-} \mid C^{+})\Pr(C^{+})}{\Pr(R^{-} \mid C^{+})\Pr(C^{+}) + \Pr(R^{-} \mid C^{-})\Pr(C^{-})} \\&=
-\frac{49/141 \cdot 0.214}{49/141 \cdot 0.214 + 1319/1321 \cdot 0.786}
-\end{align*} so there is a small, but non-negligible probability of
-8.66\% that the rapid test result is misleading. Jegerlehner et al.
-(\protect\hyperlink{ref-Jegerlehner:2021}{2021}) indeed found that the
-sensitivity was 65.3\% among symptomatic individuals, but dropped down
-to 44\% for asymptomatic cases. This may have fueled government experts
-skepticism.
-
-\end{example}
+The Bayesian paradigm includes multiples notions that are not covered in
+undergraduate introductory courses. The purpose of this chapter is to
+introduce these concepts and put them in perspective; the reader is
+assumed to be familiar with basics of likelihood-based inference. We
+begin with a discussion of the notion of probability, then define
+priors, posterior distributions, marginal likelihood and posterior
+predictive distributions. We focus on the interpretation of posterior
+distributions and explain how to summarize the posterior, leading
+leading to definitions of high posterior density region, credible
+intervals, posterior mode for cases where we either have a (correlated)
+sample from the posterior, or else have access to the whole
+distribution. Several notions, including sequentiality, prior
+elicitation and estimation of the marginal likelihood, are mentioned in
+passing. A brief discussion of Bayesian hypothesis testing (and
+alternatives) is presented.
 
 \hypertarget{probability-and-frequency}{%
 \section{Probability and frequency}\label{probability-and-frequency}}
@@ -430,18 +395,15 @@ skepticism.
 In classical (frequentist) parametric statistic, we treat observations
 \(\boldsymbol{Y}\) as realizations of a distribution whose parameters
 \(\boldsymbol{\theta}\) are unknown. All of the information about
-parameters is encoded by the likelihood function, which is optimized
-numerically or analytically to find the maximum likelihood estimator.
-Large-sample theory shows that the resulting estimator is asymptotically
-normal under regularity conditions.
+parameters is encoded by the likelihood function.
 
-The interpretation of probability in the classical statistic is
-understood in terms of long run frequency, which is why we call this
-approach frequentist statistic. Think of a fair die: when we state that
-values \(\{1, \ldots, 6\}\) are equiprobable, we mean that repeatedly
-tossing the die should result, in large sample, in each outcome being
-realized roughly \(1/6\) of the time (the symmetry of the object also
-implies that each facet should be equally likely to lie face up). This
+The interpretation of probability in the classical statistic is in terms
+of long run frequency, which is why we term this approach frequentist
+statistic. Think of a fair die: when we state that values
+\(\{1, \ldots, 6\}\) are equiprobable, we mean that repeatedly tossing
+the die should result, in large sample, in each outcome being realized
+roughly \(1/6\) of the time (the symmetry of the object also implies
+that each facet should be equally likely to lie face up). This
 interpretation also carries over to confidence intervals: a
 \((1-\alpha)\) confidence interval either contains the true parameter
 value or it doesn't, so the probability level \((1-\alpha)\) is only the
@@ -486,37 +448,51 @@ the occurrence of an event attributed by a given person at a given
 instant and with a given set of information.
 \end{quote}
 
-The likelihood
+\hypertarget{posterior-distribution}{%
+\section{Posterior distribution}\label{posterior-distribution}}
+
+We consider a parametric model with parameters \(\boldsymbol{\theta}\)
+defined on \(\boldsymbol{\Theta} \subseteq \mathbb{R}^p\). In Bayesian
+learning, we adjoin to the likelihood
 \(\mathcal{L}(\boldsymbol{\theta}; \boldsymbol{y}) \equiv p(\boldsymbol{y} \mid \boldsymbol{\theta})\)
-is the starting point for Bayesian inference. However, we adjoin to it a
-\textbf{prior} distribution \(p(\boldsymbol{\theta})\) that reflects the
+a \textbf{prior} function \(p(\boldsymbol{\theta})\) that reflects the
 prior knowledge about potential values taken by the \(p\)-dimensional
-parameter vector, before observing the data \(\boldsymbol{y}\). We thus
-seek \(p(\boldsymbol{\theta} \mid \boldsymbol{y})\): the observations
-are random variables but inference is performed conditional on the
-observed sample. By Bayes' theorem, the posterior distribution
-\(p(\boldsymbol{\Theta} \mid \boldsymbol{Y})\) is
+parameter vector, before observing the data \(\boldsymbol{y}\). The
+prior makes \(\boldsymbol{\theta}\) random and the distribution of the
+parameter reflects our uncertainty about the true value of the model
+parameters.
+
+In a Bayesian analysis, observations are random variables but inference
+is performed conditional on the observed sample values. By Bayes'
+theorem, our target is therefore the posterior density
+\(p(\boldsymbol{\theta} \mid \boldsymbol{y})\), defined as
 
 \begin{equation}\protect\hypertarget{eq-posterior}{}{
-p(\boldsymbol{\Theta} \mid \boldsymbol{Y}) = \frac{p(\boldsymbol{Y} \mid \boldsymbol{\Theta}) p(\boldsymbol{\Theta})}{\int p(\boldsymbol{Y} \mid \boldsymbol{\theta}) p(\boldsymbol{\theta}) \mathrm{d} \boldsymbol{\theta}},
+\underbracket[0.25pt]{p(\boldsymbol{\theta} \mid \boldsymbol{y})}_{\text{posterior}} = \frac{\overbracket[0.25pt]{p(\boldsymbol{y} \mid \boldsymbol{\theta})}^{\text{likelihood}} \times  \overbracket[0.25pt]{p(\boldsymbol{\theta})}^{\text{prior}}}{\underbracket[0.25pt]{\int p(\boldsymbol{y} \mid \boldsymbol{\theta}) p(\boldsymbol{\theta}) \mathrm{d} \boldsymbol{\theta}}_{\text{marginal likelihood }p(\boldsymbol{y})}}.
 }\label{eq-posterior}\end{equation}
 
-so the posterior \(p(\boldsymbol{\theta} \mid \boldsymbol{y})\) is
+The posterior \(p(\boldsymbol{\theta} \mid \boldsymbol{y})\) is
 proportional, as a function of \(\theta,\) to the product of the
-likelihood and the prior function. The integral in the denominator,
-termed marginal likelihood and denoted
-\(p(\boldsymbol{Y}) = \mathsf{E}_{\boldsymbol{\theta}}\{p(\boldsymbol{Y} \mid \boldsymbol{\theta})\}\),
-is a normalizing constant that makes the right hand side integrate to
-unity.
+likelihood and the prior function.
 
-For the posterior to be \textbf{proper}, we need the product on the
-right hand side to be integrable. The denominator of
-Equation~\ref{eq-posterior} is a normalizing constant so that the
-posterior is a distribution. If \(\boldsymbol{\theta}\) is low
-dimensional, numerical integration such as quadrature methods can be
-used to compute the latter. To obtain the marginal posterior,
-\[p(\theta_j \mid \boldsymbol{y}) = \int p(\boldsymbol{\theta} \mid \boldsymbol{y}) \mathrm{d} \boldsymbol{\theta}_{-j},\]
-additional integration is needed.
+For the posterior to be \textbf{proper}, we need the product of the
+prior and the likelihood on the right hand side to be integrable as a
+function of \(\boldsymbol{\theta}\) over the parameter domain
+\(\boldsymbol{\Theta}\). The integral in the denominator, termed
+marginal likelihood and denoted
+\(p(\boldsymbol{y}) = \mathsf{E}_{\boldsymbol{\theta}}\{p(\boldsymbol{y} \mid \boldsymbol{\theta})\}\).
+The denominator of Equation~\ref{eq-posterior} is a normalizing
+constant, making the posterior a valid density.
+
+If \(\boldsymbol{\theta}\) is low dimensional, numerical integration
+such as quadrature methods can be used to compute the marginal
+likelihood.
+
+To fix ideas, we consider next a simple one-parameter model where the
+marginal likelihood can be computed explicitly.
+
+\begin{example}[Binomial model with beta
+prior]\protect\hypertarget{exm-betabinomconjugate}{}\label{exm-betabinomconjugate}
 
 Consider a binomial likelihood with probability of success \(p\) and
 \(n\) trials, \(Y \sim \mathsf{Bin}(n, p)\). If we take a beta prior,
@@ -531,20 +507,32 @@ function of the parameter \(p\), we could recognize directly that the
 posterior distribution is \(\mathsf{Be}(k+\alpha, n-k+\beta)\) and
 deduce the normalizing constant from there.
 
-The number of success should be roughly \(np\) and the number of
-failures \(n(1-p)\) and so the likelihood contribution, relative to the
-prior, will dominate as the sample size \(n\) grows.
+If \(Y \sim \mathsf{Bin}(n, p)\), the expected number of success is
+\(np\) and the expected number of failures \(n(1-p)\) and so the
+likelihood contribution, relative to the prior, will dominate as the
+sample size \(n\) grows.
 
 Another way to see this is to track moments (expectation, variance,
 etc.) The Beta distribution, whose density is
 \(f(x; \alpha, \beta) \propto x^{\alpha-1} (1-x)^{\beta-1}\), has
 expectation \(\alpha/(\alpha+\beta)\) and variance
-\(\alpha\beta/\{(\alpha+\beta)^2(\alpha+\beta+1)\}\) and so as
-\(n \to \infty\), the mean of the posterior will be dominated by
-information from the likelihood. An alternative parametrization takes
-\(\alpha=\mu \kappa\), \(\beta = (1-\mu)\kappa\) for \(\mu \in (0,1)\)
-and \(\kappa>0\), so that the model is parametrized directly in terms of
-mean \(\mu\).
+\(\alpha\beta/\{(\alpha+\beta)^2(\alpha+\beta+1)\}\). The posterior mean
+is \begin{align*}
+ \mathsf{E}(p \mid y) = w\frac{y}{n} + (1-w) \frac{a}{a+b}, 
+ \qquad w = \frac{n}{n+a+b},
+ \end{align*} a weighted average of the maximum likelihood estimator and
+the prior mean. We can think of the parameter \(\alpha\) (respectively
+\(\beta\)) as representing the prior number of success (resp. failures).
+
+Figure~\ref{fig-betabinom} shows three different posterior distributions
+with different beta priors: the first prior, which favors values closer
+to 1/2, leads to a more peaked posterior density, contrary to the second
+which is symmetric, but concentrated toward more extreme values near
+endpoints of the support. The rightmost panel is truncated: as such, the
+posterior is zero for any value of \(p\) beyond 1/2 and so the posterior
+mode may be close to the endpoint of the prior. The influence of such a
+prior will not necessarily vanish as sample size and should be avoided,
+unless there are compelling reasons for restricting the domain.
 
 \begin{figure}[ht!]
 
@@ -552,27 +540,119 @@ mean \(\mu\).
 
 }
 
-\caption{\label{fig-betabinom}Binomial likelihood for six successes out
-of 14 trials, \(\mathsf{Beta}(3/2, 3/2)\) prior and posterior
-distribution from a beta-binomial model. The posterior curve is much
-closer to the likelihood than it is to the prior, even with a relatively
-small sample size.}
+\caption{\label{fig-betabinom}Scaled binomial likelihood for six
+successes out of 14 trials, with \(\mathsf{Beta}(3/2, 3/2)\) prior
+(left), \(\mathsf{Beta}(1/4, 1/4)\) (middle) and truncated uniform on
+\([0,1/2]\) (right), with the corresponding posterior distributions.}
 
 \end{figure}
 
-While a density integrates to 1 over the range of possible outcomes, the
-likelihood function does not when we integrate over the range of the
-parameters.
+\end{example}
 
-The beta-binomial model is an example of conjugate model, meaning the
-posterior distribution is from the same family as the prior.\footnote{This
-  is a property of exponential families that will be revisited in the
-  next chapter.} While we could calculate analytically the value of the
-normalizing constant, we could also for arbitrary priors use numerical
-integration in the event the parameter vector \(\boldsymbol{\theta}\) is
-low-dimensional. For a single scalar \(p\) on the unit interval,
-numerical integration or Monte Carlo integration yield nearly identical
-results.
+\begin{remark}[Proportionality]
+
+Any term appearing in the likelihood times prior function that does not
+depend on parameters can be omitted since they will be absorbed by the
+normalizing constant. This makes it useful to compute normalizing
+constants or likelihood ratios.
+
+\end{remark}
+
+\begin{remark}
+
+An alternative parametrization for the beta distribution sets
+\(\alpha=\mu \kappa\), \(\beta = (1-\mu)\kappa\) for \(\mu \in (0,1)\)
+and \(\kappa>0\), so that the model is parametrized directly in terms of
+mean \(\mu\), with \(\kappa\) capturing the dispersion.
+
+\end{remark}
+
+\begin{remark}
+
+A density integrates to 1 over the range of possible outcomes, but there
+is no guarantee that the likelihood function, as a function of
+\(\boldsymbol{\theta}\), integrates to one over the parameter domain
+\(\boldsymbol{\Theta}\).
+
+For example, the binomial likelihood with \(n\) trials and \(k\)
+successes satisfies
+\[\int_0^1 \binom{n}{k}p^k(1-p)^{n-k} \mathrm{d} p = \frac{1}{n+1}.\]
+
+Moreover, the binomial distribution is discrete (supported on
+\(0, \ldots, n\)), whereas the likelihood is continuous as a function of
+the probability of success, as evidenced by
+Figure~\ref{fig-binom-massvslik}
+
+\begin{figure}[ht!]
+
+{\centering \includegraphics{introduction_files/figure-pdf/fig-binom-massvslik-1.pdf}
+
+}
+
+\caption{\label{fig-binom-massvslik}Binomial mass function (left) and
+scaled likelihood function (right).}
+
+\end{figure}
+
+\end{remark}
+
+\begin{proposition}[Sequentiality and Bayesian
+updating]\protect\hypertarget{prp-sequentiality}{}\label{prp-sequentiality}
+
+The likelihood is invariant to the order of the observations if they are
+independent Thus, if we consider two blocks of observations
+\(\boldsymbol{y}_1\) and \(\boldsymbol{y}_2\)
+\[p(\boldsymbol{\theta} \mid \boldsymbol{y}_1, \boldsymbol{y}_2) = p(\boldsymbol{\theta} \mid \boldsymbol{y}_1) p(\boldsymbol{\theta} \mid \boldsymbol{y}_2),\]
+so it makes no difference if we treat data all at once or in blocks.
+More generally, for data exhibiting spatial or serial dependence, it
+makes sense to consider rather the conditional (sequential)
+decomposition
+\[f(\boldsymbol{y}; \boldsymbol{\theta}) = f(\boldsymbol{y}_1; \boldsymbol{\theta}) f(\boldsymbol{y}_2; \boldsymbol{\theta}, \boldsymbol{y}_1) \cdots f(\boldsymbol{y}_n; \boldsymbol{\theta}, \boldsymbol{y}_1, \ldots, \boldsymbol{y}_{n-1})\]
+where
+\(f(\boldsymbol{y}_k; \boldsymbol{y}_1, \ldots, \boldsymbol{y}_{k-1})\)
+denotes the conditional density function given observations
+\(\boldsymbol{y}_1, \ldots, \boldsymbol{y}_{k-1}\).
+
+By Bayes' rule, we can consider \emph{updating} the posterior by adding
+terms to the likelihood, noting that \begin{align*}
+p(\boldsymbol{\theta} \mid \boldsymbol{y}_1, \boldsymbol{y}_2) \propto p(\boldsymbol{y}_2 \mid \boldsymbol{y}_1, \boldsymbol{\theta}) p(\boldsymbol{\theta} \mid \boldsymbol{y}_1)
+\end{align*} which amounts to treating the posterior
+\(p(\boldsymbol{\theta} \mid \boldsymbol{y}_1)\) as a prior. If data are
+exchangeable, the order in which observations are collected and the
+order of the belief updating is irrelevant to the full posterior.
+Figure~\ref{fig-sequential} shows how the posterior becomes gradually
+closer to the scaled likelihood as we increase the sample size, and the
+posterior mode moves towards the true value of the parameter (here 0.3).
+
+\begin{figure}[ht!]
+
+{\centering \includegraphics{introduction_files/figure-pdf/fig-sequential-1.pdf}
+
+}
+
+\caption{\label{fig-sequential}Beta posterior and binomial likelihood
+with a uniform prior for increasing number of observations (from left to
+right) out of a total of 100 trials.}
+
+\end{figure}
+
+\end{proposition}
+
+\begin{example}[]\protect\hypertarget{exm-numericalintegration}{}\label{exm-numericalintegration}
+
+While we can calculate analytically the value of the normalizing
+constant for the beta-binomial model, we could also for arbitrary priors
+use numerical integration or Monte Carlo methods in the event the
+parameter vector \(\boldsymbol{\theta}\) is low-dimensional.
+
+While estimation of the normalizing constant is possible in simple
+models, the following highlights some challenges that are worth keeping
+in mind. In a model for discrete data (that is, assigning probability
+mass to a countable set of outcomes), the terms in the likelihood are
+probabilities and thus the likelihood becomes smaller as we gather more
+observations (since we multiply terms between zero or one). The marginal
+likelihood term becomes smaller and smaller, so it's reciprocal is big
+and this can lead to arithmetic underflow.
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -611,26 +691,13 @@ results.
 \end{Shaded}
 
 \begin{verbatim}
-[1] 1.064055e-05
+[1] 1.064067e-05
 \end{verbatim}
 
-\begin{Shaded}
-\begin{Highlighting}[]
-\CommentTok{\# Alternative approach, sampling from the prior}
-\CommentTok{\# This is less efficient}
-\FunctionTok{mean}\NormalTok{(}\FunctionTok{dbinom}\NormalTok{(}\AttributeTok{x =}\NormalTok{ k, }
-            \AttributeTok{size =}\NormalTok{ n, }
-            \AttributeTok{prob =} \FunctionTok{rbeta}\NormalTok{(}\AttributeTok{n =} \FloatTok{1e6}\NormalTok{, alpha, beta))) }\SpecialCharTok{*}
-  \FunctionTok{beta}\NormalTok{(alpha, beta) }\SpecialCharTok{/} \FunctionTok{choose}\NormalTok{(n, k)}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{verbatim}
-[1] 1.065653e-05
-\end{verbatim}
+\end{example}
 
 When \(\boldsymbol{\theta}\) is high-dimensional, the marginal
-likelihood is untractable. This is one of the main challenges of
+likelihood is intractable. This is one of the main challenges of
 Bayesian statistics and the popularity and applicability has grown
 drastically with the development and popularity of numerical algorithms,
 following th publication of Geman and Geman
@@ -639,22 +706,69 @@ following th publication of Geman and Geman
 Carlo methods circumvent the calculation of the denominator by drawing
 approximate samples from the posterior.
 
-\hypertarget{bayesian-updating}{%
-\subsection{Bayesian updating}\label{bayesian-updating}}
+\hypertarget{posterior-predictive-distribution}{%
+\section{Posterior predictive
+distribution}\label{posterior-predictive-distribution}}
 
-Subjective probabilities imply that different people with different
-prior beliefs would arrive at different conclusions. However, as more
-data are gathered, we can use Bayes theorem to update these prior
-beliefs and update the posterior. In most instances, the relative weight
-of the prior relative to the likelihood becomes negligible: if we
-consider independent data \(\boldsymbol{y}_1, \boldsymbol{y}_n\)
-observed sequentially, then \begin{align*}
-p(\boldsymbol{\theta} \mid \boldsymbol{y}_1, \ldots, \boldsymbol{y}_k) &\stackrel{\boldsymbol{\theta}}{\propto} p(\boldsymbol{y}_k \mid \boldsymbol{\theta}) p(\boldsymbol{\theta} \mid \boldsymbol{y}_1, \ldots, \boldsymbol{y}_{k-1})
-\\ & \stackrel{\boldsymbol{\theta}}{\propto} \prod_{i=1}^k p(\boldsymbol{y}_i \mid \boldsymbol{\theta}) p(\boldsymbol{\theta})
-\end{align*} If data are exchangeable, the order in which observations
-are collected and the order of the belief updating is irrelevant to the
-full posterior
-\(p(\boldsymbol{\theta} \mid \boldsymbol{y}_1, \ldots \boldsymbol{y}_n)\).
+\hypertarget{summarizing-posterior-distributions}{%
+\section{Summarizing posterior
+distributions}\label{summarizing-posterior-distributions}}
+
+Most of the field revolves around the creation of algorithms that either
+circumvent the calculation of the normalizing constant (notably Monte
+Carlo and Markov chain Monte Carlo methods) or else provide accurate
+numerical approximation of the posterior pointwise, including for
+marginalizing out all but one parameters (integrated nested Laplace
+approximations, variational inference, etc.)
+
+The target of inference is the whole posterior distribution, from which
+we can extract any summary of interest. For example, if we consider the
+beta-binomial model, we can assess the posterior probability
+\(\Pr(P > c)\) simply by calculating the area under the posterior
+density until \(c\). In certain settings, however it will be useful to
+provide moments or other characteristics of the distribution, notably
+since visualization of a (potentially high-dimensional) object is not
+easy.
+
+The output of the Bayesian learning problem will be either of:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  a fully characterized distribution
+\item
+  a numerical approximation to the posterior distribution (pointwise)
+\item
+  an exact or approximate sample drawn from the posterior distribution
+\end{enumerate}
+
+Point estimators are usually in terms of central tendency. We can return
+the expected value or mean of the posterior, quantiles such as the
+median or the mode, the value at which the posterior density is highest.
+These functionals may correspond to potentially different values, as
+shown in the left-panel of Figure~\ref{fig-central-moments}. For
+multimodal distributions, the mode is likely the better choice.
+
+If we know the distribution, we can optimize to find the mode or else
+return the value for the pointwise evaluation on a grid at which the
+density achieves it's maximum.
+
+\begin{figure}[ht!]
+
+{\centering \includegraphics{introduction_files/figure-pdf/fig-central-moments-1.pdf}
+
+}
+
+\caption{\label{fig-central-moments}Point estimators from a left-skewed
+distribution (left) and from a multimodal distribution (right).}
+
+\end{figure}
+
+Often, we will also be interested in the marginal posterior distribution
+of each component \(\theta_j\) in turn (\(j=1, \ldots, p\)). To get
+these, we carry out additional integration steps,
+\[p(\theta_j \mid \boldsymbol{y}) = \int p(\boldsymbol{\theta} \mid \boldsymbol{y}) \mathrm{d} \boldsymbol{\theta}_{-j}.\]
 
 \bookmarksetup{startatroot}
 
@@ -699,19 +813,12 @@ proportional to \begin{align*}
 y \log(p) + (n-y) \log(1-p) = y\log\left( \frac{p}{1-p}\right) + n \log(1-p)
 \end{align*} with canonical parameter \(\mathrm{logit}(p)\), which is
 the natural link function for Bernoulli, giving rise to logistic
-regresion model.
+regression model. The binomial distribution is thus an exponential
+family.
 
 Since the density of the binomial is of the form \(p^y(1-p)^{n-y}\), the
 beta distribution \(\mathsf{Be}(\alpha, \beta)\) with density
-\(f(x) \propto x^{\alpha-1} (1-x)^{\beta-1}\) is the conjugate prior.
-
-The posterior mean \begin{align*}
- \mathsf{E}(p \mid y) = w\frac{y}{n} + (1-w) \frac{a}{a+b}, 
- \qquad w = \frac{n}{n+a+b}
- \end{align*} is therefore a weighted average of the maximum likelihood
-estimator and the prior mean. We can think of the parameter \(\alpha\)
-(respectively \(\beta\)) as representing the prior number of success
-(resp. failures).
+\[f(x) \propto x^{\alpha-1} (1-x)^{\beta-1}\] is the conjugate prior.
 
 \end{example}
 
@@ -720,8 +827,8 @@ model]\protect\hypertarget{exm-conjugatepriors-poisson}{}\label{exm-conjugatepri
 
 The Poisson distribution with mean \(\mu\) has log density proportional
 to \(f(y; \mu) \propto y\log(\mu) -\mu\), so is an exponential family
-with natural parameter \(\log(\mu)\). The gamma distribution,
-\(p(x) \propto \beta^{\alpha}/\Gamma(\alpha)x^{\alpha-1} \exp(-\beta x)\)
+with natural parameter \(\log(\mu)\). The gamma density,
+\[ f(x) \propto \beta^{\alpha}/\Gamma(\alpha)x^{\alpha-1} \exp(-\beta x)\]
 with shape \(\alpha\) and rate \(\beta\) is the conjugate prior for the
 Poisson. For an \(n\)-sample of independent observations
 \(\mathsf{Po}(\mu)\) observations with
@@ -937,7 +1044,10 @@ In single parameter models, taking a prior function for \(\theta\)
 proportional to the square root of the determinant of the information
 matrix \(p(\theta) \propto \imath(\theta)\) yields a prior that is
 invariant to parametrization, so that inferences conducted in different
-parametrizations are equivalent.
+parametrizations are equivalent.\footnote{The Fisher information is
+  linear in the sample size for independent and identically distributed
+  data so we can derive the result for \(n=1\) without loss of
+  generality.}
 
 To see this, consider a bijective transformation
 \(\theta \mapsto \vartheta\). Under the reparametrized model and
@@ -967,12 +1077,9 @@ Consider the binomial distribution
 \(f(y; \theta, n) \propto \theta^y(1-\theta)^{n-y}\mathsf{I}_{\theta \in [0,1]}\).
 The negative of the second derivative of the log likelihood with respect
 to \(p\) is
-\(\jmath(\theta) = - \partial^2 \ell(\theta; y) / \partial \theta^2 = y/\theta^2 + (1-y)/(1-\theta)^2\)
-and since \(\mathsf{E}(Y)=n\theta\), thus the Fisher information is
-\(\imath = \mathsf{E}\{\jmath(\theta)\}=n/\theta + n/(1-\theta) = n/\{\theta(1-\theta)\}\).\footnote{The
-  Fisher information is linear in the sample size for independent and
-  identically distributed data.}
-
+\[\jmath(\theta) = - \partial^2 \ell(\theta; y) / \partial \theta^2 = y/\theta^2 + (1-y)/(1-\theta)^2\]
+and since \(\mathsf{E}(Y)=n\theta\), the Fisher information is
+\[\imath = \mathsf{E}\{\jmath(\theta)\}=n/\theta + n/(1-\theta) = n/\{\theta(1-\theta)\}\]
 Jeffrey's prior is thus
 \(p(\theta) \propto \theta^{-1}(1-\theta)^{-1}\).
 
@@ -1015,7 +1122,7 @@ The generalized extreme value distribution arises as the limiting
 distribution for the maximum of \(m\) independent observations. The
 \(\mathsf{GEV}(\mu, \sigma, \xi)\) distribution is a location-scale with
 distribution function \begin{align*}
-F(x) = \exp\left\{ - \left(1+\xi(x-\mu)/\sigma\right)^{-1/\xi}_{+}\right\}
+F(x) = \exp\left[ - \left\{1+\xi(x-\mu)/\sigma\right\}^{-1/\xi}_{+}\right]
 \end{align*} where \(x_{+} = \max\{0, x\}\).
 
 Inverting the distribution function yields the quantile function
@@ -1096,18 +1203,6 @@ Geman, Stuart, and Donald Geman. 1984. {``Stochastic Relaxation, {G}ibbs
 Distributions, and the {B}ayesian Restoration of Images.''} \emph{IEEE
 Transactions on Pattern Analysis and Machine Intelligence} PAMI-6 (6):
 721--41. \url{https://doi.org/10.1109/TPAMI.1984.4767596}.
-
-\leavevmode\vadjust pre{\hypertarget{ref-Jegerlehner:2021}{}}%
-Jegerlehner, Sabrina, Franziska Suter-Riniker, Philipp Jent, Pascal
-Bittel, and Michael Nagler. 2021. {``Diagnostic Accuracy of a
-{SARS-CoV-2} Rapid Antigen Test in Real-Life Clinical Settings.''}
-\emph{International Journal of Infectious Diseases} 109 (August):
-118--22. \url{https://doi.org/10.1016/j.ijid.2021.07.010}.
-
-\leavevmode\vadjust pre{\hypertarget{ref-owidcoronavirus}{}}%
-Mathieu, Edouard, Hannah Ritchie, Lucas Rodés-Guirao, Cameron Appel,
-Charlie Giattino, Joe Hasell, Bobbie Macdonald, et al. 2020.
-{``Coronavirus Pandemic (COVID-19).''} \emph{Our World in Data}.
 
 \leavevmode\vadjust pre{\hypertarget{ref-Matias:2021}{}}%
 Matias, J. Nathan, Kevin Munger, Marianne Aubin Le Quere, and Charles
