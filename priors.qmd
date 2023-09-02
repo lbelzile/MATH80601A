@@ -277,6 +277,7 @@ Consider the annual maximum rainfall in Abisko, Sweden.
 
 ```{r}
 #| eval: false
+#| label: gev-colestawn-quant-prior
 # Extract time series and compute annual maximum
 data(abisko, package = "mev")
 abi <- with(abisko, xts::xts(precip, order.by = lubridate::ymd(date)))

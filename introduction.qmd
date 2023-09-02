@@ -187,7 +187,8 @@ g3 <- ggplot() +
          colour = "",
          fill = "") + 
     theme_classic()
-g1 + g2 + g3 + plot_layout(guides = 'collect') & theme(legend.position = "bottom")
+g1 + g2 + g3 + 
+  plot_layout(guides = 'collect') & theme(legend.position = "bottom")
 ```
 
 :::
@@ -401,6 +402,7 @@ While estimation of the normalizing constant is possible in simple models, the f
 In a model for discrete data (that is, assigning probability mass to a countable set of outcomes), the terms in the likelihood are probabilities and thus the likelihood becomes smaller as we gather more observations (since we multiply terms between zero or one). The marginal likelihood term becomes smaller and smaller, so it's reciprocal is big and this can lead to arithmetic underflow.
 
 ```{r}
+#| label: betabinom-calculate-marg-lik
 #| eval: true
 #| echo: true
 #| cache: true
@@ -420,6 +422,7 @@ mean(unnormalized_posterior(runif(1e5)))
 ```
 
 ```{r}
+#| label: betabinom-montecarlo-prior-marginal-lik
 #| eval: false
 #| echo: false
 # Alternative Monte Carlo estimator, sampling from the prior
@@ -437,24 +440,133 @@ When $\boldsymbol{\theta}$ is high-dimensional, the marginal likelihood is intra
 
 ## Posterior predictive distribution
 
+Prediction in the Bayesian paradigm is obtained by considering the *posterior predictive distribution*,
+\begin{align*}
+p(y_{\text{new}} \mid \boldsymbol{y}) =
+\int_{\Theta} p(y_{\text{new}}  \mid \boldsymbol{\theta}) p(\boldsymbol{\theta} \mid  \boldsymbol{y}) \mathrm{d} \boldsymbol{\theta}
+\end{align*}
+
+Given draws from the posterior distribution, say $\boldsymbol{\theta}_b$ $(b=1, \ldots, B)$, we sample from each a new realization from the distribution appearing in the likelihood $p(y_{\text{new}}  \mid \boldsymbol{\theta}_b)$. This is different from the frequentist setting, which fixes the value of the parameter to some estimate $\widehat{\boldsymbol{\theta}}$; by contrast, the posterior predictive, here a beta-binomial distribution $\mathsf{BetaBin}(n, \alpha + k, n - k + \beta)$, carries over the uncertainty so will typically be wider and overdispersed relative to the corresponding binomial model. This can be easily seen from the left-panel of @fig-betabinompostpred, which contrasts the binomial mass function evaluated at the maximum likelihood estimator $\widehat{p}=6/14$ with the posterior predictive.
+
+:::{.exm-betabinompred}
+
+```{r}
+#| label: post-samp-betabinom
+#| eval: true
+#| echo: true
+npost <- 1e4L
+# Sample draws from the posterior distribution
+post_samp <- rbeta(n = npost, k + alpha, n - k + beta)
+# For each draw, sample new observation
+post_pred <- rbinom(n = npost, size = n, prob = post_samp)
+```
+
+
+```{r}
+#| label: fig-betabinompostpred
+#| eval: true
+#| echo: false
+#| warning: false
+#| cache: true
+#| fig-cap: "Beta-binomial posterior predictive distribution with corresponding binomial mass function evaluated at the maximum likelihood estimator."
+dbetabinom <- function(x, size, shape1, shape2, log = FALSE){
+	stopifnot(shape1 > 0, shape2 > 0, size >= x, all(x >= 0))
+	ldens <- lchoose(size, x) + 
+		 lbeta(x + shape1, size - x + shape2) - 
+		 lbeta(shape1, shape2)
+	   if(isTRUE(log)){
+	    return(ldens)
+	   } else{
+	   return(exp(ldens))
+	   }
+}
+
+k <- 6L # number of successes 
+size <- 14L # number of trials
+alpha <- beta <- 1.5 # prior parameters
+x = 0:size
+pmf_post <- dbetabinom(x = x, 
+                       size = size, 
+                       shape1 = alpha + k, 
+                       shape2 = beta + size - k)
+pmf_lik <- dbinom(x = x, size = size, prob = k/size)
+g1 <- ggplot(data = data.frame(
+    x = c(x, x),
+    pmf = c(pmf_post, pmf_lik),
+    group = rep(c("posterior predictive", "binomial distribution"), 
+                each = length(x))),
+  mapping = aes(x = x, y = pmf, col = group, fill = group)) +
+  geom_col(position = position_dodge(),
+           width = 0.5) +
+  scale_color_manual(values = MetBrewer::met.brewer("Renoir", 2)) + 
+  scale_fill_manual(values = MetBrewer::met.brewer("Renoir", 2)) + 
+  labs(col = "",
+       fill = "",
+       y = "",
+       subtitle = "probability of outcome",
+       x = "number of successes") +
+  scale_y_continuous(limits = c(0, 0.22), expand = c(0,0)) + 
+  scale_x_continuous(limits = c(0, 14), breaks = 0:14) + 
+  theme_classic() +
+  theme(legend.position = "bottom")
+g1
+# g2 <- ggplot(data = data.frame(
+#           x = sort(unique(post_pred)),
+#           y = as.numeric(table(post_pred))/length(post_pred)),
+#        mapping = aes(x = x, y = y)) +
+#   geom_col() +
+#   labs(y = "",
+#        x = "number of successes",
+#        subtitle = "probability of outcome") +
+#   theme_classic()
+# g1 + g2
+```
+
+:::
+
+:::{#exm-normal-post-pred}
+
+Consider an $n$ sample of independent and identically distributed Gaussian, $Y_i \sim \mathsf{No}(0, \tau^{-1})$ ($i=1, \ldots, n$), where we assign a gamma prior on the precision $\tau \sim \mathsf{Ga}(\alpha, \beta)$. The posterior is
+\begin{align*}
+p(\tau \mid \boldsymbol{y}) \stackrel{\tau}{\propto} \prod_{i=1}^n \tau^{n/2}\exp\left(-\tau \frac{\sum_{i=1}^n{y_i^2}}{2}\right) \times \tau^{\alpha-1} \exp(-\beta \tau)
+\end{align*}
+and rearranging the terms to collect powers of $\tau$, etc. we find that the posterior for $\tau$ must also be gamma, with shape parameter $\alpha^* = \alpha + n/2$ and rate $\beta^* = \beta + \sum_{i=1}^n y_i^2/2$.
+
+The posterior predictive is
+\begin{align*}
+p(y_{\text{new}} \mid \boldsymbol{y}) &= \int_0^\infty \frac{\tau^{1/2}}{(2\pi)^{1/2}}\exp(-\tau y_{\text{new}}^2/2) \frac{\beta^{*\alpha^*}}{\Gamma(\alpha^*)}\tau^{\alpha^*-1}\exp(-\beta^* \tau) \mathrm{d} \tau 
+\\&= (2\pi)^{-1/2} \frac{\beta^{*\alpha^*}}{\Gamma(\alpha^*)} \int_0^\infty\tau^{\alpha^*-1/2} \exp\left\{- \tau (y_{\text{new}}^2/2 + \beta^*)\right\} \mathrm{d} \tau
+\\&= (2\pi)^{-1/2} \frac{\beta^{*\alpha^*}}{\Gamma(\alpha^*)} \frac{\Gamma(\alpha^* + 1/2)}{(y_{\text{new}}^2/2 + \beta^*)^{\alpha^*+1/2}}
+\\&= \frac{\Gamma\left(\frac{2\alpha^* + 1}{2}\right)}{\sqrt{2\pi}\Gamma\left(\frac{2\alpha^*}{2}\right)\beta^{*1/2}} \left( 1+ \frac{y_{\text{new}}^2}{2\beta^*}\right)^{-\alpha^*-1/2}
+\\&= \frac{\Gamma\left(\frac{2\alpha^* + 1}{2}\right)}{\sqrt{\pi}\sqrt{ 2\alpha^*}\Gamma\left(\frac{2\alpha^*}{2}\right)(\beta^*/\alpha^*)^{1/2}} \left( 1+ \frac{1}{2\alpha^*}\frac{y_{\text{new}}^2}{(\beta^*/\alpha^*)}\right)^{-\alpha^*-1/2}
+\end{align*}
+which entails that $Y_{\text{new}}$ is a scaled Student-$t$ distribution with scale $(\beta^*/\alpha^*)^{1/2}$ and $2\alpha+n$ degrees of freedom. This example also exemplifies the additional variability relative to the distribution generating the data: indeed, the Student-$t$ distribution is more heavy-tailed than the Gaussian, but since the degrees of freedom increase linearly with $n$, the distribution converges to a Gaussian as $n \to \infty$, reflecting the added information as we collect more and more data points and the variance gets better estimated through $\sum_{i=1}^n y_i^2/n$.
+
+:::
 
 
 ## Summarizing posterior distributions
 
 
-Most of the field revolves around the creation of algorithms that either circumvent the calculation of the normalizing constant (notably Monte Carlo and Markov chain Monte Carlo methods) or else provide accurate numerical approximation of the posterior pointwise, including for marginalizing out all but one parameters (integrated nested Laplace approximations, variational inference, etc.) 
+Most of the field of Bayesian statistics revolves around the creation of algorithms that either circumvent the calculation of the normalizing constant (notably using Monte Carlo and Markov chain Monte Carlo methods) or else provide accurate numerical approximation of the posterior pointwise, including for marginalizing out all but one parameters (integrated nested Laplace approximations, variational inference, etc.) The target of inference is the whole posterior distribution, a potentially high-dimensional object which may be difficult to summarize or visualize. We can thus report only characteristics of the the latter.
 
-The target of inference is the whole posterior distribution, from which we can extract any summary of interest. For example, if we consider the beta-binomial model, we can assess the posterior probability $\Pr(P > c)$ simply by calculating the area under the posterior density until $c$. In certain settings, however it will be useful to provide moments or other characteristics of the distribution, notably since visualization of a (potentially high-dimensional) object is not easy.
+The choice of point summary to keep has it's root in decision theory.
 
-The output of the Bayesian learning problem will be either of:
+:::{#def-lossfunction}
 
-1. a fully characterized distribution
-2. a numerical approximation to the posterior distribution (pointwise)
-3. an exact or approximate sample drawn from the posterior distribution
+## Loss function
 
-Point estimators are usually in terms of central tendency. We can return the expected value or mean of the posterior, quantiles such as the median or the mode, the value at which the posterior density is highest. These functionals may correspond to potentially different values, as shown in the left-panel of @fig-central-moments. For multimodal distributions, the mode is likely the better choice.
+A loss function $c(\boldsymbol{\theta}, \boldsymbol{\upsilon})$ is a mapping from $\boldsymbol{\Theta} \to \mathbb{R}^k$ that assigns a weight to each value of $\theta$, corresponding to the regret or loss arising from choosing this value. The corresponding point estimator $\widehat{\boldsymbol{\upsilon}}$ is the minimizer of the expected loss,
 
-If we know the distribution, we can optimize to find the mode or else return the value for the pointwise evaluation on a grid at which the density achieves it's maximum. 
+$$\widehat{\boldsymbol{\upsilon}} = \mathop{\mathrm{argmin}}_{\boldsymbol{\upsilon}} \int_{\boldsymbol{\Theta}} c(\boldsymbol{\theta}, \boldsymbol{\upsilon})p(\boldsymbol{\theta} \mid \boldsymbol{y}) \mathrm{d} \boldsymbol{\theta}$$
+
+:::
+
+For example, in a univariate setting, the quadratic loss $c(\theta, \upsilon) = (\theta-\upsilon)^2$ returns the posterior mean, the absolute loss $c(\theta, \upsilon)=|\theta - \upsilon|$ returns the posterior median and the 0-1 loss $c(\theta, \upsilon) = \mathrm{I}(\upsilon \neq \theta)$ returns the posterior mode. All of these point estimators are central tendency measures, but some may be more adequate depending on the setting as they can correspond to potentially different values, as shown in the left-panel of @fig-central-moments. The choice is application specific: for multimodal distributions, the mode is likely a better choice.
+
+If we know how to evaluate the distribution numerically, we can optimize to find the mode or else return the value for the pointwise evaluation on a grid at which the density achieves it's maximum. The mean and median would have to be evaluated by numerical integration if there is no closed-form expression for the latter.
+
+If we have rather a sample from the posterior with associated posterior density values, then we can obtain the mode as the parameter combination with the highest posterior, the median from the value at rank $\lfloor n/2\rfloor$ and the mean through the sample mean of posterior draws.
 
 
 ```{r}
@@ -517,15 +629,297 @@ g2 <- ggplot() +
   g1 + g2
 ```
 
+The loss function is often a functional (meaning a one-dimensional summary) from the posterior. The following example shows how it reduces a three-dimensional problem into a single risk measure.
+
+:::{#exm-loss-extremes}
+
+In extreme value, we are often interested in assessing the risk of events that are rare enough that they lie beyond the range of observed data. To provide a scientific extrapolation, it often is justified to fit a generalized Pareto distribution to exceedances of $Z=Y-u$, for some user-specified threshold $u$ which is often taken as a large quantile of the distribution of $Y$. The generalized Pareto distribution function is
+\begin{align*}
+F(z; \tau, \xi) = 1- \begin{cases}
+\left(1+\xi/\tau z\right)^{-1/\xi}_{+}, & \xi \neq 0\\
+\exp(-z/\tau), & \xi = 0. \end{cases}
+\end{align*}
+The shape $\xi$ governs how heavy-tailed the distribution is, while $\tau$ is a scale parameter.
+
+Insurance companies provide coverage in exchange for premiums, but need to safeguard themselves against very high claims by buying reinsurance products. These risks are often communicated through the value-at-risk (VaR), a high quantile exceeded with probability $p$. We model Danish fire insurance claim amounts for inflation-adjusted data collected from January 1980 until December 1990 that are in excess of a million Danish kroner, found in the `evir` package and analyzed in Example 7.23 of @McNeil.Frey.Embrechts:2005. These claims are denoted $Y$ and there are 2167 observations.
+
+We fit a generalized Pareto distribution to exceedances above 10 millions krones, keeping 109 observations or roughly the largest 5% of the original sample. Preliminary analysis shows that we can treat data as roughly independent and identically distributed and goodness-of-fit diagnostics (not shown) for the generalized Pareto suggest that the fit is adequate for all but the three largest observations, which are (somewhat severely) underestimated by the model.
+
+```{r}
+#| eval: true
+#| echo: false
+#| cache: true
+#| label: fig-danish
+#| fig-cap: "Time series of Danish fire claims exceeding a million krone (left) and posterior samples from the scale $\\tau$ and shape $\\xi$ of the generalized Pareto model fitted to exceedances above 10 million krone (right)."
+data(danish, package = "evir")
+danish_ts <- xts::xts(danish, order.by = attr(danish, "times"))
+g1 <- zoo::autoplot.zoo(danish_ts) + 
+  scale_y_continuous(breaks = seq(0L, 250L, by = 50L), 
+                     minor_breaks = seq(0, 275, by = 25),
+                     expand = c(0,0)) + 
+  theme_classic() + 
+  labs(x = "", y = "",
+       subtitle = "Danish fire insurance claims (in million krone)")
+library(revdbayes)
+post_samp <- revdbayes::rpost_rcpp(
+  n = 1000L, 
+  model = "bingp", 
+  data = danish,
+  prior = revdbayes::set_prior(prior = "mdi", model = "gp"),
+  thresh = 10)
+post_samp <- cbind(post_samp$sim_vals, post_samp$bin_sim_vals)
+colnames(post_samp) <- c('scale','shape',"probexc")
+post_samp <- as.data.frame(post_samp)
+g2 <- ggplot(data = post_samp,
+             mapping = aes(x = scale,
+                           y = shape)) +
+  geom_point() +
+  labs(x = expression(tau), 
+       y = expression(xi)) + 
+  theme_classic() + 
+  theme(axis.title.y = element_text(angle = 0))
+```
+
+The generalized Pareto model only describes the $n_u$ exceedances above $u=10$, so we need to incorporate in the likelihood a binomial contribution for the probability $\zeta_u$ of exceeding the threshold $u$. 
+<!-- The log likelihood for the full model is -->
+<!-- \begin{align*} -->
+<!-- -109 \log \tau + \sum_{i=1}^{109} (1+1/\xi)\log\left(1+\xi\frac{y_i-10}{\tau}\right)_{+} + \\& \quad  \log \binom{2167}{109} + 109\log \zeta_u + 2058 \log(1-\zeta_u) -->
+<!-- \end{align*} -->
+<!-- and, p -->
+Provided that the priors for $(\tau, \xi)$ are independent of those for $\zeta_u$, the posterior also factorizes as a product, so $\zeta_u$ and $(\tau, \xi)$ are a posteriori independent.
+
+Suppose for now that we set a $\mathsf{Be}(0.5, 0.5)$ prior for $\zeta_u$ and a non-informative prior for the generalized Pareto parameters. The `post_samp` matrix contains exact samples from the posterior distribution of $(\tau, \xi, \zeta_u)$, obtained using a Monte Carlo algorithm. Our aim is to evaluate the posterior distribution for the value-at-risk, the $\alpha$ quantile of $Y$ for high values of $\alpha$ and see what point estimator one would obtain depending on our choice of loss function. For any $\alpha > 1-\zeta_u$, the $q_{\alpha}$ is
+\begin{align*}
+1- \alpha  &= \Pr(Y > q_\alpha \mid Y > u) \Pr(Y > u) 
+\\ &= \left(1+\xi \frac{q_{\alpha}-u}{\tau}\right)_{+}^{-1/\xi}\zeta_u
+\end{align*}
+and solving for $q_{\alpha}$ gives 
+\begin{align*}
+q_{\alpha} = u+ \frac{\tau}{\xi} \left\{\left(\frac{\zeta_u}{1-\alpha}\right)^\xi-1\right\}.
+\end{align*}
+
+To obtain the posterior distribution of the $\alpha$ quantile, $q_{\alpha}$, it suffices to plug in each posterior sample and evaluate the function: the uncertainty is carried over from the simulated values of the parameters to those of the quantile $q_{\alpha}$. The left panel of @fig-lossfn shows the posterior density estimate of the $\mathsf{VaR}(0.99)$ along with the maximum a posteriori (mode) of the latter.
+
+Suppose that we prefer to under-estimate the value-at-risk rather than overestimate: this could be captured by the custom loss function
+\begin{align*}
+c(q, q_0) = 
+\begin{cases}
+0.5(0.99q - q_0), & q > q_0 \\
+0.75(q_0 - 1.01q), & q < q_0.
+\end{cases}
+\end{align*}
+For a given value of the value-at-risk $q_0$ evaluated on a grid, we thus compute
+\begin{align*}
+ r(q_0) = \int_{\boldsymbol{\Theta}}c(q(\boldsymbol{\theta}), q_0) p (\boldsymbol{\theta} \mid \boldsymbol{y}) \mathrm{d} \boldsymbol{\theta}
+\end{align*}
+and we seek to minimize the risk, $\widehat{q} =\mathrm{argmin}_{q_0 \in \mathbb{R}_{+}} r(q_0)$. The value returned that minimizes the loss, shown in @fig-lossfn, is to the left of the posterior mean for $q_\alpha$.
+
+```{r}
+#| label: lossfn
+#| eval: false
+#| echo: true
+# Compute value at risk from generalized Pareto distribution quantile fn
+VaR_post <- with(post_samp,   # data frame of posterior draws
+            revdbayes::qgp(   # with columns 'probexc', 'scale', 'shape'
+  p = 0.01/probexc, 
+  loc = 10, 
+  scale = scale, 
+  shape = shape, 
+  lower.tail = FALSE))
+# Loss function
+loss <- function(qhat, q){
+    mean(ifelse(q > qhat,
+           0.5*(0.99*q-qhat),
+           0.75*(qhat-1.01*q)))
+}
+# Create a grid of values over which to estimate the loss for VaR
+nvals <- 101L
+VaR_grid <- seq(
+  from = quantile(VaR_post, 0.01),
+  to = quantile(VaR_post, 0.99), 
+  length.out = nvals)
+# Create a container to store results
+risk <- numeric(length = nvals)
+for(i in seq_len(nvals)){
+  # Compute integral (Monte Carlo average over draws)
+ risk[i] <- loss(q = VaR_post, qhat = VaR_grid[i])
+}
+
+```
+
+```{r}
+#| label: fig-lossfn
+#| eval: true
+#| echo: false
+#| warning: false
+#| fig-align: 'center'
+#| fig-cap: "Posterior density (left) and losses functionsfor the 0.99 value-at-risk for the Danish fire insurance data. The vertical lines denote point estimates of the quantiles that minimize the loss functions."
+VaR_post <- with(post_samp,   # data frame of posterior draws
+            revdbayes::qgp(   # with columns 'probexc', 'scale', 'shape'
+  p = 0.01/probexc, 
+  loc = 10, 
+  scale = scale, 
+  shape = shape, 
+  lower.tail = FALSE))
+# Loss functions
+loss1 <- function(qhat, q){
+    mean(ifelse(q > qhat,
+           0.5*(0.99*q-qhat),
+           0.75*(qhat-1.01*q)))
+}
+  # squared error loss
+loss2 <- function(qhat, q){
+  0.3*mean((q-qhat)^2)
+}
+# Create a grid of values over which to estimate the loss for VaR
+nvals <- 101L
+VaR_grid <- seq(
+  from = quantile(VaR_post, 0.01),
+  to = quantile(VaR_post, 0.99), 
+  length.out = nvals)
+# Create a container to store results
+risk1 <- risk2 <- numeric(length = nvals)
+for(i in seq_len(nvals)){
+  # Compute integral (Monte Carlo average over draws)
+ risk1[i] <- loss1(q = VaR_post, qhat = VaR_grid[i])
+ risk2[i] <- loss2(q = VaR_post, qhat = VaR_grid[i])
+}
+g1 <- ggplot(data = data.frame(x = VaR_post)) +
+  geom_density(mapping = aes(x = x)) +
+  labs(subtitle = "posterior density",
+       x = "value-at-risk 0.99 (in millions krone)",
+       y = "") +
+  theme_classic()
+# Plot loss function
+g2 <- ggplot(data = data.frame(
+  loss1 = risk1 - min(risk1), 
+  loss2 = risk2 - min(risk2),
+  quantile = VaR_grid)) +
+  geom_line(mapping = aes(x = quantile, y = loss1)) +
+  geom_line(mapping = aes(x = quantile, y = loss2), linetype = "dashed") +
+  geom_vline(xintercept = VaR_grid[which.min(risk1)], linewidth = 0.1) +
+  geom_vline(xintercept = mean(VaR_post), linetype = "dashed", linewidth = 0.1) +
+  scale_y_continuous(limits = c(0, 10)) +
+  labs(x = "value-at-risk 0.99 (in millions krone)",
+       subtitle = "custom loss function (full)\nand squared error loss (dashed)") +
+  theme_classic()
+g1 + g2
+```
+
+:::
+
+The output of the Bayesian learning problem will be either of:
+
+1. a fully characterized distribution
+2. a numerical approximation to the posterior distribution (pointwise)
+3. an exact or approximate sample drawn from the posterior distribution
+
+In the first case, we will be able to directly evaluate quantities of interest if there are closed-form expressions for the latter, or else we could draw samples from the distribution and evaluate them via Monte-Carlo. In case of numerical approximations, we will need to resort to numerical integration or otherwise to get our answers.
 
 Often, we will also be interested in the marginal posterior distribution of each component $\theta_j$ in turn ($j=1, \ldots, p$). To get these, we carry out additional integration steps, $$p(\theta_j \mid \boldsymbol{y}) = \int p(\boldsymbol{\theta} \mid \boldsymbol{y}) \mathrm{d} \boldsymbol{\theta}_{-j}.$$
+With a posterior sample, this is trivial: it suffices to keep the column corresponding to $\theta_j$ and discard the others. 
 
-<!--
+To communicate uncertainty, we may resort to credible regions and intervals.
 
-TODO:
+:::{#def-credible-region}
+A $(1-\alpha)$ **credible region** (or credible interval in the univariate setting) is a set $\mathcal{S}_\alpha$ such that, with probability level $\alpha$, 
+\begin{align*}
+\Pr(\boldsymbol{\theta} \in \mathcal{S}_\alpha \mid \boldsymbol{Y}=\boldsymbol{y}) = 1-\alpha
+\end{align*}
 
-- loss function and EVA example with generalized Pareto (FIG)
-- HPD and percentile intervals (FIG)
-- Summaries using Monte Carlo (quantiles)
+:::
 
--->
+These intervals are not unique, as are confidence sets. In the univariate setting, the central or equi-tailed interval are the most popular, and easily obtained by considering the $\alpha/2, 1-\alpha/2$ quantiles. These are easily obtained from samples by simply taking empirical quantiles. An alternative, highest posterior density credible sets, which may be a set of disjoint intervals obtained by considering the parts of the posterior with the highest density, may be more informative. The top panel @fig-credible-intervals shows the distinction for a bimodal mixture distribution, and a even more striking difference for 50% credible intervals for a symmetric beta distribution whose mass lie near the endpoints of the distribution, leading to no overlap between the two intervals.
+
+
+```{r}
+#| label: fig-credible-intervals
+#| eval: true
+#| echo: false
+#| fig-cap: "Density plots with 89% (top) and 50% (bottom) equitailed or central credible (left) and highest posterior density (right) intervals for two data sets, highlighted in grey." 
+# ggproto from
+# https://stackoverflow.com/questions/20355849/ggplot2-shade-area-under-density-curve-by-group
+StatAreaUnderDensity <- ggproto(
+  "StatAreaUnderDensity", Stat,
+  required_aes = "x",
+  compute_group = function(data, scales, xlim = NULL, n = 50) {
+    fun <- approxfun(density(data$x))
+    StatFunction$compute_group(data, scales, fun = fun, xlim = xlim, n = n)
+  }
+)
+
+stat_aud <- function(mapping = NULL, data = NULL, geom = "area",
+                    position = "identity", na.rm = FALSE, show.legend = NA, 
+                    inherit.aes = TRUE, n = 50, xlim=NULL,  
+                    ...) {
+  layer(
+    stat = StatAreaUnderDensity, data = data, mapping = mapping, geom = geom, 
+    position = position, show.legend = show.legend, inherit.aes = inherit.aes,
+    params = list(xlim = xlim, n = n, ...))
+}
+set.seed(2023)
+nsamp <- 1e4
+# Sample data from a mixture model
+ mixt <- sort(c(rnorm(0.5*nsamp, 20, 4), 
+                rnorm(0.2*nsamp, 55, 10),
+                55 + rexp(0.3*nsamp, 0.08)))
+# mixt <- rbeta(nsamp, shape1 = 0.5, shape2 = 0.2)
+# Compute equitailed interval bounds
+
+g1 <- ggplot(data = data.frame(x = mixt),
+       mapping = aes(x = x)) +
+  stat_aud(geom="area",
+           xlim = c(quantile(mixt, probs = c(0.055, 0.945))), 
+           alpha = .2) +
+  geom_density() + 
+  labs(x = "", y = "") +
+  scale_y_continuous(limits = c(0,0.04), expand = c(0,0)) +
+  theme_classic() 
+hdiD <- HDInterval::hdi(density(mixt), credMass = 0.89, allowSplit = TRUE)
+g2 <- ggplot(data = data.frame(x = mixt),
+       mapping = aes(x = x)) +
+    stat_aud(geom = "area",
+           xlim = hdiD[1,], 
+           alpha = .2) +
+   stat_aud(geom = "area",
+           xlim = hdiD[2,], 
+           alpha = .2) +
+  geom_density() +
+  labs(y = "", x = "") +
+  scale_y_continuous(limits = c(0,0.04), expand = c(0,0)) +
+  theme_classic() 
+
+
+shape <- 0.8
+g3 <- ggplot() +
+  stat_function(fun = dbeta, 
+                args = list(shape1 = shape, shape2 = shape), 
+                fill = "gray", xlim = c(0, qbeta(p = 0.25, shape, shape)),
+                geom = "area",n = 1001) +
+  stat_function(fun = dbeta, 
+                args = list(shape1 = shape, shape2 = shape), 
+                fill = "gray", xlim = c(qbeta(p = 0.75, shape, shape), 1),
+                geom = "area",n = 1001) +
+  stat_function(fun = dbeta, 
+                args = list(shape1 = shape, shape2 = shape), 
+                xlim = c(0,1),n = 1001) +
+  labs(x = "", y = "") +
+  scale_x_continuous(limits = c(0,1), expand = c(0,0)) +
+  scale_y_continuous(limits = c(0,5), expand = c(0,0)) +
+  theme_classic()
+g4 <- ggplot() +
+   stat_function(fun = dbeta, 
+                args = list(shape1 = shape, shape2 = shape), 
+                fill = "gray", 
+                xlim = qbeta(p = c(0.25, 0.75), shape, shape),
+                geom = "area", n = 1001) +
+   stat_function(fun = dbeta, 
+                args = list(shape1 = shape, shape2 = shape), 
+                xlim = c(0,1), n = 1001) +
+  labs(x = "", y = "") +
+  scale_x_continuous(limits = c(0,1), expand = c(0,0)) +
+  scale_y_continuous(limits = c(0,5), expand = c(0,0)) +
+  theme_classic()
+(g1 + g2) / (g3 + g4)
+```
+Another example where these would differ

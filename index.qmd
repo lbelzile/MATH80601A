@@ -6,6 +6,7 @@ This book is a web complement to MATH 80601A *Bayesian modelling*, a graduate co
 ```{r}
 #| eval: true
 #| include: false
+#| label: setup-date
 Sys.setlocale("LC_TIME", "en_CA.UTF-8")
 ```
 

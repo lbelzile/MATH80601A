@@ -245,7 +245,7 @@ p(\theta \mid y = k) &amp;\propto \binom{n}{k} p^k (1-p)^{n-k} \frac{\Gamma(\alp
 \qquad w = \frac{n}{n+a+b},
 \end{align*}\]</span> a weighted average of the maximum likelihood estimator and the prior mean. We can think of the parameter <span class="math inline">\(\alpha\)</span> (respectively <span class="math inline">\(\beta\)</span>) as representing the prior number of success (resp. failures).</p>
 <p><a href="#fig-betabinom">Figure&nbsp;<span>1.1</span></a> shows three different posterior distributions with different beta priors: the first prior, which favors values closer to 1/2, leads to a more peaked posterior density, contrary to the second which is symmetric, but concentrated toward more extreme values near endpoints of the support. The rightmost panel is truncated: as such, the posterior is zero for any value of <span class="math inline">\(p\)</span> beyond 1/2 and so the posterior mode may be close to the endpoint of the prior. The influence of such a prior will not necessarily vanish as sample size and should be avoided, unless there are compelling reasons for restricting the domain.</p>
-<div class="cell" data-hash="introduction_cache/html/fig-betabinom_505108ea87373d8e9cd291e298ca34de">
+<div class="cell" data-hash="introduction_cache/html/fig-betabinom_0f3e1ded42872faed907ea822f3298d5">
 <div class="cell-output-display">
 <div id="fig-betabinom" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
@@ -296,7 +296,7 @@ p(\boldsymbol{\theta} \mid \boldsymbol{y}_1, \boldsymbol{y}_2) \propto p(\boldsy
 <div id="exm-numericalintegration" class="theorem example">
 <p><span class="theorem-title"><strong>Example 1.2 </strong></span>While we can calculate analytically the value of the normalizing constant for the beta-binomial model, we could also for arbitrary priors use numerical integration or Monte Carlo methods in the event the parameter vector <span class="math inline">\(\boldsymbol{\theta}\)</span> is low-dimensional.</p>
 <p>While estimation of the normalizing constant is possible in simple models, the following highlights some challenges that are worth keeping in mind. In a model for discrete data (that is, assigning probability mass to a countable set of outcomes), the terms in the likelihood are probabilities and thus the likelihood becomes smaller as we gather more observations (since we multiply terms between zero or one). The marginal likelihood term becomes smaller and smaller, so it’s reciprocal is big and this can lead to arithmetic underflow.</p>
-<div class="cell" data-hash="introduction_cache/html/unnamed-chunk-4_87c51332d23d66b867c881438d928d40">
+<div class="cell" data-hash="introduction_cache/html/betabinom-calculate-marg-lik_ad0fbae6ab682e4811e97f8a842d7127">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>k <span class="ot">&lt;-</span> 6L <span class="co"># number of successes </span></span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>n <span class="ot">&lt;-</span> 14L <span class="co"># number of trials</span></span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>alpha <span class="ot">&lt;-</span> beta <span class="ot">&lt;-</span> <span class="fl">1.5</span> <span class="co"># prior parameters</span></span>
@@ -325,39 +325,155 @@ p(\boldsymbol{\theta} \mid \boldsymbol{y}_1, \boldsymbol{y}_2) \propto p(\boldsy
 </section>
 <section id="posterior-predictive-distribution" class="level2" data-number="1.3">
 <h2 data-number="1.3" class="anchored" data-anchor-id="posterior-predictive-distribution"><span class="header-section-number">1.3</span> Posterior predictive distribution</h2>
+<p>Prediction in the Bayesian paradigm is obtained by considering the <em>posterior predictive distribution</em>, <span class="math display">\[\begin{align*}
+p(y_{\text{new}} \mid \boldsymbol{y}) =
+\int_{\Theta} p(y_{\text{new}}  \mid \boldsymbol{\theta}) p(\boldsymbol{\theta} \mid  \boldsymbol{y}) \mathrm{d} \boldsymbol{\theta}
+\end{align*}\]</span></p>
+<p>Given draws from the posterior distribution, say <span class="math inline">\(\boldsymbol{\theta}_b\)</span> <span class="math inline">\((b=1, \ldots, B)\)</span>, we sample from each a new realization from the distribution appearing in the likelihood <span class="math inline">\(p(y_{\text{new}} \mid \boldsymbol{\theta}_b)\)</span>. This is different from the frequentist setting, which fixes the value of the parameter to some estimate <span class="math inline">\(\widehat{\boldsymbol{\theta}}\)</span>; by contrast, the posterior predictive, here a beta-binomial distribution <span class="math inline">\(\mathsf{BetaBin}(n, \alpha + k, n - k + \beta)\)</span>, carries over the uncertainty so will typically be wider and overdispersed relative to the corresponding binomial model. This can be easily seen from the left-panel of <a href="#fig-betabinompostpred">Figure&nbsp;<span>1.4</span></a>, which contrasts the binomial mass function evaluated at the maximum likelihood estimator <span class="math inline">\(\widehat{p}=6/14\)</span> with the posterior predictive.</p>
+<div class="exm-betabinompred">
+<div class="cell" data-hash="introduction_cache/html/post-samp-betabinom_b471c947c1a1cf5498f634a98545a084">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>npost <span class="ot">&lt;-</span> <span class="fl">1e4</span>L</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Sample draws from the posterior distribution</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>post_samp <span class="ot">&lt;-</span> <span class="fu">rbeta</span>(<span class="at">n =</span> npost, k <span class="sc">+</span> alpha, n <span class="sc">-</span> k <span class="sc">+</span> beta)</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="co"># For each draw, sample new observation</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>post_pred <span class="ot">&lt;-</span> <span class="fu">rbinom</span>(<span class="at">n =</span> npost, <span class="at">size =</span> n, <span class="at">prob =</span> post_samp)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell" data-hash="introduction_cache/html/fig-betabinompostpred_ac03a1265db68a5b3c6ec46286913d9c">
+<div class="cell-output-display">
+<div id="fig-betabinompostpred" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="introduction_files/figure-html/fig-betabinompostpred-1.png" class="img-fluid figure-img" width="672"></p>
+<figcaption class="figure-caption">Figure&nbsp;1.4: Beta-binomial posterior predictive distribution with corresponding binomial mass function evaluated at the maximum likelihood estimator.</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<div id="exm-normal-post-pred" class="theorem example">
+<p><span class="theorem-title"><strong>Example 1.3 </strong></span>Consider an <span class="math inline">\(n\)</span> sample of independent and identically distributed Gaussian, <span class="math inline">\(Y_i \sim \mathsf{No}(0, \tau^{-1})\)</span> (<span class="math inline">\(i=1, \ldots, n\)</span>), where we assign a gamma prior on the precision <span class="math inline">\(\tau \sim \mathsf{Ga}(\alpha, \beta)\)</span>. The posterior is <span class="math display">\[\begin{align*}
+p(\tau \mid \boldsymbol{y}) \stackrel{\tau}{\propto} \prod_{i=1}^n \tau^{n/2}\exp\left(-\tau \frac{\sum_{i=1}^n{y_i^2}}{2}\right) \times \tau^{\alpha-1} \exp(-\beta \tau)
+\end{align*}\]</span> and rearranging the terms to collect powers of <span class="math inline">\(\tau\)</span>, etc. we find that the posterior for <span class="math inline">\(\tau\)</span> must also be gamma, with shape parameter <span class="math inline">\(\alpha^* = \alpha + n/2\)</span> and rate <span class="math inline">\(\beta^* = \beta + \sum_{i=1}^n y_i^2/2\)</span>.</p>
+<p>The posterior predictive is <span class="math display">\[\begin{align*}
+p(y_{\text{new}} \mid \boldsymbol{y}) &amp;= \int_0^\infty \frac{\tau^{1/2}}{(2\pi)^{1/2}}\exp(-\tau y_{\text{new}}^2/2) \frac{\beta^{*\alpha^*}}{\Gamma(\alpha^*)}\tau^{\alpha^*-1}\exp(-\beta^* \tau) \mathrm{d} \tau
+\\&amp;= (2\pi)^{-1/2} \frac{\beta^{*\alpha^*}}{\Gamma(\alpha^*)} \int_0^\infty\tau^{\alpha^*-1/2} \exp\left\{- \tau (y_{\text{new}}^2/2 + \beta^*)\right\} \mathrm{d} \tau
+\\&amp;= (2\pi)^{-1/2} \frac{\beta^{*\alpha^*}}{\Gamma(\alpha^*)} \frac{\Gamma(\alpha^* + 1/2)}{(y_{\text{new}}^2/2 + \beta^*)^{\alpha^*+1/2}}
+\\&amp;= \frac{\Gamma\left(\frac{2\alpha^* + 1}{2}\right)}{\sqrt{2\pi}\Gamma\left(\frac{2\alpha^*}{2}\right)\beta^{*1/2}} \left( 1+ \frac{y_{\text{new}}^2}{2\beta^*}\right)^{-\alpha^*-1/2}
+\\&amp;= \frac{\Gamma\left(\frac{2\alpha^* + 1}{2}\right)}{\sqrt{\pi}\sqrt{ 2\alpha^*}\Gamma\left(\frac{2\alpha^*}{2}\right)(\beta^*/\alpha^*)^{1/2}} \left( 1+ \frac{1}{2\alpha^*}\frac{y_{\text{new}}^2}{(\beta^*/\alpha^*)}\right)^{-\alpha^*-1/2}
+\end{align*}\]</span> which entails that <span class="math inline">\(Y_{\text{new}}\)</span> is a scaled Student-<span class="math inline">\(t\)</span> distribution with scale <span class="math inline">\((\beta^*/\alpha^*)^{1/2}\)</span> and <span class="math inline">\(2\alpha+n\)</span> degrees of freedom. This example also exemplifies the additional variability relative to the distribution generating the data: indeed, the Student-<span class="math inline">\(t\)</span> distribution is more heavy-tailed than the Gaussian, but since the degrees of freedom increase linearly with <span class="math inline">\(n\)</span>, the distribution converges to a Gaussian as <span class="math inline">\(n \to \infty\)</span>, reflecting the added information as we collect more and more data points and the variance gets better estimated through <span class="math inline">\(\sum_{i=1}^n y_i^2/n\)</span>.</p>
+</div>
 </section>
 <section id="summarizing-posterior-distributions" class="level2" data-number="1.4">
 <h2 data-number="1.4" class="anchored" data-anchor-id="summarizing-posterior-distributions"><span class="header-section-number">1.4</span> Summarizing posterior distributions</h2>
-<p>Most of the field revolves around the creation of algorithms that either circumvent the calculation of the normalizing constant (notably Monte Carlo and Markov chain Monte Carlo methods) or else provide accurate numerical approximation of the posterior pointwise, including for marginalizing out all but one parameters (integrated nested Laplace approximations, variational inference, etc.)</p>
-<p>The target of inference is the whole posterior distribution, from which we can extract any summary of interest. For example, if we consider the beta-binomial model, we can assess the posterior probability <span class="math inline">\(\Pr(P &gt; c)\)</span> simply by calculating the area under the posterior density until <span class="math inline">\(c\)</span>. In certain settings, however it will be useful to provide moments or other characteristics of the distribution, notably since visualization of a (potentially high-dimensional) object is not easy.</p>
+<p>Most of the field of Bayesian statistics revolves around the creation of algorithms that either circumvent the calculation of the normalizing constant (notably using Monte Carlo and Markov chain Monte Carlo methods) or else provide accurate numerical approximation of the posterior pointwise, including for marginalizing out all but one parameters (integrated nested Laplace approximations, variational inference, etc.) The target of inference is the whole posterior distribution, a potentially high-dimensional object which may be difficult to summarize or visualize. We can thus report only characteristics of the the latter.</p>
+<p>The choice of point summary to keep has it’s root in decision theory.</p>
+<div id="def-lossfunction" class="theorem definition">
+<p><span class="theorem-title"><strong>Definition 1.1 (Loss function) </strong></span>A loss function <span class="math inline">\(c(\boldsymbol{\theta}, \boldsymbol{\upsilon})\)</span> is a mapping from <span class="math inline">\(\boldsymbol{\Theta} \to \mathbb{R}^k\)</span> that assigns a weight to each value of <span class="math inline">\(\theta\)</span>, corresponding to the regret or loss arising from choosing this value. The corresponding point estimator <span class="math inline">\(\widehat{\boldsymbol{\upsilon}}\)</span> is the minimizer of the expected loss,</p>
+<p><span class="math display">\[\widehat{\boldsymbol{\upsilon}} = \mathop{\mathrm{argmin}}_{\boldsymbol{\upsilon}} \int_{\boldsymbol{\Theta}} c(\boldsymbol{\theta}, \boldsymbol{\upsilon})p(\boldsymbol{\theta} \mid \boldsymbol{y}) \mathrm{d} \boldsymbol{\theta}\]</span></p>
+</div>
+<p>For example, in a univariate setting, the quadratic loss <span class="math inline">\(c(\theta, \upsilon) = (\theta-\upsilon)^2\)</span> returns the posterior mean, the absolute loss <span class="math inline">\(c(\theta, \upsilon)=|\theta - \upsilon|\)</span> returns the posterior median and the 0-1 loss <span class="math inline">\(c(\theta, \upsilon) = \mathrm{I}(\upsilon \neq \theta)\)</span> returns the posterior mode. All of these point estimators are central tendency measures, but some may be more adequate depending on the setting as they can correspond to potentially different values, as shown in the left-panel of <a href="#fig-central-moments">Figure&nbsp;<span>1.5</span></a>. The choice is application specific: for multimodal distributions, the mode is likely a better choice.</p>
+<p>If we know how to evaluate the distribution numerically, we can optimize to find the mode or else return the value for the pointwise evaluation on a grid at which the density achieves it’s maximum. The mean and median would have to be evaluated by numerical integration if there is no closed-form expression for the latter.</p>
+<p>If we have rather a sample from the posterior with associated posterior density values, then we can obtain the mode as the parameter combination with the highest posterior, the median from the value at rank <span class="math inline">\(\lfloor n/2\rfloor\)</span> and the mean through the sample mean of posterior draws.</p>
+<div class="cell" data-hash="introduction_cache/html/fig-central-moments_09d7385e76b50a09cf3152f189d34c6f">
+<div class="cell-output-display">
+<div id="fig-central-moments" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="introduction_files/figure-html/fig-central-moments-1.png" class="img-fluid figure-img" width="672"></p>
+<figcaption class="figure-caption">Figure&nbsp;1.5: Point estimators from a left-skewed distribution (left) and from a multimodal distribution (right).</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>The loss function is often a functional (meaning a one-dimensional summary) from the posterior. The following example shows how it reduces a three-dimensional problem into a single risk measure.</p>
+<div id="exm-loss-extremes" class="theorem example">
+<p><span class="theorem-title"><strong>Example 1.4 </strong></span>In extreme value, we are often interested in assessing the risk of events that are rare enough that they lie beyond the range of observed data. To provide a scientific extrapolation, it often is justified to fit a generalized Pareto distribution to exceedances of <span class="math inline">\(Z=Y-u\)</span>, for some user-specified threshold <span class="math inline">\(u\)</span> which is often taken as a large quantile of the distribution of <span class="math inline">\(Y\)</span>. The generalized Pareto distribution function is <span class="math display">\[\begin{align*}
+F(z; \tau, \xi) = 1- \begin{cases}
+\left(1+\xi/\tau z\right)^{-1/\xi}_{+}, &amp; \xi \neq 0\\
+\exp(-z/\tau), &amp; \xi = 0. \end{cases}
+\end{align*}\]</span> The shape <span class="math inline">\(\xi\)</span> governs how heavy-tailed the distribution is, while <span class="math inline">\(\tau\)</span> is a scale parameter.</p>
+<p>Insurance companies provide coverage in exchange for premiums, but need to safeguard themselves against very high claims by buying reinsurance products. These risks are often communicated through the value-at-risk (VaR), a high quantile exceeded with probability <span class="math inline">\(p\)</span>. We model Danish fire insurance claim amounts for inflation-adjusted data collected from January 1980 until December 1990 that are in excess of a million Danish kroner, found in the <code>evir</code> package and analyzed in Example 7.23 of <span class="citation" data-cites="McNeil.Frey.Embrechts:2005">McNeil, Frey, and Embrechts (<a href="references.html#ref-McNeil.Frey.Embrechts:2005" role="doc-biblioref">2005</a>)</span>. These claims are denoted <span class="math inline">\(Y\)</span> and there are 2167 observations.</p>
+<p>We fit a generalized Pareto distribution to exceedances above 10 millions krones, keeping 109 observations or roughly the largest 5% of the original sample. Preliminary analysis shows that we can treat data as roughly independent and identically distributed and goodness-of-fit diagnostics (not shown) for the generalized Pareto suggest that the fit is adequate for all but the three largest observations, which are (somewhat severely) underestimated by the model.</p>
+<p>The generalized Pareto model only describes the <span class="math inline">\(n_u\)</span> exceedances above <span class="math inline">\(u=10\)</span>, so we need to incorporate in the likelihood a binomial contribution for the probability <span class="math inline">\(\zeta_u\)</span> of exceeding the threshold <span class="math inline">\(u\)</span>. <!-- The log likelihood for the full model is --> <!-- \begin{align*} --> <!-- -109 \log \tau + \sum_{i=1}^{109} (1+1/\xi)\log\left(1+\xi\frac{y_i-10}{\tau}\right)_{+} + \\& \quad  \log \binom{2167}{109} + 109\log \zeta_u + 2058 \log(1-\zeta_u) --> <!-- \end{align*} --> <!-- and, p --> Provided that the priors for <span class="math inline">\((\tau, \xi)\)</span> are independent of those for <span class="math inline">\(\zeta_u\)</span>, the posterior also factorizes as a product, so <span class="math inline">\(\zeta_u\)</span> and <span class="math inline">\((\tau, \xi)\)</span> are a posteriori independent.</p>
+<p>Suppose for now that we set a <span class="math inline">\(\mathsf{Be}(0.5, 0.5)\)</span> prior for <span class="math inline">\(\zeta_u\)</span> and a non-informative prior for the generalized Pareto parameters. The <code>post_samp</code> matrix contains exact samples from the posterior distribution of <span class="math inline">\((\tau, \xi, \zeta_u)\)</span>, obtained using a Monte Carlo algorithm. Our aim is to evaluate the posterior distribution for the value-at-risk, the <span class="math inline">\(\alpha\)</span> quantile of <span class="math inline">\(Y\)</span> for high values of <span class="math inline">\(\alpha\)</span> and see what point estimator one would obtain depending on our choice of loss function. For any <span class="math inline">\(\alpha &gt; 1-\zeta_u\)</span>, the <span class="math inline">\(q_{\alpha}\)</span> is <span class="math display">\[\begin{align*}
+1- \alpha  &amp;= \Pr(Y &gt; q_\alpha \mid Y &gt; u) \Pr(Y &gt; u)
+\\ &amp;= \left(1+\xi \frac{q_{\alpha}-u}{\tau}\right)_{+}^{-1/\xi}\zeta_u
+\end{align*}\]</span> and solving for <span class="math inline">\(q_{\alpha}\)</span> gives <span class="math display">\[\begin{align*}
+q_{\alpha} = u+ \frac{\tau}{\xi} \left\{\left(\frac{\zeta_u}{1-\alpha}\right)^\xi-1\right\}.
+\end{align*}\]</span></p>
+<p>To obtain the posterior distribution of the <span class="math inline">\(\alpha\)</span> quantile, <span class="math inline">\(q_{\alpha}\)</span>, it suffices to plug in each posterior sample and evaluate the function: the uncertainty is carried over from the simulated values of the parameters to those of the quantile <span class="math inline">\(q_{\alpha}\)</span>. The left panel of <a href="#fig-lossfn">Figure&nbsp;<span>1.6</span></a> shows the posterior density estimate of the <span class="math inline">\(\mathsf{VaR}(0.99)\)</span> along with the maximum a posteriori (mode) of the latter.</p>
+<p>Suppose that we prefer to under-estimate the value-at-risk rather than overestimate: this could be captured by the custom loss function <span class="math display">\[\begin{align*}
+c(q, q_0) =
+\begin{cases}
+0.5(0.99q - q_0), &amp; q &gt; q_0 \\
+0.75(q_0 - 1.01q), &amp; q &lt; q_0.
+\end{cases}
+\end{align*}\]</span> For a given value of the value-at-risk <span class="math inline">\(q_0\)</span> evaluated on a grid, we thus compute <span class="math display">\[\begin{align*}
+r(q_0) = \int_{\boldsymbol{\Theta}}c(q(\boldsymbol{\theta}), q_0) p (\boldsymbol{\theta} \mid \boldsymbol{y}) \mathrm{d} \boldsymbol{\theta}
+\end{align*}\]</span> and we seek to minimize the risk, <span class="math inline">\(\widehat{q} =\mathrm{argmin}_{q_0 \in \mathbb{R}_{+}} r(q_0)\)</span>. The value returned that minimizes the loss, shown in <a href="#fig-lossfn">Figure&nbsp;<span>1.6</span></a>, is to the left of the posterior mean for <span class="math inline">\(q_\alpha\)</span>.</p>
+<div class="cell" data-hash="introduction_cache/html/lossfn_3ed0723636b9093da607f9d953a54012">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Compute value at risk from generalized Pareto distribution quantile fn</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>VaR_post <span class="ot">&lt;-</span> <span class="fu">with</span>(post_samp,   <span class="co"># data frame of posterior draws</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>            revdbayes<span class="sc">::</span><span class="fu">qgp</span>(   <span class="co"># with columns 'probexc', 'scale', 'shape'</span></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">p =</span> <span class="fl">0.01</span><span class="sc">/</span>probexc, </span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">loc =</span> <span class="dv">10</span>, </span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">scale =</span> scale, </span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">shape =</span> shape, </span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">lower.tail =</span> <span class="cn">FALSE</span>))</span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Loss function</span></span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>loss <span class="ot">&lt;-</span> <span class="cf">function</span>(qhat, q){</span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mean</span>(<span class="fu">ifelse</span>(q <span class="sc">&gt;</span> qhat,</span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a>           <span class="fl">0.5</span><span class="sc">*</span>(<span class="fl">0.99</span><span class="sc">*</span>q<span class="sc">-</span>qhat),</span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a>           <span class="fl">0.75</span><span class="sc">*</span>(qhat<span class="fl">-1.01</span><span class="sc">*</span>q)))</span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a><span class="co"># Create a grid of values over which to estimate the loss for VaR</span></span>
+<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a>nvals <span class="ot">&lt;-</span> 101L</span>
+<span id="cb8-17"><a href="#cb8-17" aria-hidden="true" tabindex="-1"></a>VaR_grid <span class="ot">&lt;-</span> <span class="fu">seq</span>(</span>
+<span id="cb8-18"><a href="#cb8-18" aria-hidden="true" tabindex="-1"></a>  <span class="at">from =</span> <span class="fu">quantile</span>(VaR_post, <span class="fl">0.01</span>),</span>
+<span id="cb8-19"><a href="#cb8-19" aria-hidden="true" tabindex="-1"></a>  <span class="at">to =</span> <span class="fu">quantile</span>(VaR_post, <span class="fl">0.99</span>), </span>
+<span id="cb8-20"><a href="#cb8-20" aria-hidden="true" tabindex="-1"></a>  <span class="at">length.out =</span> nvals)</span>
+<span id="cb8-21"><a href="#cb8-21" aria-hidden="true" tabindex="-1"></a><span class="co"># Create a container to store results</span></span>
+<span id="cb8-22"><a href="#cb8-22" aria-hidden="true" tabindex="-1"></a>risk <span class="ot">&lt;-</span> <span class="fu">numeric</span>(<span class="at">length =</span> nvals)</span>
+<span id="cb8-23"><a href="#cb8-23" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span>(i <span class="cf">in</span> <span class="fu">seq_len</span>(nvals)){</span>
+<span id="cb8-24"><a href="#cb8-24" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Compute integral (Monte Carlo average over draws)</span></span>
+<span id="cb8-25"><a href="#cb8-25" aria-hidden="true" tabindex="-1"></a> risk[i] <span class="ot">&lt;-</span> <span class="fu">loss</span>(<span class="at">q =</span> VaR_post, <span class="at">qhat =</span> VaR_grid[i])</span>
+<span id="cb8-26"><a href="#cb8-26" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell" data-layout-align="center" data-hash="introduction_cache/html/fig-lossfn_d6c7bed99c5ac0f2e8c0956424f479d4">
+<div class="cell-output-display">
+<div id="fig-lossfn" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="introduction_files/figure-html/fig-lossfn-1.png" class="img-fluid figure-img" width="672"></p>
+<figcaption class="figure-caption">Figure&nbsp;1.6: Posterior density (left) and losses functionsfor the 0.99 value-at-risk for the Danish fire insurance data. The vertical lines denote point estimates of the quantiles that minimize the loss functions.</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</div>
 <p>The output of the Bayesian learning problem will be either of:</p>
 <ol type="1">
 <li>a fully characterized distribution</li>
 <li>a numerical approximation to the posterior distribution (pointwise)</li>
 <li>an exact or approximate sample drawn from the posterior distribution</li>
 </ol>
-<p>Point estimators are usually in terms of central tendency. We can return the expected value or mean of the posterior, quantiles such as the median or the mode, the value at which the posterior density is highest. These functionals may correspond to potentially different values, as shown in the left-panel of <a href="#fig-central-moments">Figure&nbsp;<span>1.4</span></a>. For multimodal distributions, the mode is likely the better choice.</p>
-<p>If we know the distribution, we can optimize to find the mode or else return the value for the pointwise evaluation on a grid at which the density achieves it’s maximum.</p>
-<div class="cell" data-hash="introduction_cache/html/fig-central-moments_09d7385e76b50a09cf3152f189d34c6f">
+<p>In the first case, we will be able to directly evaluate quantities of interest if there are closed-form expressions for the latter, or else we could draw samples from the distribution and evaluate them via Monte-Carlo. In case of numerical approximations, we will need to resort to numerical integration or otherwise to get our answers.</p>
+<p>Often, we will also be interested in the marginal posterior distribution of each component <span class="math inline">\(\theta_j\)</span> in turn (<span class="math inline">\(j=1, \ldots, p\)</span>). To get these, we carry out additional integration steps, <span class="math display">\[p(\theta_j \mid \boldsymbol{y}) = \int p(\boldsymbol{\theta} \mid \boldsymbol{y}) \mathrm{d} \boldsymbol{\theta}_{-j}.\]</span> With a posterior sample, this is trivial: it suffices to keep the column corresponding to <span class="math inline">\(\theta_j\)</span> and discard the others.</p>
+<p>To communicate uncertainty, we may resort to credible regions and intervals.</p>
+<div id="def-credible-region" class="theorem definition">
+<p><span class="theorem-title"><strong>Definition 1.2 </strong></span>A <span class="math inline">\((1-\alpha)\)</span> <strong>credible region</strong> (or credible interval in the univariate setting) is a set <span class="math inline">\(\mathcal{S}_\alpha\)</span> such that, with probability level <span class="math inline">\(\alpha\)</span>, <span class="math display">\[\begin{align*}
+\Pr(\boldsymbol{\theta} \in \mathcal{S}_\alpha \mid \boldsymbol{Y}=\boldsymbol{y}) = 1-\alpha
+\end{align*}\]</span></p>
+</div>
+<p>These intervals are not unique, as are confidence sets. In the univariate setting, the central or equi-tailed interval are the most popular, and easily obtained by considering the <span class="math inline">\(\alpha/2, 1-\alpha/2\)</span> quantiles. These are easily obtained from samples by simply taking empirical quantiles. An alternative, highest posterior density credible sets, which may be a set of disjoint intervals obtained by considering the parts of the posterior with the highest density, may be more informative. The top panel <a href="#fig-credible-intervals">Figure&nbsp;<span>1.7</span></a> shows the distinction for a bimodal mixture distribution, and a even more striking difference for 50% credible intervals for a symmetric beta distribution whose mass lie near the endpoints of the distribution, leading to no overlap between the two intervals.</p>
+<div class="cell" data-hash="introduction_cache/html/fig-credible-intervals_9363f566b407d898a4fe8ce7f083e467">
 <div class="cell-output-display">
-<div id="fig-central-moments" class="quarto-figure quarto-figure-center anchored">
+<div id="fig-credible-intervals" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
-<p><img src="introduction_files/figure-html/fig-central-moments-1.png" class="img-fluid figure-img" width="672"></p>
-<figcaption class="figure-caption">Figure&nbsp;1.4: Point estimators from a left-skewed distribution (left) and from a multimodal distribution (right).</figcaption>
+<p><img src="introduction_files/figure-html/fig-credible-intervals-1.png" class="img-fluid figure-img" width="672"></p>
+<figcaption class="figure-caption">Figure&nbsp;1.7: Density plots with 89% (top) and 50% (bottom) equitailed or central credible (left) and highest posterior density (right) intervals for two data sets, highlighted in grey.</figcaption>
 </figure>
 </div>
 </div>
 </div>
-<p>Often, we will also be interested in the marginal posterior distribution of each component <span class="math inline">\(\theta_j\)</span> in turn (<span class="math inline">\(j=1, \ldots, p\)</span>). To get these, we carry out additional integration steps, <span class="math display">\[p(\theta_j \mid \boldsymbol{y}) = \int p(\boldsymbol{\theta} \mid \boldsymbol{y}) \mathrm{d} \boldsymbol{\theta}_{-j}.\]</span></p>
-<!--
-
-TODO:
-
-- loss function and EVA example with generalized Pareto (FIG)
-- HPD and percentile intervals (FIG)
-- Summaries using Monte Carlo (quantiles)
-
--->
+<p>Another example where these would differ</p>
 
 
 <div id="refs" class="references csl-bib-body hanging-indent" role="list" style="display: none">
@@ -369,6 +485,9 @@ Gelfand, Alan E., and Adrian F. M. Smith. 1990. <span>“Sampling-Based Approach
 </div>
 <div id="ref-Geman.Geman:1984" class="csl-entry" role="listitem">
 Geman, Stuart, and Donald Geman. 1984. <span>“Stochastic Relaxation, <span>G</span>ibbs Distributions, and the <span>B</span>ayesian Restoration of Images.”</span> <em>IEEE Transactions on Pattern Analysis and Machine Intelligence</em> PAMI-6 (6): 721–41. <a href="https://doi.org/10.1109/TPAMI.1984.4767596">https://doi.org/10.1109/TPAMI.1984.4767596</a>.
+</div>
+<div id="ref-McNeil.Frey.Embrechts:2005" class="csl-entry" role="listitem">
+McNeil, A. J., R. Frey, and P. Embrechts. 2005. <em>Quantitative Risk Management: Concepts, Techniques, and Tools</em>. 1st ed. Princeton, NJ: Princeton University Press.
 </div>
 </div>
 </section>
