@@ -2,7 +2,7 @@
 
 The Bayesian paradigm is an inferential framework that is used widespread in data science. Numerical challenges that prevented it's widespread adoption until the 90's, when the Markov chain Monte Carlo revolution allowed models estimation.
 
-Bayesian inference, which builds on likelihood-based inference, offers a natural framework for prediction and for uncertainty quantification. The interpretation is more natural than that of classical frequentists methods, and it is more easy to generalized models to complex settings, using notably hierarchical constructions. The main source of controversy is the role of the prior distribution, which allows one to incorporate subject-matter expertise but leads to different inferences being drawn by different practitioners; this subjectivity is not to the taste of many and has been the subject of many controversies.
+Bayesian inference, which builds on likelihood-based inference, offers a natural framework for prediction and for uncertainty quantification. The interpretation is more natural than that of classical (i.e., frequentist) paradigm, and it is more easy to generalized models to complex settings, notably through hierarchical constructions. The main source of controversy is the role of the prior distribution, which allows one to incorporate subject-matter expertise but leads to different inferences being drawn by different practitioners; this subjectivity is not to the taste of many and has been the subject of many controversies.
 
 The Bayesian paradigm includes multiples notions that are not covered in undergraduate introductory courses. The purpose of this chapter is to introduce these concepts and put them in perspective; the reader is assumed to be familiar with basics of likelihood-based inference. We begin with a discussion of the notion of probability, then define priors, posterior distributions, marginal likelihood and posterior predictive distributions. We focus on the interpretation of posterior distributions and explain how to summarize the posterior, leading leading to definitions of high posterior density region, credible intervals, posterior mode for cases where we either have a (correlated) sample from the posterior, or else have access to the whole distribution. Several notions, including sequentiality, prior elicitation and estimation of the marginal likelihood, are mentioned in passing. A brief discussion of Bayesian hypothesis testing (and alternatives) is presented.
 
@@ -64,7 +64,7 @@ The Beta distribution, whose density is $f(x; \alpha, \beta) \propto x^{\alpha-1
  \mathsf{E}(p \mid y) = w\frac{y}{n} + (1-w) \frac{a}{a+b}, 
  \qquad w = \frac{n}{n+a+b},
  \end{align*} 
-a weighted average of the maximum likelihood estimator and the prior mean. We can think of the parameter $\alpha$ (respectively $\beta$) as representing the prior number of success (resp. failures).
+a weighted average of the maximum likelihood estimator and the prior mean. We can think of the parameter $\alpha$ (respectively $\beta$) as representing the fixed prior number of success (resp. failures). The variance term is $\mathrm{O}(n^{-1})$ and, as the sample size increases, the likelihood weight $w$ dominates.
 
 @fig-betabinom shows three different posterior distributions with different beta priors: the first prior, which favors values closer to 1/2, leads to a more peaked posterior density, contrary to the second which is symmetric, but concentrated toward more extreme values near endpoints of the support. The rightmost panel is truncated: as such, the posterior is zero for any value of $p$ beyond 1/2 and so the posterior mode may be close to the endpoint of the prior. The influence of such a prior will not necessarily vanish as sample size and should be avoided, unless there are compelling reasons for restricting the domain. 
 
@@ -214,7 +214,7 @@ A density integrates to 1 over the range of possible outcomes, but there is no g
 
 For example, the binomial likelihood with $n$ trials and $k$ successes satisfies $$\int_0^1 \binom{n}{k}p^k(1-p)^{n-k} \mathrm{d} p = \frac{1}{n+1}.$$ 
 
-Moreover, the binomial distribution is discrete (supported on $0, \ldots, n$), whereas the likelihood is continuous as a function of the probability of success, as evidenced by @fig-binom-massvslik
+Moreover, the binomial distribution is discrete with support $0, \ldots, n$, whereas the likelihood is continuous as a function of the probability of success, as evidenced by @fig-binom-massvslik
 
 ```{r}
 #| label: fig-binom-massvslik
@@ -525,6 +525,8 @@ g1
 :::
 
 :::{#exm-normal-post-pred}
+
+## Posterior predictive distribution of univariate Gaussian with known mean
 
 Consider an $n$ sample of independent and identically distributed Gaussian, $Y_i \sim \mathsf{No}(0, \tau^{-1})$ ($i=1, \ldots, n$), where we assign a gamma prior on the precision $\tau \sim \mathsf{Ga}(\alpha, \beta)$. The posterior is
 \begin{align*}
@@ -922,4 +924,4 @@ g4 <- ggplot() +
   theme_classic()
 (g1 + g2) / (g3 + g4)
 ```
-Another example where these would differ
+

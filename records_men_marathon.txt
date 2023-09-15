@@ -1,0 +1,100 @@
+        1      2:01:09    Eliud Kipchoge                 KEN     05.11.84    1      Berlin                   25.09.2022
+        2      2:01:25    Kelvin Kiptum                  KEN     02.12.99    1      London                   23.04.2023
+        3      2:01:39    Eliud Kipchoge                 KEN     05.11.84    1      Berlin                   16.09.2018
+        4      2:01:41    Kenenisa Bekele                ETH     13.06.82    1      Berlin                   29.09.2019
+        5      2:01:53    Kelvin Kiptum                  KEN     02.12.99    1      Valencia                 04.12.2022
+        6      2:02:37    Eliud Kipchoge                 KEN     05.11.84    1      London                   28.04.2019
+        7      2:02:40    Eliud Kipchoge                 KEN     05.11.84    1      Tokyo                    06.03.2022
+        8      2:02:48    Birhanu Legesse                ETH     09.11.94    2      Berlin                   29.09.2019
+        9      2:02:55    Mosinet Geremew                ETH     12.02.92    2      London                   28.04.2019
+        10     2:02:57    Dennis Kimetto                 KEN     22.04.84    1      Berlin                   28.09.2014
+        10     2:02:57    Titus Ekiru                    KEN     02.01.92    1      Milano                   16.05.2021
+        12     2:03:00    Evans Chebet                   KEN     05.03.88    1      Valencia                 06.12.2020
+        12     2:03:00    Gabriel Gerald Geay            TAN     10.09.96    2      Valencia                 04.12.2022
+        14     2:03:02    Geoffrey Mutai                 KEN     07.10.81    1      Boston                   18.04.2011
+        15     2:03:03    Kenenisa Bekele                ETH     13.06.82    1      Berlin                   25.09.2016
+        16     2:03:04    Lawrence Cherono               KEN     07.08.88    2      Valencia                 06.12.2020
+        17     2:03:05    Eliud Kipchoge                 KEN     05.11.84    1      London                   24.04.2016
+        18     2:03:06    Moses Mosop                    KEN     17.07.85    2      Boston                   18.04.2011
+        19     2:03:13    Emmanuel Mutai                 KEN     12.10.84    2      Berlin                   28.09.2014
+        19     2:03:13    Wilson Kipsang Kiprotich       KEN     15.03.82    2      Berlin                   25.09.2016
+        19     2:03:13    Amos Kipruto                   KEN     16.09.92    2      Tokyo                    06.03.2022
+        22     2:03:16    Mule Wasihun                   ETH     20.10.93    3      London                   28.04.2019
+        22     2:03:16    Birhanu Legesse                ETH     09.11.94    3      Valencia                 06.12.2020
+        24     2:03:23    Wilson Kipsang Kiprotich       KEN     15.03.82    1      Berlin                   29.09.2013
+        25     2:03:29    Alexander Mutiso               KEN     10.09.96    3      Valencia                 04.12.2022
+        26     2:03:30    Amos Kipruto                   KEN     16.09.92    4      Valencia                 06.12.2020
+        27     2:03:32    Eliud Kipchoge                 KEN     05.11.84    1      Berlin                   24.09.2017
+        28     2:03:34    Getaneh Molla                  ETH     10.01.94    1      Dubai                    25.01.2019
+        29     2:03:36    Sisay Lemma                    ETH     12.12.90    3      Berlin                   29.09.2019
+        29     2:03:36    Abdi Bashir                    BEL     02.10.89    1      Rotterdam                24.10.2021
+        31     2:03:38    Patrick Makau                  KEN     02.03.85    1      Berlin                   25.09.2011
+        32     2:03:39    Tamirat Tola                   ETH     11.08.91    1      Amsterdam                17.10.2021
+        33     2:03:40    Herpasa Negasa                 ETH     11.09.93    2      Dubai                    25.01.2019
+        33     2:03:40    Tamirat Tola                   ETH     11.08.91    4      Valencia                 04.12.2022
+        35     2:03:42    Wilson Kipsang Kiprotich       KEN     15.03.82    1      Frankfurt                30.10.2011
+        36     2:03:45    Dennis Kimetto                 KEN     22.04.84    1      Chicago                  13.10.2013
+        37     2:03:46    Guye Adola                     ETH     20.10.90    2      Berlin                   24.09.2017
+        38     2:03:47    Bashir Abdi                    BEL     10.02.89    1      Rotterdam                16.04.2023
+        39     2:03:50    Timothy Kiplagat               KEN     97          2      Rotterdam                16.04.2023
+        40     2:03:51    Stanley Biwott                 KEN     21.04.86    2      London                   24.04.2016
+        40     2:03:51    Kinde Atanaw                   ETH     15.04.93    1      Valencia                 01.12.2019
+        42     2:03:52    Emmanuel Mutai                 KEN     12.10.84    2      Chicago                  13.10.2013
+        43     2:03:55    Reuben Kiprop Kipyego          KEN     21.08.96    2      Milano                   16.05.2021
+        44     2:03:58    Wilson Kipsang Kiprotich       KEN     15.03.82    1      Tokyo                    26.02.2017
+        45     2:03:59    Haile Gebrselassie             ETH     18.04.73    1      Berlin                   28.09.2008
+        46     2:04:00    Eliud Kipchoge                 KEN     05.11.84    1      Berlin                   27.09.2015
+        46     2:04:00    Mosinet Geremew                ETH     12.02.92    1      Dubai                    26.01.2018
+        48     2:04:01    Sisay Lemma                    ETH     12.12.90    1      London                   03.10.2021
+        49     2:04:02    Leul Gebrselassie              ETH     20.09.93    2      Dubai                    26.01.2018
+        50     2:04:04    Marius Kipserem                KEN     17.05.88    2      Rotterdam                24.10.2021
+        51     2:04:05    Eliud Kipchoge                 KEN     05.11.84    2      Berlin                   29.09.2013
+        52     2:04:06    Tamirat Tola                   ETH     11.08.91    3      Dubai                    26.01.2018
+        52     2:04:06    Asefa Mengistu                 ETH     18.01.85    4      Dubai                    26.01.2018
+        52     2:04:06    Lawrence Cherono               KEN     07.08.88    1      Amsterdam                21.10.2018
+        55     2:04:08    Sisay Lemma                    ETH     12.12.90    5      Dubai                    26.01.2018
+        56     2:04:09    Bernard Koech                  KEN     31.01.88    2      Amsterdam                17.10.2021
+        56     2:04:09    Bernard Koech                  KEN     31.01.88    1      Hamburg                  23.04.2023
+        58     2:04:11    Eliud Kipchoge                 KEN     05.11.84    1      Chicago                  12.10.2014
+        58     2:04:11    Tamirat Tola                   ETH     11.08.91    1      Dubai                    20.01.2017
+        58     2:04:11    Marius Kipserem                KEN     17.05.88    1      Rotterdam                07.04.2019
+        61     2:04:12    Reuben Kiprop Kipyego          KEN     21.08.96    5      Valencia                 06.12.2020
+        61     2:04:12    Leul Gebrselassie              ETH     20.09.93    3      Amsterdam                17.10.2021
+        63     2:04:14    Tamirat Tola                   ETH     11.08.91    3      Tokyo                    06.03.2022
+        64     2:04:15    Geoffrey Mutai                 KEN     07.10.81    1      Berlin                   30.09.2012
+        64     2:04:15    Birhanu Legesse                ETH     09.11.94    6      Dubai                    26.01.2018
+        64     2:04:15    Birhanu Legesse                ETH     09.11.94    1      Tokyo                    01.03.2020
+        67     2:04:16    Dennis Kimetto                 KEN     22.04.84    2      Berlin                   30.09.2012
+        67     2:04:16    Kaan Kigen Özbilen             TUR     15.01.86    2      Valencia                 01.12.2019
+        69     2:04:17    Eliud Kipchoge                 KEN     05.11.84    1      London                   22.04.2018
+        69     2:04:17    Barnabas Kiptum                KEN     08.10.86    3      Milano                   16.05.2021
+        71     2:04:21    Elisha Rotich                  KEN     12.04.90    1      Paris                    17.10.2021
+        72     2:04:23    Ayele Abshero                  ETH     28.12.90    1      Dubai                    27.01.2012
+        72     2:04:23    Geoffrey Kamworor              KEN     28.11.92    2      London                   23.04.2023
+        74     2:04:24    Tesfaye Abera                  ETH     31.03.92    1      Dubai                    22.01.2016
+        74     2:04:24    Asefa Mengistu                 ETH     18.01.85    3      Dubai                    25.01.2019
+        74     2:04:24    Benson Kipruto                 KEN     17.03.91    1      Chicago                  09.10.2022
+        77     2:04:26    Haile Gebrselassie             ETH     18.04.73    1      Berlin                   30.09.2007
+        78     2:04:27    Duncan Kipkemboi Kibet         KEN     25.04.78    1      Rotterdam                05.04.2009
+        78     2:04:27    James Kipsang Kwambai          KEN     28.02.83    2      Rotterdam                05.04.2009
+        78     2:04:27    Dawit Wolde                    ETH     19.05.91    3      Rotterdam                24.10.2021
+        81     2:04:28    Sammy Kirop Kitwara            KEN     26.11.86    2      Chicago                  12.10.2014
+        81     2:04:28    Vincent Toroitich              KEN     03.08.90    2      London                   03.10.2021
+        83     2:04:29    Wilson Kipsang Kiprotich       KEN     15.03.82    1      London                   13.04.2014
+        83     2:04:29    Seifu Tura                     ETH     17.06.97    4      Milano                   16.05.2021
+        85     2:04:30    Eliud Kipchoge                 KEN     05.11.84    1      Enschede                 18.04.2021
+        86     2:04:31    Leul Gebrselassie              ETH     20.09.93    1      Valencia                 02.12.2018
+        86     2:04:31    Leul Gebrselassie              ETH     20.09.93    5      Milano                   16.05.2021
+        88     2:04:32    Tsegaye Mekonnen               ETH     15.06.95    1      Dubai                    24.01.2014
+        88     2:04:32    Dickson Chumba                 KEN     27.10.86    3      Chicago                  12.10.2014
+        88     2:04:32    Jonathan Kipleting             KEN     20.11.86    4      Amsterdam                17.10.2021
+        91     2:04:33    Lemi Berhanu                   ETH     13.09.94    2      Dubai                    22.01.2016
+        91     2:04:33    Joshua Belet                   KEN     10.02.98    2      Hamburg                  23.04.2023
+        93     2:04:35    Hizkel Tewelde                 ERI     15.09.86    5      Amsterdam                17.10.2021
+        94     2:04:36    Kaan Kigen Özbilen             TUR     15.01.86    5      Valencia                 04.12.2022
+        95     2:04:37    Mule Wasihun                   ETH     20.10.93    2      Amsterdam                21.10.2018
+        96     2:04:38    Tsegay Kebede                  ETH     15.01.87    1      Chicago                  07.10.2012
+        97     2:04:39    Amos Kipruto                   KEN     16.09.92    1      London                   02.10.2022
+        98     2:04:40    Emmanuel Mutai                 KEN     12.10.84    1      London                   17.04.2011
+        98     2:04:40    Solomon Deksisa                ETH     11.03.94    3      Amsterdam                21.10.2018
+        98     2:04:40    Reuben Kiprop Kipyego          KEN     21.08.96    1      Abu Dhabi                06.12.2019
