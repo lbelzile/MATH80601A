@@ -49,20 +49,20 @@ To fix ideas, we consider next a simple one-parameter model where the marginal l
 
 ## Binomial model with beta prior
 
-Consider a binomial likelihood with probability of success $p$ and $n$ trials, $Y \sim \mathsf{Bin}(n, p)$. If we take a beta prior, $p \sim \mathsf{Be}(\alpha, \beta)$ and observe $k$ successes, the posterior is 
+Consider a binomial likelihood with probability of success $\theta \in [0,1]$ and $n$ trials, $Y \sim \mathsf{Bin}(n, \theta)$. If we take a beta prior, $p \sim \mathsf{Be}(\alpha, \beta)$ and observe $y$ successes, the posterior is 
 \begin{align*}
-p(\theta \mid y = k) &\propto \binom{n}{k} p^k (1-p)^{n-k} \frac{\Gamma(\alpha + \beta)}{\Gamma(\alpha) \Gamma(\beta)}p^{\alpha-1} (1-p)^{\beta-1}
-\\&\stackrel{p}{\propto} p^{k+\alpha-1}(1-p)^{n-k+\beta-1}
+p(\theta \mid y = y) &\propto \binom{n}{y} \theta^y (1-\theta)^{n-y} \frac{\Gamma(\alpha + \beta)}{\Gamma(\alpha) \Gamma(\beta)}\theta^{\alpha-1} (1-\theta)^{\beta-1}
+\\&\stackrel{p}{\propto} \theta^{y+\alpha-1}(1-\theta)^{n-y+\beta-1}
 \end{align*}
-and is $$\int_{0}^{1} p^{k+\alpha-1}(1-p)^{n-k+\beta-1}\mathrm{d} p = \frac{\Gamma(k+\alpha)\Gamma(n-k+\beta)}{\Gamma(n+\alpha+\beta)},$$ a Beta function. Since we need only to keep track of the terms that are function of the parameter $p$, we could recognize directly that the posterior distribution is $\mathsf{Be}(k+\alpha, n-k+\beta)$ and deduce the normalizing constant from there.
+and is $$\int_{0}^{1} \theta^{y+\alpha-1}(1-\theta)^{n-y+\beta-1}\mathrm{d} \theta = \frac{\Gamma(y+\alpha)\Gamma(n-y+\beta)}{\Gamma(n+\alpha+\beta)},$$ a Beta function. Since we need only to keep track of the terms that are function of the parameter $p$, we could recognize directly that the posterior distribution is $\mathsf{Be}(y+\alpha, n-y+\beta)$ and deduce the normalizing constant from there.
 
-If $Y \sim \mathsf{Bin}(n, p)$, the expected number of success is $np$ and the expected number of failures $n(1-p)$ and so the likelihood contribution, relative to the prior, will dominate as the sample size $n$ grows. 
+If $Y \sim \mathsf{Bin}(n, \theta)$, the expected number of success is $n\theta$ and the expected number of failures $n(1-\theta)$ and so the likelihood contribution, relative to the prior, will dominate as the sample size $n$ grows. 
 
 Another way to see this is to track moments (expectation, variance, etc.)
 The Beta distribution, whose density is $f(x; \alpha, \beta) \propto x^{\alpha-1} (1-x)^{\beta-1}$, has expectation $\alpha/(\alpha+\beta)$ and variance $\alpha\beta/\{(\alpha+\beta)^2(\alpha+\beta+1)\}$. The posterior mean is
  \begin{align*}
- \mathsf{E}(p \mid y) = w\frac{y}{n} + (1-w) \frac{a}{a+b}, 
- \qquad w = \frac{n}{n+a+b},
+ \mathsf{E}(p \mid y) = w\frac{y}{n} + (1-w) \frac{\alpha}{\alpha+\beta}, 
+ \qquad w = \frac{n}{n+\alpha + \beta},
  \end{align*} 
 a weighted average of the maximum likelihood estimator and the prior mean. We can think of the parameter $\alpha$ (respectively $\beta$) as representing the fixed prior number of success (resp. failures). The variance term is $\mathrm{O}(n^{-1})$ and, as the sample size increases, the likelihood weight $w$ dominates.
 
@@ -80,14 +80,14 @@ library(patchwork)
 set.seed(1234)
 n <- 14L
 p <- 0.4
-k <- 6L
-binlik <- function(p){dbinom(x = k, size = n, prob = p) * (n + 1) }
+y <- 6L
+binlik <- function(p){dbinom(x = y, size = n, prob = p) * (n + 1) }
 alpha <- 1.5
 beta <- 1.5
 
 g1 <- ggplot() +
     stat_function(fun =  function(x){
-        dbeta(x, shape1 = k, shape2 = n - k)},
+        dbeta(x, shape1 = y, shape2 = n - y)},
         mapping = aes(fill = "likelihood",
                       col = "likelihood"),
         alpha = 0.2,
@@ -100,7 +100,7 @@ g1 <- ggplot() +
                       col = "prior"),
         geom = "area") +
     stat_function(fun = function(x){
-        dbeta(x, shape1 = k + 1.5, shape2 = n - k + 1.5)},
+        dbeta(x, shape1 = y + 1.5, shape2 = n - y + 1.5)},
         mapping = aes(fill = "posterior", 
                       col = "posterior"), 
         group = factor(3),
@@ -121,7 +121,7 @@ g1 <- ggplot() +
 
 g2 <- ggplot() +
     stat_function(fun =  function(x){
-        dbeta(x, shape1 = k, shape2 = n - k)},
+        dbeta(x, shape1 = y, shape2 = n - y)},
         mapping = aes(fill = "likelihood",
                       col = "likelihood"),
         alpha = 0.2,
@@ -134,7 +134,7 @@ g2 <- ggplot() +
                       col = "prior"),
         geom = "area") +
     stat_function(fun = function(x){
-        dbeta(x, shape1 = k + 0.25, shape2 = n - k + 0.25)},
+        dbeta(x, shape1 = y + 0.25, shape2 = n - y + 0.25)},
         mapping = aes(fill = "posterior", 
                       col = "posterior"), 
         group = factor(3),
@@ -155,7 +155,7 @@ g2 <- ggplot() +
 
 g3 <- ggplot() +
     stat_function(fun =  function(x){
-        dbeta(x, shape1 = k, shape2 = n - k)},
+        dbeta(x, shape1 = y, shape2 = n - y)},
         mapping = aes(fill = "likelihood",
                       col = "likelihood"),
         alpha = 0.2,
@@ -168,7 +168,7 @@ g3 <- ggplot() +
                       col = "prior"),
         geom = "area") +
     stat_function(fun = function(x){
-        dbeta(x, shape1 = k + 1, shape2 = n - k + 1) / pbeta(0.5, shape1 = k + 1, shape2 = n - k + 1)},
+        dbeta(x, shape1 = y + 1, shape2 = n - y + 1) / pbeta(0.5, shape1 = y + 1, shape2 = n - y + 1)},
         mapping = aes(fill = "posterior", 
                       col = "posterior"), 
         group = factor(3),
@@ -212,7 +212,7 @@ An alternative parametrization for the beta distribution sets $\alpha=\mu \kappa
 
 A density integrates to 1 over the range of possible outcomes, but there is no guarantee that the likelihood function, as a function of $\boldsymbol{\theta}$, integrates to one over the parameter domain $\boldsymbol{\Theta}$.
 
-For example, the binomial likelihood with $n$ trials and $k$ successes satisfies $$\int_0^1 \binom{n}{k}p^k(1-p)^{n-k} \mathrm{d} p = \frac{1}{n+1}.$$ 
+For example, the binomial likelihood with $n$ trials and $y$ successes satisfies $$\int_0^1 \binom{n}{y}\theta^y(1-\theta)^{n-y} \mathrm{d} \theta = \frac{1}{n+1}.$$ 
 
 Moreover, the binomial distribution is discrete with support $0, \ldots, n$, whereas the likelihood is continuous as a function of the probability of success, as evidenced by @fig-binom-massvslik
 
@@ -224,7 +224,7 @@ Moreover, the binomial distribution is discrete with support $0, \ldots, n$, whe
 #| cache: true
 #| fig-cap: "Binomial mass function (left) and scaled likelihood function (right)."
 #Binomial mass function versus 
-binlik <- function(p){dbinom(x = k, size = n, prob = p) * (n + 1) }
+binlik <- function(p){dbinom(x = y, size = n, prob = p) * (n + 1) }
 g1 <- ggplot() +
     stat_function(fun =  binlik) +
     scale_x_continuous(limits = c(0,1),
@@ -283,13 +283,13 @@ library(MetBrewer)
 set.seed(1234)
 n <- c(10L, 20L, 50L)
 diffn <- diff(c(0,n))
-k <- cumsum(c(rbinom(n = 1, size = diffn[1], prob = 0.3),
+y <- cumsum(c(rbinom(n = 1, size = diffn[1], prob = 0.3),
               rbinom(n = 1, size = diffn[2], prob = 0.3),
               rbinom(n = 1, size = diffn[3], prob = 0.3)))
 
 g1 <- ggplot() +
     stat_function(fun =  function(x){
-        dbeta(x, shape1 = k[1], shape2 = n[1] - k[1])},
+        dbeta(x, shape1 = y[1], shape2 = n[1] - y[1])},
         mapping = aes(fill = "likelihood",
                       col = "likelihood"),
         alpha = 0.2,
@@ -302,7 +302,7 @@ g1 <- ggplot() +
                       col = "prior"),
         geom = "area") +
     stat_function(fun = function(x){
-        dbeta(x, shape1 = k[1] + 1, shape2 = n[1] - k[1] + 1)},
+        dbeta(x, shape1 = y[1] + 1, shape2 = n[1] - y[1] + 1)},
         mapping = aes(fill = "posterior", 
                       col = "posterior"), 
         group = factor(3),
@@ -319,11 +319,11 @@ g1 <- ggplot() +
     labs(y = "",
          colour = "",
          fill = "",
-         subtitle = "sample size: 5") + 
+         subtitle = paste0(y[1], " successes, ", n[1], " trials")) + 
     theme_classic()
 g2 <- ggplot() +
     stat_function(fun =  function(x){
-        dbeta(x, shape1 = k[2], shape2 = n[2] - k[2])},
+        dbeta(x, shape1 = y[2], shape2 = n[2] - y[2])},
         mapping = aes(fill = "likelihood",
                       col = "likelihood"),
         alpha = 0.2,
@@ -336,7 +336,7 @@ g2 <- ggplot() +
                       col = "prior"),
         geom = "area") +
     stat_function(fun = function(x){
-        dbeta(x, shape1 = k[2] + 1, shape2 = n[2] - k[2] + 1)},
+        dbeta(x, shape1 = y[2] + 1, shape2 = n[2] - y[2] + 1)},
         mapping = aes(fill = "posterior", 
                       col = "posterior"), 
         group = factor(3),
@@ -353,11 +353,11 @@ g2 <- ggplot() +
     labs(y = "",
          colour = "",
          fill = "",
-         subtitle = "sample size: 10") + 
+         subtitle = paste0(y[2], " successes, ", n[2], " trials")) + 
     theme_classic()
 g3 <- ggplot() +
     stat_function(fun =  function(x){
-        dbeta(x, shape1 = k[3], shape2 = n[3] - k[3])},
+        dbeta(x, shape1 = y[3], shape2 = n[3] - y[3])},
         mapping = aes(fill = "likelihood",
                       col = "likelihood"),
         alpha = 0.2,
@@ -370,7 +370,7 @@ g3 <- ggplot() +
                       col = "prior"),
         geom = "area") +
     stat_function(fun = function(x){
-        dbeta(x, shape1 = k[3] + 1, shape2 = n[3] - k[3] + 1)},
+        dbeta(x, shape1 = y[3] + 1, shape2 = n[3] - y[3] + 1)},
         mapping = aes(fill = "posterior", 
                       col = "posterior"), 
         group = factor(3),
@@ -387,7 +387,7 @@ g3 <- ggplot() +
     labs(y = "",
          colour = "",
          fill = "",
-         subtitle = "sample size: 50") + 
+         subtitle = paste0(y[3], " successes, ", n[3], " trials")) + 
     theme_classic()
 g1 + g2 + g3 + plot_layout(guides = 'collect') & theme(legend.position = "bottom")
 ```
@@ -406,17 +406,17 @@ In a model for discrete data (that is, assigning probability mass to a countable
 #| eval: true
 #| echo: true
 #| cache: true
-k <- 6L # number of successes 
+y <- 6L # number of successes 
 n <- 14L # number of trials
 alpha <- beta <- 1.5 # prior parameters
-unnormalized_posterior <- function(p){
-  p^(k+alpha-1) * (1-p)^(n-k + beta - 1)
+unnormalized_posterior <- function(theta){
+  theta^(y+alpha-1) * (1-theta)^(n-y + beta - 1)
 }
 integrate(f = unnormalized_posterior,
           lower = 0,
           upper = 1)
 # Compare with known constant
-beta(k + alpha, n - k + beta)
+beta(y + alpha, n - y + beta)
 # Monte Carlo integration
 mean(unnormalized_posterior(runif(1e5)))
 ```
@@ -427,10 +427,10 @@ mean(unnormalized_posterior(runif(1e5)))
 #| echo: false
 # Alternative Monte Carlo estimator, sampling from the prior
 # This is less efficient
-mean(dbinom(x = k, 
+mean(dbinom(x = y, 
             size = n, 
             prob = rbeta(n = 1e6, alpha, beta))) *
-  beta(alpha, beta) / choose(n, k)
+  beta(alpha, beta) / choose(n, y)
 ```
 
 :::
@@ -446,7 +446,7 @@ p(y_{\text{new}} \mid \boldsymbol{y}) =
 \int_{\Theta} p(y_{\text{new}}  \mid \boldsymbol{\theta}) p(\boldsymbol{\theta} \mid  \boldsymbol{y}) \mathrm{d} \boldsymbol{\theta}
 \end{align*}
 
-Given draws from the posterior distribution, say $\boldsymbol{\theta}_b$ $(b=1, \ldots, B)$, we sample from each a new realization from the distribution appearing in the likelihood $p(y_{\text{new}}  \mid \boldsymbol{\theta}_b)$. This is different from the frequentist setting, which fixes the value of the parameter to some estimate $\widehat{\boldsymbol{\theta}}$; by contrast, the posterior predictive, here a beta-binomial distribution $\mathsf{BetaBin}(n, \alpha + k, n - k + \beta)$, carries over the uncertainty so will typically be wider and overdispersed relative to the corresponding binomial model. This can be easily seen from the left-panel of @fig-betabinompostpred, which contrasts the binomial mass function evaluated at the maximum likelihood estimator $\widehat{p}=6/14$ with the posterior predictive.
+Given draws from the posterior distribution, say $\boldsymbol{\theta}_b$ $(b=1, \ldots, B)$, we sample from each a new realization from the distribution appearing in the likelihood $p(y_{\text{new}}  \mid \boldsymbol{\theta}_b)$. This is different from the frequentist setting, which fixes the value of the parameter to some estimate $\widehat{\boldsymbol{\theta}}$; by contrast, the posterior predictive, here a beta-binomial distribution $\mathsf{BetaBin}(n, \alpha + y, n - y + \beta)$, carries over the uncertainty so will typically be wider and overdispersed relative to the corresponding binomial model. This can be easily seen from the left-panel of @fig-betabinompostpred, which contrasts the binomial mass function evaluated at the maximum likelihood estimator $\widehat{\theta}=6/14$ with the posterior predictive.
 
 :::{.exm-betabinompred}
 
@@ -456,7 +456,7 @@ Given draws from the posterior distribution, say $\boldsymbol{\theta}_b$ $(b=1, 
 #| echo: true
 npost <- 1e4L
 # Sample draws from the posterior distribution
-post_samp <- rbeta(n = npost, k + alpha, n - k + beta)
+post_samp <- rbeta(n = npost, y + alpha, n - y + beta)
 # For each draw, sample new observation
 post_pred <- rbinom(n = npost, size = n, prob = post_samp)
 ```
@@ -481,15 +481,15 @@ dbetabinom <- function(x, size, shape1, shape2, log = FALSE){
 	   }
 }
 
-k <- 6L # number of successes 
+y <- 6L # number of successes 
 size <- 14L # number of trials
 alpha <- beta <- 1.5 # prior parameters
 x = 0:size
 pmf_post <- dbetabinom(x = x, 
                        size = size, 
-                       shape1 = alpha + k, 
-                       shape2 = beta + size - k)
-pmf_lik <- dbinom(x = x, size = size, prob = k/size)
+                       shape1 = alpha + y, 
+                       shape2 = beta + size - y)
+pmf_lik <- dbinom(x = x, size = size, prob = y/size)
 g1 <- ggplot(data = data.frame(
     x = c(x, x),
     pmf = c(pmf_post, pmf_lik),
@@ -576,7 +576,7 @@ If we have rather a sample from the posterior with associated posterior density 
 #| eval: true
 #| echo: false
 #| warning: false
-#| fig-cap: "Point estimators from a left-skewed distribution (left) and from a multimodal distribution (right)."
+#| fig-cap: "Point estimators from a right-skewed distribution (left) and from a multimodal distribution (right)."
 shape <- 2
 rate <- 2
 med <- qgamma(0.5, shape = shape, rate = rate)
@@ -634,6 +634,8 @@ g2 <- ggplot() +
 The loss function is often a functional (meaning a one-dimensional summary) from the posterior. The following example shows how it reduces a three-dimensional problem into a single risk measure.
 
 :::{#exm-loss-extremes}
+
+## Danish insurance losses
 
 In extreme value, we are often interested in assessing the risk of events that are rare enough that they lie beyond the range of observed data. To provide a scientific extrapolation, it often is justified to fit a generalized Pareto distribution to exceedances of $Z=Y-u$, for some user-specified threshold $u$ which is often taken as a large quantile of the distribution of $Y$. The generalized Pareto distribution function is
 \begin{align*}
@@ -755,7 +757,7 @@ for(i in seq_len(nvals)){
 #| echo: false
 #| warning: false
 #| fig-align: 'center'
-#| fig-cap: "Posterior density (left) and losses functionsfor the 0.99 value-at-risk for the Danish fire insurance data. The vertical lines denote point estimates of the quantiles that minimize the loss functions."
+#| fig-cap: "Posterior density (left) and losses functions for the 0.99 value-at-risk for the Danish fire insurance data. The vertical lines denote point estimates of the quantiles that minimize the loss functions."
 VaR_post <- with(post_samp,   # data frame of posterior draws
             revdbayes::qgp(   # with columns 'probexc', 'scale', 'shape'
   p = 0.01/probexc, 
@@ -791,6 +793,7 @@ g1 <- ggplot(data = data.frame(x = VaR_post)) +
   labs(subtitle = "posterior density",
        x = "value-at-risk 0.99 (in millions krone)",
        y = "") +
+  scale_y_continuous(limits = c(0, 0.15), expand = c(0,0)) +
   theme_classic()
 # Plot loss function
 g2 <- ggplot(data = data.frame(
@@ -801,7 +804,7 @@ g2 <- ggplot(data = data.frame(
   geom_line(mapping = aes(x = quantile, y = loss2), linetype = "dashed") +
   geom_vline(xintercept = VaR_grid[which.min(risk1)], linewidth = 0.1) +
   geom_vline(xintercept = mean(VaR_post), linetype = "dashed", linewidth = 0.1) +
-  scale_y_continuous(limits = c(0, 10)) +
+  scale_y_continuous(limits = c(0, 9), expand = c(0,0)) +
   labs(x = "value-at-risk 0.99 (in millions krone)",
        subtitle = "custom loss function (full)\nand squared error loss (dashed)") +
   theme_classic()
@@ -818,7 +821,7 @@ The output of the Bayesian learning problem will be either of:
 
 In the first case, we will be able to directly evaluate quantities of interest if there are closed-form expressions for the latter, or else we could draw samples from the distribution and evaluate them via Monte-Carlo. In case of numerical approximations, we will need to resort to numerical integration or otherwise to get our answers.
 
-Often, we will also be interested in the marginal posterior distribution of each component $\theta_j$ in turn ($j=1, \ldots, p$). To get these, we carry out additional integration steps, $$p(\theta_j \mid \boldsymbol{y}) = \int p(\boldsymbol{\theta} \mid \boldsymbol{y}) \mathrm{d} \boldsymbol{\theta}_{-j}.$$
+Often, we will also be interested in the marginal posterior distribution of each component $\theta_j$ in turn ($j=1, \ldots, J$). To get these, we carry out additional integration steps, $$p(\theta_j \mid \boldsymbol{y}) = \int p(\boldsymbol{\theta} \mid \boldsymbol{y}) \mathrm{d} \boldsymbol{\theta}_{-j}.$$
 With a posterior sample, this is trivial: it suffices to keep the column corresponding to $\theta_j$ and discard the others. 
 
 To communicate uncertainty, we may resort to credible regions and intervals.

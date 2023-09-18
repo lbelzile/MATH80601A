@@ -281,11 +281,11 @@
 \newcommand*\listoflistings{\listof{codelisting}{List of Listings}}
 \usepackage{amsthm}
 \theoremstyle{definition}
-\newtheorem{example}{Example}[chapter]
-\theoremstyle{definition}
 \newtheorem{definition}{Definition}[chapter]
 \theoremstyle{plain}
 \newtheorem{proposition}{Proposition}[chapter]
+\theoremstyle{definition}
+\newtheorem{example}{Example}[chapter]
 \theoremstyle{remark}
 \AtBeginDocument{\renewcommand*{\proofname}{Proof}}
 \newtheorem*{remark}{Remark}
@@ -324,7 +324,7 @@
 \begin{document}
 \frontmatter
 \maketitle
-\ifdefined\Shaded\renewenvironment{Shaded}{\begin{tcolorbox}[borderline west={3pt}{0pt}{shadecolor}, interior hidden, enhanced, boxrule=0pt, breakable, frame hidden, sharp corners]}{\end{tcolorbox}}\fi
+\ifdefined\Shaded\renewenvironment{Shaded}{\begin{tcolorbox}[borderline west={3pt}{0pt}{shadecolor}, frame hidden, sharp corners, interior hidden, enhanced, boxrule=0pt, breakable]}{\end{tcolorbox}}\fi
 
 \renewcommand*\contentsname{Table of contents}
 {
@@ -346,7 +346,7 @@ a graduate course offered at HEC Montréal.
 These notes are licensed under a
 \href{http://creativecommons.org/licenses/by-nc-sa/4.0/}{Creative
 Commons Attribution-NonCommercial-ShareAlike 4.0 International License}
-and were last compiled on Sunday, September 17 2023.
+and were last compiled on Monday, September 18 2023.
 
 The objective of the course is to provide a hands on introduction to
 Bayesian data analysis. The course will cover the formulation,
@@ -498,22 +498,23 @@ marginal likelihood can be computed explicitly.
 \begin{example}[Binomial model with beta
 prior]\protect\hypertarget{exm-betabinomconjugate}{}\label{exm-betabinomconjugate}
 
-Consider a binomial likelihood with probability of success \(p\) and
-\(n\) trials, \(Y \sim \mathsf{Bin}(n, p)\). If we take a beta prior,
-\(p \sim \mathsf{Be}(\alpha, \beta)\) and observe \(k\) successes, the
+Consider a binomial likelihood with probability of success
+\(\theta \in [0,1]\) and \(n\) trials,
+\(Y \sim \mathsf{Bin}(n, \theta)\). If we take a beta prior,
+\(p \sim \mathsf{Be}(\alpha, \beta)\) and observe \(y\) successes, the
 posterior is \begin{align*}
-p(\theta \mid y = k) &\propto \binom{n}{k} p^k (1-p)^{n-k} \frac{\Gamma(\alpha + \beta)}{\Gamma(\alpha) \Gamma(\beta)}p^{\alpha-1} (1-p)^{\beta-1}
-\\&\stackrel{p}{\propto} p^{k+\alpha-1}(1-p)^{n-k+\beta-1}
+p(\theta \mid y = y) &\propto \binom{n}{y} \theta^y (1-\theta)^{n-y} \frac{\Gamma(\alpha + \beta)}{\Gamma(\alpha) \Gamma(\beta)}\theta^{\alpha-1} (1-\theta)^{\beta-1}
+\\&\stackrel{p}{\propto} \theta^{y+\alpha-1}(1-\theta)^{n-y+\beta-1}
 \end{align*} and is
-\[\int_{0}^{1} p^{k+\alpha-1}(1-p)^{n-k+\beta-1}\mathrm{d} p = \frac{\Gamma(k+\alpha)\Gamma(n-k+\beta)}{\Gamma(n+\alpha+\beta)},\]
+\[\int_{0}^{1} \theta^{y+\alpha-1}(1-\theta)^{n-y+\beta-1}\mathrm{d} \theta = \frac{\Gamma(y+\alpha)\Gamma(n-y+\beta)}{\Gamma(n+\alpha+\beta)},\]
 a Beta function. Since we need only to keep track of the terms that are
 function of the parameter \(p\), we could recognize directly that the
-posterior distribution is \(\mathsf{Be}(k+\alpha, n-k+\beta)\) and
+posterior distribution is \(\mathsf{Be}(y+\alpha, n-y+\beta)\) and
 deduce the normalizing constant from there.
 
-If \(Y \sim \mathsf{Bin}(n, p)\), the expected number of success is
-\(np\) and the expected number of failures \(n(1-p)\) and so the
-likelihood contribution, relative to the prior, will dominate as the
+If \(Y \sim \mathsf{Bin}(n, \theta)\), the expected number of success is
+\(n\theta\) and the expected number of failures \(n(1-\theta)\) and so
+the likelihood contribution, relative to the prior, will dominate as the
 sample size \(n\) grows.
 
 Another way to see this is to track moments (expectation, variance,
@@ -522,8 +523,8 @@ etc.) The Beta distribution, whose density is
 expectation \(\alpha/(\alpha+\beta)\) and variance
 \(\alpha\beta/\{(\alpha+\beta)^2(\alpha+\beta+1)\}\). The posterior mean
 is \begin{align*}
- \mathsf{E}(p \mid y) = w\frac{y}{n} + (1-w) \frac{a}{a+b}, 
- \qquad w = \frac{n}{n+a+b},
+ \mathsf{E}(p \mid y) = w\frac{y}{n} + (1-w) \frac{\alpha}{\alpha+\beta}, 
+ \qquad w = \frac{n}{n+\alpha + \beta},
  \end{align*} a weighted average of the maximum likelihood estimator and
 the prior mean. We can think of the parameter \(\alpha\) (respectively
 \(\beta\)) as representing the fixed prior number of success (resp.
@@ -580,9 +581,9 @@ is no guarantee that the likelihood function, as a function of
 \(\boldsymbol{\theta}\), integrates to one over the parameter domain
 \(\boldsymbol{\Theta}\).
 
-For example, the binomial likelihood with \(n\) trials and \(k\)
+For example, the binomial likelihood with \(n\) trials and \(y\)
 successes satisfies
-\[\int_0^1 \binom{n}{k}p^k(1-p)^{n-k} \mathrm{d} p = \frac{1}{n+1}.\]
+\[\int_0^1 \binom{n}{y}\theta^y(1-\theta)^{n-y} \mathrm{d} \theta = \frac{1}{n+1}.\]
 
 Moreover, the binomial distribution is discrete with support
 \(0, \ldots, n\), whereas the likelihood is continuous as a function of
@@ -662,11 +663,11 @@ and this can lead to arithmetic underflow.
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\NormalTok{k }\OtherTok{\textless{}{-}}\NormalTok{ 6L }\CommentTok{\# number of successes }
+\NormalTok{y }\OtherTok{\textless{}{-}}\NormalTok{ 6L }\CommentTok{\# number of successes }
 \NormalTok{n }\OtherTok{\textless{}{-}}\NormalTok{ 14L }\CommentTok{\# number of trials}
 \NormalTok{alpha }\OtherTok{\textless{}{-}}\NormalTok{ beta }\OtherTok{\textless{}{-}} \FloatTok{1.5} \CommentTok{\# prior parameters}
-\NormalTok{unnormalized\_posterior }\OtherTok{\textless{}{-}} \ControlFlowTok{function}\NormalTok{(p)\{}
-\NormalTok{  p}\SpecialCharTok{\^{}}\NormalTok{(k}\SpecialCharTok{+}\NormalTok{alpha}\DecValTok{{-}1}\NormalTok{) }\SpecialCharTok{*}\NormalTok{ (}\DecValTok{1}\SpecialCharTok{{-}}\NormalTok{p)}\SpecialCharTok{\^{}}\NormalTok{(n}\SpecialCharTok{{-}}\NormalTok{k }\SpecialCharTok{+}\NormalTok{ beta }\SpecialCharTok{{-}} \DecValTok{1}\NormalTok{)}
+\NormalTok{unnormalized\_posterior }\OtherTok{\textless{}{-}} \ControlFlowTok{function}\NormalTok{(theta)\{}
+\NormalTok{  theta}\SpecialCharTok{\^{}}\NormalTok{(y}\SpecialCharTok{+}\NormalTok{alpha}\DecValTok{{-}1}\NormalTok{) }\SpecialCharTok{*}\NormalTok{ (}\DecValTok{1}\SpecialCharTok{{-}}\NormalTok{theta)}\SpecialCharTok{\^{}}\NormalTok{(n}\SpecialCharTok{{-}}\NormalTok{y }\SpecialCharTok{+}\NormalTok{ beta }\SpecialCharTok{{-}} \DecValTok{1}\NormalTok{)}
 \NormalTok{\}}
 \FunctionTok{integrate}\NormalTok{(}\AttributeTok{f =}\NormalTok{ unnormalized\_posterior,}
           \AttributeTok{lower =} \DecValTok{0}\NormalTok{,}
@@ -681,7 +682,7 @@ and this can lead to arithmetic underflow.
 \begin{Shaded}
 \begin{Highlighting}[]
 \CommentTok{\# Compare with known constant}
-\FunctionTok{beta}\NormalTok{(k }\SpecialCharTok{+}\NormalTok{ alpha, n }\SpecialCharTok{{-}}\NormalTok{ k }\SpecialCharTok{+}\NormalTok{ beta)}
+\FunctionTok{beta}\NormalTok{(y }\SpecialCharTok{+}\NormalTok{ alpha, n }\SpecialCharTok{{-}}\NormalTok{ y }\SpecialCharTok{+}\NormalTok{ beta)}
 \end{Highlighting}
 \end{Shaded}
 
@@ -729,18 +730,18 @@ new realization from the distribution appearing in the likelihood
 the frequentist setting, which fixes the value of the parameter to some
 estimate \(\widehat{\boldsymbol{\theta}}\); by contrast, the posterior
 predictive, here a beta-binomial distribution
-\(\mathsf{BetaBin}(n, \alpha + k, n - k + \beta)\), carries over the
+\(\mathsf{BetaBin}(n, \alpha + y, n - y + \beta)\), carries over the
 uncertainty so will typically be wider and overdispersed relative to the
 corresponding binomial model. This can be easily seen from the
 left-panel of Figure~\ref{fig-betabinompostpred}, which contrasts the
 binomial mass function evaluated at the maximum likelihood estimator
-\(\widehat{p}=6/14\) with the posterior predictive.
+\(\widehat{\theta}=6/14\) with the posterior predictive.
 
 \begin{Shaded}
 \begin{Highlighting}[]
 \NormalTok{npost }\OtherTok{\textless{}{-}} \FloatTok{1e4}\NormalTok{L}
 \CommentTok{\# Sample draws from the posterior distribution}
-\NormalTok{post\_samp }\OtherTok{\textless{}{-}} \FunctionTok{rbeta}\NormalTok{(}\AttributeTok{n =}\NormalTok{ npost, k }\SpecialCharTok{+}\NormalTok{ alpha, n }\SpecialCharTok{{-}}\NormalTok{ k }\SpecialCharTok{+}\NormalTok{ beta)}
+\NormalTok{post\_samp }\OtherTok{\textless{}{-}} \FunctionTok{rbeta}\NormalTok{(}\AttributeTok{n =}\NormalTok{ npost, y }\SpecialCharTok{+}\NormalTok{ alpha, n }\SpecialCharTok{{-}}\NormalTok{ y }\SpecialCharTok{+}\NormalTok{ beta)}
 \CommentTok{\# For each draw, sample new observation}
 \NormalTok{post\_pred }\OtherTok{\textless{}{-}} \FunctionTok{rbinom}\NormalTok{(}\AttributeTok{n =}\NormalTok{ npost, }\AttributeTok{size =}\NormalTok{ n, }\AttributeTok{prob =}\NormalTok{ post\_samp)}
 \end{Highlighting}
@@ -852,7 +853,7 @@ draws.
 
 }
 
-\caption{\label{fig-central-moments}Point estimators from a left-skewed
+\caption{\label{fig-central-moments}Point estimators from a right-skewed
 distribution (left) and from a multimodal distribution (right).}
 
 \end{figure}
@@ -861,7 +862,8 @@ The loss function is often a functional (meaning a one-dimensional
 summary) from the posterior. The following example shows how it reduces
 a three-dimensional problem into a single risk measure.
 
-\begin{example}[]\protect\hypertarget{exm-loss-extremes}{}\label{exm-loss-extremes}
+\begin{example}[Danish insurance
+losses]\protect\hypertarget{exm-loss-extremes}{}\label{exm-loss-extremes}
 
 In extreme value, we are often interested in assessing the risk of
 events that are rare enough that they lie beyond the range of observed
@@ -979,10 +981,10 @@ Figure~\ref{fig-lossfn}, is to the left of the posterior mean for
 
 }
 
-\caption{\label{fig-lossfn}Posterior density (left) and losses
-functionsfor the 0.99 value-at-risk for the Danish fire insurance data.
-The vertical lines denote point estimates of the quantiles that minimize
-the loss functions.}
+\caption{\label{fig-lossfn}Posterior density (left) and losses functions
+for the 0.99 value-at-risk for the Danish fire insurance data. The
+vertical lines denote point estimates of the quantiles that minimize the
+loss functions.}
 
 \end{figure}
 
@@ -1008,7 +1010,7 @@ Monte-Carlo. In case of numerical approximations, we will need to resort
 to numerical integration or otherwise to get our answers.
 
 Often, we will also be interested in the marginal posterior distribution
-of each component \(\theta_j\) in turn (\(j=1, \ldots, p\)). To get
+of each component \(\theta_j\) in turn (\(j=1, \ldots, J\)). To get
 these, we carry out additional integration steps,
 \[p(\theta_j \mid \boldsymbol{y}) = \int p(\boldsymbol{\theta} \mid \boldsymbol{y}) \mathrm{d} \boldsymbol{\theta}_{-j}.\]
 With a posterior sample, this is trivial: it suffices to keep the column
