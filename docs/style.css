@@ -21,7 +21,7 @@ pre code {
 }
 
 .book-summary {
- font-size: 1.4em !important;
+ font-size: 1.2em !important;
 }
 
 
@@ -35,10 +35,10 @@ pre code {
     min-height: 120px;
     background-color: #FFFFFF;
     border: dashed 5px #9678D3;
-    background-image: url("figures/yourturn_c.png") 
+    background-image: url("figures/yourturn_c.png")
  }
-  
-  
+
+
 .keyidea {
    padding: 1em;
     margin: 1em 0;
@@ -61,7 +61,7 @@ pre code {
     min-height: 120px;
     background-color: #FFFFFF;
     border: dashed 5px #FFD200;
-    background-image: url("figures/code_c.png") 
+    background-image: url("figures/code_c.png")
 }
 
 .outsidethebox{
@@ -74,7 +74,7 @@ pre code {
     min-height: 120px;
     background-color: #FFFFFF;
     border: dashed 5px #005EB8;
-    background-image: url("figures/box_c.png") 
+    background-image: url("figures/box_c.png")
 }
 
 .pitfall{
@@ -87,7 +87,7 @@ pre code {
     min-height: 120px;
     background-color: #FFFFFF;
     border: dashed 5px #00BCB5;
-    background-image: url("figures/important_c.png") 
+    background-image: url("figures/important_c.png")
 }
 
 .center {
@@ -96,4 +96,3 @@ pre code {
   margin-right: auto;
   width: 50%;
 }
-

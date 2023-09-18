@@ -1,12 +1,17 @@
 # Priors
 
-The posterior distribution combines two ingredients: the likelihood and the prior. If the former is a standard ingredient of any likelihood-based inference, prior specification requires some care. The purpose of this chapter is to consider different standard way of constructing prior functions.
+The posterior distribution combines two ingredients: the likelihood and the prior. If the former is a standard ingredient of any likelihood-based inference, prior specification requires some care. The purpose of this chapter is to consider different standard way of constructing prior functions, and to specify the parameters of the latter: we term these hyperparameters.
 
 
 ## Conjugate priors 
 
+In very simple models, there may exists prior densities that result in a posterior distribution of the same family. We can thus directly extract characteristics of the posterior. Conjugate priors are chosen for computational convenience and because interpretation is convenient, as the parameters of the posterior will often be some weighted average of prior and likelihood component.
 
-A distribution belongs to an exponential family with parameter vector $\boldsymbol{\theta} \in \mathbb{R}^D$ if it can be written  as
+:::{#def-conjugate-prior}
+
+A prior density $p(\boldsymbol{\theta})$ is conjugate for likelihood $L(\boldsymbol{\theta}; \boldsymbol{y})$ if the product $L(\boldsymbol{\theta}; \boldsymbol{y})p(\boldsymbol{\theta})$, after renormalization, is of the same parametric family as the prior.
+
+Exponential families (including the binomial, Poisson, exponential, Gaussian distributions) admit conjugate priors^[A distribution belongs to an exponential family with parameter vector $\boldsymbol{\theta} \in \mathbb{R}^D$ if it can be written  as
 \begin{align*}
 f(y; \boldsymbol{\theta}) = \exp\left\{ \sum_{k=1}^K Q_k(\boldsymbol{\theta}) t_k(y) + D(\boldsymbol{\theta})\right\}
 \end{align*}
@@ -14,18 +19,11 @@ and in particular, the support does not depend on unknown parameters. If we have
 \begin{align*}
 \ell(\boldsymbol{\theta}) = \sum_{k=1}^K \phi_k(\boldsymbol{\theta}) \sum_{i=1}^n t_k(y_i) + n D(\boldsymbol{\theta}),
 \end{align*}
-where  the collection $\sum_{i=1}^n t_k(y_i)$ ($k=1, \ldots, K$) are sufficient statistics and $\phi_k(\boldsymbol{\theta})$ are the canonical parameters. The number of sufficient statistics are the same regardless of the sample size. Exponential families play a prominent role in generalized linear models, in which the natural parameters are modelled as linear function of explanatories.
-
-
-:::{#def-conjugate-prior}
-
-A **conjugate prior* distribution $p(\boldsymbol{\theta})$ is conjugate if $L(\boldsymbol{\theta}; \boldsymbol{y})p(\boldsymbol{\theta})$ is of the same family.
-
-Exponential families admit conjugate priors: a log prior density with parameters $\eta, \nu_1, \ldots, \nu_K$ that is proportional to 
+where  the collection $\sum_{i=1}^n t_k(y_i)$ ($k=1, \ldots, K$) are sufficient statistics and $\phi_k(\boldsymbol{\theta})$ are the canonical parameters. The number of sufficient statistics are the same regardless of the sample size. Exponential families play a prominent role in generalized linear models, in which the natural parameters are modeled as linear function of explanatory variables. A log prior density with parameters $\eta, \nu_1, \ldots, \nu_K$ that is proportional to 
 \begin{align*}
 \log p(\boldsymbol{\theta}) \propto \eta D(\boldsymbol{\theta}) + \sum_{k=1}^K Q_k(\boldsymbol{\theta}) \nu_k
 \end{align*}
-is conjugate. 
+is conjugate.]
 
 :::
 
@@ -56,12 +54,13 @@ $$ f(x) \propto \beta^{\alpha}/\Gamma(\alpha)x^{\alpha-1} \exp(-\beta x)$$ with 
 
 :::
 
+Knowing the analytic expression for the posterior can be useful for calculations of the marginal likelihood, as @exm-poisson-negbin demonstrates.
+
 :::{#exm-poisson-negbin}
 
 # Negative binomial as a Poisson mixture
 
 <!-- Some canonical distributions have only one parameter which dictates moments: for a Poisson random variable $Y \sim \mathsf{Po}(\lambda)$, both $\mathsf{E}(Y) = \mathsf{Va}(Y) = \lambda$, whereas if we have binomial data with $n$ independent trials, each with probability of success $p$, then $Y \sim \mathsf{Bin}(n, p)$, then the theoretical mean of successes is $\mathsf{E}(Y)=np$ and the variance $\mathsf{Va}(Y) = np(1-p)$. -->
-
 <!-- In generalized linear models, we model the mean as a function of covariate, but data may exhibit overdispersion relative to the theoretical mean. -->
 One restriction of the Poisson model is that the restriction on its moments is often unrealistic. The most frequent problem encountered is that of **overdispersion**, meaning that the variability in the counts is larger than that implied by a Poisson distribution. 
 
@@ -80,18 +79,17 @@ and this is the density of a negative binomial distribution with probability of 
 
 By the laws of iterated expectation and iterative variance, 
 \begin{align*}
-\mathsf{E}(Y) &= \mathsf{E}_{\Lambda}\{\mathsf{E}(Y \mid \Lambda\} = \mathsf{E}(\Lambda) = \mu\\
-\mathsf{Va}(Y) &= \mathsf{E}_{\Lambda}\{\mathsf{Va}(Y \mid \Lambda)\} + \mathsf{Va}_{\Lambda}\{\mathsf{E}(Y \mid \Lambda)\} = \mathsf{E}(\Lambda) + \mathsf{Va}(\Lambda) = \mu + \mathsf{Va}(\Lambda).
+\mathsf{E}(Y) &= \mathsf{E}_{\Lambda}\{\mathsf{E}(Y \mid \Lambda\} \\& = \mathsf{E}(\Lambda) = \mu\\
+\mathsf{Va}(Y) &= \mathsf{E}_{\Lambda}\{\mathsf{Va}(Y \mid \Lambda)\} + \mathsf{Va}_{\Lambda}\{\mathsf{E}(Y \mid \Lambda)\} \\&= \mathsf{E}(\Lambda) + \mathsf{Va}(\Lambda) \\&= \mu + \mu/k.
 \end{align*}
 The marginal distribution of $Y$, unconditionally, has a variance which exceeds its mean, as
 \begin{align*}
-\mathsf{E}(Y) = \mu, \qquad \mathsf{Va}(Y) = \mu + k \mu^2.
+\mathsf{E}(Y) = \mu, \qquad \mathsf{Va}(Y) = \mu (1+1/k).
 \end{align*}
-In a negative binomial regression model, the term $k$ is a dispersion parameter, which is fixed for all observations, whereas $\mu = \exp(\boldsymbol{\beta}\mathbf{X})$ is a function of covariates $\mathbf{X}$. As $k \to 0$, the distribution of $\Lambda$ degenerates to a constant at $\mu$ and we recover the Poisson model.
+In a negative binomial regression model, the term $k$ is a dispersion parameter, which is fixed for all observations, whereas $\mu = \exp(\boldsymbol{\beta}\mathbf{X})$ is a function of covariates $\mathbf{X}$. As $k \to \infty$, the distribution of $\Lambda$ degenerates to a constant at $\mu$ and we recover the Poisson model.
 
 
 :::
-
 
 :::{#exm-abtest}
 
@@ -171,11 +169,9 @@ postH3 <- rgamma(1e5, shape = 0.01 + 31, rate = 3112 + 1.64)
 prob_sup <- mean(postH3 > postH1)
 ```
 
-We can visualize the posterior distributions. In this context, the large sample size lead to the dominance of the likelihood contribution $p(Y_i \mid \lambda_i) \sim \mathsf{Po}(n_i\lambda_i)$ relative to the prior. We can see there is virtually no overlap between different rates for headers H1 (preferred) relative to H4 (least favorable). The probability that Headline 3 is better than Headline 1 can be approximated by simulating samples from both posterior and computing the proportion of times one is larger: the probability of superiority of `H3` relative to `H1` is `r round(100*prob_sup, 1)`%, indicating a clear preference for the first headline `H1`.
+We can visualize the posterior distributions. In this context, the large sample size lead to the dominance of the likelihood contribution $p(Y_i \mid \lambda_i) \sim \mathsf{Po}(n_i\lambda_i)$ relative to the prior. We can see there is virtually no overlap between different rates for headers H1 (preferred) relative to H4 (least favorable). The probability that the conversion rate for Headline 3 is higher than Headline 1 can be approximated by simulating samples from both posteriors and computing the proportion of times one is larger: we get `r round(100*prob_sup, 1)`% for `H3` relative to `H1`, indicating a clear preference for the first headline `H1`.
 
 :::
-
-Conjugate priors are mainly used for computational reasons and for interpretability: we have seen that the parameters can often be interpreted as fake observations, corresponding to 
 
 :::{#exm-poisson-upworthy-question}
 
@@ -187,24 +183,25 @@ We can also consider aggregate records for Upworthy, as @Alexander:2023 did. The
 We model first the rates using a Poisson regression; the corresponding frequentist analysis would include an offset to account for differences in views. If $\lambda_{j}$ $(j=1, 2)$ are the average rate for each factor level (yes and no), then $\mathsf{E}(Y_{ij}/n_{ij}) = \lambda_j$. In the frequentist setting, we can fit a simple Poisson generalized linear regression model with an offset term and a binary variable. 
 
 ```{r}
+#| eval: true
+#| echo: true
 data(upworthy_question, package = "hecbayes")
 poismod <- glm(
   clicks ~ offset(log(impressions)) + question, 
   family = poisson(link = "log"),
   data = upworthy_question)
 coef(poismod)
-# anova(poismod, test = "LRT")
 ```
 
 The coefficients represent the difference in log rate (multiplicative effect) relative to the baseline rate, with an increase of `r round((exp(coef(poismod))[2]-1)*100, 1) - 1` percent when the headline does not contain a question. A likelihood ratio test can be performed by comparing the deviance of the null model (intercept-only), indicating strong evidence that including question leads to significatively different rates. This is rather unsurprising given the enormous sample sizes.
 
 
 
-Consider instead a Bayesian analysis with conjugate prior: we model separately the rates of each group (question or not). Suppose we think apriori that the click-rate is on average 1%, with a standard deviation of 2%, with no difference between questions or not. This would translate, using moment matching, into two gamma prior distributions $p(\lambda_j) with rate $\beta = 0.04 = \mathsf{Var}_0/\mathsf{E}_0$ and shape $\alpha = 2.5$. If $\lambda_{j}$ $(j=1, 2)$ are the average rate for each factor level (yes and no), then $\mathsf{E}(Y_{ij}/n_{ij}) = \lambda_j$ so the log likelihood is proportional, as a function of $\lambda_1$ and $\lambda_2$, to
+Consider instead a Bayesian analysis with conjugate prior: we model separately the rates of each group (question or not). Suppose we think apriori that the click-rate is on average 1%, with a standard deviation of 2%, with no difference between questions or not. This would translate, using moment matching, into a gamma prior distribution $p(\lambda_j)$ with rate $\beta = 0.04 = \mathsf{Var}_0/\mathsf{E}_0$ and shape $\alpha = 2.5$ ($j=1, 2$). If $\lambda_{j}$ is the average rate for each factor level (yes and no), then $\mathsf{E}(Y_{ij}/n_{ij}) = \lambda_j$ so the log likelihood is proportional, as a function of $\lambda_1$ and $\lambda_2$, to
 \begin{align*}
 \ell(\boldsymbol{\lambda}; \boldsymbol{y}, \boldsymbol{n}) \stackrel{\boldsymbol{\lambda}}{\propto} \sum_{i=1}^n \sum_{j=1}^2 y_{ij}\log \lambda_j - \lambda_jn_{ij}
 \end{align*}
-and we can recognize that the posterior for $\lambda_i$ is gamma with shape $\alpha + \sum_{i=1}^n y_{ij}$ and rate $\beta + \sum_{i=1}^n n_{ij}$. For inference, we thus only need hyperpriors and the summary statistics representing the total number of clicks and impressions per group. We can consider the posterior difference $\lambda_1 - \lambda_2$ or, to mimic the Poisson multiplicative model, of the ratio $\lambda_1/\lambda_2$. The former suggests very small differences, but one must keep in mind that rates are also small. The ratio, shown in the right-hand panel of @fig-hist-difference_rates, gives a more easily interpretable portrait that is in line with the frequentist analysis.
+and we can recognize that the posterior for $\lambda_i$ is gamma with shape $\alpha + \sum_{i=1}^n y_{ij}$ and rate $\beta + \sum_{i=1}^n n_{ij}.$ For inference, we thus only need to select hyperparameters and calculate the total number of clicks and impressions per group. We can then consider the posterior difference $\lambda_1 - \lambda_2$ or, to mimic the Poisson multiplicative model, of the ratio $\lambda_1/\lambda_2$. The former suggests very small differences, but one must keep in mind that rates are also small. The ratio, shown in the right-hand panel of @fig-hist-difference_rates, gives a more easily interpretable portrait that is in line with the frequentist analysis.
 
 ```{r}
 #| eval: true
@@ -250,37 +247,28 @@ g1 + g2
 post_mean <- with(post_data_upworthy_question, mean(yes/no))
 ```
 
-To get an approximation to the posterior mean of the ratio $\lambda_1/\lambda_2$, it thus suffices to draw independent observations from their respective posterior, compute the ratio and take the sample mean of those draws. We can see that the sampling distribution of the ratio is nearly symmetrical, so we can expect Wald intervals to perform well should one be interested in building confidence intervals. This is however hardly surprising given the sample size at play.
+To get an approximation to the posterior mean of the ratio $\lambda_1/\lambda_2$, it suffices to draw independent observations from their respective posterior, compute the ratio and take the sample mean of those draws. We can see that the sampling distribution of the ratio is nearly symmetrical, so we can expect Wald intervals to perform well should one be interested in building confidence intervals. This is however hardly surprising given the sample size at play.
 
 :::
+
 
 :::{#exm-conjugatepriors-normal}
 
-## Conjugate priors in the Bayesian linear model
+## Conjugate prior for Gaussian mean with known variance
 
-Consider a linear regression model with observation-specific mean $\mu_i = \mathbf{x}_i\boldsymbol{\beta}$ $(i=1,\ldots, n)$ with $\mathbf{x}_i$ the $i$th row of the $n \times p$ model matrix $\mathbf{X}$.
-
-Concatenating records, $\boldsymbol{Y} \sim \mathsf{No}_n(\mathbf{X}\boldsymbol{\beta}, \sigma^2 \mathbf{Q}_y^{-1})$, for a known precision matrix $\mathbf{Q}_y$, typically $\mathbf{I}_n$. To construct a conjugate joint prior for $p(\boldsymbol{\beta}, \sigma^2)$, we consider the sequential formulation
+Consider an $n$ simple random sample of independent and identically distributed Gaussian variables with mean $\mu$ and standard deviation $\sigma$, denoted $Y_i \sim \mathsf{No}(\mu, \sigma^2)$. We pick a Gaussian prior for the location parameter, $\mu \sim \mathsf{No}(\nu, \tau^2)$ where we assume $\mu, \tau$ are fixed hyperparameter values. For now, we consider only inference for $p(\mu \mid \sigma)$: discarding any term that is not a function of $\mu$, the conditional posterior is 
 \begin{align*}
-\boldsymbol{\beta} \mid \sigma^2 \sim \mathsf{No}_p(\boldsymbol{\nu}_\beta, \sigma^2 \mathbf{Q}^{-1}_\beta), \qquad \sigma^2 \sim \mathsf{IG}(\alpha,\beta)
+p(\mu \mid \sigma) &\propto \exp\left\{ -\frac{1}{2\sigma^2}\sum_{i=1}^n (y_{i}-\mu)^2\right\} \exp\left\{-\frac{1}{2\tau^2}(\mu - \nu)^2\right\}
+\\&\propto p(\sigma)\sigma^{-1} \exp\left\{\left(\frac{\sum_{i=1}^n y_{i}}{\sigma^2} + \frac{\nu}{\tau^2}\right)\mu - \left( \frac{n}{2\sigma^2} +\frac{1}{2\tau^2}\right)\mu^2\right\}.
 \end{align*}
-where $\mathsf{IG}$ denotes the inverse gamma distribution^[This simply means that the precision $\sigma^{-2}$, the reciprocal of the variance, has a gamma distribution with shape $\alpha$ and rate $\beta$.]
-
-<!--
-Writing the log likelihood in exponential family form,
+The log of the posterior density conditional on $\sigma$ is quadratic in $\mu$, it must be a Gaussian distribution truncated over the positive half line. This can be seen by completing the square in $\mu$, or by comparing this expression to the density of $\mathsf{No}(\mu, \sigma^2)$,
 \begin{align*}
-\ell(\mu, \sigma^2; \boldsymbol{y}) \propto -n \log(\sigma) - \frac{\boldsymbol{y}^\top\boldsymbol{y}}{2\sigma^2} + \frac{\mu}{\sigma^2}\boldsymbol{y}^\top \boldsymbol{1}_n - \frac{n}{2}\frac{\mu^2}{\sigma^2}
+f(x; \mu, \sigma) \stackrel{\mu}{\propto} \exp\left(-\frac{1}{2 \sigma^2}\mu^2 + \frac{x}{\sigma^2}\mu\right)
 \end{align*}
-
--->
-
-The joint posterior is Gaussian-inverse gamma and can be factorized
-\begin{align*}
-p(\boldsymbol{\beta}, \sigma^2 \mid y) = p(\sigma^2 \mid y) p(\boldsymbol{\beta} \mid \sigma^2, y)
-\end{align*}
-where $p(\sigma^2 \mid y) \sim \mathsf{IG}(\alpha^*, \beta^*)$ and $p(\boldsymbol{\beta} \mid \sigma^2, y) \sim \mathsf{No}_p(\mathbf{M}\boldsymbol{m}, \sigma^2\mathbf{M})$ with $\alpha^* = \alpha + n/2$, $\beta^*=\beta + 0.5 \boldsymbol{\nu}_\beta^\top \mathbf{Q}_\beta\boldsymbol{\nu}_\beta + \boldsymbol{y}^\top\boldsymbol{y} - \boldsymbol{m}^\top\mathbf{M}\boldsymbol{m}$, $\boldsymbol{m} = \mathbf{Q}_\beta \boldsymbol{\nu}_\beta + \mathbf{X}^\top \mathbf{Q}_y\boldsymbol{y}$ and $\mathbf{M} = (\mathbf{Q}_\beta + \mathbf{X}^\top\mathbf{Q}_y\mathbf{X})^{-1}$; the latter can be evaluated efficiently using Shermann--Morrisson--Woodbury identity.
+we can deduce by matching mean and variance that the conditional posterior $p(\mu \mid \sigma)$ is Gaussian with reciprocal variance (precision) $n/\sigma^2 + 1/\tau^2$ and mean $(n\overline{y}\tau^2 + \nu \sigma^2)/(n\tau^2 + \sigma^2)$. The precision is an average of that of the prior and data, but assigns more weight to the latter, which increases linearly with the sample size $n$. Likewise, the posterior mean is a weighted average of prior and sample mean, with weights proportional to the relative precision.
 
 :::
+
 
 
 The exponential family is quite large; [Fink (1997) *A Compendium of Conjugate Priors*](https://doi.org/10.1.1.157.5540) gives multiple examples of conjugate priors and work out parameter values.
@@ -323,7 +311,8 @@ f(x; \nu, \tau) =  \frac{1}{\tau} f\left(\frac{x - \nu}{\tau}\right), \qquad \nu
 We thus wish to have a prior so that $p(\tau) = c^{-1}p(\tau/c)$ for any scaling $c>0$, whence it follows that $p(\tau) \propto \tau^{-1}$, which is uniform on the log scale.
 
 
-The priors $p(\nu) \propto 1$ and $p(\tau) \propto \tau^{-1}$ are both improper but lead to location and scale invariance, hence that the result is the same regardless of the units of measurement.
+The priors $p(\nu) \propto 1$ and $p(\tau) \propto \tau^{-1}$ are both improper but lead to location and scale invariance, hence that the result is the same regardless of the units of measurement. 
+
 
 
 ::: {.keyidea name="Objective and subjective Bayes"}
@@ -333,48 +322,11 @@ One criticism of the Bayesian approach is the arbitrariness of prior functions. 
 :::
 
 
-
-:::{#exm-conjugatepriors-normal}
-
-## Questions revisited, with a Gaussian likelihood
-
-Consider again the Upworthy data, but suppose this time we model each rate as a single observation: since it is a sample proportion (and thus a mean of binary variables), the central limit theorem implies that such data are approximately distributed according to a Gaussian, say $\overline{Y}_{ij} = Y_{ij}/n_{ij} \sim \mathsf{No}(\lambda_{j}, \sigma^2_j)$. Different web users are shown different headlines, so the independence assumption should be more or less reasonable. We model each group again separately.
-
-We take conjugate a Gaussian prior for the rate $\lambda_j \sim \mathsf{No}(\nu, \tau^2)$  and an improper prior $p(\sigma)\propto \sigma^{-1}$ for the scale, which we can view as a limiting case of the $\mathsf{IG}(\alpha, \alpha)$ when $\alpha \to 0$.
-
-Discarding any term that is not a function of $\lambda_j$ or $\sigma_j$, the posterior of either group is \begin{align*}
-p(\lambda_j, \sigma_j) &\propto \sigma_j^{-2} \exp\left\{ -\frac{1}{2\sigma_j^2}\sum_{i=1}^n (y_{ij}-\lambda_j)^2\right\} \exp\left\{-\frac{1}{2\tau^2}(\lambda_j - \nu)^2\right\}
-\\&\propto \sigma_j^{-2} \exp\left\{\frac{1}{\sigma_j^2}\sum_{i=1}^n y_{ij}\lambda_j - \frac{n\lambda^2}{2\sigma_j^2} \right\} \exp\left\{-\frac{1}{2\tau^2}(\lambda_j - \nu)^2\right\}
-\end{align*}
-which is, up to normalizing constant, a normal-inverse gamma distribution.
-As exercise, we could consider the marginal distributions $p(\lambda_j)
-
-
-The Poisson distribution has the same mean and variance $\nu=0.01$ and $\tau=0.01$.
-
-
-```{r}
-#| eval: false
-#| echo: false
-setwd("~/Documents/Dropbox/Enseignement/MATH80601A/")
-marathon <- readr::read_delim(delim =  "\\t",
-   file = "records_men_marathon.txt", 
-   col_names = c("rank", "time","name","country", "birthdate","rank","competition","date"),
-   lazy = TRUE
-   )
-upworthy_question
-```
-
-
-:::
-
-
-
 :::{#def-jeffreys}
 
 ## Jeffrey's prior
 
-In single parameter models, taking a prior function for $\theta$ proportional to the square root of the determinant of the information matrix $p(\theta) \propto \imath(\theta)$ yields a prior that is invariant to parametrization, so that inferences conducted in different parametrizations are equivalent.^[The Fisher information is linear in the sample size for independent and identically distributed data so we can derive the result for $n=1$ without loss of generality.]
+In single parameter models, taking a prior function for $\theta$ proportional to the square root of the determinant of the information matrix, $p(\theta) \propto |\imath(\theta)|^{1/2}$ yields a prior that is invariant to reparametrization, so that inferences conducted in different parametrizations are equivalent.^[The Fisher information is linear in the sample size for independent and identically distributed data so we can derive the result for $n=1$ without loss of generality.]
 
 
 
@@ -387,7 +339,7 @@ To see this, consider a bijective transformation $\theta \mapsto \vartheta$. Und
 i(\vartheta) &= - \mathsf{E} \left(\frac{\partial^2 \ell(\vartheta)}{\partial^2 \vartheta}\right)
 \\&= - \mathsf{E}\left(\frac{\partial^2 \ell(\theta)}{\partial \theta^2}\right) \left( \frac{\mathrm{d} \theta}{\mathrm{d} \vartheta} \right)^2 + \mathsf{E}\left(\frac{\partial \ell(\theta)}{\partial \theta}\right) \frac{\mathrm{d}^2 \theta}{\mathrm{d} \vartheta^2}
 \end{align*}
-Since the score has mean zero, $\mathsf{E}\left\{\partial \ell(\theta)/\partial \theta\right\}=0$, the rightmost term vanishes. We can thus relate the Fisher information in both parametrizations, with 
+Since the score has mean zero, $\mathsf{E}\left\{\partial \ell(\theta)/\partial \theta\right\}=0$ and the rightmost term vanishes. We can thus relate the Fisher information in both parametrizations, with 
 \begin{align*}
 \imath^{1/2}(\vartheta) = \imath^{1/2}(\theta) \left| \frac{\mathrm{d} \theta}{\mathrm{d} \vartheta} \right|,
 \end{align*}
@@ -400,7 +352,7 @@ Most of the times, Jeffrey's prior is improper. For the binomial model, it can b
 :::{#exm-jeffreysbinom}
 ## Jeffrey's prior for the binomial distribution
 
-Consider the binomial distribution $f(y; \theta, n) \propto  \theta^y(1-\theta)^{n-y}\mathsf{I}_{\theta \in [0,1]}$. The negative of the second derivative of the log likelihood with respect to $p$ is $$\jmath(\theta) = - \partial^2 \ell(\theta; y) / \partial \theta^2 = y/\theta^2 + (1-y)/(1-\theta)^2$$ and since $\mathsf{E}(Y)=n\theta$, the Fisher information is $$\imath = \mathsf{E}\{\jmath(\theta)\}=n/\theta + n/(1-\theta) = n/\{\theta(1-\theta)\}$$
+Consider the binomial distribution $f(y; \theta, n) \propto  \theta^y(1-\theta)^{n-y}\mathsf{I}_{\theta \in [0,1]}$. The negative of the second derivative of the log likelihood with respect to $p$ is $$\jmath(\theta) = - \partial^2 \ell(\theta; y) / \partial \theta^2 = y/\theta^2 + (1-y)/(1-\theta)^2$$ and since $\mathsf{E}(Y)=n\theta$, the Fisher information is $$\imath(\vartheta) = \mathsf{E}\{\jmath(\theta)\}=n/\theta + n/(1-\theta) = n/\{\theta(1-\theta)\}$$
 Jeffrey's prior is thus $p(\theta) \propto \theta^{-1}(1-\theta)^{-1}$.
 
 :::
@@ -409,7 +361,9 @@ Jeffrey's prior is thus $p(\theta) \propto \theta^{-1}(1-\theta)^{-1}$.
 
 ## Jeffrey's prior for the normal distribution
 
-Check that for the Gaussian distribution $\mathsf{No}(\mu, \sigma^2)$, the Jeffrey's prior obtained by treating each parameter in turn, fixing the value of the other, are $p(\mu) \propto 1$ and $p(\sigma) \propto 1/\sigma$, which also correspond to the default uninformative priors for location-scale families. 
+Check that for the Gaussian distribution $\mathsf{No}(\mu, \sigma^2)$, the Jeffrey's prior obtained by treating each parameter as fixed in turn, are $p(\mu) \propto 1$ and $p(\sigma) \propto 1/\sigma$, which also correspond to the default uninformative priors for location-scale families. 
+
+
 :::
 
 :::{#exm-jeffreyspoisson}
@@ -421,16 +375,79 @@ The Poisson distribution with $\ell(\lambda) \propto -\lambda + y\log \lambda$, 
 :::
 
 
-## Expert knowledge
+## Prior simulation
 
-Th prior distribution may have parameters themselves that need to be specified by experts. One may also wish to add another layer and set an hyperprior distribution on the parameters, resulting in a hierarchical model.
+Oftentimes, expert elicitation is difficult and it is hard to grasp what the impacts of the hyperparameters are. One way to see if the priors are reasonable is to sample values from them and generate new observations, resulting in prior predictive draws.
 
-Setting parameters of priors is often done by reparametrizing the latter in terms of moments. Sometimes, it may be easier to set priors in a different scale where subject-matter expertise is most easily elicited.
+The prior predictive is
+$\int_{\boldsymbol{\Theta}} p(y \mid \boldsymbol{\theta}) p(\boldsymbol{\theta}) \mathrm{d} \boldsymbol{\theta}$: we can simulate outcomes from it by first drawing parameter values from the prior, then sampling new observations from the distribution in the likelihood and keeping only the latter. 
+
+:::{#exm-bixi-temp}
+
+Consider the daily number of Bixi bike sharing users for 2017--2019 at the Edouard Montpetit station next to HEC: we can consider a simple linear regression with log counts as a function of temperature,^[If counts are Poisson, then the log transform is variance stabilizing.] 
+$$\log (\texttt{nusers}) \sim \mathsf{No}_{+}\{\beta_0 + \beta_1 (\texttt{temp}-20), \sigma^2\}.$$
+The $\beta_1$ slope measures units in degree Celsius per log number of person.
+
+The hyperparameters depend of course on the units of the analysis, unless one standardizes response variable and explanatories: it is easier to standardize the temperature so that we consider deviations from, say 20$^{\circ}$C, which is not far from the observed mean in the sample. After some tuning, the independent priors $\beta_0 \sim \mathsf{No}(\overline{y}, 0.5^2)$, $\beta_1 \sim \mathsf{No}(0, 0.05^2)$ and $\sigma \sim \mathsf{Exp}(3)$ seem to yield plausible outcomes and relationships.^[One can object to the prior parameters depending on the data, but an alternative would be to model centered data $y-\overline{y}$, in which case the prior for the intercept parameter $\beta_0$ would be zero.]
+
+
+```{r}
+#| eval: true
+#| echo: false
+#| label: fig-bixi
+#| fig-cap: "Prior draws of the linear regressions with observed data superimposed (left), and draws of observations from the prior predictive distribution (in gray) against observed data (right)."
+data(bixi, package = "hecstatmod")
+set.seed(1234)
+nsamp <- 500
+sigma_prior <- rexp(n = nsamp, rate = 3)
+beta0_prior <- rnorm(n = nsamp, 
+                     mean = mean(log(bixi$nusers)), 
+                     sd = 0.5)
+beta1_prior <- TruncatedNormal::rtnorm(n = nsamp, mu = 0, sd = 0.05, lb = -Inf, ub = Inf)
+
+xsamp <- sample(bixi$temp, nsamp)
+postpriorsamp <- TruncatedNormal::rtnorm(
+  n = nsamp, 
+  mu = beta0_prior + (xsamp - 20)*beta1_prior, 
+  sd = sigma_prior, lb = 0, ub = Inf)
+g1 <- ggplot(data = bixi,
+       mapping = aes(y = log(nusers),
+                     x = temp - 20)) +
+  geom_point() +
+  geom_abline(intercept = beta0_prior,
+              slope = beta1_prior,
+              alpha = 0.1) +
+  scale_y_continuous(limits = c(0,5), expand = c(0,0)) + 
+  labs(x = "temperature - 20 (in Celsius)",
+       y = "", 
+       subtitle = "Log number of Bixi rentals") +
+  theme_classic()
+g2 <- ggplot() +
+  geom_point(data = bixi,
+             mapping = aes(x = temp, y = log(nusers))) + 
+  geom_point(data = data.frame(x = xsamp, y = postpriorsamp),
+             mapping = aes(x = x, y = y), col = "grey") +
+  labs(x = "temperature (in Celsius)",
+       y = "",
+       subtitle = "Simulated and observed number of Bixi rentals (log scale)") +
+  theme_classic()
+g1 + g2
+```
+
+We can draw regression lines from the prior, as in the left panel of @fig-bixi: while some of the negative relationships appear unlikely after seeing the data, the curves all seem to pass somewhere in the cloud of point. By contrast, a silly prior is one that would result in all observations being above or below the regression line, or yield values that are much too large near the endpoints of the explanatory variable. Indeed, given the number of bikes for rental is limited (a docking station has only 20 bikes), it is also sensible to ensure that simulations do not return overly large numbers. The maximum number of daily users in the sample is `r max(bixi$nusers)`, so priors that return simulations with more than 200 (rougly 5.3 on the log scale) are not that plausible. The prior predictive draws can help establish this and the right panel of @fig-bixi shows that, expect for the lack of correlation between temperature and number of users, the simulated values from the prior predictive are plausible even if overdispersed.
+
+:::
+
+
+## Informative priors
+
+One strength of the Bayesian approach is the capability of incorporating expert and domain-based knowledge through priors. Often, these will take the form of moment constraints, so one common way to derive a prior is to perform moment matching to related ellicited quantities with moments of the prior distribution. It may be easier to set priors on a different scale than those of the observations, as @exm-colestawn demonstrates.
 
 :::{#exm-colestawn}
 
+## Gamma quantile difference priors for extreme value distributions 
 
-The generalized extreme value distribution arises as the limiting distribution for the maximum of $m$ independent observations. The $\mathsf{GEV}(\mu, \sigma, \xi)$ distribution is a location-scale with distribution function
+The generalized extreme value distribution arises as the limiting distribution for the maximum of $m$ independent observations from some common distribution $F$. The $\mathsf{GEV}(\mu, \sigma, \xi)$ distribution is a location-scale with distribution function
 \begin{align*}
 F(x) = \exp\left[ - \left\{1+\xi(x-\mu)/\sigma\right\}^{-1/\xi}_{+}\right]
 \end{align*}
@@ -448,60 +465,348 @@ p(\boldsymbol{q}) \propto q_1^{\alpha_1-1}\exp(-\beta_1 q_1) \prod_{i=2}^3 (q_i-
 \end{align*}
 where $0 \leq q_1 \leq q_2 \leq q_3$. The fact that these quantities refer to moments or risk estimates which practitioners often must compute as part of regulatory requirements makes it easier to specify sensible values for hyperparameters.
 
+As illustrating example, consider maximum daily cumulated rainfall in Abisko, Sweden. The time series spans from 1913 until December 2014; we compute the 102 yearly maximum, which range from 11mm to 62mm, and fit a generalized extreme value distribution to these. 
+
+For the priors, suppose an expert elicits quantiles of the 10, 50 and 100 years return levels; say 30mm, 45mm and 70mm, respectively, for the median and likewise 40mm, 70mm and 120mm for the 90% percentile of the return levels. We can compute the differences and calculate the parameters of the gamma distribution through moment-matching: this gives roughly a shape of $\alpha_1=18.27$ and $\beta_1=0.6$, etc. @fig-gev-colestawn-quant-prior shows the transfer from the prior predictive to the posterior distribution. The prior is much more dispersed and concentrated on the tail, which translates in a less peaked posterior than using a weakly informative prior (dotted line): the mode of the latter is slightly to the left and with lower density in the tail.
+
 
 ```{r}
-#| eval: false
-#| label: gev-colestawn-quant-prior
+#| eval: true
+#| label: fig-gev-colestawn-quant-prior
+#| echo: false
+#| fig-cap: "Kernel density estimates of draws from the posterior distribution of 100 year return levels with a Coles--Tawn quantile prior (full line) and from the corresponding prior predictive (dashed). The dotted line gives the posterior distribution for a maximum domain information prior on the shape with improper priors on location and scale."
 # Extract time series and compute annual maximum
 data(abisko, package = "mev")
 abi <- with(abisko, xts::xts(precip, order.by = lubridate::ymd(date)))
 abimax <- as.numeric(xts::apply.yearly(abi, max))
+abimax <- abimax[-length(abimax)]
 # Set prior on 10, 50 and 100 years return levels.
-# TODO for now, we set reasonable values
-# say 30, 45, 65mm for the median
+# say 30, 45, 70mm for the median
 # and 90% of 40, 70 and 120
-rootSolve::multiroot()
-revdbayes::quantile_to_gev()
+# 0, 30, 15, 25 for 0.5
+# 0, 40, 30, 50 for 0.9
+gamma_moment_match <- function(quantiles, plev){
+  quantiles <- sort(quantiles)
+  plev <- sort(plev)
+  stopifnot(length(quantiles) == 2L,
+            length(plev) == 2L,
+            all(plev > 0, plev < 1, quantiles > 0))
+ rootSolve::multiroot(f = function(par){
+   pgamma(quantiles, shape = par[1], rate = par[2]) - plev
+   }, 
+   positive = TRUE, 
+   start = c(quantiles[1]/10,0.1))$root
+}
+pars1 <- gamma_moment_match(c(30, 40), plev = c(0.5, 0.9))
+pars2 <- gamma_moment_match(c(15, 30), plev = c(0.5, 0.9))
+pars3 <- gamma_moment_match(c(25, 50), plev = c(0.5, 0.9))
 # Convert quantiles to GEV parameters
-quant_prior <- revdbayes::gev_quant(
+library(revdbayes)
+quant_prior <- set_prior(prior = "quant", model = "gev",
+  prob = c(1/10,1/50, 1/100),
+  shape = c(pars1[1], pars2[1], pars3[1]),
+  scale = 1/c(pars1[2], pars2[2], pars3[2]),
   min_xi = -0.5, 
   max_xi = 1)
-
-rpost_rcpp(n = 1e4, 
+postsamp_expert <- rpost_rcpp(n = 1e4, 
+           data = abimax,
            model = "gev",
            prior = quant_prior)
+prior_samp <- revdbayes::rprior_quant(n = 2500, prob = c(1/10,1/50, 1/100),
+                        shape = c(pars1[1], pars2[1], pars3[1]),
+                        scale = 1/c(pars1[2], pars2[2], pars3[2]))
+retlev100_prior<-  revdbayes::qgev(
+    p = 0.99, 
+    loc = prior_samp[,"location"], 
+    scale = prior_samp[,"scale"], 
+    shape = prior_samp[,"shape"])
+retlev100_expert <- with(
+  postsamp_expert,
+  revdbayes::qgev(
+    p = 0.99, 
+    loc = sim_vals[,"mu"], 
+    scale = sim_vals[,"sigma"], 
+    shape = sim_vals[,"xi"]))
+postsamp_mdi <- rpost_rcpp(n = 1e4, 
+           data = abimax,
+           model = "gev",
+           prior = set_prior("mdi", model = "gev"))
+retlev100_mdi <- with(
+  postsamp_mdi,
+  revdbayes::qgev(
+    p = 0.99, 
+    loc = sim_vals[,"mu"], 
+    scale = sim_vals[,"sigma"], 
+    shape = sim_vals[,"xi"]))
+
+ggplot() +
+  geom_density(data = data.frame(x = retlev100_expert),
+            mapping = aes(x = x),
+            alpha = 0.5, n =1001) +
+  geom_density(data = data.frame(x = retlev100_mdi),
+            mapping = aes(x = x),
+            alpha = 0.5,
+            n = 1001,
+            linetype = "dotted") +
+  geom_density(data = data.frame(x = retlev100_prior),
+            mapping = aes(x = x),
+            alpha = 0.5,
+            n = 1001,
+            linetype = "dashed") +
+  labs(x = "daily cumulated rainfall (in mm)", ylab = "",
+       subtitle = "kernel density estimate of 100-year return level",
+       caption = "quantile prior") +
+  theme_classic()
 ```
 
 :::
 
-## Prior simulation
+What would you do if we you had prior information from different sources? One way to combine these is through a mixture: given $M$ different prior distributions $p_m(\boldsymbol{\theta})$, we can assign each a positive weight $w_m$ to form a mixture of experts prior through the linear combination
+$$ p(\boldsymbol{\theta}) \propto \sum_{m=1}^M w_m p_m(\boldsymbol{\theta})$$
+<!-- Example of prior elicitation with curve -->
 
-Oftentimes, expert elicitation is difficult and it is hard to grasp what the impacts of the hyperparameters are. One way to see if the priors are reasonable is to sample values from them and generate new observations, resulting in prior predictive draws.
+<!-- :::{#exm-priors-interest-rates} -->
+
+<!-- Medias often report banking experts forecasts for [interest rates](https://www.cbsnews.com/news/mortgage-interest-rate-forecast-what-experts-predict-for-this-year-and-2024/) or the central bank rates: these could be combined and translated into prior distributions. Note however that, if none of the expert deems a scenario possible and all assign it zero prior probability, it is impossible for the posterior to put any mass there. -->
+
+<!-- ::: -->
+
+## Priors for regression models
+
+Gaussian components are widespread: not only for linear regression models, but more generally for the specification of random effects that capture group-specific effects, residuals spatial or temporal variability. In the Bayesian paradigm, there is no difference between fixed effects $\boldsymbol{\beta}$ and the random effect parameters: both are random quantities that get assigned priors.
+
+It is generally good advice to center and scale explanatory variables and response vectors so they have approximately mean zero and unit variance, as this facilitates prior specification.
+
+Andrew Gelman uses the following taxonomy for various levels of prior information: uninformative priors are generally flat or uniform priors with $p(\beta) \propto 1$, vague priors are typically nearly flat even if propor, e.g., $\beta \sim \mathsf{No}(0, 100)$, weakly informative priors provide little constraints $\beta \sim \mathsf{No}(0, 10)$), and informative prior are typically application-specific, but constrain the ranges. Uninformative and vague priors are not recommended.
+
+If Gaussian priors are ubiquitous for the mean parameters $\boldsymbol{\beta}$, priors for the scale are more contentious. @Gelman:2006 recommends a Student-$t$ distribution truncated below at $0$, with low degrees of freedom.
+
+The rationale for this choice comes from the simple two level model: 
+\begin{align*}
+Y_{ij} &\sim \mathsf{No}(\mu + \alpha_j, \sigma^2), \qquad i=1,\ldots, n_j; j = 1, \ldots, J \\
+\alpha_j &\sim \mathsf{No}(0, \tau^2_\alpha), \qquad j =1, \ldots, J
+\end{align*}
+Given $\alpha, \mu, \sigma$ and the data $\boldsymbol{y}$, the conditionally conjugate prior is inverse gamma. Standard inference with this parametrization is complicated, because there is strong dependence between parameters.
+
+To reduce this dependence, one can consider an overparametrization in which $\alpha_j = \xi \eta_j$ and $\eta_j \sim \mathsf{No}(0, \tau^2_\eta)$, where now $\tau_\alpha=|\xi|\tau_{\eta}$ so there is an additional parameter. Consider the likelihood conditional on $\mu, \eta_j$: we have that $(y_{ij} - \mu)/\eta_j \sim \mathsf{No}(\xi, \sigma^2/\eta_j)$ so conditionally conjugate priors for $\xi$ and $\tau_\eta$ are respectively Gaussian an inverse-gamma. This translates into a prior distribution for $\tau_\alpha$ which is that of the absolute value of a noncentral Student-$t$ with location, scale and degrees of freedom $\nu$. If we set the location to zero, the prior puts high mass at the origin, but is heavy tailed with polynomial decay. We recommend to set degrees of freedom so that the variance is heavy-tailed, e.g., $\nu=3$. While this prior is not conjugate, it compares favorably to the $\mathsf{IGa}(\epsilon, \epsilon)$ that used to be widespread with $\epsilon>0$ typically set to $0.01$ or $0.001$, approaching an improper prior. Posterior inference is unfortunately sensitive to the value of $\epsilon$ in hierarchical models when the random effect variance is close to zero, and more so when there are few levels for the groups since the relative weight of the prior relative to that of the likelihood contribution is then large.
 
 
-:::{#exm-bixi-temp}
+:::{#exm-randomeffects}
 
-Consider the daily number of Bixi bike sharing users for 2017--2019 at the Edouard Montpetit station next to HEC: we can consider a simple linear regression with log counts as a function of temperature,^[If counts are Poisson, then the log transform is variance stabilizing.] 
-$$\log (\texttt{nusers}) \sim \mathsf{No}(\beta_0 + \beta_1 \texttt{temp}, \sigma^2).$$
-The hyperparameters depend of course on the units of the analysis, unless one standardizes response variable and explanatories. With priors $\beta_0 \sim \mathsf{No}(\overline{y}, 2)$, $\beta_1 \sim \mathsf{No}(7.5, 3)$ and $\sigma \sim \mathsf{Exp}(1)$.^[One can object to the prior parameters as depending on the data, but an alternative would be to model centered ]
+## Poisson random effect models
+
+We consider data from an experimental study conducted at Tech3Lab on road safety. In @Brodeur:2021, 31 participants were asked to drive in a virtual environment; the number of road violation was measured for different type of distractions (phone notification, phone on speaker, texting and smartwatch). The data are balanced, with each participant exposed to each task exactly once.
+
+We model the data using a Poisson mixed model to measure the number of violations, `nviolation`, with a fixed effect for `task`, which captures the type of distraction, and a random effect for participant `id`. The hierarchical model fitted for individual $i$ and distraction type $j$ is
+\begin{align*}
+Y_{ij} &\sim \mathsf{Po}\{\mu = \exp(\beta_{j} + \alpha_i)\}, \qquad i = 1, \ldots, 31; j = 1, \ldots, 4\\
+\beta_j &\sim \mathsf{No}(0, 100) \qquad   j = 1, \ldots, 4\\
+\alpha_i &\sim \mathsf{No}(0, \kappa^2); \qquad i=1, \ldots, 31
+\kappa \sim \mathsf{St}_{+}(3)
+\end{align*}
+so observations are conditionally independent given hyperparameters $\alpha$ and $\beta$.
+
+In frequentist statistics, there is a distinction made in mixed-effect models between parameters that are treated as constants, termed fixed effects and corresponding in this example to $\boldsymbol{\beta}$, and random effects, equivalent to $\boldsymbol{\alpha}$. There is no such distinction in the Bayesian paradigm, except perhaps for the choice of prior. 
 
 ```{r}
-data(bixi, package = "hecstatmod")
-ggplot(data = bixi,
-       mapping = aes(y = log(nusers),
-                     x = temp)) +
-  geom_point() +
-  labs(x = "temperature (in Celsius)",
-       y = "", subtitle = "Log number of Bixi rentals") +
-  theme_classic() 
-sigma_prior <- rexp(n = 100)
-beta0_prior <- rnorm(n = 100, mean = mean(log(bixi$nusers)))
+#| include: false
+#| eval: true
+#| echo: false
+#| message: false
+#| warning: false
+data(smartwatch, package = "hecbayes")
+poismod <- cmdstanr::cmdstan_model(stan_file = "models/poisson_mixed1.stan")
+postsamp <- poismod$sample(data = with(
+  smartwatch, 
+  list(N = length(nviolation),
+       J = length(levels(id)),
+       K = length(levels(task)),
+       y = as.integer(nviolation),
+       id = as.integer(id),
+       fixed = as.integer(task))),
+  iter_warmup = 1000, 
+  iter_sampling = 10000, 
+  chains = 1, 
+  refresh = 0L,
+  output_dir = "models",
+  output_basename = "Poisson_mixed1",
+  show_messages = FALSE)
 ```
+
+We can look at some of posterior distribution of the  31 random effects (here the first five individuals) and the fixed effect parameters $\boldsymbol{\beta}$, plus the variance of the random effect $\kappa$: there is strong evidence that the latter is non-zero, suggesting strong heterogeneity between individuals. The distraction which results in the largest number of violation is texting, while the other conditions all seem equally distracting on average (note that there is no control group with no distraction to compare with, so it is hard to draw conclusions).
+
+```{r}
+#| eval: true
+#| echo: false
+#| message: false
+#| warning: false
+#| label: fig-post-dist-poisson-mixed
+#| fig-cap: "Posterior density plots with 50% credible intervals and median value for the random effects of the first five individuals (left) and the fixed effects and random effect variance (right)."
+bayesplot::color_scheme_set(scheme = "gray")
+posterior <- as.array(postsamp$draws())
+g1 <- bayesplot::mcmc_areas(
+    posterior, 
+    pars = c("alpha[1]", "alpha[2]", "alpha[3]", "alpha[4]", "alpha[5]"),
+    prob = 0.50, # 50% intervals
+    prob_outer = 0.99, # 99%
+    point_est = "median"
+) +
+  scale_y_discrete(labels=c(
+  "alpha[1]" = expression(alpha[1]), 
+  "alpha[2]" = expression(alpha[2]), 
+  "alpha[3]" = expression(alpha[3]), 
+  "alpha[4]" = expression(alpha[4]), 
+  "alpha[5]" = expression(alpha[5])
+  ))
+g2 <- bayesplot::mcmc_areas(
+    posterior, 
+    pars = c("beta[1]", "beta[2]", "beta[3]", "beta[4]", "kappa"),
+    prob = 0.50, # 50% intervals
+    prob_outer = 0.99, # 99%
+    point_est = "median"
+) +
+   scale_y_discrete(labels=c(
+  "beta[1]" = expression(paste(beta[1],": phone")), 
+  "beta[2]" = expression(paste(beta[2],": watch")), 
+  "beta[3]" = expression(paste(beta[3],": speaker")), 
+  "beta[4]" = expression(paste(beta[4],": texting")), 
+  "kappa" = expression(kappa)
+  ))
+g1 + g2
+```
+
 
 :::
 
 
 
+
+## Penalized complexity priors
+
+Oftentimes, there will be a natural family of prior density to impose on some model component,  $p(\boldsymbol{\theta} \mid \zeta)$, with hyperparameter $\zeta$. The flexibility of the underlying construction leads itself to overfitting. Penalized complexity priors [@Simpson:2017] aim to palliate this by penalizing models far away from a simple baseline model, which correspond to a fixed value $\zeta_0$. The prior will favour the simpler parsimonious model the more prior mass one places on $\zeta_0$, which is in line with Occam's razor principle.
+
+To construct a penalized-complexity prior, we compute the Kullback--Leibler divergence between the model $p_\zeta \equiv p(\boldsymbol{\theta} \mid \zeta)$ relative to the baseline with $\zeta_0$, $p_0 \equiv p(\boldsymbol{\theta} \mid 
+\zeta_0)$; the Kullback--Leibler divergence is
+
+$$
+\mathsf{KL}(p_\zeta \Vert\, p_0)=\int p_\zeta \log\left(\frac{p_\zeta}{p_0}\right) \mathrm{d} \boldsymbol{\theta}.
+$$
+The distance between the prior densities is then set to $d(\zeta) = \{2\mathsf{KL}(p_\zeta \mid\mid p_0)\}^{1/2}$.
+which is zero at the model with $\zeta_0$. The PC prior then constructs an exponential prior on the distance scale, which after back-transformation gives $p(\zeta \mid \lambda) = \lambda\exp(-\lambda d(\zeta)) \left| {\partial d(\zeta)}/{\partial \zeta}\right|$. To choose $\lambda$, the authors recommend elicitation of a pair $(U, \alpha)$ such that $\Pr(\lambda > U)=\alpha$.
+
+
+
+:::{#exm-pcprior-randomeffect}
+
+## Penalized complexity prior for random effects models
+
+@Simpson:2017 give the example of a Gaussian prior for random effects $\boldsymbol{\alpha}$, of the form $\boldsymbol{\alpha} \mid \zeta \sim \mathsf{No}_J(\boldsymbol{0}_J, \zeta^2 \mathbf{I}_J)$ where $\zeta_0=0$ corresponds to the absence of random subject-variability. The penalized complexity prior for the scale $\zeta$ is then an exponential with rate $\lambda$,^[Possibly truncated above if the support of $\zeta$ has a finite upper bound.] with density $p(\zeta \mid \lambda) = \lambda \exp(-\lambda \zeta)$. Using the recommendation for setting $\lambda$, we get that $\lambda = -\ln(\alpha/U)$ and this can be directly interpreted in terms of standard deviation of $\zeta$; simulation from the prior predictive may also be used for calibration.
+
+:::
+
+
+:::{#exm-pcprior-arorder}
+
+## Penalized complexity prior for autoregressive model of order 1
+
+@Sorbye.Holbek.Rue:2017 derive penalized complexity prior for the Gaussian stationary AR(1) model with autoregressive parameter $\phi \in (-1,1)$, where $Y_t \mid Y_{t-1}, \phi, \sigma^2 \sim \mathsf{No}(\phi Y_{t-1}, \sigma^2)$. There are two based models that could be of interest: one with $\phi=0$, corresponding to lack of autocorrelation, and a static mean $\phi=1$ for no change in time, which is not stationary. For the former, the penalized complexity prior is 
+\begin{align*}
+p(\phi \mid \lambda) = \frac{\lambda}{2} \exp\left[-\lambda \left\{-\ln(1-\phi^2)\right\}^{1/2}\right] \frac{|\phi|}{(1-\phi^2)\left\{-\ln(1-\phi^2)\right\}^{1/2}}.
+\end{align*}
+One can set $\lambda$ by considering plausible values by relating the parameter to the variance of the one-step ahead forecast error.
+
+
+:::
+
+## Sensitivity analysis
+
+Do priors matter? The answer to that question depends strongly on the model, and how much information the data provides about hyperparameters. While this question is easily answered in conjugate models (the relative weight of hyperparameters relative to data can be derived from the posterior parameters), it is not so simple in hierarchical models, where the interplay between prior distributions is often more intricate. To see the impact, one often has to rely on doing several analyses with different values fr the prior and see the sensitivity of the conclusions to these changes, for example by considering a vague prior or modifying the parameters values (say halving or doubling). If the changes are immaterial, then this provides reassurance that our analyses are robust.
+
+
+:::{#exm-sensitivity-poisson-mixed}
+
+To check the sensitivity of the conclusion, we revisit the modelling of the `smartwatch` experiment data using a Poisson regression and compare four priors: a uniform prior truncated to $[0, 10]$, an inverse gamma $\mathsf{IG}(0.01, 0.01)$ prior, a penalized complexity prior such that the 0.95 percentile of the scale is 5, corresponding to $\mathsf{Exp}(0.6)$. Since each distraction type appears 31 times, there is plenty of information to reliably estimate the dispersion $\kappa$ of the random effects $\alpha$: the different density plots in @fig-sensitivity are virtually indistinguishable from one another.
+
+```{r}
+#| eval: true
+#| echo: false
+#| include: false
+pois2 <- cmdstanr::cmdstan_model(stan_file = "models/poisson_mixed2.stan")
+pois3 <- cmdstanr::cmdstan_model(stan_file = "models/poisson_mixed3.stan")
+pois4 <- cmdstanr::cmdstan_model(stan_file = "models/poisson_mixed4.stan")
+postsamp2 <- pois2$sample(data = with(
+  smartwatch, 
+  list(N = length(nviolation),
+       J = length(levels(id)),
+       K = length(levels(task)),
+       y = as.integer(nviolation),
+       id = as.integer(id),
+       fixed = as.integer(task))),
+  iter_warmup = 1000, 
+  iter_sampling = 10000, 
+  chains = 1, 
+  refresh = 0L,
+  output_dir = "models",
+  output_basename = "Poisson_mixed2",
+  show_messages = FALSE)
+postsamp3 <- pois3$sample(data = with(
+  smartwatch, 
+  list(N = length(nviolation),
+       J = length(levels(id)),
+       K = length(levels(task)),
+       y = as.integer(nviolation),
+       id = as.integer(id),
+       fixed = as.integer(task))),
+  iter_warmup = 1000, 
+  iter_sampling = 10000, 
+  chains = 1, 
+  refresh = 0L,
+  output_dir = "models",
+  output_basename = "Poisson_mixed3",
+  show_messages = FALSE)
+postsamp4 <- pois4$sample(data = with(
+  smartwatch, 
+  list(N = length(nviolation),
+       J = length(levels(id)),
+       K = length(levels(task)),
+       y = as.integer(nviolation),
+       id = as.integer(id),
+       fixed = as.integer(task))),
+  iter_warmup = 1000, 
+  iter_sampling = 10000, 
+  chains = 1, 
+  refresh = 0L,
+  output_dir = "models",
+  output_basename = "Poisson_mixed4",
+  show_messages = FALSE)
+```
+```{r}
+#| label: fig-sensitivity
+#| eval: true
+#| echo: false
+#| message: false
+#| warning: false
+#| fig-cap: "Posterior density of the scale of the random effects with uniform, inverse gamma, penalized complexity and folded Student-t with three degrees of freedom. The circle denotes the median and the bars the 50% and 95% percentile credible intervals."
+chains1 <- cmdstanr::read_cmdstan_csv(files = "models/Poisson_mixed1-1.csv", var = "kappa")
+chains2 <- cmdstanr::read_cmdstan_csv(files = "models/Poisson_mixed2-1.csv", var = "kappa")
+chains3 <- cmdstanr::read_cmdstan_csv(files = "models/Poisson_mixed3-1.csv", var = "kappa")
+chains4 <- cmdstanr::read_cmdstan_csv(files = "models/Poisson_mixed4-1.csv", var = "kappa")
+ggplot(data = data.frame(
+  kappa = c(as.numeric(chains1$post_warmup_draws),
+            as.numeric(chains2$post_warmup_draws),
+            as.numeric(chains3$post_warmup_draws),
+            as.numeric(chains4$post_warmup_draws)),
+  prior = factor(rep(
+    c("Student-t","inverse gamma","penalized complexity","uniform"), 
+    each = 1e4L))),
+             mapping = aes(x = kappa)) +
+  ggdist::stat_slabinterval(.width = c(0.5, 0.95)) +
+  facet_wrap(~prior, nrow = 2, ncol = 2) +
+  theme_classic() +
+  labs(y = "", x = expression(kappa))
+```
+
+:::
 
 <!--
 
@@ -525,16 +830,22 @@ Penalized complexity prior
 
 Maximum domain information
 
-Sensivity analysis and asymptotic effect
+Sensitivity analysis and asymptotic effect
 
 Consensus of opinion: expert opinion and mixture
 
 [Black--Litterman model](https://hudsonthames.org/bayesian-portfolio-optimisation-the-black-litterman-model/)
 
 
-:::{#exm-priosim-gev}
-We can specify gamma back-transform them to location $\mu$, scale $\sigma$ and shape $\xi$ and simulate observations from the $\mathsf{GEV}(\mu, \sigma, \xi)$ and compare them to observations.
-
-:::
 
 -->
+
+
+
+<!-- Fit to data and compare results with that of the reference improper prior $p(\phi) \propto (1-\phi^2)^{-1/2}$. 
+https://haakonbakkagit.github.io/btopic115.html
+-->
+
+
+<!-- @Zellner:1986 -->
+<!-- Zellner's $g$-prior for model selection -->
