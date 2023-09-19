@@ -282,10 +282,10 @@
 \usepackage{amsthm}
 \theoremstyle{definition}
 \newtheorem{example}{Example}[chapter]
-\theoremstyle{plain}
-\newtheorem{proposition}{Proposition}[chapter]
 \theoremstyle{definition}
 \newtheorem{definition}{Definition}[chapter]
+\theoremstyle{plain}
+\newtheorem{proposition}{Proposition}[chapter]
 \theoremstyle{remark}
 \AtBeginDocument{\renewcommand*{\proofname}{Proof}}
 \newtheorem*{remark}{Remark}
@@ -324,7 +324,7 @@
 \begin{document}
 \frontmatter
 \maketitle
-\ifdefined\Shaded\renewenvironment{Shaded}{\begin{tcolorbox}[sharp corners, interior hidden, breakable, borderline west={3pt}{0pt}{shadecolor}, enhanced, boxrule=0pt, frame hidden]}{\end{tcolorbox}}\fi
+\ifdefined\Shaded\renewenvironment{Shaded}{\begin{tcolorbox}[breakable, borderline west={3pt}{0pt}{shadecolor}, frame hidden, boxrule=0pt, sharp corners, enhanced, interior hidden]}{\end{tcolorbox}}\fi
 
 \renewcommand*\contentsname{Table of contents}
 {
@@ -796,6 +796,32 @@ variance gets better estimated through \(\sum_{i=1}^n y_i^2/n\).
 \section{Summarizing posterior
 distributions}\label{summarizing-posterior-distributions}}
 
+The output of the Bayesian learning problem will be either of:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  a fully characterized distribution
+\item
+  a numerical approximation to the posterior distribution (pointwise)
+\item
+  an exact or approximate sample drawn from the posterior distribution
+\end{enumerate}
+
+In the first case, we will be able to directly evaluate quantities of
+interest if there are closed-form expressions for the latter, or else we
+could draw samples from the distribution and evaluate them via
+Monte-Carlo. In case of numerical approximations, we will need to resort
+to numerical integration or otherwise to get our answers.
+
+Often, we will also be interested in the marginal posterior distribution
+of each component \(\theta_j\) in turn (\(j=1, \ldots, J\)). To get
+these, we carry out additional integration steps,
+\[p(\theta_j \mid \boldsymbol{y}) = \int p(\boldsymbol{\theta} \mid \boldsymbol{y}) \mathrm{d} \boldsymbol{\theta}_{-j}.\]
+With a posterior sample, this is trivial: it suffices to keep the column
+corresponding to \(\theta_j\) and discard the others.
+
 Most of the field of Bayesian statistics revolves around the creation of
 algorithms that either circumvent the calculation of the normalizing
 constant (notably using Monte Carlo and Markov chain Monte Carlo
@@ -897,6 +923,19 @@ diagnostics (not shown) for the generalized Pareto suggest that the fit
 is adequate for all but the three largest observations, which are
 (somewhat severely) underestimated by the model.
 
+\begin{figure}[ht!]
+
+{\centering \includegraphics{introduction_files/figure-pdf/fig-danish-1.pdf}
+
+}
+
+\caption{\label{fig-danish}Time series of Danish fire claims exceeding a
+million krone (left) and posterior samples from the scale \(\tau\) and
+shape \(\xi\) of the generalized Pareto model fitted to exceedances
+above 10 million krone (right).}
+
+\end{figure}
+
 The generalized Pareto model only describes the \(n_u\) exceedances
 above \(u=10\), so we need to incorporate in the likelihood a binomial
 contribution for the probability \(\zeta_u\) of exceeding the threshold
@@ -990,32 +1029,6 @@ loss functions.}
 
 \end{example}
 
-The output of the Bayesian learning problem will be either of:
-
-\begin{enumerate}
-\def\labelenumi{\arabic{enumi}.}
-\tightlist
-\item
-  a fully characterized distribution
-\item
-  a numerical approximation to the posterior distribution (pointwise)
-\item
-  an exact or approximate sample drawn from the posterior distribution
-\end{enumerate}
-
-In the first case, we will be able to directly evaluate quantities of
-interest if there are closed-form expressions for the latter, or else we
-could draw samples from the distribution and evaluate them via
-Monte-Carlo. In case of numerical approximations, we will need to resort
-to numerical integration or otherwise to get our answers.
-
-Often, we will also be interested in the marginal posterior distribution
-of each component \(\theta_j\) in turn (\(j=1, \ldots, J\)). To get
-these, we carry out additional integration steps,
-\[p(\theta_j \mid \boldsymbol{y}) = \int p(\boldsymbol{\theta} \mid \boldsymbol{y}) \mathrm{d} \boldsymbol{\theta}_{-j}.\]
-With a posterior sample, this is trivial: it suffices to keep the column
-corresponding to \(\theta_j\) and discard the others.
-
 To communicate uncertainty, we may resort to credible regions and
 intervals.
 
@@ -1030,7 +1043,7 @@ probability level \(\alpha\), \begin{align*}
 \end{definition}
 
 These intervals are not unique, as are confidence sets. In the
-univariate setting, the central or equi-tailed interval are the most
+univariate setting, the central or equitailed interval are the most
 popular, and easily obtained by considering the \(\alpha/2, 1-\alpha/2\)
 quantiles. These are easily obtained from samples by simply taking
 empirical quantiles. An alternative, highest posterior density credible
@@ -1050,7 +1063,7 @@ overlap between the two intervals.
 
 \caption{\label{fig-credible-intervals}Density plots with 89\% (top) and
 50\% (bottom) equitailed or central credible (left) and highest
-posterior density (right) intervals for two data sets, highlighted in
+posterior density (right) regions for two data sets, highlighted in
 grey.}
 
 \end{figure}
@@ -1150,19 +1163,10 @@ Knowing the analytic expression for the posterior can be useful for
 calculations of the marginal likelihood, as
 Example~\ref{exm-poisson-negbin} demonstrates.
 
-\begin{example}[]\protect\hypertarget{exm-poisson-negbin}{}\label{exm-poisson-negbin}
+\begin{example}[Negative binomial as a Poisson
+mixture]\protect\hypertarget{exm-poisson-negbin}{}\label{exm-poisson-negbin}
 
 ~
-
-\bookmarksetup{startatroot}
-
-\hypertarget{negative-binomial-as-a-poisson-mixture}{%
-\chapter*{Negative binomial as a Poisson
-mixture}\label{negative-binomial-as-a-poisson-mixture}}
-\addcontentsline{toc}{chapter}{Negative binomial as a Poisson mixture}
-
-\markboth{Negative binomial as a Poisson mixture}{Negative binomial as a
-Poisson mixture}
 
 One restriction of the Poisson model is that the restriction on its
 moments is often unrealistic. The most frequent problem encountered is

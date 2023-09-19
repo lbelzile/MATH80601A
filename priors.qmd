@@ -58,7 +58,7 @@ Knowing the analytic expression for the posterior can be useful for calculations
 
 :::{#exm-poisson-negbin}
 
-# Negative binomial as a Poisson mixture
+## Negative binomial as a Poisson mixture
 
 <!-- Some canonical distributions have only one parameter which dictates moments: for a Poisson random variable $Y \sim \mathsf{Po}(\lambda)$, both $\mathsf{E}(Y) = \mathsf{Va}(Y) = \lambda$, whereas if we have binomial data with $n$ independent trials, each with probability of success $p$, then $Y \sim \mathsf{Bin}(n, p)$, then the theoretical mean of successes is $\mathsf{E}(Y)=np$ and the variance $\mathsf{Va}(Y) = np(1-p)$. -->
 <!-- In generalized linear models, we model the mean as a function of covariate, but data may exhibit overdispersion relative to the theoretical mean. -->

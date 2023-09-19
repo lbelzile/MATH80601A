@@ -364,6 +364,14 @@ p(y_{\text{new}} \mid \boldsymbol{y}) &amp;= \int_0^\infty \frac{\tau^{1/2}}{(2\
 </section>
 <section id="summarizing-posterior-distributions" class="level2" data-number="1.4">
 <h2 data-number="1.4" class="anchored" data-anchor-id="summarizing-posterior-distributions"><span class="header-section-number">1.4</span> Summarizing posterior distributions</h2>
+<p>The output of the Bayesian learning problem will be either of:</p>
+<ol type="1">
+<li>a fully characterized distribution</li>
+<li>a numerical approximation to the posterior distribution (pointwise)</li>
+<li>an exact or approximate sample drawn from the posterior distribution</li>
+</ol>
+<p>In the first case, we will be able to directly evaluate quantities of interest if there are closed-form expressions for the latter, or else we could draw samples from the distribution and evaluate them via Monte-Carlo. In case of numerical approximations, we will need to resort to numerical integration or otherwise to get our answers.</p>
+<p>Often, we will also be interested in the marginal posterior distribution of each component <span class="math inline">\(\theta_j\)</span> in turn (<span class="math inline">\(j=1, \ldots, J\)</span>). To get these, we carry out additional integration steps, <span class="math display">\[p(\theta_j \mid \boldsymbol{y}) = \int p(\boldsymbol{\theta} \mid \boldsymbol{y}) \mathrm{d} \boldsymbol{\theta}_{-j}.\]</span> With a posterior sample, this is trivial: it suffices to keep the column corresponding to <span class="math inline">\(\theta_j\)</span> and discard the others.</p>
 <p>Most of the field of Bayesian statistics revolves around the creation of algorithms that either circumvent the calculation of the normalizing constant (notably using Monte Carlo and Markov chain Monte Carlo methods) or else provide accurate numerical approximation of the posterior pointwise, including for marginalizing out all but one parameters (integrated nested Laplace approximations, variational inference, etc.) The target of inference is the whole posterior distribution, a potentially high-dimensional object which may be difficult to summarize or visualize. We can thus report only characteristics of the the latter.</p>
 <p>The choice of point summary to keep has it’s root in decision theory.</p>
 <div id="def-lossfunction" class="theorem definition">
@@ -373,7 +381,7 @@ p(y_{\text{new}} \mid \boldsymbol{y}) &amp;= \int_0^\infty \frac{\tau^{1/2}}{(2\
 <p>For example, in a univariate setting, the quadratic loss <span class="math inline">\(c(\theta, \upsilon) = (\theta-\upsilon)^2\)</span> returns the posterior mean, the absolute loss <span class="math inline">\(c(\theta, \upsilon)=|\theta - \upsilon|\)</span> returns the posterior median and the 0-1 loss <span class="math inline">\(c(\theta, \upsilon) = \mathrm{I}(\upsilon \neq \theta)\)</span> returns the posterior mode. All of these point estimators are central tendency measures, but some may be more adequate depending on the setting as they can correspond to potentially different values, as shown in the left-panel of <a href="#fig-central-moments">Figure&nbsp;<span>1.5</span></a>. The choice is application specific: for multimodal distributions, the mode is likely a better choice.</p>
 <p>If we know how to evaluate the distribution numerically, we can optimize to find the mode or else return the value for the pointwise evaluation on a grid at which the density achieves it’s maximum. The mean and median would have to be evaluated by numerical integration if there is no closed-form expression for the latter.</p>
 <p>If we have rather a sample from the posterior with associated posterior density values, then we can obtain the mode as the parameter combination with the highest posterior, the median from the value at rank <span class="math inline">\(\lfloor n/2\rfloor\)</span> and the mean through the sample mean of posterior draws.</p>
-<div class="cell" data-hash="introduction_cache/html/fig-central-moments_8ba3909a46e4892bdb2f30d481674309">
+<div class="cell" data-hash="introduction_cache/html/fig-central-moments_795b3489dd33a2fe734c41ff04cc9a8a">
 <div class="cell-output-display">
 <div id="fig-central-moments" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
@@ -392,6 +400,16 @@ F(z; \tau, \xi) = 1- \begin{cases}
 \end{align*}\]</span> The shape <span class="math inline">\(\xi\)</span> governs how heavy-tailed the distribution is, while <span class="math inline">\(\tau\)</span> is a scale parameter.</p>
 <p>Insurance companies provide coverage in exchange for premiums, but need to safeguard themselves against very high claims by buying reinsurance products. These risks are often communicated through the value-at-risk (VaR), a high quantile exceeded with probability <span class="math inline">\(p\)</span>. We model Danish fire insurance claim amounts for inflation-adjusted data collected from January 1980 until December 1990 that are in excess of a million Danish kroner, found in the <code>evir</code> package and analyzed in Example 7.23 of <span class="citation" data-cites="McNeil.Frey.Embrechts:2005">McNeil, Frey, and Embrechts (<a href="references.html#ref-McNeil.Frey.Embrechts:2005" role="doc-biblioref">2005</a>)</span>. These claims are denoted <span class="math inline">\(Y\)</span> and there are 2167 observations.</p>
 <p>We fit a generalized Pareto distribution to exceedances above 10 millions krones, keeping 109 observations or roughly the largest 5% of the original sample. Preliminary analysis shows that we can treat data as roughly independent and identically distributed and goodness-of-fit diagnostics (not shown) for the generalized Pareto suggest that the fit is adequate for all but the three largest observations, which are (somewhat severely) underestimated by the model.</p>
+<div class="cell" data-hash="introduction_cache/html/fig-danish_fa48c8988b047623e3e2eb00bc76d4c6">
+<div class="cell-output-display">
+<div id="fig-danish" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="introduction_files/figure-html/fig-danish-1.png" class="img-fluid figure-img" width="672"></p>
+<figcaption class="figure-caption">Figure&nbsp;1.6: Time series of Danish fire claims exceeding a million krone (left) and posterior samples from the scale <span class="math inline">\(\tau\)</span> and shape <span class="math inline">\(\xi\)</span> of the generalized Pareto model fitted to exceedances above 10 million krone (right).</figcaption>
+</figure>
+</div>
+</div>
+</div>
 <p>The generalized Pareto model only describes the <span class="math inline">\(n_u\)</span> exceedances above <span class="math inline">\(u=10\)</span>, so we need to incorporate in the likelihood a binomial contribution for the probability <span class="math inline">\(\zeta_u\)</span> of exceeding the threshold <span class="math inline">\(u\)</span>. <!-- The log likelihood for the full model is --> <!-- \begin{align*} --> <!-- -109 \log \tau + \sum_{i=1}^{109} (1+1/\xi)\log\left(1+\xi\frac{y_i-10}{\tau}\right)_{+} + \\& \quad  \log \binom{2167}{109} + 109\log \zeta_u + 2058 \log(1-\zeta_u) --> <!-- \end{align*} --> <!-- and, p --> Provided that the priors for <span class="math inline">\((\tau, \xi)\)</span> are independent of those for <span class="math inline">\(\zeta_u\)</span>, the posterior also factorizes as a product, so <span class="math inline">\(\zeta_u\)</span> and <span class="math inline">\((\tau, \xi)\)</span> are a posteriori independent.</p>
 <p>Suppose for now that we set a <span class="math inline">\(\mathsf{Be}(0.5, 0.5)\)</span> prior for <span class="math inline">\(\zeta_u\)</span> and a non-informative prior for the generalized Pareto parameters. The <code>post_samp</code> matrix contains exact samples from the posterior distribution of <span class="math inline">\((\tau, \xi, \zeta_u)\)</span>, obtained using a Monte Carlo algorithm. Our aim is to evaluate the posterior distribution for the value-at-risk, the <span class="math inline">\(\alpha\)</span> quantile of <span class="math inline">\(Y\)</span> for high values of <span class="math inline">\(\alpha\)</span> and see what point estimator one would obtain depending on our choice of loss function. For any <span class="math inline">\(\alpha &gt; 1-\zeta_u\)</span>, the <span class="math inline">\(q_{\alpha}\)</span> is <span class="math display">\[\begin{align*}
 1- \alpha  &amp;= \Pr(Y &gt; q_\alpha \mid Y &gt; u) \Pr(Y &gt; u)
@@ -399,7 +417,7 @@ F(z; \tau, \xi) = 1- \begin{cases}
 \end{align*}\]</span> and solving for <span class="math inline">\(q_{\alpha}\)</span> gives <span class="math display">\[\begin{align*}
 q_{\alpha} = u+ \frac{\tau}{\xi} \left\{\left(\frac{\zeta_u}{1-\alpha}\right)^\xi-1\right\}.
 \end{align*}\]</span></p>
-<p>To obtain the posterior distribution of the <span class="math inline">\(\alpha\)</span> quantile, <span class="math inline">\(q_{\alpha}\)</span>, it suffices to plug in each posterior sample and evaluate the function: the uncertainty is carried over from the simulated values of the parameters to those of the quantile <span class="math inline">\(q_{\alpha}\)</span>. The left panel of <a href="#fig-lossfn">Figure&nbsp;<span>1.6</span></a> shows the posterior density estimate of the <span class="math inline">\(\mathsf{VaR}(0.99)\)</span> along with the maximum a posteriori (mode) of the latter.</p>
+<p>To obtain the posterior distribution of the <span class="math inline">\(\alpha\)</span> quantile, <span class="math inline">\(q_{\alpha}\)</span>, it suffices to plug in each posterior sample and evaluate the function: the uncertainty is carried over from the simulated values of the parameters to those of the quantile <span class="math inline">\(q_{\alpha}\)</span>. The left panel of <a href="#fig-lossfn">Figure&nbsp;<span>1.7</span></a> shows the posterior density estimate of the <span class="math inline">\(\mathsf{VaR}(0.99)\)</span> along with the maximum a posteriori (mode) of the latter.</p>
 <p>Suppose that we prefer to under-estimate the value-at-risk rather than overestimate: this could be captured by the custom loss function <span class="math display">\[\begin{align*}
 c(q, q_0) =
 \begin{cases}
@@ -408,7 +426,7 @@ c(q, q_0) =
 \end{cases}
 \end{align*}\]</span> For a given value of the value-at-risk <span class="math inline">\(q_0\)</span> evaluated on a grid, we thus compute <span class="math display">\[\begin{align*}
 r(q_0) = \int_{\boldsymbol{\Theta}}c(q(\boldsymbol{\theta}), q_0) p (\boldsymbol{\theta} \mid \boldsymbol{y}) \mathrm{d} \boldsymbol{\theta}
-\end{align*}\]</span> and we seek to minimize the risk, <span class="math inline">\(\widehat{q} =\mathrm{argmin}_{q_0 \in \mathbb{R}_{+}} r(q_0)\)</span>. The value returned that minimizes the loss, shown in <a href="#fig-lossfn">Figure&nbsp;<span>1.6</span></a>, is to the left of the posterior mean for <span class="math inline">\(q_\alpha\)</span>.</p>
+\end{align*}\]</span> and we seek to minimize the risk, <span class="math inline">\(\widehat{q} =\mathrm{argmin}_{q_0 \in \mathbb{R}_{+}} r(q_0)\)</span>. The value returned that minimizes the loss, shown in <a href="#fig-lossfn">Figure&nbsp;<span>1.7</span></a>, is to the left of the posterior mean for <span class="math inline">\(q_\alpha\)</span>.</p>
 <div class="cell" data-hash="introduction_cache/html/lossfn_d641deb2602f0534b81f838e11a90253">
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Compute value at risk from generalized Pareto distribution quantile fn</span></span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>VaR_post <span class="ot">&lt;-</span> <span class="fu">with</span>(post_samp,   <span class="co"># data frame of posterior draws</span></span>
@@ -442,33 +460,25 @@ r(q_0) = \int_{\boldsymbol{\Theta}}c(q(\boldsymbol{\theta}), q_0) p (\boldsymbol
 <div id="fig-lossfn" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
 <p><img src="introduction_files/figure-html/fig-lossfn-1.png" class="img-fluid figure-img" width="672"></p>
-<figcaption class="figure-caption">Figure&nbsp;1.6: Posterior density (left) and losses functions for the 0.99 value-at-risk for the Danish fire insurance data. The vertical lines denote point estimates of the quantiles that minimize the loss functions.</figcaption>
+<figcaption class="figure-caption">Figure&nbsp;1.7: Posterior density (left) and losses functions for the 0.99 value-at-risk for the Danish fire insurance data. The vertical lines denote point estimates of the quantiles that minimize the loss functions.</figcaption>
 </figure>
 </div>
 </div>
 </div>
 </div>
-<p>The output of the Bayesian learning problem will be either of:</p>
-<ol type="1">
-<li>a fully characterized distribution</li>
-<li>a numerical approximation to the posterior distribution (pointwise)</li>
-<li>an exact or approximate sample drawn from the posterior distribution</li>
-</ol>
-<p>In the first case, we will be able to directly evaluate quantities of interest if there are closed-form expressions for the latter, or else we could draw samples from the distribution and evaluate them via Monte-Carlo. In case of numerical approximations, we will need to resort to numerical integration or otherwise to get our answers.</p>
-<p>Often, we will also be interested in the marginal posterior distribution of each component <span class="math inline">\(\theta_j\)</span> in turn (<span class="math inline">\(j=1, \ldots, J\)</span>). To get these, we carry out additional integration steps, <span class="math display">\[p(\theta_j \mid \boldsymbol{y}) = \int p(\boldsymbol{\theta} \mid \boldsymbol{y}) \mathrm{d} \boldsymbol{\theta}_{-j}.\]</span> With a posterior sample, this is trivial: it suffices to keep the column corresponding to <span class="math inline">\(\theta_j\)</span> and discard the others.</p>
 <p>To communicate uncertainty, we may resort to credible regions and intervals.</p>
 <div id="def-credible-region" class="theorem definition">
 <p><span class="theorem-title"><strong>Definition 1.2 </strong></span>A <span class="math inline">\((1-\alpha)\)</span> <strong>credible region</strong> (or credible interval in the univariate setting) is a set <span class="math inline">\(\mathcal{S}_\alpha\)</span> such that, with probability level <span class="math inline">\(\alpha\)</span>, <span class="math display">\[\begin{align*}
 \Pr(\boldsymbol{\theta} \in \mathcal{S}_\alpha \mid \boldsymbol{Y}=\boldsymbol{y}) = 1-\alpha
 \end{align*}\]</span></p>
 </div>
-<p>These intervals are not unique, as are confidence sets. In the univariate setting, the central or equi-tailed interval are the most popular, and easily obtained by considering the <span class="math inline">\(\alpha/2, 1-\alpha/2\)</span> quantiles. These are easily obtained from samples by simply taking empirical quantiles. An alternative, highest posterior density credible sets, which may be a set of disjoint intervals obtained by considering the parts of the posterior with the highest density, may be more informative. The top panel <a href="#fig-credible-intervals">Figure&nbsp;<span>1.7</span></a> shows the distinction for a bimodal mixture distribution, and a even more striking difference for 50% credible intervals for a symmetric beta distribution whose mass lie near the endpoints of the distribution, leading to no overlap between the two intervals.</p>
-<div class="cell" data-hash="introduction_cache/html/fig-credible-intervals_0f4b5c0d18f61703dcb8373a4fd7d323">
+<p>These intervals are not unique, as are confidence sets. In the univariate setting, the central or equitailed interval are the most popular, and easily obtained by considering the <span class="math inline">\(\alpha/2, 1-\alpha/2\)</span> quantiles. These are easily obtained from samples by simply taking empirical quantiles. An alternative, highest posterior density credible sets, which may be a set of disjoint intervals obtained by considering the parts of the posterior with the highest density, may be more informative. The top panel <a href="#fig-credible-intervals">Figure&nbsp;<span>1.8</span></a> shows the distinction for a bimodal mixture distribution, and a even more striking difference for 50% credible intervals for a symmetric beta distribution whose mass lie near the endpoints of the distribution, leading to no overlap between the two intervals.</p>
+<div class="cell" data-hash="introduction_cache/html/fig-credible-intervals_ebf2f927fcf8601906703997b166fbe3">
 <div class="cell-output-display">
 <div id="fig-credible-intervals" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
 <p><img src="introduction_files/figure-html/fig-credible-intervals-1.png" class="img-fluid figure-img" width="672"></p>
-<figcaption class="figure-caption">Figure&nbsp;1.7: Density plots with 89% (top) and 50% (bottom) equitailed or central credible (left) and highest posterior density (right) intervals for two data sets, highlighted in grey.</figcaption>
+<figcaption class="figure-caption">Figure&nbsp;1.8: Density plots with 89% (top) and 50% (bottom) equitailed or central credible (left) and highest posterior density (right) regions for two data sets, highlighted in grey.</figcaption>
 </figure>
 </div>
 </div>
