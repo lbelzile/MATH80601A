@@ -550,6 +550,18 @@ which entails that $Y_{\text{new}}$ is a scaled Student-$t$ distribution with sc
 ## Summarizing posterior distributions
 
 
+The output of the Bayesian learning problem will be either of:
+
+1. a fully characterized distribution
+2. a numerical approximation to the posterior distribution (pointwise)
+3. an exact or approximate sample drawn from the posterior distribution
+
+In the first case, we will be able to directly evaluate quantities of interest if there are closed-form expressions for the latter, or else we could draw samples from the distribution and evaluate them via Monte-Carlo. In case of numerical approximations, we will need to resort to numerical integration or otherwise to get our answers.
+
+Often, we will also be interested in the marginal posterior distribution of each component $\theta_j$ in turn ($j=1, \ldots, J$). To get these, we carry out additional integration steps, $$p(\theta_j \mid \boldsymbol{y}) = \int p(\boldsymbol{\theta} \mid \boldsymbol{y}) \mathrm{d} \boldsymbol{\theta}_{-j}.$$
+With a posterior sample, this is trivial: it suffices to keep the column corresponding to $\theta_j$ and discard the others. 
+
+
 Most of the field of Bayesian statistics revolves around the creation of algorithms that either circumvent the calculation of the normalizing constant (notably using Monte Carlo and Markov chain Monte Carlo methods) or else provide accurate numerical approximation of the posterior pointwise, including for marginalizing out all but one parameters (integrated nested Laplace approximations, variational inference, etc.) The target of inference is the whole posterior distribution, a potentially high-dimensional object which may be difficult to summarize or visualize. We can thus report only characteristics of the the latter.
 
 The choice of point summary to keep has it's root in decision theory.
@@ -579,20 +591,34 @@ If we have rather a sample from the posterior with associated posterior density 
 #| fig-cap: "Point estimators from a right-skewed distribution (left) and from a multimodal distribution (right)."
 shape <- 2
 rate <- 2
+cols <- MetBrewer::met.brewer("Renoir", 3)
 med <- qgamma(0.5, shape = shape, rate = rate)
 g1 <- ggplot() + 
   stat_function(fun = function(x){dgamma(x, shape = shape, rate = rate)},
                 xlim = c(0,5),
                 n = 1001) +
-  geom_vline(xintercept = (shape - 1)/rate, linetype = "dashed") + 
-  geom_vline(xintercept = shape/rate, linetype = "dotted") + 
-  geom_vline(xintercept = med) + 
-  geom_label(mapping = aes(x = (shape - 1)/rate, y = 0.5, label = "mode"), 
-             fill = "white", label.r = unit(0, "lines")) +
+  geom_vline(xintercept = (shape - 1)/rate, 
+             linetype = "dotted",
+             colour = cols[1]) + #mode
+  geom_vline(xintercept = shape/rate,
+             colour = cols[2]) + # mean
+  geom_vline(xintercept = med, 
+             linetype = "dashed",
+             colour = cols[3]) + # median
+  geom_label(mapping = aes(x = (shape - 1)/rate, 
+                           y = 0.5, 
+                           label = "mode"), 
+             colour = cols[1],
+             fill = "white", 
+             label.r = unit(0, "lines")) +
   geom_label(mapping = aes(x = shape/rate, y = 0.1, label = "mean"),
-             fill = "white", label.r = unit(0, "lines")) +
+             fill = "white",
+             colour = cols[2],
+             label.r = unit(0, "lines")) +
   geom_label(mapping = aes(x = med, y = 0.3, label = "median"),
-             fill = "white", label.r = unit(0, "lines")) +
+             fill = "white",
+             colour = cols[3],
+             label.r = unit(0, "lines")) +
   scale_y_continuous(expand = c(0,0), limits = c(0, 0.8)) + 
   scale_x_continuous(expand = c(0,0), limits = c(0, 5.2)) + 
   labs(y = "", subtitle = "density", x = "") + 
@@ -612,25 +638,33 @@ hpeaks <- c((1-we)*dnorm(mu, mean = mu, sd = sigma),
             we*dgamma((shape-1)/rate, rate = rate, shape = shape))
 height <- max(hpeaks)
 mixt_mode <- c(mu, (shape-1)/rate)[which.max(hpeaks)]
+
 g2 <- ggplot() + 
   stat_function(fun = function(x){we*dgamma(x, shape = shape, rate = rate) + (1-we)*dnorm(x, mean = mu, sd = sigma)},
                 xlim = c(-2,10), n = 1001) +
-  geom_vline(xintercept = mixt_mode, linetype = "dashed") + 
-  geom_vline(xintercept = mixt_mean, linetype = "dotted") + 
-  geom_vline(xintercept = mixt_median) + 
+  geom_vline(xintercept = mixt_mode, 
+             linetype = "dotted",
+             colour = cols[1]) + 
+  geom_vline(xintercept = mixt_mean, 
+             colour = cols[2]) + 
+  geom_vline(xintercept = mixt_median,
+             linetype = "dashed",
+             colour = cols[3]) + 
   geom_label(mapping = aes(x = mixt_mode, y = 0.9*height, label = "mode"), 
-             fill = "white", label.r = unit(0, "lines")) +
+             fill = "white", label.r = unit(0, "lines"),
+             colour = cols[1]) +
   geom_label(mapping = aes(x = mixt_mean, y = 0.5*height, label = "mean"),
-             fill = "white", label.r = unit(0, "lines")) +
+             fill = "white", label.r = unit(0, "lines"),
+             colour = cols[2]) +
   geom_label(mapping = aes(x = mixt_median, y = 0.1*height, label = "median"),
-             fill = "white", label.r = unit(0, "lines")) +
+             fill = "white", label.r = unit(0, "lines"),
+             colour = cols[3]) +
   scale_y_continuous(expand = c(0,0)) + 
   scale_x_continuous(expand = c(0,0)) + 
   labs(y = "", subtitle = "density", x = "") + 
   theme_classic()  
   g1 + g2
 ```
-
 The loss function is often a functional (meaning a one-dimensional summary) from the posterior. The following example shows how it reduces a three-dimensional problem into a single risk measure.
 
 :::{#exm-loss-extremes}
@@ -682,6 +716,7 @@ g2 <- ggplot(data = post_samp,
        y = expression(xi)) + 
   theme_classic() + 
   theme(axis.title.y = element_text(angle = 0))
+g1 + g2
 ```
 
 The generalized Pareto model only describes the $n_u$ exceedances above $u=10$, so we need to incorporate in the likelihood a binomial contribution for the probability $\zeta_u$ of exceeding the threshold $u$. 
@@ -813,16 +848,6 @@ g1 + g2
 
 :::
 
-The output of the Bayesian learning problem will be either of:
-
-1. a fully characterized distribution
-2. a numerical approximation to the posterior distribution (pointwise)
-3. an exact or approximate sample drawn from the posterior distribution
-
-In the first case, we will be able to directly evaluate quantities of interest if there are closed-form expressions for the latter, or else we could draw samples from the distribution and evaluate them via Monte-Carlo. In case of numerical approximations, we will need to resort to numerical integration or otherwise to get our answers.
-
-Often, we will also be interested in the marginal posterior distribution of each component $\theta_j$ in turn ($j=1, \ldots, J$). To get these, we carry out additional integration steps, $$p(\theta_j \mid \boldsymbol{y}) = \int p(\boldsymbol{\theta} \mid \boldsymbol{y}) \mathrm{d} \boldsymbol{\theta}_{-j}.$$
-With a posterior sample, this is trivial: it suffices to keep the column corresponding to $\theta_j$ and discard the others. 
 
 To communicate uncertainty, we may resort to credible regions and intervals.
 
@@ -834,14 +859,14 @@ A $(1-\alpha)$ **credible region** (or credible interval in the univariate setti
 
 :::
 
-These intervals are not unique, as are confidence sets. In the univariate setting, the central or equi-tailed interval are the most popular, and easily obtained by considering the $\alpha/2, 1-\alpha/2$ quantiles. These are easily obtained from samples by simply taking empirical quantiles. An alternative, highest posterior density credible sets, which may be a set of disjoint intervals obtained by considering the parts of the posterior with the highest density, may be more informative. The top panel @fig-credible-intervals shows the distinction for a bimodal mixture distribution, and a even more striking difference for 50% credible intervals for a symmetric beta distribution whose mass lie near the endpoints of the distribution, leading to no overlap between the two intervals.
+These intervals are not unique, as are confidence sets. In the univariate setting, the central or equitailed interval are the most popular, and easily obtained by considering the $\alpha/2, 1-\alpha/2$ quantiles. These are easily obtained from samples by simply taking empirical quantiles. An alternative, highest posterior density credible sets, which may be a set of disjoint intervals obtained by considering the parts of the posterior with the highest density, may be more informative. The top panel @fig-credible-intervals shows the distinction for a bimodal mixture distribution, and a even more striking difference for 50% credible intervals for a symmetric beta distribution whose mass lie near the endpoints of the distribution, leading to no overlap between the two intervals.
 
 
 ```{r}
 #| label: fig-credible-intervals
 #| eval: true
 #| echo: false
-#| fig-cap: "Density plots with 89% (top) and 50% (bottom) equitailed or central credible (left) and highest posterior density (right) intervals for two data sets, highlighted in grey." 
+#| fig-cap: "Density plots with 89% (top) and 50% (bottom) equitailed or central credible (left) and highest posterior density (right) regions for two data sets, highlighted in grey." 
 # ggproto from
 # https://stackoverflow.com/questions/20355849/ggplot2-shade-area-under-density-curve-by-group
 StatAreaUnderDensity <- ggproto(
