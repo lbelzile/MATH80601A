@@ -572,7 +572,9 @@ The choice of point summary to keep has it's root in decision theory.
 
 A loss function $c(\boldsymbol{\theta}, \boldsymbol{\upsilon})$ is a mapping from $\boldsymbol{\Theta} \to \mathbb{R}^k$ that assigns a weight to each value of $\boldsymbol{\theta}$, corresponding to the regret or loss arising from choosing this value. The corresponding point estimator $\widehat{\boldsymbol{\upsilon}}$ is the minimizer of the expected loss,
 
-$$\widehat{\boldsymbol{\upsilon}} = \mathop{\mathrm{argmin}}_{\boldsymbol{\upsilon}} \int_{\boldsymbol{\Theta}} c(\boldsymbol{\theta}, \boldsymbol{\upsilon})p(\boldsymbol{\theta} \mid \boldsymbol{y}) \mathrm{d} \boldsymbol{\theta}$$
+\begin{align*}
+\widehat{\boldsymbol{\upsilon}} &= \mathop{\mathrm{argmin}}_{\boldsymbol{\upsilon}}\mathsf{E}_{\boldsymbol{\Theta} \mid \boldsymbol{Y}}\{c(\boldsymbol{\theta}, \boldsymbol{v})\} \\&=\mathop{\mathrm{argmin}}_{\boldsymbol{\upsilon}} \int_{\boldsymbol{\Theta}} c(\boldsymbol{\theta}, \boldsymbol{\upsilon})p(\boldsymbol{\theta} \mid \boldsymbol{y}) \mathrm{d} \boldsymbol{\theta}
+\end{align*}
 
 :::
 
@@ -862,13 +864,15 @@ A $(1-\alpha)$ **credible region** (or credible interval in the univariate setti
 These intervals are not unique, as are confidence sets. In the univariate setting, the central or equitailed interval are the most popular, and easily obtained by considering the $\alpha/2, 1-\alpha/2$ quantiles. These are easily obtained from samples by simply taking empirical quantiles. An alternative, highest posterior density credible sets, which may be a set of disjoint intervals obtained by considering the parts of the posterior with the highest density, may be more informative. The top panel @fig-credible-intervals shows the distinction for a bimodal mixture distribution, and a even more striking difference for 50% credible intervals for a symmetric beta distribution whose mass lie near the endpoints of the distribution, leading to no overlap between the two intervals.
 
 
+
 ```{r}
 #| label: fig-credible-intervals
 #| eval: true
 #| echo: false
-#| fig-cap: "Density plots with 89% (top) and 50% (bottom) equitailed or central credible (left) and highest posterior density (right) regions for two data sets, highlighted in grey." 
+#| fig-cap: "Density plots with 89% (top) and 50% (bottom) equitailed or central credible (left) and highest posterior density (right) regions for two data sets, highlighted in grey. The horizontal lign gives the posterior density value determining the cutoff for the HDP region." 
 # ggproto from
 # https://stackoverflow.com/questions/20355849/ggplot2-shade-area-under-density-curve-by-group
+
 StatAreaUnderDensity <- ggproto(
   "StatAreaUnderDensity", Stat,
   required_aes = "x",
@@ -888,11 +892,12 @@ stat_aud <- function(mapping = NULL, data = NULL, geom = "area",
     params = list(xlim = xlim, n = n, ...))
 }
 set.seed(2023)
-nsamp <- 1e4
+nsamp <- 1e5
 # Sample data from a mixture model
  mixt <- sort(c(rnorm(0.5*nsamp, 20, 4), 
                 rnorm(0.2*nsamp, 55, 10),
                 55 + rexp(0.3*nsamp, 0.08)))
+dmixt <- function(x){0.5*dnorm(x, 20, 4) + 0.2*dnorm(x, 55, 10) + 0.3*dexp(55+x, 0.08)}                
 # mixt <- rbeta(nsamp, shape1 = 0.5, shape2 = 0.2)
 # Compute equitailed interval bounds
 
@@ -903,11 +908,13 @@ g1 <- ggplot(data = data.frame(x = mixt),
            alpha = .2) +
   geom_density() + 
   labs(x = "", y = "") +
-  scale_y_continuous(limits = c(0,0.04), expand = c(0,0)) +
+  scale_y_continuous(limits = c(0,0.05), expand = c(0,0)) +
   theme_classic() 
 hdiD <- HDInterval::hdi(density(mixt), credMass = 0.89, allowSplit = TRUE)
 g2 <- ggplot(data = data.frame(x = mixt),
        mapping = aes(x = x)) +
+    geom_hline(yintercept = attr(hdiD, "height"),
+             alpha = 0.2, linetype = "dashed") +
     stat_aud(geom = "area",
            xlim = hdiD[1,], 
            alpha = .2) +
@@ -915,13 +922,16 @@ g2 <- ggplot(data = data.frame(x = mixt),
            xlim = hdiD[2,], 
            alpha = .2) +
   geom_density() +
+  # stat_function(fun = dmixt, 
+  #               xlim = c(0,100),
+  #               n = 1001) +
   labs(y = "", x = "") +
-  scale_y_continuous(limits = c(0,0.04), expand = c(0,0)) +
+  scale_y_continuous(limits = c(0,0.05), expand = c(0,0)) +
   theme_classic() 
 
 
 shape <- 0.8
-g3 <- ggplot() +
+g3 <- ggplot()  +
   stat_function(fun = dbeta, 
                 args = list(shape1 = shape, shape2 = shape), 
                 fill = "gray", xlim = c(0, qbeta(p = 0.25, shape, shape)),
@@ -933,6 +943,8 @@ g3 <- ggplot() +
   stat_function(fun = dbeta, 
                 args = list(shape1 = shape, shape2 = shape), 
                 xlim = c(0,1),n = 1001) +
+  geom_hline(yintercept = dbeta(qbeta(p = 0.75, shape, shape),shape, shape),
+             alpha = 0.5, linetype = "dashed") +
   labs(x = "", y = "") +
   scale_x_continuous(limits = c(0,1), expand = c(0,0)) +
   scale_y_continuous(limits = c(0,5), expand = c(0,0)) +
@@ -950,6 +962,8 @@ g4 <- ggplot() +
   scale_x_continuous(limits = c(0,1), expand = c(0,0)) +
   scale_y_continuous(limits = c(0,5), expand = c(0,0)) +
   theme_classic()
-(g1 + g2) / (g3 + g4)
+(g1 + g2) / (g4 + g3)
+```
+
 ```
 

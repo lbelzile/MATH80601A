@@ -376,7 +376,9 @@ p(y_{\text{new}} \mid \boldsymbol{y}) &amp;= \int_0^\infty \frac{\tau^{1/2}}{(2\
 <p>The choice of point summary to keep has it’s root in decision theory.</p>
 <div id="def-lossfunction" class="theorem definition">
 <p><span class="theorem-title"><strong>Definition 1.1 (Loss function) </strong></span>A loss function <span class="math inline">\(c(\boldsymbol{\theta}, \boldsymbol{\upsilon})\)</span> is a mapping from <span class="math inline">\(\boldsymbol{\Theta} \to \mathbb{R}^k\)</span> that assigns a weight to each value of <span class="math inline">\(\boldsymbol{\theta}\)</span>, corresponding to the regret or loss arising from choosing this value. The corresponding point estimator <span class="math inline">\(\widehat{\boldsymbol{\upsilon}}\)</span> is the minimizer of the expected loss,</p>
-<p><span class="math display">\[\widehat{\boldsymbol{\upsilon}} = \mathop{\mathrm{argmin}}_{\boldsymbol{\upsilon}} \int_{\boldsymbol{\Theta}} c(\boldsymbol{\theta}, \boldsymbol{\upsilon})p(\boldsymbol{\theta} \mid \boldsymbol{y}) \mathrm{d} \boldsymbol{\theta}\]</span></p>
+<p><span class="math display">\[\begin{align*}
+\widehat{\boldsymbol{\upsilon}} &amp;= \mathop{\mathrm{argmin}}_{\boldsymbol{\upsilon}}\mathsf{E}_{\boldsymbol{\Theta} \mid \boldsymbol{Y}}\{c(\boldsymbol{\theta}, \boldsymbol{v})\} \\&amp;=\mathop{\mathrm{argmin}}_{\boldsymbol{\upsilon}} \int_{\boldsymbol{\Theta}} c(\boldsymbol{\theta}, \boldsymbol{\upsilon})p(\boldsymbol{\theta} \mid \boldsymbol{y}) \mathrm{d} \boldsymbol{\theta}
+\end{align*}\]</span></p>
 </div>
 <p>For example, in a univariate setting, the quadratic loss <span class="math inline">\(c(\theta, \upsilon) = (\theta-\upsilon)^2\)</span> returns the posterior mean, the absolute loss <span class="math inline">\(c(\theta, \upsilon)=|\theta - \upsilon|\)</span> returns the posterior median and the 0-1 loss <span class="math inline">\(c(\theta, \upsilon) = \mathrm{I}(\upsilon \neq \theta)\)</span> returns the posterior mode. All of these point estimators are central tendency measures, but some may be more adequate depending on the setting as they can correspond to potentially different values, as shown in the left-panel of <a href="#fig-central-moments">Figure&nbsp;<span>1.5</span></a>. The choice is application specific: for multimodal distributions, the mode is likely a better choice.</p>
 <p>If we know how to evaluate the distribution numerically, we can optimize to find the mode or else return the value for the pointwise evaluation on a grid at which the density achieves it’s maximum. The mean and median would have to be evaluated by numerical integration if there is no closed-form expression for the latter.</p>
@@ -473,16 +475,17 @@ r(q_0) = \int_{\boldsymbol{\Theta}}c(q(\boldsymbol{\theta}), q_0) p (\boldsymbol
 \end{align*}\]</span></p>
 </div>
 <p>These intervals are not unique, as are confidence sets. In the univariate setting, the central or equitailed interval are the most popular, and easily obtained by considering the <span class="math inline">\(\alpha/2, 1-\alpha/2\)</span> quantiles. These are easily obtained from samples by simply taking empirical quantiles. An alternative, highest posterior density credible sets, which may be a set of disjoint intervals obtained by considering the parts of the posterior with the highest density, may be more informative. The top panel <a href="#fig-credible-intervals">Figure&nbsp;<span>1.8</span></a> shows the distinction for a bimodal mixture distribution, and a even more striking difference for 50% credible intervals for a symmetric beta distribution whose mass lie near the endpoints of the distribution, leading to no overlap between the two intervals.</p>
-<div class="cell" data-hash="introduction_cache/html/fig-credible-intervals_ebf2f927fcf8601906703997b166fbe3">
+<div class="cell" data-hash="introduction_cache/html/fig-credible-intervals_91590dfce54f6fdc24fdabc6f526f362">
 <div class="cell-output-display">
 <div id="fig-credible-intervals" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
 <p><img src="introduction_files/figure-html/fig-credible-intervals-1.png" class="img-fluid figure-img" width="672"></p>
-<figcaption class="figure-caption">Figure&nbsp;1.8: Density plots with 89% (top) and 50% (bottom) equitailed or central credible (left) and highest posterior density (right) regions for two data sets, highlighted in grey.</figcaption>
+<figcaption class="figure-caption">Figure&nbsp;1.8: Density plots with 89% (top) and 50% (bottom) equitailed or central credible (left) and highest posterior density (right) regions for two data sets, highlighted in grey. The horizontal lign gives the posterior density value determining the cutoff for the HDP region.</figcaption>
 </figure>
 </div>
 </div>
 </div>
+<p>```</p>
 
 
 <div id="refs" class="references csl-bib-body hanging-indent" role="list" style="display: none">
