@@ -83,7 +83,7 @@ div.csl-indent {
 <script src="site_libs/quarto-search/fuse.min.js"></script>
 <script src="site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="./">
-<link href="./references.html" rel="next">
+<link href="./mcmc.html" rel="next">
 <link href="./introduction.html" rel="prev">
 <script src="site_libs/quarto-html/quarto.js"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
@@ -179,6 +179,12 @@ div.csl-indent {
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
+  <a href="./mcmc.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Simulation-based inference</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
   <a href="./references.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">References</span></a>
   </div>
@@ -210,6 +216,7 @@ div.csl-indent {
 
 <header id="title-block-header">
 <h1 class="title display-7"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Priors</span></h1>
+
 </header>
 
 <p>The posterior distribution combines two ingredients: the likelihood and the prior. If the former is a standard ingredient of any likelihood-based inference, prior specification requires some care. The purpose of this chapter is to consider different standard way of constructing prior functions, and to specify the parameters of the latter: we term these hyperparameters.</p>
@@ -289,13 +296,13 @@ p(y) &amp;= \frac{p(y \mid \lambda)p(\lambda)}{p(\lambda \mid y)} \\&amp;= \frac
 <div class="cell" data-hash="priors_cache/html/tbl-upworthy_cb5910745de87b8528f3b6847dd40abd">
 <div class="cell-output-display">
 <div id="tbl-upworthy" class="anchored">
-<table class="table table-sm table-striped small">
+<table data-quarto-postprocess="true" class="table table-sm table-striped small">
 <caption>Table&nbsp;2.1: Number of views, clicks for different headlines for the Upworthy data.</caption>
 <thead>
 <tr class="header">
-<th style="text-align: left;">headline</th>
-<th style="text-align: right;">impressions</th>
-<th style="text-align: right;">clicks</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">headline</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">impressions</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">clicks</th>
 </tr>
 </thead>
 <tbody>
@@ -322,6 +329,8 @@ p(y) &amp;= \frac{p(y \mid \lambda)p(\lambda)}{p(\lambda \mid y)} \\&amp;= \frac
 </tbody>
 </table>
 </div>
+
+
 </div>
 </div>
 <div class="cell" data-hash="priors_cache/html/fig-upworthy_1816e2f901b84d71ca1340bd8dffed24">
@@ -339,7 +348,7 @@ p(y) &amp;= \frac{p(y \mid \lambda)p(\lambda)}{p(\lambda \mid y)} \\&amp;= \frac
 <div id="exm-poisson-upworthy-question" class="theorem example">
 <p><span class="theorem-title"><strong>Example 2.6 (Should you phrase your headline as a question?) </strong></span>We can also consider aggregate records for Upworthy, as <span class="citation" data-cites="Alexander:2023">Alexander (<a href="references.html#ref-Alexander:2023" role="doc-biblioref">2023</a>)</span> did. The <code>upworthy_question</code> database contains a balanced sample of all headlines where at least one of the choices featured a question, with at least one alternative statement. Whether a headline contains a question or not is determined by querying for the question mark. We consider aggregated counts for all such headlines, with the <code>question</code> factor encoding whether there was a question, <code>yes</code> or <code>no</code>. For simplicity, we treat the number of views as fixed, but keep in mind that A/B tests are often sequential experiments with a stopping rule.<a href="#fn5" class="footnote-ref" id="fnref5" role="doc-noteref"><sup>5</sup></a></p>
 <p>We model first the rates using a Poisson regression; the corresponding frequentist analysis would include an offset to account for differences in views. If <span class="math inline">\(\lambda_{j}\)</span> <span class="math inline">\((j=1, 2)\)</span> are the average rate for each factor level (yes and no), then <span class="math inline">\(\mathsf{E}(Y_{ij}/n_{ij}) = \lambda_j\)</span>. In the frequentist setting, we can fit a simple Poisson generalized linear regression model with an offset term and a binary variable.</p>
-<div class="cell" data-hash="priors_cache/html/unnamed-chunk-5_7cdad5ad62d77b39057d2582439d4533">
+<div class="cell" data-hash="priors_cache/html/unnamed-chunk-6_5ba1a7f021d588eba71717d3e905bcf9">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(upworthy_question, <span class="at">package =</span> <span class="st">"hecbayes"</span>)</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>poismod <span class="ot">&lt;-</span> <span class="fu">glm</span>(</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>  clicks <span class="sc">~</span> <span class="fu">offset</span>(<span class="fu">log</span>(impressions)) <span class="sc">+</span> question, </span>
@@ -375,7 +384,7 @@ p(\mu \mid \sigma) &amp;\propto \exp\left\{ -\frac{1}{2\sigma^2}\sum_{i=1}^n (y_
 f(x; \mu, \sigma) \stackrel{\mu}{\propto} \exp\left(-\frac{1}{2 \sigma^2}\mu^2 + \frac{x}{\sigma^2}\mu\right)
 \end{align*}\]</span> we can deduce by matching mean and variance that the conditional posterior <span class="math inline">\(p(\mu \mid \sigma)\)</span> is Gaussian with reciprocal variance (precision) <span class="math inline">\(n/\sigma^2 + 1/\tau^2\)</span> and mean <span class="math inline">\((n\overline{y}\tau^2 + \nu \sigma^2)/(n\tau^2 + \sigma^2)\)</span>. The precision is an average of that of the prior and data, but assigns more weight to the latter, which increases linearly with the sample size <span class="math inline">\(n\)</span>. Likewise, the posterior mean is a weighted average of prior and sample mean, with weights proportional to the relative precision.</p>
 </div>
-<p>The exponential family is quite large; <a href="https://doi.org/10.1.1.157.5540">Fink (1997) <em>A Compendium of Conjugate Priors</em></a> gives multiple examples of conjugate priors and work out parameter values.</p>
+<p>The exponential family is quite large; <a href="https://citeseerx.ist.psu.edu/doc/10.1.1.157.5540">Fink (1997) <em>A Compendium of Conjugate Priors</em></a> gives multiple examples of conjugate priors and work out parameter values.</p>
 <p>In general, unless the sample size is small and we want to add expert opinion, we may wish to pick an <em>uninformative prior</em>, i.e., one that does not impact much the outcome. For conjugate models, one can often show that the relative weight of prior parameters (relative to the random sample likelihood contribution) becomes negligible by <a href="https://en.wikipedia.org/wiki/Conjugate_prior">investigating their relative weights</a>.</p>
 </section>
 <section id="uninformative-priors" class="level2" data-number="2.3">
@@ -464,7 +473,7 @@ p(\boldsymbol{q}) \propto q_1^{\alpha_1-1}\exp(-\beta_1 q_1) \prod_{i=2}^3 (q_i-
 <p><span class="theorem-title"><strong>Example 2.12 (Penalized complexity prior for random effects models) </strong></span><span class="citation" data-cites="Simpson:2017">Simpson et al. (<a href="references.html#ref-Simpson:2017" role="doc-biblioref">2017</a>)</span> give the example of a Gaussian prior for random effects <span class="math inline">\(\boldsymbol{\alpha}\)</span>, of the form <span class="math inline">\(\boldsymbol{\alpha} \mid \zeta \sim \mathsf{No}_J(\boldsymbol{0}_J, \zeta^2 \mathbf{I}_J)\)</span> where <span class="math inline">\(\zeta_0=0\)</span> corresponds to the absence of random subject-variability. The penalized complexity prior for the scale <span class="math inline">\(\zeta\)</span> is then an exponential with rate <span class="math inline">\(\lambda\)</span>,<a href="#fn8" class="footnote-ref" id="fnref8" role="doc-noteref"><sup>8</sup></a> with density <span class="math inline">\(p(\zeta \mid \lambda) = \lambda \exp(-\lambda \zeta)\)</span>. Using the recommendation for setting <span class="math inline">\(\lambda\)</span>, we get that <span class="math inline">\(\lambda = -\ln(\alpha/U)\)</span> and this can be directly interpreted in terms of standard deviation of <span class="math inline">\(\zeta\)</span>; simulation from the prior predictive may also be used for calibration.</p>
 </div>
 <div id="exm-pcprior-arorder" class="theorem example">
-<p><span class="theorem-title"><strong>Example 2.13 (Penalized complexity prior for autoregressive model of order 1) </strong></span><span class="citation" data-cites="Sorbye.Holbek.Rue:2017">Sørbye and Rue (<a href="references.html#ref-Sorbye.Holbek.Rue:2017" role="doc-biblioref">2017</a>)</span> derive penalized complexity prior for the Gaussian stationary AR(1) model with autoregressive parameter <span class="math inline">\(\phi \in (-1,1)\)</span>, where <span class="math inline">\(Y_t \mid Y_{t-1}, \phi, \sigma^2 \sim \mathsf{No}(\phi Y_{t-1}, \sigma^2)\)</span>. There are two based models that could be of interest: one with <span class="math inline">\(\phi=0\)</span>, corresponding to a memoryless model with no autocorrelation, and a static mean <span class="math inline">\(\phi=1\)</span> for no change in time; note that the latter is not stationary. For the former, the penalized complexity prior is <span class="math display">\[\begin{align*}
+<p><span class="theorem-title"><strong>Example 2.13 (Penalized complexity prior for autoregressive model of order 1) </strong></span><span class="citation" data-cites="Sorbye.Rue:2017">Sørbye and Rue (<a href="references.html#ref-Sorbye.Rue:2017" role="doc-biblioref">2017</a>)</span> derive penalized complexity prior for the Gaussian stationary AR(1) model with autoregressive parameter <span class="math inline">\(\phi \in (-1,1)\)</span>, where <span class="math inline">\(Y_t \mid Y_{t-1}, \phi, \sigma^2 \sim \mathsf{No}(\phi Y_{t-1}, \sigma^2)\)</span>. There are two based models that could be of interest: one with <span class="math inline">\(\phi=0\)</span>, corresponding to a memoryless model with no autocorrelation, and a static mean <span class="math inline">\(\phi=1\)</span> for no change in time; note that the latter is not stationary. For the former, the penalized complexity prior is <span class="math display">\[\begin{align*}
 p(\phi \mid \lambda) = \frac{\lambda}{2} \exp\left[-\lambda \left\{-\ln(1-\phi^2)\right\}^{1/2}\right] \frac{|\phi|}{(1-\phi^2)\left\{-\ln(1-\phi^2)\right\}^{1/2}}.
 \end{align*}\]</span> One can set <span class="math inline">\(\lambda\)</span> by considering plausible values by relating the parameter to the variance of the one-step ahead forecast error.</p>
 </div>
@@ -487,7 +496,7 @@ Y_{ij} &amp;\sim \mathsf{Po}\{\mu = \exp(\beta_{j} + \alpha_i)\},\\
 \end{align*}\]</span> so observations are conditionally independent given hyperparameters <span class="math inline">\(\boldsymbol{\alpha}\)</span> and <span class="math inline">\(\boldsymbol{\beta}\)</span>.</p>
 <p>In frequentist statistics, there is a distinction made in mixed-effect models between parameters that are treated as constants, termed fixed effects and corresponding in this example to <span class="math inline">\(\boldsymbol{\beta}\)</span>, and random effects, equivalent to <span class="math inline">\(\boldsymbol{\alpha}\)</span>. There is no such distinction in the Bayesian paradigm, except perhaps for the choice of prior.</p>
 <p>We can look at some of posterior distribution of the 31 random effects (here the first five individuals) and the fixed effect parameters <span class="math inline">\(\boldsymbol{\beta}\)</span>, plus the variance of the random effect <span class="math inline">\(\kappa\)</span>: there is strong evidence that the latter is non-zero, suggesting strong heterogeneity between individuals. The distraction which results in the largest number of violation is texting, while the other conditions all seem equally distracting on average (note that there is no control group with no distraction to compare with, so it is hard to draw conclusions).</p>
-<div class="cell" data-hash="priors_cache/html/fig-post-dist-poisson-mixed_ffde3e4abd185b194c030066a7e83c10">
+<div class="cell" data-hash="priors_cache/html/fig-post-dist-poisson-mixed_a75ccbdf2221761285932cef18b626de">
 <div class="cell-output-display">
 <div id="fig-post-dist-poisson-mixed" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
@@ -577,7 +586,7 @@ Matias, J. Nathan, Kevin Munger, Marianne Aubin Le Quere, and Charles Ebersole. 
 <div id="ref-Simpson:2017" class="csl-entry" role="listitem">
 Simpson, Daniel, Håvard Rue, Andrea Riebler, Thiago G. Martins, and Sigrunn H. Sørbye. 2017. <span>“Penalising Model Component Complexity: A Principled, Practical Approach to Constructing Priors.”</span> <em>Statistical Science</em> 32 (1): 1–28. <a href="https://doi.org/10.1214/16-STS576">https://doi.org/10.1214/16-STS576</a>.
 </div>
-<div id="ref-Sorbye.Holbek.Rue:2017" class="csl-entry" role="listitem">
+<div id="ref-Sorbye.Rue:2017" class="csl-entry" role="listitem">
 Sørbye, Sigrunn Holbek, and Håvard Rue. 2017. <span>“Penalised Complexity Priors for Stationary Autoregressive Processes.”</span> <em>Journal of Time Series Analysis</em> 38 (6): 923–35. <a href="https://doi.org/10.1111/jtsa.12242">https://doi.org/10.1111/jtsa.12242</a>.
 </div>
 </div>
@@ -843,8 +852,8 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="./references.html" class="pagination-link">
-        <span class="nav-page-text">References</span> <i class="bi bi-arrow-right-short"></i>
+      <a href="./mcmc.html" class="pagination-link">
+        <span class="nav-page-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Simulation-based inference</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>

@@ -1,5 +1,14 @@
 # Priors
 
+```{r}
+#| label: setup
+#| file: "_common.R"
+#| include: true
+#| message: false
+#| warning: false
+#| echo: false
+```
+
 The posterior distribution combines two ingredients: the likelihood and the prior. If the former is a standard ingredient of any likelihood-based inference, prior specification requires some care. The purpose of this chapter is to consider different standard way of constructing prior functions, and to specify the parameters of the latter: we term these hyperparameters.
 
 
@@ -612,7 +621,7 @@ which is zero at the model with $\zeta_0$. The PC prior then constructs an expon
 
 ## Penalized complexity prior for autoregressive model of order 1
 
-@Sorbye.Holbek.Rue:2017 derive penalized complexity prior for the Gaussian stationary AR(1) model with autoregressive parameter $\phi \in (-1,1)$, where $Y_t \mid Y_{t-1}, \phi, \sigma^2 \sim \mathsf{No}(\phi Y_{t-1}, \sigma^2)$. There are two based models that could be of interest: one with $\phi=0$, corresponding to a memoryless model with no autocorrelation, and a static mean $\phi=1$ for no change in time;  note that the latter is not stationary. For the former, the penalized complexity prior is 
+@Sorbye.Rue:2017 derive penalized complexity prior for the Gaussian stationary AR(1) model with autoregressive parameter $\phi \in (-1,1)$, where $Y_t \mid Y_{t-1}, \phi, \sigma^2 \sim \mathsf{No}(\phi Y_{t-1}, \sigma^2)$. There are two based models that could be of interest: one with $\phi=0$, corresponding to a memoryless model with no autocorrelation, and a static mean $\phi=1$ for no change in time;  note that the latter is not stationary. For the former, the penalized complexity prior is 
 \begin{align*}
 p(\phi \mid \lambda) = \frac{\lambda}{2} \exp\left[-\lambda \left\{-\ln(1-\phi^2)\right\}^{1/2}\right] \frac{|\phi|}{(1-\phi^2)\left\{-\ln(1-\phi^2)\right\}^{1/2}}.
 \end{align*}
@@ -693,8 +702,9 @@ We can look at some of posterior distribution of the  31 random effects (here th
 #| warning: false
 #| label: fig-post-dist-poisson-mixed
 #| fig-cap: "Posterior density plots with 50% credible intervals and median value for the random effects of the first five individuals (left) and the fixed effects and random effect variance (right)."
+postsamp <- as.array(cmdstanr::read_cmdstan_csv("models/Poisson_mixed1-1.csv"))
 bayesplot::color_scheme_set(scheme = "gray")
-posterior <- as.array(postsamp$draws())
+posterior <- as.array(postsamp$post_warmup_draws)
 g1 <- bayesplot::mcmc_areas(
     posterior, 
     pars = c("alpha[1]", "alpha[2]", "alpha[3]", "alpha[4]", "alpha[5]"),

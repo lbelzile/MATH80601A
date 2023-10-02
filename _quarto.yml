@@ -24,6 +24,7 @@ book:
   - index.qmd
   - introduction.qmd
   - priors.qmd
+  - mcmc.qmd
   - references.qmd
   site-url: https://lbelzile.github.io/math80601a/
   repo-url: https://github.com/lbelzile/math80601a/
