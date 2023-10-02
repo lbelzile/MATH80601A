@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.3.433">
+<meta name="generator" content="quarto-1.2.335">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -17,10 +17,9 @@ div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
 ul.task-list{list-style: none;}
 ul.task-list li input[type="checkbox"] {
   width: 0.8em;
-  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  margin: 0 0.8em 0.2em -1.6em;
   vertical-align: middle;
 }
-/* CSS for syntax highlighting */
 pre > code.sourceCode { white-space: pre; position: relative; }
 pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
 pre > code.sourceCode > span:empty { height: 1.2em; }
@@ -47,19 +46,48 @@ pre.numberSource code > span > a:first-child::before
     -khtml-user-select: none; -moz-user-select: none;
     -ms-user-select: none; user-select: none;
     padding: 0 4px; width: 4em;
+    color: #aaaaaa;
   }
-pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
 div.sourceCode
   {   }
 @media screen {
 pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
-/* CSS for citations */
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
 div.csl-bib-body { }
 div.csl-entry {
   clear: both;
 }
-.hanging-indent div.csl-entry {
+.hanging div.csl-entry {
   margin-left:2em;
   text-indent:-2em;
 }
@@ -73,7 +101,8 @@ div.csl-right-inline {
 }
 div.csl-indent {
   margin-left: 2em;
-}</style>
+}
+</style>
 
 
 <script src="site_libs/quarto-nav/quarto-nav.js"></script>
@@ -110,12 +139,10 @@ div.csl-indent {
     "search-more-matches-text": "more matches in this document",
     "search-clear-button-title": "Clear",
     "search-detached-cancel-button-title": "Cancel",
-    "search-submit-button-title": "Submit",
-    "search-label": "Search"
+    "search-submit-button-title": "Submit"
   }
 }</script>
 
-  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
   <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
 
 <link rel="stylesheet" href="style.css">
@@ -125,16 +152,11 @@ div.csl-indent {
 
 <div id="quarto-search-results"></div>
   <header id="quarto-header" class="headroom fixed-top">
-  <nav class="quarto-secondary-nav">
-    <div class="container-fluid d-flex">
-      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
-        <i class="bi bi-layout-text-sidebar-reverse"></i>
-      </button>
-      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./mcmc.html"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Simulation-based inference</span></a></li></ol></nav>
-      <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
-      </a>
-      <button type="button" class="btn quarto-search-button" aria-label="" onclick="window.quartoOpenSearch();">
-        <i class="bi bi-search"></i>
+  <nav class="quarto-secondary-nav" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+    <div class="container-fluid d-flex justify-content-between">
+      <h1 class="quarto-secondary-nav-title"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Simulation-based inference</span></h1>
+      <button type="button" class="quarto-btn-toggle btn" aria-label="Show secondary navigation">
+        <i class="bi bi-chevron-right"></i>
       </button>
     </div>
   </nav>
@@ -142,67 +164,61 @@ div.csl-indent {
 <!-- content -->
 <div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
 <!-- sidebar -->
-  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal sidebar-navigation floating overflow-auto">
+  <nav id="quarto-sidebar" class="sidebar collapse sidebar-navigation floating overflow-auto">
     <div class="pt-lg-2 mt-2 text-left sidebar-header">
     <div class="sidebar-title mb-0 py-0">
       <a href="./">Bayesian modelling</a> 
         <div class="sidebar-tools-main">
-    <a href="https://github.com/lbelzile/math80601a/" rel="" title="Source Code" class="quarto-navigation-tool px-1" aria-label="Source Code"><i class="bi bi-github"></i></a>
-    <a href="./MATH80601A-bayesmod.pdf" rel="" title="Download PDF" class="quarto-navigation-tool px-1" aria-label="Download PDF"><i class="bi bi-file-pdf"></i></a>
+    <a href="https://github.com/lbelzile/math80601a/" title="Source Code" class="sidebar-tool px-1"><i class="bi bi-github"></i></a>
+    <a href="./MATH80601A-bayesmod.pdf" title="Download PDF" class="sidebar-tool px-1"><i class="bi bi-file-pdf"></i></a>
 </div>
     </div>
       </div>
-        <div class="mt-2 flex-shrink-0 align-items-center">
+      <div class="mt-2 flex-shrink-0 align-items-center">
         <div class="sidebar-search">
         <div id="quarto-search" class="" title="Search"></div>
         </div>
-        </div>
+      </div>
     <div class="sidebar-menu-container"> 
     <ul class="list-unstyled mt-1">
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./index.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Welcome</span></a>
+  <a href="./index.html" class="sidebar-item-text sidebar-link">Welcome</a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./introduction.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Bayesics</span></span></a>
+  <a href="./introduction.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Bayesics</span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./priors.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Priors</span></span></a>
+  <a href="./priors.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Priors</span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./mcmc.html" class="sidebar-item-text sidebar-link active">
- <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Simulation-based inference</span></span></a>
+  <a href="./mcmc.html" class="sidebar-item-text sidebar-link active"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Simulation-based inference</span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./references.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">References</span></a>
+  <a href="./references.html" class="sidebar-item-text sidebar-link">References</a>
   </div>
 </li>
     </ul>
     </div>
 </nav>
-<div id="quarto-sidebar-glass" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass"></div>
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
         <nav id="TOC" role="doc-toc" class="toc-active">
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#monte-carlo-methods" id="toc-monte-carlo-methods" class="nav-link active" data-scroll-target="#monte-carlo-methods"><span class="header-section-number">3.1</span> Monte Carlo methods</a></li>
-  <li><a href="#markov-chain-monte-carlo" id="toc-markov-chain-monte-carlo" class="nav-link" data-scroll-target="#markov-chain-monte-carlo"><span class="header-section-number">3.2</span> Markov chain Monte Carlo</a></li>
-  <li><a href="#markov-chain-monte-carlo-algorithms" id="toc-markov-chain-monte-carlo-algorithms" class="nav-link" data-scroll-target="#markov-chain-monte-carlo-algorithms"><span class="header-section-number">3.3</span> Markov chain Monte Carlo algorithms</a></li>
-  <li><a href="#metropolishastings-algorithm" id="toc-metropolishastings-algorithm" class="nav-link" data-scroll-target="#metropolishastings-algorithm"><span class="header-section-number">3.4</span> Metropolis–Hastings algorithm</a></li>
+  <li><a href="#monte-carlo-methods" id="toc-monte-carlo-methods" class="nav-link active" data-scroll-target="#monte-carlo-methods"><span class="toc-section-number">3.1</span>  Monte Carlo methods</a></li>
+  <li><a href="#markov-chain-monte-carlo" id="toc-markov-chain-monte-carlo" class="nav-link" data-scroll-target="#markov-chain-monte-carlo"><span class="toc-section-number">3.2</span>  Markov chain Monte Carlo</a></li>
+  <li><a href="#markov-chain-monte-carlo-algorithms" id="toc-markov-chain-monte-carlo-algorithms" class="nav-link" data-scroll-target="#markov-chain-monte-carlo-algorithms"><span class="toc-section-number">3.3</span>  Markov chain Monte Carlo algorithms</a></li>
+  <li><a href="#metropolishastings-algorithm" id="toc-metropolishastings-algorithm" class="nav-link" data-scroll-target="#metropolishastings-algorithm"><span class="toc-section-number">3.4</span>  Metropolis–Hastings algorithm</a></li>
   </ul>
 <div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/lbelzile/math80601a/edit/main/mcmc.qmd" class="toc-action">Edit this page</a></p></div></div></nav>
     </div>
@@ -210,11 +226,14 @@ div.csl-indent {
 <main class="content" id="quarto-document-content">
 
 <header id="title-block-header">
-<h1 class="title display-7"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Simulation-based inference</span></h1>
+<h1 class="title d-none d-lg-block display-7"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Simulation-based inference</span></h1>
 
 </header>
 
-<p>There are two major approaches to handling the problem of the unknown normalizing constant that is the marginal likelihood: deterministic approximations (Laplace and nested Laplace approximations, variational methods and expectation propagation). This chapter covers stochastic approximations, and focuses on implementation of basic Markov chain Monte Carlo algorithms, which circumvent the need to calculate the normalizing constant of the posterior entirely. We present several examples of implementations, several tricks for tuning and diagnostics of convergence.</p>
+<div class="cell" data-file="_common.R" data-hash="mcmc_cache/html/setup_cbcb88d98b9e05e3749fd2d006c95b9f">
+
+</div>
+<p>There are two major approaches to handling the problem of the unknown normalizing constant: deterministic and stochastic approximations. The former includes Laplace and nested Laplace approximations, variational methods and expectation propagation. This chapter covers the latter, stochastic approximations, and focuses on implementation of basic Markov chain Monte Carlo algorithms. The simulation algorithms circumvent the need to calculate the normalizing constant of the posterior entirely. We present several examples of implementations, several tricks for tuning and diagnostics of convergence.</p>
 <section id="monte-carlo-methods" class="level2" data-number="3.1">
 <h2 data-number="3.1" class="anchored" data-anchor-id="monte-carlo-methods"><span class="header-section-number">3.1</span> Monte Carlo methods</h2>
 <p>Consider a target distribution with finite expected value: think of the posterior of some model of interest, or some functional thereof. The law of large numbers guarantees that, if we can draw observations from our target distribution, then the sample average will converge to the expected value of that distribution, as the sample size becomes larger and larger, provided the expectation is finite.</p>
@@ -230,7 +249,7 @@ div.csl-indent {
 <div id="fig-monte-carlo-path" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
 <p><img src="mcmc_files/figure-html/fig-monte-carlo-path-1.png" class="img-fluid figure-img" width="672"></p>
-<figcaption class="figure-caption">Figure&nbsp;3.1: Running mean trace plots for <span class="math inline">\(\mathrm{I}(x&lt;1)\)</span> (left), <span class="math inline">\(x\)</span> (middle) and <span class="math inline">\(1/x\)</span> (right) for a Gamma distribution with shape 0.5 and rate 2, as a function of the Monte Carlo sample size.</figcaption>
+<p></p><figcaption class="figure-caption">Figure&nbsp;3.1: Running mean trace plots for <span class="math inline">\(\mathrm{I}(x&lt;1)\)</span> (left), <span class="math inline">\(x\)</span> (middle) and <span class="math inline">\(1/x\)</span> (right) for a Gamma distribution with shape 0.5 and rate 2, as a function of the Monte Carlo sample size.</figcaption><p></p>
 </figure>
 </div>
 </div>
@@ -243,28 +262,107 @@ Example: truncated Gaussian
 Exponential tilting
 Generalized ratio-of-uniform method
 -->
-<div id="exm-rejection-sampling" class="theorem example">
-<p><span class="theorem-title"><strong>Example 3.2 (Rejection sampling) </strong></span>Rejection sampling (also termed accept-reject algorithm) samples from a random vector with density <span class="math inline">\(p(\cdot)\)</span> by drawing candidates from a proposal with density <span class="math inline">\(p(\cdot)\)</span>, where <span class="math inline">\(q(\cdot)\)</span> is such that <span class="math inline">\(p(\boldsymbol{\theta}) \leq C q(\boldsymbol{\theta})\)</span> for <span class="math inline">\(C \geq 1\)</span> for all values of <span class="math inline">\(\boldsymbol{\theta}\)</span> in the support of <span class="math inline">\(p(\cdot)\)</span>. A proof can be found in <span class="citation" data-cites="Devroye:1986">Devroye (<a href="references.html#ref-Devroye:1986" role="doc-biblioref">1986</a>, Theorem 3.1)</span></p>
+<div id="prp-rejection-sampling" class="theorem proposition">
+<p><span class="theorem-title"><strong>Proposition 3.1 (Rejection sampling) </strong></span>Rejection sampling (also termed accept-reject algorithm) samples from a random vector with density <span class="math inline">\(p(\cdot)\)</span> by drawing candidates from a proposal with density <span class="math inline">\(p(\cdot)\)</span>, where <span class="math inline">\(q(\cdot)\)</span> is such that <span class="math inline">\(p(\boldsymbol{\theta}) \leq C q(\boldsymbol{\theta})\)</span> for <span class="math inline">\(C \geq 1\)</span> for all values of <span class="math inline">\(\boldsymbol{\theta}\)</span> in the support of <span class="math inline">\(p(\cdot)\)</span>. A proof can be found in <span class="citation" data-cites="Devroye:1986">Devroye (<a href="references.html#ref-Devroye:1986" role="doc-biblioref">1986</a>, Theorem 3.1)</span></p>
 <ol type="1">
 <li>Generate <span class="math inline">\(\boldsymbol{\theta}^{\star}\)</span> from the proposal with density <span class="math inline">\(q\)</span> and <span class="math inline">\(U \sim \mathsf{U}(0,1)\)</span></li>
-<li>Compute the ratio <span class="math inline">\(R \gets C^{-1} p(\boldsymbol{\theta}^{\star})/ q(\boldsymbol{\theta}^{\star})/\)</span>.</li>
+<li>Compute the ratio <span class="math inline">\(R \gets C^{-1} p(\boldsymbol{\theta}^{\star})/ q(\boldsymbol{\theta}^{\star})\)</span>.</li>
 <li>If <span class="math inline">\(R \leq U\)</span>, return <span class="math inline">\(\boldsymbol{\theta}\)</span>, else return to step 1.</li>
 </ol>
 </div>
-<p>Rejection sampling requires the proposal <span class="math inline">\(q\)</span> to have a support at least as large as that of <span class="math inline">\(p\)</span> and resemble closely the density. It should be chosen so that the bound <span class="math inline">\(C\)</span> is as sharp as possible and close to 1. The dominating density <span class="math inline">\(q\)</span> must have heavier tails than the density of interest. The expected number of simulations needed to accept one proposal is <span class="math inline">\(C\)</span>. We need to be able to compute an upper bound <span class="math inline">\(C\)</span>. Finally, for the method to be useful, we need to be able to simulate easily and cheaply from the proposal. The optimal value of <span class="math inline">\(C\)</span> is <span class="math inline">\(C = \sup_{\boldsymbol{\theta}} p(\boldsymbol{\theta}) / q(\boldsymbol{\theta})\)</span>. This quantity may be obtained by numerical optimization, by finding the mode of the ratio of the log densities if the maximum is not known analytically.</p>
-<div id="exm-ratio-uniform" class="theorem example">
-<p><span class="theorem-title"><strong>Example 3.3 (Ratio of uniform method) </strong></span>The ratio-of-uniform method <span class="citation" data-cites="Kinderman.Monahan:1977 Wakefield:1991">(<a href="references.html#ref-Kinderman.Monahan:1977" role="doc-biblioref">Kinderman and Monahan 1977</a>; <a href="references.html#ref-Wakefield:1991" role="doc-biblioref">Wakefield, Gelfand, and Smith 1991</a>)</span> is a niche simulation algorithm to draw samples from a unnormalized density <span class="math inline">\(f(\boldsymbol{\theta})\)</span> for <span class="math inline">\(\boldsymbol{\theta} \in \boldsymbol{\Theta} \subseteq \mathbb{R}^d\)</span>. For some <span class="math inline">\(r \geq 0\)</span>, consider the set <span class="math display">\[\begin{align*}
-\mathcal{C}_r = \left\{ (u_0, \ldots, u_d): 0 &lt; u_0 \leq \left[f(u_1/u_0^r, \ldots, u_d/u_0^r)\right]^{\frac{1}{rd+1}}\right\}.
-\end{align*}\]</span> If we can generate <span class="math inline">\(u_0, \ldots, u_d\)</span> uniformly over <span class="math inline">\(\mathcal{C}_R\)</span>, then the draws <span class="math inline">\((u_1/u_0^r, \ldots, u_d/u_0^r)\)</span> are from the normalized density <span class="math inline">\(f\)</span>. Rejection sampling is used to obtain uniform draws over <span class="math inline">\(\mathcal{C}_r\)</span> under some conditions on the density and marginal moments. See <a href="https://paulnorthrop.github.io/rust/articles/rust-a-vignette.html">the <code>rust</code> package vignette</a> for technical details and examples. Like with other accept-reject algorithms, the acceptance rate of the proposal goes down with the dimension of the problem. This algorithm was used in <a href="introduction.html#exm-loss-extremes">Example&nbsp;<span>1.4</span></a> to generate draws from the posterior.</p>
+<p>Rejection sampling requires the proposal <span class="math inline">\(q\)</span> to have a support at least as large as that of <span class="math inline">\(p\)</span> and resemble closely the density. It should be chosen so that the upper bound <span class="math inline">\(C\)</span> is as sharp as possible and close to 1. The dominating density <span class="math inline">\(q\)</span> must have heavier tails than the density of interest. The expected number of simulations needed to accept one proposal is <span class="math inline">\(C.\)</span> Finally, for the method to be useful, we need to be able to simulate easily and cheaply from the proposal. The optimal value of <span class="math inline">\(C\)</span> is <span class="math inline">\(C = \sup_{\boldsymbol{\theta}} p(\boldsymbol{\theta}) / q(\boldsymbol{\theta})\)</span>. This quantity may be obtained by numerical optimization, by finding the mode of the ratio of the log densities if the maximum is not known analytically.</p>
+<div id="exm-accept-reject-truncated" class="theorem example">
+<p><span class="theorem-title"><strong>Example 3.2 (Truncated Gaussian distribution) </strong></span>Consider the problem of sampling from a Gaussian distribution <span class="math inline">\(Y \sim \mathsf{No}(\mu, \sigma^2)\)</span> truncated in the interval <span class="math inline">\(a, b,\)</span> which has density <span class="math display">\[\begin{align*}
+f(x; \mu, \sigma, a, b) = \frac{1}{\sigma}\frac{\phi\left(\frac{x-\mu}{\sigma}\right)}{\Phi\{(b-\mu)/\sigma\}-\Phi\{(a-\mu)/\sigma\}}.
+\end{align*}\]</span> where <span class="math inline">\(\phi(\cdot), \Phi(\cdot)\)</span> are respectively the density and distribution function of the standard Gaussian distribution.</p>
+<p>Since the Gaussian is a location-scale family, we can reduce the problem to sampling <span class="math inline">\(X\)</span> from a standard Gaussian truncated on <span class="math inline">\(\alpha = (a-\mu)/\sigma\)</span> and <span class="math inline">\(\beta = (b-\mu)/\sigma\)</span> and back transform the result as <span class="math inline">\(Y = \mu + \sigma X\)</span>.</p>
+<p>A crude accept-reject sampling algorithm would consider sampling from the same untruncated distribution with density <span class="math inline">\(g(X) = \sigma^{-1}\phi\{(x-\mu)/\sigma\}\)</span>, and the acceptance ratio is <span class="math inline">\(C=\{\Phi(\beta) - \Phi(\alpha)\}\)</span>. We thus simply simulate points from the Gaussian and accept any that falls within the bounds.</p>
+<div class="cell" data-hash="mcmc_cache/html/unnamed-chunk-3_635ce8865b87e68fa8a02c278f63baa2">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Standard Gaussian truncated on [0,1]</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>candidate <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(<span class="fl">1e5</span>)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>trunc_samp <span class="ot">&lt;-</span> candidate[candidate <span class="sc">&gt;=</span> <span class="dv">0</span> <span class="sc">&amp;</span> candidate <span class="sc">&lt;=</span> <span class="dv">1</span>]</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Acceptance rate</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="fu">length</span>(trunc_samp)<span class="sc">/</span><span class="fl">1e5</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.34242</code></pre>
 </div>
-<!--
-:::{#exm-accept-reject}
-
-Truncated Gaussian with a probit model?
-
-:::
-
--->
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Theoretical acceptance rate</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="fu">pnorm</span>(<span class="dv">1</span>)<span class="sc">-</span><span class="fu">pnorm</span>(<span class="dv">0</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.3413447</code></pre>
+</div>
+</div>
+<p>We can of course do better: if we consider a random variable with distribution function <span class="math inline">\(F\)</span>, but truncated over the interval <span class="math inline">\([a,b]\)</span>, then the resulting distribution function is <span class="math display">\[\frac{F(x) - F(a)}{F(b)-F(a)}, \qquad a \leq x \leq b,\]</span> and we can invert this expression to get the quantile function of the truncated variable in terms of the distribution function <span class="math inline">\(F\)</span> and the quantile function <span class="math inline">\(F^{-1}\)</span> of the original untruncated variable.</p>
+<p>For the Gaussian, this gives <span class="math display">\[\begin{align*}
+X \sim \Phi^{-1}\left[\Phi(\alpha) + \{\Phi(\beta)-\Phi(\alpha)\}U\right]
+\end{align*}\]</span> for <span class="math inline">\(U \sim \mathsf{U}(0,1)\)</span>. Although the quantile and distribution functions of the Gaussian, <code>pnorm</code> and <code>qnorm</code> in <strong>R</strong>, are very accurate, this method will fail for rare event simulation because it will return <span class="math inline">\(\Phi(x) = 0\)</span> for <span class="math inline">\(x \leq -39\)</span> and <span class="math inline">\(\Phi(x)=1\)</span> for <span class="math inline">\(x \geq 8.3\)</span>, implying that <span class="math inline">\(a \leq 8.3\)</span> for this approach to work <span class="citation" data-cites="LEcuyer.Botev:2017">(<a href="references.html#ref-LEcuyer.Botev:2017" role="doc-biblioref">Botev and L’Écuyer 2017</a>)</span>.</p>
+<p>Consider the problem of simulating events in the right tail for a standard Gaussian where <span class="math inline">\(a &gt; 0\)</span>; Marsaglia’s method <span class="citation" data-cites="Devroye:1986">(<a href="references.html#ref-Devroye:1986" role="doc-biblioref">Devroye 1986, 381</a>)</span>, can be used for that purpose. Write the density of the Gaussian as <span class="math inline">\(f(x) = \exp(-x^2/2)/c_1\)</span>, where <span class="math inline">\(c_1 = \int_{a}^{\infty}\exp(-z^2/2)\mathrm{d} z\)</span>, and note that <span class="math display">\[c_1f(x) \leq \frac{x}{a}\exp\left(-\frac{x^2}{2}\right)= a^{-1}\exp\left(-\frac{a^2}{2}\right)g(x), \qquad x \geq a;\]</span> where <span class="math inline">\(g(x)\)</span> is the density of a Rayleigh variable shifted by <span class="math inline">\(a\)</span>, which has distribution function <span class="math inline">\(G(x) = 1-\exp\{(a^2-x^2)/2\}\)</span> for <span class="math inline">\(x \geq a\)</span>. We can simulate such a random variate <span class="math inline">\(X\)</span> through the inversion method. The constant <span class="math inline">\(C= \exp(-a^2/2)(c_1a)^{-1}\)</span> approaches 1 quickly as <span class="math inline">\(a \to \infty\)</span>.</p>
+<p>The accept-reject thus proceeds with</p>
+<ol type="1">
+<li>Generate a shifted Rayleigh above <span class="math inline">\(a\)</span>, <span class="math inline">\(X \gets \{a^2 - 2\log(U)\}^{1/2}\)</span> for <span class="math inline">\(U \sim \mathsf{U}(0,1)\)</span></li>
+<li>Accept <span class="math inline">\(X\)</span> if <span class="math inline">\(XV \leq a\)</span>, where <span class="math inline">\(V \sim \mathsf{U}(0,1)\)</span>.</li>
+</ol>
+<p>Should we wish to obtain samples on <span class="math inline">\([a,b]\)</span>, we could instead propose from a Rayleigh truncated above at <span class="math inline">\(b\)</span> <span class="citation" data-cites="LEcuyer.Botev:2017">(<a href="references.html#ref-LEcuyer.Botev:2017" role="doc-biblioref">Botev and L’Écuyer 2017</a>)</span>.</p>
+<div class="cell" data-hash="mcmc_cache/html/marsaglia-algo_951358f90eee3e48bbfbdb370b769bc9">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>a <span class="ot">&lt;-</span> <span class="fl">8.3</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>niter <span class="ot">&lt;-</span> 1000L</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>X <span class="ot">&lt;-</span> <span class="fu">sqrt</span>(a<span class="sc">^</span><span class="dv">2</span> <span class="sc">+</span> <span class="dv">2</span><span class="sc">*</span><span class="fu">rexp</span>(niter))</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>samp <span class="ot">&lt;-</span> X[<span class="fu">runif</span>(niter)<span class="sc">*</span>X <span class="sc">&lt;=</span> a]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+<p>For a given candidate density <span class="math inline">\(g\)</span> which has a heavier tail than the target, we can resort to numerical methods to compute the mode of the ratio <span class="math inline">\(f/g\)</span> and obtain the bound <span class="math inline">\(C\)</span>; see <span class="citation" data-cites="Albert:2009">Albert (<a href="references.html#ref-Albert:2009" role="doc-biblioref">2009</a>)</span>, Section 5.8 for an insightful example.</p>
+<div id="prp-ratio-uniform" class="theorem proposition">
+<p><span class="theorem-title"><strong>Proposition 3.2 (Ratio of uniform method) </strong></span>The ratio-of-uniform method <span class="citation" data-cites="Kinderman.Monahan:1977 Wakefield:1991">(<a href="references.html#ref-Kinderman.Monahan:1977" role="doc-biblioref">Kinderman and Monahan 1977</a>; <a href="references.html#ref-Wakefield:1991" role="doc-biblioref">Wakefield, Gelfand, and Smith 1991</a>)</span> is a variant of accept-reject used to draw samples from a unnormalized density <span class="math inline">\(f(\boldsymbol{\theta})\)</span> for <span class="math inline">\(\boldsymbol{\theta} \in \boldsymbol{\Theta} \subseteq \mathbb{R}^d\)</span>. For some <span class="math inline">\(r \geq 0\)</span>, consider the set <span class="math display">\[\begin{align*}
+\mathcal{C}_r = \left\{ (u_0, \ldots, u_d): 0 &lt; u_0 \leq \left[f(u_1/u_0^r, \ldots, u_d/u_0^r)\right]^{\frac{1}{rd+1}}\right\}.
+\end{align*}\]</span> If we can generate <span class="math inline">\(u_0, \ldots, u_d\)</span> uniformly over <span class="math inline">\(\mathcal{C}_R\)</span>, then the draws <span class="math inline">\((u_1/u_0^r, \ldots, u_d/u_0^r)\)</span> are from the normalized density <span class="math inline">\(f\)</span>. Rejection sampling is used to obtain uniform draws over <span class="math inline">\(\mathcal{C}_r\)</span> under some conditions on the density and marginal moments. See <a href="https://paulnorthrop.github.io/rust/articles/rust-a-vignette.html">the <code>rust</code> package vignette</a> for technical details and examples. Like with other accept-reject algorithms, the acceptance rate of the proposal goes down with the dimension of the problem.</p>
+</div>
+<div id="exm-rust" class="theorem example">
+<p><span class="theorem-title"><strong>Example 3.3 </strong></span>The ratio-of-uniform algorithm was used in <a href="introduction.html#exm-loss-extremes">Example&nbsp;<span>1.4</span></a> to generate draws from the posterior. We illustrate below the <code>rust</code> package with a user-specified prior and posterior. We fit a generalized Pareto distribution <span class="math inline">\(Y \sim \mathsf{GP}(\sigma, \xi)\)</span> to exceedances above 10 millions krones to the <code>danish</code> fire insurance data, using a truncated maximal data information prior <span class="math inline">\(p(\sigma, \xi) \propto \sigma^{-1}\exp(-\xi+1)\mathrm{I}(\xi &gt; -1)\)</span>.</p>
+<div class="cell" data-hash="mcmc_cache/html/danish-rou-demo_8ef1981d50554e265795e495fa815dfb">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(danish, <span class="at">package =</span> <span class="st">"evir"</span>)</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Extract threshold exceedances</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>exc <span class="ot">&lt;-</span> danish[danish <span class="sc">&gt;</span> <span class="dv">10</span>] <span class="sc">-</span> <span class="dv">10</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Create a function for the log prior</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>logmdiprior <span class="ot">&lt;-</span> <span class="cf">function</span>(par, ...){</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span>(<span class="fu">isTRUE</span>(<span class="fu">any</span>(par[<span class="dv">1</span>] <span class="sc">&lt;=</span> <span class="dv">0</span>, par[<span class="dv">2</span>] <span class="sc">&lt;</span> <span class="sc">-</span><span class="dv">1</span>))){</span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>    <span class="fu">return</span>(<span class="sc">-</span><span class="cn">Inf</span>)</span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>  <span class="sc">-</span><span class="fu">log</span>(par[<span class="dv">1</span>]) <span class="sc">-</span> par[<span class="dv">2</span>]</span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Same for log likelihood, assuming independent data</span></span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>loglik_gp <span class="ot">&lt;-</span> <span class="cf">function</span>(par, <span class="at">data =</span> exc, ...){</span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span>(<span class="fu">isTRUE</span>(<span class="fu">any</span>(par[<span class="dv">1</span>] <span class="sc">&lt;=</span> <span class="dv">0</span>, par[<span class="dv">2</span>] <span class="sc">&lt;</span> <span class="sc">-</span><span class="dv">1</span>))){</span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>    <span class="fu">return</span>(<span class="sc">-</span><span class="cn">Inf</span>)</span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">sum</span>(mev<span class="sc">::</span><span class="fu">dgp</span>(<span class="at">x =</span> data, <span class="at">scale =</span> par[<span class="dv">1</span>], <span class="at">shape =</span> par[<span class="dv">2</span>], <span class="at">log =</span> <span class="cn">TRUE</span>))</span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a>logpost <span class="ot">&lt;-</span> <span class="cf">function</span>(par, ...){</span>
+<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">logmdiprior</span>(par) <span class="sc">+</span> <span class="fu">loglik_gp</span>(par)</span>
+<span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb6-21"><a href="#cb6-21" aria-hidden="true" tabindex="-1"></a><span class="co"># Sampler using ratio-of-uniform method</span></span>
+<span id="cb6-22"><a href="#cb6-22" aria-hidden="true" tabindex="-1"></a>ru_output <span class="ot">&lt;-</span> rust<span class="sc">::</span><span class="fu">ru</span>(</span>
+<span id="cb6-23"><a href="#cb6-23" aria-hidden="true" tabindex="-1"></a>  <span class="at">logf =</span> logpost,  <span class="co"># log posterior function</span></span>
+<span id="cb6-24"><a href="#cb6-24" aria-hidden="true" tabindex="-1"></a>  <span class="at">n =</span> <span class="dv">10000</span>, <span class="co"># number of posterior draws</span></span>
+<span id="cb6-25"><a href="#cb6-25" aria-hidden="true" tabindex="-1"></a>  <span class="at">d =</span> <span class="dv">2</span>, <span class="co"># dimension of the parameter vector</span></span>
+<span id="cb6-26"><a href="#cb6-26" aria-hidden="true" tabindex="-1"></a>  <span class="at">init =</span> mev<span class="sc">::</span><span class="fu">fit.gpd</span>(danish, <span class="at">thresh =</span> <span class="dv">10</span>)<span class="sc">$</span>par,</span>
+<span id="cb6-27"><a href="#cb6-27" aria-hidden="true" tabindex="-1"></a>  <span class="at">lower =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="sc">-</span><span class="dv">1</span>))</span>
+<span id="cb6-28"><a href="#cb6-28" aria-hidden="true" tabindex="-1"></a><span class="do">## Acceptance rate </span></span>
+<span id="cb6-29"><a href="#cb6-29" aria-hidden="true" tabindex="-1"></a><span class="co"># ru_output$pa</span></span>
+<span id="cb6-30"><a href="#cb6-30" aria-hidden="true" tabindex="-1"></a><span class="do">## Posterior samples</span></span>
+<span id="cb6-31"><a href="#cb6-31" aria-hidden="true" tabindex="-1"></a>postsamp <span class="ot">&lt;-</span> ru_output<span class="sc">$</span>sim_vals</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Even without modification, the acceptance rate is 52%, which is quite efficient in the context. The generalized Pareto approximation suggests a very heavy tail: values of <span class="math inline">\(\xi \geq 1\)</span> correspond to distributions with infinite first moment, and those with <span class="math inline">\(\xi \geq 1/2\)</span> to infinite variance.</p>
+<div class="cell" data-hash="mcmc_cache/html/fig-danish-rou_deddf844cfb9c16e10bea019f6b1d7b3">
+<div class="cell-output-display">
+<div id="fig-danish-rou" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="mcmc_files/figure-html/fig-danish-rou-1.png" class="img-fluid figure-img" width="672"></p>
+<p></p><figcaption class="figure-caption">Figure&nbsp;3.2: Scatterplot of posterior samples from the generalized Pareto model applied to Danish fire insurance losses above 10 millions krones, with maximal data information prior (left) and posterior predictive density on log scale (right).</figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
 </section>
 <section id="markov-chain-monte-carlo" class="level2" data-number="3.2">
 <h2 data-number="3.2" class="anchored" data-anchor-id="markov-chain-monte-carlo"><span class="header-section-number">3.2</span> Markov chain Monte Carlo</h2>
@@ -276,14 +374,14 @@ Truncated Gaussian with a probit model?
 </div>
 <div id="exm-autoregressive-one" class="theorem example">
 <p><span class="theorem-title"><strong>Example 3.4 </strong></span>Consider a first-order autoregressive process, or <span class="math inline">\(\mathsf{AR}(1)\)</span>, of the form</p>
-<p><span class="math display">\[Y_t = \mu + \phi(Y_{t-1} - \mu) + \varepsilon_t,\]</span> where <span class="math inline">\(\phi\)</span> is the autoregressive process, <span class="math inline">\(\mu\)</span> the global mean and <span class="math inline">\(\varepsilon_t\)</span> is an iid innovation with mean zero and variance <span class="math inline">\(\sigma^2\)</span>. If <span class="math inline">\(|\phi| &lt; 1\)</span>, the process is stationary, and the variance does not increase with <span class="math inline">\(t\)</span>. If innovations are Gaussian, then we have <span class="math inline">\(Y_t \mid Y_{t-1}=y_{t-1} \sim \mathsf{No}\{\mu(1-\phi)+ \phi y_{t-1}, \sigma^2\}\)</span></p>
+<p><span class="math display">\[Y_t = \mu + \phi(Y_{t-1} - \mu) + \varepsilon_t,\]</span> where <span class="math inline">\(\phi\)</span> is the autoregressive process, <span class="math inline">\(\mu\)</span> the global mean and <span class="math inline">\(\varepsilon_t\)</span> is an iid innovation with mean zero and variance <span class="math inline">\(\sigma^2\)</span>. If <span class="math inline">\(|\phi| &lt; 1\)</span>, the process is stationary, and the variance does not increase with <span class="math inline">\(t\)</span>. If innovations are Gaussian, we have <span class="math display">\[Y_t \mid Y_{t-1}=y_{t-1} \sim \mathsf{No}\{\mu(1-\phi)+ \phi y_{t-1}, \sigma^2\}.\]</span></p>
 <p>The <span class="math inline">\(\mathsf{AR}(1)\)</span> stationarity process <span class="math inline">\(Y_t\)</span>, marginally, has mean <span class="math inline">\(\mu\)</span> and unconditional variance <span class="math inline">\(\sigma^2/(1-\phi^2)\)</span>. The <span class="math inline">\(\mathsf{AR}(1)\)</span> process is first-order Markov since the conditional distribution <span class="math inline">\(p(Y_t \mid Y_{t-1}, \ldots, Y_{t-p})\)</span> equals <span class="math inline">\(p(Y_t \mid Y_{t-1})\)</span>.</p>
 </div>
 <p>Autoregressive processes are not the only ones we can consider, although their simplicity lends itself to analytic calculations. More generally, for a correlated sequence, the variance of the stationary distribution is <span class="math display">\[\begin{align*}
 \mathsf{Va}(Y_t) + 2 \sum_{k=1}^\infty \mathsf{Co}(Y_t, Y_{t-k})
 \end{align*}\]</span></p>
 <div id="prp-variance-clt" class="theorem proposition">
-<p><span class="theorem-title"><strong>Proposition 3.1 </strong></span>Intuitively, a sample of correlated observations carries less information than an independent sample of draws. If we want to compute sample averages <span class="math inline">\(\overline{Y}_T=(Y_1+ \cdots + Y_T)/T\)</span>, the variance will be <span class="math display">\[\begin{align*}
+<p><span class="theorem-title"><strong>Proposition 3.3 </strong></span>Intuitively, a sample of correlated observations carries less information than an independent sample of draws. If we want to compute sample averages <span class="math inline">\(\overline{Y}_T=(Y_1+ \cdots + Y_T)/T\)</span>, the variance will be <span class="math display">\[\begin{align*}
 \mathsf{Va}\left(\overline{Y}_T\right) = \frac{1}{T}\sum_{t=1}^T \mathsf{Va}(Y_t) + \frac{2}{T} \sum_{t=1}^{T-1}\sum_{s = t+1}^T \mathsf{Co}(Y_t, Y_s).
 \end{align*}\]</span></p>
 <p>In the independent case, the covariance is zero so we get the sum of variances. If the process is stationary, the covariances at lag <span class="math inline">\(k\)</span> are the same regardless of the time index and the variance is some constant, say <span class="math inline">\(\sigma^2\)</span>; this allows us to simplify calculations, <span class="math display">\[\begin{align*}
@@ -293,6 +391,9 @@ Truncated Gaussian with a probit model?
 \end{align*}\]</span> This statement holds only if we start with draws from the stationary distribution, otherwise bets are off.</p>
 </div>
 <p>A visual diagnostic of the time dependence of a Markov chain is the correlogram, which shows the empirical lag-<span class="math inline">\(k\)</span> autocorrelation estimates against lag.</p>
+<div class="cell" data-hash="mcmc_cache/html/unnamed-chunk-7_591de6c861d296aadacecd7f84d14578">
+
+</div>
 <div id="exm-ar1-clt-variance" class="theorem example">
 <p><span class="theorem-title"><strong>Example 3.5 </strong></span>The lag-<span class="math inline">\(k\)</span> correlation of the stationary autoregressive process of order 1 is <span class="math inline">\(\phi^k\)</span>, so summing the series gives an asymptotic variance of <span class="math inline">\(\sigma^2(1+\phi)/(1-\phi)\)</span>. We can constrast that to the variance of the stationary distribution for an independent sample, which is <span class="math inline">\(\sigma^2/(1-\phi^2)\)</span>. The price to pay for having correlated samples is inefficiency: the higher the autocorrelation, the larger the variability of our mean estimators.</p>
 <div class="cell" data-hash="mcmc_cache/html/fig-ar1-variance_b0f5d684df739315dd311482ee0a9ae3">
@@ -300,12 +401,12 @@ Truncated Gaussian with a probit model?
 <div id="fig-ar1-variance" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
 <p><img src="mcmc_files/figure-html/fig-ar1-variance-1.png" class="img-fluid figure-img" width="672"></p>
-<figcaption class="figure-caption">Figure&nbsp;3.2: Scaled asymptotic variance of the sample mean for a stationary autoregressive first-order process with unit variance (dashed) and a corresponding sample of independent observations with the same marginal variance (full line). The plot on the right gives the variance ratio for positive correlations.</figcaption>
+<p></p><figcaption class="figure-caption">Figure&nbsp;3.3: Scaled asymptotic variance of the sample mean for a stationary autoregressive first-order process with unit variance (dashed) and a corresponding sample of independent observations with the same marginal variance (full line). The plot on the right gives the variance ratio for positive correlations.</figcaption><p></p>
 </figure>
 </div>
 </div>
 </div>
-<p>We can see from <a href="#fig-ar1-variance">Figure&nbsp;<span>3.2</span></a> that, when the autocorrelation is positive (as will be the cause in all applications of interest), we will suffer from variance inflation. To get the same uncertainty estimates for the mean with an <span class="math inline">\(\mathsf{AR}(1)\)</span> process with <span class="math inline">\(\phi \approx 0.75\)</span> than with an iid sample, we would need nine times as many observations: this is the prize to pay.</p>
+<p>We can see from <a href="#fig-ar1-variance">Figure&nbsp;<span>3.3</span></a> that, when the autocorrelation is positive (as will be the cause in all applications of interest), we will suffer from variance inflation. To get the same uncertainty estimates for the mean with an <span class="math inline">\(\mathsf{AR}(1)\)</span> process with <span class="math inline">\(\phi \approx 0.75\)</span> than with an iid sample, we would need nine times as many observations: this is the prize to pay.</p>
 </div>
 <p>When can we use output from a Markov chain in place of independent Monte Carlo draws? The assumptions laid out in the ergodic theorem are that the chain is irreducible and acyclic, ensuring that the chain has a unique stationary distribution.</p>
 <p>To make sense of these concepts, we consider a discrete Markov chain over the integers <span class="math inline">\(1, 2, 3\)</span>. A discrete-time stochastic process is a random sequences whose elements are part of some set, the state space, here the integers. We can encode the probability of moving from one state to the next via a transition matrix, whose rows contain the probabilities of moving from one state to the next and thus sum to one. We can run a Markov chain by sampling an initial state <span class="math inline">\(X_0\)</span> at random from <span class="math inline">\(\{1, \ldots, 5\}\)</span> and then consider the transitions from the conditional distribution, sampling <span class="math inline">\(p(X_t \mid X_{t-1})\)</span>. Because of the Markov property, the history of the chain does not matter: we only need to read the value <span class="math inline">\(i=X_{t-1}\)</span> of the state and pick the <span class="math inline">\(i\)</span>th row of <span class="math inline">\(P_3\)</span> to know the probability of the different moves from the current state.</p>
@@ -333,13 +434,16 @@ P_3 = \begin{pmatrix}
 0 &amp; 0 &amp; 0 &amp;  \frac{1}{3}  &amp; \frac{2}{3} \\
 \end{pmatrix}
 \]</span> The stationary distribution is the value of the row vector <span class="math inline">\(\boldsymbol{p}\)</span>, such that <span class="math inline">\(\boldsymbol{p} = \boldsymbol{p}\mathbf{P}\)</span> for transition matrix <span class="math inline">\(\mathbf{P}\)</span>: we get <span class="math inline">\(\boldsymbol{p}_1=(0, 5/11, 6/11)\)</span> for <span class="math inline">\(P_1\)</span>, <span class="math inline">\((1/3, 1/3, 1/3)\)</span> for <span class="math inline">\(P_2\)</span> and <span class="math inline">\((1,2,2,2,1)/8\)</span> for <span class="math inline">\(P_3\)</span>.</p>
-<p><a href="#fig-discrete-markov-chain">Figure&nbsp;<span>3.3</span></a> shows the path of the walk and the empirical proportion of the time spent in each state, as time progress. Since the Markov chain has a unique stationary distribution, we expect these to converge to it.</p>
+<div class="cell" data-hash="mcmc_cache/html/unnamed-chunk-9_f24c659c91949aeb1eecc628da05f3d3">
+
+</div>
+<p><a href="#fig-discrete-markov-chain">Figure&nbsp;<span>3.4</span></a> shows the path of the walk and the empirical proportion of the time spent in each state, as time progress. Since the Markov chain has a unique stationary distribution, we expect these to converge to it.</p>
 <div class="cell" data-hash="mcmc_cache/html/fig-discrete-markov-chain_65a78bd28a5193e9b0f9d84f1eeeff9d">
 <div class="cell-output-display">
 <div id="fig-discrete-markov-chain" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
 <p><img src="mcmc_files/figure-html/fig-discrete-markov-chain-1.png" class="img-fluid figure-img" width="672"></p>
-<figcaption class="figure-caption">Figure&nbsp;3.3: Discrete Markov chain on integers from 1 to 5, with transition matrix <span class="math inline">\(P_3\)</span>, with traceplot of 1000 first iterations (left) and running mean plots of sample proportion of each state visited per 100 iterations (right).</figcaption>
+<p></p><figcaption class="figure-caption">Figure&nbsp;3.4: Discrete Markov chain on integers from 1 to 5, with transition matrix <span class="math inline">\(P_3\)</span>, with traceplot of 1000 first iterations (left) and running mean plots of sample proportion of each state visited per 100 iterations (right).</figcaption><p></p>
 </figure>
 </div>
 </div>
@@ -353,7 +457,7 @@ P_3 = \begin{pmatrix}
 <h2 data-number="3.4" class="anchored" data-anchor-id="metropolishastings-algorithm"><span class="header-section-number">3.4</span> Metropolis–Hastings algorithm</h2>
 <p>Named after <span class="citation" data-cites="Metropolis:1953">Metropolis et al. (<a href="references.html#ref-Metropolis:1953" role="doc-biblioref">1953</a>)</span>, <span class="citation" data-cites="Hastings:1970">Hastings (<a href="references.html#ref-Hastings:1970" role="doc-biblioref">1970</a>)</span>, its relevance took a long time to gain traction in the statistical community. The idea of the Metropolis–Hastings algorithm is to construct a Markov chain targeting a distribution <span class="math inline">\(p(\cdot)\)</span>.</p>
 <div id="prp-metropolis" class="theorem proposition">
-<p><span class="theorem-title"><strong>Proposition 3.2 (Metropolis–Hastings algorithm) </strong></span>We consider from a density function <span class="math inline">\(p(\boldsymbol{\theta})\)</span>, known up to a normalizing factor not depending on <span class="math inline">\(\boldsymbol{\theta}\)</span>. We use a (conditional) proposal density <span class="math inline">\(q(\boldsymbol{\theta} \mid \boldsymbol{\theta}^*)\)</span> which has non-zero probability over the support of <span class="math inline">\(p(\cdot)\)</span>, as transition kernel to generate proposals.</p>
+<p><span class="theorem-title"><strong>Proposition 3.4 (Metropolis–Hastings algorithm) </strong></span>We consider from a density function <span class="math inline">\(p(\boldsymbol{\theta})\)</span>, known up to a normalizing factor not depending on <span class="math inline">\(\boldsymbol{\theta}\)</span>. We use a (conditional) proposal density <span class="math inline">\(q(\boldsymbol{\theta} \mid \boldsymbol{\theta}^*)\)</span> which has non-zero probability over the support of <span class="math inline">\(p(\cdot)\)</span>, as transition kernel to generate proposals.</p>
 <p>The Metropolis–Hastings build a Markov chain starting from an initial value <span class="math inline">\(\boldsymbol{\theta}_0\)</span>:</p>
 <ol type="1">
 <li>draw a proposal value <span class="math inline">\(\boldsymbol{\theta}_t^{\star} \sim q(\boldsymbol{\theta} \mid \boldsymbol{\theta}_{t-1})\)</span>.</li>
@@ -385,61 +489,61 @@ Y_{i} &amp;\sim \mathsf{Po}(n_i\lambda_i), \qquad (i=1,2)\\
 \beta &amp; \sim \mathsf{No}(\log 0.01, 1.5) \\
 \kappa &amp;\sim \mathsf{No}(0, 1)
 \end{align*}\]</span> There are two parameters in the model, which can be updated in turn or jointly.</p>
-<div class="cell" data-hash="mcmc_cache/html/unnamed-chunk-7_7b58d65f04731daaa6a04ed412625bf6">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(upworthy_question, <span class="at">package =</span> <span class="st">"hecbayes"</span>)</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Compute sufficient statistics</span></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>data <span class="ot">&lt;-</span> upworthy_question <span class="sc">|&gt;</span></span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">group_by</span>(question) <span class="sc">|&gt;</span></span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">summarize</span>(<span class="at">ntot =</span> <span class="fu">sum</span>(impressions),</span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>                   <span class="at">y =</span> <span class="fu">sum</span>(clicks))</span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Code log posterior as sum of log likelihood and log prior</span></span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>loglik <span class="ot">&lt;-</span> <span class="cf">function</span>(par, <span class="at">counts =</span> data<span class="sc">$</span>y, <span class="at">offset =</span> data<span class="sc">$</span>ntot, ...){</span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>  lambda <span class="ot">&lt;-</span> <span class="fu">exp</span>(<span class="fu">c</span>(par[<span class="dv">1</span>] <span class="sc">+</span> <span class="fu">log</span>(offset[<span class="dv">1</span>]), par[<span class="dv">1</span>] <span class="sc">+</span> par[<span class="dv">2</span>] <span class="sc">+</span> <span class="fu">log</span>(offset[<span class="dv">2</span>])))</span>
-<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a> <span class="fu">sum</span>(<span class="fu">dpois</span>(<span class="at">x =</span> counts, <span class="at">lambda =</span> lambda, <span class="at">log =</span> <span class="cn">TRUE</span>))</span>
-<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>logprior <span class="ot">&lt;-</span> <span class="cf">function</span>(par, ...){</span>
-<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">dnorm</span>(<span class="at">x =</span> par[<span class="dv">1</span>], <span class="at">mean =</span> <span class="fu">log</span>(<span class="fl">0.01</span>), <span class="at">sd =</span> <span class="fl">1.5</span>, <span class="at">log =</span> <span class="cn">TRUE</span>) <span class="sc">+</span></span>
-<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>    <span class="fu">dnorm</span>(<span class="at">x =</span> par[<span class="dv">2</span>], <span class="at">log =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>logpost <span class="ot">&lt;-</span> <span class="cf">function</span>(par, ...){</span>
-<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">loglik</span>(par, ...) <span class="sc">+</span> <span class="fu">logprior</span>(par, ...)</span>
-<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a><span class="co"># Compute maximum a posteriori (MAP)</span></span>
-<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>map <span class="ot">&lt;-</span> <span class="fu">optim</span>(</span>
-<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>  <span class="at">par =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="dv">4</span>, <span class="fl">0.07</span>),</span>
-<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>  <span class="at">fn =</span> logpost,</span>
-<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a>  <span class="at">control =</span> <span class="fu">list</span>(<span class="at">fnscale =</span> <span class="sc">-</span><span class="dv">1</span>),</span>
-<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a>  <span class="at">offset =</span> data<span class="sc">$</span>ntot,</span>
-<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a>  <span class="at">counts =</span> data<span class="sc">$</span>y,</span>
-<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a>  <span class="at">hessian =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a><span class="co"># Use MAP as starting value</span></span>
-<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a>cur <span class="ot">&lt;-</span> map<span class="sc">$</span>par</span>
-<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a><span class="co"># Compute logpost_cur - we can keep track of this to reduce calculations</span></span>
-<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a>logpost_cur <span class="ot">&lt;-</span> <span class="fu">logpost</span>(cur)</span>
-<span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a><span class="co"># Proposal covariance</span></span>
-<span id="cb1-32"><a href="#cb1-32" aria-hidden="true" tabindex="-1"></a>cov_map <span class="ot">&lt;-</span> <span class="sc">-</span><span class="dv">2</span><span class="sc">*</span><span class="fu">solve</span>(map<span class="sc">$</span>hessian)</span>
-<span id="cb1-33"><a href="#cb1-33" aria-hidden="true" tabindex="-1"></a>chol <span class="ot">&lt;-</span> <span class="fu">chol</span>(cov_map)</span>
-<span id="cb1-34"><a href="#cb1-34" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-35"><a href="#cb1-35" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">80601</span>)</span>
-<span id="cb1-36"><a href="#cb1-36" aria-hidden="true" tabindex="-1"></a>niter <span class="ot">&lt;-</span> <span class="fl">1e4</span>L</span>
-<span id="cb1-37"><a href="#cb1-37" aria-hidden="true" tabindex="-1"></a>chain <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="dv">0</span>, <span class="at">nrow =</span> niter, <span class="at">ncol =</span> 2L)</span>
-<span id="cb1-38"><a href="#cb1-38" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(chain) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"beta"</span>,<span class="st">"kappa"</span>)</span>
-<span id="cb1-39"><a href="#cb1-39" aria-hidden="true" tabindex="-1"></a>naccept <span class="ot">&lt;-</span> 0L</span>
-<span id="cb1-40"><a href="#cb1-40" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span>(i <span class="cf">in</span> <span class="fu">seq_len</span>(niter)){</span>
-<span id="cb1-41"><a href="#cb1-41" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Multivariate normal proposal - symmetric random walk</span></span>
-<span id="cb1-42"><a href="#cb1-42" aria-hidden="true" tabindex="-1"></a>  prop <span class="ot">&lt;-</span> chol <span class="sc">%*%</span> <span class="fu">rnorm</span>(<span class="at">n =</span> <span class="dv">2</span>) <span class="sc">+</span> cur</span>
-<span id="cb1-43"><a href="#cb1-43" aria-hidden="true" tabindex="-1"></a>  logpost_prop <span class="ot">&lt;-</span> <span class="fu">logpost</span>(prop)</span>
-<span id="cb1-44"><a href="#cb1-44" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Compute acceptance ratio (no q because the ratio is 1)</span></span>
-<span id="cb1-45"><a href="#cb1-45" aria-hidden="true" tabindex="-1"></a>  logR <span class="ot">&lt;-</span> logpost_prop <span class="sc">-</span> logpost_cur</span>
-<span id="cb1-46"><a href="#cb1-46" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span>(logR <span class="sc">&gt;</span> <span class="sc">-</span><span class="fu">rexp</span>(<span class="dv">1</span>)){</span>
-<span id="cb1-47"><a href="#cb1-47" aria-hidden="true" tabindex="-1"></a>    cur <span class="ot">&lt;-</span> prop</span>
-<span id="cb1-48"><a href="#cb1-48" aria-hidden="true" tabindex="-1"></a>    logpost_cur <span class="ot">&lt;-</span> logpost_prop</span>
-<span id="cb1-49"><a href="#cb1-49" aria-hidden="true" tabindex="-1"></a>    naccept <span class="ot">&lt;-</span> naccept <span class="sc">+</span> 1L</span>
-<span id="cb1-50"><a href="#cb1-50" aria-hidden="true" tabindex="-1"></a>  }</span>
-<span id="cb1-51"><a href="#cb1-51" aria-hidden="true" tabindex="-1"></a>  chain[i,] <span class="ot">&lt;-</span> cur</span>
-<span id="cb1-52"><a href="#cb1-52" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb1-53"><a href="#cb1-53" aria-hidden="true" tabindex="-1"></a><span class="co"># Posterior summaries</span></span>
-<span id="cb1-54"><a href="#cb1-54" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(coda<span class="sc">::</span><span class="fu">as.mcmc</span>(chain))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell" data-hash="mcmc_cache/html/unnamed-chunk-11_98ece623d5155cc4fb486a9f90a52d69">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(upworthy_question, <span class="at">package =</span> <span class="st">"hecbayes"</span>)</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Compute sufficient statistics</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>data <span class="ot">&lt;-</span> upworthy_question <span class="sc">|&gt;</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">group_by</span>(question) <span class="sc">|&gt;</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">summarize</span>(<span class="at">ntot =</span> <span class="fu">sum</span>(impressions),</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>                   <span class="at">y =</span> <span class="fu">sum</span>(clicks))</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Code log posterior as sum of log likelihood and log prior</span></span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>loglik <span class="ot">&lt;-</span> <span class="cf">function</span>(par, <span class="at">counts =</span> data<span class="sc">$</span>y, <span class="at">offset =</span> data<span class="sc">$</span>ntot, ...){</span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>  lambda <span class="ot">&lt;-</span> <span class="fu">exp</span>(<span class="fu">c</span>(par[<span class="dv">1</span>] <span class="sc">+</span> <span class="fu">log</span>(offset[<span class="dv">1</span>]), par[<span class="dv">1</span>] <span class="sc">+</span> par[<span class="dv">2</span>] <span class="sc">+</span> <span class="fu">log</span>(offset[<span class="dv">2</span>])))</span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a> <span class="fu">sum</span>(<span class="fu">dpois</span>(<span class="at">x =</span> counts, <span class="at">lambda =</span> lambda, <span class="at">log =</span> <span class="cn">TRUE</span>))</span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>logprior <span class="ot">&lt;-</span> <span class="cf">function</span>(par, ...){</span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">dnorm</span>(<span class="at">x =</span> par[<span class="dv">1</span>], <span class="at">mean =</span> <span class="fu">log</span>(<span class="fl">0.01</span>), <span class="at">sd =</span> <span class="fl">1.5</span>, <span class="at">log =</span> <span class="cn">TRUE</span>) <span class="sc">+</span></span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>    <span class="fu">dnorm</span>(<span class="at">x =</span> par[<span class="dv">2</span>], <span class="at">log =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a>logpost <span class="ot">&lt;-</span> <span class="cf">function</span>(par, ...){</span>
+<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">loglik</span>(par, ...) <span class="sc">+</span> <span class="fu">logprior</span>(par, ...)</span>
+<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a><span class="co"># Compute maximum a posteriori (MAP)</span></span>
+<span id="cb7-20"><a href="#cb7-20" aria-hidden="true" tabindex="-1"></a>map <span class="ot">&lt;-</span> <span class="fu">optim</span>(</span>
+<span id="cb7-21"><a href="#cb7-21" aria-hidden="true" tabindex="-1"></a>  <span class="at">par =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="dv">4</span>, <span class="fl">0.07</span>),</span>
+<span id="cb7-22"><a href="#cb7-22" aria-hidden="true" tabindex="-1"></a>  <span class="at">fn =</span> logpost,</span>
+<span id="cb7-23"><a href="#cb7-23" aria-hidden="true" tabindex="-1"></a>  <span class="at">control =</span> <span class="fu">list</span>(<span class="at">fnscale =</span> <span class="sc">-</span><span class="dv">1</span>),</span>
+<span id="cb7-24"><a href="#cb7-24" aria-hidden="true" tabindex="-1"></a>  <span class="at">offset =</span> data<span class="sc">$</span>ntot,</span>
+<span id="cb7-25"><a href="#cb7-25" aria-hidden="true" tabindex="-1"></a>  <span class="at">counts =</span> data<span class="sc">$</span>y,</span>
+<span id="cb7-26"><a href="#cb7-26" aria-hidden="true" tabindex="-1"></a>  <span class="at">hessian =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb7-27"><a href="#cb7-27" aria-hidden="true" tabindex="-1"></a><span class="co"># Use MAP as starting value</span></span>
+<span id="cb7-28"><a href="#cb7-28" aria-hidden="true" tabindex="-1"></a>cur <span class="ot">&lt;-</span> map<span class="sc">$</span>par</span>
+<span id="cb7-29"><a href="#cb7-29" aria-hidden="true" tabindex="-1"></a><span class="co"># Compute logpost_cur - we can keep track of this to reduce calculations</span></span>
+<span id="cb7-30"><a href="#cb7-30" aria-hidden="true" tabindex="-1"></a>logpost_cur <span class="ot">&lt;-</span> <span class="fu">logpost</span>(cur)</span>
+<span id="cb7-31"><a href="#cb7-31" aria-hidden="true" tabindex="-1"></a><span class="co"># Proposal covariance</span></span>
+<span id="cb7-32"><a href="#cb7-32" aria-hidden="true" tabindex="-1"></a>cov_map <span class="ot">&lt;-</span> <span class="sc">-</span><span class="dv">2</span><span class="sc">*</span><span class="fu">solve</span>(map<span class="sc">$</span>hessian)</span>
+<span id="cb7-33"><a href="#cb7-33" aria-hidden="true" tabindex="-1"></a>chol <span class="ot">&lt;-</span> <span class="fu">chol</span>(cov_map)</span>
+<span id="cb7-34"><a href="#cb7-34" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-35"><a href="#cb7-35" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">80601</span>)</span>
+<span id="cb7-36"><a href="#cb7-36" aria-hidden="true" tabindex="-1"></a>niter <span class="ot">&lt;-</span> <span class="fl">1e4</span>L</span>
+<span id="cb7-37"><a href="#cb7-37" aria-hidden="true" tabindex="-1"></a>chain <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="dv">0</span>, <span class="at">nrow =</span> niter, <span class="at">ncol =</span> 2L)</span>
+<span id="cb7-38"><a href="#cb7-38" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(chain) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"beta"</span>,<span class="st">"kappa"</span>)</span>
+<span id="cb7-39"><a href="#cb7-39" aria-hidden="true" tabindex="-1"></a>naccept <span class="ot">&lt;-</span> 0L</span>
+<span id="cb7-40"><a href="#cb7-40" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span>(i <span class="cf">in</span> <span class="fu">seq_len</span>(niter)){</span>
+<span id="cb7-41"><a href="#cb7-41" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Multivariate normal proposal - symmetric random walk</span></span>
+<span id="cb7-42"><a href="#cb7-42" aria-hidden="true" tabindex="-1"></a>  prop <span class="ot">&lt;-</span> chol <span class="sc">%*%</span> <span class="fu">rnorm</span>(<span class="at">n =</span> <span class="dv">2</span>) <span class="sc">+</span> cur</span>
+<span id="cb7-43"><a href="#cb7-43" aria-hidden="true" tabindex="-1"></a>  logpost_prop <span class="ot">&lt;-</span> <span class="fu">logpost</span>(prop)</span>
+<span id="cb7-44"><a href="#cb7-44" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Compute acceptance ratio (no q because the ratio is 1)</span></span>
+<span id="cb7-45"><a href="#cb7-45" aria-hidden="true" tabindex="-1"></a>  logR <span class="ot">&lt;-</span> logpost_prop <span class="sc">-</span> logpost_cur</span>
+<span id="cb7-46"><a href="#cb7-46" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span>(logR <span class="sc">&gt;</span> <span class="sc">-</span><span class="fu">rexp</span>(<span class="dv">1</span>)){</span>
+<span id="cb7-47"><a href="#cb7-47" aria-hidden="true" tabindex="-1"></a>    cur <span class="ot">&lt;-</span> prop</span>
+<span id="cb7-48"><a href="#cb7-48" aria-hidden="true" tabindex="-1"></a>    logpost_cur <span class="ot">&lt;-</span> logpost_prop</span>
+<span id="cb7-49"><a href="#cb7-49" aria-hidden="true" tabindex="-1"></a>    naccept <span class="ot">&lt;-</span> naccept <span class="sc">+</span> 1L</span>
+<span id="cb7-50"><a href="#cb7-50" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb7-51"><a href="#cb7-51" aria-hidden="true" tabindex="-1"></a>  chain[i,] <span class="ot">&lt;-</span> cur</span>
+<span id="cb7-52"><a href="#cb7-52" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb7-53"><a href="#cb7-53" aria-hidden="true" tabindex="-1"></a><span class="co"># Posterior summaries</span></span>
+<span id="cb7-54"><a href="#cb7-54" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(coda<span class="sc">::</span><span class="fu">as.mcmc</span>(chain))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
 Iterations = 1:10000
@@ -460,8 +564,8 @@ kappa  0.07075 0.002033 2.033e-05      9.741e-05
 beta  -4.51591 -4.51385 -4.51273 -4.51154 -4.50929
 kappa  0.06673  0.06933  0.07077  0.07212  0.07463</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Computing standard errors using batch means</span></span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="fu">sqrt</span>(<span class="fu">diag</span>(mcmc<span class="sc">::</span><span class="fu">olbm</span>(chain, <span class="at">batch.length =</span> niter<span class="sc">/</span><span class="dv">40</span>)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Computing standard errors using batch means</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="fu">sqrt</span>(<span class="fu">diag</span>(mcmc<span class="sc">::</span><span class="fu">olbm</span>(chain, <span class="at">batch.length =</span> niter<span class="sc">/</span><span class="dv">40</span>)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 5.717097e-05 8.220816e-05</code></pre>
 </div>
@@ -472,56 +576,56 @@ kappa  0.06673  0.06933  0.07077  0.07212  0.07463</code></pre>
 <div id="fig-traceplot" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
 <p><img src="mcmc_files/figure-html/fig-traceplot-1.png" class="img-fluid figure-img" width="672"></p>
-<figcaption class="figure-caption">Figure&nbsp;3.4: Traceplots of Markov chain of log rate and log odds rate for the Metropolis–Hastings sampler applied to the Upworthy question data.</figcaption>
+<p></p><figcaption class="figure-caption">Figure&nbsp;3.5: Traceplots of Markov chain of log rate and log odds rate for the Metropolis–Hastings sampler applied to the Upworthy question data.</figcaption><p></p>
 </figure>
 </div>
 </div>
 </div>
-<p><a href="#fig-scatterplot-upworthy-question">Figure&nbsp;<span>3.5</span></a> shows the posterior samples, which are very nearly bivariate Gaussian. The parametrization in terms of log odds ratio induces strong negative dependence, so if we were to sample <span class="math inline">\(\kappa\)</span>, then <span class="math inline">\(\beta\)</span>, we would have much larger inefficiency and slower exploration. Instead, the code used a bivariate Gaussian random walk proposal whose covariance matrix was taken as a multiple of the inverse of the negative hessian (equivalently, to the observed information matrix of the log posterior), evaluated at of the maximum a posteriori. This Gaussian approximation is called <strong>Laplace approximation</strong>: it is advisable to reparametrize the model so that the distribution is nearly symmetric, so that the approximation is good. In this example, because of the large sample, the Gaussian approximation implied by Bernstein–von Mises’ theorem is excellent.</p>
+<p><a href="#fig-scatterplot-upworthy-question">Figure&nbsp;<span>3.6</span></a> shows the posterior samples, which are very nearly bivariate Gaussian. The parametrization in terms of log odds ratio induces strong negative dependence, so if we were to sample <span class="math inline">\(\kappa\)</span>, then <span class="math inline">\(\beta\)</span>, we would have much larger inefficiency and slower exploration. Instead, the code used a bivariate Gaussian random walk proposal whose covariance matrix was taken as a multiple of the inverse of the negative hessian (equivalently, to the observed information matrix of the log posterior), evaluated at of the maximum a posteriori. This Gaussian approximation is called <strong>Laplace approximation</strong>: it is advisable to reparametrize the model so that the distribution is nearly symmetric, so that the approximation is good. In this example, because of the large sample, the Gaussian approximation implied by Bernstein–von Mises’ theorem is excellent.</p>
 <div class="cell" data-hash="mcmc_cache/html/fig-scatterplot-upworthy-question_3a8557be81b67c958b29b50f5244bb88">
 <div class="cell-output-display">
 <div id="fig-scatterplot-upworthy-question" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
 <p><img src="mcmc_files/figure-html/fig-scatterplot-upworthy-question-1.png" class="img-fluid figure-img" width="672"></p>
-<figcaption class="figure-caption">Figure&nbsp;3.5: Scatterplot of posterior draws (left) and marginal density plot of log hazard rate (right).</figcaption>
+<p></p><figcaption class="figure-caption">Figure&nbsp;3.6: Scatterplot of posterior draws (left) and marginal density plot of log hazard rate (right).</figcaption><p></p>
 </figure>
 </div>
 </div>
 </div>
 </div>
 <div id="prp-visual-diagnostics" class="theorem proposition">
-<p><span class="theorem-title"><strong>Proposition 3.3 (Visual diagnostics for Markov chains) </strong></span>It is useful to inspect visually the Markov chain, as it may indicate several problems. If the chain drifts around without stabilizing around the posterior mode, then we can suspect that it either hasn’t reached it’s stationary distribution (likely due to poor starting values). In such cases, we need to disregard the dubious draws from the chain by discarding the so-called warm up or <strong>burn in</strong> period. While there are some guarantees of convergence, silly starting values may translate into tens of thousands of iterations lost wandering around. Preliminary optimization and plausible starting values help alleviate these problems. <a href="#fig-badstart">Figure&nbsp;<span>3.6</span></a> shows the effect of bad starting values on a toy problem where convergence to the mode is relatively fast. If the proposal is in a flat region of the space, it can wander around for a very long time before converging to the stationary distribution.</p>
-<p>If we run several chains, as in <a href="#fig-badstart">Figure&nbsp;<span>3.6</span></a>, with different starting values, we can monitor convergence by checking whether these chains converge to the same target. A <strong>trace rank</strong> plots, shown on right panel of <a href="#fig-badstart">Figure&nbsp;<span>3.6</span></a>, compares the rank of the values of the different chain at a given iteration: with good mixing, the ranks should switch frequently and be distributed uniformly across integers.</p>
+<p><span class="theorem-title"><strong>Proposition 3.5 (Visual diagnostics for Markov chains) </strong></span>It is useful to inspect visually the Markov chain, as it may indicate several problems. If the chain drifts around without stabilizing around the posterior mode, then we can suspect that it either hasn’t reached it’s stationary distribution (likely due to poor starting values). In such cases, we need to disregard the dubious draws from the chain by discarding the so-called warm up or <strong>burn in</strong> period. While there are some guarantees of convergence, silly starting values may translate into tens of thousands of iterations lost wandering around. Preliminary optimization and plausible starting values help alleviate these problems. <a href="#fig-badstart">Figure&nbsp;<span>3.7</span></a> shows the effect of bad starting values on a toy problem where convergence to the mode is relatively fast. If the proposal is in a flat region of the space, it can wander around for a very long time before converging to the stationary distribution.</p>
+<p>If we run several chains, as in <a href="#fig-badstart">Figure&nbsp;<span>3.7</span></a>, with different starting values, we can monitor convergence by checking whether these chains converge to the same target. A <strong>trace rank</strong> plots, shown on right panel of <a href="#fig-badstart">Figure&nbsp;<span>3.7</span></a>, compares the rank of the values of the different chain at a given iteration: with good mixing, the ranks should switch frequently and be distributed uniformly across integers.</p>
 <div class="cell" data-hash="mcmc_cache/html/fig-badstart_a65284234d35eecfade40ee68a825a16">
 <div class="cell-output-display">
 <div id="fig-badstart" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
 <p><img src="mcmc_files/figure-html/fig-badstart-1.png" class="img-fluid figure-img" width="672"></p>
-<figcaption class="figure-caption">Figure&nbsp;3.6: Traceplots of three Markov chains for the same target with different initial values for the first 500 iterations (left) and trace rank plot after discarding these (right).</figcaption>
+<p></p><figcaption class="figure-caption">Figure&nbsp;3.7: Traceplots of three Markov chains for the same target with different initial values for the first 500 iterations (left) and trace rank plot after discarding these (right).</figcaption><p></p>
 </figure>
 </div>
 </div>
 </div>
-<p>The quality of the mixing of the chain (autocorrelation), depends on the proposal variance, which can obtain by trial and error. Trace plots <a href="#fig-traceplot">Figure&nbsp;<span>3.4</span></a> show the values of the chain as a function of iteration number. If our algorithm works well, we expect the proposals to center around the posterior mode and resemble a fat hairy caterpillar. If the variance is too small, the acceptance rate will increase but most steps will be small. If the variance of the proposal is too high, the acceptance rate will decrease (as many proposal moves will have much lower posterior), so the chain will get stuck for long periods of time. This is Goldilock’s principle, as illustrated in <a href="#fig-goldilock-trace">Figure&nbsp;<span>3.7</span></a>.</p>
+<p>The quality of the mixing of the chain (autocorrelation), depends on the proposal variance, which can obtain by trial and error. Trace plots <a href="#fig-traceplot">Figure&nbsp;<span>3.5</span></a> show the values of the chain as a function of iteration number. If our algorithm works well, we expect the proposals to center around the posterior mode and resemble a fat hairy caterpillar. If the variance is too small, the acceptance rate will increase but most steps will be small. If the variance of the proposal is too high, the acceptance rate will decrease (as many proposal moves will have much lower posterior), so the chain will get stuck for long periods of time. This is Goldilock’s principle, as illustrated in <a href="#fig-goldilock-trace">Figure&nbsp;<span>3.8</span></a>.</p>
 <div class="cell" data-hash="mcmc_cache/html/fig-goldilock-trace_db5a123bbb85f2745e455154534e509b">
 <div class="cell-output-display">
 <div id="fig-goldilock-trace" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
 <p><img src="mcmc_files/figure-html/fig-goldilock-trace-1.png" class="img-fluid figure-img" width="672"></p>
-<figcaption class="figure-caption">Figure&nbsp;3.7: Example of traceplot with proposal variance that is too small (top), adequate (middle) and too large (bottom).</figcaption>
+<p></p><figcaption class="figure-caption">Figure&nbsp;3.8: Example of traceplot with proposal variance that is too small (top), adequate (middle) and too large (bottom).</figcaption><p></p>
 </figure>
 </div>
 </div>
 </div>
-<p>One way to calibrate is to track the acceptance rate of the proposals: for the three chains in <a href="#fig-goldilock-trace">Figure&nbsp;<span>3.7</span></a>, these are 0.932, 0.33, 0.12. In one-dimensional toy problems with Gaussian distributions, an acceptance rate of 0.44 is optimal, and this ratio decreases to 0.234 when <span class="math inline">\(D \geq 2\)</span> <span class="citation" data-cites="Roberts.Rosenthal:2001">Sherlock (<a href="references.html#ref-Sherlock:2013" role="doc-biblioref">2013</a>)</span>. This need not generalize to other settings and depends on the context. Optimal rate for alternative algorithms, such as Metropolis-adjusted Langevin algorithm, are typically higher.</p>
+<p>One way to calibrate is to track the acceptance rate of the proposals: for the three chains in <a href="#fig-goldilock-trace">Figure&nbsp;<span>3.8</span></a>, these are 0.932, 0.33, 0.12. In one-dimensional toy problems with Gaussian distributions, an acceptance rate of 0.44 is optimal, and this ratio decreases to 0.234 when <span class="math inline">\(D \geq 2\)</span> <span class="citation" data-cites="Roberts.Rosenthal:2001">Sherlock (<a href="references.html#ref-Sherlock:2013" role="doc-biblioref">2013</a>)</span>. This need not generalize to other settings and depends on the context. Optimal rate for alternative algorithms, such as Metropolis-adjusted Langevin algorithm, are typically higher.</p>
 <p>We can tune the variance of the global proposal <span class="citation" data-cites="Andrieu.Thoms:2008">(<a href="references.html#ref-Andrieu.Thoms:2008" role="doc-biblioref">Andrieu and Thoms 2008</a>)</span> to improve the mixing of the chains at approximate stationarity. This is done by increasing (decreasing) the variance if the historical acceptance rate is too high (respectively low) during burn-in period, and reinitializing after any change with an acceptance target of <span class="math inline">\(0.44\)</span>. We stop adapting to ensure convergence to the posterior after a suitable number of initial iterations. Adaptive MCMC methods use an initial warm up period to find good proposals: we can consider a block of length <span class="math inline">\(L\)</span>, compute the acceptance rate, multiply the variance by a scaling factor and run the chain a little longer. We only keep samples obtained after the adaptation phase.</p>
-<p>We can also plot the autocorrelation of the entries of the chain as a function of lags, a display known as correlogram in the time series literature but colloquially referred to as autocorrelation function (acf). The higher the autocorrelation, the more variance inflation one has and the longer the number of steps before two draws are treated as independent. <a href="#fig-goldilock-correlogram">Figure&nbsp;<span>3.8</span></a> shows the effect of the proposal variance on the correlation for the three chains. Practitioners designing very inefficient Markov chain Monte Carlo algorithms often thin their series: that is, they keep only every <span class="math inline">\(k\)</span> iteration. This is not recommended practice unless storage is an issue and usually points towards inefficient sampling algorithms.</p>
+<p>We can also plot the autocorrelation of the entries of the chain as a function of lags, a display known as correlogram in the time series literature but colloquially referred to as autocorrelation function (acf). The higher the autocorrelation, the more variance inflation one has and the longer the number of steps before two draws are treated as independent. <a href="#fig-goldilock-correlogram">Figure&nbsp;<span>3.9</span></a> shows the effect of the proposal variance on the correlation for the three chains. Practitioners designing very inefficient Markov chain Monte Carlo algorithms often thin their series: that is, they keep only every <span class="math inline">\(k\)</span> iteration. This is not recommended practice unless storage is an issue and usually points towards inefficient sampling algorithms.</p>
 <div class="cell" data-hash="mcmc_cache/html/fig-goldilock-correlogram_ec9d4288773dcc1b98cc7cd642c09f40">
 <div class="cell-output-display">
 <div id="fig-goldilock-correlogram" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
 <p><img src="mcmc_files/figure-html/fig-goldilock-correlogram-1.png" class="img-fluid figure-img" width="960"></p>
-<figcaption class="figure-caption">Figure&nbsp;3.8: Correlogram for the three Markov chains.</figcaption>
+<p></p><figcaption class="figure-caption">Figure&nbsp;3.9: Correlogram for the three Markov chains.</figcaption><p></p>
 </figure>
 </div>
 </div>
@@ -543,7 +647,7 @@ one chain or multiple chain
 <p>In models with multiple parameter, we can use Metropolis–Hastings algorithm to update every parameter in turn, fixing the value of the others, rather than update them in block. The reason behind this pragmatic choice is that, as for ordinary Monte Carlo sampling, the acceptance rate goes down sharply with the dimension of the vector. Updating parameters one at a time can lead to higher acceptance rates, but slower exploration as a result of the correlation between parameters.</p>
 <p>If we can factorize the log posterior, then some updates may not depend on all parameters: in a hierarchical model, hyperpriors parameter only appear through priors, etc. This can reduce computational costs.</p>
 <div id="prp-parameter-transformation" class="theorem proposition">
-<p><span class="theorem-title"><strong>Proposition 3.4 (Parameter transformation) </strong></span>If a parameter is bounded in the interval <span class="math inline">\((a,b)\)</span>, where <span class="math inline">\(-\infty \leq a &lt; b \leq \infty\)</span>, we can consider a bijective transformation <span class="math inline">\(\vartheta \equiv t(\theta): (a,b) \to \mathbb{R}\)</span> with differentiable inverse. The log density of the transformed variable, assuming it exists, is <span class="math display">\[\begin{align*}
+<p><span class="theorem-title"><strong>Proposition 3.6 (Parameter transformation) </strong></span>If a parameter is bounded in the interval <span class="math inline">\((a,b)\)</span>, where <span class="math inline">\(-\infty \leq a &lt; b \leq \infty\)</span>, we can consider a bijective transformation <span class="math inline">\(\vartheta \equiv t(\theta): (a,b) \to \mathbb{R}\)</span> with differentiable inverse. The log density of the transformed variable, assuming it exists, is <span class="math display">\[\begin{align*}
 f_\vartheta(\vartheta) = f_{\theta}\{t^{-1}(\vartheta)\} \left| \frac{\mathrm{d}}{\mathrm{d} \vartheta} t^{-1}(\vartheta)\right|
 \end{align*}\]</span> For example, we can use of the following transformations for finite <span class="math inline">\(a, b\)</span> in the software:</p>
 <ul>
@@ -556,22 +660,131 @@ f_{\vartheta}(\vartheta)&amp;=f_{\theta}\{a+(b-a) \mathrm{expit}(\vartheta)\} (b
 <p>To guarantee that our proposals fall in the support of <span class="math inline">\(\theta\)</span>, we can thus run a symmetric random walk proposal on the <em>transformed scale</em> by drawing <span class="math inline">\(\vartheta_{t}^{\star} \sim \vartheta_{t-1}+\tau Z\)</span> where <span class="math inline">\(Z\sim\mathsf{No}(0, 1)\)</span>. Due to the transformation, the kernel ratio now contains the Jacobian.</p>
 </div>
 <div id="prp-truncated-proposals" class="theorem proposition">
-<p><span class="theorem-title"><strong>Proposition 3.5 (Truncated proposals) </strong></span>As an alternative, if we are dealing with parameters that are restricted in <span class="math inline">\([a,b]\)</span>, we can simulate <span class="math inline">\(\theta^{\star}_{t} \sim \mathsf{TNo}(\vartheta_{t-1}, \tau^2, a, b).\)</span> The density of a univariate truncated Gaussian variable is <span class="math display">\[\begin{align*}
-f(x; \mu, \tau, a, b) = \tau^{-1}\frac{\phi\left(\frac{x-\mu}{\tau}\right)}{\Phi\{(b-\mu)/\tau\}-\Phi\{(a-\mu)/\tau\}}.
-\end{align*}\]</span> where <span class="math inline">\(\phi(\cdot), \Phi(\cdot)\)</span> are respectively the density and distribution function of the standard Gaussian distribution. While the benefit of using the truncated proposal isn’t obvious, it becomes more visible when we move to more advanced proposals whose mean and variance depends on the gradient and or the hessian of the underlying unnormalized log posterior, as the mean can be lower than <span class="math inline">\(a\)</span> or larger than <span class="math inline">\(b\)</span> while still giving non-zero acceptance. The <code>TruncatedNormal</code> package can be used to efficiently evaluate such instances using results from <span class="citation" data-cites="LEcuyer.Botev:2017">Botev and L’Écuyer (<a href="references.html#ref-LEcuyer.Botev:2017" role="doc-biblioref">2017</a>)</span> even when the truncation bounds are far from the mode. Note that the normalizing constant of the truncated Gaussian in the denominator of the density are a function of the location and scale parameters: if these are dependent on the current value, as is the case for a random walk, we need to keep these terms as part of the Metropolis ratio. The mean and standard deviation of the trunctaed Gaussian are not equal to the parameters <span class="math inline">\(\mu\)</span> (which corresponds to the mode, provided <span class="math inline">\(a &lt; \mu &lt; b\)</span>) and <span class="math inline">\(\sigma\)</span>.</p>
+<p><span class="theorem-title"><strong>Proposition 3.7 (Truncated proposals) </strong></span>As an alternative, if we are dealing with parameters that are restricted in <span class="math inline">\([a,b]\)</span>, we can simulate <span class="math inline">\(\theta^{\star}_{t} \sim \mathsf{TNo}(\vartheta_{t-1}, \tau^2, a, b).\)</span> While the benefit of using the truncated proposal isn’t obvious, it becomes more visible when we move to more advanced proposals whose mean and variance depends on the gradient and or the hessian of the underlying unnormalized log posterior, as the mean can be lower than <span class="math inline">\(a\)</span> or larger than <span class="math inline">\(b\)</span> while still giving non-zero acceptance. The <code>TruncatedNormal</code> package can be used to efficiently evaluate such instances using results from <span class="citation" data-cites="LEcuyer.Botev:2017">Botev and L’Écuyer (<a href="references.html#ref-LEcuyer.Botev:2017" role="doc-biblioref">2017</a>)</span> even when the truncation bounds are far from the mode. the normalizing constant of the truncated Gaussian in the denominator of the density is a function of the location and scale parameters: if these depend on the current value of <span class="math inline">\(\boldsymbol{\theta}_{t-1}\)</span>, as is the case for a random walk, we need to keep these terms as part of the Metropolis ratio. The mean and standard deviation of the trunctaed Gaussian are not equal to the parameters <span class="math inline">\(\mu\)</span> (which corresponds to the mode, provided <span class="math inline">\(a &lt; \mu &lt; b\)</span>) and <span class="math inline">\(\sigma\)</span>.</p>
 </div>
 <div id="prp-mala" class="theorem proposition">
-<p><span class="theorem-title"><strong>Proposition 3.6 (Efficient proposals) </strong></span>Rather than simply build a random walk, we can exploit the geometry of the posterior using the gradient, via Metropolis-ajusted Langevin algorithm (MALA), or using local quadratic approximations of the target.</p>
+<p><span class="theorem-title"><strong>Proposition 3.8 (Efficient proposals) </strong></span>Rather than simply build a random walk, we can exploit the geometry of the posterior using the gradient, via Metropolis-ajusted Langevin algorithm (MALA), or using local quadratic approximations of the target.</p>
 <p>Let <span class="math inline">\(p(\theta)\)</span> denote the conditional (unnormalized) log posterior for a scalar parameter <span class="math inline">\(\theta \in (a, b)\)</span>. We considering a Taylor series expansion of <span class="math inline">\(p(\cdot)\)</span> around the current parameter value <span class="math inline">\(\theta_{t-1}\)</span>, <span class="math display">\[\begin{align*}
 p(\theta) \approx p(\theta_{t-1}) + p'(\theta_{t-1})(\theta - \theta_{t-1}) + \frac{1}{2} p''(\theta_{t-1})(\theta - \theta_{t-1})^2
-\end{align*}\]</span> plus remainder, which suggests a Gaussian approximation with mean <span class="math inline">\(\mu_{t-1} = \theta_{t-1} - f'(\theta_{t-1})/f''(\theta_{t-1})\)</span> and precision <span class="math inline">\(\tau^{-2} = -f''(\theta_{t-1})\)</span>. We use truncated Gaussian distribution on <span class="math inline">\((a, b)\)</span> with mean <span class="math inline">\(\mu\)</span> and standard deviation <span class="math inline">\(\tau\)</span>, denoted <span class="math inline">\(\mathsf{TNo}(\mu, \tau, a, b)\)</span> with corresponding density function <span class="math inline">\(q(\cdot; \mu, \tau, a, b)\)</span>. The Metropolis acceptance ratio for a proposal <span class="math inline">\(\theta^{\star}_{t} \sim \mathsf{TNo}(\mu_{t-1}, \tau_{t-1}, a, b)\)</span> is <span class="math display">\[\begin{align*}
+\end{align*}\]</span> plus remainder, which suggests a Gaussian approximation with mean <span class="math inline">\(\mu_{t-1} = \theta_{t-1} - f'(\theta_{t-1})/f''(\theta_{t-1})\)</span> and precision <span class="math inline">\(\tau^{-2} = -f''(\theta_{t-1})\)</span>. We can use truncated Gaussian distribution on <span class="math inline">\((a, b)\)</span> with mean <span class="math inline">\(\mu\)</span> and standard deviation <span class="math inline">\(\tau\)</span>, denoted <span class="math inline">\(\mathsf{TNo}(\mu, \tau, a, b)\)</span> with corresponding density function <span class="math inline">\(q(\cdot; \mu, \tau, a, b)\)</span>. The Metropolis acceptance ratio for a proposal <span class="math inline">\(\theta^{\star}_{t} \sim \mathsf{TNo}(\mu_{t-1}, \tau_{t-1}, a, b)\)</span> is <span class="math display">\[\begin{align*}
 \alpha = \frac{p(\theta^{\star}_{t})}{p(\theta_{t-1})} \frac{ q(\theta_{t-1} \mid \mu_{t}^{\star}, \tau_{t}^{\star}, a, b)}{q(\theta^{\star}_{t} \mid \mu_{t-1}, \tau_{t-1}, a, b)}
 \end{align*}\]</span> and we set <span class="math inline">\(\theta^{(t+1)} = \theta^{\star}_{t}\)</span> with probability <span class="math inline">\(\min\{1, r\}\)</span> and <span class="math inline">\(\theta^{(t+1)} = \theta_{t-1}\)</span> otherwise. To evaluate the ratio of truncated Gaussian densities <span class="math inline">\(q(\cdot; \mu, \tau, a, b)\)</span>, we need to compute the Taylor approximation from the current parameter value, but also the reverse move from the proposal <span class="math inline">\(\theta^{\star}_{t}\)</span>. Another option is to modify the move dictated by the rescaled gradient by taking instead <span class="math display">\[\mu_{t-1} = \theta_{t-1} - \eta f'(\theta_{t-1})/f''(\theta_{t-1}).\]</span> The proposal includes an additional tuning parameter, <span class="math inline">\(\eta \leq 1\)</span>, whose role is to prevent oscillations of the quadratic approximation, as in a Newton–Raphson algorithm. Relative to a random walk Metropolis–Hastings, the proposal automatically adjusts to the local geometry of the target, which guarantees a higher acceptance rate and lower autocorrelation for the Markov chain despite the higher evaluation costs. The proposal requires that both <span class="math inline">\(f''(\theta_{t-1})\)</span> and <span class="math inline">\(f''(\theta^{\star}_{t})\)</span> be negative since the variance is <span class="math inline">\(-1/f''(\theta)\)</span>: this shouldn’t be problematic in the vicinity of the mode. Otherwise, one could use a global scaling derived from the hessian at the mode.</p>
-<p>For MALA to work well, we need both to start near stationarity, to ensure that the gradient is relatively small and to prevent oscillations. One can dampen the size of the step initially if needed to avoid overshooting. Note that the proposal variance, the other tuning parameter, is critical to the success of the algorithm. The usual target for the variance is one that gives an acceptance rate of roughly 0.574. These more efficient methods require additional calculations of the gradient and Hessian, either numerically or analytically. Depending on the situation and the computational costs of such calculations, the additional overhead may not be worth it.</p>
+<p>The simpler Metropolis-adjusted Langevin algorithm is equivalent to using a Gaussian random walk where the proposal has mean <span class="math inline">\(\boldsymbol{\theta}_{t-1} + \mathbf{A}\eta \nabla \ell(\boldsymbol{\theta}_{t-1})\)</span> and variance <span class="math inline">\(\tau^2\mathbf{A}\)</span>, for some mass matrix <span class="math inline">\(\boldsymbol{A}\)</span> and a damping factor <span class="math inline">\(\eta\)</span>. Taking <span class="math inline">\(\mathbf{A}\)</span> as the identity matrix, which assumes the parameters are isotropic (same variance, uncorrelated) is the default choice although seldom far from optimal.</p>
+<p>For MALA to work well, we need both to start near stationarity, to ensure that the gradient is relatively small and to prevent oscillations. One can dampen the size of the step initially if needed to avoid overshooting. The proposal variance, the other tuning parameter, is critical to the success of the algorithm. The usual target for the variance is one that gives an acceptance rate of roughly 0.574. These more efficient methods require additional calculations of the gradient and Hessian, either numerically or analytically. Depending on the situation and the computational costs of such calculations, the additional overhead may not be worth it.</p>
 </div>
 <div id="exm-normal-question-upworthy" class="theorem example">
-<p><span class="theorem-title"><strong>Example 3.7 </strong></span>We revisit the Upworthy data, this time modelling each individual headline as a separate observation and using a Gaussian likelihood for the rate <code>nclick</code>/<code>nimpression</code> This allows up to capture the heterogeneity inherent to each newstory.</p>
-<!-- The `hecbayes` package contains an helper function `mh` -->
+<p><span class="theorem-title"><strong>Example 3.7 </strong></span>We revisit the Upworthy data, this time modelling each individual headline as a separate observation. We view <span class="math inline">\(n=\)</span><code>nimpression</code> as the sample size of a binomial distribution and <code>nclick</code> as the number of successes. Since the number of trials is large, the sample average <code>nclick</code>/<code>nimpression</code>, denoted <span class="math inline">\(y\)</span> in the sequel, is approximately Gaussian. We assume that each story has a similar population rate and capture the heterogeneity inherent to each news story by treating each mean as a sample. The variance of the sample average or click rate is proportional to <span class="math inline">\(n^{-1}\)</span>, where <span class="math inline">\(n\)</span> is the number of impressions. To allow for underdispersion or overdispersion, we thus consider a Gaussian likelihood <span class="math inline">\(Y_i \sim \mathsf{No}(\mu, \sigma^2/n_i)\)</span>. We perform Bayesian inference for <span class="math inline">\(\mu, \sigma\)</span> after assigning a truncated Gaussian prior for <span class="math inline">\(\mu \sim \mathsf{TNo}(0.01, 0.1^2)\)</span> over <span class="math inline">\([0,1]\)</span> and an penalized complexity prior for <span class="math inline">\(\sigma \sim \mathsf{Exp}(0.7)\)</span>.</p>
+<!-- The `hecbayes` package contains an helper function `mh` that computes the step given the log likelihood, log prior and their gradients. -->
+<div class="cell" data-hash="mcmc_cache/html/unnamed-chunk-17_90ba5d0f34676f0db081490fe9c5e497">
+
+</div>
+<div class="cell" data-hash="mcmc_cache/html/unnamed-chunk-18_335db8baef33ccde2c7e628d59e10fb4">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(upworthy_question, <span class="at">package =</span> <span class="st">"hecbayes"</span>)</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Select data for a single question</span></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>qdata <span class="ot">&lt;-</span> upworthy_question <span class="sc">|&gt;</span></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">filter</span>(question <span class="sc">==</span> <span class="st">"yes"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="at">y =</span> clicks<span class="sc">/</span>impressions,</span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>                <span class="at">no =</span> impressions)</span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Create functions with the same signature (...) for the algorithm</span></span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>logpost <span class="ot">&lt;-</span> <span class="cf">function</span>(par, data, ...){</span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a>  mu <span class="ot">&lt;-</span> par[<span class="dv">1</span>]; sigma <span class="ot">&lt;-</span> par[<span class="dv">2</span>]</span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a>  no <span class="ot">&lt;-</span> data<span class="sc">$</span>no</span>
+<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a>  y <span class="ot">&lt;-</span> data<span class="sc">$</span>y</span>
+<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span>(<span class="fu">isTRUE</span>(<span class="fu">any</span>(sigma <span class="sc">&lt;=</span> <span class="dv">0</span>, mu <span class="sc">&lt;</span> <span class="dv">0</span>, mu <span class="sc">&gt;</span> <span class="dv">1</span>))){</span>
+<span id="cb11-13"><a href="#cb11-13" aria-hidden="true" tabindex="-1"></a>    <span class="fu">return</span>(<span class="sc">-</span><span class="cn">Inf</span>)</span>
+<span id="cb11-14"><a href="#cb11-14" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb11-15"><a href="#cb11-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">dnorm</span>(<span class="at">x =</span> mu, <span class="at">mean =</span> <span class="fl">0.01</span>, <span class="at">sd =</span> <span class="fl">0.1</span>, <span class="at">log =</span> <span class="cn">TRUE</span>) <span class="sc">+</span></span>
+<span id="cb11-16"><a href="#cb11-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">dexp</span>(sigma, <span class="at">rate =</span> <span class="fl">0.7</span>, <span class="at">log =</span> <span class="cn">TRUE</span>) <span class="sc">+</span> </span>
+<span id="cb11-17"><a href="#cb11-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">sum</span>(<span class="fu">dnorm</span>(<span class="at">x =</span> y, <span class="at">mean =</span> mu, <span class="at">sd =</span> sigma<span class="sc">/</span><span class="fu">sqrt</span>(no), <span class="at">log =</span> <span class="cn">TRUE</span>))</span>
+<span id="cb11-18"><a href="#cb11-18" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb11-19"><a href="#cb11-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-20"><a href="#cb11-20" aria-hidden="true" tabindex="-1"></a>logpost_grad <span class="ot">&lt;-</span> <span class="cf">function</span>(par, data, ...){</span>
+<span id="cb11-21"><a href="#cb11-21" aria-hidden="true" tabindex="-1"></a>   no <span class="ot">&lt;-</span> data<span class="sc">$</span>no</span>
+<span id="cb11-22"><a href="#cb11-22" aria-hidden="true" tabindex="-1"></a>  y <span class="ot">&lt;-</span> data<span class="sc">$</span>y</span>
+<span id="cb11-23"><a href="#cb11-23" aria-hidden="true" tabindex="-1"></a>  mu <span class="ot">&lt;-</span> par[<span class="dv">1</span>]; sigma <span class="ot">&lt;-</span> par[<span class="dv">2</span>]</span>
+<span id="cb11-24"><a href="#cb11-24" aria-hidden="true" tabindex="-1"></a>  <span class="fu">c</span>(<span class="fu">sum</span>(no<span class="sc">*</span>(y<span class="sc">-</span>mu))<span class="sc">/</span>sigma<span class="sc">^</span><span class="dv">2</span> <span class="sc">-</span>(mu <span class="sc">-</span> <span class="fl">0.01</span>)<span class="sc">/</span><span class="fl">0.01</span>,</span>
+<span id="cb11-25"><a href="#cb11-25" aria-hidden="true" tabindex="-1"></a>    <span class="sc">-</span><span class="fu">length</span>(y)<span class="sc">/</span>sigma <span class="sc">+</span> <span class="fu">sum</span>(no<span class="sc">*</span>(y<span class="sc">-</span>mu)<span class="sc">^</span><span class="dv">2</span>)<span class="sc">/</span>sigma<span class="sc">^</span><span class="dv">3</span> <span class="sc">-</span><span class="fl">0.7</span></span>
+<span id="cb11-26"><a href="#cb11-26" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb11-27"><a href="#cb11-27" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb11-28"><a href="#cb11-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-29"><a href="#cb11-29" aria-hidden="true" tabindex="-1"></a><span class="co"># Starting values - MAP</span></span>
+<span id="cb11-30"><a href="#cb11-30" aria-hidden="true" tabindex="-1"></a>map <span class="ot">&lt;-</span> <span class="fu">optim</span>(</span>
+<span id="cb11-31"><a href="#cb11-31" aria-hidden="true" tabindex="-1"></a>  <span class="at">par =</span> <span class="fu">c</span>(<span class="fu">mean</span>(qdata<span class="sc">$</span>y), <span class="fl">0.5</span>),</span>
+<span id="cb11-32"><a href="#cb11-32" aria-hidden="true" tabindex="-1"></a>  <span class="at">fn =</span> <span class="cf">function</span>(x){<span class="sc">-</span><span class="fu">logpost</span>(x, <span class="at">data =</span> qdata)},</span>
+<span id="cb11-33"><a href="#cb11-33" aria-hidden="true" tabindex="-1"></a>  <span class="at">gr =</span> <span class="cf">function</span>(x){<span class="sc">-</span><span class="fu">logpost_grad</span>(x, <span class="at">data =</span> qdata)},  </span>
+<span id="cb11-34"><a href="#cb11-34" aria-hidden="true" tabindex="-1"></a>  <span class="at">hessian =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb11-35"><a href="#cb11-35" aria-hidden="true" tabindex="-1"></a>  <span class="at">method =</span> <span class="st">"BFGS"</span>)</span>
+<span id="cb11-36"><a href="#cb11-36" aria-hidden="true" tabindex="-1"></a><span class="co"># Set initial parameter values</span></span>
+<span id="cb11-37"><a href="#cb11-37" aria-hidden="true" tabindex="-1"></a>curr <span class="ot">&lt;-</span> map<span class="sc">$</span>par </span>
+<span id="cb11-38"><a href="#cb11-38" aria-hidden="true" tabindex="-1"></a><span class="co"># Check convergence </span></span>
+<span id="cb11-39"><a href="#cb11-39" aria-hidden="true" tabindex="-1"></a><span class="fu">logpost_grad</span>(curr, <span class="at">data =</span> qdata)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 7.650733e-03 5.575424e-05</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Compute a mass matrix</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>Amat <span class="ot">&lt;-</span> <span class="fu">solve</span>(map<span class="sc">$</span>hessian)</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Cholesky root - for random number generation</span></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>cholA <span class="ot">&lt;-</span> <span class="fu">chol</span>(Amat)</span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Create containers for MCMC</span></span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a>B <span class="ot">&lt;-</span> <span class="fl">1e4</span>L <span class="co"># number of iterations</span></span>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a>warmup <span class="ot">&lt;-</span> <span class="fl">1e3</span>L <span class="co"># adaptation period</span></span>
+<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a>prop_sd <span class="ot">&lt;-</span> <span class="fu">rep</span>(<span class="dv">1</span>, <span class="dv">2</span>)</span>
+<span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a>npar <span class="ot">&lt;-</span> 2L</span>
+<span id="cb13-13"><a href="#cb13-13" aria-hidden="true" tabindex="-1"></a>chains <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="at">nrow =</span> B, <span class="at">ncol =</span> npar)</span>
+<span id="cb13-14"><a href="#cb13-14" aria-hidden="true" tabindex="-1"></a>damping <span class="ot">&lt;-</span> <span class="fl">0.8</span></span>
+<span id="cb13-15"><a href="#cb13-15" aria-hidden="true" tabindex="-1"></a>acceptance <span class="ot">&lt;-</span> attempts <span class="ot">&lt;-</span> <span class="dv">0</span> </span>
+<span id="cb13-16"><a href="#cb13-16" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(chains) <span class="ot">&lt;-</span> <span class="fu">names</span>(curr) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"mu"</span>,<span class="st">"sigma"</span>)</span>
+<span id="cb13-17"><a href="#cb13-17" aria-hidden="true" tabindex="-1"></a>prop_var <span class="ot">&lt;-</span> <span class="fu">diag</span>(prop_sd) <span class="sc">%*%</span> Amat <span class="sc">%*%</span> <span class="fu">diag</span>(prop_sd)</span>
+<span id="cb13-18"><a href="#cb13-18" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span>(i <span class="cf">in</span> <span class="fu">seq_len</span>(B <span class="sc">+</span> warmup)){</span>
+<span id="cb13-19"><a href="#cb13-19" aria-hidden="true" tabindex="-1"></a>  ind <span class="ot">&lt;-</span> <span class="fu">pmax</span>(<span class="dv">1</span>, i <span class="sc">-</span> warmup)</span>
+<span id="cb13-20"><a href="#cb13-20" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Compute the proposal mean for the Newton step</span></span>
+<span id="cb13-21"><a href="#cb13-21" aria-hidden="true" tabindex="-1"></a>  prop_mean <span class="ot">&lt;-</span> <span class="fu">c</span>(curr <span class="sc">+</span> damping <span class="sc">*</span> </span>
+<span id="cb13-22"><a href="#cb13-22" aria-hidden="true" tabindex="-1"></a>     Amat <span class="sc">%*%</span> <span class="fu">logpost_grad</span>(curr, <span class="at">data =</span> qdata))</span>
+<span id="cb13-23"><a href="#cb13-23" aria-hidden="true" tabindex="-1"></a>  <span class="co"># prop &lt;- prop_sd * c(rnorm(npar) %*% cholA) + prop_mean</span></span>
+<span id="cb13-24"><a href="#cb13-24" aria-hidden="true" tabindex="-1"></a>  prop <span class="ot">&lt;-</span> <span class="fu">c</span>(mvtnorm<span class="sc">::</span><span class="fu">rmvnorm</span>(</span>
+<span id="cb13-25"><a href="#cb13-25" aria-hidden="true" tabindex="-1"></a>    <span class="at">n =</span> <span class="dv">1</span>,</span>
+<span id="cb13-26"><a href="#cb13-26" aria-hidden="true" tabindex="-1"></a>    <span class="at">mean =</span> prop_mean, </span>
+<span id="cb13-27"><a href="#cb13-27" aria-hidden="true" tabindex="-1"></a>    <span class="at">sigma =</span> prop_var))</span>
+<span id="cb13-28"><a href="#cb13-28" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Compute the reverse step</span></span>
+<span id="cb13-29"><a href="#cb13-29" aria-hidden="true" tabindex="-1"></a>  curr_mean <span class="ot">&lt;-</span> <span class="fu">c</span>(prop <span class="sc">+</span> damping <span class="sc">*</span> </span>
+<span id="cb13-30"><a href="#cb13-30" aria-hidden="true" tabindex="-1"></a>     Amat <span class="sc">%*%</span> <span class="fu">logpost_grad</span>(prop, <span class="at">data =</span> qdata))</span>
+<span id="cb13-31"><a href="#cb13-31" aria-hidden="true" tabindex="-1"></a>  <span class="co"># log of ratio of bivariate Gaussian densities</span></span>
+<span id="cb13-32"><a href="#cb13-32" aria-hidden="true" tabindex="-1"></a>  logmh <span class="ot">&lt;-</span> mvtnorm<span class="sc">::</span><span class="fu">dmvnorm</span>(</span>
+<span id="cb13-33"><a href="#cb13-33" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> curr, <span class="at">mean =</span> prop_mean, </span>
+<span id="cb13-34"><a href="#cb13-34" aria-hidden="true" tabindex="-1"></a>    <span class="at">sigma =</span> prop_var, </span>
+<span id="cb13-35"><a href="#cb13-35" aria-hidden="true" tabindex="-1"></a>    <span class="at">log =</span> <span class="cn">TRUE</span>) <span class="sc">-</span> </span>
+<span id="cb13-36"><a href="#cb13-36" aria-hidden="true" tabindex="-1"></a>    mvtnorm<span class="sc">::</span><span class="fu">dmvnorm</span>(</span>
+<span id="cb13-37"><a href="#cb13-37" aria-hidden="true" tabindex="-1"></a>      <span class="at">x =</span> prop, </span>
+<span id="cb13-38"><a href="#cb13-38" aria-hidden="true" tabindex="-1"></a>      <span class="at">mean =</span> curr_mean, </span>
+<span id="cb13-39"><a href="#cb13-39" aria-hidden="true" tabindex="-1"></a>      <span class="at">sigma =</span> prop_var, </span>
+<span id="cb13-40"><a href="#cb13-40" aria-hidden="true" tabindex="-1"></a>      <span class="at">log =</span> <span class="cn">TRUE</span>) <span class="sc">+</span> </span>
+<span id="cb13-41"><a href="#cb13-41" aria-hidden="true" tabindex="-1"></a>  <span class="fu">logpost</span>(prop, <span class="at">data =</span> qdata) <span class="sc">-</span> </span>
+<span id="cb13-42"><a href="#cb13-42" aria-hidden="true" tabindex="-1"></a>    <span class="fu">logpost</span>(curr, <span class="at">data =</span> qdata)</span>
+<span id="cb13-43"><a href="#cb13-43" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span>(logmh <span class="sc">&gt;</span> <span class="fu">log</span>(<span class="fu">runif</span>(<span class="dv">1</span>))){</span>
+<span id="cb13-44"><a href="#cb13-44" aria-hidden="true" tabindex="-1"></a>    curr <span class="ot">&lt;-</span> prop</span>
+<span id="cb13-45"><a href="#cb13-45" aria-hidden="true" tabindex="-1"></a>    acceptance <span class="ot">&lt;-</span> acceptance <span class="sc">+</span> 1L</span>
+<span id="cb13-46"><a href="#cb13-46" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb13-47"><a href="#cb13-47" aria-hidden="true" tabindex="-1"></a>  attempts <span class="ot">&lt;-</span> attempts <span class="sc">+</span> 1L</span>
+<span id="cb13-48"><a href="#cb13-48" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Save current value</span></span>
+<span id="cb13-49"><a href="#cb13-49" aria-hidden="true" tabindex="-1"></a>  chains[ind,] <span class="ot">&lt;-</span> curr</span>
+<span id="cb13-50"><a href="#cb13-50" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span>(i <span class="sc">%%</span> <span class="dv">100</span> <span class="sc">&amp;</span> i <span class="sc">&lt;</span> warmup){</span>
+<span id="cb13-51"><a href="#cb13-51" aria-hidden="true" tabindex="-1"></a>    out <span class="ot">&lt;-</span> hecbayes<span class="sc">::</span><span class="fu">adaptive</span>(</span>
+<span id="cb13-52"><a href="#cb13-52" aria-hidden="true" tabindex="-1"></a>      <span class="at">attempts =</span> attempts, </span>
+<span id="cb13-53"><a href="#cb13-53" aria-hidden="true" tabindex="-1"></a>      <span class="at">acceptance =</span> acceptance, </span>
+<span id="cb13-54"><a href="#cb13-54" aria-hidden="true" tabindex="-1"></a>      <span class="at">sd.p =</span> prop_sd,</span>
+<span id="cb13-55"><a href="#cb13-55" aria-hidden="true" tabindex="-1"></a>      <span class="at">target =</span> <span class="fl">0.574</span>)</span>
+<span id="cb13-56"><a href="#cb13-56" aria-hidden="true" tabindex="-1"></a>    prop_sd <span class="ot">&lt;-</span> out<span class="sc">$</span>sd</span>
+<span id="cb13-57"><a href="#cb13-57" aria-hidden="true" tabindex="-1"></a>    acceptance <span class="ot">&lt;-</span> out<span class="sc">$</span>acc</span>
+<span id="cb13-58"><a href="#cb13-58" aria-hidden="true" tabindex="-1"></a>    attempts <span class="ot">&lt;-</span> out<span class="sc">$</span>att</span>
+<span id="cb13-59"><a href="#cb13-59" aria-hidden="true" tabindex="-1"></a>    prop_var <span class="ot">&lt;-</span> <span class="fu">diag</span>(prop_sd) <span class="sc">%*%</span> Amat <span class="sc">%*%</span> <span class="fu">diag</span>(prop_sd)</span>
+<span id="cb13-60"><a href="#cb13-60" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb13-61"><a href="#cb13-61" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>MALA requires critically a good mass matrix, especially if the gradient is very large at the starting values (often the case when the starting value is far from the mode). Given the precision of the original observations, we did not need to modify anything to deal with the parameter constraints <span class="math inline">\(0 \leq \mu \leq 1\)</span> and <span class="math inline">\(\sigma&gt;0\)</span>, outside of encoding them in the log posterior function.</p>
+<p>The posterior mean for the standard deviation is 0.64, which suggests overdispersion.</p>
 </div>
 <!-- ## Gibbs sampling -->
 
@@ -628,41 +841,44 @@ A simple model, following @Gelman:2006, is to assume the effect size is Gaussian
 -->
 
 
-<div id="refs" class="references csl-bib-body hanging-indent" role="list" style="display: none">
-<div id="ref-Andrieu.Thoms:2008" class="csl-entry" role="listitem">
+<div id="refs" class="references csl-bib-body hanging-indent" role="doc-bibliography" style="display: none">
+<div id="ref-Albert:2009" class="csl-entry" role="doc-biblioentry">
+Albert, Jim. 2009. <em>Bayesian Computation with <span>R</span></em>. 2nd ed. New York: springer. <a href="https://doi.org/10.1007/978-0-387-92298-0">https://doi.org/10.1007/978-0-387-92298-0</a>.
+</div>
+<div id="ref-Andrieu.Thoms:2008" class="csl-entry" role="doc-biblioentry">
 Andrieu, Christophe, and Johannes Thoms. 2008. <span>“A Tutorial on Adaptive <span>MCMC</span>.”</span> <em>Statistics and Computing</em> 18 (4): 343–73. <a href="https://doi.org/10.1007/s11222-008-9110-y">https://doi.org/10.1007/s11222-008-9110-y</a>.
 </div>
-<div id="ref-LEcuyer.Botev:2017" class="csl-entry" role="listitem">
+<div id="ref-LEcuyer.Botev:2017" class="csl-entry" role="doc-biblioentry">
 Botev, Zdravko, and Pierre L’Écuyer. 2017. <span>“Simulation from the Normal Distribution Truncated to an Interval in the Tail.”</span> In <em>Proceedings of the 10th EAI International Conference on Performance Evaluation Methodologies and Tools on 10th EAI International Conference on Performance Evaluation Methodologies and Tools</em>, 23–29. <a href="https://doi.org/10.4108/eai.25-10-2016.2266879">https://doi.org/10.4108/eai.25-10-2016.2266879</a>.
 </div>
-<div id="ref-Devroye:1986" class="csl-entry" role="listitem">
+<div id="ref-Devroye:1986" class="csl-entry" role="doc-biblioentry">
 Devroye, L. 1986. <em><span>Non-Uniform Random Variate Generation</span></em>. New York: Springer. <a href="http://www.nrbook.com/devroye/">http://www.nrbook.com/devroye/</a>.
 </div>
-<div id="ref-Geyer:2011" class="csl-entry" role="listitem">
+<div id="ref-Geyer:2011" class="csl-entry" role="doc-biblioentry">
 Geyer, Charles J. 2011. <span>“Introduction to <span>M</span>arkov Chain <span>M</span>onte <span>C</span>arlo.”</span> In <em>Handbook of <span>M</span>arkov Chain <span>M</span>onte <span>C</span>arlo</em>, edited by S. Brooks, A. Gelman, G. Jones, and X. L. Meng, 3–48. Boca Raton: CRC Press. <a href="https://doi.org/10.1201/b10905">https://doi.org/10.1201/b10905</a>.
 </div>
-<div id="ref-Green:1994" class="csl-entry" role="listitem">
+<div id="ref-Green:1994" class="csl-entry" role="doc-biblioentry">
 Green, Peter J. 1995. <span>“Reversible Jump <span>M</span>arkov Chain <span>M</span>onte <span>C</span>arlo Computation and <span>B</span>ayesian Model Determination.”</span> <em>Biometrika</em> 82 (4): 711–32. <a href="https://doi.org/10.1093/biomet/82.4.711">https://doi.org/10.1093/biomet/82.4.711</a>.
 </div>
-<div id="ref-Hastings:1970" class="csl-entry" role="listitem">
+<div id="ref-Hastings:1970" class="csl-entry" role="doc-biblioentry">
 Hastings, W. K. 1970. <span>“<span class="nocase">Monte <span>C</span>arlo sampling methods using <span>M</span>arkov chains and their applications</span>.”</span> <em>Biometrika</em> 57 (1): 97–109. <a href="https://doi.org/10.1093/biomet/57.1.97">https://doi.org/10.1093/biomet/57.1.97</a>.
 </div>
-<div id="ref-Kinderman.Monahan:1977" class="csl-entry" role="listitem">
+<div id="ref-Kinderman.Monahan:1977" class="csl-entry" role="doc-biblioentry">
 Kinderman, Albert J, and John F Monahan. 1977. <span>“Computer Generation of Random Variables Using the Ratio of Uniform Deviates.”</span> <em>ACM Transactions on Mathematical Software (TOMS)</em> 3 (3): 257–60.
 </div>
-<div id="ref-Metropolis:1953" class="csl-entry" role="listitem">
+<div id="ref-Metropolis:1953" class="csl-entry" role="doc-biblioentry">
 Metropolis, Nicholas, Arianna W. Rosenbluth, Marshall N. Rosenbluth, Augusta H. Teller, and Edward Teller. 1953. <span>“<span class="nocase">Equation of State Calculations by Fast Computing Machines</span>.”</span> <em>The Journal of Chemical Physics</em> 21 (6): 1087–92. <a href="https://doi.org/10.1063/1.1699114">https://doi.org/10.1063/1.1699114</a>.
 </div>
-<div id="ref-Robert.Casella:2004" class="csl-entry" role="listitem">
+<div id="ref-Robert.Casella:2004" class="csl-entry" role="doc-biblioentry">
 Robert, Christian P., and George Casella. 2004. <em>Monte <span>C</span>arlo Statistical Methods</em>. New York, NY: Springer. <a href="https://doi.org/10.1007/978-1-4757-4145-2">https://doi.org/10.1007/978-1-4757-4145-2</a>.
 </div>
-<div id="ref-Roberts.Rosenthal:2001" class="csl-entry" role="listitem">
+<div id="ref-Roberts.Rosenthal:2001" class="csl-entry" role="doc-biblioentry">
 Roberts, Gareth O., and Jeffrey S. Rosenthal. 2001. <span>“Optimal Scaling for Various <span>M</span>etropolis–<span>H</span>astings Algorithms.”</span> <em>Statistical Science</em> 16 (4): 351–67. <a href="https://doi.org/10.1214/ss/1015346320">https://doi.org/10.1214/ss/1015346320</a>.
 </div>
-<div id="ref-Sherlock:2013" class="csl-entry" role="listitem">
+<div id="ref-Sherlock:2013" class="csl-entry" role="doc-biblioentry">
 Sherlock, Chris. 2013. <span>“Optimal Scaling of the Random Walk <span>M</span>etropolis: General Criteria for the 0.234 Acceptance Rule.”</span> <em>Journal of Applied Probability</em> 50 (1): 1–15. <a href="https://doi.org/10.1239/jap/1363784420">https://doi.org/10.1239/jap/1363784420</a>.
 </div>
-<div id="ref-Wakefield:1991" class="csl-entry" role="listitem">
+<div id="ref-Wakefield:1991" class="csl-entry" role="doc-biblioentry">
 Wakefield, J. C., A. E. Gelfand, and A. F. M. Smith. 1991. <span>“Efficient Generation of Random Variates via the Ratio-of-Uniforms Method.”</span> <em>Statistics and Computing</em> 1 (2): 129–33. <a href="https://doi.org/10.1007/BF01889987">https://doi.org/10.1007/BF01889987</a>.
 </div>
 </div>
@@ -705,23 +921,9 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     icon: icon
   };
   anchorJS.add('.anchored');
-  const isCodeAnnotation = (el) => {
-    for (const clz of el.classList) {
-      if (clz.startsWith('code-annotation-')) {                     
-        return true;
-      }
-    }
-    return false;
-  }
   const clipboard = new window.ClipboardJS('.code-copy-button', {
-    text: function(trigger) {
-      const codeEl = trigger.previousElementSibling.cloneNode(true);
-      for (const childEl of codeEl.children) {
-        if (isCodeAnnotation(childEl)) {
-          childEl.remove();
-        }
-      }
-      return codeEl.innerText;
+    target: function(trigger) {
+      return trigger.previousElementSibling;
     }
   });
   clipboard.on('success', function(e) {
@@ -786,92 +988,6 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       return note.innerHTML;
     });
   }
-      let selectedAnnoteEl;
-      const selectorForAnnotation = ( cell, annotation) => {
-        let cellAttr = 'data-code-cell="' + cell + '"';
-        let lineAttr = 'data-code-annotation="' +  annotation + '"';
-        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
-        return selector;
-      }
-      const selectCodeLines = (annoteEl) => {
-        const doc = window.document;
-        const targetCell = annoteEl.getAttribute("data-target-cell");
-        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
-        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
-        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
-        const lineIds = lines.map((line) => {
-          return targetCell + "-" + line;
-        })
-        let top = null;
-        let height = null;
-        let parent = null;
-        if (lineIds.length > 0) {
-            //compute the position of the single el (top and bottom and make a div)
-            const el = window.document.getElementById(lineIds[0]);
-            top = el.offsetTop;
-            height = el.offsetHeight;
-            parent = el.parentElement.parentElement;
-          if (lineIds.length > 1) {
-            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
-            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
-            height = bottom - top;
-          }
-          if (top !== null && height !== null && parent !== null) {
-            // cook up a div (if necessary) and position it 
-            let div = window.document.getElementById("code-annotation-line-highlight");
-            if (div === null) {
-              div = window.document.createElement("div");
-              div.setAttribute("id", "code-annotation-line-highlight");
-              div.style.position = 'absolute';
-              parent.appendChild(div);
-            }
-            div.style.top = top - 2 + "px";
-            div.style.height = height + 4 + "px";
-            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
-            if (gutterDiv === null) {
-              gutterDiv = window.document.createElement("div");
-              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
-              gutterDiv.style.position = 'absolute';
-              const codeCell = window.document.getElementById(targetCell);
-              const gutter = codeCell.querySelector('.code-annotation-gutter');
-              gutter.appendChild(gutterDiv);
-            }
-            gutterDiv.style.top = top - 2 + "px";
-            gutterDiv.style.height = height + 4 + "px";
-          }
-          selectedAnnoteEl = annoteEl;
-        }
-      };
-      const unselectCodeLines = () => {
-        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
-        elementsIds.forEach((elId) => {
-          const div = window.document.getElementById(elId);
-          if (div) {
-            div.remove();
-          }
-        });
-        selectedAnnoteEl = undefined;
-      };
-      // Attach click handler to the DT
-      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
-      for (const annoteDlNode of annoteDls) {
-        annoteDlNode.addEventListener('click', (event) => {
-          const clickedEl = event.target;
-          if (clickedEl !== selectedAnnoteEl) {
-            unselectCodeLines();
-            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
-            if (activeEl) {
-              activeEl.classList.remove('code-annotation-active');
-            }
-            selectCodeLines(clickedEl);
-            clickedEl.classList.add('code-annotation-active');
-          } else {
-            // Unselect the line
-            unselectCodeLines();
-            clickedEl.classList.remove('code-annotation-active');
-          }
-        });
-      }
   const findCites = (el) => {
     const parentEl = el.parentElement;
     if (parentEl) {

@@ -8,6 +8,7 @@
 ]{scrbook}
 
 \usepackage{amsmath,amssymb}
+\usepackage{lmodern}
 \usepackage{iftex}
 \ifPDFTeX
   \usepackage[T1]{fontenc}
@@ -17,10 +18,6 @@
   \usepackage{unicode-math}
   \defaultfontfeatures{Scale=MatchLowercase}
   \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
-\fi
-\usepackage{lmodern}
-\ifPDFTeX\else  
-    % xetex/luatex font selection
 \fi
 % Use upquote if available, for straight quotes in verbatim environments
 \IfFileExists{upquote.sty}{\usepackage{upquote}}{}
@@ -240,6 +237,20 @@
 \DeclareMathAlphabet{\mathcrl}{U}{rsfs}{m}{n}
 \usepackage{utopia}
 \DeclareMathAlphabet{\mathcal}{OMS}{cmsy}{m}{n}
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{wrapfig}
+\usepackage{float}
+\usepackage{colortbl}
+\usepackage{pdflscape}
+\usepackage{tabu}
+\usepackage{threeparttable}
+\usepackage{threeparttablex}
+\usepackage[normalem]{ulem}
+\usepackage{makecell}
+\usepackage{xcolor}
 \makeatletter
 \makeatother
 \makeatletter
@@ -280,14 +291,14 @@
 \floatname{codelisting}{Listing}
 \newcommand*\listoflistings{\listof{codelisting}{List of Listings}}
 \usepackage{amsthm}
+\theoremstyle{plain}
+\newtheorem{proposition}{Proposition}[chapter]
 \theoremstyle{definition}
 \newtheorem{example}{Example}[chapter]
 \theoremstyle{definition}
 \newtheorem{definition}{Definition}[chapter]
-\theoremstyle{plain}
-\newtheorem{proposition}{Proposition}[chapter]
 \theoremstyle{remark}
-\AtBeginDocument{\renewcommand*{\proofname}{Proof}}
+\renewcommand*{\proofname}{Proof}
 \newtheorem*{remark}{Remark}
 \newtheorem*{solution}{Solution}
 \makeatother
@@ -296,12 +307,10 @@
 \@ifpackageloaded{subcaption}{}{\usepackage{subcaption}}
 \makeatother
 \makeatletter
-\@ifpackageloaded{tcolorbox}{}{\usepackage[skins,breakable]{tcolorbox}}
+\@ifpackageloaded{tcolorbox}{}{\usepackage[many]{tcolorbox}}
 \makeatother
 \makeatletter
 \@ifundefined{shadecolor}{\definecolor{shadecolor}{rgb}{.97, .97, .97}}
-\makeatother
-\makeatletter
 \makeatother
 \makeatletter
 \makeatother
@@ -324,7 +333,7 @@
 \begin{document}
 \frontmatter
 \maketitle
-\ifdefined\Shaded\renewenvironment{Shaded}{\begin{tcolorbox}[frame hidden, breakable, sharp corners, interior hidden, borderline west={3pt}{0pt}{shadecolor}, boxrule=0pt, enhanced]}{\end{tcolorbox}}\fi
+\ifdefined\Shaded\renewenvironment{Shaded}{\begin{tcolorbox}[enhanced, frame hidden, borderline west={3pt}{0pt}{shadecolor}, breakable, interior hidden, boxrule=0pt, sharp corners]}{\end{tcolorbox}}\fi
 
 \renewcommand*\contentsname{Table of contents}
 {
@@ -346,7 +355,7 @@ a graduate course offered at HEC Montréal.
 These notes are licensed under a
 \href{http://creativecommons.org/licenses/by-nc-sa/4.0/}{Creative
 Commons Attribution-NonCommercial-ShareAlike 4.0 International License}
-and were last compiled on Sunday, October 01 2023.
+and were last compiled on Monday, October 02 2023.
 
 The objective of the course is to provide a hands on introduction to
 Bayesian data analysis. The course will cover the formulation,
@@ -495,8 +504,9 @@ likelihood.
 To fix ideas, we consider next a simple one-parameter model where the
 marginal likelihood can be computed explicitly.
 
+\leavevmode\vadjust pre{\hypertarget{exm-betabinomconjugate}{}}%
 \begin{example}[Binomial model with beta
-prior]\protect\hypertarget{exm-betabinomconjugate}{}\label{exm-betabinomconjugate}
+prior]\label{exm-betabinomconjugate}
 
 Consider a binomial likelihood with probability of success
 \(\theta \in [0,1]\) and \(n\) trials,
@@ -543,7 +553,7 @@ avoided, unless there are compelling reasons for restricting the domain.
 
 \begin{figure}[ht!]
 
-{\centering \includegraphics{introduction_files/figure-pdf/fig-betabinom-1.pdf}
+{\centering \includegraphics[width=0.85\textwidth,height=\textheight]{./introduction_files/figure-pdf/fig-betabinom-1.pdf}
 
 }
 
@@ -592,7 +602,7 @@ Figure~\ref{fig-binom-massvslik}
 
 \begin{figure}[ht!]
 
-{\centering \includegraphics{introduction_files/figure-pdf/fig-binom-massvslik-1.pdf}
+{\centering \includegraphics[width=0.85\textwidth,height=\textheight]{./introduction_files/figure-pdf/fig-binom-massvslik-1.pdf}
 
 }
 
@@ -603,8 +613,9 @@ scaled likelihood function (right).}
 
 \end{remark}
 
+\leavevmode\vadjust pre{\hypertarget{prp-sequentiality}{}}%
 \begin{proposition}[Sequentiality and Bayesian
-updating]\protect\hypertarget{prp-sequentiality}{}\label{prp-sequentiality}
+updating]\label{prp-sequentiality}
 
 The likelihood is invariant to the order of the observations if they are
 independent Thus, if we consider two blocks of observations
@@ -633,7 +644,7 @@ posterior mode moves towards the true value of the parameter (here 0.3).
 
 \begin{figure}[ht!]
 
-{\centering \includegraphics{introduction_files/figure-pdf/fig-sequential-1.pdf}
+{\centering \includegraphics[width=0.85\textwidth,height=\textheight]{./introduction_files/figure-pdf/fig-sequential-1.pdf}
 
 }
 
@@ -645,7 +656,8 @@ right) out of a total of 100 trials.}
 
 \end{proposition}
 
-\begin{example}[]\protect\hypertarget{exm-numericalintegration}{}\label{exm-numericalintegration}
+\leavevmode\vadjust pre{\hypertarget{exm-numericalintegration}{}}%
+\begin{example}[]\label{exm-numericalintegration}
 
 While we can calculate analytically the value of the normalizing
 constant for the beta-binomial model, we could also for arbitrary priors
@@ -672,34 +684,15 @@ and this can lead to arithmetic underflow.
 \FunctionTok{integrate}\NormalTok{(}\AttributeTok{f =}\NormalTok{ unnormalized\_posterior,}
           \AttributeTok{lower =} \DecValTok{0}\NormalTok{,}
           \AttributeTok{upper =} \DecValTok{1}\NormalTok{)}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{verbatim}
-1.066906e-05 with absolute error < 1e-12
-\end{verbatim}
-
-\begin{Shaded}
-\begin{Highlighting}[]
+\CommentTok{\#\textgreater{} 0.0000107 with absolute error \textless{} 1e{-}12}
 \CommentTok{\# Compare with known constant}
 \FunctionTok{beta}\NormalTok{(y }\SpecialCharTok{+}\NormalTok{ alpha, n }\SpecialCharTok{{-}}\NormalTok{ y }\SpecialCharTok{+}\NormalTok{ beta)}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{verbatim}
-[1] 1.066906e-05
-\end{verbatim}
-
-\begin{Shaded}
-\begin{Highlighting}[]
+\CommentTok{\#\textgreater{} [1] 0.0000107}
 \CommentTok{\# Monte Carlo integration}
 \FunctionTok{mean}\NormalTok{(}\FunctionTok{unnormalized\_posterior}\NormalTok{(}\FunctionTok{runif}\NormalTok{(}\FloatTok{1e5}\NormalTok{)))}
+\CommentTok{\#\textgreater{} [1] 0.0000106}
 \end{Highlighting}
 \end{Shaded}
-
-\begin{verbatim}
-[1] 1.064067e-05
-\end{verbatim}
 
 \end{example}
 
@@ -749,7 +742,7 @@ binomial mass function evaluated at the maximum likelihood estimator
 
 \begin{figure}[ht!]
 
-{\centering \includegraphics{introduction_files/figure-pdf/fig-betabinompostpred-1.pdf}
+{\centering \includegraphics[width=0.85\textwidth,height=\textheight]{./introduction_files/figure-pdf/fig-betabinompostpred-1.pdf}
 
 }
 
@@ -759,9 +752,9 @@ maximum likelihood estimator.}
 
 \end{figure}
 
+\leavevmode\vadjust pre{\hypertarget{exm-normal-post-pred}{}}%
 \begin{example}[Posterior predictive distribution of univariate Gaussian
-with known
-mean]\protect\hypertarget{exm-normal-post-pred}{}\label{exm-normal-post-pred}
+with known mean]\label{exm-normal-post-pred}
 
 Consider an \(n\) sample of independent and identically distributed
 Gaussian, \(Y_i \sim \mathsf{No}(0, \tau^{-1})\) (\(i=1, \ldots, n\)),
@@ -835,8 +828,8 @@ characteristics of the the latter.
 
 The choice of point summary to keep has it's root in decision theory.
 
-\begin{definition}[Loss
-function]\protect\hypertarget{def-lossfunction}{}\label{def-lossfunction}
+\leavevmode\vadjust pre{\hypertarget{def-lossfunction}{}}%
+\begin{definition}[Loss function]\label{def-lossfunction}
 
 A loss function \(c(\boldsymbol{\theta}, \boldsymbol{\upsilon})\) is a
 mapping from \(\boldsymbol{\Theta} \to \mathbb{R}^k\) that assigns a
@@ -877,7 +870,7 @@ draws.
 
 \begin{figure}[ht!]
 
-{\centering \includegraphics{introduction_files/figure-pdf/fig-central-moments-1.pdf}
+{\centering \includegraphics[width=0.85\textwidth,height=\textheight]{./introduction_files/figure-pdf/fig-central-moments-1.pdf}
 
 }
 
@@ -890,8 +883,8 @@ The loss function is often a functional (meaning a one-dimensional
 summary) from the posterior. The following example shows how it reduces
 a three-dimensional problem into a single risk measure.
 
-\begin{example}[Danish insurance
-losses]\protect\hypertarget{exm-loss-extremes}{}\label{exm-loss-extremes}
+\leavevmode\vadjust pre{\hypertarget{exm-loss-extremes}{}}%
+\begin{example}[Danish insurance losses]\label{exm-loss-extremes}
 
 In extreme value, we are often interested in assessing the risk of
 events that are rare enough that they lie beyond the range of observed
@@ -927,7 +920,7 @@ is adequate for all but the three largest observations, which are
 
 \begin{figure}[ht!]
 
-{\centering \includegraphics{introduction_files/figure-pdf/fig-danish-1.pdf}
+{\centering \includegraphics[width=0.85\textwidth,height=\textheight]{./introduction_files/figure-pdf/fig-danish-1.pdf}
 
 }
 
@@ -1018,7 +1011,7 @@ Figure~\ref{fig-lossfn}, is to the left of the posterior mean for
 
 \begin{figure}[ht!]
 
-{\centering \includegraphics{introduction_files/figure-pdf/fig-lossfn-1.pdf}
+{\centering \includegraphics[width=0.85\textwidth,height=\textheight]{./introduction_files/figure-pdf/fig-lossfn-1.pdf}
 
 }
 
@@ -1034,7 +1027,8 @@ loss functions.}
 To communicate uncertainty, we may resort to credible regions and
 intervals.
 
-\begin{definition}[]\protect\hypertarget{def-credible-region}{}\label{def-credible-region}
+\leavevmode\vadjust pre{\hypertarget{def-credible-region}{}}%
+\begin{definition}[]\label{def-credible-region}
 
 A \((1-\alpha)\) \textbf{credible region} (or credible interval in the
 univariate setting) is a set \(\mathcal{S}_\alpha\) such that, with
@@ -1059,7 +1053,7 @@ overlap between the two intervals.
 
 \begin{figure}[ht!]
 
-{\centering \includegraphics{introduction_files/figure-pdf/fig-credible-intervals-1.pdf}
+{\centering \includegraphics[width=0.85\textwidth,height=\textheight]{./introduction_files/figure-pdf/fig-credible-intervals-1.pdf}
 
 }
 
@@ -1136,7 +1130,8 @@ numerical explanatory), the slope is the correlation between
 standardized explanatory \(\mathrm{X}\) and standardized response \(Y\)
 and the intercept should be mean zero.
 
-\begin{example}[]\protect\hypertarget{exm-bixi-temp}{}\label{exm-bixi-temp}
+\leavevmode\vadjust pre{\hypertarget{exm-bixi-temp}{}}%
+\begin{example}[]\label{exm-bixi-temp}
 
 Consider the daily number of Bixi bike sharing users for 2017--2019 at
 the Edouard Montpetit station next to HEC: we can consider a simple
@@ -1162,7 +1157,7 @@ relationships.\footnote{One can object to the prior parameters depending
 
 \begin{figure}[ht!]
 
-{\centering \includegraphics{priors_files/figure-pdf/fig-bixi-1.pdf}
+{\centering \includegraphics[width=0.85\textwidth,height=\textheight]{./priors_files/figure-pdf/fig-bixi-1.pdf}
 
 }
 
@@ -1200,7 +1195,8 @@ computational convenience and because interpretation is convenient, as
 the parameters of the posterior will often be some weighted average of
 prior and likelihood component.
 
-\begin{definition}[]\protect\hypertarget{def-conjugate-prior}{}\label{def-conjugate-prior}
+\leavevmode\vadjust pre{\hypertarget{def-conjugate-prior}{}}%
+\begin{definition}[]\label{def-conjugate-prior}
 
 A prior density \(p(\boldsymbol{\theta})\) is conjugate for likelihood
 \(L(\boldsymbol{\theta}; \boldsymbol{y})\) if the product
@@ -1231,8 +1227,9 @@ Gaussian distributions) admit conjugate priors\footnote{A distribution
 
 \end{definition}
 
+\leavevmode\vadjust pre{\hypertarget{exm-conjugatepriors-binom}{}}%
 \begin{example}[Conjugate prior for the binomial
-model]\protect\hypertarget{exm-conjugatepriors-binom}{}\label{exm-conjugatepriors-binom}
+model]\label{exm-conjugatepriors-binom}
 
 The binomial log density with \(y\) successes out of \(n\) trials is
 proportional to \begin{align*}
@@ -1254,8 +1251,9 @@ the same inference is called likelihood principle.
 
 \end{example}
 
+\leavevmode\vadjust pre{\hypertarget{exm-conjugatepriors-poisson}{}}%
 \begin{example}[Conjugate prior for the Poisson
-model]\protect\hypertarget{exm-conjugatepriors-poisson}{}\label{exm-conjugatepriors-poisson}
+model]\label{exm-conjugatepriors-poisson}
 
 The Poisson distribution with mean \(\mu\) has log density proportional
 to \(f(y; \mu) \propto y\log(\mu) -\mu\), so is an exponential family
@@ -1273,8 +1271,9 @@ Knowing the analytic expression for the posterior can be useful for
 calculations of the marginal likelihood, as
 Example~\ref{exm-poisson-negbin} demonstrates.
 
+\leavevmode\vadjust pre{\hypertarget{exm-poisson-negbin}{}}%
 \begin{example}[Negative binomial as a Poisson
-mixture]\protect\hypertarget{exm-poisson-negbin}{}\label{exm-poisson-negbin}
+mixture]\label{exm-poisson-negbin}
 
 ~
 
@@ -1314,8 +1313,9 @@ degenerates to a constant at \(\mu\) and we recover the Poisson model.
 
 \end{example}
 
+\leavevmode\vadjust pre{\hypertarget{exm-abtest}{}}%
 \begin{example}[Posterior rates for A/B tests using conjugate Poisson
-model]\protect\hypertarget{exm-abtest}{}\label{exm-abtest}
+model]\label{exm-abtest}
 
 Upworthy.com, a US media publisher, revolutionized headlines online
 advertisement by running systematic A/B tests to compare the different
@@ -1387,7 +1387,7 @@ H4 & 3083 & 9\\
 
 \begin{figure}[ht!]
 
-{\centering \includegraphics{priors_files/figure-pdf/fig-upworthy-1.pdf}
+{\centering \includegraphics[width=0.85\textwidth,height=\textheight]{./priors_files/figure-pdf/fig-upworthy-1.pdf}
 
 }
 
@@ -1409,8 +1409,9 @@ preference for the first headline \texttt{H1}.
 
 \end{example}
 
+\leavevmode\vadjust pre{\hypertarget{exm-poisson-upworthy-question}{}}%
 \begin{example}[Should you phrase your headline as a
-question?]\protect\hypertarget{exm-poisson-upworthy-question}{}\label{exm-poisson-upworthy-question}
+question?]\label{exm-poisson-upworthy-question}
 
 We can also consider aggregate records for Upworthy, as Alexander
 (\protect\hyperlink{ref-Alexander:2023}{2023}) did. The
@@ -1442,13 +1443,10 @@ offset term and a binary variable.
   \AttributeTok{family =} \FunctionTok{poisson}\NormalTok{(}\AttributeTok{link =} \StringTok{"log"}\NormalTok{),}
   \AttributeTok{data =}\NormalTok{ upworthy\_question)}
 \FunctionTok{coef}\NormalTok{(poismod)}
+\CommentTok{\#\textgreater{} (Intercept)  questionno }
+\CommentTok{\#\textgreater{}     {-}4.5126      0.0707}
 \end{Highlighting}
 \end{Shaded}
-
-\begin{verbatim}
-(Intercept)  questionno 
--4.51264669  0.07069677 
-\end{verbatim}
 
 The coefficients represent the difference in log rate (multiplicative
 effect) relative to the baseline rate, with an increase of 6.3 percent
@@ -1485,7 +1483,7 @@ interpretable portrait that is in line with the frequentist analysis.
 
 \begin{figure}[ht!]
 
-{\centering \includegraphics{priors_files/figure-pdf/fig-hist-difference_rates-1.pdf}
+{\centering \includegraphics[width=0.85\textwidth,height=\textheight]{./priors_files/figure-pdf/fig-hist-difference_rates-1.pdf}
 
 }
 
@@ -1505,8 +1503,9 @@ however hardly surprising given the sample size at play.
 
 \end{example}
 
+\leavevmode\vadjust pre{\hypertarget{exm-conjugatepriors-normal}{}}%
 \begin{example}[Conjugate prior for Gaussian mean with known
-variance]\protect\hypertarget{exm-conjugatepriors-normal}{}\label{exm-conjugatepriors-normal}
+variance]\label{exm-conjugatepriors-normal}
 
 Consider an \(n\) simple random sample of independent and identically
 distributed Gaussian variables with mean \(\mu\) and standard deviation
@@ -1551,8 +1550,8 @@ relative weights}.
 \hypertarget{uninformative-priors}{%
 \section{Uninformative priors}\label{uninformative-priors}}
 
-\begin{definition}[Proper
-prior]\protect\hypertarget{def-properprior}{}\label{def-properprior}
+\leavevmode\vadjust pre{\hypertarget{def-properprior}{}}%
+\begin{definition}[Proper prior]\label{def-properprior}
 
 We call a prior function \emph{proper} if it's integral is finite over
 the parameter space; such prior function automatically leads to a valid
@@ -1587,8 +1586,9 @@ ranges. Uninformative and vague priors are generally not recommended
 unless they are known to give valid posterior inference and the amount
 of information from the likelihood is high.
 
+\leavevmode\vadjust pre{\hypertarget{exm-scaleflatprior}{}}%
 \begin{example}[Transformation of flat prior for
-scales]\protect\hypertarget{exm-scaleflatprior}{}\label{exm-scaleflatprior}
+scales]\label{exm-scaleflatprior}
 
 Consider the parameter \(\log(\tau) \in \mathbb{R}\) and the prior
 \(p( \log \tau) \propto 1\). If we reparametrize the model in terms of
@@ -1618,8 +1618,8 @@ fitted using a linear regression model seldom follow Gaussian
 distributions conditionally, in the same way that the linearity is a
 convenience (and first order approximation).
 
-\begin{definition}[Jeffrey's
-prior]\protect\hypertarget{def-jeffreys}{}\label{def-jeffreys}
+\leavevmode\vadjust pre{\hypertarget{def-jeffreys}{}}%
+\begin{definition}[Jeffrey's prior]\label{def-jeffreys}
 
 In single parameter models, taking a prior function for \(\theta\)
 proportional to the square root of the determinant of the information
@@ -1650,8 +1650,9 @@ information.
 
 \end{definition}
 
+\leavevmode\vadjust pre{\hypertarget{exm-jeffreysbinom}{}}%
 \begin{example}[Jeffrey's prior for the binomial
-distribution]\protect\hypertarget{exm-jeffreysbinom}{}\label{exm-jeffreysbinom}
+distribution]\label{exm-jeffreysbinom}
 
 Consider the binomial distribution \(\mathsf{Bin}(1, \theta)\) with
 density
@@ -1678,8 +1679,9 @@ turn, are \(p(\mu) \propto 1\) and \(p(\sigma) \propto 1/\sigma\), which
 also correspond to the default uninformative priors for location-scale
 families.
 
+\leavevmode\vadjust pre{\hypertarget{exm-jeffreyspoisson}{}}%
 \begin{example}[Jeffrey's prior for the Poisson
-distribution]\protect\hypertarget{exm-jeffreyspoisson}{}\label{exm-jeffreyspoisson}
+distribution]\label{exm-jeffreyspoisson}
 
 The Poisson distribution with
 \(\ell(\lambda) \propto -\lambda + y\log \lambda\), with second
@@ -1702,8 +1704,9 @@ of the prior distribution. It may be easier to set priors on a different
 scale than those of the observations, as Example~\ref{exm-colestawn}
 demonstrates.
 
+\leavevmode\vadjust pre{\hypertarget{exm-colestawn}{}}%
 \begin{example}[Gamma quantile difference priors for extreme value
-distributions]\protect\hypertarget{exm-colestawn}{}\label{exm-colestawn}
+distributions]\label{exm-colestawn}
 
 The generalized extreme value distribution arises as the limiting
 distribution for the maximum of \(m\) independent observations from some
@@ -1758,7 +1761,7 @@ the tail.
 
 \begin{figure}[ht!]
 
-{\centering \includegraphics{priors_files/figure-pdf/fig-gev-colestawn-quant-prior-1.pdf}
+{\centering \includegraphics[width=0.85\textwidth,height=\textheight]{./priors_files/figure-pdf/fig-gev-colestawn-quant-prior-1.pdf}
 
 }
 
@@ -1812,8 +1815,9 @@ gives
 To choose \(\lambda\), the authors recommend elicitation of a pair
 \((U, \alpha)\) such that \(\Pr(\lambda > U)=\alpha\).
 
+\leavevmode\vadjust pre{\hypertarget{exm-pcprior-randomeffect}{}}%
 \begin{example}[Penalized complexity prior for random effects
-models]\protect\hypertarget{exm-pcprior-randomeffect}{}\label{exm-pcprior-randomeffect}
+models]\label{exm-pcprior-randomeffect}
 
 Simpson et al. (\protect\hyperlink{ref-Simpson:2017}{2017}) give the
 example of a Gaussian prior for random effects \(\boldsymbol{\alpha}\),
@@ -1831,9 +1835,9 @@ predictive may also be used for calibration.
 
 \end{example}
 
+\leavevmode\vadjust pre{\hypertarget{exm-pcprior-arorder}{}}%
 \begin{example}[Penalized complexity prior for autoregressive model of
-order
-1]\protect\hypertarget{exm-pcprior-arorder}{}\label{exm-pcprior-arorder}
+order 1]\label{exm-pcprior-arorder}
 
 Sørbye and Rue (\protect\hyperlink{ref-Sorbye.Rue:2017}{2017}) derive
 penalized complexity prior for the Gaussian stationary AR(1) model with
@@ -1873,8 +1877,9 @@ variance is close to zero, and more so when there are few levels for the
 groups since the relative weight of the prior relative to that of the
 likelihood contribution is then large.
 
+\leavevmode\vadjust pre{\hypertarget{exm-random-effect-variance}{}}%
 \begin{example}[Student-t prior for variance
-components]\protect\hypertarget{exm-random-effect-variance}{}\label{exm-random-effect-variance}
+components]\label{exm-random-effect-variance}
 
 Gelman (\protect\hyperlink{ref-Gelman:2006}{2006}) recommends a
 Student-\(t\) distribution truncated below at \(0\), with low degrees of
@@ -1906,8 +1911,8 @@ the \(\mathsf{IGa}(\epsilon, \epsilon)\).
 
 \end{example}
 
-\begin{example}[Poisson random effect
-models]\protect\hypertarget{exm-randomeffects}{}\label{exm-randomeffects}
+\leavevmode\vadjust pre{\hypertarget{exm-randomeffects}{}}%
+\begin{example}[Poisson random effect models]\label{exm-randomeffects}
 
 We consider data from an experimental study conducted at Tech3Lab on
 road safety. In Brodeur et al.
@@ -1949,7 +1954,7 @@ hard to draw conclusions).
 
 \begin{figure}[ht!]
 
-{\centering \includegraphics{priors_files/figure-pdf/fig-post-dist-poisson-mixed-1.pdf}
+{\centering \includegraphics[width=0.85\textwidth,height=\textheight]{./priors_files/figure-pdf/fig-post-dist-poisson-mixed-1.pdf}
 
 }
 
@@ -1977,7 +1982,8 @@ to these changes, for example by considering a vague prior or modifying
 the parameters values (say halving or doubling). If the changes are
 immaterial, then this provides reassurance that our analyses are robust.
 
-\begin{example}[]\protect\hypertarget{exm-sensitivity-poisson-mixed}{}\label{exm-sensitivity-poisson-mixed}
+\leavevmode\vadjust pre{\hypertarget{exm-sensitivity-poisson-mixed}{}}%
+\begin{example}[]\label{exm-sensitivity-poisson-mixed}
 
 To check the sensitivity of the conclusion, we revisit the modelling of
 the \texttt{smartwatch} experiment data using a Poisson regression and
@@ -1993,7 +1999,7 @@ replicates, and the significant variability between groups.
 
 \begin{figure}[ht!]
 
-{\centering \includegraphics{priors_files/figure-pdf/fig-sensitivity-1.pdf}
+{\centering \includegraphics[width=0.85\textwidth,height=\textheight]{./priors_files/figure-pdf/fig-sensitivity-1.pdf}
 
 }
 
@@ -2012,14 +2018,14 @@ median and the bars the 50\% and 95\% percentile credible intervals.}
 \chapter{Simulation-based inference}\label{simulation-based-inference}}
 
 There are two major approaches to handling the problem of the unknown
-normalizing constant that is the marginal likelihood: deterministic
-approximations (Laplace and nested Laplace approximations, variational
-methods and expectation propagation). This chapter covers stochastic
-approximations, and focuses on implementation of basic Markov chain
-Monte Carlo algorithms, which circumvent the need to calculate the
-normalizing constant of the posterior entirely. We present several
-examples of implementations, several tricks for tuning and diagnostics
-of convergence.
+normalizing constant: deterministic and stochastic approximations. The
+former includes Laplace and nested Laplace approximations, variational
+methods and expectation propagation. This chapter covers the latter,
+stochastic approximations, and focuses on implementation of basic Markov
+chain Monte Carlo algorithms. The simulation algorithms circumvent the
+need to calculate the normalizing constant of the posterior entirely. We
+present several examples of implementations, several tricks for tuning
+and diagnostics of convergence.
 
 \hypertarget{monte-carlo-methods}{%
 \section{Monte Carlo methods}\label{monte-carlo-methods}}
@@ -2038,7 +2044,8 @@ pay for this generality is randomness.
 Specifically, suppose we are interested in the average
 \(\mathsf{E}\{g(X)\}\) of \(X_i \sim F\) for some function \(g\).
 
-\begin{example}[]\protect\hypertarget{exm-expectation-demo}{}\label{exm-expectation-demo}
+\leavevmode\vadjust pre{\hypertarget{exm-expectation-demo}{}}%
+\begin{example}[]\label{exm-expectation-demo}
 
 Consider \(X \sim \mathsf{Ga}(\alpha, \beta)\), a gamma distribution
 with shape \(\alpha\) and rate \(\beta\). We can compute the probability
@@ -2077,7 +2084,7 @@ testimonial of this.
 
 \begin{figure}[ht!]
 
-{\centering \includegraphics{mcmc_files/figure-pdf/fig-monte-carlo-path-1.pdf}
+{\centering \includegraphics[width=0.85\textwidth,height=\textheight]{./mcmc_files/figure-pdf/fig-monte-carlo-path-1.pdf}
 
 }
 
@@ -2101,8 +2108,8 @@ from the target, especially if the model is high dimensional: rejection
 sampling and the ratio of uniform method are examples of Monte Carlo
 methods which can be used to generate iid draws.
 
-\begin{example}[Rejection
-sampling]\protect\hypertarget{exm-rejection-sampling}{}\label{exm-rejection-sampling}
+\leavevmode\vadjust pre{\hypertarget{prp-rejection-sampling}{}}%
+\begin{proposition}[Rejection sampling]\label{prp-rejection-sampling}
 
 Rejection sampling (also termed accept-reject algorithm) samples from a
 random vector with density \(p(\cdot)\) by drawing candidates from a
@@ -2120,35 +2127,134 @@ proposal with density \(p(\cdot)\), where \(q(\cdot)\) is such that
   density \(q\) and \(U \sim \mathsf{U}(0,1)\)
 \item
   Compute the ratio
-  \(R \gets C^{-1} p(\boldsymbol{\theta}^{\star})/ q(\boldsymbol{\theta}^{\star})/\).
+  \(R \gets C^{-1} p(\boldsymbol{\theta}^{\star})/ q(\boldsymbol{\theta}^{\star})\).
 \item
   If \(R \leq U\), return \(\boldsymbol{\theta}\), else return to step
   1.
 \end{enumerate}
 
-\end{example}
+\end{proposition}
 
 Rejection sampling requires the proposal \(q\) to have a support at
 least as large as that of \(p\) and resemble closely the density. It
-should be chosen so that the bound \(C\) is as sharp as possible and
-close to 1. The dominating density \(q\) must have heavier tails than
-the density of interest. The expected number of simulations needed to
-accept one proposal is \(C\). We need to be able to compute an upper
-bound \(C\). Finally, for the method to be useful, we need to be able to
-simulate easily and cheaply from the proposal. The optimal value of
-\(C\) is
+should be chosen so that the upper bound \(C\) is as sharp as possible
+and close to 1. The dominating density \(q\) must have heavier tails
+than the density of interest. The expected number of simulations needed
+to accept one proposal is \(C.\) Finally, for the method to be useful,
+we need to be able to simulate easily and cheaply from the proposal. The
+optimal value of \(C\) is
 \(C = \sup_{\boldsymbol{\theta}} p(\boldsymbol{\theta}) / q(\boldsymbol{\theta})\).
 This quantity may be obtained by numerical optimization, by finding the
 mode of the ratio of the log densities if the maximum is not known
 analytically.
 
-\begin{example}[Ratio of uniform
-method]\protect\hypertarget{exm-ratio-uniform}{}\label{exm-ratio-uniform}
+\leavevmode\vadjust pre{\hypertarget{exm-accept-reject-truncated}{}}%
+\begin{example}[Truncated Gaussian
+distribution]\label{exm-accept-reject-truncated}
+
+Consider the problem of sampling from a Gaussian distribution
+\(Y \sim \mathsf{No}(\mu, \sigma^2)\) truncated in the interval
+\(a, b,\) which has density \begin{align*}
+f(x; \mu, \sigma, a, b) = \frac{1}{\sigma}\frac{\phi\left(\frac{x-\mu}{\sigma}\right)}{\Phi\{(b-\mu)/\sigma\}-\Phi\{(a-\mu)/\sigma\}}.
+\end{align*} where \(\phi(\cdot), \Phi(\cdot)\) are respectively the
+density and distribution function of the standard Gaussian distribution.
+
+Since the Gaussian is a location-scale family, we can reduce the problem
+to sampling \(X\) from a standard Gaussian truncated on
+\(\alpha = (a-\mu)/\sigma\) and \(\beta = (b-\mu)/\sigma\) and back
+transform the result as \(Y = \mu + \sigma X\).
+
+A crude accept-reject sampling algorithm would consider sampling from
+the same untruncated distribution with density
+\(g(X) = \sigma^{-1}\phi\{(x-\mu)/\sigma\}\), and the acceptance ratio
+is \(C=\{\Phi(\beta) - \Phi(\alpha)\}\). We thus simply simulate points
+from the Gaussian and accept any that falls within the bounds.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Standard Gaussian truncated on [0,1]}
+\NormalTok{candidate }\OtherTok{\textless{}{-}} \FunctionTok{rnorm}\NormalTok{(}\FloatTok{1e5}\NormalTok{)}
+\NormalTok{trunc\_samp }\OtherTok{\textless{}{-}}\NormalTok{ candidate[candidate }\SpecialCharTok{\textgreater{}=} \DecValTok{0} \SpecialCharTok{\&}\NormalTok{ candidate }\SpecialCharTok{\textless{}=} \DecValTok{1}\NormalTok{]}
+\CommentTok{\# Acceptance rate}
+\FunctionTok{length}\NormalTok{(trunc\_samp)}\SpecialCharTok{/}\FloatTok{1e5}
+\CommentTok{\#\textgreater{} [1] 0.342}
+\CommentTok{\# Theoretical acceptance rate}
+\FunctionTok{pnorm}\NormalTok{(}\DecValTok{1}\NormalTok{)}\SpecialCharTok{{-}}\FunctionTok{pnorm}\NormalTok{(}\DecValTok{0}\NormalTok{)}
+\CommentTok{\#\textgreater{} [1] 0.341}
+\end{Highlighting}
+\end{Shaded}
+
+We can of course do better: if we consider a random variable with
+distribution function \(F\), but truncated over the interval \([a,b]\),
+then the resulting distribution function is
+\[\frac{F(x) - F(a)}{F(b)-F(a)}, \qquad a \leq x \leq b,\] and we can
+invert this expression to get the quantile function of the truncated
+variable in terms of the distribution function \(F\) and the quantile
+function \(F^{-1}\) of the original untruncated variable.
+
+For the Gaussian, this gives \begin{align*}
+X \sim \Phi^{-1}\left[\Phi(\alpha) + \{\Phi(\beta)-\Phi(\alpha)\}U\right]
+\end{align*} for \(U \sim \mathsf{U}(0,1)\). Although the quantile and
+distribution functions of the Gaussian, \texttt{pnorm} and
+\texttt{qnorm} in \textbf{R}, are very accurate, this method will fail
+for rare event simulation because it will return \(\Phi(x) = 0\) for
+\(x \leq -39\) and \(\Phi(x)=1\) for \(x \geq 8.3\), implying that
+\(a \leq 8.3\) for this approach to work
+(\protect\hyperlink{ref-LEcuyer.Botev:2017}{Botev and L'Écuyer 2017}).
+
+Consider the problem of simulating events in the right tail for a
+standard Gaussian where \(a > 0\); Marsaglia's method
+(\protect\hyperlink{ref-Devroye:1986}{Devroye 1986, 381}), can be used
+for that purpose. Write the density of the Gaussian as
+\(f(x) = \exp(-x^2/2)/c_1\), where
+\(c_1 = \int_{a}^{\infty}\exp(-z^2/2)\mathrm{d} z\), and note that
+\[c_1f(x) \leq \frac{x}{a}\exp\left(-\frac{x^2}{2}\right)= a^{-1}\exp\left(-\frac{a^2}{2}\right)g(x), \qquad x \geq a;\]
+where \(g(x)\) is the density of a Rayleigh variable shifted by \(a\),
+which has distribution function \(G(x) = 1-\exp\{(a^2-x^2)/2\}\) for
+\(x \geq a\). We can simulate such a random variate \(X\) through the
+inversion method. The constant \(C= \exp(-a^2/2)(c_1a)^{-1}\) approaches
+1 quickly as \(a \to \infty\).
+
+The accept-reject thus proceeds with
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  Generate a shifted Rayleigh above \(a\),
+  \(X \gets \{a^2 - 2\log(U)\}^{1/2}\) for \(U \sim \mathsf{U}(0,1)\)
+\item
+  Accept \(X\) if \(XV \leq a\), where \(V \sim \mathsf{U}(0,1)\).
+\end{enumerate}
+
+Should we wish to obtain samples on \([a,b]\), we could instead propose
+from a Rayleigh truncated above at \(b\)
+(\protect\hyperlink{ref-LEcuyer.Botev:2017}{Botev and L'Écuyer 2017}).
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{a }\OtherTok{\textless{}{-}} \FloatTok{8.3}
+\NormalTok{niter }\OtherTok{\textless{}{-}}\NormalTok{ 1000L}
+\NormalTok{X }\OtherTok{\textless{}{-}} \FunctionTok{sqrt}\NormalTok{(a}\SpecialCharTok{\^{}}\DecValTok{2} \SpecialCharTok{+} \DecValTok{2}\SpecialCharTok{*}\FunctionTok{rexp}\NormalTok{(niter))}
+\NormalTok{samp }\OtherTok{\textless{}{-}}\NormalTok{ X[}\FunctionTok{runif}\NormalTok{(niter)}\SpecialCharTok{*}\NormalTok{X }\SpecialCharTok{\textless{}=}\NormalTok{ a]}
+\end{Highlighting}
+\end{Shaded}
+
+\end{example}
+
+For a given candidate density \(g\) which has a heavier tail than the
+target, we can resort to numerical methods to compute the mode of the
+ratio \(f/g\) and obtain the bound \(C\); see Albert
+(\protect\hyperlink{ref-Albert:2009}{2009}), Section 5.8 for an
+insightful example.
+
+\leavevmode\vadjust pre{\hypertarget{prp-ratio-uniform}{}}%
+\begin{proposition}[Ratio of uniform method]\label{prp-ratio-uniform}
 
 The ratio-of-uniform method
 (\protect\hyperlink{ref-Kinderman.Monahan:1977}{Kinderman and Monahan
 1977}; \protect\hyperlink{ref-Wakefield:1991}{Wakefield, Gelfand, and
-Smith 1991}) is a niche simulation algorithm to draw samples from a
+Smith 1991}) is a variant of accept-reject used to draw samples from a
 unnormalized density \(f(\boldsymbol{\theta})\) for
 \(\boldsymbol{\theta} \in \boldsymbol{\Theta} \subseteq \mathbb{R}^d\).
 For some \(r \geq 0\), consider the set \begin{align*}
@@ -2161,8 +2267,76 @@ density and marginal moments. See
 \href{https://paulnorthrop.github.io/rust/articles/rust-a-vignette.html}{the
 \texttt{rust} package vignette} for technical details and examples. Like
 with other accept-reject algorithms, the acceptance rate of the proposal
-goes down with the dimension of the problem. This algorithm was used in
-Example~\ref{exm-loss-extremes} to generate draws from the posterior.
+goes down with the dimension of the problem.
+
+\end{proposition}
+
+\leavevmode\vadjust pre{\hypertarget{exm-rust}{}}%
+\begin{example}[]\label{exm-rust}
+
+The ratio-of-uniform algorithm was used in
+Example~\ref{exm-loss-extremes} to generate draws from the posterior. We
+illustrate below the \texttt{rust} package with a user-specified prior
+and posterior. We fit a generalized Pareto distribution
+\(Y \sim \mathsf{GP}(\sigma, \xi)\) to exceedances above 10 millions
+krones to the \texttt{danish} fire insurance data, using a truncated
+maximal data information prior
+\(p(\sigma, \xi) \propto \sigma^{-1}\exp(-\xi+1)\mathrm{I}(\xi > -1)\).
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{data}\NormalTok{(danish, }\AttributeTok{package =} \StringTok{"evir"}\NormalTok{)}
+\CommentTok{\# Extract threshold exceedances}
+\NormalTok{exc }\OtherTok{\textless{}{-}}\NormalTok{ danish[danish }\SpecialCharTok{\textgreater{}} \DecValTok{10}\NormalTok{] }\SpecialCharTok{{-}} \DecValTok{10}
+\CommentTok{\# Create a function for the log prior}
+\NormalTok{logmdiprior }\OtherTok{\textless{}{-}} \ControlFlowTok{function}\NormalTok{(par, ...)\{}
+  \ControlFlowTok{if}\NormalTok{(}\FunctionTok{isTRUE}\NormalTok{(}\FunctionTok{any}\NormalTok{(par[}\DecValTok{1}\NormalTok{] }\SpecialCharTok{\textless{}=} \DecValTok{0}\NormalTok{, par[}\DecValTok{2}\NormalTok{] }\SpecialCharTok{\textless{}} \SpecialCharTok{{-}}\DecValTok{1}\NormalTok{)))\{}
+    \FunctionTok{return}\NormalTok{(}\SpecialCharTok{{-}}\ConstantTok{Inf}\NormalTok{)}
+\NormalTok{  \}}
+  \SpecialCharTok{{-}}\FunctionTok{log}\NormalTok{(par[}\DecValTok{1}\NormalTok{]) }\SpecialCharTok{{-}}\NormalTok{ par[}\DecValTok{2}\NormalTok{]}
+\NormalTok{\}}
+\CommentTok{\# Same for log likelihood, assuming independent data}
+\NormalTok{loglik\_gp }\OtherTok{\textless{}{-}} \ControlFlowTok{function}\NormalTok{(par, }\AttributeTok{data =}\NormalTok{ exc, ...)\{}
+  \ControlFlowTok{if}\NormalTok{(}\FunctionTok{isTRUE}\NormalTok{(}\FunctionTok{any}\NormalTok{(par[}\DecValTok{1}\NormalTok{] }\SpecialCharTok{\textless{}=} \DecValTok{0}\NormalTok{, par[}\DecValTok{2}\NormalTok{] }\SpecialCharTok{\textless{}} \SpecialCharTok{{-}}\DecValTok{1}\NormalTok{)))\{}
+    \FunctionTok{return}\NormalTok{(}\SpecialCharTok{{-}}\ConstantTok{Inf}\NormalTok{)}
+\NormalTok{  \}}
+  \FunctionTok{sum}\NormalTok{(mev}\SpecialCharTok{::}\FunctionTok{dgp}\NormalTok{(}\AttributeTok{x =}\NormalTok{ data, }\AttributeTok{scale =}\NormalTok{ par[}\DecValTok{1}\NormalTok{], }\AttributeTok{shape =}\NormalTok{ par[}\DecValTok{2}\NormalTok{], }\AttributeTok{log =} \ConstantTok{TRUE}\NormalTok{))}
+\NormalTok{\}}
+\NormalTok{logpost }\OtherTok{\textless{}{-}} \ControlFlowTok{function}\NormalTok{(par, ...)\{}
+  \FunctionTok{logmdiprior}\NormalTok{(par) }\SpecialCharTok{+} \FunctionTok{loglik\_gp}\NormalTok{(par)}
+\NormalTok{\}}
+\CommentTok{\# Sampler using ratio{-}of{-}uniform method}
+\NormalTok{ru\_output }\OtherTok{\textless{}{-}}\NormalTok{ rust}\SpecialCharTok{::}\FunctionTok{ru}\NormalTok{(}
+  \AttributeTok{logf =}\NormalTok{ logpost,  }\CommentTok{\# log posterior function}
+  \AttributeTok{n =} \DecValTok{10000}\NormalTok{, }\CommentTok{\# number of posterior draws}
+  \AttributeTok{d =} \DecValTok{2}\NormalTok{, }\CommentTok{\# dimension of the parameter vector}
+  \AttributeTok{init =}\NormalTok{ mev}\SpecialCharTok{::}\FunctionTok{fit.gpd}\NormalTok{(danish, }\AttributeTok{thresh =} \DecValTok{10}\NormalTok{)}\SpecialCharTok{$}\NormalTok{par,}
+  \AttributeTok{lower =} \FunctionTok{c}\NormalTok{(}\DecValTok{0}\NormalTok{, }\SpecialCharTok{{-}}\DecValTok{1}\NormalTok{))}
+\DocumentationTok{\#\# Acceptance rate }
+\CommentTok{\# ru\_output$pa}
+\DocumentationTok{\#\# Posterior samples}
+\NormalTok{postsamp }\OtherTok{\textless{}{-}}\NormalTok{ ru\_output}\SpecialCharTok{$}\NormalTok{sim\_vals}
+\end{Highlighting}
+\end{Shaded}
+
+Even without modification, the acceptance rate is 52\%, which is quite
+efficient in the context. The generalized Pareto approximation suggests
+a very heavy tail: values of \(\xi \geq 1\) correspond to distributions
+with infinite first moment, and those with \(\xi \geq 1/2\) to infinite
+variance.
+
+\begin{figure}[ht!]
+
+{\centering \includegraphics[width=0.85\textwidth,height=\textheight]{./mcmc_files/figure-pdf/fig-danish-rou-1.pdf}
+
+}
+
+\caption{\label{fig-danish-rou}Scatterplot of posterior samples from the
+generalized Pareto model applied to Danish fire insurance losses above
+10 millions krones, with maximal data information prior (left) and
+posterior predictive density on log scale (right).}
+
+\end{figure}
 
 \end{example}
 
@@ -2181,8 +2355,9 @@ Before going forward with algorithms for sampling, we introduce some
 terminology that should be familiar to people with a background in time
 series analysis.
 
+\leavevmode\vadjust pre{\hypertarget{def-weak-stationarity}{}}%
 \begin{definition}[Stationarity and Markov
-property]\protect\hypertarget{def-weak-stationarity}{}\label{def-weak-stationarity}
+property]\label{def-weak-stationarity}
 
 A stochastic (i.e., random) process is (weakly) stationary if the
 distribution of \(\{X_1, \ldots, X_t\}\) is the same as that of
@@ -2194,7 +2369,8 @@ on the past.
 
 \end{definition}
 
-\begin{example}[]\protect\hypertarget{exm-autoregressive-one}{}\label{exm-autoregressive-one}
+\leavevmode\vadjust pre{\hypertarget{exm-autoregressive-one}{}}%
+\begin{example}[]\label{exm-autoregressive-one}
 
 Consider a first-order autoregressive process, or \(\mathsf{AR}(1)\), of
 the form
@@ -2222,7 +2398,8 @@ is \begin{align*}
 \mathsf{Va}(Y_t) + 2 \sum_{k=1}^\infty \mathsf{Co}(Y_t, Y_{t-k})
 \end{align*}
 
-\begin{proposition}[]\protect\hypertarget{prp-variance-clt}{}\label{prp-variance-clt}
+\leavevmode\vadjust pre{\hypertarget{prp-variance-clt}{}}%
+\begin{proposition}[]\label{prp-variance-clt}
 
 Intuitively, a sample of correlated observations carries less
 information than an independent sample of draws. If we want to compute
@@ -2252,7 +2429,8 @@ A visual diagnostic of the time dependence of a Markov chain is the
 correlogram, which shows the empirical lag-\(k\) autocorrelation
 estimates against lag.
 
-\begin{example}[]\protect\hypertarget{exm-ar1-clt-variance}{}\label{exm-ar1-clt-variance}
+\leavevmode\vadjust pre{\hypertarget{exm-ar1-clt-variance}{}}%
+\begin{example}[]\label{exm-ar1-clt-variance}
 
 The lag-\(k\) correlation of the stationary autoregressive process of
 order 1 is \(\phi^k\), so summing the series gives an asymptotic
@@ -2264,7 +2442,7 @@ variability of our mean estimators.
 
 \begin{figure}[ht!]
 
-{\centering \includegraphics{mcmc_files/figure-pdf/fig-ar1-variance-1.pdf}
+{\centering \includegraphics[width=0.85\textwidth,height=\textheight]{./mcmc_files/figure-pdf/fig-ar1-variance-1.pdf}
 
 }
 
@@ -2354,7 +2532,7 @@ we expect these to converge to it.
 
 \begin{figure}[ht!]
 
-{\centering \includegraphics{mcmc_files/figure-pdf/fig-discrete-markov-chain-1.pdf}
+{\centering \includegraphics[width=0.85\textwidth,height=\textheight]{./mcmc_files/figure-pdf/fig-discrete-markov-chain-1.pdf}
 
 }
 
@@ -2387,8 +2565,9 @@ time to gain traction in the statistical community. The idea of the
 Metropolis--Hastings algorithm is to construct a Markov chain targeting
 a distribution \(p(\cdot)\).
 
+\leavevmode\vadjust pre{\hypertarget{prp-metropolis}{}}%
 \begin{proposition}[Metropolis--Hastings
-algorithm]\protect\hypertarget{prp-metropolis}{}\label{prp-metropolis}
+algorithm]\label{prp-metropolis}
 
 We consider from a density function \(p(\boldsymbol{\theta})\), known up
 to a normalizing factor not depending on \(\boldsymbol{\theta}\). We use
@@ -2469,7 +2648,8 @@ kernels. We then compare the value of \(\ln R\) (if less than zero) to
 
 \end{remark}
 
-\begin{example}[]\protect\hypertarget{exm-upworthy-question}{}\label{exm-upworthy-question}
+\leavevmode\vadjust pre{\hypertarget{exm-upworthy-question}{}}%
+\begin{example}[]\label{exm-upworthy-question}
 
 Consider again the Upworthy data from
 Example~\ref{exm-poisson-upworthy-question}. We model the Poisson rates
@@ -2542,40 +2722,29 @@ in turn or jointly.
 \NormalTok{\}}
 \CommentTok{\# Posterior summaries}
 \FunctionTok{summary}\NormalTok{(coda}\SpecialCharTok{::}\FunctionTok{as.mcmc}\NormalTok{(chain))}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{verbatim}
-
-Iterations = 1:10000
-Thinning interval = 1 
-Number of chains = 1 
-Sample size per chain = 10000 
-
-1. Empirical mean and standard deviation for each variable,
-   plus standard error of the mean:
-
-          Mean       SD  Naive SE Time-series SE
-beta  -4.51268 0.001697 1.697e-05      6.176e-05
-kappa  0.07075 0.002033 2.033e-05      9.741e-05
-
-2. Quantiles for each variable:
-
-          2.5%      25%      50%      75%    97.5%
-beta  -4.51591 -4.51385 -4.51273 -4.51154 -4.50929
-kappa  0.06673  0.06933  0.07077  0.07212  0.07463
-\end{verbatim}
-
-\begin{Shaded}
-\begin{Highlighting}[]
+\CommentTok{\#\textgreater{} }
+\CommentTok{\#\textgreater{} Iterations = 1:10000}
+\CommentTok{\#\textgreater{} Thinning interval = 1 }
+\CommentTok{\#\textgreater{} Number of chains = 1 }
+\CommentTok{\#\textgreater{} Sample size per chain = 10000 }
+\CommentTok{\#\textgreater{} }
+\CommentTok{\#\textgreater{} 1. Empirical mean and standard deviation for each variable,}
+\CommentTok{\#\textgreater{}    plus standard error of the mean:}
+\CommentTok{\#\textgreater{} }
+\CommentTok{\#\textgreater{}          Mean      SD  Naive SE Time{-}series SE}
+\CommentTok{\#\textgreater{} beta  {-}4.5127 0.00170 0.0000170      0.0000618}
+\CommentTok{\#\textgreater{} kappa  0.0708 0.00203 0.0000203      0.0000974}
+\CommentTok{\#\textgreater{} }
+\CommentTok{\#\textgreater{} 2. Quantiles for each variable:}
+\CommentTok{\#\textgreater{} }
+\CommentTok{\#\textgreater{}          2.5\%     25\%     50\%     75\%   97.5\%}
+\CommentTok{\#\textgreater{} beta  {-}4.5159 {-}4.5138 {-}4.5127 {-}4.5115 {-}4.5093}
+\CommentTok{\#\textgreater{} kappa  0.0667  0.0693  0.0708  0.0721  0.0746}
 \CommentTok{\# Computing standard errors using batch means}
 \FunctionTok{sqrt}\NormalTok{(}\FunctionTok{diag}\NormalTok{(mcmc}\SpecialCharTok{::}\FunctionTok{olbm}\NormalTok{(chain, }\AttributeTok{batch.length =}\NormalTok{ niter}\SpecialCharTok{/}\DecValTok{40}\NormalTok{)))}
+\CommentTok{\#\textgreater{} [1] 0.0000572 0.0000822}
 \end{Highlighting}
 \end{Shaded}
-
-\begin{verbatim}
-[1] 5.717097e-05 8.220816e-05
-\end{verbatim}
 
 The acceptance rate of the algorithm is 35.1\% and the posterior means
 are \(\beta =-4.51\) and \(\kappa =0.07\). The standard errors cannot be
@@ -2591,7 +2760,7 @@ variance for the posterior mean.
 
 \begin{figure}[ht!]
 
-{\centering \includegraphics{mcmc_files/figure-pdf/fig-traceplot-1.pdf}
+{\centering \includegraphics[width=0.85\textwidth,height=\textheight]{./mcmc_files/figure-pdf/fig-traceplot-1.pdf}
 
 }
 
@@ -2618,7 +2787,7 @@ excellent.
 
 \begin{figure}[ht!]
 
-{\centering \includegraphics{mcmc_files/figure-pdf/fig-scatterplot-upworthy-question-1.pdf}
+{\centering \includegraphics[width=0.85\textwidth,height=\textheight]{./mcmc_files/figure-pdf/fig-scatterplot-upworthy-question-1.pdf}
 
 }
 
@@ -2630,8 +2799,9 @@ posterior draws (left) and marginal density plot of log hazard rate
 
 \end{example}
 
+\leavevmode\vadjust pre{\hypertarget{prp-visual-diagnostics}{}}%
 \begin{proposition}[Visual diagnostics for Markov
-chains]\protect\hypertarget{prp-visual-diagnostics}{}\label{prp-visual-diagnostics}
+chains]\label{prp-visual-diagnostics}
 
 It is useful to inspect visually the Markov chain, as it may indicate
 several problems. If the chain drifts around without stabilizing around
@@ -2658,7 +2828,7 @@ uniformly across integers.
 
 \begin{figure}[ht!]
 
-{\centering \includegraphics{mcmc_files/figure-pdf/fig-badstart-1.pdf}
+{\centering \includegraphics[width=0.85\textwidth,height=\textheight]{./mcmc_files/figure-pdf/fig-badstart-1.pdf}
 
 }
 
@@ -2682,7 +2852,7 @@ Figure~\ref{fig-goldilock-trace}.
 
 \begin{figure}[ht!]
 
-{\centering \includegraphics{mcmc_files/figure-pdf/fig-goldilock-trace-1.pdf}
+{\centering \includegraphics[width=0.85\textwidth,height=\textheight]{./mcmc_files/figure-pdf/fig-goldilock-trace-1.pdf}
 
 }
 
@@ -2729,7 +2899,7 @@ and usually points towards inefficient sampling algorithms.
 
 \begin{figure}[ht!]
 
-{\centering \includegraphics{mcmc_files/figure-pdf/fig-goldilock-correlogram-1.pdf}
+{\centering \includegraphics[width=0.85\textwidth,height=\textheight]{./mcmc_files/figure-pdf/fig-goldilock-correlogram-1.pdf}
 
 }
 
@@ -2774,8 +2944,9 @@ If we can factorize the log posterior, then some updates may not depend
 on all parameters: in a hierarchical model, hyperpriors parameter only
 appear through priors, etc. This can reduce computational costs.
 
+\leavevmode\vadjust pre{\hypertarget{prp-parameter-transformation}{}}%
 \begin{proposition}[Parameter
-transformation]\protect\hypertarget{prp-parameter-transformation}{}\label{prp-parameter-transformation}
+transformation]\label{prp-parameter-transformation}
 
 If a parameter is bounded in the interval \((a,b)\), where
 \(-\infty \leq a < b \leq \infty\), we can consider a bijective
@@ -2811,17 +2982,12 @@ ratio now contains the Jacobian.
 
 \end{proposition}
 
-\begin{proposition}[Truncated
-proposals]\protect\hypertarget{prp-truncated-proposals}{}\label{prp-truncated-proposals}
+\leavevmode\vadjust pre{\hypertarget{prp-truncated-proposals}{}}%
+\begin{proposition}[Truncated proposals]\label{prp-truncated-proposals}
 
 As an alternative, if we are dealing with parameters that are restricted
 in \([a,b]\), we can simulate
 \(\theta^{\star}_{t} \sim \mathsf{TNo}(\vartheta_{t-1}, \tau^2, a, b).\)
-The density of a univariate truncated Gaussian variable is
-\begin{align*}
-f(x; \mu, \tau, a, b) = \tau^{-1}\frac{\phi\left(\frac{x-\mu}{\tau}\right)}{\Phi\{(b-\mu)/\tau\}-\Phi\{(a-\mu)/\tau\}}.
-\end{align*} where \(\phi(\cdot), \Phi(\cdot)\) are respectively the
-density and distribution function of the standard Gaussian distribution.
 While the benefit of using the truncated proposal isn't obvious, it
 becomes more visible when we move to more advanced proposals whose mean
 and variance depends on the gradient and or the hessian of the
@@ -2830,19 +2996,19 @@ underlying unnormalized log posterior, as the mean can be lower than
 \texttt{TruncatedNormal} package can be used to efficiently evaluate
 such instances using results from Botev and L'Écuyer
 (\protect\hyperlink{ref-LEcuyer.Botev:2017}{2017}) even when the
-truncation bounds are far from the mode. Note that the normalizing
-constant of the truncated Gaussian in the denominator of the density are
-a function of the location and scale parameters: if these are dependent
-on the current value, as is the case for a random walk, we need to keep
-these terms as part of the Metropolis ratio. The mean and standard
-deviation of the trunctaed Gaussian are not equal to the parameters
-\(\mu\) (which corresponds to the mode, provided \(a < \mu < b\)) and
-\(\sigma\).
+truncation bounds are far from the mode. the normalizing constant of the
+truncated Gaussian in the denominator of the density is a function of
+the location and scale parameters: if these depend on the current value
+of \(\boldsymbol{\theta}_{t-1}\), as is the case for a random walk, we
+need to keep these terms as part of the Metropolis ratio. The mean and
+standard deviation of the trunctaed Gaussian are not equal to the
+parameters \(\mu\) (which corresponds to the mode, provided
+\(a < \mu < b\)) and \(\sigma\).
 
 \end{proposition}
 
-\begin{proposition}[Efficient
-proposals]\protect\hypertarget{prp-mala}{}\label{prp-mala}
+\leavevmode\vadjust pre{\hypertarget{prp-mala}{}}%
+\begin{proposition}[Efficient proposals]\label{prp-mala}
 
 Rather than simply build a random walk, we can exploit the geometry of
 the posterior using the gradient, via Metropolis-ajusted Langevin
@@ -2856,11 +3022,11 @@ series expansion of \(p(\cdot)\) around the current parameter value
 \end{align*} plus remainder, which suggests a Gaussian approximation
 with mean
 \(\mu_{t-1} = \theta_{t-1} - f'(\theta_{t-1})/f''(\theta_{t-1})\) and
-precision \(\tau^{-2} = -f''(\theta_{t-1})\). We use truncated Gaussian
-distribution on \((a, b)\) with mean \(\mu\) and standard deviation
-\(\tau\), denoted \(\mathsf{TNo}(\mu, \tau, a, b)\) with corresponding
-density function \(q(\cdot; \mu, \tau, a, b)\). The Metropolis
-acceptance ratio for a proposal
+precision \(\tau^{-2} = -f''(\theta_{t-1})\). We can use truncated
+Gaussian distribution on \((a, b)\) with mean \(\mu\) and standard
+deviation \(\tau\), denoted \(\mathsf{TNo}(\mu, \tau, a, b)\) with
+corresponding density function \(q(\cdot; \mu, \tau, a, b)\). The
+Metropolis acceptance ratio for a proposal
 \(\theta^{\star}_{t} \sim \mathsf{TNo}(\mu_{t-1}, \tau_{t-1}, a, b)\) is
 \begin{align*}
  \alpha = \frac{p(\theta^{\star}_{t})}{p(\theta_{t-1})} \frac{ q(\theta_{t-1} \mid \mu_{t}^{\star}, \tau_{t}^{\star}, a, b)}{q(\theta^{\star}_{t} \mid \mu_{t-1}, \tau_{t-1}, a, b)}
@@ -2884,25 +3050,162 @@ costs. The proposal requires that both \(f''(\theta_{t-1})\) and
 mode. Otherwise, one could use a global scaling derived from the hessian
 at the mode.
 
+The simpler Metropolis-adjusted Langevin algorithm is equivalent to
+using a Gaussian random walk where the proposal has mean
+\(\boldsymbol{\theta}_{t-1} + \mathbf{A}\eta \nabla \ell(\boldsymbol{\theta}_{t-1})\)
+and variance \(\tau^2\mathbf{A}\), for some mass matrix
+\(\boldsymbol{A}\) and a damping factor \(\eta\). Taking \(\mathbf{A}\)
+as the identity matrix, which assumes the parameters are isotropic (same
+variance, uncorrelated) is the default choice although seldom far from
+optimal.
+
 For MALA to work well, we need both to start near stationarity, to
 ensure that the gradient is relatively small and to prevent
 oscillations. One can dampen the size of the step initially if needed to
-avoid overshooting. Note that the proposal variance, the other tuning
-parameter, is critical to the success of the algorithm. The usual target
-for the variance is one that gives an acceptance rate of roughly 0.574.
-These more efficient methods require additional calculations of the
-gradient and Hessian, either numerically or analytically. Depending on
-the situation and the computational costs of such calculations, the
+avoid overshooting. The proposal variance, the other tuning parameter,
+is critical to the success of the algorithm. The usual target for the
+variance is one that gives an acceptance rate of roughly 0.574. These
+more efficient methods require additional calculations of the gradient
+and Hessian, either numerically or analytically. Depending on the
+situation and the computational costs of such calculations, the
 additional overhead may not be worth it.
 
 \end{proposition}
 
-\begin{example}[]\protect\hypertarget{exm-normal-question-upworthy}{}\label{exm-normal-question-upworthy}
+\leavevmode\vadjust pre{\hypertarget{exm-normal-question-upworthy}{}}%
+\begin{example}[]\label{exm-normal-question-upworthy}
 
 We revisit the Upworthy data, this time modelling each individual
-headline as a separate observation and using a Gaussian likelihood for
-the rate \texttt{nclick}/\texttt{nimpression} This allows up to capture
-the heterogeneity inherent to each newstory.
+headline as a separate observation. We view \(n=\)\texttt{nimpression}
+as the sample size of a binomial distribution and \texttt{nclick} as the
+number of successes. Since the number of trials is large, the sample
+average \texttt{nclick}/\texttt{nimpression}, denoted \(y\) in the
+sequel, is approximately Gaussian. We assume that each story has a
+similar population rate and capture the heterogeneity inherent to each
+news story by treating each mean as a sample. The variance of the sample
+average or click rate is proportional to \(n^{-1}\), where \(n\) is the
+number of impressions. To allow for underdispersion or overdispersion,
+we thus consider a Gaussian likelihood
+\(Y_i \sim \mathsf{No}(\mu, \sigma^2/n_i)\). We perform Bayesian
+inference for \(\mu, \sigma\) after assigning a truncated Gaussian prior
+for \(\mu \sim \mathsf{TNo}(0.01, 0.1^2)\) over \([0,1]\) and an
+penalized complexity prior for \(\sigma \sim \mathsf{Exp}(0.7)\).
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{data}\NormalTok{(upworthy\_question, }\AttributeTok{package =} \StringTok{"hecbayes"}\NormalTok{)}
+\CommentTok{\# Select data for a single question}
+\NormalTok{qdata }\OtherTok{\textless{}{-}}\NormalTok{ upworthy\_question }\SpecialCharTok{|\textgreater{}}
+\NormalTok{  dplyr}\SpecialCharTok{::}\FunctionTok{filter}\NormalTok{(question }\SpecialCharTok{==} \StringTok{"yes"}\NormalTok{) }\SpecialCharTok{|\textgreater{}}
+\NormalTok{  dplyr}\SpecialCharTok{::}\FunctionTok{mutate}\NormalTok{(}\AttributeTok{y =}\NormalTok{ clicks}\SpecialCharTok{/}\NormalTok{impressions,}
+                \AttributeTok{no =}\NormalTok{ impressions)}
+\CommentTok{\# Create functions with the same signature (...) for the algorithm}
+\NormalTok{logpost }\OtherTok{\textless{}{-}} \ControlFlowTok{function}\NormalTok{(par, data, ...)\{}
+\NormalTok{  mu }\OtherTok{\textless{}{-}}\NormalTok{ par[}\DecValTok{1}\NormalTok{]; sigma }\OtherTok{\textless{}{-}}\NormalTok{ par[}\DecValTok{2}\NormalTok{]}
+\NormalTok{  no }\OtherTok{\textless{}{-}}\NormalTok{ data}\SpecialCharTok{$}\NormalTok{no}
+\NormalTok{  y }\OtherTok{\textless{}{-}}\NormalTok{ data}\SpecialCharTok{$}\NormalTok{y}
+  \ControlFlowTok{if}\NormalTok{(}\FunctionTok{isTRUE}\NormalTok{(}\FunctionTok{any}\NormalTok{(sigma }\SpecialCharTok{\textless{}=} \DecValTok{0}\NormalTok{, mu }\SpecialCharTok{\textless{}} \DecValTok{0}\NormalTok{, mu }\SpecialCharTok{\textgreater{}} \DecValTok{1}\NormalTok{)))\{}
+    \FunctionTok{return}\NormalTok{(}\SpecialCharTok{{-}}\ConstantTok{Inf}\NormalTok{)}
+\NormalTok{  \}}
+  \FunctionTok{dnorm}\NormalTok{(}\AttributeTok{x =}\NormalTok{ mu, }\AttributeTok{mean =} \FloatTok{0.01}\NormalTok{, }\AttributeTok{sd =} \FloatTok{0.1}\NormalTok{, }\AttributeTok{log =} \ConstantTok{TRUE}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{dexp}\NormalTok{(sigma, }\AttributeTok{rate =} \FloatTok{0.7}\NormalTok{, }\AttributeTok{log =} \ConstantTok{TRUE}\NormalTok{) }\SpecialCharTok{+} 
+  \FunctionTok{sum}\NormalTok{(}\FunctionTok{dnorm}\NormalTok{(}\AttributeTok{x =}\NormalTok{ y, }\AttributeTok{mean =}\NormalTok{ mu, }\AttributeTok{sd =}\NormalTok{ sigma}\SpecialCharTok{/}\FunctionTok{sqrt}\NormalTok{(no), }\AttributeTok{log =} \ConstantTok{TRUE}\NormalTok{))}
+\NormalTok{\}}
+
+\NormalTok{logpost\_grad }\OtherTok{\textless{}{-}} \ControlFlowTok{function}\NormalTok{(par, data, ...)\{}
+\NormalTok{   no }\OtherTok{\textless{}{-}}\NormalTok{ data}\SpecialCharTok{$}\NormalTok{no}
+\NormalTok{  y }\OtherTok{\textless{}{-}}\NormalTok{ data}\SpecialCharTok{$}\NormalTok{y}
+\NormalTok{  mu }\OtherTok{\textless{}{-}}\NormalTok{ par[}\DecValTok{1}\NormalTok{]; sigma }\OtherTok{\textless{}{-}}\NormalTok{ par[}\DecValTok{2}\NormalTok{]}
+  \FunctionTok{c}\NormalTok{(}\FunctionTok{sum}\NormalTok{(no}\SpecialCharTok{*}\NormalTok{(y}\SpecialCharTok{{-}}\NormalTok{mu))}\SpecialCharTok{/}\NormalTok{sigma}\SpecialCharTok{\^{}}\DecValTok{2} \SpecialCharTok{{-}}\NormalTok{(mu }\SpecialCharTok{{-}} \FloatTok{0.01}\NormalTok{)}\SpecialCharTok{/}\FloatTok{0.01}\NormalTok{,}
+    \SpecialCharTok{{-}}\FunctionTok{length}\NormalTok{(y)}\SpecialCharTok{/}\NormalTok{sigma }\SpecialCharTok{+} \FunctionTok{sum}\NormalTok{(no}\SpecialCharTok{*}\NormalTok{(y}\SpecialCharTok{{-}}\NormalTok{mu)}\SpecialCharTok{\^{}}\DecValTok{2}\NormalTok{)}\SpecialCharTok{/}\NormalTok{sigma}\SpecialCharTok{\^{}}\DecValTok{3} \SpecialCharTok{{-}}\FloatTok{0.7}
+\NormalTok{  )}
+\NormalTok{\}}
+
+\CommentTok{\# Starting values {-} MAP}
+\NormalTok{map }\OtherTok{\textless{}{-}} \FunctionTok{optim}\NormalTok{(}
+  \AttributeTok{par =} \FunctionTok{c}\NormalTok{(}\FunctionTok{mean}\NormalTok{(qdata}\SpecialCharTok{$}\NormalTok{y), }\FloatTok{0.5}\NormalTok{),}
+  \AttributeTok{fn =} \ControlFlowTok{function}\NormalTok{(x)\{}\SpecialCharTok{{-}}\FunctionTok{logpost}\NormalTok{(x, }\AttributeTok{data =}\NormalTok{ qdata)\},}
+  \AttributeTok{gr =} \ControlFlowTok{function}\NormalTok{(x)\{}\SpecialCharTok{{-}}\FunctionTok{logpost\_grad}\NormalTok{(x, }\AttributeTok{data =}\NormalTok{ qdata)\},  }
+  \AttributeTok{hessian =} \ConstantTok{TRUE}\NormalTok{,}
+  \AttributeTok{method =} \StringTok{"BFGS"}\NormalTok{)}
+\CommentTok{\# Set initial parameter values}
+\NormalTok{curr }\OtherTok{\textless{}{-}}\NormalTok{ map}\SpecialCharTok{$}\NormalTok{par }
+\CommentTok{\# Check convergence }
+\FunctionTok{logpost\_grad}\NormalTok{(curr, }\AttributeTok{data =}\NormalTok{ qdata)}
+\CommentTok{\#\textgreater{} [1] 0.0076507 0.0000558}
+\CommentTok{\# Compute a mass matrix}
+\NormalTok{Amat }\OtherTok{\textless{}{-}} \FunctionTok{solve}\NormalTok{(map}\SpecialCharTok{$}\NormalTok{hessian)}
+\CommentTok{\# Cholesky root {-} for random number generation}
+\NormalTok{cholA }\OtherTok{\textless{}{-}} \FunctionTok{chol}\NormalTok{(Amat)}
+
+
+
+\CommentTok{\# Create containers for MCMC}
+\NormalTok{B }\OtherTok{\textless{}{-}} \FloatTok{1e4}\NormalTok{L }\CommentTok{\# number of iterations}
+\NormalTok{warmup }\OtherTok{\textless{}{-}} \FloatTok{1e3}\NormalTok{L }\CommentTok{\# adaptation period}
+\NormalTok{prop\_sd }\OtherTok{\textless{}{-}} \FunctionTok{rep}\NormalTok{(}\DecValTok{1}\NormalTok{, }\DecValTok{2}\NormalTok{)}
+\NormalTok{npar }\OtherTok{\textless{}{-}}\NormalTok{ 2L}
+\NormalTok{chains }\OtherTok{\textless{}{-}} \FunctionTok{matrix}\NormalTok{(}\AttributeTok{nrow =}\NormalTok{ B, }\AttributeTok{ncol =}\NormalTok{ npar)}
+\NormalTok{damping }\OtherTok{\textless{}{-}} \FloatTok{0.8}
+\NormalTok{acceptance }\OtherTok{\textless{}{-}}\NormalTok{ attempts }\OtherTok{\textless{}{-}} \DecValTok{0} 
+\FunctionTok{colnames}\NormalTok{(chains) }\OtherTok{\textless{}{-}} \FunctionTok{names}\NormalTok{(curr) }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(}\StringTok{"mu"}\NormalTok{,}\StringTok{"sigma"}\NormalTok{)}
+\NormalTok{prop\_var }\OtherTok{\textless{}{-}} \FunctionTok{diag}\NormalTok{(prop\_sd) }\SpecialCharTok{\%*\%}\NormalTok{ Amat }\SpecialCharTok{\%*\%} \FunctionTok{diag}\NormalTok{(prop\_sd)}
+\ControlFlowTok{for}\NormalTok{(i }\ControlFlowTok{in} \FunctionTok{seq\_len}\NormalTok{(B }\SpecialCharTok{+}\NormalTok{ warmup))\{}
+\NormalTok{  ind }\OtherTok{\textless{}{-}} \FunctionTok{pmax}\NormalTok{(}\DecValTok{1}\NormalTok{, i }\SpecialCharTok{{-}}\NormalTok{ warmup)}
+  \CommentTok{\# Compute the proposal mean for the Newton step}
+\NormalTok{  prop\_mean }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(curr }\SpecialCharTok{+}\NormalTok{ damping }\SpecialCharTok{*} 
+\NormalTok{     Amat }\SpecialCharTok{\%*\%} \FunctionTok{logpost\_grad}\NormalTok{(curr, }\AttributeTok{data =}\NormalTok{ qdata))}
+  \CommentTok{\# prop \textless{}{-} prop\_sd * c(rnorm(npar) \%*\% cholA) + prop\_mean}
+\NormalTok{  prop }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(mvtnorm}\SpecialCharTok{::}\FunctionTok{rmvnorm}\NormalTok{(}
+    \AttributeTok{n =} \DecValTok{1}\NormalTok{,}
+    \AttributeTok{mean =}\NormalTok{ prop\_mean, }
+    \AttributeTok{sigma =}\NormalTok{ prop\_var))}
+  \CommentTok{\# Compute the reverse step}
+\NormalTok{  curr\_mean }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(prop }\SpecialCharTok{+}\NormalTok{ damping }\SpecialCharTok{*} 
+\NormalTok{     Amat }\SpecialCharTok{\%*\%} \FunctionTok{logpost\_grad}\NormalTok{(prop, }\AttributeTok{data =}\NormalTok{ qdata))}
+  \CommentTok{\# log of ratio of bivariate Gaussian densities}
+\NormalTok{  logmh }\OtherTok{\textless{}{-}}\NormalTok{ mvtnorm}\SpecialCharTok{::}\FunctionTok{dmvnorm}\NormalTok{(}
+    \AttributeTok{x =}\NormalTok{ curr, }\AttributeTok{mean =}\NormalTok{ prop\_mean, }
+    \AttributeTok{sigma =}\NormalTok{ prop\_var, }
+    \AttributeTok{log =} \ConstantTok{TRUE}\NormalTok{) }\SpecialCharTok{{-}} 
+\NormalTok{    mvtnorm}\SpecialCharTok{::}\FunctionTok{dmvnorm}\NormalTok{(}
+      \AttributeTok{x =}\NormalTok{ prop, }
+      \AttributeTok{mean =}\NormalTok{ curr\_mean, }
+      \AttributeTok{sigma =}\NormalTok{ prop\_var, }
+      \AttributeTok{log =} \ConstantTok{TRUE}\NormalTok{) }\SpecialCharTok{+} 
+  \FunctionTok{logpost}\NormalTok{(prop, }\AttributeTok{data =}\NormalTok{ qdata) }\SpecialCharTok{{-}} 
+    \FunctionTok{logpost}\NormalTok{(curr, }\AttributeTok{data =}\NormalTok{ qdata)}
+  \ControlFlowTok{if}\NormalTok{(logmh }\SpecialCharTok{\textgreater{}} \FunctionTok{log}\NormalTok{(}\FunctionTok{runif}\NormalTok{(}\DecValTok{1}\NormalTok{)))\{}
+\NormalTok{    curr }\OtherTok{\textless{}{-}}\NormalTok{ prop}
+\NormalTok{    acceptance }\OtherTok{\textless{}{-}}\NormalTok{ acceptance }\SpecialCharTok{+}\NormalTok{ 1L}
+\NormalTok{  \}}
+\NormalTok{  attempts }\OtherTok{\textless{}{-}}\NormalTok{ attempts }\SpecialCharTok{+}\NormalTok{ 1L}
+  \CommentTok{\# Save current value}
+\NormalTok{  chains[ind,] }\OtherTok{\textless{}{-}}\NormalTok{ curr}
+  \ControlFlowTok{if}\NormalTok{(i }\SpecialCharTok{\%\%} \DecValTok{100} \SpecialCharTok{\&}\NormalTok{ i }\SpecialCharTok{\textless{}}\NormalTok{ warmup)\{}
+\NormalTok{    out }\OtherTok{\textless{}{-}}\NormalTok{ hecbayes}\SpecialCharTok{::}\FunctionTok{adaptive}\NormalTok{(}
+      \AttributeTok{attempts =}\NormalTok{ attempts, }
+      \AttributeTok{acceptance =}\NormalTok{ acceptance, }
+      \AttributeTok{sd.p =}\NormalTok{ prop\_sd,}
+      \AttributeTok{target =} \FloatTok{0.574}\NormalTok{)}
+\NormalTok{    prop\_sd }\OtherTok{\textless{}{-}}\NormalTok{ out}\SpecialCharTok{$}\NormalTok{sd}
+\NormalTok{    acceptance }\OtherTok{\textless{}{-}}\NormalTok{ out}\SpecialCharTok{$}\NormalTok{acc}
+\NormalTok{    attempts }\OtherTok{\textless{}{-}}\NormalTok{ out}\SpecialCharTok{$}\NormalTok{att}
+\NormalTok{    prop\_var }\OtherTok{\textless{}{-}} \FunctionTok{diag}\NormalTok{(prop\_sd) }\SpecialCharTok{\%*\%}\NormalTok{ Amat }\SpecialCharTok{\%*\%} \FunctionTok{diag}\NormalTok{(prop\_sd)}
+\NormalTok{  \}}
+\NormalTok{\}}
+\end{Highlighting}
+\end{Shaded}
+
+MALA requires critically a good mass matrix, especially if the gradient
+is very large at the starting values (often the case when the starting
+value is far from the mode). Given the precision of the original
+observations, we did not need to modify anything to deal with the
+parameter constraints \(0 \leq \mu \leq 1\) and \(\sigma>0\), outside of
+encoding them in the log posterior function.
+
+The posterior mean for the standard deviation is 0.64, which suggests
+overdispersion.
 
 \end{example}
 
@@ -2916,6 +3219,10 @@ the heterogeneity inherent to each newstory.
 
 \hypertarget{refs}{}
 \begin{CSLReferences}{1}{0}
+\leavevmode\vadjust pre{\hypertarget{ref-Albert:2009}{}}%
+Albert, Jim. 2009. \emph{Bayesian Computation with {R}}. 2nd ed. New
+York: springer. \url{https://doi.org/10.1007/978-0-387-92298-0}.
+
 \leavevmode\vadjust pre{\hypertarget{ref-Alexander:2023}{}}%
 Alexander, Rohan. 2023. \emph{Telling Stories with Data: With
 Applications in {R}}. Boca Raton, FL: CRC Press.

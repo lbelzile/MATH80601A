@@ -10,7 +10,7 @@
 theme_set(theme_classic())
 ```
 
-There are two major approaches to handling the problem of the unknown normalizing constant that is the marginal likelihood: deterministic approximations (Laplace and nested Laplace approximations, variational methods and expectation propagation). This chapter covers stochastic approximations, and focuses on implementation of basic Markov chain Monte Carlo algorithms, which circumvent the need to calculate the normalizing constant of the posterior entirely. We present several examples of implementations, several tricks for tuning and diagnostics of convergence.
+There are two major approaches to handling the problem of the unknown normalizing constant: deterministic and stochastic approximations. The former includes Laplace and nested Laplace approximations, variational methods and expectation propagation. This chapter covers the latter, stochastic approximations, and focuses on implementation of basic Markov chain Monte Carlo algorithms. The simulation algorithms circumvent the need to calculate the normalizing constant of the posterior entirely. We present several examples of implementations, several tricks for tuning and diagnostics of convergence.
 
 ## Monte Carlo methods
 
@@ -107,38 +107,163 @@ Generalized ratio-of-uniform method
 -->
 
 
-:::{#exm-rejection-sampling}
+:::{#prp-rejection-sampling}
 
 ## Rejection sampling
 
 Rejection sampling (also termed accept-reject algorithm) samples from a random vector with density $p(\cdot)$ by drawing candidates from a proposal with density $p(\cdot)$, where $q(\cdot)$ is such that $p(\boldsymbol{\theta}) \leq C q(\boldsymbol{\theta})$ for $C \geq 1$ for all values of $\boldsymbol{\theta}$ in the support of $p(\cdot)$. A proof can be found in @Devroye:1986 [Theorem 3.1]
 
 1. Generate $\boldsymbol{\theta}^{\star}$ from the proposal with density $q$ and $U \sim \mathsf{U}(0,1)$ 
-2. Compute the ratio $R \gets C^{-1} p(\boldsymbol{\theta}^{\star})/ q(\boldsymbol{\theta}^{\star})/$.
+2. Compute the ratio $R \gets C^{-1} p(\boldsymbol{\theta}^{\star})/ q(\boldsymbol{\theta}^{\star})$.
 3. If $R \leq U$, return $\boldsymbol{\theta}$, else return to step 1.
 
 :::
 
-Rejection sampling requires the proposal $q$ to have a support at least as large as that of $p$ and resemble closely the density. It should be chosen so that the bound $C$ is as sharp as possible and close to 1. The dominating density $q$ must have heavier tails than the density of interest. The expected number of simulations needed to accept one proposal is $C$. We need to be able to compute an upper bound $C$. Finally, for the method to be useful, we need to be able to simulate easily and cheaply from the proposal. The optimal value of $C$ is $C = \sup_{\boldsymbol{\theta}} p(\boldsymbol{\theta}) / q(\boldsymbol{\theta})$. This quantity may be obtained by numerical optimization, by finding the mode of the ratio of the log densities if the maximum is not known analytically.
+Rejection sampling requires the proposal $q$ to have a support at least as large as that of $p$ and resemble closely the density. It should be chosen so that the upper bound $C$ is as sharp as possible and close to 1. The dominating density $q$ must have heavier tails than the density of interest. The expected number of simulations needed to accept one proposal is $C.$ Finally, for the method to be useful, we need to be able to simulate easily and cheaply from the proposal. The optimal value of $C$ is $C = \sup_{\boldsymbol{\theta}} p(\boldsymbol{\theta}) / q(\boldsymbol{\theta})$. This quantity may be obtained by numerical optimization, by finding the mode of the ratio of the log densities if the maximum is not known analytically.
 
 
-::: {#exm-ratio-uniform}
+
+
+:::{#exm-accept-reject-truncated}
+
+## Truncated Gaussian distribution
+
+Consider the problem of sampling from a Gaussian distribution $Y \sim \mathsf{No}(\mu, \sigma^2)$ truncated in the interval $a, b,$ which has density
+\begin{align*}
+f(x; \mu, \sigma, a, b) = \frac{1}{\sigma}\frac{\phi\left(\frac{x-\mu}{\sigma}\right)}{\Phi\{(b-\mu)/\sigma\}-\Phi\{(a-\mu)/\sigma\}}.
+\end{align*}
+where $\phi(\cdot), \Phi(\cdot)$ are respectively the density and distribution function of the standard Gaussian distribution.
+
+Since the Gaussian is a location-scale family, we can reduce the problem to sampling $X$ from a standard Gaussian truncated on $\alpha = (a-\mu)/\sigma$ and $\beta = (b-\mu)/\sigma$ and back transform the result  as $Y = \mu + \sigma X$.
+
+
+A crude accept-reject sampling algorithm would consider sampling from the same untruncated distribution with density $g(X) = \sigma^{-1}\phi\{(x-\mu)/\sigma\}$, and the acceptance ratio is $C=\{\Phi(\beta) - \Phi(\alpha)\}$. We thus simply simulate points from the Gaussian and accept any that falls within the bounds.
+
+```{r}
+#| eval: true
+#| echo: true
+# Standard Gaussian truncated on [0,1]
+candidate <- rnorm(1e5)
+trunc_samp <- candidate[candidate >= 0 & candidate <= 1]
+# Acceptance rate
+length(trunc_samp)/1e5
+# Theoretical acceptance rate
+pnorm(1)-pnorm(0)
+```
+
+We can of course do better: if we consider a random variable with distribution function $F$, but truncated over the interval $[a,b]$, then the resulting distribution function is
+$$\frac{F(x) - F(a)}{F(b)-F(a)}, \qquad a \leq x \leq b,$$
+and we can invert this expression to get the quantile function of the truncated variable in terms of the distribution function $F$ and the quantile function $F^{-1}$ of the original untruncated variable.
+
+For the Gaussian, this gives
+\begin{align*}
+X \sim \Phi^{-1}\left[\Phi(\alpha) + \{\Phi(\beta)-\Phi(\alpha)\}U\right]
+\end{align*}
+for $U \sim \mathsf{U}(0,1)$. Although the quantile and distribution functions of the Gaussian, `pnorm` and `qnorm` in **R**, are very accurate, this method will fail for rare event simulation because it will return $\Phi(x) = 0$ for $x \leq -39$ and $\Phi(x)=1$ for $x \geq 8.3$, implying that $a \leq 8.3$ for this approach to work [@LEcuyer.Botev:2017].
+
+
+Consider the problem of simulating events in the right tail for a standard Gaussian where $a > 0$; Marsaglia's method [@Devroye:1986, p.381], can be used for that purpose. Write the density of the Gaussian as $f(x) = \exp(-x^2/2)/c_1$, where $c_1 = \int_{a}^{\infty}\exp(-z^2/2)\mathrm{d} z$, and note that
+$$c_1f(x) \leq \frac{x}{a}\exp\left(-\frac{x^2}{2}\right)= a^{-1}\exp\left(-\frac{a^2}{2}\right)g(x), \qquad x \geq a;$$
+where $g(x)$ is the density of a Rayleigh variable shifted by $a$, which has distribution function $G(x) = 1-\exp\{(a^2-x^2)/2\}$ for $x \geq a$. We can simulate such a random variate $X$ through the inversion method. The constant $C= \exp(-a^2/2)(c_1a)^{-1}$ approaches 1 quickly as $a \to \infty$.
+
+The accept-reject thus proceeds with 
+
+1. Generate a shifted Rayleigh  above $a$, $X \gets  \{a^2 - 2\log(U)\}^{1/2}$ for $U \sim \mathsf{U}(0,1)$
+2. Accept $X$ if $XV \leq a$, where $V \sim \mathsf{U}(0,1)$.
+
+Should we wish to obtain samples on $[a,b]$, we could instead propose from a Rayleigh truncated above at $b$ [@LEcuyer.Botev:2017].
+
+```{r}
+#| eval: true
+#| echo: true
+#| label: marsaglia-algo
+a <- 8.3
+niter <- 1000L
+X <- sqrt(a^2 + 2*rexp(niter))
+samp <- X[runif(niter)*X <= a]
+```
+
+:::
+
+For a given candidate density $g$ which has a heavier tail than the target, we can resort to numerical methods to compute the mode of the ratio $f/g$ and obtain the bound $C$; see @Albert:2009, Section 5.8 for an insightful example.
+
+
+::: {#prp-ratio-uniform}
 ## Ratio of uniform method
 
-The ratio-of-uniform method [@Kinderman.Monahan:1977; @Wakefield:1991] is a niche simulation algorithm to draw samples from a unnormalized density $f(\boldsymbol{\theta})$ for $\boldsymbol{\theta} \in \boldsymbol{\Theta} \subseteq \mathbb{R}^d$. For some $r \geq 0$, consider the set \begin{align*}
+The ratio-of-uniform method [@Kinderman.Monahan:1977; @Wakefield:1991] is a variant of accept-reject used to draw samples from a unnormalized density $f(\boldsymbol{\theta})$ for $\boldsymbol{\theta} \in \boldsymbol{\Theta} \subseteq \mathbb{R}^d$. For some $r \geq 0$, consider the set \begin{align*}
 \mathcal{C}_r = \left\{ (u_0, \ldots, u_d): 0 < u_0 \leq \left[f(u_1/u_0^r, \ldots, u_d/u_0^r)\right]^{\frac{1}{rd+1}}\right\}.
-\end{align*} If we can generate $u_0, \ldots, u_d$ uniformly over $\mathcal{C}_R$, then the draws $(u_1/u_0^r, \ldots, u_d/u_0^r)$ are from the normalized density $f$. Rejection sampling is used to obtain uniform draws over $\mathcal{C}_r$ under some conditions on the density and marginal moments. See [the `rust` package vignette](https://paulnorthrop.github.io/rust/articles/rust-a-vignette.html) for technical details and examples. Like with other accept-reject algorithms, the acceptance rate of the proposal goes down with the dimension of the problem. This algorithm was used in @exm-loss-extremes to generate draws from the posterior.
+\end{align*} If we can generate $u_0, \ldots, u_d$ uniformly over $\mathcal{C}_R$, then the draws $(u_1/u_0^r, \ldots, u_d/u_0^r)$ are from the normalized density $f$. Rejection sampling is used to obtain uniform draws over $\mathcal{C}_r$ under some conditions on the density and marginal moments. See [the `rust` package vignette](https://paulnorthrop.github.io/rust/articles/rust-a-vignette.html) for technical details and examples. Like with other accept-reject algorithms, the acceptance rate of the proposal goes down with the dimension of the problem. 
+:::
+
+:::{#exm-rust}
+
+The ratio-of-uniform algorithm was used in @exm-loss-extremes to generate draws from the posterior. We illustrate below the `rust` package with a user-specified prior and posterior. We fit a generalized Pareto distribution $Y \sim \mathsf{GP}(\sigma, \xi)$ to exceedances above 10 millions krones to the `danish` fire insurance data, using a truncated maximal data information prior $p(\sigma, \xi) \propto \sigma^{-1}\exp(-\xi+1)\mathrm{I}(\xi > -1)$.
+
+```{r}
+#| eval: true
+#| echo: true
+#| label: danish-rou-demo
+data(danish, package = "evir")
+# Extract threshold exceedances
+exc <- danish[danish > 10] - 10
+# Create a function for the log prior
+logmdiprior <- function(par, ...){
+  if(isTRUE(any(par[1] <= 0, par[2] < -1))){
+    return(-Inf)
+  }
+  -log(par[1]) - par[2]
+}
+# Same for log likelihood, assuming independent data
+loglik_gp <- function(par, data = exc, ...){
+  if(isTRUE(any(par[1] <= 0, par[2] < -1))){
+    return(-Inf)
+  }
+  sum(mev::dgp(x = data, scale = par[1], shape = par[2], log = TRUE))
+}
+logpost <- function(par, ...){
+  logmdiprior(par) + loglik_gp(par)
+}
+# Sampler using ratio-of-uniform method
+ru_output <- rust::ru(
+  logf = logpost,  # log posterior function
+  n = 10000, # number of posterior draws
+  d = 2, # dimension of the parameter vector
+  init = mev::fit.gpd(danish, thresh = 10)$par,
+  lower = c(0, -1))
+## Acceptance rate 
+# ru_output$pa
+## Posterior samples
+postsamp <- ru_output$sim_vals
+```
+Even without modification, the acceptance rate is `r round(100*ru_output$pa, 0)`%, which is quite efficient in the context. The generalized Pareto approximation suggests a very heavy tail: values of $\xi \geq 1$ correspond to distributions with infinite first moment, and those with $\xi \geq 1/2$ to infinite variance.
+
+```{r}
+#| eval: true
+#| echo: false
+#| label: fig-danish-rou
+#| fig-cap: "Scatterplot of posterior samples from the generalized Pareto model applied to Danish fire insurance losses above 10 millions krones, with maximal data information prior (left) and posterior predictive density on log scale (right)."
+colnames(postsamp) <- c("scale","shape")
+g1 <- ggplot(data = data.frame(postsamp),
+        mapping = aes(x = scale, y = shape)) +
+  geom_point(alpha = 0.1) +
+  labs(x = expression(sigma), y = expression(xi)) +
+  theme_classic()
+postpred <- revdbayes::rgp(n = 10000, 
+                           loc = 10, 
+                           scale = postsamp[,1],
+                           shape = postsamp[,2])
+g2 <- ggplot(data = data.frame(x = postpred),
+             mapping = aes(x = x)) +
+  geom_density() + 
+  scale_x_continuous(trans = "log10") +
+  labs(x = "insurance claims (in millions krones)") +
+  theme_classic()
+g1 + g2 
+```
 :::
 
 
-<!--
-:::{#exm-accept-reject}
-
-Truncated Gaussian with a probit model?
-
-:::
-
--->
 
 ## Markov chain Monte Carlo
 
@@ -159,7 +284,7 @@ It is Markov if it satisfies the Markov property: given the current state of the
 ::: {#exm-autoregressive-one}
 Consider a first-order autoregressive process, or $\mathsf{AR}(1)$, of the form
 
-$$Y_t = \mu + \phi(Y_{t-1} - \mu) + \varepsilon_t,$$ where $\phi$ is the autoregressive process, $\mu$ the global mean and $\varepsilon_t$ is an iid innovation with mean zero and variance $\sigma^2$. If $|\phi| < 1$, the process is stationary, and the variance does not increase with $t$. If innovations are Gaussian, then we have $Y_t \mid Y_{t-1}=y_{t-1} \sim \mathsf{No}\{\mu(1-\phi)+ \phi y_{t-1}, \sigma^2\}$
+$$Y_t = \mu + \phi(Y_{t-1} - \mu) + \varepsilon_t,$$ where $\phi$ is the autoregressive process, $\mu$ the global mean and $\varepsilon_t$ is an iid innovation with mean zero and variance $\sigma^2$. If $|\phi| < 1$, the process is stationary, and the variance does not increase with $t$. If innovations are Gaussian, we have $$Y_t \mid Y_{t-1}=y_{t-1} \sim \mathsf{No}\{\mu(1-\phi)+ \phi y_{t-1}, \sigma^2\}.$$
 
 The $\mathsf{AR}(1)$ stationarity process $Y_t$, marginally, has mean $\mu$ and unconditional variance $\sigma^2/(1-\phi^2)$. The $\mathsf{AR}(1)$ process is first-order Markov since the conditional distribution $p(Y_t \mid Y_{t-1}, \ldots, Y_{t-p})$ equals $p(Y_t \mid Y_{t-1})$.
 :::
@@ -621,11 +746,7 @@ To guarantee that our proposals fall in the support of $\theta$, we can thus run
 
 ## Truncated proposals
 
-As an alternative, if we are dealing with parameters that are restricted in $[a,b]$, we can simulate $\theta^{\star}_{t} \sim \mathsf{TNo}(\vartheta_{t-1}, \tau^2, a, b).$ The density of a univariate truncated Gaussian variable is 
-\begin{align*}
-f(x; \mu, \tau, a, b) = \tau^{-1}\frac{\phi\left(\frac{x-\mu}{\tau}\right)}{\Phi\{(b-\mu)/\tau\}-\Phi\{(a-\mu)/\tau\}}.
-\end{align*}
-where $\phi(\cdot), \Phi(\cdot)$ are respectively the density and distribution function of the standard Gaussian distribution. While the benefit of using the truncated proposal isn't obvious, it becomes more visible when we move to more advanced proposals whose mean and variance depends on the gradient and or the hessian of the underlying unnormalized log posterior, as the mean can be lower than $a$ or larger than $b$ while still giving non-zero acceptance. The `TruncatedNormal` package can be used to efficiently evaluate such instances using results from @LEcuyer.Botev:2017 even when the truncation bounds are far from the mode. Note that the normalizing constant of the truncated Gaussian in the denominator of the density are a function of the location and scale parameters: if these are dependent on the current value, as is the case for a random walk, we need to keep these terms as part of the Metropolis ratio. The mean and standard deviation of the trunctaed Gaussian are not equal to the parameters $\mu$ (which corresponds to the mode, provided $a < \mu < b$) and $\sigma$.
+As an alternative, if we are dealing with parameters that are restricted in $[a,b]$, we can simulate $\theta^{\star}_{t} \sim \mathsf{TNo}(\vartheta_{t-1}, \tau^2, a, b).$ While the benefit of using the truncated proposal isn't obvious, it becomes more visible when we move to more advanced proposals whose mean and variance depends on the gradient and or the hessian of the underlying unnormalized log posterior, as the mean can be lower than $a$ or larger than $b$ while still giving non-zero acceptance. The `TruncatedNormal` package can be used to efficiently evaluate such instances using results from @LEcuyer.Botev:2017 even when the truncation bounds are far from the mode. the normalizing constant of the truncated Gaussian in the denominator of the density is a function of the location and scale parameters: if these depend on the current value of $\boldsymbol{\theta}_{t-1}$, as is the case for a random walk, we need to keep these terms as part of the Metropolis ratio. The mean and standard deviation of the trunctaed Gaussian are not equal to the parameters $\mu$ (which corresponds to the mode, provided $a < \mu < b$) and $\sigma$.
 
 :::
 
@@ -640,29 +761,167 @@ Let $p(\theta)$ denote the conditional (unnormalized) log posterior for a scalar
 \begin{align*}
  p(\theta) \approx p(\theta_{t-1}) + p'(\theta_{t-1})(\theta - \theta_{t-1}) + \frac{1}{2} p''(\theta_{t-1})(\theta - \theta_{t-1})^2
 \end{align*}
-plus remainder, which suggests a Gaussian approximation with mean $\mu_{t-1} = \theta_{t-1} - f'(\theta_{t-1})/f''(\theta_{t-1})$ and precision $\tau^{-2} = -f''(\theta_{t-1})$. We use truncated Gaussian distribution on $(a, b)$ with mean $\mu$ and standard deviation $\tau$, denoted $\mathsf{TNo}(\mu, \tau, a, b)$ with corresponding density function $q(\cdot; \mu, \tau, a, b)$. The Metropolis acceptance ratio for a proposal $\theta^{\star}_{t} \sim \mathsf{TNo}(\mu_{t-1}, \tau_{t-1}, a, b)$ is 
+plus remainder, which suggests a Gaussian approximation with mean $\mu_{t-1} = \theta_{t-1} - f'(\theta_{t-1})/f''(\theta_{t-1})$ and precision $\tau^{-2} = -f''(\theta_{t-1})$. We can use truncated Gaussian distribution on $(a, b)$ with mean $\mu$ and standard deviation $\tau$, denoted $\mathsf{TNo}(\mu, \tau, a, b)$ with corresponding density function $q(\cdot; \mu, \tau, a, b)$. The Metropolis acceptance ratio for a proposal $\theta^{\star}_{t} \sim \mathsf{TNo}(\mu_{t-1}, \tau_{t-1}, a, b)$ is 
 \begin{align*}
  \alpha = \frac{p(\theta^{\star}_{t})}{p(\theta_{t-1})} \frac{ q(\theta_{t-1} \mid \mu_{t}^{\star}, \tau_{t}^{\star}, a, b)}{q(\theta^{\star}_{t} \mid \mu_{t-1}, \tau_{t-1}, a, b)}
 \end{align*}
 and we set $\theta^{(t+1)} = \theta^{\star}_{t}$ with probability $\min\{1, r\}$ and $\theta^{(t+1)} = \theta_{t-1}$ otherwise. To evaluate the ratio of truncated Gaussian densities $q(\cdot; \mu, \tau, a, b)$, we need to compute the Taylor approximation from the current parameter value, but also the reverse move from the proposal $\theta^{\star}_{t}$. Another option is to modify the move dictated by the rescaled gradient by taking instead $$\mu_{t-1} = \theta_{t-1} - \eta f'(\theta_{t-1})/f''(\theta_{t-1}).$$ The proposal includes an additional tuning parameter, $\eta \leq 1$, whose role is to prevent oscillations of the quadratic approximation, as in a Newton--Raphson algorithm. Relative to a random walk Metropolis--Hastings, the proposal automatically adjusts to the local geometry of the target, which guarantees a higher acceptance rate and lower autocorrelation for the Markov chain despite the higher evaluation costs. The proposal requires that both $f''(\theta_{t-1})$ and $f''(\theta^{\star}_{t})$ be negative since the variance is $-1/f''(\theta)$: this shouldn't be problematic in the vicinity of the mode. Otherwise, one could use a global scaling derived from the hessian at the mode.
 
-For MALA to work well, we need both to start near stationarity, to ensure that the gradient is relatively small and to prevent oscillations. One can dampen the size of the step initially if needed to avoid overshooting. Note that the proposal variance, the other tuning parameter, is critical to the success of the algorithm. The usual target for the variance is one that gives an acceptance rate of roughly 0.574. These more efficient methods require additional calculations of the gradient and Hessian, either numerically or analytically. Depending on the situation and the computational costs of such calculations, the additional overhead may not be worth it.
+The simpler Metropolis-adjusted Langevin algorithm is equivalent to using a Gaussian random walk where the proposal has mean $\boldsymbol{\theta}_{t-1} + \mathbf{A}\eta \nabla \ell(\boldsymbol{\theta}_{t-1})$ and variance $\tau^2\mathbf{A}$, for some mass matrix $\boldsymbol{A}$ and a damping factor $\eta$. Taking $\mathbf{A}$ as the identity matrix, which assumes the parameters are isotropic (same variance, uncorrelated) is the default choice although seldom far from optimal.
+
+
+For MALA to work well, we need both to start near stationarity, to ensure that the gradient is relatively small and to prevent oscillations. One can dampen the size of the step initially if needed to avoid overshooting. The proposal variance, the other tuning parameter, is critical to the success of the algorithm. The usual target for the variance is one that gives an acceptance rate of roughly 0.574. These more efficient methods require additional calculations of the gradient and Hessian, either numerically or analytically. Depending on the situation and the computational costs of such calculations, the additional overhead may not be worth it.
 
 :::
 
 :::{#exm-normal-question-upworthy}
 
-We revisit the Upworthy data, this time modelling each individual headline as a separate observation and using a Gaussian likelihood for the rate `nclick`/`nimpression` This allows up to capture the heterogeneity inherent to each newstory.
+We revisit the Upworthy data, this time modelling each individual headline as a separate observation. We view $n=$`nimpression` as the sample size of a binomial distribution and `nclick` as the number of successes. Since the number of trials is large, the sample average `nclick`/`nimpression`, denoted $y$ in the sequel, is approximately Gaussian. We assume that each story has a similar population rate and capture the heterogeneity inherent to each news story by treating each mean as a sample. The variance of the sample average or click rate is proportional to $n^{-1}$, where $n$ is the number of impressions. To allow for underdispersion or overdispersion, we thus consider a Gaussian likelihood $Y_i \sim \mathsf{No}(\mu, \sigma^2/n_i)$. We perform Bayesian inference for $\mu, \sigma$ after assigning a truncated Gaussian prior for $\mu \sim \mathsf{TNo}(0.01, 0.1^2)$ over $[0,1]$ and an penalized complexity prior for $\sigma \sim \mathsf{Exp}(0.7)$.
 
-<!-- The `hecbayes` package contains an helper function `mh` -->
+
+<!-- The `hecbayes` package contains an helper function `mh` that computes the step given the log likelihood, log prior and their gradients. -->
 
 ```{r}
 #| eval: false
 #| echo: false
-data(upworthy_question, package = "hecbayes")
-library(hecbayes)
 
+loglik <- function(mu, sigma, y, nobs, ...){
+  if(sigma < 0){
+    return(-Inf)
+  }
+  sum(nobs*dnorm(x = y, mean = mu, sd = sigma, log = TRUE))
+}
+logprior <- function(mu, sigma, y, nobs, ...){
+  if(isTRUE(any(sigma <= 0, mu < 0, mu > 1))){
+    return(-Inf)
+  }
+  dnorm(x = mu, mean = 0.01, sd = 0.1, log = TRUE) +
+    dexp(sigma, rate = 0.7, log = TRUE)
+}
+# Compute gradients of the log likelihood and log prior 
+loglik_grad_mu <- function(mu, sigma, y, nobs, ...){
+  sum(nobs*(y-mu))/sigma^2
+}
+loglik_grad_sigma <- function(mu, sigma, y, nobs, ...){
+    -length(y)/sigma + sum(nobs*(y-mu)^2)/sigma^3
+}
+logprior_grad_mu <- function(mu, sigma, y, nobs, ...){
+  -(mu - 0.01)/0.01
+}
+logprior_grad_sigma <- function(mu, sigma, y, nobs, ...){
+  -0.7
+}
 ```
+
+```{r}
+#| eval: true
+#| echo: true
+data(upworthy_question, package = "hecbayes")
+# Select data for a single question
+qdata <- upworthy_question |>
+  dplyr::filter(question == "yes") |>
+  dplyr::mutate(y = clicks/impressions,
+                no = impressions)
+# Create functions with the same signature (...) for the algorithm
+logpost <- function(par, data, ...){
+  mu <- par[1]; sigma <- par[2]
+  no <- data$no
+  y <- data$y
+  if(isTRUE(any(sigma <= 0, mu < 0, mu > 1))){
+    return(-Inf)
+  }
+  dnorm(x = mu, mean = 0.01, sd = 0.1, log = TRUE) +
+  dexp(sigma, rate = 0.7, log = TRUE) + 
+  sum(dnorm(x = y, mean = mu, sd = sigma/sqrt(no), log = TRUE))
+}
+
+logpost_grad <- function(par, data, ...){
+   no <- data$no
+  y <- data$y
+  mu <- par[1]; sigma <- par[2]
+  c(sum(no*(y-mu))/sigma^2 -(mu - 0.01)/0.01,
+    -length(y)/sigma + sum(no*(y-mu)^2)/sigma^3 -0.7
+  )
+}
+
+# Starting values - MAP
+map <- optim(
+  par = c(mean(qdata$y), 0.5),
+  fn = function(x){-logpost(x, data = qdata)},
+  gr = function(x){-logpost_grad(x, data = qdata)},  
+  hessian = TRUE,
+  method = "BFGS")
+# Set initial parameter values
+curr <- map$par 
+# Check convergence 
+logpost_grad(curr, data = qdata)
+# Compute a mass matrix
+Amat <- solve(map$hessian)
+# Cholesky root - for random number generation
+cholA <- chol(Amat)
+
+
+
+# Create containers for MCMC
+B <- 1e4L # number of iterations
+warmup <- 1e3L # adaptation period
+prop_sd <- rep(1, 2)
+npar <- 2L
+chains <- matrix(nrow = B, ncol = npar)
+damping <- 0.8
+acceptance <- attempts <- 0 
+colnames(chains) <- names(curr) <- c("mu","sigma")
+prop_var <- diag(prop_sd) %*% Amat %*% diag(prop_sd)
+for(i in seq_len(B + warmup)){
+  ind <- pmax(1, i - warmup)
+  # Compute the proposal mean for the Newton step
+  prop_mean <- c(curr + damping * 
+     Amat %*% logpost_grad(curr, data = qdata))
+  # prop <- prop_sd * c(rnorm(npar) %*% cholA) + prop_mean
+  prop <- c(mvtnorm::rmvnorm(
+    n = 1,
+    mean = prop_mean, 
+    sigma = prop_var))
+  # Compute the reverse step
+  curr_mean <- c(prop + damping * 
+     Amat %*% logpost_grad(prop, data = qdata))
+  # log of ratio of bivariate Gaussian densities
+  logmh <- mvtnorm::dmvnorm(
+    x = curr, mean = prop_mean, 
+    sigma = prop_var, 
+    log = TRUE) - 
+    mvtnorm::dmvnorm(
+      x = prop, 
+      mean = curr_mean, 
+      sigma = prop_var, 
+      log = TRUE) + 
+  logpost(prop, data = qdata) - 
+    logpost(curr, data = qdata)
+  if(logmh > log(runif(1))){
+    curr <- prop
+    acceptance <- acceptance + 1L
+  }
+  attempts <- attempts + 1L
+  # Save current value
+  chains[ind,] <- curr
+  if(i %% 100 & i < warmup){
+    out <- hecbayes::adaptive(
+      attempts = attempts, 
+      acceptance = acceptance, 
+      sd.p = prop_sd,
+      target = 0.574)
+    prop_sd <- out$sd
+    acceptance <- out$acc
+    attempts <- out$att
+    prop_var <- diag(prop_sd) %*% Amat %*% diag(prop_sd)
+  }
+}
+```
+
+
+MALA requires critically a good mass matrix, especially if the gradient is very large at the starting values (often the case when the starting value is far from the mode). Given the precision of the original observations, we did not need to modify anything to deal with the parameter constraints $0 \leq \mu \leq 1$ and $\sigma>0$, outside of encoding them in the log posterior function.
+
+The posterior mean for the standard deviation is  `r round(mean(chains[,'sigma']), 2)`, which suggests overdispersion.
 
 :::
 
