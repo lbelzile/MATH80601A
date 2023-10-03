@@ -244,12 +244,12 @@ div.csl-indent {
 <p>Suppose we have drawn a Monte Carlo sample of size <span class="math inline">\(B\)</span>. If the function <span class="math inline">\(g(\cdot)\)</span> is square integrable,<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a> with variance <span class="math inline">\(\sigma^2_g\)</span>, then a central limit theorem applies. In large samples and for independent observations, our Monte Carlo average <span class="math inline">\(\widehat{\mu}_g = B^{-1}\sum_{b=1}^B g(X_i)\)</span> has variance <span class="math inline">\(\sigma^2_g/B\)</span>. We can approximate the unknown variance <span class="math inline">\(\sigma^2_g\)</span> by it’s empirical counterpart.<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a>. Note that, while the variance decreases linearly with <span class="math inline">\(B\)</span>, the choice of <span class="math inline">\(g\)</span> impacts the speed of convergence: we can compute <span class="math inline">\(\sigma^2_g =\Pr(X \leq 1)\{1-\Pr(X \leq 1)\}=0.0434\)</span> (left) and <span class="math inline">\(\sigma^2_g=\alpha/\beta^2=1/8\)</span> (middle plot).</p>
 <p><a href="#fig-monte-carlo-path">Figure&nbsp;<span>3.1</span></a> shows the empirical trace plot of the Monte Carlo average (note the <span class="math inline">\(\sqrt{B}\)</span> <span class="math inline">\(x\)</span>-axis scale!) as a function of the Monte Carlo sample size <span class="math inline">\(B\)</span> along with 95% Wald-based confidence intervals (gray shaded region), <span class="math inline">\(\widehat{\mu}_g \pm 1.96 \times \sigma_g/\sqrt{B}\)</span>. We can see that the ‘likely region’ for the average shrinks with <span class="math inline">\(B\)</span>.</p>
 <p>What happens if our function is not integrable? The right-hand plot of <a href="#fig-monte-carlo-path">Figure&nbsp;<span>3.1</span></a> shows empirical averages of <span class="math inline">\(g(x) = x^{-1}\)</span>, which is not integrable if <span class="math inline">\(\alpha &lt; 1\)</span>. We can compute the empirical average, but the result won’t converge to any meaningful quantity regardless of the sample size. The large jumps are testimonial of this.</p>
-<div class="cell" data-hash="mcmc_cache/html/fig-monte-carlo-path_f4671c58230aa7dbe94e959bedc95431">
+<div class="cell" data-hash="mcmc_cache/html/fig-monte-carlo-path_2f0b91d714c49864d40d1d110e2b8123">
 <div class="cell-output-display">
 <div id="fig-monte-carlo-path" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
 <p><img src="mcmc_files/figure-html/fig-monte-carlo-path-1.png" class="img-fluid figure-img" width="672"></p>
-<p></p><figcaption class="figure-caption">Figure&nbsp;3.1: Running mean trace plots for <span class="math inline">\(\mathrm{I}(x&lt;1)\)</span> (left), <span class="math inline">\(x\)</span> (middle) and <span class="math inline">\(1/x\)</span> (right) for a Gamma distribution with shape 0.5 and rate 2, as a function of the Monte Carlo sample size.</figcaption><p></p>
+<p></p><figcaption class="figure-caption">Figure&nbsp;3.1: Running mean trace plots for <span class="math inline">\(g(x)=\mathrm{I}(x&lt;1)\)</span> (left), <span class="math inline">\(g(x)=x\)</span> (middle) and <span class="math inline">\(g(x)=1/x\)</span> (right) for a Gamma distribution with shape 0.5 and rate 2, as a function of the Monte Carlo sample size.</figcaption><p></p>
 </figure>
 </div>
 </div>
@@ -267,7 +267,7 @@ Generalized ratio-of-uniform method
 <ol type="1">
 <li>Generate <span class="math inline">\(\boldsymbol{\theta}^{\star}\)</span> from the proposal with density <span class="math inline">\(q\)</span> and <span class="math inline">\(U \sim \mathsf{U}(0,1)\)</span></li>
 <li>Compute the ratio <span class="math inline">\(R \gets C^{-1} p(\boldsymbol{\theta}^{\star})/ q(\boldsymbol{\theta}^{\star})\)</span>.</li>
-<li>If <span class="math inline">\(R \leq U\)</span>, return <span class="math inline">\(\boldsymbol{\theta}\)</span>, else return to step 1.</li>
+<li>If <span class="math inline">\(R \leq U\)</span>, return <span class="math inline">\(\boldsymbol{\theta}\)</span>, else go back to step 1.</li>
 </ol>
 </div>
 <p>Rejection sampling requires the proposal <span class="math inline">\(q\)</span> to have a support at least as large as that of <span class="math inline">\(p\)</span> and resemble closely the density. It should be chosen so that the upper bound <span class="math inline">\(C\)</span> is as sharp as possible and close to 1. The dominating density <span class="math inline">\(q\)</span> must have heavier tails than the density of interest. The expected number of simulations needed to accept one proposal is <span class="math inline">\(C.\)</span> Finally, for the method to be useful, we need to be able to simulate easily and cheaply from the proposal. The optimal value of <span class="math inline">\(C\)</span> is <span class="math inline">\(C = \sup_{\boldsymbol{\theta}} p(\boldsymbol{\theta}) / q(\boldsymbol{\theta})\)</span>. This quantity may be obtained by numerical optimization, by finding the mode of the ratio of the log densities if the maximum is not known analytically.</p>
@@ -276,7 +276,7 @@ Generalized ratio-of-uniform method
 f(x; \mu, \sigma, a, b) = \frac{1}{\sigma}\frac{\phi\left(\frac{x-\mu}{\sigma}\right)}{\Phi\{(b-\mu)/\sigma\}-\Phi\{(a-\mu)/\sigma\}}.
 \end{align*}\]</span> where <span class="math inline">\(\phi(\cdot), \Phi(\cdot)\)</span> are respectively the density and distribution function of the standard Gaussian distribution.</p>
 <p>Since the Gaussian is a location-scale family, we can reduce the problem to sampling <span class="math inline">\(X\)</span> from a standard Gaussian truncated on <span class="math inline">\(\alpha = (a-\mu)/\sigma\)</span> and <span class="math inline">\(\beta = (b-\mu)/\sigma\)</span> and back transform the result as <span class="math inline">\(Y = \mu + \sigma X\)</span>.</p>
-<p>A crude accept-reject sampling algorithm would consider sampling from the same untruncated distribution with density <span class="math inline">\(g(X) = \sigma^{-1}\phi\{(x-\mu)/\sigma\}\)</span>, and the acceptance ratio is <span class="math inline">\(C=\{\Phi(\beta) - \Phi(\alpha)\}\)</span>. We thus simply simulate points from the Gaussian and accept any that falls within the bounds.</p>
+<p>A crude accept-reject sampling algorithm would consider sampling from the same untruncated distribution with density <span class="math inline">\(g(X) = \sigma^{-1}\phi\{(x-\mu)/\sigma\}\)</span>, and the acceptance ratio is <span class="math inline">\(C^{-1}=\{\Phi(\beta) - \Phi(\alpha)\}\)</span>. We thus simply simulate points from the Gaussian and accept any that falls within the bounds.</p>
 <div class="cell" data-hash="mcmc_cache/html/unnamed-chunk-3_635ce8865b87e68fa8a02c278f63baa2">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Standard Gaussian truncated on [0,1]</span></span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>candidate <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(<span class="fl">1e5</span>)</span>
@@ -374,7 +374,7 @@ X \sim \Phi^{-1}\left[\Phi(\alpha) + \{\Phi(\beta)-\Phi(\alpha)\}U\right]
 </div>
 <div id="exm-autoregressive-one" class="theorem example">
 <p><span class="theorem-title"><strong>Example 3.4 </strong></span>Consider a first-order autoregressive process, or <span class="math inline">\(\mathsf{AR}(1)\)</span>, of the form</p>
-<p><span class="math display">\[Y_t = \mu + \phi(Y_{t-1} - \mu) + \varepsilon_t,\]</span> where <span class="math inline">\(\phi\)</span> is the autoregressive process, <span class="math inline">\(\mu\)</span> the global mean and <span class="math inline">\(\varepsilon_t\)</span> is an iid innovation with mean zero and variance <span class="math inline">\(\sigma^2\)</span>. If <span class="math inline">\(|\phi| &lt; 1\)</span>, the process is stationary, and the variance does not increase with <span class="math inline">\(t\)</span>. If innovations are Gaussian, we have <span class="math display">\[Y_t \mid Y_{t-1}=y_{t-1} \sim \mathsf{No}\{\mu(1-\phi)+ \phi y_{t-1}, \sigma^2\}.\]</span></p>
+<p><span class="math display">\[Y_t = \mu + \phi(Y_{t-1} - \mu) + \varepsilon_t,\]</span> where <span class="math inline">\(\phi\)</span> is the lag-one correlation, <span class="math inline">\(\mu\)</span> the global mean and <span class="math inline">\(\varepsilon_t\)</span> is an iid innovation with mean zero and variance <span class="math inline">\(\sigma^2\)</span>. If <span class="math inline">\(|\phi| &lt; 1\)</span>, the process is stationary, and the variance does not increase with <span class="math inline">\(t\)</span>. If innovations are Gaussian, we have <span class="math display">\[Y_t \mid Y_{t-1}=y_{t-1} \sim \mathsf{No}\{\mu(1-\phi)+ \phi y_{t-1}, \sigma^2\}.\]</span></p>
 <p>The <span class="math inline">\(\mathsf{AR}(1)\)</span> stationarity process <span class="math inline">\(Y_t\)</span>, marginally, has mean <span class="math inline">\(\mu\)</span> and unconditional variance <span class="math inline">\(\sigma^2/(1-\phi^2)\)</span>. The <span class="math inline">\(\mathsf{AR}(1)\)</span> process is first-order Markov since the conditional distribution <span class="math inline">\(p(Y_t \mid Y_{t-1}, \ldots, Y_{t-p})\)</span> equals <span class="math inline">\(p(Y_t \mid Y_{t-1})\)</span>.</p>
 </div>
 <p>Autoregressive processes are not the only ones we can consider, although their simplicity lends itself to analytic calculations. More generally, for a correlated sequence, the variance of the stationary distribution is <span class="math display">\[\begin{align*}
@@ -389,10 +389,6 @@ X \sim \Phi^{-1}\left[\Phi(\alpha) + \{\Phi(\beta)-\Phi(\alpha)\}U\right]
 \end{align*}\]</span> Denote the lag-<span class="math inline">\(k\)</span> autocorrelation <span class="math inline">\(\mathsf{Cor}(Y_{t}, Y_{t+k})\)</span> by <span class="math inline">\(\gamma_k\)</span>. Under technical conditions<a href="#fn4" class="footnote-ref" id="fnref4" role="doc-noteref"><sup>4</sup></a>, a central limit theorem applies and we get an asymptotic variance for the mean of <span class="math display">\[\begin{align*}
 \lim_{T \to \infty} T\mathsf{Va}\left(\overline{Y}_T\right) = \sigma^2 \left\{1+2\sum_{t=1}^\infty \gamma_t\right\}.
 \end{align*}\]</span> This statement holds only if we start with draws from the stationary distribution, otherwise bets are off.</p>
-</div>
-<p>A visual diagnostic of the time dependence of a Markov chain is the correlogram, which shows the empirical lag-<span class="math inline">\(k\)</span> autocorrelation estimates against lag.</p>
-<div class="cell" data-hash="mcmc_cache/html/unnamed-chunk-7_591de6c861d296aadacecd7f84d14578">
-
 </div>
 <div id="exm-ar1-clt-variance" class="theorem example">
 <p><span class="theorem-title"><strong>Example 3.5 </strong></span>The lag-<span class="math inline">\(k\)</span> correlation of the stationary autoregressive process of order 1 is <span class="math inline">\(\phi^k\)</span>, so summing the series gives an asymptotic variance of <span class="math inline">\(\sigma^2(1+\phi)/(1-\phi)\)</span>. We can constrast that to the variance of the stationary distribution for an independent sample, which is <span class="math inline">\(\sigma^2/(1-\phi^2)\)</span>. The price to pay for having correlated samples is inefficiency: the higher the autocorrelation, the larger the variability of our mean estimators.</p>
@@ -434,11 +430,11 @@ P_3 = \begin{pmatrix}
 0 &amp; 0 &amp; 0 &amp;  \frac{1}{3}  &amp; \frac{2}{3} \\
 \end{pmatrix}
 \]</span> The stationary distribution is the value of the row vector <span class="math inline">\(\boldsymbol{p}\)</span>, such that <span class="math inline">\(\boldsymbol{p} = \boldsymbol{p}\mathbf{P}\)</span> for transition matrix <span class="math inline">\(\mathbf{P}\)</span>: we get <span class="math inline">\(\boldsymbol{p}_1=(0, 5/11, 6/11)\)</span> for <span class="math inline">\(P_1\)</span>, <span class="math inline">\((1/3, 1/3, 1/3)\)</span> for <span class="math inline">\(P_2\)</span> and <span class="math inline">\((1,2,2,2,1)/8\)</span> for <span class="math inline">\(P_3\)</span>.</p>
-<div class="cell" data-hash="mcmc_cache/html/unnamed-chunk-9_f24c659c91949aeb1eecc628da05f3d3">
+<div class="cell" data-hash="mcmc_cache/html/unnamed-chunk-8_f60dbff301b9e019d4bd0d0c0761f9e3">
 
 </div>
 <p><a href="#fig-discrete-markov-chain">Figure&nbsp;<span>3.4</span></a> shows the path of the walk and the empirical proportion of the time spent in each state, as time progress. Since the Markov chain has a unique stationary distribution, we expect these to converge to it.</p>
-<div class="cell" data-hash="mcmc_cache/html/fig-discrete-markov-chain_65a78bd28a5193e9b0f9d84f1eeeff9d">
+<div class="cell" data-hash="mcmc_cache/html/fig-discrete-markov-chain_c6892019fb97cf3a2ac3c1b3660b467f">
 <div class="cell-output-display">
 <div id="fig-discrete-markov-chain" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
@@ -489,7 +485,7 @@ Y_{i} &amp;\sim \mathsf{Po}(n_i\lambda_i), \qquad (i=1,2)\\
 \beta &amp; \sim \mathsf{No}(\log 0.01, 1.5) \\
 \kappa &amp;\sim \mathsf{No}(0, 1)
 \end{align*}\]</span> There are two parameters in the model, which can be updated in turn or jointly.</p>
-<div class="cell" data-hash="mcmc_cache/html/unnamed-chunk-11_98ece623d5155cc4fb486a9f90a52d69">
+<div class="cell" data-hash="mcmc_cache/html/unnamed-chunk-10_4a60e74b637e38b9cda157fff8b38d0e">
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(upworthy_question, <span class="at">package =</span> <span class="st">"hecbayes"</span>)</span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Compute sufficient statistics</span></span>
 <span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>data <span class="ot">&lt;-</span> upworthy_question <span class="sc">|&gt;</span></span>
@@ -675,10 +671,10 @@ p(\theta) \approx p(\theta_{t-1}) + p'(\theta_{t-1})(\theta - \theta_{t-1}) + \f
 <div id="exm-normal-question-upworthy" class="theorem example">
 <p><span class="theorem-title"><strong>Example 3.7 </strong></span>We revisit the Upworthy data, this time modelling each individual headline as a separate observation. We view <span class="math inline">\(n=\)</span><code>nimpression</code> as the sample size of a binomial distribution and <code>nclick</code> as the number of successes. Since the number of trials is large, the sample average <code>nclick</code>/<code>nimpression</code>, denoted <span class="math inline">\(y\)</span> in the sequel, is approximately Gaussian. We assume that each story has a similar population rate and capture the heterogeneity inherent to each news story by treating each mean as a sample. The variance of the sample average or click rate is proportional to <span class="math inline">\(n^{-1}\)</span>, where <span class="math inline">\(n\)</span> is the number of impressions. To allow for underdispersion or overdispersion, we thus consider a Gaussian likelihood <span class="math inline">\(Y_i \sim \mathsf{No}(\mu, \sigma^2/n_i)\)</span>. We perform Bayesian inference for <span class="math inline">\(\mu, \sigma\)</span> after assigning a truncated Gaussian prior for <span class="math inline">\(\mu \sim \mathsf{TNo}(0.01, 0.1^2)\)</span> over <span class="math inline">\([0,1]\)</span> and an penalized complexity prior for <span class="math inline">\(\sigma \sim \mathsf{Exp}(0.7)\)</span>.</p>
 <!-- The `hecbayes` package contains an helper function `mh` that computes the step given the log likelihood, log prior and their gradients. -->
-<div class="cell" data-hash="mcmc_cache/html/unnamed-chunk-17_90ba5d0f34676f0db081490fe9c5e497">
+<div class="cell" data-hash="mcmc_cache/html/unnamed-chunk-16_99aa75e44ddb25c15b8c261e4d5d745d">
 
 </div>
-<div class="cell" data-hash="mcmc_cache/html/unnamed-chunk-18_335db8baef33ccde2c7e628d59e10fb4">
+<div class="cell" data-hash="mcmc_cache/html/unnamed-chunk-17_6d799ea59abbb3b3886af78ab9d5c7f1">
 <div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(upworthy_question, <span class="at">package =</span> <span class="st">"hecbayes"</span>)</span>
 <span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Select data for a single question</span></span>
 <span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>qdata <span class="ot">&lt;-</span> upworthy_question <span class="sc">|&gt;</span></span>

@@ -28,14 +28,13 @@ Suppose we have drawn a Monte Carlo sample of size $B$. If the function $g(\cdot
 @fig-monte-carlo-path shows the empirical trace plot of the Monte Carlo average (note the $\sqrt{B}$ $x$-axis scale!) as a function of the Monte Carlo sample size $B$ along with 95% Wald-based confidence intervals (gray shaded region), $\widehat{\mu}_g \pm 1.96 \times \sigma_g/\sqrt{B}$. We can see that the 'likely region' for the average shrinks with $B$.
 
 What happens if our function is not integrable? The right-hand plot of @fig-monte-carlo-path shows empirical averages of $g(x) = x^{-1}$, which is not integrable if $\alpha < 1$. We can compute the empirical average, but the result won't converge to any meaningful quantity regardless of the sample size. The large jumps are testimonial of this.
-
 ```{r}
 #| label: fig-monte-carlo-path
 #| eval: true
 #| echo: false
 #| message: false
 #| warning: false
-#| fig-cap: "Running mean trace plots for $\\mathrm{I}(x<1)$ (left), $x$ (middle) and $1/x$ (right) for a Gamma distribution with shape 0.5 and rate 2, as a function of the Monte Carlo sample size."
+#| fig-cap: "Running mean trace plots for $g(x)=\\mathrm{I}(x<1)$ (left), $g(x)=x$ (middle) and $g(x)=1/x$ (right) for a Gamma distribution with shape 0.5 and rate 2, as a function of the Monte Carlo sample size."
 set.seed(80601)
 B <- 1e5L
 Bseq <- seq_len(B)
@@ -57,9 +56,10 @@ g1 <- ggplot(data = data.frame(
                alpha = 0.1) + 
   geom_hline(yintercept = pv, alpha = 0.5) +
   geom_line(aes(x = nsim, y = y)) +
-  scale_x_continuous(limits = c(10, NA), trans = "sqrt") +
+  scale_x_continuous(limits = c(10, NA), trans = "sqrt",
+                     labels = scales::unit_format(unit = "K", scale = 1e-3)) +
   scale_y_continuous(limits = c(0.9, 1), expand = c(0,0)) +
-  labs(x = "number of Monte Carlo simulations",
+  labs(x = "number of simulations",
        y = "",
        subtitle = "Pr(X < 1)")
 g2 <- ggplot(data = data.frame(
@@ -76,16 +76,18 @@ g2 <- ggplot(data = data.frame(
   geom_line(mapping = aes(
                x = nsim, 
                y = y)) +
-  scale_x_continuous(limits = c(10, NA), trans = "sqrt") +
+  scale_x_continuous(limits = c(10, NA), trans = "sqrt",
+                     labels = scales::unit_format(unit = "K", scale = 1e-3)) +
   scale_y_continuous(limits = c(0.1, 0.4), expand = c(0,0)) +
-  labs(x = "number of Monte Carlo simulations",
+  labs(x = "number of simulations",
        y = "",
        subtitle = "E(X)")
 g3 <- ggplot(data = data.frame(nsim = Bseq, y = int3),
              mapping = aes(x = nsim, y = y)) +
   geom_line() +
-  scale_x_continuous(limits = c(10, NA), trans = "sqrt") +
-  labs(x = "number of Monte Carlo simulations",
+  scale_x_continuous(limits = c(10, NA), trans = "sqrt",
+                     labels = scales::unit_format(unit = "K", scale = 1e-3)) +
+  labs(x = "number of simulations",
        y = "",
        subtitle = "E(1/X) (divergent)")
 g1 + g2 + g3 & theme_classic()
@@ -115,7 +117,7 @@ Rejection sampling (also termed accept-reject algorithm) samples from a random v
 
 1. Generate $\boldsymbol{\theta}^{\star}$ from the proposal with density $q$ and $U \sim \mathsf{U}(0,1)$ 
 2. Compute the ratio $R \gets C^{-1} p(\boldsymbol{\theta}^{\star})/ q(\boldsymbol{\theta}^{\star})$.
-3. If $R \leq U$, return $\boldsymbol{\theta}$, else return to step 1.
+3. If $R \leq U$, return $\boldsymbol{\theta}$, else go back to step 1.
 
 :::
 
@@ -137,7 +139,7 @@ where $\phi(\cdot), \Phi(\cdot)$ are respectively the density and distribution f
 Since the Gaussian is a location-scale family, we can reduce the problem to sampling $X$ from a standard Gaussian truncated on $\alpha = (a-\mu)/\sigma$ and $\beta = (b-\mu)/\sigma$ and back transform the result  as $Y = \mu + \sigma X$.
 
 
-A crude accept-reject sampling algorithm would consider sampling from the same untruncated distribution with density $g(X) = \sigma^{-1}\phi\{(x-\mu)/\sigma\}$, and the acceptance ratio is $C=\{\Phi(\beta) - \Phi(\alpha)\}$. We thus simply simulate points from the Gaussian and accept any that falls within the bounds.
+A crude accept-reject sampling algorithm would consider sampling from the same untruncated distribution with density $g(X) = \sigma^{-1}\phi\{(x-\mu)/\sigma\}$, and the acceptance ratio is $C^{-1}=\{\Phi(\beta) - \Phi(\alpha)\}$. We thus simply simulate points from the Gaussian and accept any that falls within the bounds.
 
 ```{r}
 #| eval: true
@@ -284,7 +286,7 @@ It is Markov if it satisfies the Markov property: given the current state of the
 ::: {#exm-autoregressive-one}
 Consider a first-order autoregressive process, or $\mathsf{AR}(1)$, of the form
 
-$$Y_t = \mu + \phi(Y_{t-1} - \mu) + \varepsilon_t,$$ where $\phi$ is the autoregressive process, $\mu$ the global mean and $\varepsilon_t$ is an iid innovation with mean zero and variance $\sigma^2$. If $|\phi| < 1$, the process is stationary, and the variance does not increase with $t$. If innovations are Gaussian, we have $$Y_t \mid Y_{t-1}=y_{t-1} \sim \mathsf{No}\{\mu(1-\phi)+ \phi y_{t-1}, \sigma^2\}.$$
+$$Y_t = \mu + \phi(Y_{t-1} - \mu) + \varepsilon_t,$$ where $\phi$ is the lag-one correlation, $\mu$ the global mean and $\varepsilon_t$ is an iid innovation with mean zero and variance $\sigma^2$. If $|\phi| < 1$, the process is stationary, and the variance does not increase with $t$. If innovations are Gaussian, we have $$Y_t \mid Y_{t-1}=y_{t-1} \sim \mathsf{No}\{\mu(1-\phi)+ \phi y_{t-1}, \sigma^2\}.$$
 
 The $\mathsf{AR}(1)$ stationarity process $Y_t$, marginally, has mean $\mu$ and unconditional variance $\sigma^2/(1-\phi^2)$. The $\mathsf{AR}(1)$ process is first-order Markov since the conditional distribution $p(Y_t \mid Y_{t-1}, \ldots, Y_{t-p})$ equals $p(Y_t \mid Y_{t-1})$.
 :::
@@ -307,12 +309,6 @@ In the independent case, the covariance is zero so we get the sum of variances. 
 
 [^mcmc-4]: Geometric ergodicity and existence of moments, among other things.
 
-A visual diagnostic of the time dependence of a Markov chain is the correlogram, which shows the empirical lag-$k$ autocorrelation estimates against lag.
-
-```{r}
-
-
-```
 
 ::: {#exm-ar1-clt-variance}
 The lag-$k$ correlation of the stationary autoregressive process of order 1 is $\phi^k$, so summing the series gives an asymptotic variance of $\sigma^2(1+\phi)/(1-\phi)$. We can constrast that to the variance of the stationary distribution for an independent sample, which is $\sigma^2/(1-\phi^2)$. The price to pay for having correlated samples is inefficiency: the higher the autocorrelation, the larger the variability of our mean estimators.
@@ -377,6 +373,7 @@ P_3 = \begin{pmatrix}
 $$ The stationary distribution is the value of the row vector $\boldsymbol{p}$, such that $\boldsymbol{p} = \boldsymbol{p}\mathbf{P}$ for transition matrix $\mathbf{P}$: we get $\boldsymbol{p}_1=(0, 5/11, 6/11)$ for $P_1$, $(1/3, 1/3, 1/3)$ for $P_2$ and $(1,2,2,2,1)/8$ for $P_3$.
 
 ```{r}
+set.seed(1234)
 P3 <- rbind(c(4,2,0,0,0),
             c(1,4,1,0,0),
             c(0,1,4,1,0),
@@ -415,7 +412,8 @@ g2 <- ggplot(
     state = factor(rep(1:5, length.out = length(sub)))),
   mapping = aes(x = x, group = state, color = state, y = y)) +
   geom_line() +
-  scale_x_continuous(trans = "sqrt") + 
+  scale_x_continuous(trans = "sqrt",
+                     labels = scales::unit_format(unit = "K", scale = 1e-3)) + 
   labs(y = "",
        subtitle = "probability of state", 
        x = "iteration") +
