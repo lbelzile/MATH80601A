@@ -427,7 +427,7 @@ g1 + g2
 
 The Markov chain Monte Carlo revolution in the 1990s made Bayesian inference mainstream by allowing inference for models when only approximations were permitted, and coincided with a time at which computers became more widely available. The idea is to draw correlated samples from a posterior via Markov chains, constructed to have the posterior as invariant stationary distribution.
 
-## Metropolis--Hastings algorithm
+### Metropolis--Hastings algorithm
 
 Named after @Metropolis:1953, @Hastings:1970, its relevance took a long time to gain traction in the statistical community. The idea of the Metropolis--Hastings algorithm is to construct a Markov chain targeting a distribution $p(\cdot)$.
 
@@ -457,7 +457,7 @@ If $R>1$, the proposal has higher density and we always accept the move. If the 
 
 ## Blank run
 
-To check that the algorithm is well-defined, we can remove the log likelihood component and run the algorithm: if it is correct, the resulting draws should be drawn from the prior [@Green:1994].
+To check that the algorithm is well-defined, we can remove the log likelihood component and run the algorithm: if it is correct, the resulting draws should be drawn from the prior provided the latter is proper [@Green:1994].
 
 :::
 
@@ -482,7 +482,7 @@ and we proceed likewise for the log of the ratio of transition kernels. We then 
 
 
 :::{#exm-upworthy-question}
-Consider again the Upworthy data from @exm-poisson-upworthy-question. We model the Poisson rates $\lambda_i$ $(i=1,2)$, this time with the usual Poisson regression parametrization in terms of log rate for the baseline \text{yes}, $\log(\lambda_2) = \beta$, and log odds rates $\kappa = \log(\lambda_1) - \log(\lambda_2)$. Our model is
+Consider again the Upworthy data from @exm-poisson-upworthy-question. We model the Poisson rates $\lambda_i$ $(i=1,2),$ this time with the usual Poisson regression parametrization in terms of log rate for the baseline \text{yes}, $\log(\lambda_2) = \beta$, and log odds rates $\kappa = \log(\lambda_1) - \log(\lambda_2)$. Our model is
 \begin{align*}
 Y_{i} &\sim \mathsf{Po}(n_i\lambda_i), \qquad (i=1,2)\\
 \lambda_1 &= \exp(\beta\kappa) \\
@@ -590,7 +590,7 @@ g1 + g2
 
 ## Visual diagnostics for Markov chains
 
-It is useful to inspect visually the Markov chain, as it may indicate several problems. If the chain drifts around without stabilizing around the posterior mode, then we can suspect that it either hasn't reached it's stationary distribution (likely due to poor starting values). In such cases, we need to disregard the dubious draws from the chain by discarding the so-called warm up or **burn in** period. While there are some guarantees of convergence, silly starting values may translate into tens of thousands of iterations lost wandering around. Preliminary optimization and plausible starting values help alleviate these problems. @fig-badstart shows the effect of bad starting values on a toy problem where convergence to the mode is relatively fast. If the proposal is in a flat region of the space, it can wander around for a very long time before converging to the stationary distribution.
+It is useful to inspect visually the Markov chain, as it may indicate several problems. If the chain drifts around without stabilizing around the posterior mode, then we can suspect that it hasn't reached it's stationary distribution (likely due to poor starting values). In such cases, we need to disregard the dubious draws from the chain by discarding the so-called warm up or **burn in** period. While there are some guarantees of convergence, silly starting values may translate into tens of thousands of iterations lost wandering around. Preliminary optimization and plausible starting values help alleviate these problems. @fig-badstart shows the effect of bad starting values on a toy problem where convergence to the mode is relatively fast. If the proposal is in a flat region of the space, it can wander around for a very long time before converging to the stationary distribution.
 
 If we run several chains, as in @fig-badstart, with different starting values, we can monitor convergence by checking whether these chains converge to the same target. A **trace rank** plots, shown on right panel of @fig-badstart, compares the rank of the values of the different chain at a given iteration: with good mixing, the ranks should switch frequently and be distributed uniformly across integers.
 
