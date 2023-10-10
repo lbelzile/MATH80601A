@@ -246,11 +246,11 @@ Exponential tilting
 Generalized ratio-of-uniform method
 -->
 <div id="prp-rejection-sampling" class="theorem proposition">
-<p><span class="theorem-title"><strong>Proposition 3.1 (Rejection sampling) </strong></span>Rejection sampling (also termed accept-reject algorithm) samples from a random vector with density <span class="math inline">\(p(\cdot)\)</span> by drawing candidates from a proposal with density <span class="math inline">\(p(\cdot)\)</span>, where <span class="math inline">\(q(\cdot)\)</span> is such that <span class="math inline">\(p(\boldsymbol{\theta}) \leq C q(\boldsymbol{\theta})\)</span> for <span class="math inline">\(C \geq 1\)</span> for all values of <span class="math inline">\(\boldsymbol{\theta}\)</span> in the support of <span class="math inline">\(p(\cdot)\)</span>. A proof can be found in <span class="citation" data-cites="Devroye:1986">Devroye (<a href="references.html#ref-Devroye:1986" role="doc-biblioref">1986</a>, Theorem 3.1)</span></p>
+<p><span class="theorem-title"><strong>Proposition 3.1 (Rejection sampling) </strong></span>Rejection sampling (also termed accept-reject algorithm) samples from a random vector with density <span class="math inline">\(p(\cdot)\)</span> by drawing candidates from a proposal with density <span class="math inline">\(q(\cdot)\)</span> with nested support, <span class="math inline">\(\mathrm{supp}(p) \subseteq \mathrm{supp}(q)\)</span>. The density <span class="math inline">\(q(\cdot)\)</span> must be such that <span class="math inline">\(p(\boldsymbol{\theta}) \leq C q(\boldsymbol{\theta})\)</span> for <span class="math inline">\(C \geq 1\)</span> for all values of <span class="math inline">\(\boldsymbol{\theta}\)</span> in the support of <span class="math inline">\(p(\cdot)\)</span>. A proof can be found in <span class="citation" data-cites="Devroye:1986">Devroye (<a href="references.html#ref-Devroye:1986" role="doc-biblioref">1986</a>, Theorem 3.1)</span></p>
 <ol type="1">
 <li>Generate <span class="math inline">\(\boldsymbol{\theta}^{\star}\)</span> from the proposal with density <span class="math inline">\(q\)</span> and <span class="math inline">\(U \sim \mathsf{U}(0,1)\)</span></li>
-<li>Compute the ratio <span class="math inline">\(R \gets C^{-1} p(\boldsymbol{\theta}^{\star})/ q(\boldsymbol{\theta}^{\star})\)</span>.</li>
-<li>If <span class="math inline">\(R \leq U\)</span>, return <span class="math inline">\(\boldsymbol{\theta}\)</span>, else go back to step 1.</li>
+<li>Compute the ratio <span class="math inline">\(R \gets p(\boldsymbol{\theta}^{\star})/ q(\boldsymbol{\theta}^{\star})\)</span>.</li>
+<li>If <span class="math inline">\(R \geq CU\)</span>, return <span class="math inline">\(\boldsymbol{\theta}\)</span>, else go back to step 1.</li>
 </ol>
 </div>
 <p>Rejection sampling requires the proposal <span class="math inline">\(q\)</span> to have a support at least as large as that of <span class="math inline">\(p\)</span> and resemble closely the density. It should be chosen so that the upper bound <span class="math inline">\(C\)</span> is as sharp as possible and close to 1. The dominating density <span class="math inline">\(q\)</span> must have heavier tails than the density of interest. The expected number of simulations needed to accept one proposal is <span class="math inline">\(C.\)</span> Finally, for the method to be useful, we need to be able to simulate easily and cheaply from the proposal. The optimal value of <span class="math inline">\(C\)</span> is <span class="math inline">\(C = \sup_{\boldsymbol{\theta}} p(\boldsymbol{\theta}) / q(\boldsymbol{\theta})\)</span>. This quantity may be obtained by numerical optimization, by finding the mode of the ratio of the log densities if the maximum is not known analytically.</p>
@@ -439,7 +439,7 @@ P_3 = \begin{pmatrix}
 <li>Compute the acceptance ratio <span id="eq-metropolis-ratio"><span class="math display">\[
 R = \frac{p(\boldsymbol{\theta}_t^{\star})}{p(\boldsymbol{\theta}_{t-1})}\frac{q(\boldsymbol{\theta}_{t-1} \mid \boldsymbol{\theta}_t^{\star} )}{q(\boldsymbol{\theta}_t^{\star} \mid \boldsymbol{\theta}_{t-1})}
 \tag{3.1}\]</span></span></li>
-<li>With probability <span class="math inline">\(\max\{R, 1\}\)</span>, accept the proposal and set <span class="math inline">\(\boldsymbol{\theta}_t \gets \boldsymbol{\theta}_t^{\star}\)</span>, otherwise set the value to the previous state, <span class="math inline">\(\boldsymbol{\theta}_t \gets \boldsymbol{\theta}_{t-1}\)</span>.</li>
+<li>With probability <span class="math inline">\(\min\{R, 1\}\)</span>, accept the proposal and set <span class="math inline">\(\boldsymbol{\theta}_t \gets \boldsymbol{\theta}_t^{\star}\)</span>, otherwise set the value to the previous state, <span class="math inline">\(\boldsymbol{\theta}_t \gets \boldsymbol{\theta}_{t-1}\)</span>.</li>
 </ol>
 </div>
 <div class="remark proof">
@@ -459,7 +459,7 @@ R = \frac{p(\boldsymbol{\theta}_t^{\star})}{p(\boldsymbol{\theta}_{t-1})}\frac{q
 <div id="exm-upworthy-question" class="theorem example">
 <p><span class="theorem-title"><strong>Example 3.6 </strong></span>Consider again the Upworthy data from <a href="priors.html#exm-poisson-upworthy-question">Example&nbsp;<span>2.6</span></a>. We model the Poisson rates <span class="math inline">\(\lambda_i\)</span> <span class="math inline">\((i=1,2),\)</span> this time with the usual Poisson regression parametrization in terms of log rate for the baseline , <span class="math inline">\(\log(\lambda_2) = \beta\)</span>, and log odds rates <span class="math inline">\(\kappa = \log(\lambda_1) - \log(\lambda_2)\)</span>. Our model is <span class="math display">\[\begin{align*}
 Y_{i} &amp;\sim \mathsf{Po}(n_i\lambda_i), \qquad (i=1,2)\\
-\lambda_1 &amp;= \exp(\beta\kappa) \\
+\lambda_1 &amp;= \exp(\beta + \kappa) \\
 \lambda_2 &amp;= \exp(\beta) \\
 \beta &amp; \sim \mathsf{No}(\log 0.01, 1.5) \\
 \kappa &amp;\sim \mathsf{No}(0, 1)

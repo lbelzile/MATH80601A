@@ -113,11 +113,11 @@ Generalized ratio-of-uniform method
 
 ## Rejection sampling
 
-Rejection sampling (also termed accept-reject algorithm) samples from a random vector with density $p(\cdot)$ by drawing candidates from a proposal with density $p(\cdot)$, where $q(\cdot)$ is such that $p(\boldsymbol{\theta}) \leq C q(\boldsymbol{\theta})$ for $C \geq 1$ for all values of $\boldsymbol{\theta}$ in the support of $p(\cdot)$. A proof can be found in @Devroye:1986 [Theorem 3.1]
+Rejection sampling (also termed accept-reject algorithm) samples from a random vector with density $p(\cdot)$ by drawing candidates from a proposal with density $q(\cdot)$ with nested support, $\mathrm{supp}(p) \subseteq \mathrm{supp}(q)$. The density $q(\cdot)$ must be  such that $p(\boldsymbol{\theta}) \leq C q(\boldsymbol{\theta})$ for $C \geq 1$ for all values of $\boldsymbol{\theta}$ in the support of $p(\cdot)$. A proof can be found in @Devroye:1986 [Theorem 3.1]
 
 1. Generate $\boldsymbol{\theta}^{\star}$ from the proposal with density $q$ and $U \sim \mathsf{U}(0,1)$ 
-2. Compute the ratio $R \gets C^{-1} p(\boldsymbol{\theta}^{\star})/ q(\boldsymbol{\theta}^{\star})$.
-3. If $R \leq U$, return $\boldsymbol{\theta}$, else go back to step 1.
+2. Compute the ratio $R \gets p(\boldsymbol{\theta}^{\star})/ q(\boldsymbol{\theta}^{\star})$.
+3. If $R \geq CU$, return $\boldsymbol{\theta}$, else go back to step 1.
 
 :::
 
@@ -443,7 +443,7 @@ The Metropolis--Hastings build a Markov chain starting from an initial value $\b
 2.  Compute the acceptance ratio $$
     R = \frac{p(\boldsymbol{\theta}_t^{\star})}{p(\boldsymbol{\theta}_{t-1})}\frac{q(\boldsymbol{\theta}_{t-1} \mid \boldsymbol{\theta}_t^{\star} )}{q(\boldsymbol{\theta}_t^{\star} \mid \boldsymbol{\theta}_{t-1})}
     $$ {#eq-metropolis-ratio}
-3.  With probability $\max\{R, 1\}$, accept the proposal and set $\boldsymbol{\theta}_t \gets \boldsymbol{\theta}_t^{\star}$, otherwise set the value to the previous state, $\boldsymbol{\theta}_t \gets \boldsymbol{\theta}_{t-1}$.
+3.  With probability $\min\{R, 1\}$, accept the proposal and set $\boldsymbol{\theta}_t \gets \boldsymbol{\theta}_t^{\star}$, otherwise set the value to the previous state, $\boldsymbol{\theta}_t \gets \boldsymbol{\theta}_{t-1}$.
 :::
 
 ::: {.remark}
@@ -485,7 +485,7 @@ and we proceed likewise for the log of the ratio of transition kernels. We then 
 Consider again the Upworthy data from @exm-poisson-upworthy-question. We model the Poisson rates $\lambda_i$ $(i=1,2),$ this time with the usual Poisson regression parametrization in terms of log rate for the baseline \text{yes}, $\log(\lambda_2) = \beta$, and log odds rates $\kappa = \log(\lambda_1) - \log(\lambda_2)$. Our model is
 \begin{align*}
 Y_{i} &\sim \mathsf{Po}(n_i\lambda_i), \qquad (i=1,2)\\
-\lambda_1 &= \exp(\beta\kappa) \\
+\lambda_1 &= \exp(\beta + \kappa) \\
 \lambda_2 &= \exp(\beta) \\
 \beta & \sim \mathsf{No}(\log 0.01, 1.5) \\
 \kappa &\sim \mathsf{No}(0, 1)
