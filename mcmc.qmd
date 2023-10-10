@@ -121,6 +121,44 @@ Rejection sampling (also termed accept-reject algorithm) samples from a random v
 
 :::
 
+```{r}
+#| eval: true
+#| echo: false
+#| label: fig-acceptreject
+#| fig-cap: "Target density (full) and scaled proposal density (dashed): the vertical segment at $x=1$ shows the percentage of acceptance for a uniform slice under the scaled proposal, giving an acceptance ratio of 0.58."
+ptarget <- function(x){
+  0.3*TruncatedNormal::dtmvnorm(x = cbind(x), mu = 2, sigma = matrix(0.25),lb = 0) + 
+    0.4*TruncatedNormal::dtmvnorm(x = cbind(x), mu = 0, sigma = matrix(0.5),lb = 0, ub = 3) + 0.3*TruncatedNormal::dtmvnorm(x = cbind(x), mu = 0, sigma = matrix(4),lb = 0, ub = 5)
+}
+
+Cst <- dgamma(x = 4, shape = 4, rate = 1/0.75)/ptarget(2)
+qprop <- function(x){1.02*dgamma(x = x+2, shape = 4, rate = 1/0.75)/Cst}
+# curve(ptarget, from = -0.2, to = 4, n = 1001, ylim = c(0, 2))
+# curve(qprop, from = 0, to = 4, add = TRUE, lty = 2)
+ggplot() +
+  stat_function(fun = ptarget, n = 1001, xlim = c(0, 5)) +
+  stat_function(fun = qprop, n = 1001, xlim = c(0, 5), linetype = "dashed") +
+  geom_segment(data = data.frame(
+    x0 = 1, x1 = 1, y0 = 0, y1 = qprop(1)),
+               mapping = aes(
+                 x = x0, y = y0, xend = x1, yend = y1), 
+    linewidth = 2) +
+  geom_segment(data = data.frame(
+    x0 = 1, x1 = 1, y0 = 0, y1 = ptarget(1)),
+               mapping = aes(
+                 x = x0, y = y0, xend = x1, yend = y1),
+    linewidth = 2, col = "grey") +
+  labs(x = "x", 
+       y = "", 
+       subtitle = "scaled proposal and target densities") +
+    scale_y_continuous(limits = c(0, 0.62), expand = c(0,0)) + 
+    scale_x_continuous(expand = c(0,0)) + 
+  theme_classic() 
+
+
+```
+
+
 Rejection sampling requires the proposal $q$ to have a support at least as large as that of $p$ and resemble closely the density. It should be chosen so that the upper bound $C$ is as sharp as possible and close to 1. The dominating density $q$ must have heavier tails than the density of interest. The expected number of simulations needed to accept one proposal is $C.$ Finally, for the method to be useful, we need to be able to simulate easily and cheaply from the proposal. The optimal value of $C$ is $C = \sup_{\boldsymbol{\theta}} p(\boldsymbol{\theta}) / q(\boldsymbol{\theta})$. This quantity may be obtained by numerical optimization, by finding the mode of the ratio of the log densities if the maximum is not known analytically.
 
 

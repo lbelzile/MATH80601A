@@ -253,6 +253,16 @@ Generalized ratio-of-uniform method
 <li>If <span class="math inline">\(R \geq CU\)</span>, return <span class="math inline">\(\boldsymbol{\theta}\)</span>, else go back to step 1.</li>
 </ol>
 </div>
+<div class="cell" data-hash="mcmc_cache/html/fig-acceptreject_e188f8bde1b8076a583b44d4fc036e3e">
+<div class="cell-output-display">
+<div id="fig-acceptreject" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="mcmc_files/figure-html/fig-acceptreject-1.png" class="img-fluid figure-img" width="672"></p>
+<figcaption class="figure-caption">Figure&nbsp;3.2: Target density (full) and scaled proposal density (dashed): the vertical segment at <span class="math inline">\(x=1\)</span> shows the percentage of acceptance for a uniform slice under the scaled proposal, giving an acceptance ratio of 0.58.</figcaption>
+</figure>
+</div>
+</div>
+</div>
 <p>Rejection sampling requires the proposal <span class="math inline">\(q\)</span> to have a support at least as large as that of <span class="math inline">\(p\)</span> and resemble closely the density. It should be chosen so that the upper bound <span class="math inline">\(C\)</span> is as sharp as possible and close to 1. The dominating density <span class="math inline">\(q\)</span> must have heavier tails than the density of interest. The expected number of simulations needed to accept one proposal is <span class="math inline">\(C.\)</span> Finally, for the method to be useful, we need to be able to simulate easily and cheaply from the proposal. The optimal value of <span class="math inline">\(C\)</span> is <span class="math inline">\(C = \sup_{\boldsymbol{\theta}} p(\boldsymbol{\theta}) / q(\boldsymbol{\theta})\)</span>. This quantity may be obtained by numerical optimization, by finding the mode of the ratio of the log densities if the maximum is not known analytically.</p>
 <div id="exm-accept-reject-truncated" class="theorem example">
 <p><span class="theorem-title"><strong>Example 3.2 (Truncated Gaussian distribution) </strong></span>Consider the problem of sampling from a Gaussian distribution <span class="math inline">\(Y \sim \mathsf{No}(\mu, \sigma^2)\)</span> truncated in the interval <span class="math inline">\(a, b,\)</span> which has density <span class="math display">\[\begin{align*}
@@ -260,7 +270,7 @@ f(x; \mu, \sigma, a, b) = \frac{1}{\sigma}\frac{\phi\left(\frac{x-\mu}{\sigma}\r
 \end{align*}\]</span> where <span class="math inline">\(\phi(\cdot), \Phi(\cdot)\)</span> are respectively the density and distribution function of the standard Gaussian distribution.</p>
 <p>Since the Gaussian is a location-scale family, we can reduce the problem to sampling <span class="math inline">\(X\)</span> from a standard Gaussian truncated on <span class="math inline">\(\alpha = (a-\mu)/\sigma\)</span> and <span class="math inline">\(\beta = (b-\mu)/\sigma\)</span> and back transform the result as <span class="math inline">\(Y = \mu + \sigma X\)</span>.</p>
 <p>A crude accept-reject sampling algorithm would consider sampling from the same untruncated distribution with density <span class="math inline">\(g(X) = \sigma^{-1}\phi\{(x-\mu)/\sigma\}\)</span>, and the acceptance ratio is <span class="math inline">\(C^{-1}=\{\Phi(\beta) - \Phi(\alpha)\}\)</span>. We thus simply simulate points from the Gaussian and accept any that falls within the bounds.</p>
-<div class="cell" data-hash="mcmc_cache/html/unnamed-chunk-3_635ce8865b87e68fa8a02c278f63baa2">
+<div class="cell" data-hash="mcmc_cache/html/unnamed-chunk-4_1de549d3707c1db24d2baaf48f801f47">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Standard Gaussian truncated on [0,1]</span></span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>candidate <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(<span class="fl">1e5</span>)</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>trunc_samp <span class="ot">&lt;-</span> candidate[candidate <span class="sc">&gt;=</span> <span class="dv">0</span> <span class="sc">&amp;</span> candidate <span class="sc">&lt;=</span> <span class="dv">1</span>]</span>
@@ -340,7 +350,7 @@ X \sim \Phi^{-1}\left[\Phi(\alpha) + \{\Phi(\beta)-\Phi(\alpha)\}U\right]
 <div id="fig-danish-rou" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
 <p><img src="mcmc_files/figure-html/fig-danish-rou-1.png" class="img-fluid figure-img" width="672"></p>
-<figcaption class="figure-caption">Figure&nbsp;3.2: Scatterplot of posterior samples from the generalized Pareto model applied to Danish fire insurance losses above 10 millions krones, with maximal data information prior (left) and posterior predictive density on log scale (right).</figcaption>
+<figcaption class="figure-caption">Figure&nbsp;3.3: Scatterplot of posterior samples from the generalized Pareto model applied to Danish fire insurance losses above 10 millions krones, with maximal data information prior (left) and posterior predictive density on log scale (right).</figcaption>
 </figure>
 </div>
 </div>
@@ -380,12 +390,12 @@ X \sim \Phi^{-1}\left[\Phi(\alpha) + \{\Phi(\beta)-\Phi(\alpha)\}U\right]
 <div id="fig-ar1-variance" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
 <p><img src="mcmc_files/figure-html/fig-ar1-variance-1.png" class="img-fluid figure-img" width="672"></p>
-<figcaption class="figure-caption">Figure&nbsp;3.3: Scaled asymptotic variance of the sample mean for a stationary autoregressive first-order process with unit variance (dashed) and a corresponding sample of independent observations with the same marginal variance (full line). The plot on the right gives the variance ratio for positive correlations.</figcaption>
+<figcaption class="figure-caption">Figure&nbsp;3.4: Scaled asymptotic variance of the sample mean for a stationary autoregressive first-order process with unit variance (dashed) and a corresponding sample of independent observations with the same marginal variance (full line). The plot on the right gives the variance ratio for positive correlations.</figcaption>
 </figure>
 </div>
 </div>
 </div>
-<p>We can see from <a href="#fig-ar1-variance">Figure&nbsp;<span>3.3</span></a> that, when the autocorrelation is positive (as will be the cause in all applications of interest), we will suffer from variance inflation. To get the same uncertainty estimates for the mean with an <span class="math inline">\(\mathsf{AR}(1)\)</span> process with <span class="math inline">\(\phi \approx 0.75\)</span> than with an iid sample, we would need nine times as many observations: this is the prize to pay.</p>
+<p>We can see from <a href="#fig-ar1-variance">Figure&nbsp;<span>3.4</span></a> that, when the autocorrelation is positive (as will be the cause in all applications of interest), we will suffer from variance inflation. To get the same uncertainty estimates for the mean with an <span class="math inline">\(\mathsf{AR}(1)\)</span> process with <span class="math inline">\(\phi \approx 0.75\)</span> than with an iid sample, we would need nine times as many observations: this is the prize to pay.</p>
 </div>
 <p>When can we use output from a Markov chain in place of independent Monte Carlo draws? The assumptions laid out in the ergodic theorem are that the chain is irreducible and acyclic, ensuring that the chain has a unique stationary distribution.</p>
 <p>To make sense of these concepts, we consider a discrete Markov chain over the integers <span class="math inline">\(1, 2, 3\)</span>. A discrete-time stochastic process is a random sequences whose elements are part of some set, the state space, here the integers. We can encode the probability of moving from one state to the next via a transition matrix, whose rows contain the probabilities of moving from one state to the next and thus sum to one. We can run a Markov chain by sampling an initial state <span class="math inline">\(X_0\)</span> at random from <span class="math inline">\(\{1, \ldots, 5\}\)</span> and then consider the transitions from the conditional distribution, sampling <span class="math inline">\(p(X_t \mid X_{t-1})\)</span>. Because of the Markov property, the history of the chain does not matter: we only need to read the value <span class="math inline">\(i=X_{t-1}\)</span> of the state and pick the <span class="math inline">\(i\)</span>th row of <span class="math inline">\(P_3\)</span> to know the probability of the different moves from the current state.</p>
@@ -413,13 +423,13 @@ P_3 = \begin{pmatrix}
 0 &amp; 0 &amp; 0 &amp;  \frac{1}{3}  &amp; \frac{2}{3} \\
 \end{pmatrix}
 \]</span> The stationary distribution is the value of the row vector <span class="math inline">\(\boldsymbol{p}\)</span>, such that <span class="math inline">\(\boldsymbol{p} = \boldsymbol{p}\mathbf{P}\)</span> for transition matrix <span class="math inline">\(\mathbf{P}\)</span>: we get <span class="math inline">\(\boldsymbol{p}_1=(0, 5/11, 6/11)\)</span> for <span class="math inline">\(P_1\)</span>, <span class="math inline">\((1/3, 1/3, 1/3)\)</span> for <span class="math inline">\(P_2\)</span> and <span class="math inline">\((1,2,2,2,1)/8\)</span> for <span class="math inline">\(P_3\)</span>.</p>
-<p><a href="#fig-discrete-markov-chain">Figure&nbsp;<span>3.4</span></a> shows the path of the walk and the empirical proportion of the time spent in each state, as time progress. Since the Markov chain has a unique stationary distribution, we expect these to converge to it.</p>
+<p><a href="#fig-discrete-markov-chain">Figure&nbsp;<span>3.5</span></a> shows the path of the walk and the empirical proportion of the time spent in each state, as time progress. Since the Markov chain has a unique stationary distribution, we expect these to converge to it.</p>
 <div class="cell" data-hash="mcmc_cache/html/fig-discrete-markov-chain_c6892019fb97cf3a2ac3c1b3660b467f">
 <div class="cell-output-display">
 <div id="fig-discrete-markov-chain" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
 <p><img src="mcmc_files/figure-html/fig-discrete-markov-chain-1.png" class="img-fluid figure-img" width="672"></p>
-<figcaption class="figure-caption">Figure&nbsp;3.4: Discrete Markov chain on integers from 1 to 5, with transition matrix <span class="math inline">\(P_3\)</span>, with traceplot of 1000 first iterations (left) and running mean plots of sample proportion of each state visited per 100 iterations (right).</figcaption>
+<figcaption class="figure-caption">Figure&nbsp;3.5: Discrete Markov chain on integers from 1 to 5, with transition matrix <span class="math inline">\(P_3\)</span>, with traceplot of 1000 first iterations (left) and running mean plots of sample proportion of each state visited per 100 iterations (right).</figcaption>
 </figure>
 </div>
 </div>
@@ -464,7 +474,7 @@ Y_{i} &amp;\sim \mathsf{Po}(n_i\lambda_i), \qquad (i=1,2)\\
 \beta &amp; \sim \mathsf{No}(\log 0.01, 1.5) \\
 \kappa &amp;\sim \mathsf{No}(0, 1)
 \end{align*}\]</span> There are two parameters in the model, which can be updated in turn or jointly.</p>
-<div class="cell" data-hash="mcmc_cache/html/unnamed-chunk-10_4a60e74b637e38b9cda157fff8b38d0e">
+<div class="cell" data-hash="mcmc_cache/html/unnamed-chunk-11_98ece623d5155cc4fb486a9f90a52d69">
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(upworthy_question, <span class="at">package =</span> <span class="st">"hecbayes"</span>)</span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Compute sufficient statistics</span></span>
 <span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>data <span class="ot">&lt;-</span> upworthy_question <span class="sc">|&gt;</span></span>
@@ -551,56 +561,56 @@ kappa  0.06673  0.06933  0.07077  0.07212  0.07463</code></pre>
 <div id="fig-traceplot" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
 <p><img src="mcmc_files/figure-html/fig-traceplot-1.png" class="img-fluid figure-img" width="672"></p>
-<figcaption class="figure-caption">Figure&nbsp;3.5: Traceplots of Markov chain of log rate and log odds rate for the Metropolis–Hastings sampler applied to the Upworthy question data.</figcaption>
+<figcaption class="figure-caption">Figure&nbsp;3.6: Traceplots of Markov chain of log rate and log odds rate for the Metropolis–Hastings sampler applied to the Upworthy question data.</figcaption>
 </figure>
 </div>
 </div>
 </div>
-<p><a href="#fig-scatterplot-upworthy-question">Figure&nbsp;<span>3.6</span></a> shows the posterior samples, which are very nearly bivariate Gaussian. The parametrization in terms of log odds ratio induces strong negative dependence, so if we were to sample <span class="math inline">\(\kappa\)</span>, then <span class="math inline">\(\beta\)</span>, we would have much larger inefficiency and slower exploration. Instead, the code used a bivariate Gaussian random walk proposal whose covariance matrix was taken as a multiple of the inverse of the negative hessian (equivalently, to the observed information matrix of the log posterior), evaluated at of the maximum a posteriori. This Gaussian approximation is called <strong>Laplace approximation</strong>: it is advisable to reparametrize the model so that the distribution is nearly symmetric, so that the approximation is good. In this example, because of the large sample, the Gaussian approximation implied by Bernstein–von Mises’ theorem is excellent.</p>
+<p><a href="#fig-scatterplot-upworthy-question">Figure&nbsp;<span>3.7</span></a> shows the posterior samples, which are very nearly bivariate Gaussian. The parametrization in terms of log odds ratio induces strong negative dependence, so if we were to sample <span class="math inline">\(\kappa\)</span>, then <span class="math inline">\(\beta\)</span>, we would have much larger inefficiency and slower exploration. Instead, the code used a bivariate Gaussian random walk proposal whose covariance matrix was taken as a multiple of the inverse of the negative hessian (equivalently, to the observed information matrix of the log posterior), evaluated at of the maximum a posteriori. This Gaussian approximation is called <strong>Laplace approximation</strong>: it is advisable to reparametrize the model so that the distribution is nearly symmetric, so that the approximation is good. In this example, because of the large sample, the Gaussian approximation implied by Bernstein–von Mises’ theorem is excellent.</p>
 <div class="cell" data-hash="mcmc_cache/html/fig-scatterplot-upworthy-question_3a8557be81b67c958b29b50f5244bb88">
 <div class="cell-output-display">
 <div id="fig-scatterplot-upworthy-question" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
 <p><img src="mcmc_files/figure-html/fig-scatterplot-upworthy-question-1.png" class="img-fluid figure-img" width="672"></p>
-<figcaption class="figure-caption">Figure&nbsp;3.6: Scatterplot of posterior draws (left) and marginal density plot of log hazard rate (right).</figcaption>
+<figcaption class="figure-caption">Figure&nbsp;3.7: Scatterplot of posterior draws (left) and marginal density plot of log hazard rate (right).</figcaption>
 </figure>
 </div>
 </div>
 </div>
 </div>
 <div id="prp-visual-diagnostics" class="theorem proposition">
-<p><span class="theorem-title"><strong>Proposition 3.5 (Visual diagnostics for Markov chains) </strong></span>It is useful to inspect visually the Markov chain, as it may indicate several problems. If the chain drifts around without stabilizing around the posterior mode, then we can suspect that it hasn’t reached it’s stationary distribution (likely due to poor starting values). In such cases, we need to disregard the dubious draws from the chain by discarding the so-called warm up or <strong>burn in</strong> period. While there are some guarantees of convergence, silly starting values may translate into tens of thousands of iterations lost wandering around. Preliminary optimization and plausible starting values help alleviate these problems. <a href="#fig-badstart">Figure&nbsp;<span>3.7</span></a> shows the effect of bad starting values on a toy problem where convergence to the mode is relatively fast. If the proposal is in a flat region of the space, it can wander around for a very long time before converging to the stationary distribution.</p>
-<p>If we run several chains, as in <a href="#fig-badstart">Figure&nbsp;<span>3.7</span></a>, with different starting values, we can monitor convergence by checking whether these chains converge to the same target. A <strong>trace rank</strong> plots, shown on right panel of <a href="#fig-badstart">Figure&nbsp;<span>3.7</span></a>, compares the rank of the values of the different chain at a given iteration: with good mixing, the ranks should switch frequently and be distributed uniformly across integers.</p>
+<p><span class="theorem-title"><strong>Proposition 3.5 (Visual diagnostics for Markov chains) </strong></span>It is useful to inspect visually the Markov chain, as it may indicate several problems. If the chain drifts around without stabilizing around the posterior mode, then we can suspect that it hasn’t reached it’s stationary distribution (likely due to poor starting values). In such cases, we need to disregard the dubious draws from the chain by discarding the so-called warm up or <strong>burn in</strong> period. While there are some guarantees of convergence, silly starting values may translate into tens of thousands of iterations lost wandering around. Preliminary optimization and plausible starting values help alleviate these problems. <a href="#fig-badstart">Figure&nbsp;<span>3.8</span></a> shows the effect of bad starting values on a toy problem where convergence to the mode is relatively fast. If the proposal is in a flat region of the space, it can wander around for a very long time before converging to the stationary distribution.</p>
+<p>If we run several chains, as in <a href="#fig-badstart">Figure&nbsp;<span>3.8</span></a>, with different starting values, we can monitor convergence by checking whether these chains converge to the same target. A <strong>trace rank</strong> plots, shown on right panel of <a href="#fig-badstart">Figure&nbsp;<span>3.8</span></a>, compares the rank of the values of the different chain at a given iteration: with good mixing, the ranks should switch frequently and be distributed uniformly across integers.</p>
 <div class="cell" data-hash="mcmc_cache/html/fig-badstart_a65284234d35eecfade40ee68a825a16">
 <div class="cell-output-display">
 <div id="fig-badstart" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
 <p><img src="mcmc_files/figure-html/fig-badstart-1.png" class="img-fluid figure-img" width="672"></p>
-<figcaption class="figure-caption">Figure&nbsp;3.7: Traceplots of three Markov chains for the same target with different initial values for the first 500 iterations (left) and trace rank plot after discarding these (right).</figcaption>
+<figcaption class="figure-caption">Figure&nbsp;3.8: Traceplots of three Markov chains for the same target with different initial values for the first 500 iterations (left) and trace rank plot after discarding these (right).</figcaption>
 </figure>
 </div>
 </div>
 </div>
-<p>The quality of the mixing of the chain (autocorrelation), depends on the proposal variance, which can obtain by trial and error. Trace plots <a href="#fig-traceplot">Figure&nbsp;<span>3.5</span></a> show the values of the chain as a function of iteration number. If our algorithm works well, we expect the proposals to center around the posterior mode and resemble a fat hairy caterpillar. If the variance is too small, the acceptance rate will increase but most steps will be small. If the variance of the proposal is too high, the acceptance rate will decrease (as many proposal moves will have much lower posterior), so the chain will get stuck for long periods of time. This is Goldilock’s principle, as illustrated in <a href="#fig-goldilock-trace">Figure&nbsp;<span>3.8</span></a>.</p>
+<p>The quality of the mixing of the chain (autocorrelation), depends on the proposal variance, which can obtain by trial and error. Trace plots <a href="#fig-traceplot">Figure&nbsp;<span>3.6</span></a> show the values of the chain as a function of iteration number. If our algorithm works well, we expect the proposals to center around the posterior mode and resemble a fat hairy caterpillar. If the variance is too small, the acceptance rate will increase but most steps will be small. If the variance of the proposal is too high, the acceptance rate will decrease (as many proposal moves will have much lower posterior), so the chain will get stuck for long periods of time. This is Goldilock’s principle, as illustrated in <a href="#fig-goldilock-trace">Figure&nbsp;<span>3.9</span></a>.</p>
 <div class="cell" data-hash="mcmc_cache/html/fig-goldilock-trace_db5a123bbb85f2745e455154534e509b">
 <div class="cell-output-display">
 <div id="fig-goldilock-trace" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
 <p><img src="mcmc_files/figure-html/fig-goldilock-trace-1.png" class="img-fluid figure-img" width="672"></p>
-<figcaption class="figure-caption">Figure&nbsp;3.8: Example of traceplot with proposal variance that is too small (top), adequate (middle) and too large (bottom).</figcaption>
+<figcaption class="figure-caption">Figure&nbsp;3.9: Example of traceplot with proposal variance that is too small (top), adequate (middle) and too large (bottom).</figcaption>
 </figure>
 </div>
 </div>
 </div>
-<p>One way to calibrate is to track the acceptance rate of the proposals: for the three chains in <a href="#fig-goldilock-trace">Figure&nbsp;<span>3.8</span></a>, these are 0.932, 0.33, 0.12. In one-dimensional toy problems with Gaussian distributions, an acceptance rate of 0.44 is optimal, and this ratio decreases to 0.234 when <span class="math inline">\(D \geq 2\)</span> <span class="citation" data-cites="Roberts.Rosenthal:2001">Sherlock (<a href="references.html#ref-Sherlock:2013" role="doc-biblioref">2013</a>)</span>. This need not generalize to other settings and depends on the context. Optimal rate for alternative algorithms, such as Metropolis-adjusted Langevin algorithm, are typically higher.</p>
+<p>One way to calibrate is to track the acceptance rate of the proposals: for the three chains in <a href="#fig-goldilock-trace">Figure&nbsp;<span>3.9</span></a>, these are 0.932, 0.33, 0.12. In one-dimensional toy problems with Gaussian distributions, an acceptance rate of 0.44 is optimal, and this ratio decreases to 0.234 when <span class="math inline">\(D \geq 2\)</span> <span class="citation" data-cites="Roberts.Rosenthal:2001">Sherlock (<a href="references.html#ref-Sherlock:2013" role="doc-biblioref">2013</a>)</span>. This need not generalize to other settings and depends on the context. Optimal rate for alternative algorithms, such as Metropolis-adjusted Langevin algorithm, are typically higher.</p>
 <p>We can tune the variance of the global proposal <span class="citation" data-cites="Andrieu.Thoms:2008">(<a href="references.html#ref-Andrieu.Thoms:2008" role="doc-biblioref">Andrieu and Thoms 2008</a>)</span> to improve the mixing of the chains at approximate stationarity. This is done by increasing (decreasing) the variance if the historical acceptance rate is too high (respectively low) during burn-in period, and reinitializing after any change with an acceptance target of <span class="math inline">\(0.44\)</span>. We stop adapting to ensure convergence to the posterior after a suitable number of initial iterations. Adaptive MCMC methods use an initial warm up period to find good proposals: we can consider a block of length <span class="math inline">\(L\)</span>, compute the acceptance rate, multiply the variance by a scaling factor and run the chain a little longer. We only keep samples obtained after the adaptation phase.</p>
-<p>We can also plot the autocorrelation of the entries of the chain as a function of lags, a display known as correlogram in the time series literature but colloquially referred to as autocorrelation function (acf). The higher the autocorrelation, the more variance inflation one has and the longer the number of steps before two draws are treated as independent. <a href="#fig-goldilock-correlogram">Figure&nbsp;<span>3.9</span></a> shows the effect of the proposal variance on the correlation for the three chains. Practitioners designing very inefficient Markov chain Monte Carlo algorithms often thin their series: that is, they keep only every <span class="math inline">\(k\)</span> iteration. This is not recommended practice unless storage is an issue and usually points towards inefficient sampling algorithms.</p>
+<p>We can also plot the autocorrelation of the entries of the chain as a function of lags, a display known as correlogram in the time series literature but colloquially referred to as autocorrelation function (acf). The higher the autocorrelation, the more variance inflation one has and the longer the number of steps before two draws are treated as independent. <a href="#fig-goldilock-correlogram">Figure&nbsp;<span>3.10</span></a> shows the effect of the proposal variance on the correlation for the three chains. Practitioners designing very inefficient Markov chain Monte Carlo algorithms often thin their series: that is, they keep only every <span class="math inline">\(k\)</span> iteration. This is not recommended practice unless storage is an issue and usually points towards inefficient sampling algorithms.</p>
 <div class="cell" data-hash="mcmc_cache/html/fig-goldilock-correlogram_ec9d4288773dcc1b98cc7cd642c09f40">
 <div class="cell-output-display">
 <div id="fig-goldilock-correlogram" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
 <p><img src="mcmc_files/figure-html/fig-goldilock-correlogram-1.png" class="img-fluid figure-img" width="960"></p>
-<figcaption class="figure-caption">Figure&nbsp;3.9: Correlogram for the three Markov chains.</figcaption>
+<figcaption class="figure-caption">Figure&nbsp;3.10: Correlogram for the three Markov chains.</figcaption>
 </figure>
 </div>
 </div>
@@ -650,7 +660,7 @@ p(\theta) \approx p(\theta_{t-1}) + p'(\theta_{t-1})(\theta - \theta_{t-1}) + \f
 <div id="exm-normal-question-upworthy" class="theorem example">
 <p><span class="theorem-title"><strong>Example 3.7 </strong></span>We revisit the Upworthy data, this time modelling each individual headline as a separate observation. We view <span class="math inline">\(n=\)</span><code>nimpression</code> as the sample size of a binomial distribution and <code>nclick</code> as the number of successes. Since the number of trials is large, the sample average <code>nclick</code>/<code>nimpression</code>, denoted <span class="math inline">\(y\)</span> in the sequel, is approximately Gaussian. We assume that each story has a similar population rate and capture the heterogeneity inherent to each news story by treating each mean as a sample. The variance of the sample average or click rate is proportional to <span class="math inline">\(n^{-1}\)</span>, where <span class="math inline">\(n\)</span> is the number of impressions. To allow for underdispersion or overdispersion, we thus consider a Gaussian likelihood <span class="math inline">\(Y_i \sim \mathsf{No}(\mu, \sigma^2/n_i)\)</span>. We perform Bayesian inference for <span class="math inline">\(\mu, \sigma\)</span> after assigning a truncated Gaussian prior for <span class="math inline">\(\mu \sim \mathsf{TNo}(0.01, 0.1^2)\)</span> over <span class="math inline">\([0,1]\)</span> and an penalized complexity prior for <span class="math inline">\(\sigma \sim \mathsf{Exp}(0.7)\)</span>.</p>
 <!-- The `hecbayes` package contains an helper function `mh` that computes the step given the log likelihood, log prior and their gradients. -->
-<div class="cell" data-hash="mcmc_cache/html/unnamed-chunk-17_6d799ea59abbb3b3886af78ab9d5c7f1">
+<div class="cell" data-hash="mcmc_cache/html/unnamed-chunk-18_335db8baef33ccde2c7e628d59e10fb4">
 <div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(upworthy_question, <span class="at">package =</span> <span class="st">"hecbayes"</span>)</span>
 <span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Select data for a single question</span></span>
 <span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>qdata <span class="ot">&lt;-</span> upworthy_question <span class="sc">|&gt;</span></span>
