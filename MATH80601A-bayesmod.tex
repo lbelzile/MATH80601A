@@ -338,7 +338,7 @@
 \begin{document}
 \frontmatter
 \maketitle
-\ifdefined\Shaded\renewenvironment{Shaded}{\begin{tcolorbox}[sharp corners, frame hidden, boxrule=0pt, breakable, enhanced, borderline west={3pt}{0pt}{shadecolor}, interior hidden]}{\end{tcolorbox}}\fi
+\ifdefined\Shaded\renewenvironment{Shaded}{\begin{tcolorbox}[breakable, boxrule=0pt, interior hidden, enhanced, sharp corners, borderline west={3pt}{0pt}{shadecolor}, frame hidden]}{\end{tcolorbox}}\fi
 
 \renewcommand*\contentsname{Table of contents}
 {
@@ -360,7 +360,7 @@ a graduate course offered at HEC Montréal.
 These notes are licensed under a
 \href{http://creativecommons.org/licenses/by-nc-sa/4.0/}{Creative
 Commons Attribution-NonCommercial-ShareAlike 4.0 International License}
-and were last compiled on Monday, October 09 2023.
+and were last compiled on Monday, October 16 2023.
 
 The objective of the course is to provide a hands on introduction to
 Bayesian data analysis. The course will cover the formulation,
@@ -514,22 +514,22 @@ prior]\protect\hypertarget{exm-betabinomconjugate}{}\label{exm-betabinomconjugat
 
 Consider a binomial likelihood with probability of success
 \(\theta \in [0,1]\) and \(n\) trials,
-\(Y \sim \mathsf{Bin}(n, \theta)\). If we take a beta prior,
-\(\theta \sim \mathsf{Be}(\alpha, \beta)\) and observe \(y\) successes,
-the posterior is \begin{align*}
+\(Y \sim \mathsf{Binom}(n, \theta)\). If we take a beta prior,
+\(\theta \sim \mathsf{Beta}(\alpha, \beta)\) and observe \(y\)
+successes, the posterior is \begin{align*}
 p(\theta \mid y = y) &\propto \binom{n}{y} \theta^y (1-\theta)^{n-y} \frac{\Gamma(\alpha + \beta)}{\Gamma(\alpha) \Gamma(\beta)}\theta^{\alpha-1} (1-\theta)^{\beta-1}
 \\&\stackrel{\theta}{\propto} \theta^{y+\alpha-1}(1-\theta)^{n-y+\beta-1}
 \end{align*} and is
 \[\int_{0}^{1} \theta^{y+\alpha-1}(1-\theta)^{n-y+\beta-1}\mathrm{d} \theta = \frac{\Gamma(y+\alpha)\Gamma(n-y+\beta)}{\Gamma(n+\alpha+\beta)},\]
 a Beta function. Since we need only to keep track of the terms that are
 function of the parameter \(\theta\), we could recognize directly that
-the posterior distribution is \(\mathsf{Be}(y+\alpha, n-y+\beta)\) and
+the posterior distribution is \(\mathsf{Beta}(y+\alpha, n-y+\beta)\) and
 deduce the normalizing constant from there.
 
-If \(Y \sim \mathsf{Bin}(n, \theta)\), the expected number of success is
-\(n\theta\) and the expected number of failures \(n(1-\theta)\) and so
-the likelihood contribution, relative to the prior, will dominate as the
-sample size \(n\) grows.
+If \(Y \sim \mathsf{Binom}(n, \theta)\), the expected number of success
+is \(n\theta\) and the expected number of failures \(n(1-\theta)\) and
+so the likelihood contribution, relative to the prior, will dominate as
+the sample size \(n\) grows.
 
 Another way to see this is to track moments (expectation, variance,
 etc.) The Beta distribution, whose density is
@@ -778,7 +778,7 @@ with known
 mean]\protect\hypertarget{exm-normal-post-pred}{}\label{exm-normal-post-pred}
 
 Consider an \(n\) sample of independent and identically distributed
-Gaussian, \(Y_i \sim \mathsf{No}(0, \tau^{-1})\) (\(i=1, \ldots, n\)),
+Gaussian, \(Y_i \sim \mathsf{Norm}(0, \tau^{-1})\) (\(i=1, \ldots, n\)),
 where we assign a gamma prior on the precision
 \(\tau \sim \mathsf{Ga}(\alpha, \beta)\). The posterior is
 \begin{align*}
@@ -959,7 +959,7 @@ contribution for the probability \(\zeta_u\) of exceeding the threshold
 those for \(\zeta_u\), the posterior also factorizes as a product, so
 \(\zeta_u\) and \((\tau, \xi)\) are a posteriori independent.
 
-Suppose for now that we set a \(\mathsf{Be}(0.5, 0.5)\) prior for
+Suppose for now that we set a \(\mathsf{Beta}(0.5, 0.5)\) prior for
 \(\zeta_u\) and a non-informative prior for the generalized Pareto
 parameters. The \texttt{post\_samp} matrix contains exact samples from
 the posterior distribution of \((\tau, \xi, \zeta_u)\), obtained using a
@@ -1157,7 +1157,7 @@ the Edouard Montpetit station next to HEC: we can consider a simple
 linear regression with log counts as a function of
 temperature,\footnote{If counts are Poisson, then the log transform is
   variance stabilizing.}
-\[\log (\texttt{nusers}) \sim \mathsf{No}_{+}\{\beta_0 + \beta_1 (\texttt{temp}-20), \sigma^2\}.\]
+\[\log (\texttt{nusers}) \sim \mathsf{Norm}_{+}\{\beta_0 + \beta_1 (\texttt{temp}-20), \sigma^2\}.\]
 The \(\beta_1\) slope measures units in degree Celsius per log number of
 person.
 
@@ -1166,8 +1166,8 @@ unless one standardizes response variable and explanatories: it is
 easier to standardize the temperature so that we consider deviations
 from, say 20\(^{\circ}\)C, which is not far from the observed mean in
 the sample. After some tuning, the independent priors
-\(\beta_0 \sim \mathsf{No}(\overline{y}, 0.5^2)\),
-\(\beta_1 \sim \mathsf{No}(0, 0.05^2)\) and
+\(\beta_0 \sim \mathsf{Norm}(\overline{y}, 0.5^2)\),
+\(\beta_1 \sim \mathsf{Norm}(0, 0.05^2)\) and
 \(\sigma \sim \mathsf{Exp}(3)\) seem to yield plausible outcomes and
 relationships.\footnote{One can object to the prior parameters depending
   on the data, but an alternative would be to model centered data
@@ -1257,7 +1257,7 @@ y \log(p) + (n-y) \log(1-p) = y\log\left( \frac{p}{1-p}\right) + n \log(1-p)
 family.
 
 Since the density of the binomial is of the form \(p^y(1-p)^{n-y}\), the
-beta distribution \(\mathsf{Be}(\alpha, \beta)\) with density
+beta distribution \(\mathsf{Beta}(\alpha, \beta)\) with density
 \[f(x) \propto x^{\alpha-1} (1-x)^{\beta-1}\] is the conjugate prior.
 
 The beta distribution is also the conjugate prior for the negative
@@ -1277,9 +1277,9 @@ with natural parameter \(\log(\mu)\). The gamma density,
 \[ f(x) \propto \beta^{\alpha}/\Gamma(\alpha)x^{\alpha-1} \exp(-\beta x)\]
 with shape \(\alpha\) and rate \(\beta\) is the conjugate prior for the
 Poisson. For an \(n\)-sample of independent observations
-\(\mathsf{Po}(\mu)\) observations with
-\(\mu \sim \mathsf{Ga}(\alpha, \beta)\), the posterior is
-\(\mathsf{Ga}(\sum_{i=1}^n y_i + \alpha, \beta + n)\).
+\(\mathsf{Pois}(\mu)\) observations with
+\(\mu \sim \mathsf{Gamma}(\alpha, \beta)\), the posterior is
+\(\mathsf{Gamma}(\sum_{i=1}^n y_i + \alpha, \beta + n)\).
 
 \end{example}
 
@@ -1298,11 +1298,12 @@ that of \textbf{overdispersion}, meaning that the variability in the
 counts is larger than that implied by a Poisson distribution.
 
 One common framework for handling overdispersion is to have
-\(Y \mid \Lambda = \lambda \sim \mathsf{Po}(\lambda)\), where the mean
+\(Y \mid \Lambda = \lambda \sim \mathsf{Pois}(\lambda)\), where the mean
 of the Poisson distribution is itself a positive random variable with
 mean \(\mu\), if \(\Lambda\) follows a conjugate gamma distribution with
-shape \(k\mu\) and rate \(k>0\), \(\Lambda \sim \mathsf{Ga}(k\mu, k)\),
-the posterior \(\Lambda \mid Y=y \sim \mathsf{Ga}(k\mu + y, k+1)\).
+shape \(k\mu\) and rate \(k>0\),
+\(\Lambda \sim \mathsf{Gamma}(k\mu, k)\), the posterior
+\(\Lambda \mid Y=y \sim \mathsf{Gamma}(k\mu + y, k+1)\).
 
 Since the joint density of \(Y\) and \(\Lambda\) can be written \[
 p(y, \lambda) = p(y \mid \lambda)p(\lambda) = p(\lambda \mid y) p(y)
@@ -1412,9 +1413,9 @@ different Upworthy Sesame Street headline.}
 
 We can visualize the posterior distributions. In this context, the large
 sample size lead to the dominance of the likelihood contribution
-\(p(Y_i \mid \lambda_i) \sim \mathsf{Po}(n_i\lambda_i)\) relative to the
-prior. We can see there is virtually no overlap between different rates
-for headers H1 (preferred) relative to H4 (least favorable). The
+\(p(Y_i \mid \lambda_i) \sim \mathsf{Pois}(n_i\lambda_i)\) relative to
+the prior. We can see there is virtually no overlap between different
+rates for headers H1 (preferred) relative to H4 (least favorable). The
 probability that the conversion rate for Headline 3 is higher than
 Headline 1 can be approximated by simulating samples from both
 posteriors and computing the proportion of times one is larger: we get
@@ -1476,8 +1477,8 @@ Consider instead a Bayesian analysis with conjugate prior: we model
 separately the rates of each group (question or not). Suppose we think
 apriori that the click-rate is on average 1\%, with a standard deviation
 of 2\%, with no difference between questions or not. For a
-\(\mathsf{Ga}(\alpha, \beta)\) prior, this would translate, using moment
-matching, into a rate of
+\(\mathsf{Gamma}(\alpha, \beta)\) prior, this would translate, using
+moment matching, into a rate of
 \(\beta = 0.04 = \mathsf{Var}_0(\lambda_j)/\mathsf{E}_0(\lambda_j)\) and
 a shape of \(\alpha = 2.5\) (\(j=1, 2\)). If \(\lambda_{j}\) is the
 average rate for each factor level (yes and no), then
@@ -1524,10 +1525,10 @@ variance]\protect\hypertarget{exm-conjugatepriors-normal}{}\label{exm-conjugatep
 
 Consider an \(n\) simple random sample of independent and identically
 distributed Gaussian variables with mean \(\mu\) and standard deviation
-\(\sigma\), denoted \(Y_i \sim \mathsf{No}(\mu, \sigma^2)\). We pick a
+\(\sigma\), denoted \(Y_i \sim \mathsf{Norm}(\mu, \sigma^2)\). We pick a
 Gaussian prior for the location parameter,
-\(\mu \sim \mathsf{No}(\nu, \tau^2)\) where we assume \(\mu, \tau\) are
-fixed hyperparameter values. For now, we consider only inference for
+\(\mu \sim \mathsf{Norm}(\nu, \tau^2)\) where we assume \(\mu, \tau\)
+are fixed hyperparameter values. For now, we consider only inference for
 \(p(\mu \mid \sigma)\): discarding any term that is not a function of
 \(\mu\), the conditional posterior is \begin{align*}
 p(\mu \mid \sigma) &\propto \exp\left\{ -\frac{1}{2\sigma^2}\sum_{i=1}^n (y_{i}-\mu)^2\right\} \exp\left\{-\frac{1}{2\tau^2}(\mu - \nu)^2\right\}
@@ -1536,7 +1537,7 @@ p(\mu \mid \sigma) &\propto \exp\left\{ -\frac{1}{2\sigma^2}\sum_{i=1}^n (y_{i}-
 is quadratic in \(\mu\), it must be a Gaussian distribution truncated
 over the positive half line. This can be seen by completing the square
 in \(\mu\), or by comparing this expression to the density of
-\(\mathsf{No}(\mu, \sigma^2)\), \begin{align*}
+\(\mathsf{Norm}(\mu, \sigma^2)\), \begin{align*}
 f(x; \mu, \sigma) \stackrel{\mu}{\propto} \exp\left(-\frac{1}{2 \sigma^2}\mu^2 + \frac{x}{\sigma^2}\mu\right)
 \end{align*} we can deduce by matching mean and variance that the
 conditional posterior \(p(\mu \mid \sigma)\) is Gaussian with reciprocal
@@ -1594,10 +1595,10 @@ Gelman et al. (\protect\hyperlink{ref-Gelman:2013}{2013}) uses the
 following taxonomy for various levels of prior information:
 uninformative priors are generally flat or uniform priors with
 \(p(\beta) \propto 1\), vague priors are typically nearly flat even if
-proper, e.g., \(\beta \sim \mathsf{No}(0, 100)\), weakly informative
-priors provide little constraints \(\beta \sim \mathsf{No}(0, 10)\), and
-informative prior are typically application-specific, but constrain the
-ranges. Uninformative and vague priors are generally not recommended
+proper, e.g., \(\beta \sim \mathsf{Norm}(0, 100)\), weakly informative
+priors provide little constraints \(\beta \sim \mathsf{Norm}(0, 10)\),
+and informative prior are typically application-specific, but constrain
+the ranges. Uninformative and vague priors are generally not recommended
 unless they are known to give valid posterior inference and the amount
 of information from the likelihood is high.
 
@@ -1677,7 +1678,7 @@ and since \(\mathsf{E}(Y)=\theta\), the Fisher information is
 \[\imath(\vartheta) = \mathsf{E}\{\jmath(\theta)\}=1/\theta + 1/(1-\theta) = 1/\{\theta(1-\theta)\}\]
 Jeffrey's prior is thus
 \(p(\theta) \propto \theta^{-1/2}(1-\theta)^{-1/2}\), a conjugate Beta
-prior \(\mathsf{Be}(0.5,0.5)\).
+prior \(\mathsf{Beta}(0.5,0.5)\).
 
 \end{example}
 
@@ -1686,11 +1687,11 @@ prior \(\mathsf{Be}(0.5,0.5)\).
 \section{Jeffrey's prior for the normal
 distribution}\label{jeffreys-prior-for-the-normal-distribution}}
 
-Check that for the Gaussian distribution \(\mathsf{No}(\mu, \sigma^2)\),
-the Jeffrey's prior obtained by treating each parameter as fixed in
-turn, are \(p(\mu) \propto 1\) and \(p(\sigma) \propto 1/\sigma\), which
-also correspond to the default uninformative priors for location-scale
-families.
+Check that for the Gaussian distribution
+\(\mathsf{Norm}(\mu, \sigma^2)\), the Jeffrey's prior obtained by
+treating each parameter as fixed in turn, are \(p(\mu) \propto 1\) and
+\(p(\sigma) \propto 1/\sigma\), which also correspond to the default
+uninformative priors for location-scale families.
 
 \begin{example}[Jeffrey's prior for the Poisson
 distribution]\protect\hypertarget{exm-jeffreyspoisson}{}\label{exm-jeffreyspoisson}
@@ -1740,9 +1741,9 @@ Coles and Tawn (\protect\hyperlink{ref-Coles.Tawn:1996}{1996}) proposed
 modelling annual daily rainfall and specifying a prior on the quantile
 scale \(q_1 < q_2 < q_3\) for tail probabilities \(p_1> p_2 > p_3\). To
 deal with the ordering constraints, gamma priors are imposed on the
-differences \(q_1 - o \sim \mathsf{Ga}(\alpha_1, \beta_1)\),
-\(q_2 - q_1 \sim \mathsf{Ga}(\alpha_2, \beta_2)\) and
-\(q_3-q_2 \sim \mathsf{Ga}(\alpha_3, \beta_3)\), where \(o\) is the
+differences \(q_1 - o \sim \mathsf{Gamma}(\alpha_1, \beta_1)\),
+\(q_2 - q_1 \sim \mathsf{Gamma}(\alpha_2, \beta_2)\) and
+\(q_3-q_2 \sim \mathsf{Gamma}(\alpha_3, \beta_3)\), where \(o\) is the
 lower bound of the support. The prior is thus of the form
 
 \begin{align*}
@@ -1832,7 +1833,7 @@ models]\protect\hypertarget{exm-pcprior-randomeffect}{}\label{exm-pcprior-random
 Simpson et al. (\protect\hyperlink{ref-Simpson:2017}{2017}) give the
 example of a Gaussian prior for random effects \(\boldsymbol{\alpha}\),
 of the form
-\(\boldsymbol{\alpha} \mid \zeta \sim \mathsf{No}_J(\boldsymbol{0}_J, \zeta^2 \mathbf{I}_J)\)
+\(\boldsymbol{\alpha} \mid \zeta \sim \mathsf{Norm}_J(\boldsymbol{0}_J, \zeta^2 \mathbf{I}_J)\)
 where \(\zeta_0=0\) corresponds to the absence of random
 subject-variability. The penalized complexity prior for the scale
 \(\zeta\) is then an exponential with rate \(\lambda\),\footnote{Possibly
@@ -1852,7 +1853,7 @@ order
 Sørbye and Rue (\protect\hyperlink{ref-Sorbye.Rue:2017}{2017}) derive
 penalized complexity prior for the Gaussian stationary AR(1) model with
 autoregressive parameter \(\phi \in (-1,1)\), where
-\(Y_t \mid Y_{t-1}, \phi, \sigma^2 \sim \mathsf{No}(\phi Y_{t-1}, \sigma^2)\).
+\(Y_t \mid Y_{t-1}, \phi, \sigma^2 \sim \mathsf{Norm}(\phi Y_{t-1}, \sigma^2)\).
 There are two based models that could be of interest: one with
 \(\phi=0\), corresponding to a memoryless model with no autocorrelation,
 and a static mean \(\phi=1\) for no change in time; note that the latter
@@ -1874,9 +1875,9 @@ both are random quantities that get assigned priors, but we will treat
 these priors differently.
 
 The reason why we would like to use a penalized complexity prior for a
-random effect, say \(\alpha_j \sim \mathsf{No}(0, \zeta^2)\), is because
-we don't know a prior if there is variability between groups. The
-inverse gamma prior for \(\zeta\),
+random effect, say \(\alpha_j \sim \mathsf{Norm}(0, \zeta^2)\), is
+because we don't know a prior if there is variability between groups.
+The inverse gamma prior for \(\zeta\),
 \(\zeta \sim \mathsf{IGa}(\epsilon, \epsilon)\) does not have a mode at
 zero unless it is improper with \(\epsilon \to 0\). Generally, we want
 our prior for the variance to have significant probability density at
@@ -1895,8 +1896,8 @@ Student-\(t\) distribution truncated below at \(0\), with low degrees of
 freedom. The rationale for this choice comes from the simple two level
 model with \(n_j\) independent in each group \(j=1, \ldots, J\): for
 observation \(i\) in group \(j\), \begin{align*}
-Y_{ij} &\sim \mathsf{No}(\mu + \alpha_j, \sigma^2),\\
-\alpha_j &\sim \mathsf{No}(0, \tau^2_\alpha), 
+Y_{ij} &\sim \mathsf{Norm}(\mu + \alpha_j, \sigma^2),\\
+\alpha_j &\sim \mathsf{Norm}(0, \tau^2_\alpha), 
 \end{align*} The conditionally conjugate prior
 \(p(\tau \mid \boldsymbol{\alpha}, \mu, \sigma)\) is inverse gamma.
 Standard inference with this parametrization is however complicated,
@@ -1905,9 +1906,9 @@ because there is strong dependence between parameters.
 To reduce this dependence, one can add a parameter, taking
 \(\alpha_j = \xi \eta_j\) and \(\tau_\alpha=|\xi|\tau_{\eta}\); the
 model is now overparametrized. Suppose
-\(\eta_j \sim \mathsf{No}(0, \tau^2_\eta)\) and consider the likelihood
-conditional on \(\mu, \eta_j\): we have that
-\((y_{ij} - \mu)/\eta_j \sim \mathsf{No}(\xi, \sigma^2/\eta_j)\) so
+\(\eta_j \sim \mathsf{Norm}(0, \tau^2_\eta)\) and consider the
+likelihood conditional on \(\mu, \eta_j\): we have that
+\((y_{ij} - \mu)/\eta_j \sim \mathsf{Norm}(\xi, \sigma^2/\eta_j)\) so
 conditionally conjugate priors for \(\xi\) and \(\tau_\eta\) are
 respectively Gaussian and inverse gamma. This translates into a prior
 distribution for \(\tau_\alpha\) which is that of the absolute value of
@@ -1937,9 +1938,9 @@ which captures the type of distraction, and a random effect for
 participant \texttt{id}. The hierarchical model fitted for individual
 \(i\) \((i=1, \ldots, 34)\) and distraction type \(j\)
 \((j=1, \ldots, 4)\) is \begin{align*}
-Y_{ij} &\sim \mathsf{Po}\{\mu = \exp(\beta_{j} + \alpha_i)\},\\
-\beta_j &\sim \mathsf{No}(0, 100), \\
-\alpha_i &\sim \mathsf{No}(0, \kappa^2), \\
+Y_{ij} &\sim \mathsf{Pois}\{\mu = \exp(\beta_{j} + \alpha_i)\},\\
+\beta_j &\sim \mathsf{Norm}(0, 100), \\
+\alpha_i &\sim \mathsf{Norm}(0, \kappa^2), \\
 \kappa &\sim \mathsf{St}_{+}(3).
 \end{align*} so observations are conditionally independent given
 hyperparameters \(\boldsymbol{\alpha}\) and \(\boldsymbol{\beta}\).
@@ -1996,14 +1997,15 @@ immaterial, then this provides reassurance that our analyses are robust.
 To check the sensitivity of the conclusion, we revisit the modelling of
 the \texttt{smartwatch} experiment data using a Poisson regression and
 compare four priors: a uniform prior truncated to \([0, 10]\), an
-inverse gamma \(\mathsf{IG}(0.01, 0.01)\) prior, a penalized complexity
-prior such that the 0.95 percentile of the scale is 5, corresponding to
-\(\mathsf{Exp}(0.6)\). Since each distraction type appears 31 times,
-there is plenty of information to reliably estimate the dispersion
-\(\kappa\) of the random effects \(\alpha\): the different density plots
-in Figure~\ref{fig-sensitivity} are virtually indistinguishable from one
-another. This is perhaps unsurprising given the large number of
-replicates, and the significant variability between groups.
+inverse gamma \(\mathsf{InvGamma}(0.01, 0.01)\) prior, a penalized
+complexity prior such that the 0.95 percentile of the scale is 5,
+corresponding to \(\mathsf{Exp}(0.6)\). Since each distraction type
+appears 31 times, there is plenty of information to reliably estimate
+the dispersion \(\kappa\) of the random effects \(\alpha\): the
+different density plots in Figure~\ref{fig-sensitivity} are virtually
+indistinguishable from one another. This is perhaps unsurprising given
+the large number of replicates, and the significant variability between
+groups.
 
 \begin{figure}[ht!]
 
@@ -2054,7 +2056,7 @@ Specifically, suppose we are interested in the average
 
 \begin{example}[]\protect\hypertarget{exm-expectation-demo}{}\label{exm-expectation-demo}
 
-Consider \(X \sim \mathsf{Ga}(\alpha, \beta)\), a gamma distribution
+Consider \(X \sim \mathsf{Gamma}(\alpha, \beta)\), a gamma distribution
 with shape \(\alpha\) and rate \(\beta\). We can compute the probability
 that \(X < 1\) easily by Monte Carlo since
 \(\Pr(X <1) = \mathsf{E}\{\mathrm{I}(X<1)\}\) and this means we only
@@ -2174,7 +2176,7 @@ analytically.
 distribution]\protect\hypertarget{exm-accept-reject-truncated}{}\label{exm-accept-reject-truncated}
 
 Consider the problem of sampling from a Gaussian distribution
-\(Y \sim \mathsf{No}(\mu, \sigma^2)\) truncated in the interval
+\(Y \sim \mathsf{Norm}(\mu, \sigma^2)\) truncated in the interval
 \(a, b,\) which has density \begin{align*}
 f(x; \mu, \sigma, a, b) = \frac{1}{\sigma}\frac{\phi\left(\frac{x-\mu}{\sigma}\right)}{\Phi\{(b-\mu)/\sigma\}-\Phi\{(a-\mu)/\sigma\}}.
 \end{align*} where \(\phi(\cdot), \Phi(\cdot)\) are respectively the
@@ -2409,7 +2411,7 @@ the lag-one correlation, \(\mu\) the global mean and \(\varepsilon_t\)
 is an iid innovation with mean zero and variance \(\sigma^2\). If
 \(|\phi| < 1\), the process is stationary, and the variance does not
 increase with \(t\). If innovations are Gaussian, we have
-\[Y_t \mid Y_{t-1}=y_{t-1} \sim \mathsf{No}\{\mu(1-\phi)+ \phi y_{t-1}, \sigma^2\}.\]
+\[Y_t \mid Y_{t-1}=y_{t-1} \sim \mathsf{Norm}\{\mu(1-\phi)+ \phi y_{t-1}, \sigma^2\}.\]
 
 The \(\mathsf{AR}(1)\) stationarity process \(Y_t\), marginally, has
 mean \(\mu\) and unconditional variance \(\sigma^2/(1-\phi^2)\). The
@@ -2485,10 +2487,65 @@ times as many observations: this is the prize to pay.
 
 \end{example}
 
+\hypertarget{estimating-uncertainty-of-point-estimators-with-markov-chains}{%
+\subsection{Estimating uncertainty of point estimators with Markov
+chains}\label{estimating-uncertainty-of-point-estimators-with-markov-chains}}
+
+With a simple random sample containing independent and identically
+distributed observations, the standard error of the sample mean is
+\(\sigma/\sqrt{n}\) and we can use the empirical standard deviation
+\(\widehat{\sigma}\) to estimate the first term. For Markov chains, the
+correlation prevents us from using this approach. The output of
+the\texttt{coda} package are based on fitting a high order
+autoregressive process to the Markov chain and using the formula of the
+unconditional variance of the \(\mathsf{AR}(p)\) to obtain the central
+limit theorem variance. An alternative method recommended by Geyer
+(\protect\hyperlink{ref-Geyer:2011}{2011}) and implemented in his
+\textbf{R} package \texttt{mcmc}, is to segment the time series into
+batch, compute the means of each non-overlapping segment and use this
+standard deviation with suitable rescaling to get the central limit
+variance for the posterior mean. Figure~\ref{fig-mcmc-batchmean}
+illustrate the method of batch means.
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  Break the chain of length \(B\) (after burn in) in \(K\) blocks of
+  size \(\approx K/B\).
+\item
+  Compute the sample mean of each segment. These values form a Markov
+  chain and should be approximately uncorrelated.
+\item
+  Compute the standard deviation of the segments mean. Rescale by
+  \(K^{-1/2}\) to get standard error of the global mean.
+\end{enumerate}
+
+Why does the approach work? If the chain samples from the stationary
+distribution, all samples have the same mean. If we partition the sample
+into long enough, the sample mean of each blocks should be roughly
+independent (otherwise we could remove an overlapping portion). We can
+then compute the empirical standard deviation of the estimators. We can
+then compute the overall mean and use a scaling argument to relate the
+variability of the global estimator with the variability of the means of
+the smaller blocks.
+
+\begin{figure}[ht!]
+
+{\centering \includegraphics{mcmc_files/figure-pdf/fig-mcmc-batchmean-1.pdf}
+
+}
+
+\caption{\label{fig-mcmc-batchmean}Calculation of the standard error of
+the posterior mean using the batch method.}
+
+\end{figure}
+
 When can we use output from a Markov chain in place of independent Monte
 Carlo draws? The assumptions laid out in the ergodic theorem are that
 the chain is irreducible and acyclic, ensuring that the chain has a
-unique stationary distribution.
+unique stationary distribution. The ergodic theorem is a result about
+convergence of averages.
 
 To make sense of these concepts, we consider a discrete Markov chain
 over the integers \(1, 2, 3\). A discrete-time stochastic process is a
@@ -2620,6 +2677,27 @@ value \(\boldsymbol{\theta}_0\):
 
 \end{proposition}
 
+The Metropolis--Hastings algorithm generates samples from the posterior
+\(p(\boldsymbol{\theta} \mid \boldsymbol{y})\) if the Markov chain it
+defines is reversible: we say it satisfies the \emph{detailed balance
+condition} when the density of
+\(\boldsymbol{\theta}_{t+1} \mid \boldsymbol{\theta}_{t}\), say
+\(f(\boldsymbol{\theta}_{t+1} \mid \boldsymbol{\theta}_{t})\). Detailed
+balance means \begin{align*}
+f(\boldsymbol{\theta}_{t+1} \mid \boldsymbol{\theta}_{t})p(\boldsymbol{\theta}_{t} \mid \boldsymbol{y}) = f(\boldsymbol{\theta}_{t} \mid \boldsymbol{\theta}_{t+1})p(\boldsymbol{\theta}_{t+1} \mid \boldsymbol{y})
+\end{align*} This guarantees that, if \(\boldsymbol{\theta}_{t}\) is
+drawn from the posterior, then the left hand side is the joint density
+of \((\boldsymbol{\theta}_{t}, \boldsymbol{\theta}_{t+1})\) and the
+marginal distribution obtained by integrating over
+\(\boldsymbol{\theta}_{t}\), \begin{align*}
+&\int f(\boldsymbol{\theta}_{t+1} \mid \boldsymbol{\theta}_{t})p(\boldsymbol{\theta}_{t} \mid \boldsymbol{y})\mathrm{d} \boldsymbol{\theta}_{t}
+\\&\quad = \int f(\boldsymbol{\theta}_{t} \mid \boldsymbol{\theta}_{t+1})p(\boldsymbol{\theta}_{t+1} \mid \boldsymbol{y})\mathrm{d} \boldsymbol{\theta}_{t} 
+\\&\quad= p(\boldsymbol{\theta}_{t+1} \mid \boldsymbol{y})
+\end{align*} and any draw from the posterior will generate a new
+realization from the posterior. We also ensure that, provided the
+starting value as non-zero probability under the posterior, the chain
+will converge to the stationarity distribution (albeit perhaps slowly).
+
 \begin{remark}[Interpretation of the algorithm]
 
 If \(R>1\), the proposal has higher density and we always accept the
@@ -2640,7 +2718,7 @@ without having to compute the marginal likelihood.
 To check that the algorithm is well-defined, we can remove the log
 likelihood component and run the algorithm: if it is correct, the
 resulting draws should be drawn from the prior provided the latter is
-proper (\protect\hyperlink{ref-Green:1994}{Green 1995}).
+proper (\protect\hyperlink{ref-Green:2001}{Green 2001, 55}).
 
 \end{remark}
 
@@ -2681,8 +2759,8 @@ parametrization in terms of log rate for the baseline \text{yes},
 Y_{i} &\sim \mathsf{Po}(n_i\lambda_i), \qquad (i=1,2)\\
 \lambda_1 &= \exp(\beta + \kappa) \\
 \lambda_2 &= \exp(\beta) \\
-\beta & \sim \mathsf{No}(\log 0.01, 1.5) \\
-\kappa &\sim \mathsf{No}(0, 1)
+\beta & \sim \mathsf{Norm}(\log 0.01, 1.5) \\
+\kappa &\sim \mathsf{Norm}(0, 1)
 \end{align*} There are two parameters in the model, which can be updated
 in turn or jointly.
 
@@ -2778,16 +2856,7 @@ kappa  0.06673  0.06933  0.07077  0.07212  0.07463
 \end{verbatim}
 
 The acceptance rate of the algorithm is 35.1\% and the posterior means
-are \(\beta =-4.51\) and \(\kappa =0.07\). The standard errors cannot be
-calculated from the empirical standard deviations. The output of
-the\texttt{coda} package are based on fitting an autoregressive process
-to the Markov chain and using the formula to compute the central limit
-theorem variance. An alternative method recommended by Geyer
-(\protect\hyperlink{ref-Geyer:2011}{2011}) and implemented in his
-\textbf{R} package \texttt{mcmc}, is to segment the time series into
-batch, compute the means of each non-overlapping segment and use this
-standard deviation with suitable rescaling to get the central limit
-variance for the posterior mean.
+are \(\beta =-4.51\) and \(\kappa =0.07\).
 
 \begin{figure}[ht!]
 
@@ -2906,8 +2975,8 @@ We can tune the variance of the global proposal
 (\protect\hyperlink{ref-Andrieu.Thoms:2008}{Andrieu and Thoms 2008}) to
 improve the mixing of the chains at approximate stationarity. This is
 done by increasing (decreasing) the variance if the historical
-acceptance rate is too high (respectively low) during burn-in period,
-and reinitializing after any change with an acceptance target of
+acceptance rate is too high (respectively low) during the burn in
+period, and reinitializing after any change with an acceptance target of
 \(0.44\). We stop adapting to ensure convergence to the posterior after
 a suitable number of initial iterations. Adaptive MCMC methods use an
 initial warm up period to find good proposals: we can consider a block
@@ -3006,8 +3075,8 @@ for finite \(a, b\) in the software:
 To guarantee that our proposals fall in the support of \(\theta\), we
 can thus run a symmetric random walk proposal on the \emph{transformed
 scale} by drawing \(\vartheta_{t}^{\star} \sim \vartheta_{t-1}+\tau Z\)
-where \(Z\sim\mathsf{No}(0, 1)\). Due to the transformation, the kernel
-ratio now contains the Jacobian.
+where \(Z\sim\mathsf{Norm}(0, 1)\). Due to the transformation, the
+kernel ratio now contains the Jacobian.
 
 \end{proposition}
 
@@ -3015,14 +3084,15 @@ ratio now contains the Jacobian.
 proposals]\protect\hypertarget{prp-truncated-proposals}{}\label{prp-truncated-proposals}
 
 As an alternative, if we are dealing with parameters that are restricted
-in \([a,b]\), we can simulate
+in \([a,b]\), we can simulate using a random walk but with truncated
+Gaussian steps, taking
 \(\theta^{\star}_{t} \sim \mathsf{TNo}(\vartheta_{t-1}, \tau^2, a, b).\)
-While the benefit of using the truncated proposal isn't obvious, it
-becomes more visible when we move to more advanced proposals whose mean
-and variance depends on the gradient and or the hessian of the
-underlying unnormalized log posterior, as the mean can be lower than
-\(a\) or larger than \(b\) while still giving non-zero acceptance. The
-\texttt{TruncatedNormal} package can be used to efficiently evaluate
+The benefits of using the truncated proposal becomes more apparent when
+we move to more advanced proposals whose mean and variance depends on
+the gradient and or the hessian of the underlying unnormalized log
+posterior, as the mean can be lower than \(a\) or larger than \(b\):
+this would garantee zero acceptance with regular Gaussian random walk.
+The \texttt{TruncatedNormal} package can be used to efficiently evaluate
 such instances using results from Botev and L'Écuyer
 (\protect\hyperlink{ref-LEcuyer.Botev:2017}{2017}) even when the
 truncation bounds are far from the mode. the normalizing constant of the
@@ -3030,7 +3100,7 @@ truncated Gaussian in the denominator of the density is a function of
 the location and scale parameters: if these depend on the current value
 of \(\boldsymbol{\theta}_{t-1}\), as is the case for a random walk, we
 need to keep these terms as part of the Metropolis ratio. The mean and
-standard deviation of the trunctaed Gaussian are not equal to the
+standard deviation of the truncated Gaussian are not equal to the
 parameters \(\mu\) (which corresponds to the mode, provided
 \(a < \mu < b\)) and \(\sigma\).
 
@@ -3114,7 +3184,7 @@ news story by treating each mean as a sample. The variance of the sample
 average or click rate is proportional to \(n^{-1}\), where \(n\) is the
 number of impressions. To allow for underdispersion or overdispersion,
 we thus consider a Gaussian likelihood
-\(Y_i \sim \mathsf{No}(\mu, \sigma^2/n_i)\). We perform Bayesian
+\(Y_i \sim \mathsf{Norm}(\mu, \sigma^2/n_i)\). We perform Bayesian
 inference for \(\mu, \sigma\) after assigning a truncated Gaussian prior
 for \(\mu \sim \mathsf{TNo}(0.01, 0.1^2)\) over \([0,1]\) and an
 penalized complexity prior for \(\sigma \sim \mathsf{Exp}(0.7)\).
@@ -3245,6 +3315,232 @@ overdispersion.
 
 \end{example}
 
+\hypertarget{gibbs-sampling}{%
+\section{Gibbs sampling}\label{gibbs-sampling}}
+
+The Gibbs sampling algorithm builds a Markov chain by iterating through
+a sequence of conditional distributions. Consider a model with
+\(\boldsymbol{\theta} \in \boldsymbol{\Theta} \subseteq \mathbb{R}^p\).
+We consider a single (or \(m \leq p\) blocks of parameters), say
+\(\boldsymbol{\theta}^{[j]}\), such that, conditional on the remaining
+components of the parameter vector \(\boldsymbol{\theta}^{-[j]}\), the
+conditional posterior
+\(p(\boldsymbol{\theta}^{[j]} \mid \boldsymbol{\theta}^{-[j]}, \boldsymbol{y})\)
+is from a known distribution from which we can simulate draws
+
+At iteration \(t\), we can update each block in turn: note that the
+\(k\)th block uses the partially updated state \begin{align*}
+\boldsymbol{\theta}^{-[k]\star} = (\boldsymbol{\theta}_{t}^{[1]}, \ldots, \boldsymbol{\theta}_{t}^{[k-1]},\boldsymbol{\theta}_{t-1}^{[k+1]}, \boldsymbol{\theta}_{t-1}^{[m]})
+\end{align*} which corresponds to the current value of the parameter
+vector after the updates. The Gibbs sampling can be viewed as a special
+case of Metropolis--Hastings where the proposal distribution \(q\) is
+\(p(\boldsymbol{\theta}^{[j]} \mid \boldsymbol{\theta}^{-[j]\star}, \boldsymbol{y})\).
+The particularity is that all proposals get accepted because the log
+posterior of the partial update, equals the proposal distribution, so
+\begin{align*}
+R = \frac{p(\boldsymbol{\theta}_t^{[j]\star} \mid \boldsymbol{\theta}^{-[j]\star}, \boldsymbol{y})}{p(\boldsymbol{\theta}_{t-1}^{[j]\star} \mid \boldsymbol{\theta}^{-[j]\star}, \boldsymbol{y})}\frac{p(\boldsymbol{\theta}_{t-1}^{[j]\star} \mid \boldsymbol{\theta}^{-[j]\star}, \boldsymbol{y})}{p(\boldsymbol{\theta}_t^{[j]\star} \mid \boldsymbol{\theta}^{-[j]\star}, \boldsymbol{y})}=1.
+\end{align*} Regardless of the order (systematic scan or random scan),
+the procedure remains valid. The Gibbs sampling is thus an automatic
+algorithm: we only need to derive the conditional posterior
+distributions of the parameters and run the sampler, and there are no
+tuning parameter involved. If the parameters are strongly correlated,
+the changes for each parameter will be incremental and this will lead to
+slow mixing and large autocorrelation, even if the values drawn are all
+different. Figure~\ref{fig-Gibbs-steps} shows 25 steps from a Gibbs
+algorithm for a bivariate target.
+
+\begin{figure}[ht!]
+
+{\centering \includegraphics{mcmc_files/figure-pdf/fig-Gibbs-steps-1.pdf}
+
+}
+
+\caption{\label{fig-Gibbs-steps}Sampling trajectory for a bivariate
+target using Gibbs sampling.}
+
+\end{figure}
+
+As a toy illustration, we use Gibbs sampling to simulate data from a
+\(d\)-dimensional multivariate Gaussian target with mean
+\(\boldsymbol{\mu}\) and equicorrelation covariance matrix
+\(\mathbf{\Sigma} = (1-\rho)\mathbf{I}_d + \rho\boldsymbol{1}_{d}\boldsymbol{1}^\top_d\)
+with inverse
+\[\mathbf{Q} = \boldsymbol{\Sigma}^{-1}=(1-\rho)^{-1}\left\{\mathbf{I}_d - \rho \mathbf{1}_d\mathbf{1}_d/(1+(d-1)\rho)\right\},\]
+for known correlation coefficient \(\rho\). While we can easily sample
+independent observations, the exercise is insightful to see how well the
+methods works as the dimension increases, and when the correlation
+between pairs becomes stronger.
+
+Consider
+\(\boldsymbol{Y} \sim \mathsf{Norm}_d(\boldsymbol{\mu}, \boldsymbol{\Sigma})\)
+and a partition \((\boldsymbol{Y}_1^\top, \boldsymbol{Y}_2^\top)^\top\):
+the conditional distribution of the \(k\) subvector \(\boldsymbol{Y}_1\)
+given the \(d-k\) other components \(\boldsymbol{Y}_2\) is, in terms of
+either the covariance (first line) or the precision (second line),
+Gaussian where \begin{align*}
+\boldsymbol{Y}_1 \mid \boldsymbol{Y}_2=\boldsymbol{y}_2 &\sim \mathsf{Norm}_{k}\left\{ \boldsymbol{\mu}_1 + \boldsymbol{\Sigma}_{12} \boldsymbol{\Sigma}_{22}^{-1}(\boldsymbol{y}_2 - \boldsymbol{\mu}_2), \boldsymbol{\Sigma}_{11} - \boldsymbol{\Sigma}_{12}\boldsymbol{\Sigma}_{22}^{-1}\boldsymbol{\Sigma}_{21}\right\}
+\\&\sim \mathsf{Norm}_{k}\left\{ \boldsymbol{\mu}_1 -\mathbf{Q}_{11}^{-1}\mathbf{Q}_{12}(\boldsymbol{y}_2 - \boldsymbol{\mu}_2), \mathbf{Q}_{11}^{-1}\right\}.
+\end{align*}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Create a 20 dimensional equicorrelation}
+\NormalTok{d }\OtherTok{\textless{}{-}} \DecValTok{20}
+\NormalTok{Q }\OtherTok{\textless{}{-}}\NormalTok{ hecbayes}\SpecialCharTok{::}\FunctionTok{equicorrelation}\NormalTok{(}\AttributeTok{d =}\NormalTok{ d, }\AttributeTok{rho =} \FloatTok{0.9}\NormalTok{, }\AttributeTok{precision =} \ConstantTok{TRUE}\NormalTok{)}
+\NormalTok{B }\OtherTok{\textless{}{-}} \FloatTok{1e4}
+\NormalTok{chains }\OtherTok{\textless{}{-}} \FunctionTok{matrix}\NormalTok{(}\DecValTok{0}\NormalTok{, }\AttributeTok{nrow =}\NormalTok{ B, }\AttributeTok{ncol =}\NormalTok{ d)}
+\NormalTok{mu }\OtherTok{\textless{}{-}} \FunctionTok{rep}\NormalTok{(}\DecValTok{2}\NormalTok{, d)}
+\CommentTok{\# Start far from mode}
+\NormalTok{curr }\OtherTok{\textless{}{-}} \FunctionTok{rep}\NormalTok{(}\SpecialCharTok{{-}}\DecValTok{3}\NormalTok{, d)}
+\ControlFlowTok{for}\NormalTok{(i }\ControlFlowTok{in} \FunctionTok{seq\_len}\NormalTok{(B))\{}
+  \CommentTok{\# Random scan, updating one variable at a time}
+  \ControlFlowTok{for}\NormalTok{(j }\ControlFlowTok{in} \FunctionTok{sample}\NormalTok{(}\DecValTok{1}\SpecialCharTok{:}\NormalTok{d, }\AttributeTok{size =}\NormalTok{ d))\{}
+    \CommentTok{\# sample from conditional Gaussian given curr}
+\NormalTok{    curr[j] }\OtherTok{\textless{}{-}}\NormalTok{ hecbayes}\SpecialCharTok{::}\FunctionTok{rcondmvnorm}\NormalTok{(}
+      \AttributeTok{n =} \DecValTok{1}\NormalTok{, }
+      \AttributeTok{value =}\NormalTok{ curr, }
+      \AttributeTok{ind =}\NormalTok{ j, }
+      \AttributeTok{mean =}\NormalTok{ mu, }
+      \AttributeTok{precision =}\NormalTok{ Q)}
+\NormalTok{  \}}
+\NormalTok{  chains[i,] }\OtherTok{\textless{}{-}}\NormalTok{ curr }\CommentTok{\# save values after full round of update}
+\NormalTok{\}}
+\end{Highlighting}
+\end{Shaded}
+
+As the dimension of the parameter space increases, and as the
+correlation between components becomes larger, the efficiency of the
+Gibbs sampler degrades: Figure~\ref{fig-gibbs-normal} shows the first
+component for updating one-parameter at a time for a multivariate
+Gaussian target in dimensions \(d=20\) and \(d=3\), started at four
+deviation away from the mode. The chain makes smaller steps when there
+is strong correlation, resulting in an inefficient sampler.
+
+\begin{figure}[ht!]
+
+{\centering \includegraphics{mcmc_files/figure-pdf/fig-gibbs-normal-1.pdf}
+
+}
+
+\caption{\label{fig-gibbs-normal}Trace plots (top) and correlograms
+(bottom) for the first component of a Gibbs sampler with \(d=20\)
+equicorrelated Gaussian variates with correlation \(\rho=0.9\) (left)
+and \(d=3\) with equicorrelation \(\rho=0.5\) (right).}
+
+\end{figure}
+
+The main bottleneck in Gibbs sampling is determining all of the relevant
+conditional distributions, which often relies on setting conditionally
+conjugate priors. In large models with multiple layers, full
+conditionals may only depend on a handful of parameters.
+
+\begin{example}[]\protect\hypertarget{exm-gaussian-gamma}{}\label{exm-gaussian-gamma}
+
+Consider a Gaussian model \(Y_i \sim \mathsf{Norm}(\mu, \tau)\)
+(\(i=1, \ldots, n\)) are independent, and where we assign priors
+\(\mu \sim \mathsf{Norm}(\nu, \omega)\) and
+\(\sigma \sim \mathsf{InvGamma}(\alpha, \beta)\).
+
+The joint posterior is not available in closed form, but the independent
+priors for the mean and variance of the observations are conditionally
+conjugate, since the joint posterior \begin{align*}
+p(\mu, \tau \mid \boldsymbol{y}) \propto& \tau^{-n/2}\exp\left\{-\frac{1}{2\tau}\left(\sum_{i=1}^n y_i^2 - 2\mu \sum_{i=1}^n y_i+n\mu^2 \right)\right\}\\& \times \exp\left\{-\frac{(\mu-\nu)^2}{2\omega}\right\} \times \tau^{-\alpha-1}\exp(-\beta/\tau)
+\end{align*} gives us \begin{align*}
+p(\mu \mid \tau, \boldsymbol{y}) &\propto \exp\left\{-\frac{1}{2} \left( \frac{\mu^2-2\mu\overline{y}}{\tau/n} + \frac{\mu^2-2\nu \mu}{\omega}\right)\right\}\\
+p(\tau \mid \mu, \boldsymbol{y}) & \propto \tau^{-n/2-\alpha-1}\exp\left[-\left\{\frac{\sum_{i=1}^n (y_i-\mu)^2}{2} + \beta \right\}/\tau\right]
+\end{align*} so we can simulate in turn \begin{align*}
+\mu_t \mid \tau_{t-1}, \boldsymbol{y} &\sim \mathsf{Norm}\left(\frac{n\overline{y}\omega+\tau \nu}{\omega\tau}, \frac{\omega \tau}{\tau + \omega/n}\right)\\
+\tau_t \mid \mu_t, \boldsymbol{y} &\sim \mathsf{InvGamma}\left\{\frac{n}{2}+\alpha, \frac{\sum_{i=1}^n (y_i-\mu)^2}{2} + \beta\right\}.
+\end{align*}
+
+\end{example}
+
+\begin{remark}[Gibbs sampler and proper posterior]
+
+Gibbs sampling cannot be used to determine if the posterior is improper.
+If the posterior is not well defined, the Markov chains may seem to
+stabilize even though there is no proper target.
+
+\end{remark}
+
+\begin{example}[Bayesian
+LASS0]\protect\hypertarget{exm-student-mixture-gaussian}{}\label{exm-student-mixture-gaussian}
+
+The Laplace distribution with mean \(\mu\) and scale \(\sigma\), which
+has density \begin{align*}
+f(x; \mu, \sigma) = \frac{1}{2\sigma}\exp\left(-\frac{|x-\mu|}{\sigma}\right),
+\end{align*} can be expressed as a scale mixture of Gaussians, where
+\(Y \sim \mathsf{La}(\mu, \sigma)\) is equivalent to
+\(Z \mid W=w \sim \mathsf{Norm}(\mu, \tau)\) and
+\(\tau \sim \mathsf{Exp}\{(2\sigma)^{-1}\}\). With the improper prior
+\(p(\mu, \sigma) \propto \sigma^{-1}\) and with \(n\) independent and
+identically distributed Laplace variates, the joint posterior can be
+written \begin{align*}
+p(\boldsymbol{\tau}, \mu, \sigma \mid \boldsymbol{y}) &\propto \left(\prod_{i=1}^n \tau_i\right)^{-1/2}\exp\left\{-\frac{1}{2}\sum_{i=1}^n \frac{(y_i-\mu)^2}{\tau_i}\right\} \\&\quad \times \frac{1}{\sigma^{n+1}}\exp\left(-\frac{1}{2\sigma}\sum_{i=1}^n \tau_i\right)
+\end{align*} and \(\mu \mid \cdots\) and \(\sigma \mid \cdots\) are, as
+usual, Gaussian and inverse gamma, respectively. The variances,
+\(\tau_j\), are conditionally independent of one another with
+\begin{align*}
+p(\tau_j \mid \mu, \sigma, y_j) &\propto \tau_j^{-1/2}\exp\left\{-\frac{1}{2}\frac{(y_j-\mu)^2}{\tau_j} -\frac{1}{2} \frac{\tau_j}{\sigma}\right\}\\
+\intertext{so with $\xi_j=1/\tau_j$, we have}
+p(\xi_j \mid \mu, \sigma, y_j) &\propto \xi_j^{-3/2}\exp\left\{-\frac{1}{2\sigma}\frac{\xi_j(y_j-\mu)^2}{\sigma} -\frac{1}{2} \frac{1}{\xi_j}\right\}\\
+\end{align*} and we recognize the latter as a Wald (or inverse Gaussian)
+distribution, whose density function is \begin{align*}
+f(y; \nu, \lambda) &= \left(\frac{\lambda}{2\pi y^{3}}\right)^{1/2} \exp\left\{ - \frac{\lambda (y-\nu)^2}{2\nu^2y}\right\}, \quad y > 0
+\\ \stackrel{y}{\propto} y^{-3/2}\exp\left\{-\frac{\lambda}{2} \left(\frac{y}{\nu} + \frac{1}{y}\right)\right\}
+\end{align*} for location \(\nu >0\) and shape \(\lambda>0\), where
+\(\nu=\{\sigma/(y_i-\mu)^2\}^{1/2}\) and \(\lambda=\sigma^{-1}\).
+
+Park and Casella (\protect\hyperlink{ref-Park.Casella:2008}{2008}) use
+this hierarchical construction to defined the Bayesian LASSO. With a
+model matrix \(\mathbf{X}\) whose columns are standardized to have mean
+zero and unit standard deviation, we may write \begin{align*}
+\boldsymbol{Y} \mid \mu, \boldsymbol{\beta}, \sigma^2 &\sim \mathsf{Norm}_n(\nu \boldsymbol{1}_n + \mathbf{X}\boldsymbol{\beta}, \sigma \mathbf{I}_n)\\
+\beta_j &\mid \sigma, \tau \sim \mathsf{Norm}(0, \sigma\tau)\\
+\tau &\sim \mathsf{Exp}(\lambda/2)\\
+p(\mu, \sigma) & \propto \sigma^{-1}.
+\end{align*} This yields a Laplace penalty on the regression
+coefficients, with lower values of \(\lambda\) yielding more shrinkage.
+Note that, in the Bayesian LASSO, none of the posterior draws of
+\(\boldsymbol{\beta}\) are exactly zero.
+
+Many elliptical distributions can be cast as scale mixture models of
+spherical or Gaussian variables; see, e.g., Section 10.2 of Albert
+(\protect\hyperlink{ref-Albert:2009}{2009}) for a similar derivation
+with a Student-\(t\) distribution.
+
+\end{example}
+
+\begin{example}[Mixture
+models]\protect\hypertarget{exm-mixture}{}\label{exm-mixture}
+
+In clustering problems, we can specify that observations arise from a
+mixture model with a fixed or unknown number of coefficients: the
+interest lies then in estimating
+
+A \(K\)-mixture model is a weighted combination of models frequently
+used in clustering or to model subpopulations with respective densities
+\(f_k\), with density
+\[f(x; \boldsymbol{\theta}, \boldsymbol{\omega}) = \sum_{k=1}^K \omega_kf_k(x; \boldsymbol{\theta}_k), \qquad \omega_1 + \cdots \omega_K=1.\]
+Since the density involves a sum, numerical optimization is challenging.
+Let \(C_i\) denote the cluster index for observation \(i\): if we knew
+the value of \(C_i =j\), the density would involve only \(f_j\). We can
+thus use latent variables representing the group allocation to simplify
+the problem and run an EM algorithm or use the data augmentation. In an
+iterative framework, we can consider the complete data as the tuples
+\((X_i, Z_i)\), where \(Z_i = \mathsf{I}(C_i=k)\).
+
+With the augmented data, the conditional distribution of
+\(Z_i \mid X_i, \boldsymbol{\omega}, \boldsymbol{\theta} \sim \mathsf{Mult}(1, \boldsymbol{\gamma}_{ik})\)
+where
+\(\gamma_{ik} = \omega_k f_k(X_i\boldsymbol{\theta}_k)/\big\{\sum_{j=1}^K f_j(X_i\boldsymbol{\theta}_k)\big\}\).
+Given suitable priors for the probabilities \(\boldsymbol{\omega}\) and
+\(\boldsymbol{\theta} \equiv \{\boldsymbol{\theta}_1, \ldots, \boldsymbol{\theta}_k\}\),
+we can use Gibbs sampling updating \(\boldsymbol{Z}\),
+\(\boldsymbol{\omega}\) and \(\boldsymbol{\theta}\) in turn.
+
+\end{example}
+
 \bookmarksetup{startatroot}
 
 \hypertarget{references}{%
@@ -3326,10 +3622,9 @@ Geyer, Charles J. 2011. {``Introduction to {M}arkov Chain {M}onte
 by S. Brooks, A. Gelman, G. Jones, and X. L. Meng, 3--48. Boca Raton:
 CRC Press. \url{https://doi.org/10.1201/b10905}.
 
-\leavevmode\vadjust pre{\hypertarget{ref-Green:1994}{}}%
-Green, Peter J. 1995. {``Reversible Jump {M}arkov Chain {M}onte {C}arlo
-Computation and {B}ayesian Model Determination.''} \emph{Biometrika} 82
-(4): 711--32. \url{https://doi.org/10.1093/biomet/82.4.711}.
+\leavevmode\vadjust pre{\hypertarget{ref-Green:2001}{}}%
+Green, Peter J. 2001. {``A Primer on {M}arkov Chain {M}onte {C}arlo.''}
+\emph{Monographs on Statistics and Applied Probability} 87: 1--62.
 
 \leavevmode\vadjust pre{\hypertarget{ref-Hastings:1970}{}}%
 Hastings, W. K. 1970. {``{Monte {C}arlo sampling methods using {M}arkov
@@ -3358,6 +3653,11 @@ Augusta H. Teller, and Edward Teller. 1953. {``{Equation of State
 Calculations by Fast Computing Machines}.''} \emph{The Journal of
 Chemical Physics} 21 (6): 1087--92.
 \url{https://doi.org/10.1063/1.1699114}.
+
+\leavevmode\vadjust pre{\hypertarget{ref-Park.Casella:2008}{}}%
+Park, Trevor, and George Casella. 2008. {``The {B}ayesian {L}asso.''}
+\emph{Journal of the American Statistical Association} 103 (482):
+681--86. \url{https://doi.org/10.1198/016214508000000337}.
 
 \leavevmode\vadjust pre{\hypertarget{ref-Robert.Casella:2004}{}}%
 Robert, Christian P., and George Casella. 2004. \emph{Monte {C}arlo

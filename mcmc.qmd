@@ -21,7 +21,7 @@ We can thus compute the probability of any event or the expected value of any (i
 Specifically, suppose we are interested in the average $\mathsf{E}\{g(X)\}$ of $X_i \sim F$ for some function $g$.
 
 ::: {#exm-expectation-demo}
-Consider $X \sim \mathsf{Ga}(\alpha, \beta)$, a gamma distribution with shape $\alpha$ and rate $\beta$. We can compute the probability that $X < 1$ easily by Monte Carlo since $\Pr(X <1) = \mathsf{E}\{\mathrm{I}(X<1)\}$ and this means we only need to compute the proportion of draws less than one. We can likewise compute the mean $g(x) = x$ or variance.
+Consider $X \sim \mathsf{Gamma}(\alpha, \beta)$, a gamma distribution with shape $\alpha$ and rate $\beta$. We can compute the probability that $X < 1$ easily by Monte Carlo since $\Pr(X <1) = \mathsf{E}\{\mathrm{I}(X<1)\}$ and this means we only need to compute the proportion of draws less than one. We can likewise compute the mean $g(x) = x$ or variance.
 
 Suppose we have drawn a Monte Carlo sample of size $B$. If the function $g(\cdot)$ is square integrable,[^mcmc-1] with variance $\sigma^2_g$, then a central limit theorem applies. In large samples and for independent observations, our Monte Carlo average $\widehat{\mu}_g = B^{-1}\sum_{b=1}^B g(X_i)$ has variance $\sigma^2_g/B$. We can approximate the unknown variance $\sigma^2_g$ by it's empirical counterpart.[^mcmc-2]. Note that, while the variance decreases linearly with $B$, the choice of $g$ impacts the speed of convergence: we can compute $\sigma^2_g =\Pr(X \leq 1)\{1-\Pr(X \leq 1)\}=0.0434$ (left) and $\sigma^2_g=\alpha/\beta^2=1/8$ (middle plot).
 
@@ -168,7 +168,7 @@ Rejection sampling requires the proposal $q$ to have a support at least as large
 
 ## Truncated Gaussian distribution
 
-Consider the problem of sampling from a Gaussian distribution $Y \sim \mathsf{No}(\mu, \sigma^2)$ truncated in the interval $a, b,$ which has density
+Consider the problem of sampling from a Gaussian distribution $Y \sim \mathsf{Norm}(\mu, \sigma^2)$ truncated in the interval $a, b,$ which has density
 \begin{align*}
 f(x; \mu, \sigma, a, b) = \frac{1}{\sigma}\frac{\phi\left(\frac{x-\mu}{\sigma}\right)}{\Phi\{(b-\mu)/\sigma\}-\Phi\{(a-\mu)/\sigma\}}.
 \end{align*}
@@ -276,6 +276,7 @@ ru_output <- rust::ru(
 ## Posterior samples
 postsamp <- ru_output$sim_vals
 ```
+
 Even without modification, the acceptance rate is `r round(100*ru_output$pa, 0)`%, which is quite efficient in the context. The generalized Pareto approximation suggests a very heavy tail: values of $\xi \geq 1$ correspond to distributions with infinite first moment, and those with $\xi \geq 1/2$ to infinite variance.
 
 ```{r}
@@ -324,7 +325,7 @@ It is Markov if it satisfies the Markov property: given the current state of the
 ::: {#exm-autoregressive-one}
 Consider a first-order autoregressive process, or $\mathsf{AR}(1)$, of the form
 
-$$Y_t = \mu + \phi(Y_{t-1} - \mu) + \varepsilon_t,$$ where $\phi$ is the lag-one correlation, $\mu$ the global mean and $\varepsilon_t$ is an iid innovation with mean zero and variance $\sigma^2$. If $|\phi| < 1$, the process is stationary, and the variance does not increase with $t$. If innovations are Gaussian, we have $$Y_t \mid Y_{t-1}=y_{t-1} \sim \mathsf{No}\{\mu(1-\phi)+ \phi y_{t-1}, \sigma^2\}.$$
+$$Y_t = \mu + \phi(Y_{t-1} - \mu) + \varepsilon_t,$$ where $\phi$ is the lag-one correlation, $\mu$ the global mean and $\varepsilon_t$ is an iid innovation with mean zero and variance $\sigma^2$. If $|\phi| < 1$, the process is stationary, and the variance does not increase with $t$. If innovations are Gaussian, we have $$Y_t \mid Y_{t-1}=y_{t-1} \sim \mathsf{Norm}\{\mu(1-\phi)+ \phi y_{t-1}, \sigma^2\}.$$
 
 The $\mathsf{AR}(1)$ stationarity process $Y_t$, marginally, has mean $\mu$ and unconditional variance $\sigma^2/(1-\phi^2)$. The $\mathsf{AR}(1)$ process is first-order Markov since the conditional distribution $p(Y_t \mid Y_{t-1}, \ldots, Y_{t-p})$ equals $p(Y_t \mid Y_{t-1})$.
 :::
@@ -378,7 +379,52 @@ g1 + g2
 We can see from @fig-ar1-variance that, when the autocorrelation is positive (as will be the cause in all applications of interest), we will suffer from variance inflation. To get the same uncertainty estimates for the mean with an $\mathsf{AR}(1)$ process with $\phi \approx 0.75$ than with an iid sample, we would need nine times as many observations: this is the prize to pay.
 :::
 
-When can we use output from a Markov chain in place of independent Monte Carlo draws? The assumptions laid out in the ergodic theorem are that the chain is irreducible and acyclic, ensuring that the chain has a unique stationary distribution.
+### Estimating uncertainty of point estimators with Markov chains
+
+With a simple random sample containing independent and identically distributed observations, the standard error of the sample mean is $\sigma/\sqrt{n}$ and we can use the empirical standard deviation $\widehat{\sigma}$ to estimate the first term. For Markov chains, the correlation prevents us from using this approach. The output of the`coda` package are based on fitting a high order autoregressive process to the Markov chain and using the formula of the unconditional variance of the $\mathsf{AR}(p)$ to obtain the central limit theorem variance. An alternative method recommended by @Geyer:2011 and implemented in his **R** package `mcmc`, is to segment the time series into batch, compute the means of each non-overlapping segment and use this standard deviation with suitable rescaling to get the central limit variance for the posterior mean. @fig-mcmc-batchmean illustrate the method of batch means.
+
+1. Break the chain of length $B$ (after burn in) in $K$ blocks of size $\approx K/B$.
+2. Compute the sample mean of each segment. These values form a Markov chain and should be approximately uncorrelated.
+3. Compute the standard deviation of the segments mean. Rescale by $K^{-1/2}$ to get standard error of the global mean.
+
+Why does the approach work? If the chain samples from the stationary distribution, all samples have the same mean. If we partition the sample into long enough, the sample mean of each blocks should be roughly independent (otherwise we could remove an overlapping portion). We can then compute the empirical standard deviation of the estimators. We can then compute the overall mean and use a scaling argument to relate the variability of the global estimator with the variability of the means of the smaller blocks.
+
+
+```{r}
+#| label: fig-mcmc-batchmean
+#| eval: true
+#| echo: false
+#| fig-cap: "Calculation of the standard error of the posterior mean using the batch method."
+set.seed(123450)
+chain <- as.numeric(arima.sim(model = list(ar = c(0.9)), n = 2000)) + 0.4
+batchMean <- function(x, batchSize = 100){
+  niter <- length(x)
+    nbatch <- niter%/%batchSize
+    niter <- nbatch * batchSize
+    ibatch <- rep(1:nbatch, each = batchSize)[1:niter]
+    batchMeans <- t(sapply(split(data.frame(x[1:niter]), ibatch), 
+        function(batch) apply(batch, 2, mean)))
+    return(as.numeric(batchMeans))
+}
+ggplot() +
+  geom_line(data = data.frame(t = 1:2000,
+                         chain = chain),
+       mapping = aes(x = t,
+                     y = chain),
+       alpha = 0.1) +
+  geom_segment(data = data.frame(x0 = seq(1, 2000, by = 100),
+                                 x1 = seq(100, 2000, by = 100),
+                                 y = batchMean(chain, batchSize = 100)),
+               mapping = aes(x = x0, y = y, yend = y, xend = x1), 
+               linetype = "dashed") +
+  geom_hline(yintercept = mean(chain)) +
+  labs(x = "iteration number", y = "") +
+  theme_classic()
+```
+
+
+
+When can we use output from a Markov chain in place of independent Monte Carlo draws? The assumptions laid out in the ergodic theorem are that the chain is irreducible and acyclic, ensuring that the chain has a unique stationary distribution. The ergodic theorem is a result about convergence of averages.
 
 To make sense of these concepts, we consider a discrete Markov chain over the integers $1, 2, 3$. A discrete-time stochastic process is a random sequences whose elements are part of some set, the state space, here the integers. We can encode the probability of moving from one state to the next via a transition matrix, whose rows contain the probabilities of moving from one state to the next and thus sum to one. We can run a Markov chain by sampling an initial state $X_0$ at random from $\{1, \ldots, 5\}$ and then consider the transitions from the conditional distribution, sampling $p(X_t \mid X_{t-1})$. Because of the Markov property, the history of the chain does not matter: we only need to read the value $i=X_{t-1}$ of the state and pick the $i$th row of $P_3$ to know the probability of the different moves from the current state.
 
@@ -484,6 +530,21 @@ The Metropolis--Hastings build a Markov chain starting from an initial value $\b
 3.  With probability $\min\{R, 1\}$, accept the proposal and set $\boldsymbol{\theta}_t \gets \boldsymbol{\theta}_t^{\star}$, otherwise set the value to the previous state, $\boldsymbol{\theta}_t \gets \boldsymbol{\theta}_{t-1}$.
 :::
 
+
+The Metropolis--Hastings algorithm generates samples from the posterior $p(\boldsymbol{\theta} \mid \boldsymbol{y})$ if the Markov chain it defines is reversible: we say it satisfies the *detailed balance condition* when the density of $\boldsymbol{\theta}_{t+1} \mid \boldsymbol{\theta}_{t}$, say $f(\boldsymbol{\theta}_{t+1} \mid \boldsymbol{\theta}_{t})$. Detailed balance means
+\begin{align*}
+f(\boldsymbol{\theta}_{t+1} \mid \boldsymbol{\theta}_{t})p(\boldsymbol{\theta}_{t} \mid \boldsymbol{y}) = f(\boldsymbol{\theta}_{t} \mid \boldsymbol{\theta}_{t+1})p(\boldsymbol{\theta}_{t+1} \mid \boldsymbol{y})
+\end{align*}
+This guarantees that, if $\boldsymbol{\theta}_{t}$ is drawn from the posterior, then the left hand side is the joint density of $(\boldsymbol{\theta}_{t}, \boldsymbol{\theta}_{t+1})$ and the marginal distribution obtained by integrating over $\boldsymbol{\theta}_{t}$,
+\begin{align*}
+&\int f(\boldsymbol{\theta}_{t+1} \mid \boldsymbol{\theta}_{t})p(\boldsymbol{\theta}_{t} \mid \boldsymbol{y})\mathrm{d} \boldsymbol{\theta}_{t}
+\\&\quad = \int f(\boldsymbol{\theta}_{t} \mid \boldsymbol{\theta}_{t+1})p(\boldsymbol{\theta}_{t+1} \mid \boldsymbol{y})\mathrm{d} \boldsymbol{\theta}_{t} 
+\\&\quad= p(\boldsymbol{\theta}_{t+1} \mid \boldsymbol{y})
+\end{align*}
+and any draw from the posterior will generate a new realization from the posterior. We also ensure that, provided the starting value as non-zero probability under the posterior, the chain will converge to the stationarity distribution (albeit perhaps slowly).
+
+
+
 ::: {.remark}
 
 ## Interpretation of the algorithm
@@ -495,7 +556,7 @@ If $R>1$, the proposal has higher density and we always accept the move. If the 
 
 ## Blank run
 
-To check that the algorithm is well-defined, we can remove the log likelihood component and run the algorithm: if it is correct, the resulting draws should be drawn from the prior provided the latter is proper [@Green:1994].
+To check that the algorithm is well-defined, we can remove the log likelihood component and run the algorithm: if it is correct, the resulting draws should be drawn from the prior provided the latter is proper [@Green:2001, p.55].
 
 :::
 
@@ -525,8 +586,8 @@ Consider again the Upworthy data from @exm-poisson-upworthy-question. We model t
 Y_{i} &\sim \mathsf{Po}(n_i\lambda_i), \qquad (i=1,2)\\
 \lambda_1 &= \exp(\beta + \kappa) \\
 \lambda_2 &= \exp(\beta) \\
-\beta & \sim \mathsf{No}(\log 0.01, 1.5) \\
-\kappa &\sim \mathsf{No}(0, 1)
+\beta & \sim \mathsf{Norm}(\log 0.01, 1.5) \\
+\kappa &\sim \mathsf{Norm}(0, 1)
 \end{align*}
 There are two parameters in the model, which can be updated in turn or jointly.
 
@@ -591,8 +652,7 @@ summary(coda::as.mcmc(chain))
 sqrt(diag(mcmc::olbm(chain, batch.length = niter/40)))
 ```
 
-The acceptance rate of the algorithm is `r round(100*naccept/niter, 1)`% and the posterior means are $\beta =`r round(mean(chain[,1]), 2)`$ and $\kappa =`r round(mean(chain[,2]), 2)`$. The standard errors cannot be calculated from the empirical standard deviations. The output of the`coda` package are based on fitting an autoregressive process to the Markov chain and using the formula to compute the central limit theorem variance. An alternative method recommended by @Geyer:2011 and implemented in his **R** package `mcmc`, is to segment the time series into batch, compute the means of each non-overlapping segment and use this standard deviation with suitable rescaling to get the central limit variance for the posterior mean.
-
+The acceptance rate of the algorithm is `r round(100*naccept/niter, 1)`% and the posterior means are $\beta =`r round(mean(chain[,1]), 2)`$ and $\kappa =`r round(mean(chain[,2]), 2)`$.
 
 ```{r}
 #| eval: true
@@ -712,7 +772,7 @@ bayesplot::mcmc_trace(x = coda::as.mcmc(chains_goldi),
 One way to calibrate is to track the acceptance rate of the proposals: for the three chains in @fig-goldilock-trace, these are `r paste0(accept, collapse = ", ")`. In one-dimensional toy problems with Gaussian distributions, an acceptance rate of 0.44 is optimal, and this ratio decreases to 0.234 when $D \geq 2$ [@Roberts.Rosenthal:2001,@Sherlock:2013]. This need not generalize to other settings and depends on the context. Optimal rate for alternative algorithms, such as Metropolis-adjusted Langevin algorithm, are typically higher. 
 
 
-We can tune the variance of the global proposal [@Andrieu.Thoms:2008] to improve the  mixing of the chains at approximate stationarity. This is done by increasing (decreasing) the variance if the historical acceptance rate is too high (respectively low) during burn-in period, and reinitializing after any change with an acceptance target of $0.44$. We stop adapting to ensure convergence to the posterior after a suitable number of initial iterations.
+We can tune the variance of the global proposal [@Andrieu.Thoms:2008] to improve the  mixing of the chains at approximate stationarity. This is done by increasing (decreasing) the variance if the historical acceptance rate is too high (respectively low) during the burn in period, and reinitializing after any change with an acceptance target of $0.44$. We stop adapting to ensure convergence to the posterior after a suitable number of initial iterations.
 Adaptive MCMC methods use an initial warm up period to find good proposals: we can consider a block of length $L$, compute the acceptance rate, multiply the variance by a scaling factor and run the chain a little longer. We only keep samples obtained after the adaptation phase.
 
 
@@ -774,7 +834,7 @@ For example, we can use of the following transformations for finite $a, b$ in th
 f_{\vartheta}(\vartheta)&=f_{\theta}\{a+(b-a) \mathrm{expit}(\vartheta)\} (b-a)\\&\quad \times \mathrm{expit}(\vartheta)\{1-\mathrm{expit}(\vartheta)\}
 \end{align*}
 
-To guarantee that our proposals fall in the support of $\theta$, we can thus run a symmetric random walk proposal on the *transformed scale* by drawing $\vartheta_{t}^{\star} \sim \vartheta_{t-1}+\tau Z$ where $Z\sim\mathsf{No}(0, 1)$. Due to the transformation, the kernel ratio now contains the Jacobian.
+To guarantee that our proposals fall in the support of $\theta$, we can thus run a symmetric random walk proposal on the *transformed scale* by drawing $\vartheta_{t}^{\star} \sim \vartheta_{t-1}+\tau Z$ where $Z\sim\mathsf{Norm}(0, 1)$. Due to the transformation, the kernel ratio now contains the Jacobian.
 
 :::
 
@@ -782,7 +842,7 @@ To guarantee that our proposals fall in the support of $\theta$, we can thus run
 
 ## Truncated proposals
 
-As an alternative, if we are dealing with parameters that are restricted in $[a,b]$, we can simulate $\theta^{\star}_{t} \sim \mathsf{TNo}(\vartheta_{t-1}, \tau^2, a, b).$ While the benefit of using the truncated proposal isn't obvious, it becomes more visible when we move to more advanced proposals whose mean and variance depends on the gradient and or the hessian of the underlying unnormalized log posterior, as the mean can be lower than $a$ or larger than $b$ while still giving non-zero acceptance. The `TruncatedNormal` package can be used to efficiently evaluate such instances using results from @LEcuyer.Botev:2017 even when the truncation bounds are far from the mode. the normalizing constant of the truncated Gaussian in the denominator of the density is a function of the location and scale parameters: if these depend on the current value of $\boldsymbol{\theta}_{t-1}$, as is the case for a random walk, we need to keep these terms as part of the Metropolis ratio. The mean and standard deviation of the trunctaed Gaussian are not equal to the parameters $\mu$ (which corresponds to the mode, provided $a < \mu < b$) and $\sigma$.
+As an alternative, if we are dealing with parameters that are restricted in $[a,b]$, we can simulate using a random walk but with truncated Gaussian steps, taking $\theta^{\star}_{t} \sim \mathsf{TNo}(\vartheta_{t-1}, \tau^2, a, b).$ The benefits of using the truncated proposal becomes more apparent when we move to more advanced proposals whose mean and variance depends on the gradient and or the hessian of the underlying unnormalized log posterior, as the mean can be lower than $a$ or larger than $b$: this would garantee zero acceptance with regular Gaussian random walk. The `TruncatedNormal` package can be used to efficiently evaluate such instances using results from @LEcuyer.Botev:2017 even when the truncation bounds are far from the mode. the normalizing constant of the truncated Gaussian in the denominator of the density is a function of the location and scale parameters: if these depend on the current value of $\boldsymbol{\theta}_{t-1}$, as is the case for a random walk, we need to keep these terms as part of the Metropolis ratio. The mean and standard deviation of the truncated Gaussian are not equal to the parameters $\mu$ (which corresponds to the mode, provided $a < \mu < b$) and $\sigma$.
 
 :::
 
@@ -812,7 +872,7 @@ For MALA to work well, we need both to start near stationarity, to ensure that t
 
 :::{#exm-normal-question-upworthy}
 
-We revisit the Upworthy data, this time modelling each individual headline as a separate observation. We view $n=$`nimpression` as the sample size of a binomial distribution and `nclick` as the number of successes. Since the number of trials is large, the sample average `nclick`/`nimpression`, denoted $y$ in the sequel, is approximately Gaussian. We assume that each story has a similar population rate and capture the heterogeneity inherent to each news story by treating each mean as a sample. The variance of the sample average or click rate is proportional to $n^{-1}$, where $n$ is the number of impressions. To allow for underdispersion or overdispersion, we thus consider a Gaussian likelihood $Y_i \sim \mathsf{No}(\mu, \sigma^2/n_i)$. We perform Bayesian inference for $\mu, \sigma$ after assigning a truncated Gaussian prior for $\mu \sim \mathsf{TNo}(0.01, 0.1^2)$ over $[0,1]$ and an penalized complexity prior for $\sigma \sim \mathsf{Exp}(0.7)$.
+We revisit the Upworthy data, this time modelling each individual headline as a separate observation. We view $n=$`nimpression` as the sample size of a binomial distribution and `nclick` as the number of successes. Since the number of trials is large, the sample average `nclick`/`nimpression`, denoted $y$ in the sequel, is approximately Gaussian. We assume that each story has a similar population rate and capture the heterogeneity inherent to each news story by treating each mean as a sample. The variance of the sample average or click rate is proportional to $n^{-1}$, where $n$ is the number of impressions. To allow for underdispersion or overdispersion, we thus consider a Gaussian likelihood $Y_i \sim \mathsf{Norm}(\mu, \sigma^2/n_i)$. We perform Bayesian inference for $\mu, \sigma$ after assigning a truncated Gaussian prior for $\mu \sim \mathsf{TNo}(0.01, 0.1^2)$ over $[0,1]$ and an penalized complexity prior for $\sigma \sim \mathsf{Exp}(0.7)$.
 
 
 <!-- The `hecbayes` package contains an helper function `mh` that computes the step given the log likelihood, log prior and their gradients. -->
@@ -962,10 +1022,321 @@ The posterior mean for the standard deviation is  `r round(mean(chains[,'sigma']
 :::
 
 
+## Gibbs sampling
+
+The Gibbs sampling algorithm builds a Markov chain by iterating through a sequence of conditional distributions. 
+Consider a model with $\boldsymbol{\theta} \in \boldsymbol{\Theta} \subseteq \mathbb{R}^p$. We consider a single (or $m \leq p$ blocks of parameters), say $\boldsymbol{\theta}^{[j]}$, such that, conditional on the remaining components of the parameter vector $\boldsymbol{\theta}^{-[j]}$, the conditional posterior $p(\boldsymbol{\theta}^{[j]} \mid \boldsymbol{\theta}^{-[j]}, \boldsymbol{y})$ is from a known distribution from which we can simulate draws
+
+At iteration $t$, we can update each block in turn: note that the $k$th block uses the partially updated state
+\begin{align*}
+\boldsymbol{\theta}^{-[k]\star} = (\boldsymbol{\theta}_{t}^{[1]}, \ldots, \boldsymbol{\theta}_{t}^{[k-1]},\boldsymbol{\theta}_{t-1}^{[k+1]}, \boldsymbol{\theta}_{t-1}^{[m]})
+\end{align*}
+which corresponds to the current value of the parameter vector after the updates. 
+The Gibbs sampling can be viewed as a special case of Metropolis--Hastings where the proposal distribution $q$ is $p(\boldsymbol{\theta}^{[j]} \mid \boldsymbol{\theta}^{-[j]\star}, \boldsymbol{y})$. The particularity is that all proposals get accepted because the log posterior of the partial update, equals the proposal distribution, so 
+\begin{align*}
+R = \frac{p(\boldsymbol{\theta}_t^{[j]\star} \mid \boldsymbol{\theta}^{-[j]\star}, \boldsymbol{y})}{p(\boldsymbol{\theta}_{t-1}^{[j]\star} \mid \boldsymbol{\theta}^{-[j]\star}, \boldsymbol{y})}\frac{p(\boldsymbol{\theta}_{t-1}^{[j]\star} \mid \boldsymbol{\theta}^{-[j]\star}, \boldsymbol{y})}{p(\boldsymbol{\theta}_t^{[j]\star} \mid \boldsymbol{\theta}^{-[j]\star}, \boldsymbol{y})}=1.
+\end{align*}
+Regardless of the order (systematic scan or random scan), the procedure remains valid. The Gibbs sampling is thus an automatic algorithm: we only need to derive the conditional posterior distributions of the parameters and run the sampler, and there are no tuning parameter involved. If the parameters are strongly correlated, the changes for each parameter will be incremental and this will lead to slow mixing and large autocorrelation, even if the values drawn are all different. @fig-Gibbs-steps shows 25 steps from a Gibbs algorithm for a bivariate target.
+
+```{r}
+#| eval: true
+#| echo: false
+#| cache: true
+#| message: false
+#| warning: false
+#| fig-cap: "Sampling trajectory for a bivariate target using Gibbs sampling."
+#| label: fig-Gibbs-steps
+xg <- seq(-3,6, length.out = 101)
+yg <- seq(0, 7, length.out = 101)
+grid <- as.matrix(expand.grid(xg, yg))
+zg <- TruncatedNormal::dtmvnorm(x = grid, 
+                                mu = c(2,1), 
+                                sigma = cbind(c(2,-1), c(-1,3)),
+                                lb = c(-Inf, 0.1),
+                                ub = rep(Inf, 2))
+
+set.seed(1234)
+chains <- matrix(nrow = 50, ncol = 2)
+curr <- c(-1,3)
+for(i in 1:nrow(chains)){
+  j <- i %% 2 + 1L
+  curr[j] <- mgp::rcondmvtnorm(model = "norm",
+                               n = 1, ind = j, x = curr[-j], lbound = c(-3, 0.1)[j], 
+                  ubound = c(6,7)[j], mu = c(2,1), 
+                                sigma = cbind(c(2,-1), c(-1,3)))
+  chains[i,] <- curr
+}
+
+ggplot() + 
+  geom_contour_filled(data = data.frame(x = grid[,1], y = grid[,2], z = zg),
+       mapping = aes(x = x, y = y, z = z),
+       alpha = 0.1) +
+  geom_path(data = data.frame(x = chains[,1], y = chains[,2],
+                              shade = seq(0.1, 0.5, length.out = nrow(chains))),
+            mapping = aes(x = x, y = y, alpha = shade)) + 
+  scale_y_continuous(limits = c(0,6), expand = c(0,0), breaks = NULL) + 
+  scale_x_continuous(limits = c(-3, 5), expand = c(0,0), breaks = NULL) + 
+  theme_void() + 
+  labs(x = "", y = "") + 
+  theme(legend.position = "none")
+
+
+```
+
+
+:::{exm-normal-Gibbs}
+
+As a toy illustration, we use Gibbs sampling to simulate data from a $d$-dimensional multivariate Gaussian target with mean $\boldsymbol{\mu}$ and equicorrelation covariance matrix $\mathbf{\Sigma} = (1-\rho)\mathbf{I}_d + \rho\boldsymbol{1}_{d}\boldsymbol{1}^\top_d$ with inverse $$\mathbf{Q} = \boldsymbol{\Sigma}^{-1}=(1-\rho)^{-1}\left\{\mathbf{I}_d - \rho \mathbf{1}_d\mathbf{1}_d/(1+(d-1)\rho)\right\},$$ for known correlation coefficient $\rho$. While we can easily sample independent observations, the exercise is insightful to see how well the methods works as the dimension increases, and when the correlation between pairs becomes stronger.
+
+Consider $\boldsymbol{Y} \sim \mathsf{Norm}_d(\boldsymbol{\mu}, \boldsymbol{\Sigma})$ and a partition $(\boldsymbol{Y}_1^\top, \boldsymbol{Y}_2^\top)^\top$: the conditional distribution of the $k$ subvector $\boldsymbol{Y}_1$ given the $d-k$ other components $\boldsymbol{Y}_2$ is, in terms of either the covariance (first line) or the precision (second line), Gaussian where
+\begin{align*}
+\boldsymbol{Y}_1 \mid \boldsymbol{Y}_2=\boldsymbol{y}_2 &\sim \mathsf{Norm}_{k}\left\{ \boldsymbol{\mu}_1 + \boldsymbol{\Sigma}_{12} \boldsymbol{\Sigma}_{22}^{-1}(\boldsymbol{y}_2 - \boldsymbol{\mu}_2), \boldsymbol{\Sigma}_{11} - \boldsymbol{\Sigma}_{12}\boldsymbol{\Sigma}_{22}^{-1}\boldsymbol{\Sigma}_{21}\right\}
+\\&\sim \mathsf{Norm}_{k}\left\{ \boldsymbol{\mu}_1 -\mathbf{Q}_{11}^{-1}\mathbf{Q}_{12}(\boldsymbol{y}_2 - \boldsymbol{\mu}_2), \mathbf{Q}_{11}^{-1}\right\}.
+\end{align*}
+
+
+```{r}
+#| eval: false
+#| echo: true
+# Create a 20 dimensional equicorrelation
+d <- 20
+Q <- hecbayes::equicorrelation(d = d, rho = 0.9, precision = TRUE)
+B <- 1e4
+chains <- matrix(0, nrow = B, ncol = d)
+mu <- rep(2, d)
+# Start far from mode
+curr <- rep(-3, d)
+for(i in seq_len(B)){
+  # Random scan, updating one variable at a time
+  for(j in sample(1:d, size = d)){
+    # sample from conditional Gaussian given curr
+    curr[j] <- hecbayes::rcondmvnorm(
+      n = 1, 
+      value = curr, 
+      ind = j, 
+      mean = mu, 
+      precision = Q)
+  }
+  chains[i,] <- curr # save values after full round of update
+}
+```
+
+As the dimension of the parameter space increases, and as the correlation between components becomes larger, the efficiency of the Gibbs sampler degrades: @fig-gibbs-normal shows the first component for updating one-parameter at a time for a multivariate Gaussian target in dimensions $d=20$ and $d=3$, started at four deviation away from the mode. The chain makes smaller steps when there is strong correlation, resulting in an inefficient sampler.
+
+```{r}
+#| eval: true
+#| echo: false
+#| cache: true
+#| message: false
+#| warning: false
+#| label: fig-gibbs-normal
+#| fig-cap: "Trace plots (top) and correlograms (bottom) for the first component of a Gibbs sampler with $d=20$ equicorrelated Gaussian variates with correlation $\\rho=0.9$ (left) and $d=3$ with equicorrelation $\\rho=0.5$ (right)."
+d <- 20
+Q <- hecbayes::equicorrelation(d = d, rho = 0.9, precision = TRUE)
+B <- 1e3
+chains <- matrix(0, nrow = B, ncol = d)
+mu <- rep(2, d)
+# Start far from mode
+curr <- rep(-2, d)
+for(i in seq_len(B)){
+  # Random scan, updating one variable at a time
+  for(j in sample(1:d, size = d)){
+    # sample from conditional Gaussian given curr
+    curr[j] <- hecbayes::rcondmvnorm(
+      n = 1, 
+      value = curr, 
+      ind = j, 
+      mean = mu, 
+      precision = Q)
+  }
+  chains[i,] <- curr # save after full round of update
+}
+d <- 3
+Q <- hecbayes::equicorrelation(d = d, rho = 0.5, precision = TRUE)
+chains2 <- matrix(0, nrow = B, ncol = d)
+mu <- rep(2, d)
+# Start far from mode
+curr <- rep(-3, d)
+for(i in seq_len(B)){
+  # Random scan, updating one variable at a time
+  for(j in sample(1:d, size = d)){
+    # sample from conditional Gaussian given curr
+    curr[j] <- hecbayes::rcondmvnorm(
+      n = 1, 
+      value = curr, 
+      ind = j, 
+      mean = mu, 
+      precision = Q)
+  }
+  chains2[i,] <- curr # save after full round of update
+}
+ggacf <- function(series) {
+  significance_level <- qnorm((1 + 0.95)/2)/sqrt(sum(!is.na(series)))  
+  a<-acf(series, plot = FALSE, lag.max = 30)
+  a.2<-with(a, data.frame(lag, acf))
+  g<- ggplot(a.2[-1,], aes(x=lag,y=acf)) + 
+          geom_bar(stat = "identity", position = "identity",
+                   width = 0.5) + 
+    labs(x = 'lag', y =  "", subtitle = 'autocorrelation') +
+          geom_hline(yintercept=c(significance_level,-significance_level), lty=3) +
+    scale_x_continuous(breaks = seq(5L, 30L, by = 5L),minor_breaks = 1:30, 
+                       limits = c(1,30)) +
+    scale_y_continuous(limits = c(-0.2,1), expand = c(0,0))
+  return(g);
+}
+g1 <- ggplot(data = data.frame(x = seq_len(nrow(chains)),
+                               y = chains[,1]),
+             mapping = aes(x = x, y = y)) +
+  geom_line() +
+  labs(y = "", x = "iteration number") +
+  theme_classic()
+g2 <- ggacf(chains[,1]) + theme_classic()
+g3 <- ggplot(data = data.frame(x = seq_len(B),
+                               y = chains2[,1]),
+             mapping = aes(x = x, y = y)) +
+  geom_line() +
+  labs(y = "", x = "iteration number") +
+  theme_classic()
+g4 <- ggacf(chains2[,1]) + theme_classic()
+(g1 + g3) / (g2 + g4)
+```
+
+The main bottleneck in Gibbs sampling is determining all of the relevant conditional distributions, which often relies on setting conditionally conjugate priors.  In large models with multiple layers, full conditionals may only depend on a handful of parameters.
+
+:::
+
+:::{#exm-gaussian-gamma}
+
+Consider a Gaussian model $Y_i \sim \mathsf{Norm}(\mu, \tau)$ ($i=1, \ldots, n$) are independent, and where we assign priors $\mu \sim \mathsf{Norm}(\nu, \omega)$ and $\sigma \sim \mathsf{InvGamma}(\alpha, \beta)$.
+
+The joint posterior is not available in closed form, but the independent priors for the mean and variance of the observations are conditionally conjugate, since the joint posterior
+\begin{align*}
+p(\mu, \tau \mid \boldsymbol{y}) \propto& \tau^{-n/2}\exp\left\{-\frac{1}{2\tau}\left(\sum_{i=1}^n y_i^2 - 2\mu \sum_{i=1}^n y_i+n\mu^2 \right)\right\}\\& \times \exp\left\{-\frac{(\mu-\nu)^2}{2\omega}\right\} \times \tau^{-\alpha-1}\exp(-\beta/\tau)
+\end{align*}
+gives us
+\begin{align*}
+p(\mu \mid \tau, \boldsymbol{y}) &\propto \exp\left\{-\frac{1}{2} \left( \frac{\mu^2-2\mu\overline{y}}{\tau/n} + \frac{\mu^2-2\nu \mu}{\omega}\right)\right\}\\
+p(\tau \mid \mu, \boldsymbol{y}) & \propto \tau^{-n/2-\alpha-1}\exp\left[-\left\{\frac{\sum_{i=1}^n (y_i-\mu)^2}{2} + \beta \right\}/\tau\right]
+\end{align*}
+so we can simulate in turn 
+\begin{align*}
+\mu_t \mid \tau_{t-1}, \boldsymbol{y} &\sim \mathsf{Norm}\left(\frac{n\overline{y}\omega+\tau \nu}{\omega\tau}, \frac{\omega \tau}{\tau + \omega/n}\right)\\
+\tau_t \mid \mu_t, \boldsymbol{y} &\sim \mathsf{InvGamma}\left\{\frac{n}{2}+\alpha, \frac{\sum_{i=1}^n (y_i-\mu)^2}{2} + \beta\right\}.
+\end{align*}
+
+:::
+
+
+:::{.remark}
+
+## Gibbs sampler and proper posterior
+
+Gibbs sampling cannot be used to determine if the posterior is improper. If the posterior is not well defined, the Markov chains may seem to stabilize even though there is no proper target.
+
+:::
+
+
+<!--
+
+## Data augmentation and auxiliary variables
+
+Sometimes, it is 
+
+
+:::{#exm-probit-regression}
+
+The probit regression sets 
+
+:::
+
+
+-->
+
+:::{#exm-student-mixture-gaussian}
+
+## Bayesian LASS0
+
+The Laplace distribution with mean $\mu$ and scale $\sigma$, which has density
+\begin{align*}
+f(x; \mu, \sigma) = \frac{1}{2\sigma}\exp\left(-\frac{|x-\mu|}{\sigma}\right),
+\end{align*}
+can be expressed as a scale mixture of Gaussians, where $Y \sim \mathsf{La}(\mu, \sigma)$ is equivalent to $Z \mid W=w \sim \mathsf{Norm}(\mu, \tau)$ and $\tau \sim \mathsf{Exp}\{(2\sigma)^{-1}\}$.
+With the improper prior $p(\mu, \sigma) \propto \sigma^{-1}$ and with $n$ independent and identically distributed Laplace variates, the joint posterior can be written
+\begin{align*}
+p(\boldsymbol{\tau}, \mu, \sigma \mid \boldsymbol{y}) &\propto \left(\prod_{i=1}^n \tau_i\right)^{-1/2}\exp\left\{-\frac{1}{2}\sum_{i=1}^n \frac{(y_i-\mu)^2}{\tau_i}\right\} \\&\quad \times \frac{1}{\sigma^{n+1}}\exp\left(-\frac{1}{2\sigma}\sum_{i=1}^n \tau_i\right)
+\end{align*}
+and $\mu \mid \cdots$ and $\sigma \mid \cdots$ are, as usual, Gaussian and inverse gamma, respectively. The variances, $\tau_j$, are conditionally independent of one another with 
+\begin{align*}
+p(\tau_j \mid \mu, \sigma, y_j) &\propto \tau_j^{-1/2}\exp\left\{-\frac{1}{2}\frac{(y_j-\mu)^2}{\tau_j} -\frac{1}{2} \frac{\tau_j}{\sigma}\right\}\\
+\intertext{so with $\xi_j=1/\tau_j$, we have}
+p(\xi_j \mid \mu, \sigma, y_j) &\propto \xi_j^{-3/2}\exp\left\{-\frac{1}{2\sigma}\frac{\xi_j(y_j-\mu)^2}{\sigma} -\frac{1}{2} \frac{1}{\xi_j}\right\}\\
+\end{align*}
+and we recognize the latter as a Wald (or inverse Gaussian) distribution, whose density function is
+\begin{align*}
+f(y; \nu, \lambda) &= \left(\frac{\lambda}{2\pi y^{3}}\right)^{1/2} \exp\left\{ - \frac{\lambda (y-\nu)^2}{2\nu^2y}\right\}, \quad y > 0
+\\ \stackrel{y}{\propto} y^{-3/2}\exp\left\{-\frac{\lambda}{2} \left(\frac{y}{\nu} + \frac{1}{y}\right)\right\}
+\end{align*}
+for location $\nu >0$ and shape $\lambda>0$, where $\nu=\{\sigma/(y_i-\mu)^2\}^{1/2}$ and $\lambda=\sigma^{-1}$.
+
+@Park.Casella:2008 use this hierarchical construction to defined the Bayesian LASSO. With a model matrix $\mathbf{X}$ whose columns are standardized to have mean zero and unit standard deviation, we may write
+\begin{align*}
+\boldsymbol{Y} \mid \mu, \boldsymbol{\beta}, \sigma^2 &\sim \mathsf{Norm}_n(\nu \boldsymbol{1}_n + \mathbf{X}\boldsymbol{\beta}, \sigma \mathbf{I}_n)\\
+\beta_j &\mid \sigma, \tau \sim \mathsf{Norm}(0, \sigma\tau)\\
+\tau &\sim \mathsf{Exp}(\lambda/2)\\
+p(\mu, \sigma) & \propto \sigma^{-1}.
+\end{align*}
+This yields a Laplace penalty on the regression coefficients, with lower values of $\lambda$ yielding more shrinkage. Note that, in the Bayesian LASSO, none of the posterior draws of $\boldsymbol{\beta}$ are exactly zero.
+
+Many elliptical distributions can be cast as scale mixture models of spherical or Gaussian variables; see, e.g.,  Section 10.2 of @Albert:2009 for a similar derivation with a Student-$t$ distribution.
+
+
+:::
+
+:::{#exm-mixture}
+
+## Mixture models
+
+In clustering problems, we can specify that observations arise from a mixture model with a fixed or unknown number of coefficients: the interest lies then in estimating 
+
+A $K$-mixture model is a weighted combination of models frequently used in clustering or to model subpopulations with respective densities $f_k$, with density
+$$f(x; \boldsymbol{\theta}, \boldsymbol{\omega}) = \sum_{k=1}^K \omega_kf_k(x; \boldsymbol{\theta}_k), \qquad \omega_1 + \cdots \omega_K=1.$$
+Since the density involves a sum, numerical optimization is challenging. Let $C_i$ denote the cluster index for observation $i$: if we knew the value of $C_i =j$, the density would involve only $f_j$. We can thus use latent variables representing the group allocation to simplify the problem and run an EM algorithm or use the data augmentation. In an iterative framework, we can consider the complete data as the tuples $(X_i, Z_i)$, where $Z_i = \mathsf{I}(C_i=k)$.
+
+With the augmented data, the conditional distribution of $Z_i \mid X_i, \boldsymbol{\omega}, \boldsymbol{\theta} \sim \mathsf{Mult}(1, \boldsymbol{\gamma}_{ik})$ where $\gamma_{ik} = \omega_k f_k(X_i\boldsymbol{\theta}_k)/\big\{\sum_{j=1}^K f_j(X_i\boldsymbol{\theta}_k)\big\}$.
+Given suitable priors for the probabilities $\boldsymbol{\omega}$ and $\boldsymbol{\theta} \equiv \{\boldsymbol{\theta}_1, \ldots, \boldsymbol{\theta}_k\}$, we can use Gibbs sampling updating $\boldsymbol{Z}$, $\boldsymbol{\omega}$ and $\boldsymbol{\theta}$ in turn.
+
+:::
+
+<!--
+Consider hybrid mixture of independent MH and random walk, or mean-centered
+
+```{r}
+#| eval: false
+#| echo: false
+dpareto <- function(x, scale, shape, log = FALSE){
+  stopifnot(scale > 0, shape > 0)
+  bad <- !(is.finite(x) & x >= scale)
+  d <- numeric(length = length(x))
+  d[bad] <- -Inf
+  d[!bad] <- log(shape) + shape*log(scale) - (shape+1)*log(x[!bad]); 
+  if(log){
+    return(d)
+  } else{
+    return(exp(d))
+    }
+}
+mle_pareto <- function(x){
+  c(scale = min(x), shape = length(x)/sum(log(x)- log(min(x))))
+}
+
+
+```
+
+-->
 <!-- ## Gibbs sampling -->
 
 <!--
-The Gibbs sampling algorithm builds a Markov chain by iterating through a sequence of conditional distributions. Given initial values for the state vector $\boldsymbol{\theta}_0$, we simulate in turn 
+Given initial values for the state vector $\boldsymbol{\theta}_0$, we simulate in turn 
 $\theta_i \mid \boldsymbol{\theta}_{-i}$ ($i=1,\ldots, p$)
 Gibbs with Normal - inverse gamma (not necessarily conjugate) (Geyer page 17)
 
@@ -974,26 +1345,8 @@ Basic conditions: irreducibility, aperiodic and what they mean in layman terms
 A toy example with a discrete state space
 
 Autocorrelation: correlogram 
-Evaluation of functionals and standard error for correlated draws
 Burnin period
 Thinning: only for storage
-
-Metropolis--Hastings method
-
-Algorithm
-2 examples (a single parameter, two parameters in turn)
-Random walk proposals versus independent proposals
-Practical considerations 
-- tuning the variance of the proposal to reach decent acceptance rate
-- decent starting values and convergence
-- joint updates
-- running a blank MCMC (remove the likelihood: are you sampling from the prior?)
-Gibbs sampling
-Deriving conditionals
-Plot of exploration with steps
-
-Metropolis-within-Gibbs
-Example of a more complicated model
 
 Newer approaches: 
 

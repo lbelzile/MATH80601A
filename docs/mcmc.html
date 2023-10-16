@@ -200,11 +200,15 @@ div.csl-indent {
    
   <ul>
   <li><a href="#monte-carlo-methods" id="toc-monte-carlo-methods" class="nav-link active" data-scroll-target="#monte-carlo-methods"><span class="header-section-number">3.1</span> Monte Carlo methods</a></li>
-  <li><a href="#markov-chain-monte-carlo" id="toc-markov-chain-monte-carlo" class="nav-link" data-scroll-target="#markov-chain-monte-carlo"><span class="header-section-number">3.2</span> Markov chain Monte Carlo</a></li>
+  <li><a href="#markov-chain-monte-carlo" id="toc-markov-chain-monte-carlo" class="nav-link" data-scroll-target="#markov-chain-monte-carlo"><span class="header-section-number">3.2</span> Markov chain Monte Carlo</a>
+  <ul class="collapse">
+  <li><a href="#estimating-uncertainty-of-point-estimators-with-markov-chains" id="toc-estimating-uncertainty-of-point-estimators-with-markov-chains" class="nav-link" data-scroll-target="#estimating-uncertainty-of-point-estimators-with-markov-chains"><span class="header-section-number">3.2.1</span> Estimating uncertainty of point estimators with Markov chains</a></li>
+  </ul></li>
   <li><a href="#markov-chain-monte-carlo-algorithms" id="toc-markov-chain-monte-carlo-algorithms" class="nav-link" data-scroll-target="#markov-chain-monte-carlo-algorithms"><span class="header-section-number">3.3</span> Markov chain Monte Carlo algorithms</a>
   <ul class="collapse">
   <li><a href="#metropolishastings-algorithm" id="toc-metropolishastings-algorithm" class="nav-link" data-scroll-target="#metropolishastings-algorithm"><span class="header-section-number">3.3.1</span> Metropolis–Hastings algorithm</a></li>
   </ul></li>
+  <li><a href="#gibbs-sampling" id="toc-gibbs-sampling" class="nav-link" data-scroll-target="#gibbs-sampling"><span class="header-section-number">3.4</span> Gibbs sampling</a></li>
   </ul>
 <div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/lbelzile/math80601a/edit/main/mcmc.qmd" class="toc-action">Edit this page</a></p></div></div></nav>
     </div>
@@ -223,7 +227,7 @@ div.csl-indent {
 <p>We can thus compute the probability of any event or the expected value of any (integrable) function by computing sample averages; the cost to pay for this generality is randomness.</p>
 <p>Specifically, suppose we are interested in the average <span class="math inline">\(\mathsf{E}\{g(X)\}\)</span> of <span class="math inline">\(X_i \sim F\)</span> for some function <span class="math inline">\(g\)</span>.</p>
 <div id="exm-expectation-demo" class="theorem example">
-<p><span class="theorem-title"><strong>Example 3.1 </strong></span>Consider <span class="math inline">\(X \sim \mathsf{Ga}(\alpha, \beta)\)</span>, a gamma distribution with shape <span class="math inline">\(\alpha\)</span> and rate <span class="math inline">\(\beta\)</span>. We can compute the probability that <span class="math inline">\(X &lt; 1\)</span> easily by Monte Carlo since <span class="math inline">\(\Pr(X &lt;1) = \mathsf{E}\{\mathrm{I}(X&lt;1)\}\)</span> and this means we only need to compute the proportion of draws less than one. We can likewise compute the mean <span class="math inline">\(g(x) = x\)</span> or variance.</p>
+<p><span class="theorem-title"><strong>Example 3.1 </strong></span>Consider <span class="math inline">\(X \sim \mathsf{Gamma}(\alpha, \beta)\)</span>, a gamma distribution with shape <span class="math inline">\(\alpha\)</span> and rate <span class="math inline">\(\beta\)</span>. We can compute the probability that <span class="math inline">\(X &lt; 1\)</span> easily by Monte Carlo since <span class="math inline">\(\Pr(X &lt;1) = \mathsf{E}\{\mathrm{I}(X&lt;1)\}\)</span> and this means we only need to compute the proportion of draws less than one. We can likewise compute the mean <span class="math inline">\(g(x) = x\)</span> or variance.</p>
 <p>Suppose we have drawn a Monte Carlo sample of size <span class="math inline">\(B\)</span>. If the function <span class="math inline">\(g(\cdot)\)</span> is square integrable,<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a> with variance <span class="math inline">\(\sigma^2_g\)</span>, then a central limit theorem applies. In large samples and for independent observations, our Monte Carlo average <span class="math inline">\(\widehat{\mu}_g = B^{-1}\sum_{b=1}^B g(X_i)\)</span> has variance <span class="math inline">\(\sigma^2_g/B\)</span>. We can approximate the unknown variance <span class="math inline">\(\sigma^2_g\)</span> by it’s empirical counterpart.<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a>. Note that, while the variance decreases linearly with <span class="math inline">\(B\)</span>, the choice of <span class="math inline">\(g\)</span> impacts the speed of convergence: we can compute <span class="math inline">\(\sigma^2_g =\Pr(X \leq 1)\{1-\Pr(X \leq 1)\}=0.0434\)</span> (left) and <span class="math inline">\(\sigma^2_g=\alpha/\beta^2=1/8\)</span> (middle plot).</p>
 <p><a href="#fig-monte-carlo-path">Figure&nbsp;<span>3.1</span></a> shows the empirical trace plot of the Monte Carlo average (note the <span class="math inline">\(\sqrt{B}\)</span> <span class="math inline">\(x\)</span>-axis scale!) as a function of the Monte Carlo sample size <span class="math inline">\(B\)</span> along with 95% Wald-based confidence intervals (gray shaded region), <span class="math inline">\(\widehat{\mu}_g \pm 1.96 \times \sigma_g/\sqrt{B}\)</span>. We can see that the ‘likely region’ for the average shrinks with <span class="math inline">\(B\)</span>.</p>
 <p>What happens if our function is not integrable? The right-hand plot of <a href="#fig-monte-carlo-path">Figure&nbsp;<span>3.1</span></a> shows empirical averages of <span class="math inline">\(g(x) = x^{-1}\)</span>, which is not integrable if <span class="math inline">\(\alpha &lt; 1\)</span>. We can compute the empirical average, but the result won’t converge to any meaningful quantity regardless of the sample size. The large jumps are testimonial of this.</p>
@@ -265,7 +269,7 @@ Generalized ratio-of-uniform method
 </div>
 <p>Rejection sampling requires the proposal <span class="math inline">\(q\)</span> to have a support at least as large as that of <span class="math inline">\(p\)</span> and resemble closely the density. It should be chosen so that the upper bound <span class="math inline">\(C\)</span> is as sharp as possible and close to 1. The dominating density <span class="math inline">\(q\)</span> must have heavier tails than the density of interest. The expected number of simulations needed to accept one proposal is <span class="math inline">\(C.\)</span> Finally, for the method to be useful, we need to be able to simulate easily and cheaply from the proposal. The optimal value of <span class="math inline">\(C\)</span> is <span class="math inline">\(C = \sup_{\boldsymbol{\theta}} p(\boldsymbol{\theta}) / q(\boldsymbol{\theta})\)</span>. This quantity may be obtained by numerical optimization, by finding the mode of the ratio of the log densities if the maximum is not known analytically.</p>
 <div id="exm-accept-reject-truncated" class="theorem example">
-<p><span class="theorem-title"><strong>Example 3.2 (Truncated Gaussian distribution) </strong></span>Consider the problem of sampling from a Gaussian distribution <span class="math inline">\(Y \sim \mathsf{No}(\mu, \sigma^2)\)</span> truncated in the interval <span class="math inline">\(a, b,\)</span> which has density <span class="math display">\[\begin{align*}
+<p><span class="theorem-title"><strong>Example 3.2 (Truncated Gaussian distribution) </strong></span>Consider the problem of sampling from a Gaussian distribution <span class="math inline">\(Y \sim \mathsf{Norm}(\mu, \sigma^2)\)</span> truncated in the interval <span class="math inline">\(a, b,\)</span> which has density <span class="math display">\[\begin{align*}
 f(x; \mu, \sigma, a, b) = \frac{1}{\sigma}\frac{\phi\left(\frac{x-\mu}{\sigma}\right)}{\Phi\{(b-\mu)/\sigma\}-\Phi\{(a-\mu)/\sigma\}}.
 \end{align*}\]</span> where <span class="math inline">\(\phi(\cdot), \Phi(\cdot)\)</span> are respectively the density and distribution function of the standard Gaussian distribution.</p>
 <p>Since the Gaussian is a location-scale family, we can reduce the problem to sampling <span class="math inline">\(X\)</span> from a standard Gaussian truncated on <span class="math inline">\(\alpha = (a-\mu)/\sigma\)</span> and <span class="math inline">\(\beta = (b-\mu)/\sigma\)</span> and back transform the result as <span class="math inline">\(Y = \mu + \sigma X\)</span>.</p>
@@ -367,7 +371,7 @@ X \sim \Phi^{-1}\left[\Phi(\alpha) + \{\Phi(\beta)-\Phi(\alpha)\}U\right]
 </div>
 <div id="exm-autoregressive-one" class="theorem example">
 <p><span class="theorem-title"><strong>Example 3.4 </strong></span>Consider a first-order autoregressive process, or <span class="math inline">\(\mathsf{AR}(1)\)</span>, of the form</p>
-<p><span class="math display">\[Y_t = \mu + \phi(Y_{t-1} - \mu) + \varepsilon_t,\]</span> where <span class="math inline">\(\phi\)</span> is the lag-one correlation, <span class="math inline">\(\mu\)</span> the global mean and <span class="math inline">\(\varepsilon_t\)</span> is an iid innovation with mean zero and variance <span class="math inline">\(\sigma^2\)</span>. If <span class="math inline">\(|\phi| &lt; 1\)</span>, the process is stationary, and the variance does not increase with <span class="math inline">\(t\)</span>. If innovations are Gaussian, we have <span class="math display">\[Y_t \mid Y_{t-1}=y_{t-1} \sim \mathsf{No}\{\mu(1-\phi)+ \phi y_{t-1}, \sigma^2\}.\]</span></p>
+<p><span class="math display">\[Y_t = \mu + \phi(Y_{t-1} - \mu) + \varepsilon_t,\]</span> where <span class="math inline">\(\phi\)</span> is the lag-one correlation, <span class="math inline">\(\mu\)</span> the global mean and <span class="math inline">\(\varepsilon_t\)</span> is an iid innovation with mean zero and variance <span class="math inline">\(\sigma^2\)</span>. If <span class="math inline">\(|\phi| &lt; 1\)</span>, the process is stationary, and the variance does not increase with <span class="math inline">\(t\)</span>. If innovations are Gaussian, we have <span class="math display">\[Y_t \mid Y_{t-1}=y_{t-1} \sim \mathsf{Norm}\{\mu(1-\phi)+ \phi y_{t-1}, \sigma^2\}.\]</span></p>
 <p>The <span class="math inline">\(\mathsf{AR}(1)\)</span> stationarity process <span class="math inline">\(Y_t\)</span>, marginally, has mean <span class="math inline">\(\mu\)</span> and unconditional variance <span class="math inline">\(\sigma^2/(1-\phi^2)\)</span>. The <span class="math inline">\(\mathsf{AR}(1)\)</span> process is first-order Markov since the conditional distribution <span class="math inline">\(p(Y_t \mid Y_{t-1}, \ldots, Y_{t-p})\)</span> equals <span class="math inline">\(p(Y_t \mid Y_{t-1})\)</span>.</p>
 </div>
 <p>Autoregressive processes are not the only ones we can consider, although their simplicity lends itself to analytic calculations. More generally, for a correlated sequence, the variance of the stationary distribution is <span class="math display">\[\begin{align*}
@@ -397,7 +401,26 @@ X \sim \Phi^{-1}\left[\Phi(\alpha) + \{\Phi(\beta)-\Phi(\alpha)\}U\right]
 </div>
 <p>We can see from <a href="#fig-ar1-variance">Figure&nbsp;<span>3.4</span></a> that, when the autocorrelation is positive (as will be the cause in all applications of interest), we will suffer from variance inflation. To get the same uncertainty estimates for the mean with an <span class="math inline">\(\mathsf{AR}(1)\)</span> process with <span class="math inline">\(\phi \approx 0.75\)</span> than with an iid sample, we would need nine times as many observations: this is the prize to pay.</p>
 </div>
-<p>When can we use output from a Markov chain in place of independent Monte Carlo draws? The assumptions laid out in the ergodic theorem are that the chain is irreducible and acyclic, ensuring that the chain has a unique stationary distribution.</p>
+<section id="estimating-uncertainty-of-point-estimators-with-markov-chains" class="level3" data-number="3.2.1">
+<h3 data-number="3.2.1" class="anchored" data-anchor-id="estimating-uncertainty-of-point-estimators-with-markov-chains"><span class="header-section-number">3.2.1</span> Estimating uncertainty of point estimators with Markov chains</h3>
+<p>With a simple random sample containing independent and identically distributed observations, the standard error of the sample mean is <span class="math inline">\(\sigma/\sqrt{n}\)</span> and we can use the empirical standard deviation <span class="math inline">\(\widehat{\sigma}\)</span> to estimate the first term. For Markov chains, the correlation prevents us from using this approach. The output of the<code>coda</code> package are based on fitting a high order autoregressive process to the Markov chain and using the formula of the unconditional variance of the <span class="math inline">\(\mathsf{AR}(p)\)</span> to obtain the central limit theorem variance. An alternative method recommended by <span class="citation" data-cites="Geyer:2011">Geyer (<a href="references.html#ref-Geyer:2011" role="doc-biblioref">2011</a>)</span> and implemented in his <strong>R</strong> package <code>mcmc</code>, is to segment the time series into batch, compute the means of each non-overlapping segment and use this standard deviation with suitable rescaling to get the central limit variance for the posterior mean. <a href="#fig-mcmc-batchmean">Figure&nbsp;<span>3.5</span></a> illustrate the method of batch means.</p>
+<ol type="1">
+<li>Break the chain of length <span class="math inline">\(B\)</span> (after burn in) in <span class="math inline">\(K\)</span> blocks of size <span class="math inline">\(\approx K/B\)</span>.</li>
+<li>Compute the sample mean of each segment. These values form a Markov chain and should be approximately uncorrelated.</li>
+<li>Compute the standard deviation of the segments mean. Rescale by <span class="math inline">\(K^{-1/2}\)</span> to get standard error of the global mean.</li>
+</ol>
+<p>Why does the approach work? If the chain samples from the stationary distribution, all samples have the same mean. If we partition the sample into long enough, the sample mean of each blocks should be roughly independent (otherwise we could remove an overlapping portion). We can then compute the empirical standard deviation of the estimators. We can then compute the overall mean and use a scaling argument to relate the variability of the global estimator with the variability of the means of the smaller blocks.</p>
+<div class="cell" data-hash="mcmc_cache/html/fig-mcmc-batchmean_ca694168d22e3f931bf5317d086819de">
+<div class="cell-output-display">
+<div id="fig-mcmc-batchmean" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="mcmc_files/figure-html/fig-mcmc-batchmean-1.png" class="img-fluid figure-img" width="672"></p>
+<figcaption class="figure-caption">Figure&nbsp;3.5: Calculation of the standard error of the posterior mean using the batch method.</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>When can we use output from a Markov chain in place of independent Monte Carlo draws? The assumptions laid out in the ergodic theorem are that the chain is irreducible and acyclic, ensuring that the chain has a unique stationary distribution. The ergodic theorem is a result about convergence of averages.</p>
 <p>To make sense of these concepts, we consider a discrete Markov chain over the integers <span class="math inline">\(1, 2, 3\)</span>. A discrete-time stochastic process is a random sequences whose elements are part of some set, the state space, here the integers. We can encode the probability of moving from one state to the next via a transition matrix, whose rows contain the probabilities of moving from one state to the next and thus sum to one. We can run a Markov chain by sampling an initial state <span class="math inline">\(X_0\)</span> at random from <span class="math inline">\(\{1, \ldots, 5\}\)</span> and then consider the transitions from the conditional distribution, sampling <span class="math inline">\(p(X_t \mid X_{t-1})\)</span>. Because of the Markov property, the history of the chain does not matter: we only need to read the value <span class="math inline">\(i=X_{t-1}\)</span> of the state and pick the <span class="math inline">\(i\)</span>th row of <span class="math inline">\(P_3\)</span> to know the probability of the different moves from the current state.</p>
 <p>Irreducible means that the chain can move from anywhere to anywhere, so it doesn’t get stuck in part of the space forever. A transition matrix such as <span class="math inline">\(P_1\)</span> below describes a reducible Markov chain, because once you get into state <span class="math inline">\(2\)</span> or <span class="math inline">\(3\)</span>, you won’t escape. With reducible chains, the stationary distribution need not be unique, and so the target would depend on the starting values.</p>
 <p>Cyclical chains loop around and visit periodically a state: <span class="math inline">\(P_2\)</span> is an instance of transition matrix describing a chain that cycles from <span class="math inline">\(1\)</span> to <span class="math inline">\(3\)</span>, <span class="math inline">\(3\)</span> to <span class="math inline">\(2\)</span> and <span class="math inline">\(2\)</span> to <span class="math inline">\(1\)</span> every three iteration. An acyclic chain is needed for convergence of marginals.</p>
@@ -423,17 +446,18 @@ P_3 = \begin{pmatrix}
 0 &amp; 0 &amp; 0 &amp;  \frac{1}{3}  &amp; \frac{2}{3} \\
 \end{pmatrix}
 \]</span> The stationary distribution is the value of the row vector <span class="math inline">\(\boldsymbol{p}\)</span>, such that <span class="math inline">\(\boldsymbol{p} = \boldsymbol{p}\mathbf{P}\)</span> for transition matrix <span class="math inline">\(\mathbf{P}\)</span>: we get <span class="math inline">\(\boldsymbol{p}_1=(0, 5/11, 6/11)\)</span> for <span class="math inline">\(P_1\)</span>, <span class="math inline">\((1/3, 1/3, 1/3)\)</span> for <span class="math inline">\(P_2\)</span> and <span class="math inline">\((1,2,2,2,1)/8\)</span> for <span class="math inline">\(P_3\)</span>.</p>
-<p><a href="#fig-discrete-markov-chain">Figure&nbsp;<span>3.5</span></a> shows the path of the walk and the empirical proportion of the time spent in each state, as time progress. Since the Markov chain has a unique stationary distribution, we expect these to converge to it.</p>
+<p><a href="#fig-discrete-markov-chain">Figure&nbsp;<span>3.6</span></a> shows the path of the walk and the empirical proportion of the time spent in each state, as time progress. Since the Markov chain has a unique stationary distribution, we expect these to converge to it.</p>
 <div class="cell" data-hash="mcmc_cache/html/fig-discrete-markov-chain_c6892019fb97cf3a2ac3c1b3660b467f">
 <div class="cell-output-display">
 <div id="fig-discrete-markov-chain" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
 <p><img src="mcmc_files/figure-html/fig-discrete-markov-chain-1.png" class="img-fluid figure-img" width="672"></p>
-<figcaption class="figure-caption">Figure&nbsp;3.5: Discrete Markov chain on integers from 1 to 5, with transition matrix <span class="math inline">\(P_3\)</span>, with traceplot of 1000 first iterations (left) and running mean plots of sample proportion of each state visited per 100 iterations (right).</figcaption>
+<figcaption class="figure-caption">Figure&nbsp;3.6: Discrete Markov chain on integers from 1 to 5, with transition matrix <span class="math inline">\(P_3\)</span>, with traceplot of 1000 first iterations (left) and running mean plots of sample proportion of each state visited per 100 iterations (right).</figcaption>
 </figure>
 </div>
 </div>
 </div>
+</section>
 </section>
 <section id="markov-chain-monte-carlo-algorithms" class="level2" data-number="3.3">
 <h2 data-number="3.3" class="anchored" data-anchor-id="markov-chain-monte-carlo-algorithms"><span class="header-section-number">3.3</span> Markov chain Monte Carlo algorithms</h2>
@@ -452,11 +476,18 @@ R = \frac{p(\boldsymbol{\theta}_t^{\star})}{p(\boldsymbol{\theta}_{t-1})}\frac{q
 <li>With probability <span class="math inline">\(\min\{R, 1\}\)</span>, accept the proposal and set <span class="math inline">\(\boldsymbol{\theta}_t \gets \boldsymbol{\theta}_t^{\star}\)</span>, otherwise set the value to the previous state, <span class="math inline">\(\boldsymbol{\theta}_t \gets \boldsymbol{\theta}_{t-1}\)</span>.</li>
 </ol>
 </div>
+<p>The Metropolis–Hastings algorithm generates samples from the posterior <span class="math inline">\(p(\boldsymbol{\theta} \mid \boldsymbol{y})\)</span> if the Markov chain it defines is reversible: we say it satisfies the <em>detailed balance condition</em> when the density of <span class="math inline">\(\boldsymbol{\theta}_{t+1} \mid \boldsymbol{\theta}_{t}\)</span>, say <span class="math inline">\(f(\boldsymbol{\theta}_{t+1} \mid \boldsymbol{\theta}_{t})\)</span>. Detailed balance means <span class="math display">\[\begin{align*}
+f(\boldsymbol{\theta}_{t+1} \mid \boldsymbol{\theta}_{t})p(\boldsymbol{\theta}_{t} \mid \boldsymbol{y}) = f(\boldsymbol{\theta}_{t} \mid \boldsymbol{\theta}_{t+1})p(\boldsymbol{\theta}_{t+1} \mid \boldsymbol{y})
+\end{align*}\]</span> This guarantees that, if <span class="math inline">\(\boldsymbol{\theta}_{t}\)</span> is drawn from the posterior, then the left hand side is the joint density of <span class="math inline">\((\boldsymbol{\theta}_{t}, \boldsymbol{\theta}_{t+1})\)</span> and the marginal distribution obtained by integrating over <span class="math inline">\(\boldsymbol{\theta}_{t}\)</span>, <span class="math display">\[\begin{align*}
+&amp;\int f(\boldsymbol{\theta}_{t+1} \mid \boldsymbol{\theta}_{t})p(\boldsymbol{\theta}_{t} \mid \boldsymbol{y})\mathrm{d} \boldsymbol{\theta}_{t}
+\\&amp;\quad = \int f(\boldsymbol{\theta}_{t} \mid \boldsymbol{\theta}_{t+1})p(\boldsymbol{\theta}_{t+1} \mid \boldsymbol{y})\mathrm{d} \boldsymbol{\theta}_{t}
+\\&amp;\quad= p(\boldsymbol{\theta}_{t+1} \mid \boldsymbol{y})
+\end{align*}\]</span> and any draw from the posterior will generate a new realization from the posterior. We also ensure that, provided the starting value as non-zero probability under the posterior, the chain will converge to the stationarity distribution (albeit perhaps slowly).</p>
 <div class="remark proof">
 <p><span class="proof-title"><em>Remark</em> (Interpretation of the algorithm). </span>If <span class="math inline">\(R&gt;1\)</span>, the proposal has higher density and we always accept the move. If the ratio is less than one, the proposal is in a lower probability region, we accept the move with probability <span class="math inline">\(R\)</span> and set <span class="math inline">\(\boldsymbol{\theta}_{t}=\boldsymbol{\theta}^{\star}_t\)</span>; if we reject, the Markov chain stays at the current value, which induces autocorrelation. Since the acceptance probability depends only on the density through ratios, we can work with unnormalized density functions and this is what allows us, if our proposal density is the (marginal) posterior of the parameter, to obtain approximate posterior samples without having to compute the marginal likelihood.</p>
 </div>
 <div class="remark proof">
-<p><span class="proof-title"><em>Remark</em> (Blank run). </span>To check that the algorithm is well-defined, we can remove the log likelihood component and run the algorithm: if it is correct, the resulting draws should be drawn from the prior provided the latter is proper <span class="citation" data-cites="Green:1994">(<a href="references.html#ref-Green:1994" role="doc-biblioref">Green 1995</a>)</span>.</p>
+<p><span class="proof-title"><em>Remark</em> (Blank run). </span>To check that the algorithm is well-defined, we can remove the log likelihood component and run the algorithm: if it is correct, the resulting draws should be drawn from the prior provided the latter is proper <span class="citation" data-cites="Green:2001">(<a href="references.html#ref-Green:2001" role="doc-biblioref">Green 2001, 55</a>)</span>.</p>
 </div>
 <div class="remark proof">
 <p><span class="proof-title"><em>Remark</em> (Symmetric proposals). </span>Suppose we generate a candidate sample <span class="math inline">\(\boldsymbol{\theta}_t^{\star}\)</span> from a symmetric distribution <span class="math inline">\(q(\cdot \mid \cdot)\)</span> centered at <span class="math inline">\(\boldsymbol{\theta}_{t-1}\)</span>, such as the random walk <span class="math inline">\(\boldsymbol{\theta}_t^{\star} =\boldsymbol{\theta}_{t-1}+ Z\)</span> where <span class="math inline">\(Z\)</span> has a symmetric distribution. Then, the proposal density ratio cancels so need not be computed in the Metropolis ratio of <a href="#eq-metropolis-ratio">Equation&nbsp;<span>3.1</span></a>.</p>
@@ -471,10 +502,10 @@ R = \frac{p(\boldsymbol{\theta}_t^{\star})}{p(\boldsymbol{\theta}_{t-1})}\frac{q
 Y_{i} &amp;\sim \mathsf{Po}(n_i\lambda_i), \qquad (i=1,2)\\
 \lambda_1 &amp;= \exp(\beta + \kappa) \\
 \lambda_2 &amp;= \exp(\beta) \\
-\beta &amp; \sim \mathsf{No}(\log 0.01, 1.5) \\
-\kappa &amp;\sim \mathsf{No}(0, 1)
+\beta &amp; \sim \mathsf{Norm}(\log 0.01, 1.5) \\
+\kappa &amp;\sim \mathsf{Norm}(0, 1)
 \end{align*}\]</span> There are two parameters in the model, which can be updated in turn or jointly.</p>
-<div class="cell" data-hash="mcmc_cache/html/unnamed-chunk-11_98ece623d5155cc4fb486a9f90a52d69">
+<div class="cell" data-hash="mcmc_cache/html/unnamed-chunk-12_5d8b49ce508e0df0f0664b38eeff3372">
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(upworthy_question, <span class="at">package =</span> <span class="st">"hecbayes"</span>)</span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Compute sufficient statistics</span></span>
 <span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>data <span class="ot">&lt;-</span> upworthy_question <span class="sc">|&gt;</span></span>
@@ -555,62 +586,62 @@ kappa  0.06673  0.06933  0.07077  0.07212  0.07463</code></pre>
 <pre><code>[1] 5.717097e-05 8.220816e-05</code></pre>
 </div>
 </div>
-<p>The acceptance rate of the algorithm is 35.1% and the posterior means are <span class="math inline">\(\beta =-4.51\)</span> and <span class="math inline">\(\kappa =0.07\)</span>. The standard errors cannot be calculated from the empirical standard deviations. The output of the<code>coda</code> package are based on fitting an autoregressive process to the Markov chain and using the formula to compute the central limit theorem variance. An alternative method recommended by <span class="citation" data-cites="Geyer:2011">Geyer (<a href="references.html#ref-Geyer:2011" role="doc-biblioref">2011</a>)</span> and implemented in his <strong>R</strong> package <code>mcmc</code>, is to segment the time series into batch, compute the means of each non-overlapping segment and use this standard deviation with suitable rescaling to get the central limit variance for the posterior mean.</p>
+<p>The acceptance rate of the algorithm is 35.1% and the posterior means are <span class="math inline">\(\beta =-4.51\)</span> and <span class="math inline">\(\kappa =0.07\)</span>.</p>
 <div class="cell" data-hash="mcmc_cache/html/fig-traceplot_1b9a1a3c4cbcf3d56cc985ee45b87449">
 <div class="cell-output-display">
 <div id="fig-traceplot" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
 <p><img src="mcmc_files/figure-html/fig-traceplot-1.png" class="img-fluid figure-img" width="672"></p>
-<figcaption class="figure-caption">Figure&nbsp;3.6: Traceplots of Markov chain of log rate and log odds rate for the Metropolis–Hastings sampler applied to the Upworthy question data.</figcaption>
+<figcaption class="figure-caption">Figure&nbsp;3.7: Traceplots of Markov chain of log rate and log odds rate for the Metropolis–Hastings sampler applied to the Upworthy question data.</figcaption>
 </figure>
 </div>
 </div>
 </div>
-<p><a href="#fig-scatterplot-upworthy-question">Figure&nbsp;<span>3.7</span></a> shows the posterior samples, which are very nearly bivariate Gaussian. The parametrization in terms of log odds ratio induces strong negative dependence, so if we were to sample <span class="math inline">\(\kappa\)</span>, then <span class="math inline">\(\beta\)</span>, we would have much larger inefficiency and slower exploration. Instead, the code used a bivariate Gaussian random walk proposal whose covariance matrix was taken as a multiple of the inverse of the negative hessian (equivalently, to the observed information matrix of the log posterior), evaluated at of the maximum a posteriori. This Gaussian approximation is called <strong>Laplace approximation</strong>: it is advisable to reparametrize the model so that the distribution is nearly symmetric, so that the approximation is good. In this example, because of the large sample, the Gaussian approximation implied by Bernstein–von Mises’ theorem is excellent.</p>
+<p><a href="#fig-scatterplot-upworthy-question">Figure&nbsp;<span>3.8</span></a> shows the posterior samples, which are very nearly bivariate Gaussian. The parametrization in terms of log odds ratio induces strong negative dependence, so if we were to sample <span class="math inline">\(\kappa\)</span>, then <span class="math inline">\(\beta\)</span>, we would have much larger inefficiency and slower exploration. Instead, the code used a bivariate Gaussian random walk proposal whose covariance matrix was taken as a multiple of the inverse of the negative hessian (equivalently, to the observed information matrix of the log posterior), evaluated at of the maximum a posteriori. This Gaussian approximation is called <strong>Laplace approximation</strong>: it is advisable to reparametrize the model so that the distribution is nearly symmetric, so that the approximation is good. In this example, because of the large sample, the Gaussian approximation implied by Bernstein–von Mises’ theorem is excellent.</p>
 <div class="cell" data-hash="mcmc_cache/html/fig-scatterplot-upworthy-question_3a8557be81b67c958b29b50f5244bb88">
 <div class="cell-output-display">
 <div id="fig-scatterplot-upworthy-question" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
 <p><img src="mcmc_files/figure-html/fig-scatterplot-upworthy-question-1.png" class="img-fluid figure-img" width="672"></p>
-<figcaption class="figure-caption">Figure&nbsp;3.7: Scatterplot of posterior draws (left) and marginal density plot of log hazard rate (right).</figcaption>
+<figcaption class="figure-caption">Figure&nbsp;3.8: Scatterplot of posterior draws (left) and marginal density plot of log hazard rate (right).</figcaption>
 </figure>
 </div>
 </div>
 </div>
 </div>
 <div id="prp-visual-diagnostics" class="theorem proposition">
-<p><span class="theorem-title"><strong>Proposition 3.5 (Visual diagnostics for Markov chains) </strong></span>It is useful to inspect visually the Markov chain, as it may indicate several problems. If the chain drifts around without stabilizing around the posterior mode, then we can suspect that it hasn’t reached it’s stationary distribution (likely due to poor starting values). In such cases, we need to disregard the dubious draws from the chain by discarding the so-called warm up or <strong>burn in</strong> period. While there are some guarantees of convergence, silly starting values may translate into tens of thousands of iterations lost wandering around. Preliminary optimization and plausible starting values help alleviate these problems. <a href="#fig-badstart">Figure&nbsp;<span>3.8</span></a> shows the effect of bad starting values on a toy problem where convergence to the mode is relatively fast. If the proposal is in a flat region of the space, it can wander around for a very long time before converging to the stationary distribution.</p>
-<p>If we run several chains, as in <a href="#fig-badstart">Figure&nbsp;<span>3.8</span></a>, with different starting values, we can monitor convergence by checking whether these chains converge to the same target. A <strong>trace rank</strong> plots, shown on right panel of <a href="#fig-badstart">Figure&nbsp;<span>3.8</span></a>, compares the rank of the values of the different chain at a given iteration: with good mixing, the ranks should switch frequently and be distributed uniformly across integers.</p>
+<p><span class="theorem-title"><strong>Proposition 3.5 (Visual diagnostics for Markov chains) </strong></span>It is useful to inspect visually the Markov chain, as it may indicate several problems. If the chain drifts around without stabilizing around the posterior mode, then we can suspect that it hasn’t reached it’s stationary distribution (likely due to poor starting values). In such cases, we need to disregard the dubious draws from the chain by discarding the so-called warm up or <strong>burn in</strong> period. While there are some guarantees of convergence, silly starting values may translate into tens of thousands of iterations lost wandering around. Preliminary optimization and plausible starting values help alleviate these problems. <a href="#fig-badstart">Figure&nbsp;<span>3.9</span></a> shows the effect of bad starting values on a toy problem where convergence to the mode is relatively fast. If the proposal is in a flat region of the space, it can wander around for a very long time before converging to the stationary distribution.</p>
+<p>If we run several chains, as in <a href="#fig-badstart">Figure&nbsp;<span>3.9</span></a>, with different starting values, we can monitor convergence by checking whether these chains converge to the same target. A <strong>trace rank</strong> plots, shown on right panel of <a href="#fig-badstart">Figure&nbsp;<span>3.9</span></a>, compares the rank of the values of the different chain at a given iteration: with good mixing, the ranks should switch frequently and be distributed uniformly across integers.</p>
 <div class="cell" data-hash="mcmc_cache/html/fig-badstart_a65284234d35eecfade40ee68a825a16">
 <div class="cell-output-display">
 <div id="fig-badstart" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
 <p><img src="mcmc_files/figure-html/fig-badstart-1.png" class="img-fluid figure-img" width="672"></p>
-<figcaption class="figure-caption">Figure&nbsp;3.8: Traceplots of three Markov chains for the same target with different initial values for the first 500 iterations (left) and trace rank plot after discarding these (right).</figcaption>
+<figcaption class="figure-caption">Figure&nbsp;3.9: Traceplots of three Markov chains for the same target with different initial values for the first 500 iterations (left) and trace rank plot after discarding these (right).</figcaption>
 </figure>
 </div>
 </div>
 </div>
-<p>The quality of the mixing of the chain (autocorrelation), depends on the proposal variance, which can obtain by trial and error. Trace plots <a href="#fig-traceplot">Figure&nbsp;<span>3.6</span></a> show the values of the chain as a function of iteration number. If our algorithm works well, we expect the proposals to center around the posterior mode and resemble a fat hairy caterpillar. If the variance is too small, the acceptance rate will increase but most steps will be small. If the variance of the proposal is too high, the acceptance rate will decrease (as many proposal moves will have much lower posterior), so the chain will get stuck for long periods of time. This is Goldilock’s principle, as illustrated in <a href="#fig-goldilock-trace">Figure&nbsp;<span>3.9</span></a>.</p>
+<p>The quality of the mixing of the chain (autocorrelation), depends on the proposal variance, which can obtain by trial and error. Trace plots <a href="#fig-traceplot">Figure&nbsp;<span>3.7</span></a> show the values of the chain as a function of iteration number. If our algorithm works well, we expect the proposals to center around the posterior mode and resemble a fat hairy caterpillar. If the variance is too small, the acceptance rate will increase but most steps will be small. If the variance of the proposal is too high, the acceptance rate will decrease (as many proposal moves will have much lower posterior), so the chain will get stuck for long periods of time. This is Goldilock’s principle, as illustrated in <a href="#fig-goldilock-trace">Figure&nbsp;<span>3.10</span></a>.</p>
 <div class="cell" data-hash="mcmc_cache/html/fig-goldilock-trace_db5a123bbb85f2745e455154534e509b">
 <div class="cell-output-display">
 <div id="fig-goldilock-trace" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
 <p><img src="mcmc_files/figure-html/fig-goldilock-trace-1.png" class="img-fluid figure-img" width="672"></p>
-<figcaption class="figure-caption">Figure&nbsp;3.9: Example of traceplot with proposal variance that is too small (top), adequate (middle) and too large (bottom).</figcaption>
+<figcaption class="figure-caption">Figure&nbsp;3.10: Example of traceplot with proposal variance that is too small (top), adequate (middle) and too large (bottom).</figcaption>
 </figure>
 </div>
 </div>
 </div>
-<p>One way to calibrate is to track the acceptance rate of the proposals: for the three chains in <a href="#fig-goldilock-trace">Figure&nbsp;<span>3.9</span></a>, these are 0.932, 0.33, 0.12. In one-dimensional toy problems with Gaussian distributions, an acceptance rate of 0.44 is optimal, and this ratio decreases to 0.234 when <span class="math inline">\(D \geq 2\)</span> <span class="citation" data-cites="Roberts.Rosenthal:2001">Sherlock (<a href="references.html#ref-Sherlock:2013" role="doc-biblioref">2013</a>)</span>. This need not generalize to other settings and depends on the context. Optimal rate for alternative algorithms, such as Metropolis-adjusted Langevin algorithm, are typically higher.</p>
-<p>We can tune the variance of the global proposal <span class="citation" data-cites="Andrieu.Thoms:2008">(<a href="references.html#ref-Andrieu.Thoms:2008" role="doc-biblioref">Andrieu and Thoms 2008</a>)</span> to improve the mixing of the chains at approximate stationarity. This is done by increasing (decreasing) the variance if the historical acceptance rate is too high (respectively low) during burn-in period, and reinitializing after any change with an acceptance target of <span class="math inline">\(0.44\)</span>. We stop adapting to ensure convergence to the posterior after a suitable number of initial iterations. Adaptive MCMC methods use an initial warm up period to find good proposals: we can consider a block of length <span class="math inline">\(L\)</span>, compute the acceptance rate, multiply the variance by a scaling factor and run the chain a little longer. We only keep samples obtained after the adaptation phase.</p>
-<p>We can also plot the autocorrelation of the entries of the chain as a function of lags, a display known as correlogram in the time series literature but colloquially referred to as autocorrelation function (acf). The higher the autocorrelation, the more variance inflation one has and the longer the number of steps before two draws are treated as independent. <a href="#fig-goldilock-correlogram">Figure&nbsp;<span>3.10</span></a> shows the effect of the proposal variance on the correlation for the three chains. Practitioners designing very inefficient Markov chain Monte Carlo algorithms often thin their series: that is, they keep only every <span class="math inline">\(k\)</span> iteration. This is not recommended practice unless storage is an issue and usually points towards inefficient sampling algorithms.</p>
+<p>One way to calibrate is to track the acceptance rate of the proposals: for the three chains in <a href="#fig-goldilock-trace">Figure&nbsp;<span>3.10</span></a>, these are 0.932, 0.33, 0.12. In one-dimensional toy problems with Gaussian distributions, an acceptance rate of 0.44 is optimal, and this ratio decreases to 0.234 when <span class="math inline">\(D \geq 2\)</span> <span class="citation" data-cites="Roberts.Rosenthal:2001">Sherlock (<a href="references.html#ref-Sherlock:2013" role="doc-biblioref">2013</a>)</span>. This need not generalize to other settings and depends on the context. Optimal rate for alternative algorithms, such as Metropolis-adjusted Langevin algorithm, are typically higher.</p>
+<p>We can tune the variance of the global proposal <span class="citation" data-cites="Andrieu.Thoms:2008">(<a href="references.html#ref-Andrieu.Thoms:2008" role="doc-biblioref">Andrieu and Thoms 2008</a>)</span> to improve the mixing of the chains at approximate stationarity. This is done by increasing (decreasing) the variance if the historical acceptance rate is too high (respectively low) during the burn in period, and reinitializing after any change with an acceptance target of <span class="math inline">\(0.44\)</span>. We stop adapting to ensure convergence to the posterior after a suitable number of initial iterations. Adaptive MCMC methods use an initial warm up period to find good proposals: we can consider a block of length <span class="math inline">\(L\)</span>, compute the acceptance rate, multiply the variance by a scaling factor and run the chain a little longer. We only keep samples obtained after the adaptation phase.</p>
+<p>We can also plot the autocorrelation of the entries of the chain as a function of lags, a display known as correlogram in the time series literature but colloquially referred to as autocorrelation function (acf). The higher the autocorrelation, the more variance inflation one has and the longer the number of steps before two draws are treated as independent. <a href="#fig-goldilock-correlogram">Figure&nbsp;<span>3.11</span></a> shows the effect of the proposal variance on the correlation for the three chains. Practitioners designing very inefficient Markov chain Monte Carlo algorithms often thin their series: that is, they keep only every <span class="math inline">\(k\)</span> iteration. This is not recommended practice unless storage is an issue and usually points towards inefficient sampling algorithms.</p>
 <div class="cell" data-hash="mcmc_cache/html/fig-goldilock-correlogram_ec9d4288773dcc1b98cc7cd642c09f40">
 <div class="cell-output-display">
 <div id="fig-goldilock-correlogram" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
 <p><img src="mcmc_files/figure-html/fig-goldilock-correlogram-1.png" class="img-fluid figure-img" width="960"></p>
-<figcaption class="figure-caption">Figure&nbsp;3.10: Correlogram for the three Markov chains.</figcaption>
+<figcaption class="figure-caption">Figure&nbsp;3.11: Correlogram for the three Markov chains.</figcaption>
 </figure>
 </div>
 </div>
@@ -642,10 +673,10 @@ f_\vartheta(\vartheta) = f_{\theta}\{t^{-1}(\vartheta)\} \left| \frac{\mathrm{d}
 f_{\vartheta}(\vartheta)&amp;=f_{\theta}\{a+(b-a) \mathrm{expit}(\vartheta)\} (b-a)\\&amp;\quad \times \mathrm{expit}(\vartheta)\{1-\mathrm{expit}(\vartheta)\}
 \end{align*}\]</span></li>
 </ul>
-<p>To guarantee that our proposals fall in the support of <span class="math inline">\(\theta\)</span>, we can thus run a symmetric random walk proposal on the <em>transformed scale</em> by drawing <span class="math inline">\(\vartheta_{t}^{\star} \sim \vartheta_{t-1}+\tau Z\)</span> where <span class="math inline">\(Z\sim\mathsf{No}(0, 1)\)</span>. Due to the transformation, the kernel ratio now contains the Jacobian.</p>
+<p>To guarantee that our proposals fall in the support of <span class="math inline">\(\theta\)</span>, we can thus run a symmetric random walk proposal on the <em>transformed scale</em> by drawing <span class="math inline">\(\vartheta_{t}^{\star} \sim \vartheta_{t-1}+\tau Z\)</span> where <span class="math inline">\(Z\sim\mathsf{Norm}(0, 1)\)</span>. Due to the transformation, the kernel ratio now contains the Jacobian.</p>
 </div>
 <div id="prp-truncated-proposals" class="theorem proposition">
-<p><span class="theorem-title"><strong>Proposition 3.7 (Truncated proposals) </strong></span>As an alternative, if we are dealing with parameters that are restricted in <span class="math inline">\([a,b]\)</span>, we can simulate <span class="math inline">\(\theta^{\star}_{t} \sim \mathsf{TNo}(\vartheta_{t-1}, \tau^2, a, b).\)</span> While the benefit of using the truncated proposal isn’t obvious, it becomes more visible when we move to more advanced proposals whose mean and variance depends on the gradient and or the hessian of the underlying unnormalized log posterior, as the mean can be lower than <span class="math inline">\(a\)</span> or larger than <span class="math inline">\(b\)</span> while still giving non-zero acceptance. The <code>TruncatedNormal</code> package can be used to efficiently evaluate such instances using results from <span class="citation" data-cites="LEcuyer.Botev:2017">Botev and L’Écuyer (<a href="references.html#ref-LEcuyer.Botev:2017" role="doc-biblioref">2017</a>)</span> even when the truncation bounds are far from the mode. the normalizing constant of the truncated Gaussian in the denominator of the density is a function of the location and scale parameters: if these depend on the current value of <span class="math inline">\(\boldsymbol{\theta}_{t-1}\)</span>, as is the case for a random walk, we need to keep these terms as part of the Metropolis ratio. The mean and standard deviation of the trunctaed Gaussian are not equal to the parameters <span class="math inline">\(\mu\)</span> (which corresponds to the mode, provided <span class="math inline">\(a &lt; \mu &lt; b\)</span>) and <span class="math inline">\(\sigma\)</span>.</p>
+<p><span class="theorem-title"><strong>Proposition 3.7 (Truncated proposals) </strong></span>As an alternative, if we are dealing with parameters that are restricted in <span class="math inline">\([a,b]\)</span>, we can simulate using a random walk but with truncated Gaussian steps, taking <span class="math inline">\(\theta^{\star}_{t} \sim \mathsf{TNo}(\vartheta_{t-1}, \tau^2, a, b).\)</span> The benefits of using the truncated proposal becomes more apparent when we move to more advanced proposals whose mean and variance depends on the gradient and or the hessian of the underlying unnormalized log posterior, as the mean can be lower than <span class="math inline">\(a\)</span> or larger than <span class="math inline">\(b\)</span>: this would garantee zero acceptance with regular Gaussian random walk. The <code>TruncatedNormal</code> package can be used to efficiently evaluate such instances using results from <span class="citation" data-cites="LEcuyer.Botev:2017">Botev and L’Écuyer (<a href="references.html#ref-LEcuyer.Botev:2017" role="doc-biblioref">2017</a>)</span> even when the truncation bounds are far from the mode. the normalizing constant of the truncated Gaussian in the denominator of the density is a function of the location and scale parameters: if these depend on the current value of <span class="math inline">\(\boldsymbol{\theta}_{t-1}\)</span>, as is the case for a random walk, we need to keep these terms as part of the Metropolis ratio. The mean and standard deviation of the truncated Gaussian are not equal to the parameters <span class="math inline">\(\mu\)</span> (which corresponds to the mode, provided <span class="math inline">\(a &lt; \mu &lt; b\)</span>) and <span class="math inline">\(\sigma\)</span>.</p>
 </div>
 <div id="prp-mala" class="theorem proposition">
 <p><span class="theorem-title"><strong>Proposition 3.8 (Efficient proposals) </strong></span>Rather than simply build a random walk, we can exploit the geometry of the posterior using the gradient, via Metropolis-ajusted Langevin algorithm (MALA), or using local quadratic approximations of the target.</p>
@@ -658,9 +689,9 @@ p(\theta) \approx p(\theta_{t-1}) + p'(\theta_{t-1})(\theta - \theta_{t-1}) + \f
 <p>For MALA to work well, we need both to start near stationarity, to ensure that the gradient is relatively small and to prevent oscillations. One can dampen the size of the step initially if needed to avoid overshooting. The proposal variance, the other tuning parameter, is critical to the success of the algorithm. The usual target for the variance is one that gives an acceptance rate of roughly 0.574. These more efficient methods require additional calculations of the gradient and Hessian, either numerically or analytically. Depending on the situation and the computational costs of such calculations, the additional overhead may not be worth it.</p>
 </div>
 <div id="exm-normal-question-upworthy" class="theorem example">
-<p><span class="theorem-title"><strong>Example 3.7 </strong></span>We revisit the Upworthy data, this time modelling each individual headline as a separate observation. We view <span class="math inline">\(n=\)</span><code>nimpression</code> as the sample size of a binomial distribution and <code>nclick</code> as the number of successes. Since the number of trials is large, the sample average <code>nclick</code>/<code>nimpression</code>, denoted <span class="math inline">\(y\)</span> in the sequel, is approximately Gaussian. We assume that each story has a similar population rate and capture the heterogeneity inherent to each news story by treating each mean as a sample. The variance of the sample average or click rate is proportional to <span class="math inline">\(n^{-1}\)</span>, where <span class="math inline">\(n\)</span> is the number of impressions. To allow for underdispersion or overdispersion, we thus consider a Gaussian likelihood <span class="math inline">\(Y_i \sim \mathsf{No}(\mu, \sigma^2/n_i)\)</span>. We perform Bayesian inference for <span class="math inline">\(\mu, \sigma\)</span> after assigning a truncated Gaussian prior for <span class="math inline">\(\mu \sim \mathsf{TNo}(0.01, 0.1^2)\)</span> over <span class="math inline">\([0,1]\)</span> and an penalized complexity prior for <span class="math inline">\(\sigma \sim \mathsf{Exp}(0.7)\)</span>.</p>
+<p><span class="theorem-title"><strong>Example 3.7 </strong></span>We revisit the Upworthy data, this time modelling each individual headline as a separate observation. We view <span class="math inline">\(n=\)</span><code>nimpression</code> as the sample size of a binomial distribution and <code>nclick</code> as the number of successes. Since the number of trials is large, the sample average <code>nclick</code>/<code>nimpression</code>, denoted <span class="math inline">\(y\)</span> in the sequel, is approximately Gaussian. We assume that each story has a similar population rate and capture the heterogeneity inherent to each news story by treating each mean as a sample. The variance of the sample average or click rate is proportional to <span class="math inline">\(n^{-1}\)</span>, where <span class="math inline">\(n\)</span> is the number of impressions. To allow for underdispersion or overdispersion, we thus consider a Gaussian likelihood <span class="math inline">\(Y_i \sim \mathsf{Norm}(\mu, \sigma^2/n_i)\)</span>. We perform Bayesian inference for <span class="math inline">\(\mu, \sigma\)</span> after assigning a truncated Gaussian prior for <span class="math inline">\(\mu \sim \mathsf{TNo}(0.01, 0.1^2)\)</span> over <span class="math inline">\([0,1]\)</span> and an penalized complexity prior for <span class="math inline">\(\sigma \sim \mathsf{Exp}(0.7)\)</span>.</p>
 <!-- The `hecbayes` package contains an helper function `mh` that computes the step given the log likelihood, log prior and their gradients. -->
-<div class="cell" data-hash="mcmc_cache/html/unnamed-chunk-18_335db8baef33ccde2c7e628d59e10fb4">
+<div class="cell" data-hash="mcmc_cache/html/unnamed-chunk-19_1e46a645c3fc71b9689b2ac33bafd650">
 <div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(upworthy_question, <span class="at">package =</span> <span class="st">"hecbayes"</span>)</span>
 <span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Select data for a single question</span></span>
 <span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>qdata <span class="ot">&lt;-</span> upworthy_question <span class="sc">|&gt;</span></span>
@@ -768,10 +799,138 @@ p(\theta) \approx p(\theta_{t-1}) + p'(\theta_{t-1})(\theta - \theta_{t-1}) + \f
 <p>MALA requires critically a good mass matrix, especially if the gradient is very large at the starting values (often the case when the starting value is far from the mode). Given the precision of the original observations, we did not need to modify anything to deal with the parameter constraints <span class="math inline">\(0 \leq \mu \leq 1\)</span> and <span class="math inline">\(\sigma&gt;0\)</span>, outside of encoding them in the log posterior function.</p>
 <p>The posterior mean for the standard deviation is 0.64, which suggests overdispersion.</p>
 </div>
+</section>
+</section>
+<section id="gibbs-sampling" class="level2" data-number="3.4">
+<h2 data-number="3.4" class="anchored" data-anchor-id="gibbs-sampling"><span class="header-section-number">3.4</span> Gibbs sampling</h2>
+<p>The Gibbs sampling algorithm builds a Markov chain by iterating through a sequence of conditional distributions. Consider a model with <span class="math inline">\(\boldsymbol{\theta} \in \boldsymbol{\Theta} \subseteq \mathbb{R}^p\)</span>. We consider a single (or <span class="math inline">\(m \leq p\)</span> blocks of parameters), say <span class="math inline">\(\boldsymbol{\theta}^{[j]}\)</span>, such that, conditional on the remaining components of the parameter vector <span class="math inline">\(\boldsymbol{\theta}^{-[j]}\)</span>, the conditional posterior <span class="math inline">\(p(\boldsymbol{\theta}^{[j]} \mid \boldsymbol{\theta}^{-[j]}, \boldsymbol{y})\)</span> is from a known distribution from which we can simulate draws</p>
+<p>At iteration <span class="math inline">\(t\)</span>, we can update each block in turn: note that the <span class="math inline">\(k\)</span>th block uses the partially updated state <span class="math display">\[\begin{align*}
+\boldsymbol{\theta}^{-[k]\star} = (\boldsymbol{\theta}_{t}^{[1]}, \ldots, \boldsymbol{\theta}_{t}^{[k-1]},\boldsymbol{\theta}_{t-1}^{[k+1]}, \boldsymbol{\theta}_{t-1}^{[m]})
+\end{align*}\]</span> which corresponds to the current value of the parameter vector after the updates. The Gibbs sampling can be viewed as a special case of Metropolis–Hastings where the proposal distribution <span class="math inline">\(q\)</span> is <span class="math inline">\(p(\boldsymbol{\theta}^{[j]} \mid \boldsymbol{\theta}^{-[j]\star}, \boldsymbol{y})\)</span>. The particularity is that all proposals get accepted because the log posterior of the partial update, equals the proposal distribution, so <span class="math display">\[\begin{align*}
+R = \frac{p(\boldsymbol{\theta}_t^{[j]\star} \mid \boldsymbol{\theta}^{-[j]\star}, \boldsymbol{y})}{p(\boldsymbol{\theta}_{t-1}^{[j]\star} \mid \boldsymbol{\theta}^{-[j]\star}, \boldsymbol{y})}\frac{p(\boldsymbol{\theta}_{t-1}^{[j]\star} \mid \boldsymbol{\theta}^{-[j]\star}, \boldsymbol{y})}{p(\boldsymbol{\theta}_t^{[j]\star} \mid \boldsymbol{\theta}^{-[j]\star}, \boldsymbol{y})}=1.
+\end{align*}\]</span> Regardless of the order (systematic scan or random scan), the procedure remains valid. The Gibbs sampling is thus an automatic algorithm: we only need to derive the conditional posterior distributions of the parameters and run the sampler, and there are no tuning parameter involved. If the parameters are strongly correlated, the changes for each parameter will be incremental and this will lead to slow mixing and large autocorrelation, even if the values drawn are all different. <a href="#fig-Gibbs-steps">Figure&nbsp;<span>3.12</span></a> shows 25 steps from a Gibbs algorithm for a bivariate target.</p>
+<div class="cell" data-hash="mcmc_cache/html/fig-Gibbs-steps_bf9008a92637a09ed456b814c1fd500d">
+<div class="cell-output-display">
+<div id="fig-Gibbs-steps" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="mcmc_files/figure-html/fig-Gibbs-steps-1.png" class="img-fluid figure-img" width="672"></p>
+<figcaption class="figure-caption">Figure&nbsp;3.12: Sampling trajectory for a bivariate target using Gibbs sampling.</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<div class="{exm-normal-Gibbs}">
+<p>As a toy illustration, we use Gibbs sampling to simulate data from a <span class="math inline">\(d\)</span>-dimensional multivariate Gaussian target with mean <span class="math inline">\(\boldsymbol{\mu}\)</span> and equicorrelation covariance matrix <span class="math inline">\(\mathbf{\Sigma} = (1-\rho)\mathbf{I}_d + \rho\boldsymbol{1}_{d}\boldsymbol{1}^\top_d\)</span> with inverse <span class="math display">\[\mathbf{Q} = \boldsymbol{\Sigma}^{-1}=(1-\rho)^{-1}\left\{\mathbf{I}_d - \rho \mathbf{1}_d\mathbf{1}_d/(1+(d-1)\rho)\right\},\]</span> for known correlation coefficient <span class="math inline">\(\rho\)</span>. While we can easily sample independent observations, the exercise is insightful to see how well the methods works as the dimension increases, and when the correlation between pairs becomes stronger.</p>
+<p>Consider <span class="math inline">\(\boldsymbol{Y} \sim \mathsf{Norm}_d(\boldsymbol{\mu}, \boldsymbol{\Sigma})\)</span> and a partition <span class="math inline">\((\boldsymbol{Y}_1^\top, \boldsymbol{Y}_2^\top)^\top\)</span>: the conditional distribution of the <span class="math inline">\(k\)</span> subvector <span class="math inline">\(\boldsymbol{Y}_1\)</span> given the <span class="math inline">\(d-k\)</span> other components <span class="math inline">\(\boldsymbol{Y}_2\)</span> is, in terms of either the covariance (first line) or the precision (second line), Gaussian where <span class="math display">\[\begin{align*}
+\boldsymbol{Y}_1 \mid \boldsymbol{Y}_2=\boldsymbol{y}_2 &amp;\sim \mathsf{Norm}_{k}\left\{ \boldsymbol{\mu}_1 + \boldsymbol{\Sigma}_{12} \boldsymbol{\Sigma}_{22}^{-1}(\boldsymbol{y}_2 - \boldsymbol{\mu}_2), \boldsymbol{\Sigma}_{11} - \boldsymbol{\Sigma}_{12}\boldsymbol{\Sigma}_{22}^{-1}\boldsymbol{\Sigma}_{21}\right\}
+\\&amp;\sim \mathsf{Norm}_{k}\left\{ \boldsymbol{\mu}_1 -\mathbf{Q}_{11}^{-1}\mathbf{Q}_{12}(\boldsymbol{y}_2 - \boldsymbol{\mu}_2), \mathbf{Q}_{11}^{-1}\right\}.
+\end{align*}\]</span></p>
+<div class="cell" data-hash="mcmc_cache/html/unnamed-chunk-21_4f6294c15b312760572b1084a6896255">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Create a 20 dimensional equicorrelation</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>d <span class="ot">&lt;-</span> <span class="dv">20</span></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>Q <span class="ot">&lt;-</span> hecbayes<span class="sc">::</span><span class="fu">equicorrelation</span>(<span class="at">d =</span> d, <span class="at">rho =</span> <span class="fl">0.9</span>, <span class="at">precision =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>B <span class="ot">&lt;-</span> <span class="fl">1e4</span></span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>chains <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="dv">0</span>, <span class="at">nrow =</span> B, <span class="at">ncol =</span> d)</span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>mu <span class="ot">&lt;-</span> <span class="fu">rep</span>(<span class="dv">2</span>, d)</span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Start far from mode</span></span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>curr <span class="ot">&lt;-</span> <span class="fu">rep</span>(<span class="sc">-</span><span class="dv">3</span>, d)</span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span>(i <span class="cf">in</span> <span class="fu">seq_len</span>(B)){</span>
+<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Random scan, updating one variable at a time</span></span>
+<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span>(j <span class="cf">in</span> <span class="fu">sample</span>(<span class="dv">1</span><span class="sc">:</span>d, <span class="at">size =</span> d)){</span>
+<span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a>    <span class="co"># sample from conditional Gaussian given curr</span></span>
+<span id="cb14-13"><a href="#cb14-13" aria-hidden="true" tabindex="-1"></a>    curr[j] <span class="ot">&lt;-</span> hecbayes<span class="sc">::</span><span class="fu">rcondmvnorm</span>(</span>
+<span id="cb14-14"><a href="#cb14-14" aria-hidden="true" tabindex="-1"></a>      <span class="at">n =</span> <span class="dv">1</span>, </span>
+<span id="cb14-15"><a href="#cb14-15" aria-hidden="true" tabindex="-1"></a>      <span class="at">value =</span> curr, </span>
+<span id="cb14-16"><a href="#cb14-16" aria-hidden="true" tabindex="-1"></a>      <span class="at">ind =</span> j, </span>
+<span id="cb14-17"><a href="#cb14-17" aria-hidden="true" tabindex="-1"></a>      <span class="at">mean =</span> mu, </span>
+<span id="cb14-18"><a href="#cb14-18" aria-hidden="true" tabindex="-1"></a>      <span class="at">precision =</span> Q)</span>
+<span id="cb14-19"><a href="#cb14-19" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb14-20"><a href="#cb14-20" aria-hidden="true" tabindex="-1"></a>  chains[i,] <span class="ot">&lt;-</span> curr <span class="co"># save values after full round of update</span></span>
+<span id="cb14-21"><a href="#cb14-21" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>As the dimension of the parameter space increases, and as the correlation between components becomes larger, the efficiency of the Gibbs sampler degrades: <a href="#fig-gibbs-normal">Figure&nbsp;<span>3.13</span></a> shows the first component for updating one-parameter at a time for a multivariate Gaussian target in dimensions <span class="math inline">\(d=20\)</span> and <span class="math inline">\(d=3\)</span>, started at four deviation away from the mode. The chain makes smaller steps when there is strong correlation, resulting in an inefficient sampler.</p>
+<div class="cell" data-hash="mcmc_cache/html/fig-gibbs-normal_f195bf24ccb716b89fccc2ce77f73522">
+<div class="cell-output-display">
+<div id="fig-gibbs-normal" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="mcmc_files/figure-html/fig-gibbs-normal-1.png" class="img-fluid figure-img" width="672"></p>
+<figcaption class="figure-caption">Figure&nbsp;3.13: Trace plots (top) and correlograms (bottom) for the first component of a Gibbs sampler with <span class="math inline">\(d=20\)</span> equicorrelated Gaussian variates with correlation <span class="math inline">\(\rho=0.9\)</span> (left) and <span class="math inline">\(d=3\)</span> with equicorrelation <span class="math inline">\(\rho=0.5\)</span> (right).</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>The main bottleneck in Gibbs sampling is determining all of the relevant conditional distributions, which often relies on setting conditionally conjugate priors. In large models with multiple layers, full conditionals may only depend on a handful of parameters.</p>
+</div>
+<div id="exm-gaussian-gamma" class="theorem example">
+<p><span class="theorem-title"><strong>Example 3.8 </strong></span>Consider a Gaussian model <span class="math inline">\(Y_i \sim \mathsf{Norm}(\mu, \tau)\)</span> (<span class="math inline">\(i=1, \ldots, n\)</span>) are independent, and where we assign priors <span class="math inline">\(\mu \sim \mathsf{Norm}(\nu, \omega)\)</span> and <span class="math inline">\(\sigma \sim \mathsf{InvGamma}(\alpha, \beta)\)</span>.</p>
+<p>The joint posterior is not available in closed form, but the independent priors for the mean and variance of the observations are conditionally conjugate, since the joint posterior <span class="math display">\[\begin{align*}
+p(\mu, \tau \mid \boldsymbol{y}) \propto&amp; \tau^{-n/2}\exp\left\{-\frac{1}{2\tau}\left(\sum_{i=1}^n y_i^2 - 2\mu \sum_{i=1}^n y_i+n\mu^2 \right)\right\}\\&amp; \times \exp\left\{-\frac{(\mu-\nu)^2}{2\omega}\right\} \times \tau^{-\alpha-1}\exp(-\beta/\tau)
+\end{align*}\]</span> gives us <span class="math display">\[\begin{align*}
+p(\mu \mid \tau, \boldsymbol{y}) &amp;\propto \exp\left\{-\frac{1}{2} \left( \frac{\mu^2-2\mu\overline{y}}{\tau/n} + \frac{\mu^2-2\nu \mu}{\omega}\right)\right\}\\
+p(\tau \mid \mu, \boldsymbol{y}) &amp; \propto \tau^{-n/2-\alpha-1}\exp\left[-\left\{\frac{\sum_{i=1}^n (y_i-\mu)^2}{2} + \beta \right\}/\tau\right]
+\end{align*}\]</span> so we can simulate in turn <span class="math display">\[\begin{align*}
+\mu_t \mid \tau_{t-1}, \boldsymbol{y} &amp;\sim \mathsf{Norm}\left(\frac{n\overline{y}\omega+\tau \nu}{\omega\tau}, \frac{\omega \tau}{\tau + \omega/n}\right)\\
+\tau_t \mid \mu_t, \boldsymbol{y} &amp;\sim \mathsf{InvGamma}\left\{\frac{n}{2}+\alpha, \frac{\sum_{i=1}^n (y_i-\mu)^2}{2} + \beta\right\}.
+\end{align*}\]</span></p>
+</div>
+<div class="remark proof">
+<p><span class="proof-title"><em>Remark</em> (Gibbs sampler and proper posterior). </span>Gibbs sampling cannot be used to determine if the posterior is improper. If the posterior is not well defined, the Markov chains may seem to stabilize even though there is no proper target.</p>
+</div>
+<!--
+
+## Data augmentation and auxiliary variables
+
+Sometimes, it is 
+
+
+:::{#exm-probit-regression}
+
+The probit regression sets 
+
+:::
+
+
+-->
+<div id="exm-student-mixture-gaussian" class="theorem example">
+<p><span class="theorem-title"><strong>Example 3.9 (Bayesian LASS0) </strong></span>The Laplace distribution with mean <span class="math inline">\(\mu\)</span> and scale <span class="math inline">\(\sigma\)</span>, which has density <span class="math display">\[\begin{align*}
+f(x; \mu, \sigma) = \frac{1}{2\sigma}\exp\left(-\frac{|x-\mu|}{\sigma}\right),
+\end{align*}\]</span> can be expressed as a scale mixture of Gaussians, where <span class="math inline">\(Y \sim \mathsf{La}(\mu, \sigma)\)</span> is equivalent to <span class="math inline">\(Z \mid W=w \sim \mathsf{Norm}(\mu, \tau)\)</span> and <span class="math inline">\(\tau \sim \mathsf{Exp}\{(2\sigma)^{-1}\}\)</span>. With the improper prior <span class="math inline">\(p(\mu, \sigma) \propto \sigma^{-1}\)</span> and with <span class="math inline">\(n\)</span> independent and identically distributed Laplace variates, the joint posterior can be written <span class="math display">\[\begin{align*}
+p(\boldsymbol{\tau}, \mu, \sigma \mid \boldsymbol{y}) &amp;\propto \left(\prod_{i=1}^n \tau_i\right)^{-1/2}\exp\left\{-\frac{1}{2}\sum_{i=1}^n \frac{(y_i-\mu)^2}{\tau_i}\right\} \\&amp;\quad \times \frac{1}{\sigma^{n+1}}\exp\left(-\frac{1}{2\sigma}\sum_{i=1}^n \tau_i\right)
+\end{align*}\]</span> and <span class="math inline">\(\mu \mid \cdots\)</span> and <span class="math inline">\(\sigma \mid \cdots\)</span> are, as usual, Gaussian and inverse gamma, respectively. The variances, <span class="math inline">\(\tau_j\)</span>, are conditionally independent of one another with <span class="math display">\[\begin{align*}
+p(\tau_j \mid \mu, \sigma, y_j) &amp;\propto \tau_j^{-1/2}\exp\left\{-\frac{1}{2}\frac{(y_j-\mu)^2}{\tau_j} -\frac{1}{2} \frac{\tau_j}{\sigma}\right\}\\
+\intertext{so with $\xi_j=1/\tau_j$, we have}
+p(\xi_j \mid \mu, \sigma, y_j) &amp;\propto \xi_j^{-3/2}\exp\left\{-\frac{1}{2\sigma}\frac{\xi_j(y_j-\mu)^2}{\sigma} -\frac{1}{2} \frac{1}{\xi_j}\right\}\\
+\end{align*}\]</span> and we recognize the latter as a Wald (or inverse Gaussian) distribution, whose density function is <span class="math display">\[\begin{align*}
+f(y; \nu, \lambda) &amp;= \left(\frac{\lambda}{2\pi y^{3}}\right)^{1/2} \exp\left\{ - \frac{\lambda (y-\nu)^2}{2\nu^2y}\right\}, \quad y &gt; 0
+\\ \stackrel{y}{\propto} y^{-3/2}\exp\left\{-\frac{\lambda}{2} \left(\frac{y}{\nu} + \frac{1}{y}\right)\right\}
+\end{align*}\]</span> for location <span class="math inline">\(\nu &gt;0\)</span> and shape <span class="math inline">\(\lambda&gt;0\)</span>, where <span class="math inline">\(\nu=\{\sigma/(y_i-\mu)^2\}^{1/2}\)</span> and <span class="math inline">\(\lambda=\sigma^{-1}\)</span>.</p>
+<p><span class="citation" data-cites="Park.Casella:2008">Park and Casella (<a href="references.html#ref-Park.Casella:2008" role="doc-biblioref">2008</a>)</span> use this hierarchical construction to defined the Bayesian LASSO. With a model matrix <span class="math inline">\(\mathbf{X}\)</span> whose columns are standardized to have mean zero and unit standard deviation, we may write <span class="math display">\[\begin{align*}
+\boldsymbol{Y} \mid \mu, \boldsymbol{\beta}, \sigma^2 &amp;\sim \mathsf{Norm}_n(\nu \boldsymbol{1}_n + \mathbf{X}\boldsymbol{\beta}, \sigma \mathbf{I}_n)\\
+\beta_j &amp;\mid \sigma, \tau \sim \mathsf{Norm}(0, \sigma\tau)\\
+\tau &amp;\sim \mathsf{Exp}(\lambda/2)\\
+p(\mu, \sigma) &amp; \propto \sigma^{-1}.
+\end{align*}\]</span> This yields a Laplace penalty on the regression coefficients, with lower values of <span class="math inline">\(\lambda\)</span> yielding more shrinkage. Note that, in the Bayesian LASSO, none of the posterior draws of <span class="math inline">\(\boldsymbol{\beta}\)</span> are exactly zero.</p>
+<p>Many elliptical distributions can be cast as scale mixture models of spherical or Gaussian variables; see, e.g., Section 10.2 of <span class="citation" data-cites="Albert:2009">Albert (<a href="references.html#ref-Albert:2009" role="doc-biblioref">2009</a>)</span> for a similar derivation with a Student-<span class="math inline">\(t\)</span> distribution.</p>
+</div>
+<div id="exm-mixture" class="theorem example">
+<p><span class="theorem-title"><strong>Example 3.10 (Mixture models) </strong></span>In clustering problems, we can specify that observations arise from a mixture model with a fixed or unknown number of coefficients: the interest lies then in estimating</p>
+<p>A <span class="math inline">\(K\)</span>-mixture model is a weighted combination of models frequently used in clustering or to model subpopulations with respective densities <span class="math inline">\(f_k\)</span>, with density <span class="math display">\[f(x; \boldsymbol{\theta}, \boldsymbol{\omega}) = \sum_{k=1}^K \omega_kf_k(x; \boldsymbol{\theta}_k), \qquad \omega_1 + \cdots \omega_K=1.\]</span> Since the density involves a sum, numerical optimization is challenging. Let <span class="math inline">\(C_i\)</span> denote the cluster index for observation <span class="math inline">\(i\)</span>: if we knew the value of <span class="math inline">\(C_i =j\)</span>, the density would involve only <span class="math inline">\(f_j\)</span>. We can thus use latent variables representing the group allocation to simplify the problem and run an EM algorithm or use the data augmentation. In an iterative framework, we can consider the complete data as the tuples <span class="math inline">\((X_i, Z_i)\)</span>, where <span class="math inline">\(Z_i = \mathsf{I}(C_i=k)\)</span>.</p>
+<p>With the augmented data, the conditional distribution of <span class="math inline">\(Z_i \mid X_i, \boldsymbol{\omega}, \boldsymbol{\theta} \sim \mathsf{Mult}(1, \boldsymbol{\gamma}_{ik})\)</span> where <span class="math inline">\(\gamma_{ik} = \omega_k f_k(X_i\boldsymbol{\theta}_k)/\big\{\sum_{j=1}^K f_j(X_i\boldsymbol{\theta}_k)\big\}\)</span>. Given suitable priors for the probabilities <span class="math inline">\(\boldsymbol{\omega}\)</span> and <span class="math inline">\(\boldsymbol{\theta} \equiv \{\boldsymbol{\theta}_1, \ldots, \boldsymbol{\theta}_k\}\)</span>, we can use Gibbs sampling updating <span class="math inline">\(\boldsymbol{Z}\)</span>, <span class="math inline">\(\boldsymbol{\omega}\)</span> and <span class="math inline">\(\boldsymbol{\theta}\)</span> in turn.</p>
+</div>
+<!--
+Consider hybrid mixture of independent MH and random walk, or mean-centered
+
+
+::: {.cell hash='mcmc_cache/html/unnamed-chunk-23_ac2c0735d592864a4540b1f30a3fe37b'}
+
+:::
+
+
+-->
 <!-- ## Gibbs sampling -->
 
 <!--
-The Gibbs sampling algorithm builds a Markov chain by iterating through a sequence of conditional distributions. Given initial values for the state vector $\boldsymbol{\theta}_0$, we simulate in turn 
+Given initial values for the state vector $\boldsymbol{\theta}_0$, we simulate in turn 
 $\theta_i \mid \boldsymbol{\theta}_{-i}$ ($i=1,\ldots, p$)
 Gibbs with Normal - inverse gamma (not necessarily conjugate) (Geyer page 17)
 
@@ -780,26 +939,8 @@ Basic conditions: irreducibility, aperiodic and what they mean in layman terms
 A toy example with a discrete state space
 
 Autocorrelation: correlogram 
-Evaluation of functionals and standard error for correlated draws
 Burnin period
 Thinning: only for storage
-
-Metropolis--Hastings method
-
-Algorithm
-2 examples (a single parameter, two parameters in turn)
-Random walk proposals versus independent proposals
-Practical considerations 
-- tuning the variance of the proposal to reach decent acceptance rate
-- decent starting values and convergence
-- joint updates
-- running a blank MCMC (remove the likelihood: are you sampling from the prior?)
-Gibbs sampling
-Deriving conditionals
-Plot of exploration with steps
-
-Metropolis-within-Gibbs
-Example of a more complicated model
 
 Newer approaches: 
 
@@ -839,8 +980,8 @@ Devroye, L. 1986. <em><span>Non-Uniform Random Variate Generation</span></em>. N
 <div id="ref-Geyer:2011" class="csl-entry" role="listitem">
 Geyer, Charles J. 2011. <span>“Introduction to <span>M</span>arkov Chain <span>M</span>onte <span>C</span>arlo.”</span> In <em>Handbook of <span>M</span>arkov Chain <span>M</span>onte <span>C</span>arlo</em>, edited by S. Brooks, A. Gelman, G. Jones, and X. L. Meng, 3–48. Boca Raton: CRC Press. <a href="https://doi.org/10.1201/b10905">https://doi.org/10.1201/b10905</a>.
 </div>
-<div id="ref-Green:1994" class="csl-entry" role="listitem">
-Green, Peter J. 1995. <span>“Reversible Jump <span>M</span>arkov Chain <span>M</span>onte <span>C</span>arlo Computation and <span>B</span>ayesian Model Determination.”</span> <em>Biometrika</em> 82 (4): 711–32. <a href="https://doi.org/10.1093/biomet/82.4.711">https://doi.org/10.1093/biomet/82.4.711</a>.
+<div id="ref-Green:2001" class="csl-entry" role="listitem">
+Green, Peter J. 2001. <span>“A Primer on <span>M</span>arkov Chain <span>M</span>onte <span>C</span>arlo.”</span> <em>Monographs on Statistics and Applied Probability</em> 87: 1–62.
 </div>
 <div id="ref-Hastings:1970" class="csl-entry" role="listitem">
 Hastings, W. K. 1970. <span>“<span class="nocase">Monte <span>C</span>arlo sampling methods using <span>M</span>arkov chains and their applications</span>.”</span> <em>Biometrika</em> 57 (1): 97–109. <a href="https://doi.org/10.1093/biomet/57.1.97">https://doi.org/10.1093/biomet/57.1.97</a>.
@@ -850,6 +991,9 @@ Kinderman, Albert J, and John F Monahan. 1977. <span>“Computer Generation of R
 </div>
 <div id="ref-Metropolis:1953" class="csl-entry" role="listitem">
 Metropolis, Nicholas, Arianna W. Rosenbluth, Marshall N. Rosenbluth, Augusta H. Teller, and Edward Teller. 1953. <span>“<span class="nocase">Equation of State Calculations by Fast Computing Machines</span>.”</span> <em>The Journal of Chemical Physics</em> 21 (6): 1087–92. <a href="https://doi.org/10.1063/1.1699114">https://doi.org/10.1063/1.1699114</a>.
+</div>
+<div id="ref-Park.Casella:2008" class="csl-entry" role="listitem">
+Park, Trevor, and George Casella. 2008. <span>“The <span>B</span>ayesian <span>L</span>asso.”</span> <em>Journal of the American Statistical Association</em> 103 (482): 681–86. <a href="https://doi.org/10.1198/016214508000000337">https://doi.org/10.1198/016214508000000337</a>.
 </div>
 <div id="ref-Robert.Casella:2004" class="csl-entry" role="listitem">
 Robert, Christian P., and George Casella. 2004. <em>Monte <span>C</span>arlo Statistical Methods</em>. New York, NY: Springer. <a href="https://doi.org/10.1007/978-1-4757-4145-2">https://doi.org/10.1007/978-1-4757-4145-2</a>.
@@ -864,7 +1008,6 @@ Sherlock, Chris. 2013. <span>“Optimal Scaling of the Random Walk <span>M</span
 Wakefield, J. C., A. E. Gelfand, and A. F. M. Smith. 1991. <span>“Efficient Generation of Random Variates via the Ratio-of-Uniforms Method.”</span> <em>Statistics and Computing</em> 1 (2): 129–33. <a href="https://doi.org/10.1007/BF01889987">https://doi.org/10.1007/BF01889987</a>.
 </div>
 </div>
-</section>
 </section>
 <section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes">
 <hr>

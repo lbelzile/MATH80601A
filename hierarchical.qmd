@@ -1,55 +1,23 @@
-
 <!--
-:::{#exm-svensson}
+Gibbs sampling
+Data augmentation: 
+- probit regression
+- censoring and missing data
+- robust modelling (clustering and student-t mixture?)
 
-## Road accidents and speed limits on the motorway in Sweden
-
-Sweden is a worldwide leader in road safety and has a long history of countermeasures to increase road traffic safety, including the Vision Zero program. Back in the 1960s, a study was conducted by the authorities to investigate the potential of speed limits on motorways to reduce the number of accidents. The `sweden` data contains the number of accidents on 92 matching days in both 1961 and 1962 [@Svensson:1981]; speed limits were in place on selected days in either year. 
-
-
-We consider an example from Section 4.5 of @Brazzale/Davison/Reid:2007. 
-To study the impact of the restrictions we can fit a Poisson model. Let
-$Y_{i1}$ (respectively $Y_{i2}$) denote the number of accidents in 1961
-(1962) on day $i$ and let $\texttt{limit}_{ij}$ denote a binary
-indicator equal to one if speed limits were enforced on day $i$ of year
-$j$. We set 
-\begin{align*}
-Y_{i1} \sim \mathsf{Po}(\delta_i + \alpha \texttt{limit}_{i1}), \quad Y_{i2} \sim\mathsf{Po}(\delta_i + \gamma +  \alpha \texttt{limit}_{i2}), \qquad i=1, \ldots, 92. 
-\end{align*}
-The nuisance parameters $\delta_1, \ldots, \delta_{92}$ control for changes in background number of accidents and are of no practical interest, while $\gamma$ denotes the change from 1961 to 1962. We are interested here in assessing changes in the number of accidents due to the policy, $\alpha$; of secondary interest is to determine whether there has been a decrease in the number of accident relative to 1961.
+Hierarchy and latent Gaussian models
+Dags and moral graphs
 
 
-```{r}
-#| label: swedenglm
-#| cache: true
-#| echo: true
-#| eval: false
-data(sweden, package = "hecstatmod")
-modswed <- glm(accidents ~ -1 + day + limit + year,
-               family = poisson("log"), data = sweden)
-tab <- car::Anova(modswed, type = 3)
-```
-
-```{r}
-#| label: tbl-swedenglm
-#| echo: false
-#| eval: false
-#| tbl-cap: "Analysis of deviance table (Type 3 decomposition) for the Poisson regression model fitted to the Sweden traffic restrictions data: the table gives the p-value for likelihood ratio tests comparing the full model including all covariates with models in which a single explanatory is removed."
-dust(tab, 
-     keep_rownames = TRUE) %>% 
-  sprinkle(col = 2, round = 2) %>% 
-  sprinkle(col = 3, round = 2) %>% 
-  sprinkle(col = 4, fn = quote(pvalString(value))) %>% 
-  sprinkle_colnames('.rownames' = "variable",
-                    'LR Chisq' = "lik. ratio", 
-                     'Df' = "df",
-                     "Pr(>Chisq)" = "p-value")  %>% 
-knitr::kable(align = "lrrr", booktabs = TRUE)
-```
+Probabilistic programming
+Bayesian workflow
+- multiple chains and diagnostics
+- testing for equality of means, etc.
+- tracking summaries from the posterior predictive
+- effective sample size: is my chain long enough?
 
 
-The residual deviance is `r round(modswed$deviance, 2)` for `r modswed$df.residual` degrees of freedom, suggests the overall fit is good, despite the large number of nuisance parameters $\delta_1, \ldots, \delta_{92}$. The coefficient associated to limit is strongly significant: the estimated coefficient is $\widehat{\alpha}=`r as.numeric(coef(modswed)['limit'])`$, indicates that speed limits reduce the mean number of accidents by $`r round(100*(1-exp(as.numeric(coef(modswed)["limit"]))),1)`$% on average. In contrast, the likelihood ratio test reported in @tbl-swedenglm shows that the change in the yearly number of accident from 1961 to 1962, $\gamma$, is not significantly different from zero.
 
 
-:::
+
 -->

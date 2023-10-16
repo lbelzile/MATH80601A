@@ -58,14 +58,14 @@ To fix ideas, we consider next a simple one-parameter model where the marginal l
 
 ## Binomial model with beta prior
 
-Consider a binomial likelihood with probability of success $\theta \in [0,1]$ and $n$ trials, $Y \sim \mathsf{Bin}(n, \theta)$. If we take a beta prior, $\theta \sim \mathsf{Be}(\alpha, \beta)$ and observe $y$ successes, the posterior is 
+Consider a binomial likelihood with probability of success $\theta \in [0,1]$ and $n$ trials, $Y \sim \mathsf{Binom}(n, \theta)$. If we take a beta prior, $\theta \sim \mathsf{Beta}(\alpha, \beta)$ and observe $y$ successes, the posterior is 
 \begin{align*}
 p(\theta \mid y = y) &\propto \binom{n}{y} \theta^y (1-\theta)^{n-y} \frac{\Gamma(\alpha + \beta)}{\Gamma(\alpha) \Gamma(\beta)}\theta^{\alpha-1} (1-\theta)^{\beta-1}
 \\&\stackrel{\theta}{\propto} \theta^{y+\alpha-1}(1-\theta)^{n-y+\beta-1}
 \end{align*}
-and is $$\int_{0}^{1} \theta^{y+\alpha-1}(1-\theta)^{n-y+\beta-1}\mathrm{d} \theta = \frac{\Gamma(y+\alpha)\Gamma(n-y+\beta)}{\Gamma(n+\alpha+\beta)},$$ a Beta function. Since we need only to keep track of the terms that are function of the parameter $\theta$, we could recognize directly that the posterior distribution is $\mathsf{Be}(y+\alpha, n-y+\beta)$ and deduce the normalizing constant from there.
+and is $$\int_{0}^{1} \theta^{y+\alpha-1}(1-\theta)^{n-y+\beta-1}\mathrm{d} \theta = \frac{\Gamma(y+\alpha)\Gamma(n-y+\beta)}{\Gamma(n+\alpha+\beta)},$$ a Beta function. Since we need only to keep track of the terms that are function of the parameter $\theta$, we could recognize directly that the posterior distribution is $\mathsf{Beta}(y+\alpha, n-y+\beta)$ and deduce the normalizing constant from there.
 
-If $Y \sim \mathsf{Bin}(n, \theta)$, the expected number of success is $n\theta$ and the expected number of failures $n(1-\theta)$ and so the likelihood contribution, relative to the prior, will dominate as the sample size $n$ grows. 
+If $Y \sim \mathsf{Binom}(n, \theta)$, the expected number of success is $n\theta$ and the expected number of failures $n(1-\theta)$ and so the likelihood contribution, relative to the prior, will dominate as the sample size $n$ grows. 
 
 Another way to see this is to track moments (expectation, variance, etc.)
 The Beta distribution, whose density is $f(x; \alpha, \beta) \propto x^{\alpha-1} (1-x)^{\beta-1}$, has expectation $\alpha/(\alpha+\beta)$ and variance $\alpha\beta/\{(\alpha+\beta)^2(\alpha+\beta+1)\}$. The posterior mean is
@@ -537,7 +537,7 @@ g1
 
 ## Posterior predictive distribution of univariate Gaussian with known mean
 
-Consider an $n$ sample of independent and identically distributed Gaussian, $Y_i \sim \mathsf{No}(0, \tau^{-1})$ ($i=1, \ldots, n$), where we assign a gamma prior on the precision $\tau \sim \mathsf{Ga}(\alpha, \beta)$. The posterior is
+Consider an $n$ sample of independent and identically distributed Gaussian, $Y_i \sim \mathsf{Norm}(0, \tau^{-1})$ ($i=1, \ldots, n$), where we assign a gamma prior on the precision $\tau \sim \mathsf{Ga}(\alpha, \beta)$. The posterior is
 \begin{align*}
 p(\tau \mid \boldsymbol{y}) \stackrel{\tau}{\propto} \prod_{i=1}^n \tau^{n/2}\exp\left(-\tau \frac{\sum_{i=1}^n{y_i^2}}{2}\right) \times \tau^{\alpha-1} \exp(-\beta \tau)
 \end{align*}
@@ -738,7 +738,7 @@ The generalized Pareto model only describes the $n_u$ exceedances above $u=10$, 
 <!-- and, p -->
 Provided that the priors for $(\tau, \xi)$ are independent of those for $\zeta_u$, the posterior also factorizes as a product, so $\zeta_u$ and $(\tau, \xi)$ are a posteriori independent.
 
-Suppose for now that we set a $\mathsf{Be}(0.5, 0.5)$ prior for $\zeta_u$ and a non-informative prior for the generalized Pareto parameters. The `post_samp` matrix contains exact samples from the posterior distribution of $(\tau, \xi, \zeta_u)$, obtained using a Monte Carlo algorithm. Our aim is to evaluate the posterior distribution for the value-at-risk, the $\alpha$ quantile of $Y$ for high values of $\alpha$ and see what point estimator one would obtain depending on our choice of loss function. For any $\alpha > 1-\zeta_u$, the $q_{\alpha}$ is
+Suppose for now that we set a $\mathsf{Beta}(0.5, 0.5)$ prior for $\zeta_u$ and a non-informative prior for the generalized Pareto parameters. The `post_samp` matrix contains exact samples from the posterior distribution of $(\tau, \xi, \zeta_u)$, obtained using a Monte Carlo algorithm. Our aim is to evaluate the posterior distribution for the value-at-risk, the $\alpha$ quantile of $Y$ for high values of $\alpha$ and see what point estimator one would obtain depending on our choice of loss function. For any $\alpha > 1-\zeta_u$, the $q_{\alpha}$ is
 \begin{align*}
 1- \alpha  &= \Pr(Y > q_\alpha \mid Y > u) \Pr(Y > u) 
 \\ &= \left(1+\xi \frac{q_{\alpha}-u}{\tau}\right)_{+}^{-1/\xi}\zeta_u
