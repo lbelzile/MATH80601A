@@ -237,6 +237,20 @@
 \DeclareMathAlphabet{\mathcrl}{U}{rsfs}{m}{n}
 \usepackage{utopia}
 \DeclareMathAlphabet{\mathcal}{OMS}{cmsy}{m}{n}
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{wrapfig}
+\usepackage{float}
+\usepackage{colortbl}
+\usepackage{pdflscape}
+\usepackage{tabu}
+\usepackage{threeparttable}
+\usepackage{threeparttablex}
+\usepackage[normalem]{ulem}
+\usepackage{makecell}
+\usepackage{xcolor}
 \makeatletter
 \makeatother
 \makeatletter
@@ -277,12 +291,12 @@
 \floatname{codelisting}{Listing}
 \newcommand*\listoflistings{\listof{codelisting}{List of Listings}}
 \usepackage{amsthm}
+\theoremstyle{plain}
+\newtheorem{proposition}{Proposition}[chapter]
 \theoremstyle{definition}
 \newtheorem{example}{Example}[chapter]
 \theoremstyle{definition}
 \newtheorem{definition}{Definition}[chapter]
-\theoremstyle{plain}
-\newtheorem{proposition}{Proposition}[chapter]
 \theoremstyle{remark}
 \renewcommand*{\proofname}{Proof}
 \newtheorem*{remark}{Remark}
@@ -319,7 +333,7 @@
 \begin{document}
 \frontmatter
 \maketitle
-\ifdefined\Shaded\renewenvironment{Shaded}{\begin{tcolorbox}[boxrule=0pt, frame hidden, borderline west={3pt}{0pt}{shadecolor}, enhanced, interior hidden, sharp corners, breakable]}{\end{tcolorbox}}\fi
+\ifdefined\Shaded\renewenvironment{Shaded}{\begin{tcolorbox}[enhanced, interior hidden, borderline west={3pt}{0pt}{shadecolor}, boxrule=0pt, sharp corners, frame hidden, breakable]}{\end{tcolorbox}}\fi
 
 \renewcommand*\contentsname{Table of contents}
 {
@@ -1876,15 +1890,15 @@ The reason why we would like to use a penalized complexity prior for a
 random effect, say \(\alpha_j \sim \mathsf{Norm}(0, \zeta^2)\), is
 because we don't know a prior if there is variability between groups.
 The inverse gamma prior for \(\zeta\),
-\(\zeta \sim \mathsf{IGa}(\epsilon, \epsilon)\) does not have a mode at
-zero unless it is improper with \(\epsilon \to 0\). Generally, we want
-our prior for the variance to have significant probability density at
-the null \(\zeta=0\). The penalized complexity prior is not the only
-sensible choice. Posterior inference is unfortunately sensitive to the
-value of \(\epsilon\) in hierarchical models when the random effect
-variance is close to zero, and more so when there are few levels for the
-groups since the relative weight of the prior relative to that of the
-likelihood contribution is then large.
+\(\zeta \sim \mathsf{InvGamma}(\epsilon, \epsilon)\) does not have a
+mode at zero unless it is improper with \(\epsilon \to 0\). Generally,
+we want our prior for the variance to have significant probability
+density at the null \(\zeta=0\). The penalized complexity prior is not
+the only sensible choice. Posterior inference is unfortunately sensitive
+to the value of \(\epsilon\) in hierarchical models when the random
+effect variance is close to zero, and more so when there are few levels
+for the groups since the relative weight of the prior relative to that
+of the likelihood contribution is then large.
 
 \leavevmode\vadjust pre{\hypertarget{exm-random-effect-variance}{}}%
 \begin{example}[Student-t prior for variance
@@ -2075,7 +2089,7 @@ by it's empirical counterpart.\footnote{By contrasts, if data are
   identically distributed but not independent, care is needed}. Note
 that, while the variance decreases linearly with \(B\), the choice of
 \(g\) impacts the speed of convergence: we can compute
-\(\sigma^2_g =\Pr(X \leq 1)\{1-\Pr(X \leq 1)\}=0.0434\) (left) and
+\[\sigma^2_g =\Pr(X \leq 1)\{1-\Pr(X \leq 1)\}=0.0434\] (left) and
 \(\sigma^2_g=\alpha/\beta^2=1/8\) (middle plot).
 
 Figure~\ref{fig-monte-carlo-path} shows the empirical trace plot of the
@@ -2434,7 +2448,7 @@ is \begin{align*}
 \end{align*}
 
 \leavevmode\vadjust pre{\hypertarget{prp-variance-clt}{}}%
-\begin{proposition}[]\label{prp-variance-clt}
+\begin{proposition}[Effective sample size]\label{prp-variance-clt}
 
 Intuitively, a sample of correlated observations carries less
 information than an independent sample of draws. If we want to compute
@@ -2457,6 +2471,31 @@ asymptotic variance for the mean of \begin{align*}
 \lim_{T \to \infty} T\mathsf{Va}\left(\overline{Y}_T\right) = \sigma^2 \left\{1+2\sum_{t=1}^\infty \gamma_t\right\}.
 \end{align*} This statement holds only if we start with draws from the
 stationary distribution, otherwise bets are off.
+
+We need the \textbf{effective sample size} of our Monte Carlo averages
+based on a Markov chain of length \(B\) to be sufficient for the
+estimates to be meaningful. The effective sample size is, loosely
+speaking, the equivalent number of observations if the marginal
+posterior draws where independent and more formally
+\begin{equation}\protect\hypertarget{eq-effective-sample-size}{}{
+\mathsf{ESS} = \frac{B}{\left\{1+2\sum_{t=1}^\infty \gamma_t\right\}}
+}\label{eq-effective-sample-size}\end{equation} where \(\gamma_t\) is
+the lag \(t\) correlation, as in Small values (less than a few hundreds)
+is not enough for estimating. The relative effective sample size is
+simply the fraction of the effective sample size over the Monte Carlo
+number of replications: small values of \(\mathsf{ESS}/B\) indicate
+pathological or inefficient samplers. If the ratio is larger than one,
+it indicates the sample is superefficient (as it generates negatively
+correlated draws).
+
+In practice, we replace the unknown autocorrelations by sample estimates
+and truncate the series in Equation~\ref{eq-effective-sample-size} at
+the point where they become negligible --- typically when the
+consecutive sum of two consecutive becomes negative; see Section 1.4 of
+the
+\href{https://mc-stan.org/docs/reference-manual/effective-sample-size.html}{Stan
+manual} or Section 1.10.2 of Geyer
+(\protect\hyperlink{ref-Geyer:2011}{2011}) for details.
 
 \end{proposition}
 
@@ -2908,45 +2947,6 @@ posterior draws (left) and marginal density plot of log hazard rate
 
 \end{example}
 
-\leavevmode\vadjust pre{\hypertarget{prp-visual-diagnostics}{}}%
-\begin{proposition}[Visual diagnostics for Markov
-chains]\label{prp-visual-diagnostics}
-
-It is useful to inspect visually the Markov chain, as it may indicate
-several problems. If the chain drifts around without stabilizing around
-the posterior mode, then we can suspect that it hasn't reached it's
-stationary distribution (likely due to poor starting values). In such
-cases, we need to disregard the dubious draws from the chain by
-discarding the so-called warm up or \textbf{burn in} period. While there
-are some guarantees of convergence, silly starting values may translate
-into tens of thousands of iterations lost wandering around. Preliminary
-optimization and plausible starting values help alleviate these
-problems. Figure~\ref{fig-badstart} shows the effect of bad starting
-values on a toy problem where convergence to the mode is relatively
-fast. If the proposal is in a flat region of the space, it can wander
-around for a very long time before converging to the stationary
-distribution.
-
-If we run several chains, as in Figure~\ref{fig-badstart}, with
-different starting values, we can monitor convergence by checking
-whether these chains converge to the same target. A \textbf{trace rank}
-plots, shown on right panel of Figure~\ref{fig-badstart}, compares the
-rank of the values of the different chain at a given iteration: with
-good mixing, the ranks should switch frequently and be distributed
-uniformly across integers.
-
-\begin{figure}[ht!]
-
-{\centering \includegraphics{./mcmc_files/figure-pdf/fig-badstart-1.pdf}
-
-}
-
-\caption{\label{fig-badstart}Traceplots of three Markov chains for the
-same target with different initial values for the first 500 iterations
-(left) and trace rank plot after discarding these (right).}
-
-\end{figure}
-
 The quality of the mixing of the chain (autocorrelation), depends on the
 proposal variance, which can obtain by trial and error. Trace plots
 Figure~\ref{fig-traceplot} show the values of the chain as a function of
@@ -3017,7 +3017,7 @@ Markov chains.}
 
 \end{figure}
 
-\end{proposition}
+:::
 
 \begin{remark}[Independence Metropolis--Hastings]
 
@@ -3344,8 +3344,12 @@ At iteration \(t\), we can update each block in turn: note that the
 \(k\)th block uses the partially updated state \begin{align*}
 \boldsymbol{\theta}^{-[k]\star} = (\boldsymbol{\theta}_{t}^{[1]}, \ldots, \boldsymbol{\theta}_{t}^{[k-1]},\boldsymbol{\theta}_{t-1}^{[k+1]}, \boldsymbol{\theta}_{t-1}^{[m]})
 \end{align*} which corresponds to the current value of the parameter
-vector after the updates. The Gibbs sampling can be viewed as a special
-case of Metropolis--Hastings where the proposal distribution \(q\) is
+vector after the updates. To check the validity of the Gibbs sampler,
+see the methods proposed in Geweke
+(\protect\hyperlink{ref-Geweke:2004}{2004}).
+
+The Gibbs sampling can be viewed as a special case of
+Metropolis--Hastings where the proposal distribution \(q\) is
 \(p(\boldsymbol{\theta}^{[j]} \mid \boldsymbol{\theta}^{-[j]\star}, \boldsymbol{y})\).
 The particularity is that all proposals get accepted because the log
 posterior of the partial update, equals the proposal distribution, so
@@ -3477,7 +3481,7 @@ stabilize even though there is no proper target.
 \end{remark}
 
 \hypertarget{data-augmentation-and-auxiliary-variables}{%
-\section{Data augmentation and auxiliary
+\subsection{Data augmentation and auxiliary
 variables}\label{data-augmentation-and-auxiliary-variables}}
 
 In many problems, the likelihood
@@ -3528,7 +3532,7 @@ simply the results of ordinary linear regression with unit variance, so
 \(\widehat{\boldsymbol{\beta}}=(\mathbf{X}^\top\mathbf{X})^{-1}\mathbf{X}^\top\boldsymbol{z}\)
 the ordinary least square coefficients from the regression with
 \(\boldsymbol{z}\)'s whereas the values of \(Z_i\), conditionally
-independent, are truncated Gaussian \begin{align*}
+independent, are truncated Gaussian with \begin{align*}
 Z_i \mid Y_i=y_i, \boldsymbol{\beta} \begin{cases}
 \mathsf{TruncNorm}(\mathbf{x}_i\boldsymbol{\beta}, -\infty, 0) & y_i =0 \\
 \mathsf{TruncNorm}(\mathbf{x}_i\boldsymbol{\beta}, 0, \infty) & y_i =1.
@@ -3562,16 +3566,17 @@ p(\xi_j \mid \mu, \sigma, y_j) &\propto \xi_j^{-3/2}\exp\left\{-\frac{1}{2\sigma
 \end{align*} and we recognize the latter as a Wald (or inverse Gaussian)
 distribution, whose density function is \begin{align*}
 f(y; \nu, \lambda) &= \left(\frac{\lambda}{2\pi y^{3}}\right)^{1/2} \exp\left\{ - \frac{\lambda (y-\nu)^2}{2\nu^2y}\right\}, \quad y > 0
-\\ \stackrel{y}{\propto} y^{-3/2}\exp\left\{-\frac{\lambda}{2} \left(\frac{y}{\nu} + \frac{1}{y}\right)\right\}
+\\ &\stackrel{y}{\propto} y^{-3/2}\exp\left\{-\frac{\lambda}{2} \left(\frac{y}{\nu} + \frac{1}{y}\right)\right\}
 \end{align*} for location \(\nu >0\) and shape \(\lambda>0\), where
-\(\nu=\{\sigma/(y_i-\mu)^2\}^{1/2}\) and \(\lambda=\sigma^{-1}\).
+\(\xi_i \sim \mathsf{Wald}(\nu_i, \lambda)\) with
+\(\nu_i=\{\sigma/(y_i-\mu)^2\}^{1/2}\) and \(\lambda=\sigma^{-1}\).
 
 Park and Casella (\protect\hyperlink{ref-Park.Casella:2008}{2008}) use
 this hierarchical construction to defined the Bayesian LASSO. With a
 model matrix \(\mathbf{X}\) whose columns are standardized to have mean
 zero and unit standard deviation, we may write \begin{align*}
-\boldsymbol{Y} \mid \mu, \boldsymbol{\beta}, \sigma^2 &\sim \mathsf{Norm}_n(\nu \boldsymbol{1}_n + \mathbf{X}\boldsymbol{\beta}, \sigma \mathbf{I}_n)\\
-\beta_j &\mid \sigma, \tau \sim \mathsf{Norm}(0, \sigma\tau)\\
+\boldsymbol{Y} \mid \mu, \boldsymbol{\beta}, \sigma^2 &\sim  \mathsf{Norm}_n(\nu \boldsymbol{1}_n + \mathbf{X}\boldsymbol{\beta}, \sigma \mathbf{I}_n)\\
+\beta_j \mid \sigma, \tau &\sim &\mathsf{Norm}(0, \sigma\tau)\\
 \tau &\sim \mathsf{Exp}(\lambda/2)
 \end{align*} If we set an improper prior
 \(p(\mu, \sigma) \propto \sigma^{-1}\), the resulting conditional
@@ -3612,13 +3617,243 @@ iterative framework, we can consider the complete data as the tuples
 With the augmented data, the conditional distribution of
 \(Z_i \mid X_i, \boldsymbol{\omega}, \boldsymbol{\theta} \sim \mathsf{Mult}(1, \boldsymbol{\gamma}_{ik})\)
 where
-\(\gamma_{ik} = \omega_k f_k(X_i\boldsymbol{\theta}_k)/\big\{\sum_{j=1}^K f_j(X_i\boldsymbol{\theta}_k)\big\}\).
+\[\gamma_{ik} = \frac{\omega_k f_k(X_i\boldsymbol{\theta}_k)}{\sum_{j=1}^K f_j(X_i\boldsymbol{\theta}_k)}.\]
 Given suitable priors for the probabilities \(\boldsymbol{\omega}\) and
 \(\boldsymbol{\theta} \equiv \{\boldsymbol{\theta}_1, \ldots, \boldsymbol{\theta}_k\}\),
 we can use Gibbs sampling updating \(\boldsymbol{Z}\),
 \(\boldsymbol{\omega}\) and \(\boldsymbol{\theta}\) in turn.
 
 \end{example}
+
+\hypertarget{bayesian-workflow-and-diagnostics-for-markov-chains}{%
+\section{Bayesian workflow and diagnostics for Markov
+chains}\label{bayesian-workflow-and-diagnostics-for-markov-chains}}
+
+For a given problem, there are many different Markov chain Monte Carlo
+algorithms that one can implement: they will typically be distinguished
+based on the running time and the efficiency (with algorithms providing
+chains that have low autocorrelation being better). Many visual
+diagnostics and standard tests can be used to diagnose lack of
+convergence, or inefficiency. The purpose of this section is to review
+these in turn.
+
+The Bayesian workflow is a coherent framework for model construction,
+estimation and validation. It typically involves multiple iterations
+tuning, adapting and modifying both the models and the algorithms in the
+hope of achieving a model that is useful
+(\protect\hyperlink{ref-Gelman:2020}{Gelman et al. 2020}); see also
+\href{https://betanalpha.github.io/assets/case_studies/principled_bayesian_workflow.html}{Michael
+Betancourt} for excellent visualizations.
+
+To illustrate these, we revisit the model from
+Example~\ref{exm-randomeffects} with a penalized complexity prior for
+the individual effect \(\alpha_i\) and vague normal priors. We also fit
+a simple Poisson model with only the fixed effect, taking
+\(Y_{ij} \sim \mathsf{Pois}\{\exp(\beta_j)\}\) with
+\(\beta_j \sim \mathsf{Norm}(0,100)\) has much too little variability
+relative to the observations.
+
+\hypertarget{trace-plots}{%
+\subsection{Trace plots}\label{trace-plots}}
+
+It is useful to inspect visually the Markov chain, as it may indicate
+several problems. If the chain drifts around without stabilizing around
+the posterior mode, then we can suspect that it hasn't reached it's
+stationary distribution (likely due to poor starting values). In such
+cases, we need to disregard the dubious draws from the chain by
+discarding the so-called warm up or \textbf{burn in} period. While there
+are some guarantees of convergence in the long term, silly starting
+values may translate into tens of thousands of iterations lost wandering
+around in regions with low posterior mass. Preliminary optimization and
+plausible starting values help alleviate these problems.
+Figure~\ref{fig-badstart} shows the effect of bad starting values on a
+toy problem where convergence to the mode is relatively fast. If the
+proposal is in a flat region of the space, it can wander around for a
+very long time before converging to the stationary distribution.
+
+If we run several chains, as in Figure~\ref{fig-badstart}, with
+different starting values, we can monitor convergence by checking
+whether these chains converge to the same target. A \textbf{trace rank}
+plots, shown on right panel of Figure~\ref{fig-badstart}, compares the
+rank of the values of the different chain at a given iteration: with
+good mixing, the ranks should switch frequently and be distributed
+uniformly across integers.
+
+\begin{figure}[ht!]
+
+{\centering \includegraphics{./mcmc_files/figure-pdf/fig-badstart-1.pdf}
+
+}
+
+\caption{\label{fig-badstart}Traceplots of three Markov chains for the
+same target with different initial values for the first 500 iterations
+(left) and trace rank plot after discarding these (right).}
+
+\end{figure}
+
+\hypertarget{diagnostics-of-convergence}{%
+\subsection{Diagnostics of
+convergence}\label{diagnostics-of-convergence}}
+
+Generally, one would run a MCMC algorithm. The first iterations, used
+during the burn in period to tune proposal variances and allow the
+chains to converge to the stationary distribution, are discarded. If
+visual inspection of the chains reveal that some of the chains for one
+or more parameters are not stationary until some iteration, we will
+discard all of these in addition.
+
+The target of inference is functional (i.e., one-dimensional summaries
+of the chain): we need to have convergence of the latter, but also
+sufficient effective sample size for our averages to be accurate (at
+least to two significant digits).
+
+For the Poisson example, the effective sample size for the
+\(\boldsymbol{\beta}\) for the multilevel model is a bit higher than
+1000 with \(B=5000\) iterations, whereas we have for the simple naive
+model is \ensuremath{10^{4}} for \(B=10000\) draws, suggesting
+superefficient sampling. The dependency between \(\boldsymbol{\alpha}\)
+and \(\boldsymbol{\beta}\) is responsible for the drop in accuracy.
+
+The \texttt{coda} (convergence diagnosis and output analysis) \textbf{R}
+package contains many tests. For example, the Geweke \(Z\)-score
+compares the averages for the beginning and the end of the chain:
+rejection of the null implies lack of convergence, or poor mixing.
+
+Running multiple Markov chains can be useful for diagnostics. The
+Gelman--Rubin diagnostic \(\widehat{R}\), also called potential scale
+reduction statistic, is obtained by considering the difference between
+within-chains and within-chains variance. Suppose we run \(M\) chains
+for \(B\) iterations, post burn in. Denoting by \(\theta_{bm}\) the
+\(b\)th draw of the \(m\)th chain, we compute the global average
+\(\overline{\theta} = B^{-1}M^{-1}\sum_{b=1}^B \sum_{m=1}^m \theta_{bm}\)
+and similarly the chain sample average and variances, respectively
+\(\overline{\theta}_m\) and \(\widehat{\sigma}^2_m\)
+(\(m=1, \ldots, M\)). The between-chain variance and within-chain
+variance estimator are \begin{align*}
+\mathsf{Va}_{\text{between}} &= \frac{B}{M-1}\sum_{m=1}^M (\overline{\theta}_m - \overline{\theta})^2\\
+\mathsf{Va}_{\text{within}} &= \frac{1}{M}\sum_{m=1}^m \widehat{\sigma}^2_m
+\end{align*} and we can compute \begin{align*}
+\widehat{R} = \left(\frac{\mathsf{Va}_{\text{within}}(B-1) + \mathsf{Va}_{\text{between}}}{B\mathsf{Va}_{\text{within}}}\right)^{1/2}
+\end{align*} The potential scale reduction statistic must be, by
+construction, larger than 1 in large sample. Any value larger than this
+is indicative of problems of convergence. While the Gelman--Rubin
+diagnostic is frequently reported, and any value larger than 1 deemed
+problematic, it is not enough to have approximately \(\widehat{R}=1\) to
+guarantee convergence.
+
+More generally, it is preferable to run a single chain for a longer
+period than run multiple chains sequentially, as there is a cost to
+initializing multiple times with different starting values since we must
+discard initial draws. With parallel computations, multiple chains are
+more frequent nowadays.
+
+MCMC algorithms are often run thinning the chain (i.e., keeping only a
+fraction of the samples drawn, typically every \(k\) iteration). This is
+wasteful as we can of course get more precise estimates by keeping all
+posterior draws, whether correlated or not. The only argument in favor
+of thinning is limited storage capacity: if we run very long chains in a
+model with hundreds of parameters, we may run out of memory.
+
+\hypertarget{posterior-predictive-checks}{%
+\subsection{Posterior predictive
+checks}\label{posterior-predictive-checks}}
+
+Posterior predictive checks can be used to compare models of varying
+complexity: suppose we have the leave-one-out predictive distribution
+for observation \(i\) given all the rest,
+\(p(y_i \mid \boldsymbol{y}_{-i})\). We can assess the probability level
+for each in turn, and the collection for all of leave-one-out cross
+validation probabilities can be used to define the dis integral
+transformation, consisting of being approximately uniform under the null
+hypothesis of perfect model calibration. The probability of seeing an
+outcome as extreme as \(y_i\) can be obtained by simulating draws from
+the posterior predictive of \(\boldsymbol{y}_{-i}\) and computing the
+scaled rank of the original observation. Values close to zero or one may
+indicate outliers.
+
+One of the visual diagnostics, outlined in Gabry et al.
+(\protect\hyperlink{ref-Gabry:2019}{2019}), consists in computing a
+summary statistic of interest from the posterior predictive (whether
+mean, median, quantile, skewness, etc.) which is relevant for the
+problem at hand and which we hope our model can adequately capture.
+
+Suppose we have \(B\) draws from the posterior and simulate for each
+\(n\) observations from the posterior predictive: we can benchmark
+summary statistics from our original data \(\boldsymbol{y}\) with the
+posterior predictive copies \(\widetilde{\boldsymbol{y}}_b\).
+Figure~\ref{fig-posterior-pred-check} shows this for the two competing
+models and highlight the fact that the simpler model is not dispersed
+enough. Even the more complex model struggles to capture this additional
+heterogeneity with the additional variables. One could go back to the
+drawing board and consider a negative binomial model.
+
+\begin{figure}[ht!]
+
+{\centering \includegraphics{./mcmc_files/figure-pdf/fig-posterior-pred-check-1.pdf}
+
+}
+
+\caption{\label{fig-posterior-pred-check}Posterior predictive checks for
+the standard deviation (top) and density of posterior draws (bottom) for
+hierarchical Poisson model with individual effects (left) and simpler
+model with only conditions (right).}
+
+\end{figure}
+
+\hypertarget{information-criterion}{%
+\subsection{Information criterion}\label{information-criterion}}
+
+The widely applicable information criterion
+(\protect\hyperlink{ref-Watanabe:2010}{Watanabe 2010}) is a measure of
+predictive performance that approximates the cross-validation loss.
+Consider first the log pointwise predictive density, defined as the
+expected value over the posterior distribution
+\(p(\boldsymbol{\theta} \mid \boldsymbol{y})\), \begin{align*}
+\mathsf{LPPD} = \mathsf{E}_{\boldsymbol{\theta} \mid \boldsymbol{y}} \left\{ \log p(y_i \mid \boldsymbol{\theta})\right\}.
+\end{align*} We can approximate this quantity pointwise by averaging the
+log density of each sample observation over the posterior samples via
+Monte Carlo. The lower the value of \(\mathsf{LPPD}\), the better the
+fit.
+
+As in general information criteria, we add a penalization factor that
+approximates the effective number of parameters in the model, with
+\begin{align*}
+n\mathsf{WAIC} = -\mathsf{LPPD} + \mathsf{Va}_{\boldsymbol{\theta} \mid \boldsymbol{y}}\{\log p(y_i \mid \boldsymbol{\theta})\}
+\end{align*} where we use again the empirical variance to compute the
+rightmost term. When comparing competing models, we can rely on their
+values of \(\mathsf{WAIC}\) to discriminate about the predictive
+performance. To compute \(\mathsf{WAIC}\), we need to store the values
+of the log density of each observation, or at least minimally
+\href{https://www.johndcook.com/blog/standard_deviation/}{compute the
+running mean and variance accurately} pointwise at storage cost
+\(\mathrm{O}(n)\). Note that Section 7.2 of Gelman et al.
+(\protect\hyperlink{ref-Gelman:2013}{2013}) define the widely applicable
+information criterion as \(2n \times \mathsf{WAIC}\) to make on par with
+other information criteria, which are defined typically on the deviance
+scale and so that lower values correspond to higher predictive
+performance. For the smartwatch model, we get a value of 3.07 for the
+complex model and 4.51: this suggests an improvement in using
+individual-specific effects.
+
+We can also compute the pointwise predictive performance using
+leave-one-out validation. Naively, this requires refitting the model
+\(n\) times, which is prohibitively expansive in the Bayesian setting
+since this would require running the MCMC \(n\) times. A quick
+approximation to the posterior predictive is via importance sampling,
+but the latter can be noisy. The \texttt{loo} package uses this with
+generalized Pareto smoothing to avoid overly large weights.
+
+\begin{figure}[ht!]
+
+{\centering \includegraphics{./mcmc_files/figure-pdf/fig-loocv-qqplots-1.pdf}
+
+}
+
+\caption{\label{fig-loocv-qqplots}Quantile-quanitle plots based on
+leave-one-out cross validation for model for the Poisson hierarchical
+model with the individual random effects (left) and without (right).}
+
+\end{figure}
 
 \bookmarksetup{startatroot}
 
@@ -3678,6 +3913,12 @@ Statistics} 10 (1): 1--50.
 Finetti, Bruno de. 1974. \emph{Theory of Probability: A Critical
 Introductory Treatment}. Vol. 1. New York: Wiley.
 
+\leavevmode\vadjust pre{\hypertarget{ref-Gabry:2019}{}}%
+Gabry, Jonah, Daniel Simpson, Aki Vehtari, Michael Betancourt, and
+Andrew Gelman. 2019. {``{Visualization in {B}ayesian Workflow}.''}
+\emph{Journal of the Royal Statistical Society Series A: Statistics in
+Society} 182 (2): 389--402. \url{https://doi.org/10.1111/rssa.12378}.
+
 \leavevmode\vadjust pre{\hypertarget{ref-Gelfand.Smith:1990}{}}%
 Gelfand, Alan E., and Adrian F. M. Smith. 1990. {``Sampling-Based
 Approaches to Calculating Marginal Densities.''} \emph{Journal of the
@@ -3695,11 +3936,23 @@ Gelman, Andrew, John B. Carlin, Hal S. Stern, David B. Dunson, Aki
 Vehtari, and Donald B. Rubin. 2013. \emph{Bayesian Data Analysis}. 3rd
 ed. New York: Chapman; Hall/CRC. \url{https://doi.org/10.1201/b16018}.
 
+\leavevmode\vadjust pre{\hypertarget{ref-Gelman:2020}{}}%
+Gelman, Andrew, Aki Vehtari, Daniel Simpson, Charles C Margossian, Bob
+Carpenter, Yuling Yao, Lauren Kennedy, Jonah Gabry, Paul-Christian
+Bürkner, and Martin Modrák. 2020. {``Bayesian Workflow.''} \emph{arXiv}.
+https://doi.org/\url{https://doi.org/10.48550/arXiv.2011.01808}.
+
 \leavevmode\vadjust pre{\hypertarget{ref-Geman.Geman:1984}{}}%
 Geman, Stuart, and Donald Geman. 1984. {``Stochastic Relaxation, {G}ibbs
 Distributions, and the {B}ayesian Restoration of Images.''} \emph{IEEE
 Transactions on Pattern Analysis and Machine Intelligence} PAMI-6 (6):
 721--41. \url{https://doi.org/10.1109/TPAMI.1984.4767596}.
+
+\leavevmode\vadjust pre{\hypertarget{ref-Geweke:2004}{}}%
+Geweke, John. 2004. {``Getting It Right: Joint Distribution Tests of
+Posterior Simulators.''} \emph{Journal of the American Statistical
+Association} 99 (467): 799--804.
+\url{https://doi.org/10.1198/016214504000001132}.
 
 \leavevmode\vadjust pre{\hypertarget{ref-Geyer:2011}{}}%
 Geyer, Charles J. 2011. {``Introduction to {M}arkov Chain {M}onte
@@ -3790,6 +4043,12 @@ Wakefield, J. C., A. E. Gelfand, and A. F. M. Smith. 1991. {``Efficient
 Generation of Random Variates via the Ratio-of-Uniforms Method.''}
 \emph{Statistics and Computing} 1 (2): 129--33.
 \url{https://doi.org/10.1007/BF01889987}.
+
+\leavevmode\vadjust pre{\hypertarget{ref-Watanabe:2010}{}}%
+Watanabe, Sumio. 2010. {``Asymptotic Equivalence of {B}ayes Cross
+Validation and Widely Applicable Information Criterion in Singular
+Learning Theory.''} \emph{Journal of Machine Learning Research} 11
+(116): 3571--94. \url{http://jmlr.org/papers/v11/watanabe10a.html}.
 
 \end{CSLReferences}
 
