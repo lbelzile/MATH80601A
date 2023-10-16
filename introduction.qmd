@@ -445,7 +445,7 @@ mean(dbinom(x = y,
 :::
 
 
-When $\boldsymbol{\theta}$ is high-dimensional, the marginal likelihood is intractable. This is one of the main challenges of Bayesian statistics and the popularity and applicability has grown drastically with the development and popularity of numerical algorithms, following th publication of @Geman.Geman:1984 and @Gelfand.Smith:1990. Markov chain Monte Carlo methods circumvent the calculation of the denominator by drawing approximate samples from the posterior. 
+When $\boldsymbol{\theta}$ is high-dimensional, the marginal likelihood is intractable. This is one of the main challenges of Bayesian statistics and the popularity and applicability has grown drastically with the development and popularity of numerical algorithms, following the publication of @Geman.Geman:1984 and @Gelfand.Smith:1990. Markov chain Monte Carlo methods circumvent the calculation of the denominator by drawing approximate samples from the posterior. 
 
 ## Posterior predictive distribution
 

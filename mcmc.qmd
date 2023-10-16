@@ -168,7 +168,7 @@ Rejection sampling requires the proposal $q$ to have a support at least as large
 
 ## Truncated Gaussian distribution
 
-Consider the problem of sampling from a Gaussian distribution $Y \sim \mathsf{Norm}(\mu, \sigma^2)$ truncated in the interval $a, b,$ which has density
+Consider the problem of sampling from a Gaussian distribution $Y \sim \mathsf{Norm}(\mu, \sigma^2)$ truncated in the interval $[a, b],$ which has density
 \begin{align*}
 f(x; \mu, \sigma, a, b) = \frac{1}{\sigma}\frac{\phi\left(\frac{x-\mu}{\sigma}\right)}{\Phi\{(b-\mu)/\sigma\}-\Phi\{(a-\mu)/\sigma\}}.
 \end{align*}
@@ -191,7 +191,7 @@ length(trunc_samp)/1e5
 pnorm(1)-pnorm(0)
 ```
 
-We can of course do better: if we consider a random variable with distribution function $F$, but truncated over the interval $[a,b]$, then the resulting distribution function is
+We can of course do better: if we consider a random variable with distribution function $F,$ but truncated over the interval $[a,b],$ then the resulting distribution function is
 $$\frac{F(x) - F(a)}{F(b)-F(a)}, \qquad a \leq x \leq b,$$
 and we can invert this expression to get the quantile function of the truncated variable in terms of the distribution function $F$ and the quantile function $F^{-1}$ of the original untruncated variable.
 
@@ -842,7 +842,7 @@ To guarantee that our proposals fall in the support of $\theta$, we can thus run
 
 ## Truncated proposals
 
-As an alternative, if we are dealing with parameters that are restricted in $[a,b]$, we can simulate using a random walk but with truncated Gaussian steps, taking $\theta^{\star}_{t} \sim \mathsf{TNo}(\vartheta_{t-1}, \tau^2, a, b).$ The benefits of using the truncated proposal becomes more apparent when we move to more advanced proposals whose mean and variance depends on the gradient and or the hessian of the underlying unnormalized log posterior, as the mean can be lower than $a$ or larger than $b$: this would garantee zero acceptance with regular Gaussian random walk. The `TruncatedNormal` package can be used to efficiently evaluate such instances using results from @LEcuyer.Botev:2017 even when the truncation bounds are far from the mode. the normalizing constant of the truncated Gaussian in the denominator of the density is a function of the location and scale parameters: if these depend on the current value of $\boldsymbol{\theta}_{t-1}$, as is the case for a random walk, we need to keep these terms as part of the Metropolis ratio. The mean and standard deviation of the truncated Gaussian are not equal to the parameters $\mu$ (which corresponds to the mode, provided $a < \mu < b$) and $\sigma$.
+As an alternative, if we are dealing with parameters that are restricted in $[a,b]$, we can simulate using a random walk but with truncated Gaussian steps, taking $\theta^{\star}_{t} \sim \mathsf{TruncNorm}(\vartheta_{t-1}, \tau^2, a, b).$ The benefits of using the truncated proposal becomes more apparent when we move to more advanced proposals whose mean and variance depends on the gradient and or the hessian of the underlying unnormalized log posterior, as the mean can be lower than $a$ or larger than $b$: this would garantee zero acceptance with regular Gaussian random walk. The `TruncatedNormal` package can be used to efficiently evaluate such instances using results from @LEcuyer.Botev:2017 even when the truncation bounds are far from the mode. the normalizing constant of the truncated Gaussian in the denominator of the density is a function of the location and scale parameters: if these depend on the current value of $\boldsymbol{\theta}_{t-1}$, as is the case for a random walk, we need to keep these terms as part of the Metropolis ratio. The mean and standard deviation of the truncated Gaussian are not equal to the parameters $\mu$ (which corresponds to the mode, provided $a < \mu < b$) and $\sigma$.
 
 :::
 
@@ -857,7 +857,7 @@ Let $p(\theta)$ denote the conditional (unnormalized) log posterior for a scalar
 \begin{align*}
  p(\theta) \approx p(\theta_{t-1}) + p'(\theta_{t-1})(\theta - \theta_{t-1}) + \frac{1}{2} p''(\theta_{t-1})(\theta - \theta_{t-1})^2
 \end{align*}
-plus remainder, which suggests a Gaussian approximation with mean $\mu_{t-1} = \theta_{t-1} - f'(\theta_{t-1})/f''(\theta_{t-1})$ and precision $\tau^{-2} = -f''(\theta_{t-1})$. We can use truncated Gaussian distribution on $(a, b)$ with mean $\mu$ and standard deviation $\tau$, denoted $\mathsf{TNo}(\mu, \tau, a, b)$ with corresponding density function $q(\cdot; \mu, \tau, a, b)$. The Metropolis acceptance ratio for a proposal $\theta^{\star}_{t} \sim \mathsf{TNo}(\mu_{t-1}, \tau_{t-1}, a, b)$ is 
+plus remainder, which suggests a Gaussian approximation with mean $\mu_{t-1} = \theta_{t-1} - f'(\theta_{t-1})/f''(\theta_{t-1})$ and precision $\tau^{-2} = -f''(\theta_{t-1})$. We can use truncated Gaussian distribution on $(a, b)$ with mean $\mu$ and standard deviation $\tau$, denoted $\mathsf{TruncNorm}(\mu, \tau, a, b)$ with corresponding density function $q(\cdot; \mu, \tau, a, b)$. The Metropolis acceptance ratio for a proposal $\theta^{\star}_{t} \sim \mathsf{TruncNorm}(\mu_{t-1}, \tau_{t-1}, a, b)$ is 
 \begin{align*}
  \alpha = \frac{p(\theta^{\star}_{t})}{p(\theta_{t-1})} \frac{ q(\theta_{t-1} \mid \mu_{t}^{\star}, \tau_{t}^{\star}, a, b)}{q(\theta^{\star}_{t} \mid \mu_{t-1}, \tau_{t-1}, a, b)}
 \end{align*}
@@ -872,7 +872,7 @@ For MALA to work well, we need both to start near stationarity, to ensure that t
 
 :::{#exm-normal-question-upworthy}
 
-We revisit the Upworthy data, this time modelling each individual headline as a separate observation. We view $n=$`nimpression` as the sample size of a binomial distribution and `nclick` as the number of successes. Since the number of trials is large, the sample average `nclick`/`nimpression`, denoted $y$ in the sequel, is approximately Gaussian. We assume that each story has a similar population rate and capture the heterogeneity inherent to each news story by treating each mean as a sample. The variance of the sample average or click rate is proportional to $n^{-1}$, where $n$ is the number of impressions. To allow for underdispersion or overdispersion, we thus consider a Gaussian likelihood $Y_i \sim \mathsf{Norm}(\mu, \sigma^2/n_i)$. We perform Bayesian inference for $\mu, \sigma$ after assigning a truncated Gaussian prior for $\mu \sim \mathsf{TNo}(0.01, 0.1^2)$ over $[0,1]$ and an penalized complexity prior for $\sigma \sim \mathsf{Exp}(0.7)$.
+We revisit the Upworthy data, this time modelling each individual headline as a separate observation. We view $n=$`nimpression` as the sample size of a binomial distribution and `nclick` as the number of successes. Since the number of trials is large, the sample average `nclick`/`nimpression`, denoted $y$ in the sequel, is approximately Gaussian. We assume that each story has a similar population rate and capture the heterogeneity inherent to each news story by treating each mean as a sample. The variance of the sample average or click rate is proportional to $n^{-1}$, where $n$ is the number of impressions. To allow for underdispersion or overdispersion, we thus consider a Gaussian likelihood $Y_i \sim \mathsf{Norm}(\mu, \sigma^2/n_i)$. We perform Bayesian inference for $\mu, \sigma$ after assigning a truncated Gaussian prior for $\mu \sim \mathsf{TruncNorm}(0.01, 0.1^2)$ over $[0,1]$ and an penalized complexity prior for $\sigma \sim \mathsf{Exp}(0.7)$.
 
 
 <!-- The `hecbayes` package contains an helper function `mh` that computes the step given the log likelihood, log prior and their gradients. -->
@@ -1236,21 +1236,45 @@ Gibbs sampling cannot be used to determine if the posterior is improper. If the 
 :::
 
 
-<!--
 
 ## Data augmentation and auxiliary variables
 
-Sometimes, it is 
+
+In many problems, the likelihood $p(\boldsymbol{y}; \boldsymbol{\theta})$ is intractable or costly to evaluate and auxiliary variables are introduced to simplify calculations, as in the expectation-maximization algorithm. The Bayesian analog is  data augmentation [@Tanner.Wong:1987], which we present succinctly: let $\boldsymbol{\theta} \in \Theta$ be a vector of parameters and consider auxiliary variables $\boldsymbol{u} \in \mathbb{R}^k$ such that $\int_{\mathbb{R}^k} p(\boldsymbol{u}, \boldsymbol{\theta}; \boldsymbol{y}) \mathrm{d} \boldsymbol{u} = p(\boldsymbol{\theta}; \boldsymbol{y})$, i.e., the marginal distribution is that of interest, but evaluation of $p(\boldsymbol{u}, \boldsymbol{\theta}; \boldsymbol{y})$ is cheaper. The data augmentation algorithm consists in running a Markov chain on the augmented state space $(\Theta, \mathbb{R}^k)$, simulating in turn from the conditionals $p(\boldsymbol{u}; \boldsymbol{\theta}, \boldsymbol{y})$ and $p(\boldsymbol{\theta}; \boldsymbol{u}, \boldsymbol{y})$ with new variables chosen to simplify the likelihood. If simulation from the conditionals is straightforward, we can also use data augmentation to speed up calculations or improve mixing. For more details and examples, see @vanDyk.Meng:2001 and @Hobert:2011.
 
 
 :::{#exm-probit-regression}
 
-The probit regression sets 
+Consider binary responses $\boldsymbol{Y}_i$, for which we postulate a probit regression model,
+\begin{align*}
+p_i = \Pr(Y_i=1) = \Phi(\beta_0 + \beta_1 \mathrm{X}_{i1} + \cdots + \beta_p\mathrm{X}_{ip}),
+\end{align*}
+where $\Phi$ is the distribution function of the standard Gaussian distribution.
+The likelihood of the probit model for a sample of $n$ independent observations is 
+$$L(\boldsymbol{\beta}; \boldsymbol{y}) = \prod_{i=1}^n p_i^{y_i}(1-p_i)^{1-y_i},$$
+and this prevents easy simulation. We can consider a data augmentation scheme where $Y_i = \mathsf{I}(Z_i > 0)$, where $Z_i \sim \mathsf{Norm}(\mathbf{x}_i\boldsymbol{\beta}, 1)$, where $\mathbf{x}_i$ is the $i$th row of the design matrix.
 
+The augmented data likelihood is
+\begin{align*}
+p(\boldsymbol{z}, \boldsymbol{y} \mid \boldsymbol{\beta}) \propto \exp\left\{-\frac{1}{2}(\boldsymbol{z} - \mathbf{X}\boldsymbol{\beta})^\top(\boldsymbol{z} - \mathbf{X}\boldsymbol{\beta})\right\} \times \prod_{i=1}^n \mathsf{I}(z_i > 0)^{y_i}\mathsf{I}(z_i \le 0)^{1-y_i}
+\end{align*}
+Given $Z_i$, the coefficients $\boldsymbol{\beta}$ are simply the results of ordinary linear regression with unit variance, so 
+\begin{align*}
+\boldsymbol{\beta} \mid \boldsymbol{z}, \boldsymbol{y} &\sim \mathsf{Norm}\{\widehat{\boldsymbol{\beta}}, (\mathbf{X}^\top\mathbf{X})^{-1}\}
+\end{align*}
+with $\widehat{\boldsymbol{\beta}}=(\mathbf{X}^\top\mathbf{X})^{-1}\mathbf{X}^\top\boldsymbol{z}$ the ordinary least square coefficients from the regression with $\boldsymbol{z}$'s
+whereas the values of $Z_i$, conditionally independent, are truncated Gaussian
+\begin{align*}
+Z_i \mid Y_i=y_i, \boldsymbol{\beta} \begin{cases}
+\mathsf{TruncNorm}(\mathbf{x}_i\boldsymbol{\beta}, -\infty, 0) & y_i =0 \\
+\mathsf{TruncNorm}(\mathbf{x}_i\boldsymbol{\beta}, 0, \infty) & y_i =1.
+\end{cases}
+\end{align*}
+and we can use the algorithms of @exm-accept-reject-truncated to simulate these.
 :::
 
 
--->
+
 
 :::{#exm-student-mixture-gaussian}
 
@@ -1267,8 +1291,10 @@ p(\boldsymbol{\tau}, \mu, \sigma \mid \boldsymbol{y}) &\propto \left(\prod_{i=1}
 \end{align*}
 and $\mu \mid \cdots$ and $\sigma \mid \cdots$ are, as usual, Gaussian and inverse gamma, respectively. The variances, $\tau_j$, are conditionally independent of one another with 
 \begin{align*}
-p(\tau_j \mid \mu, \sigma, y_j) &\propto \tau_j^{-1/2}\exp\left\{-\frac{1}{2}\frac{(y_j-\mu)^2}{\tau_j} -\frac{1}{2} \frac{\tau_j}{\sigma}\right\}\\
-\intertext{so with $\xi_j=1/\tau_j$, we have}
+p(\tau_j \mid \mu, \sigma, y_j) &\propto \tau_j^{-1/2}\exp\left\{-\frac{1}{2}\frac{(y_j-\mu)^2}{\tau_j} -\frac{1}{2} \frac{\tau_j}{\sigma}\right\}
+\end{align*}
+so with $\xi_j=1/\tau_j$, we have
+\begin{align*}
 p(\xi_j \mid \mu, \sigma, y_j) &\propto \xi_j^{-3/2}\exp\left\{-\frac{1}{2\sigma}\frac{\xi_j(y_j-\mu)^2}{\sigma} -\frac{1}{2} \frac{1}{\xi_j}\right\}\\
 \end{align*}
 and we recognize the latter as a Wald (or inverse Gaussian) distribution, whose density function is
@@ -1282,10 +1308,11 @@ for location $\nu >0$ and shape $\lambda>0$, where $\nu=\{\sigma/(y_i-\mu)^2\}^{
 \begin{align*}
 \boldsymbol{Y} \mid \mu, \boldsymbol{\beta}, \sigma^2 &\sim \mathsf{Norm}_n(\nu \boldsymbol{1}_n + \mathbf{X}\boldsymbol{\beta}, \sigma \mathbf{I}_n)\\
 \beta_j &\mid \sigma, \tau \sim \mathsf{Norm}(0, \sigma\tau)\\
-\tau &\sim \mathsf{Exp}(\lambda/2)\\
-p(\mu, \sigma) & \propto \sigma^{-1}.
+\tau &\sim \mathsf{Exp}(\lambda/2)
 \end{align*}
-This yields a Laplace penalty on the regression coefficients, with lower values of $\lambda$ yielding more shrinkage. Note that, in the Bayesian LASSO, none of the posterior draws of $\boldsymbol{\beta}$ are exactly zero.
+If we set an improper prior $p(\mu, \sigma) \propto \sigma^{-1}$, the resulting conditional distributions are all available and thus the model is amenable to Gibbs sampling.
+
+The Bayesian LASSO places a Laplace penalty on the regression coefficients, with lower values of $\lambda$ yielding more shrinkage. Note that, contrary to the frequentist setting, none of the posterior draws of $\boldsymbol{\beta}$ are exactly zero.
 
 Many elliptical distributions can be cast as scale mixture models of spherical or Gaussian variables; see, e.g.,  Section 10.2 of @Albert:2009 for a similar derivation with a Student-$t$ distribution.
 
