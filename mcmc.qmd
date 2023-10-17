@@ -353,8 +353,7 @@ We need the **effective sample size** of our Monte Carlo averages based on a Mar
 $$
 \mathsf{ESS} = \frac{B}{\left\{1+2\sum_{t=1}^\infty \gamma_t\right\}}
 $$ {#eq-effective-sample-size}
-where $\gamma_t$ is the lag $t$ correlation, as in 
-Small values (less than a few hundreds) is not enough for estimating. The relative effective sample size is simply the fraction of the effective sample size over the Monte Carlo number of replications: small values of $\mathsf{ESS}/B$ indicate pathological or inefficient samplers. If the ratio is larger than one, it indicates the sample is superefficient (as it generates negatively correlated draws).
+where $\gamma_t$ is the lag $t$ correlation. The relative effective sample size is simply the fraction of the effective sample size over the Monte Carlo number of replications: small values of $\mathsf{ESS}/B$ indicate pathological or inefficient samplers. If the ratio is larger than one, it indicates the sample is superefficient (as it generates negatively correlated draws).
 
 In practice, we replace the unknown autocorrelations by sample estimates and truncate the series in @eq-effective-sample-size at the point where they become negligible --- typically when the consecutive sum of two consecutive becomes negative; see Section 1.4 of the [Stan manual](https://mc-stan.org/docs/reference-manual/effective-sample-size.html) or Section 1.10.2 of @Geyer:2011 for details.
 
@@ -525,6 +524,35 @@ g1 + g2
 
 The Markov chain Monte Carlo revolution in the 1990s made Bayesian inference mainstream by allowing inference for models when only approximations were permitted, and coincided with a time at which computers became more widely available. The idea is to draw correlated samples from a posterior via Markov chains, constructed to have the posterior as invariant stationary distribution.
 
+
+
+:::{#prp-conjugate-bayesian-linmod}
+
+## Conjugate priors in the Bayesian linear model
+
+Consider a linear regression model with observation-specific mean $\mu_i = \mathbf{x}_i\boldsymbol{\beta}$ $(i=1,\ldots, n)$ with $\mathbf{x}_i$ the $i$th row of the $n \times p$ model matrix $\mathbf{X}$.
+
+Concatenating records, $\boldsymbol{Y} \sim \mathsf{No}_n(\mathbf{X}\boldsymbol{\beta}, \sigma^2 \mathbf{Q}_y^{-1})$, for a known precision matrix $\mathbf{Q}_y$, typically $\mathbf{I}_n$. To construct a conjugate joint prior for $p(\boldsymbol{\beta}, \sigma^2)$, we consider the sequential formulation
+\begin{align*}
+\boldsymbol{\beta} \mid \sigma^2 \sim \mathsf{No}_p(\boldsymbol{\nu}_\beta, \sigma^2 \mathbf{Q}^{-1}_\beta), \qquad \sigma^2 \sim \mathsf{IG}(\alpha,\beta)
+\end{align*}
+where $\mathsf{IG}$ denotes the inverse gamma distribution^[This simply means that the precision $\sigma^{-2}$, the reciprocal of the variance, has a gamma distribution with shape $\alpha$ and rate $\beta$.]
+
+<!--
+Writing the log likelihood in exponential family form,
+\begin{align*}
+\ell(\mu, \sigma^2; \boldsymbol{y}) \propto -n \log(\sigma) - \frac{\boldsymbol{y}^\top\boldsymbol{y}}{2\sigma^2} + \frac{\mu}{\sigma^2}\boldsymbol{y}^\top \boldsymbol{1}_n - \frac{n}{2}\frac{\mu^2}{\sigma^2}
+\end{align*}
+
+-->
+
+The joint posterior is Gaussian-inverse gamma and can be factorized
+\begin{align*}
+p(\boldsymbol{\beta}, \sigma^2 \mid y) = p(\sigma^2 \mid y) p(\boldsymbol{\beta} \mid \sigma^2, y)
+\end{align*}
+where $p(\sigma^2 \mid y) \sim \mathsf{IG}(\alpha^*, \beta^*)$ and $p(\boldsymbol{\beta} \mid \sigma^2, y) \sim \mathsf{No}_p(\mathbf{M}\boldsymbol{m}, \sigma^2\mathbf{M})$ with $\alpha^* = \alpha + n/2$, $\beta^*=\beta + 0.5 \boldsymbol{\nu}_\beta^\top \mathbf{Q}_\beta\boldsymbol{\nu}_\beta + \boldsymbol{y}^\top\boldsymbol{y} - \boldsymbol{m}^\top\mathbf{M}\boldsymbol{m}$, $\boldsymbol{m} = \mathbf{Q}_\beta \boldsymbol{\nu}_\beta + \mathbf{X}^\top \mathbf{Q}_y\boldsymbol{y}$ and $\mathbf{M} = (\mathbf{Q}_\beta + \mathbf{X}^\top\mathbf{Q}_y\mathbf{X})^{-1};$ the latter can be evaluated efficiently using Shermann--Morrisson--Woodbury identity.
+
+:::
 ### Metropolis--Hastings algorithm
 
 Named after @Metropolis:1953, @Hastings:1970, its relevance took a long time to gain traction in the statistical community. The idea of the Metropolis--Hastings algorithm is to construct a Markov chain targeting a distribution $p(\cdot)$.
@@ -686,7 +714,7 @@ bayesplot::mcmc_trace(x = coda::as.mcmc(chain),
 #| message: false
 #| warning: false
 #| label: fig-scatterplot-upworthy-question
-#| fig-cap: "Scatterplot of posterior draws (left) and marginal density plot of log hazard rate (right)."
+#| fig-cap: "Scatterplot of posterior draws (left) and marginal density plot of log odds rate (right)."
 bayesplot::color_scheme_set("darkgray")
 g1 <- bayesplot::mcmc_scatter(x = coda::as.mcmc(chain), alpha = 0.5) +
   labs(y = expression(kappa), x = expression(beta))
@@ -750,9 +778,6 @@ We can also plot the autocorrelation of the entries of the chain as a function o
 #| fig-cap: "Correlogram for the three Markov chains."
 bayesplot::mcmc_acf(x = coda::as.mcmc(chains_goldi))
 ```
-
-:::
-
 
 
 
@@ -1201,6 +1226,33 @@ Gibbs sampling cannot be used to determine if the posterior is improper. If the 
 :::
 
 
+:::{#prp-conjugate-bayesian-linmod}
+
+## Conjugate priors in the Bayesian linear model
+
+Consider a linear regression model with observation-specific mean $\mu_i = \mathbf{x}_i\boldsymbol{\beta}$ $(i=1,\ldots, n)$ with $\mathbf{x}_i$ the $i$th row of the $n \times p$ model matrix $\mathbf{X}$.
+
+Concatenating records, $\boldsymbol{Y} \sim \mathsf{No}_n(\mathbf{X}\boldsymbol{\beta}, \sigma^2 \mathbf{Q}_y^{-1})$, for a known precision matrix $\mathbf{Q}_y$, typically $\mathbf{I}_n$. To construct a conjugate joint prior for $p(\boldsymbol{\beta}, \sigma^2)$, we consider the sequential formulation
+\begin{align*}
+\boldsymbol{\beta} \mid \sigma^2 \sim \mathsf{Norm}_p(\boldsymbol{\nu}_\beta, \sigma^2 \mathbf{Q}^{-1}_\beta), \qquad \sigma^2 \sim \mathsf{InvGamma}(\alpha,\beta)
+\end{align*}
+where $\mathsf{InvGamma}$ denotes the inverse gamma distribution^[This simply means that the precision $\sigma^{-2}$, the reciprocal of the variance, has a gamma distribution with shape $\alpha$ and rate $\beta$.]
+
+<!--
+Writing the log likelihood in exponential family form,
+\begin{align*}
+\ell(\mu, \sigma^2; \boldsymbol{y}) \propto -n \log(\sigma) - \frac{\boldsymbol{y}^\top\boldsymbol{y}}{2\sigma^2} + \frac{\mu}{\sigma^2}\boldsymbol{y}^\top \boldsymbol{1}_n - \frac{n}{2}\frac{\mu^2}{\sigma^2}
+\end{align*}
+
+-->
+
+The joint posterior is Gaussian-inverse gamma and can be factorized
+\begin{align*}
+p(\boldsymbol{\beta}, \sigma^2 \mid y) = p(\sigma^2 \mid y) p(\boldsymbol{\beta} \mid \sigma^2, y)
+\end{align*}
+where $p(\sigma^2 \mid y) \sim \mathsf{InvGamma}(\alpha^*, \beta^*)$ and $p(\boldsymbol{\beta} \mid \sigma^2, y) \sim \mathsf{No}_p(\mathbf{M}\boldsymbol{m}, \sigma^2\mathbf{M})$ with $\alpha^* = \alpha + n/2$, $\beta^*=\beta + 0.5 \boldsymbol{\nu}_\beta^\top \mathbf{Q}_\beta\boldsymbol{\nu}_\beta + \boldsymbol{y}^\top\boldsymbol{y} - \boldsymbol{m}^\top\mathbf{M}\boldsymbol{m}$, $\boldsymbol{m} = \mathbf{Q}_\beta \boldsymbol{\nu}_\beta + \mathbf{X}^\top \mathbf{Q}_y\boldsymbol{y}$ and $\mathbf{M} = (\mathbf{Q}_\beta + \mathbf{X}^\top\mathbf{Q}_y\mathbf{X})^{-1};$ the latter can be evaluated efficiently using Shermann--Morrisson--Woodbury identity. Given the conditionally conjugate priors, we can easily sample from the posterior using Gibbs sampling.
+
+:::
 
 ### Data augmentation and auxiliary variables
 
@@ -1230,7 +1282,7 @@ Given $Z_i$, the coefficients $\boldsymbol{\beta}$ are simply the results of ord
 with $\widehat{\boldsymbol{\beta}}=(\mathbf{X}^\top\mathbf{X})^{-1}\mathbf{X}^\top\boldsymbol{z}$ the ordinary least square coefficients from the regression with $\boldsymbol{z}$'s
 whereas the values of $Z_i$, conditionally independent, are truncated Gaussian with
 \begin{align*}
-Z_i \mid Y_i=y_i, \boldsymbol{\beta} \begin{cases}
+Z_i \mid Y_i=y_i, \boldsymbol{\beta} \sim \begin{cases}
 \mathsf{TruncNorm}(\mathbf{x}_i\boldsymbol{\beta}, -\infty, 0) & y_i =0 \\
 \mathsf{TruncNorm}(\mathbf{x}_i\boldsymbol{\beta}, 0, \infty) & y_i =1.
 \end{cases}
@@ -1243,7 +1295,7 @@ and we can use the algorithms of @exm-accept-reject-truncated to simulate these.
 
 :::{#exm-student-mixture-gaussian}
 
-## Bayesian LASS0
+## Bayesian LASSO
 
 The Laplace distribution with mean $\mu$ and scale $\sigma$, which has density
 \begin{align*}
@@ -1272,7 +1324,7 @@ for location $\nu >0$ and shape $\lambda>0$, where $\xi_i \sim \mathsf{Wald}(\nu
 @Park.Casella:2008 use this hierarchical construction to defined the Bayesian LASSO. With a model matrix $\mathbf{X}$ whose columns are standardized to have mean zero and unit standard deviation, we may write
 \begin{align*}
 \boldsymbol{Y} \mid \mu, \boldsymbol{\beta}, \sigma^2 &\sim  \mathsf{Norm}_n(\nu \boldsymbol{1}_n + \mathbf{X}\boldsymbol{\beta}, \sigma \mathbf{I}_n)\\
-\beta_j \mid \sigma, \tau &\sim &\mathsf{Norm}(0, \sigma\tau)\\
+\beta_j \mid \sigma, \tau &\sim \mathsf{Norm}(0, \sigma\tau)\\
 \tau &\sim \mathsf{Exp}(\lambda/2)
 \end{align*}
 If we set an improper prior $p(\mu, \sigma) \propto \sigma^{-1}$, the resulting conditional distributions are all available and thus the model is amenable to Gibbs sampling.
@@ -1451,7 +1503,62 @@ and we can compute
 \begin{align*}
 \widehat{R} = \left(\frac{\mathsf{Va}_{\text{within}}(B-1) + \mathsf{Va}_{\text{between}}}{B\mathsf{Va}_{\text{within}}}\right)^{1/2}
 \end{align*}
-The potential scale reduction statistic must be, by construction, larger than 1 in large sample. Any value larger than this is indicative of problems of convergence. While the Gelman--Rubin diagnostic is frequently reported, and any value larger than 1 deemed problematic, it is not enough to have approximately $\widehat{R}=1$ to guarantee convergence.
+The potential scale reduction statistic must be, by construction, larger than 1 in large sample. Any value larger than this is indicative of problems of convergence. While the Gelman--Rubin diagnostic is frequently reported, and any value larger than 1 deemed problematic, it is not enough to have approximately $\widehat{R}=1$ to guarantee convergence, but large values are usually indication of something being amiss. @fig-rhat shows two instances where the chains are visually very far from having the same average and this is reflected by the large values of $\widehat{R}$.
+
+```{r}
+#| eval: true
+#| echo: false
+#| label: fig-rhat
+#| fig-cap: "Two pairs of Markov chains: the top ones seem stationary, but with different modes. This makes the between chain variance substantial, with a value of $\\widehat{R} \\approx 3.4$, whereas the chains on the right hover around the same values of zero, but do not appear stable with $\\widehat{R} \\approx 1.6$."
+B <- 1000
+set.seed(1234)
+c1 <- arima.sim(model = list(ar = c(0.6,0.2)), 
+                           rand.gen = rexp,
+                           n = B) + -2
+c2 <- arima.sim(model = list(ar = c(0.5,0.2)),
+                           n = B) - 1
+chains <- coda::mcmc.list(
+  list(theta = coda::mcmc(c1),
+       theta = coda::mcmc(c2)))
+rhat1 <- coda::gelman.diag(chains)
+# bayesplot::mcmc_trace(chains)
+
+g1 <- ggplot(data = data.frame(
+    time = rep(seq_len(B), length.out = 2*B),
+    chain = c(c1, c2),
+    group = factor(rep(c(1,2), each = B))),
+  mapping = aes(x = time, y = chain, col = group)) +
+  geom_line() +
+  scale_color_manual(values = MetBrewer::met.brewer("Renoir", 3)[c(2:3)]) + 
+  labs(x = "iteration number", y = "") + 
+  theme_classic() +
+  theme(legend.position = "none")
+
+set.seed(1234)
+c1b <- arima.sim(model = list(ar = c(0.6,0.2)), 
+                rand.gen = rnorm,
+                n = B) + seq(-2, 2, length.out = B)
+c2b <- arima.sim(model = list(ar = c(0.5,0.2)),
+                n = B) +  seq(2, -2, length.out = B)
+chains <- coda::mcmc.list(
+  list(theta = coda::mcmc(c1b),
+       theta = coda::mcmc(c2b)))
+rhat2 <- coda::gelman.diag(chains)
+# bayesplot::mcmc_trace(chains)
+
+g2 <- ggplot(data = data.frame(
+  time = rep(seq_len(B), length.out = 2*B),
+  chain = c(c1b, c2b),
+  group = factor(rep(c(1,2), each = B))),
+  mapping = aes(x = time, y = chain, col = group)) +
+  geom_line() +
+  scale_color_manual(values = MetBrewer::met.brewer("Renoir", 3)[c(2:3)]) + 
+  labs(x = "iteration number", y = "") + 
+  theme_classic() +
+  theme(legend.position = "none")
+
+g1 + g2
+```
 
 More generally, it is preferable to run a single chain for a longer period than run multiple chains sequentially, as there is a cost to initializing multiple times with different starting values since we must discard initial draws. With parallel computations, multiple chains are more frequent nowadays.
 
@@ -1583,7 +1690,7 @@ We can also compute the pointwise predictive performance using leave-one-out val
 #| label: fig-loocv-qqplots
 #| warning: false
 #| message: false
-#| fig-cap: "Quantile-quanitle plots based on leave-one-out cross validation for model for the Poisson hierarchical model with the individual random effects (left) and without (right)."
+#| fig-cap: "Quantile-quantile plots based on leave-one-out cross validation for model for the Poisson hierarchical model with the individual random effects (left) and without (right)."
 loo_test1 <- loo::loo(loglik_pt1, save_psis = TRUE)
 g1 <- bayesplot::ppc_loo_pit_qq(
   y = smartwatch$nviolation,
