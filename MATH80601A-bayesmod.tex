@@ -240,20 +240,6 @@
 \DeclareMathAlphabet{\mathcrl}{U}{rsfs}{m}{n}
 \usepackage{utopia}
 \DeclareMathAlphabet{\mathcal}{OMS}{cmsy}{m}{n}
-\usepackage{booktabs}
-\usepackage{longtable}
-\usepackage{array}
-\usepackage{multirow}
-\usepackage{wrapfig}
-\usepackage{float}
-\usepackage{colortbl}
-\usepackage{pdflscape}
-\usepackage{tabu}
-\usepackage{threeparttable}
-\usepackage{threeparttablex}
-\usepackage[normalem]{ulem}
-\usepackage{makecell}
-\usepackage{xcolor}
 \makeatletter
 \makeatother
 \makeatletter
@@ -295,9 +281,9 @@
 \newcommand*\listoflistings{\listof{codelisting}{List of Listings}}
 \usepackage{amsthm}
 \theoremstyle{definition}
-\newtheorem{example}{Example}[chapter]
-\theoremstyle{definition}
 \newtheorem{definition}{Definition}[chapter]
+\theoremstyle{definition}
+\newtheorem{example}{Example}[chapter]
 \theoremstyle{plain}
 \newtheorem{proposition}{Proposition}[chapter]
 \theoremstyle{remark}
@@ -338,7 +324,7 @@
 \begin{document}
 \frontmatter
 \maketitle
-\ifdefined\Shaded\renewenvironment{Shaded}{\begin{tcolorbox}[enhanced, interior hidden, frame hidden, borderline west={3pt}{0pt}{shadecolor}, breakable, sharp corners, boxrule=0pt]}{\end{tcolorbox}}\fi
+\ifdefined\Shaded\renewenvironment{Shaded}{\begin{tcolorbox}[boxrule=0pt, frame hidden, interior hidden, breakable, sharp corners, borderline west={3pt}{0pt}{shadecolor}, enhanced]}{\end{tcolorbox}}\fi
 
 \renewcommand*\contentsname{Table of contents}
 {
@@ -2658,42 +2644,6 @@ computers became more widely available. The idea is to draw correlated
 samples from a posterior via Markov chains, constructed to have the
 posterior as invariant stationary distribution.
 
-\begin{proposition}[Conjugate priors in the Bayesian linear
-model]\protect\hypertarget{prp-conjugate-bayesian-linmod}{}\label{prp-conjugate-bayesian-linmod}
-
-Consider a linear regression model with observation-specific mean
-\(\mu_i = \mathbf{x}_i\boldsymbol{\beta}\) \((i=1,\ldots, n)\) with
-\(\mathbf{x}_i\) the \(i\)th row of the \(n \times p\) model matrix
-\(\mathbf{X}\).
-
-Concatenating records,
-\(\boldsymbol{Y} \sim \mathsf{No}_n(\mathbf{X}\boldsymbol{\beta}, \sigma^2 \mathbf{Q}_y^{-1})\),
-for a known precision matrix \(\mathbf{Q}_y\), typically
-\(\mathbf{I}_n\). To construct a conjugate joint prior for
-\(p(\boldsymbol{\beta}, \sigma^2)\), we consider the sequential
-formulation \begin{align*}
-\boldsymbol{\beta} \mid \sigma^2 \sim \mathsf{No}_p(\boldsymbol{\nu}_\beta, \sigma^2 \mathbf{Q}^{-1}_\beta), \qquad \sigma^2 \sim \mathsf{IG}(\alpha,\beta)
-\end{align*} where \(\mathsf{IG}\) denotes the inverse gamma
-distribution\footnote{This simply means that the precision
-  \(\sigma^{-2}\), the reciprocal of the variance, has a gamma
-  distribution with shape \(\alpha\) and rate \(\beta\).}
-
-The joint posterior is Gaussian-inverse gamma and can be factorized
-\begin{align*}
-p(\boldsymbol{\beta}, \sigma^2 \mid y) = p(\sigma^2 \mid y) p(\boldsymbol{\beta} \mid \sigma^2, y)
-\end{align*} where
-\(p(\sigma^2 \mid y) \sim \mathsf{IG}(\alpha^*, \beta^*)\) and
-\(p(\boldsymbol{\beta} \mid \sigma^2, y) \sim \mathsf{No}_p(\mathbf{M}\boldsymbol{m}, \sigma^2\mathbf{M})\)
-with \(\alpha^* = \alpha + n/2\),
-\(\beta^*=\beta + 0.5 \boldsymbol{\nu}_\beta^\top \mathbf{Q}_\beta\boldsymbol{\nu}_\beta + \boldsymbol{y}^\top\boldsymbol{y} - \boldsymbol{m}^\top\mathbf{M}\boldsymbol{m}\),
-\(\boldsymbol{m} = \mathbf{Q}_\beta \boldsymbol{\nu}_\beta + \mathbf{X}^\top \mathbf{Q}_y\boldsymbol{y}\)
-and
-\(\mathbf{M} = (\mathbf{Q}_\beta + \mathbf{X}^\top\mathbf{Q}_y\mathbf{X})^{-1};\)
-the latter can be evaluated efficiently using
-Shermann--Morrisson--Woodbury identity.
-
-\end{proposition}
-
 \hypertarget{metropolishastings-algorithm}{%
 \subsection{Metropolis--Hastings
 algorithm}\label{metropolishastings-algorithm}}
@@ -3173,11 +3123,10 @@ at the mode.
 The simpler Metropolis-adjusted Langevin algorithm is equivalent to
 using a Gaussian random walk where the proposal has mean
 \(\boldsymbol{\theta}_{t-1} + \mathbf{A}\eta \nabla \ell(\boldsymbol{\theta}_{t-1})\)
-and variance \(\tau^2\mathbf{A}\), for some mass matrix
-\(\boldsymbol{A}\) and a damping factor \(\eta\). Taking \(\mathbf{A}\)
-as the identity matrix, which assumes the parameters are isotropic (same
-variance, uncorrelated) is the default choice although seldom far from
-optimal.
+and variance \(\tau^2\mathbf{A}\), for some mass matrix \(\mathbf{A}\)
+and a damping factor \(\eta\). Taking \(\mathbf{A}\) as the identity
+matrix, which assumes the parameters are isotropic (same variance,
+uncorrelated) is the default choice although seldom far from optimal.
 
 For MALA to work well, we need both to start near stationarity, to
 ensure that the gradient is relatively small and to prevent
@@ -3488,7 +3437,7 @@ stabilize even though there is no proper target.
 
 \end{remark}
 
-\begin{proposition}[Conjugate priors in the Bayesian linear
+\begin{proposition}[Bayesian linear
 model]\protect\hypertarget{prp-conjugate-bayesian-linmod}{}\label{prp-conjugate-bayesian-linmod}
 
 Consider a linear regression model with observation-specific mean
@@ -3660,7 +3609,7 @@ iterative framework, we can consider the complete data as the tuples
 \((X_i, Z_i)\), where \(Z_i = \mathsf{I}(C_i=k)\).
 
 With the augmented data, the conditional distribution of
-\(Z_i \mid X_i, \boldsymbol{\omega}, \boldsymbol{\theta} \sim \mathsf{Mult}(1, \boldsymbol{\gamma}_{ik})\)
+\(Z_i \mid X_i, \boldsymbol{\omega}, \boldsymbol{\theta} \sim \mathsf{Multinom}(1, \boldsymbol{\gamma}_{ik})\)
 where
 \[\gamma_{ik} = \frac{\omega_k f_k(X_i\boldsymbol{\theta}_k)}{\sum_{j=1}^K f_j(X_i\boldsymbol{\theta}_k)}.\]
 Given suitable priors for the probabilities \(\boldsymbol{\omega}\) and
@@ -3755,7 +3704,7 @@ least to two significant digits).
 For the Poisson example, the effective sample size for the
 \(\boldsymbol{\beta}\) for the multilevel model is a bit higher than
 1000 with \(B=5000\) iterations, whereas we have for the simple naive
-model is \ensuremath{10^{4}} for \(B=10000\) draws, suggesting
+model is \(\ensuremath{10^{4}}\) for \(B=10000\) draws, suggesting
 superefficient sampling. The dependency between \(\boldsymbol{\alpha}\)
 and \(\boldsymbol{\beta}\) is responsible for the drop in accuracy.
 
@@ -3767,7 +3716,7 @@ rejection of the null implies lack of convergence, or poor mixing.
 Running multiple Markov chains can be useful for diagnostics. The
 Gelman--Rubin diagnostic \(\widehat{R}\), also called potential scale
 reduction statistic, is obtained by considering the difference between
-within-chains and within-chains variance. Suppose we run \(M\) chains
+within-chains and between-chains variance. Suppose we run \(M\) chains
 for \(B\) iterations, post burn in. Denoting by \(\theta_{bm}\) the
 \(b\)th draw of the \(m\)th chain, we compute the global average
 \(\overline{\theta} = B^{-1}M^{-1}\sum_{b=1}^B \sum_{m=1}^m \theta_{bm}\)
@@ -3821,26 +3770,15 @@ model with hundreds of parameters, we may run out of memory.
 checks}\label{posterior-predictive-checks}}
 
 Posterior predictive checks can be used to compare models of varying
-complexity: suppose we have the leave-one-out predictive distribution
-for observation \(i\) given all the rest,
-\(p(y_i \mid \boldsymbol{y}_{-i})\). We can assess the probability level
-for each in turn, and the collection for all of leave-one-out cross
-validation probabilities can be used to define the dis integral
-transformation, consisting of being approximately uniform under the null
-hypothesis of perfect model calibration. The probability of seeing an
-outcome as extreme as \(y_i\) can be obtained by simulating draws from
-the posterior predictive of \(\boldsymbol{y}_{-i}\) and computing the
-scaled rank of the original observation. Values close to zero or one may
-indicate outliers.
-
-One of the visual diagnostics, outlined in Gabry et al.
+complexity.One of the visual diagnostics, outlined in Gabry et al.
 (\protect\hyperlink{ref-Gabry:2019}{2019}), consists in computing a
 summary statistic of interest from the posterior predictive (whether
 mean, median, quantile, skewness, etc.) which is relevant for the
 problem at hand and which we hope our model can adequately capture.
 
 Suppose we have \(B\) draws from the posterior and simulate for each
-\(n\) observations from the posterior predictive: we can benchmark
+\(n\) observations from the posterior predictive
+\(p(\widetilde{\boldsymbol{y}} \mid \boldsymbol{y})\): we can benchmark
 summary statistics from our original data \(\boldsymbol{y}\) with the
 posterior predictive copies \(\widetilde{\boldsymbol{y}}_b\).
 Figure~\ref{fig-posterior-pred-check} shows this for the two competing
@@ -3873,9 +3811,9 @@ expected value over the posterior distribution
 \(p(\boldsymbol{\theta} \mid \boldsymbol{y})\), \begin{align*}
 \mathsf{LPPD} = \mathsf{E}_{\boldsymbol{\theta} \mid \boldsymbol{y}} \left\{ \log p(y_i \mid \boldsymbol{\theta})\right\}.
 \end{align*} We can approximate this quantity pointwise by averaging the
-log density of each sample observation over the posterior samples via
-Monte Carlo. The lower the value of \(\mathsf{LPPD}\), the better the
-fit.
+log posterior density of each sample observation over the posterior
+samples via Monte Carlo. The higher the value of the predictive density
+\(\mathsf{LPPD}\), the better the fit.
 
 As in general information criteria, we add a penalization factor that
 approximates the effective number of parameters in the model, with
@@ -3897,13 +3835,23 @@ performance. For the smartwatch model, we get a value of 3.06 for the
 complex model and 4.51: this suggests an improvement in using
 individual-specific effects.
 
-We can also compute the pointwise predictive performance using
-leave-one-out validation. Naively, this requires refitting the model
-\(n\) times, which is prohibitively expansive in the Bayesian setting
-since this would require running the MCMC \(n\) times. A quick
-approximation to the posterior predictive is via importance sampling,
-but the latter can be noisy. The \texttt{loo} package uses this with
-generalized Pareto smoothing to avoid overly large weights.
+Ideally, one would measure the predictive performance using the
+leave-one-out predictive distribution for observation \(i\) given all
+the rest, \(p(y_i \mid \boldsymbol{y}_{-i})\), to avoid double dipping
+--- the latter is computationally intractable because it would require
+running \(n\) Markov chains with \(n-1\) observations each, but we can
+get a good approximation using importance sampling. The \texttt{loo}
+package uses this with generalized Pareto smoothing to avoid overly
+large weights.
+
+Once we have the collection of estimated
+\(p(y_i \mid \boldsymbol{y}_{-i})\), we can assess the probability level
+of each observation. This gives us a set of values which should be
+approximately uniform if the model was perfectly calibrated. The
+probability of seeing an outcome as extreme as \(y_i\) can be obtained
+by simulating draws from the posterior predictive given
+\(\boldsymbol{y}_{-i}\) and computing the scaled rank of the original
+observation. Values close to zero or one may indicate outliers.
 
 \begin{figure}[ht!]
 

@@ -526,33 +526,6 @@ The Markov chain Monte Carlo revolution in the 1990s made Bayesian inference mai
 
 
 
-:::{#prp-conjugate-bayesian-linmod}
-
-## Conjugate priors in the Bayesian linear model
-
-Consider a linear regression model with observation-specific mean $\mu_i = \mathbf{x}_i\boldsymbol{\beta}$ $(i=1,\ldots, n)$ with $\mathbf{x}_i$ the $i$th row of the $n \times p$ model matrix $\mathbf{X}$.
-
-Concatenating records, $\boldsymbol{Y} \sim \mathsf{No}_n(\mathbf{X}\boldsymbol{\beta}, \sigma^2 \mathbf{Q}_y^{-1})$, for a known precision matrix $\mathbf{Q}_y$, typically $\mathbf{I}_n$. To construct a conjugate joint prior for $p(\boldsymbol{\beta}, \sigma^2)$, we consider the sequential formulation
-\begin{align*}
-\boldsymbol{\beta} \mid \sigma^2 \sim \mathsf{No}_p(\boldsymbol{\nu}_\beta, \sigma^2 \mathbf{Q}^{-1}_\beta), \qquad \sigma^2 \sim \mathsf{IG}(\alpha,\beta)
-\end{align*}
-where $\mathsf{IG}$ denotes the inverse gamma distribution^[This simply means that the precision $\sigma^{-2}$, the reciprocal of the variance, has a gamma distribution with shape $\alpha$ and rate $\beta$.]
-
-<!--
-Writing the log likelihood in exponential family form,
-\begin{align*}
-\ell(\mu, \sigma^2; \boldsymbol{y}) \propto -n \log(\sigma) - \frac{\boldsymbol{y}^\top\boldsymbol{y}}{2\sigma^2} + \frac{\mu}{\sigma^2}\boldsymbol{y}^\top \boldsymbol{1}_n - \frac{n}{2}\frac{\mu^2}{\sigma^2}
-\end{align*}
-
--->
-
-The joint posterior is Gaussian-inverse gamma and can be factorized
-\begin{align*}
-p(\boldsymbol{\beta}, \sigma^2 \mid y) = p(\sigma^2 \mid y) p(\boldsymbol{\beta} \mid \sigma^2, y)
-\end{align*}
-where $p(\sigma^2 \mid y) \sim \mathsf{IG}(\alpha^*, \beta^*)$ and $p(\boldsymbol{\beta} \mid \sigma^2, y) \sim \mathsf{No}_p(\mathbf{M}\boldsymbol{m}, \sigma^2\mathbf{M})$ with $\alpha^* = \alpha + n/2$, $\beta^*=\beta + 0.5 \boldsymbol{\nu}_\beta^\top \mathbf{Q}_\beta\boldsymbol{\nu}_\beta + \boldsymbol{y}^\top\boldsymbol{y} - \boldsymbol{m}^\top\mathbf{M}\boldsymbol{m}$, $\boldsymbol{m} = \mathbf{Q}_\beta \boldsymbol{\nu}_\beta + \mathbf{X}^\top \mathbf{Q}_y\boldsymbol{y}$ and $\mathbf{M} = (\mathbf{Q}_\beta + \mathbf{X}^\top\mathbf{Q}_y\mathbf{X})^{-1};$ the latter can be evaluated efficiently using Shermann--Morrisson--Woodbury identity.
-
-:::
 ### Metropolis--Hastings algorithm
 
 Named after @Metropolis:1953, @Hastings:1970, its relevance took a long time to gain traction in the statistical community. The idea of the Metropolis--Hastings algorithm is to construct a Markov chain targeting a distribution $p(\cdot)$.
@@ -851,7 +824,7 @@ plus remainder, which suggests a Gaussian approximation with mean $\mu_{t-1} = \
 \end{align*}
 and we set $\theta^{(t+1)} = \theta^{\star}_{t}$ with probability $\min\{1, r\}$ and $\theta^{(t+1)} = \theta_{t-1}$ otherwise. To evaluate the ratio of truncated Gaussian densities $q(\cdot; \mu, \tau, a, b)$, we need to compute the Taylor approximation from the current parameter value, but also the reverse move from the proposal $\theta^{\star}_{t}$. Another option is to modify the move dictated by the rescaled gradient by taking instead $$\mu_{t-1} = \theta_{t-1} - \eta f'(\theta_{t-1})/f''(\theta_{t-1}).$$ The proposal includes an additional tuning parameter, $\eta \leq 1$, whose role is to prevent oscillations of the quadratic approximation, as in a Newton--Raphson algorithm. Relative to a random walk Metropolis--Hastings, the proposal automatically adjusts to the local geometry of the target, which guarantees a higher acceptance rate and lower autocorrelation for the Markov chain despite the higher evaluation costs. The proposal requires that both $f''(\theta_{t-1})$ and $f''(\theta^{\star}_{t})$ be negative since the variance is $-1/f''(\theta)$: this shouldn't be problematic in the vicinity of the mode. Otherwise, one could use a global scaling derived from the hessian at the mode.
 
-The simpler Metropolis-adjusted Langevin algorithm is equivalent to using a Gaussian random walk where the proposal has mean $\boldsymbol{\theta}_{t-1} + \mathbf{A}\eta \nabla \ell(\boldsymbol{\theta}_{t-1})$ and variance $\tau^2\mathbf{A}$, for some mass matrix $\boldsymbol{A}$ and a damping factor $\eta$. Taking $\mathbf{A}$ as the identity matrix, which assumes the parameters are isotropic (same variance, uncorrelated) is the default choice although seldom far from optimal.
+The simpler Metropolis-adjusted Langevin algorithm is equivalent to using a Gaussian random walk where the proposal has mean $\boldsymbol{\theta}_{t-1} + \mathbf{A}\eta \nabla \ell(\boldsymbol{\theta}_{t-1})$ and variance $\tau^2\mathbf{A}$, for some mass matrix $\mathbf{A}$ and a damping factor $\eta$. Taking $\mathbf{A}$ as the identity matrix, which assumes the parameters are isotropic (same variance, uncorrelated) is the default choice although seldom far from optimal.
 
 
 For MALA to work well, we need both to start near stationarity, to ensure that the gradient is relatively small and to prevent oscillations. One can dampen the size of the step initially if needed to avoid overshooting. The proposal variance, the other tuning parameter, is critical to the success of the algorithm. The usual target for the variance is one that gives an acceptance rate of roughly 0.574. These more efficient methods require additional calculations of the gradient and Hessian, either numerically or analytically. Depending on the situation and the computational costs of such calculations, the additional overhead may not be worth it.
@@ -1228,7 +1201,7 @@ Gibbs sampling cannot be used to determine if the posterior is improper. If the 
 
 :::{#prp-conjugate-bayesian-linmod}
 
-## Conjugate priors in the Bayesian linear model
+## Bayesian linear model
 
 Consider a linear regression model with observation-specific mean $\mu_i = \mathbf{x}_i\boldsymbol{\beta}$ $(i=1,\ldots, n)$ with $\mathbf{x}_i$ the $i$th row of the $n \times p$ model matrix $\mathbf{X}$.
 
@@ -1346,7 +1319,7 @@ A $K$-mixture model is a weighted combination of models frequently used in clust
 $$f(x; \boldsymbol{\theta}, \boldsymbol{\omega}) = \sum_{k=1}^K \omega_kf_k(x; \boldsymbol{\theta}_k), \qquad \omega_1 + \cdots \omega_K=1.$$
 Since the density involves a sum, numerical optimization is challenging. Let $C_i$ denote the cluster index for observation $i$: if we knew the value of $C_i =j$, the density would involve only $f_j$. We can thus use latent variables representing the group allocation to simplify the problem and run an EM algorithm or use the data augmentation. In an iterative framework, we can consider the complete data as the tuples $(X_i, Z_i)$, where $Z_i = \mathsf{I}(C_i=k)$.
 
-With the augmented data, the conditional distribution of $Z_i \mid X_i, \boldsymbol{\omega}, \boldsymbol{\theta} \sim \mathsf{Mult}(1, \boldsymbol{\gamma}_{ik})$ where $$\gamma_{ik} = \frac{\omega_k f_k(X_i\boldsymbol{\theta}_k)}{\sum_{j=1}^K f_j(X_i\boldsymbol{\theta}_k)}.$$
+With the augmented data, the conditional distribution of $Z_i \mid X_i, \boldsymbol{\omega}, \boldsymbol{\theta} \sim \mathsf{Multinom}(1, \boldsymbol{\gamma}_{ik})$ where $$\gamma_{ik} = \frac{\omega_k f_k(X_i\boldsymbol{\theta}_k)}{\sum_{j=1}^K f_j(X_i\boldsymbol{\theta}_k)}.$$
 Given suitable priors for the probabilities $\boldsymbol{\omega}$ and $\boldsymbol{\theta} \equiv \{\boldsymbol{\theta}_1, \ldots, \boldsymbol{\theta}_k\}$, we can use Gibbs sampling updating $\boldsymbol{Z}$, $\boldsymbol{\omega}$ and $\boldsymbol{\theta}$ in turn.
 
 :::
@@ -1488,13 +1461,13 @@ ess1 <- floor(coda::effectiveSize(coda::as.mcmc(output1[,1,-1])))
 ess2 <- floor(coda::effectiveSize(coda::as.mcmc(output2[,1,-1])))
 ```
 
-For the Poisson example, the effective sample size for the $\boldsymbol{\beta}$ for the multilevel model is a bit higher than 1000 with $B=5000$ iterations, whereas we have for the simple naive model is `r min(ess2)` for $B=10000$ draws, suggesting superefficient sampling. The dependency between $\boldsymbol{\alpha}$ and $\boldsymbol{\beta}$ is responsible for the drop in accuracy.
+For the Poisson example, the effective sample size for the $\boldsymbol{\beta}$ for the multilevel model is a bit higher than 1000 with $B=5000$ iterations, whereas we have for the simple naive model is $`r round(min(ess2),digits = 0)`$ for $B=10000$ draws, suggesting superefficient sampling. The dependency between $\boldsymbol{\alpha}$ and $\boldsymbol{\beta}$ is responsible for the drop in accuracy.
 
 The `coda` (convergence diagnosis and output analysis) **R** package contains many tests. For example, the Geweke $Z$-score compares the averages for the beginning and the end of the chain: rejection of the null implies lack of convergence, or poor mixing. 
 
 <!-- The Gelman--Rubin $\widehat{R}$ diagnostic, which is advocated in STAN, is a multi-chain diagnostic that compares the within-chain variability to the between-chain variability. The value should be  -->
 
-Running multiple Markov chains can be useful for diagnostics. The Gelman--Rubin diagnostic $\widehat{R}$, also called potential scale reduction statistic, is obtained by considering the difference between within-chains and within-chains variance. Suppose we run $M$ chains for $B$ iterations, post burn in. Denoting by $\theta_{bm}$ the $b$th draw of the $m$th chain, we compute the global average $\overline{\theta} = B^{-1}M^{-1}\sum_{b=1}^B \sum_{m=1}^m \theta_{bm}$ and similarly the chain sample average and variances, respectively $\overline{\theta}_m$ and $\widehat{\sigma}^2_m$ ($m=1, \ldots, M$). The between-chain variance and within-chain variance estimator are
+Running multiple Markov chains can be useful for diagnostics. The Gelman--Rubin diagnostic $\widehat{R}$, also called potential scale reduction statistic, is obtained by considering the difference between within-chains and between-chains variance. Suppose we run $M$ chains for $B$ iterations, post burn in. Denoting by $\theta_{bm}$ the $b$th draw of the $m$th chain, we compute the global average $\overline{\theta} = B^{-1}M^{-1}\sum_{b=1}^B \sum_{m=1}^m \theta_{bm}$ and similarly the chain sample average and variances, respectively $\overline{\theta}_m$ and $\widehat{\sigma}^2_m$ ($m=1, \ldots, M$). The between-chain variance and within-chain variance estimator are
 \begin{align*}
 \mathsf{Va}_{\text{between}} &= \frac{B}{M-1}\sum_{m=1}^M (\overline{\theta}_m - \overline{\theta})^2\\
 \mathsf{Va}_{\text{within}} &= \frac{1}{M}\sum_{m=1}^m \widehat{\sigma}^2_m
@@ -1570,14 +1543,9 @@ The only argument in favor of thinning is limited storage capacity: if we run ve
 
 ### Posterior predictive checks
 
-Posterior predictive checks can be used to compare models of varying complexity: suppose we have the leave-one-out predictive distribution for observation $i$ given all the rest, $p(y_i \mid \boldsymbol{y}_{-i})$. We can assess the probability level for each in turn, and the collection for all of leave-one-out cross validation probabilities can be used to define the dis integral transformation, consisting of  being approximately uniform under the null hypothesis of perfect model calibration. The probability of seeing an outcome as extreme as $y_i$ can be obtained by simulating draws from the posterior predictive of $\boldsymbol{y}_{-i}$ and computing the scaled rank of the original observation. Values close to zero or one may indicate outliers.
+Posterior predictive checks can be used to compare models of varying complexity.One of the visual diagnostics, outlined in @Gabry:2019, consists in computing a summary statistic of interest from the posterior predictive (whether mean, median, quantile, skewness, etc.) which is relevant for the problem at hand and which we hope our model can adequately capture. 
 
-
-
-
-One of the visual diagnostics, outlined in @Gabry:2019, consists in computing a summary statistic of interest from the posterior predictive (whether mean, median, quantile, skewness, etc.) which is relevant for the problem at hand and which we hope our model can adequately capture. 
-
-Suppose we have $B$ draws from the posterior and simulate for each $n$ observations from the posterior predictive: we can benchmark summary statistics from our original data $\boldsymbol{y}$ with the posterior predictive copies $\widetilde{\boldsymbol{y}}_b$. @fig-posterior-pred-check shows this for the two competing models and highlight the fact that the simpler model is not dispersed enough. Even the more complex model struggles to capture this additional heterogeneity with the additional variables. One could go back to the drawing board and consider a negative binomial model.
+Suppose we have $B$ draws from the posterior and simulate for each $n$ observations from the posterior predictive $p(\widetilde{\boldsymbol{y}} \mid \boldsymbol{y})$: we can benchmark summary statistics from our original data $\boldsymbol{y}$ with the posterior predictive copies $\widetilde{\boldsymbol{y}}_b$. @fig-posterior-pred-check shows this for the two competing models and highlight the fact that the simpler model is not dispersed enough. Even the more complex model struggles to capture this additional heterogeneity with the additional variables. One could go back to the drawing board and consider a negative binomial model.
 
 
 ```{r}
@@ -1665,7 +1633,7 @@ Consider first the log pointwise predictive density, defined as the expected val
 \begin{align*}
 \mathsf{LPPD} = \mathsf{E}_{\boldsymbol{\theta} \mid \boldsymbol{y}} \left\{ \log p(y_i \mid \boldsymbol{\theta})\right\}.
 \end{align*}
-We can approximate this quantity pointwise by averaging the log density of each sample observation over the posterior samples via Monte Carlo. The lower the value of $\mathsf{LPPD}$, the better the fit. 
+We can approximate this quantity pointwise by averaging the log posterior density of each sample observation over the posterior samples via Monte Carlo. The higher the value of the predictive density $\mathsf{LPPD}$, the better the fit. 
 
 As in general information criteria, we add a penalization factor that approximates the effective number of parameters in the model, with
 \begin{align*}
@@ -1682,7 +1650,10 @@ WAIC <- -mean(apply(loglik_pt, 2, mean)) +
   mean(apply(loglik_pt, 2, var))
 ```
 
-We can also compute the pointwise predictive performance using leave-one-out validation. Naively, this requires refitting the model $n$ times, which is prohibitively expansive in the Bayesian setting since this would require running the MCMC $n$ times. A quick approximation to the posterior predictive is via importance sampling, but the latter can be noisy. The `loo` package uses this with generalized Pareto smoothing to avoid overly large weights.
+Ideally, one would measure the predictive performance using the leave-one-out predictive distribution for observation $i$ given all the rest, $p(y_i \mid \boldsymbol{y}_{-i})$, to avoid double dipping --- the latter is computationally intractable because it would require running $n$ Markov chains with $n-1$ observations each, but we can get a good approximation using importance sampling.  The `loo` package uses this with generalized Pareto smoothing to avoid overly large weights.
+
+Once we have the collection of estimated  $p(y_i \mid \boldsymbol{y}_{-i})$, we can assess the probability level of each observation. This gives us a set of values which should be  approximately uniform if the model was perfectly calibrated. The probability of seeing an outcome as extreme as $y_i$ can be obtained by simulating draws from the posterior predictive given $\boldsymbol{y}_{-i}$ and computing the scaled rank of the original observation. Values close to zero or one may indicate outliers.
+
 
 ```{r}
 #| echo: false
