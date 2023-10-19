@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.3.433">
+<meta name="generator" content="quarto-1.2.335">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -17,10 +17,9 @@ div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
 ul.task-list{list-style: none;}
 ul.task-list li input[type="checkbox"] {
   width: 0.8em;
-  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  margin: 0 0.8em 0.2em -1.6em;
   vertical-align: middle;
 }
-/* CSS for syntax highlighting */
 pre > code.sourceCode { white-space: pre; position: relative; }
 pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
 pre > code.sourceCode > span:empty { height: 1.2em; }
@@ -47,19 +46,48 @@ pre.numberSource code > span > a:first-child::before
     -khtml-user-select: none; -moz-user-select: none;
     -ms-user-select: none; user-select: none;
     padding: 0 4px; width: 4em;
+    color: #aaaaaa;
   }
-pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
 div.sourceCode
   {   }
 @media screen {
 pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
-/* CSS for citations */
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
 div.csl-bib-body { }
 div.csl-entry {
   clear: both;
 }
-.hanging-indent div.csl-entry {
+.hanging div.csl-entry {
   margin-left:2em;
   text-indent:-2em;
 }
@@ -73,7 +101,8 @@ div.csl-right-inline {
 }
 div.csl-indent {
   margin-left: 2em;
-}</style>
+}
+</style>
 
 
 <script src="site_libs/quarto-nav/quarto-nav.js"></script>
@@ -110,12 +139,10 @@ div.csl-indent {
     "search-more-matches-text": "more matches in this document",
     "search-clear-button-title": "Clear",
     "search-detached-cancel-button-title": "Cancel",
-    "search-submit-button-title": "Submit",
-    "search-label": "Search"
+    "search-submit-button-title": "Submit"
   }
 }</script>
 
-  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
   <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
 
 <link rel="stylesheet" href="style.css">
@@ -125,16 +152,11 @@ div.csl-indent {
 
 <div id="quarto-search-results"></div>
   <header id="quarto-header" class="headroom fixed-top">
-  <nav class="quarto-secondary-nav">
-    <div class="container-fluid d-flex">
-      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
-        <i class="bi bi-layout-text-sidebar-reverse"></i>
-      </button>
-      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./mcmc.html"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Simulation-based inference</span></a></li></ol></nav>
-      <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
-      </a>
-      <button type="button" class="btn quarto-search-button" aria-label="" onclick="window.quartoOpenSearch();">
-        <i class="bi bi-search"></i>
+  <nav class="quarto-secondary-nav" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+    <div class="container-fluid d-flex justify-content-between">
+      <h1 class="quarto-secondary-nav-title"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Simulation-based inference</span></h1>
+      <button type="button" class="quarto-btn-toggle btn" aria-label="Show secondary navigation">
+        <i class="bi bi-chevron-right"></i>
       </button>
     </div>
   </nav>
@@ -142,82 +164,76 @@ div.csl-indent {
 <!-- content -->
 <div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
 <!-- sidebar -->
-  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal sidebar-navigation floating overflow-auto">
+  <nav id="quarto-sidebar" class="sidebar collapse sidebar-navigation floating overflow-auto">
     <div class="pt-lg-2 mt-2 text-left sidebar-header">
     <div class="sidebar-title mb-0 py-0">
       <a href="./">Bayesian modelling</a> 
         <div class="sidebar-tools-main">
-    <a href="https://github.com/lbelzile/math80601a/" rel="" title="Source Code" class="quarto-navigation-tool px-1" aria-label="Source Code"><i class="bi bi-github"></i></a>
-    <a href="./MATH80601A-bayesmod.pdf" rel="" title="Download PDF" class="quarto-navigation-tool px-1" aria-label="Download PDF"><i class="bi bi-file-pdf"></i></a>
+    <a href="https://github.com/lbelzile/math80601a/" title="Source Code" class="sidebar-tool px-1"><i class="bi bi-github"></i></a>
+    <a href="./MATH80601A-bayesmod.pdf" title="Download PDF" class="sidebar-tool px-1"><i class="bi bi-file-pdf"></i></a>
 </div>
     </div>
       </div>
-        <div class="mt-2 flex-shrink-0 align-items-center">
+      <div class="mt-2 flex-shrink-0 align-items-center">
         <div class="sidebar-search">
         <div id="quarto-search" class="" title="Search"></div>
         </div>
-        </div>
+      </div>
     <div class="sidebar-menu-container"> 
     <ul class="list-unstyled mt-1">
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./index.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Welcome</span></a>
+  <a href="./index.html" class="sidebar-item-text sidebar-link">Welcome</a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./introduction.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Bayesics</span></span></a>
+  <a href="./introduction.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Bayesics</span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./priors.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Priors</span></span></a>
+  <a href="./priors.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Priors</span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./mcmc.html" class="sidebar-item-text sidebar-link active">
- <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Simulation-based inference</span></span></a>
+  <a href="./mcmc.html" class="sidebar-item-text sidebar-link active"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Simulation-based inference</span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./references.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">References</span></a>
+  <a href="./references.html" class="sidebar-item-text sidebar-link">References</a>
   </div>
 </li>
     </ul>
     </div>
 </nav>
-<div id="quarto-sidebar-glass" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass"></div>
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
         <nav id="TOC" role="doc-toc" class="toc-active">
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#monte-carlo-methods" id="toc-monte-carlo-methods" class="nav-link active" data-scroll-target="#monte-carlo-methods"><span class="header-section-number">3.1</span> Monte Carlo methods</a></li>
-  <li><a href="#markov-chain-monte-carlo" id="toc-markov-chain-monte-carlo" class="nav-link" data-scroll-target="#markov-chain-monte-carlo"><span class="header-section-number">3.2</span> Markov chain Monte Carlo</a>
+  <li><a href="#monte-carlo-methods" id="toc-monte-carlo-methods" class="nav-link active" data-scroll-target="#monte-carlo-methods"><span class="toc-section-number">3.1</span>  Monte Carlo methods</a></li>
+  <li><a href="#markov-chain-monte-carlo" id="toc-markov-chain-monte-carlo" class="nav-link" data-scroll-target="#markov-chain-monte-carlo"><span class="toc-section-number">3.2</span>  Markov chain Monte Carlo</a>
   <ul class="collapse">
-  <li><a href="#estimating-uncertainty-of-point-estimators-with-markov-chains" id="toc-estimating-uncertainty-of-point-estimators-with-markov-chains" class="nav-link" data-scroll-target="#estimating-uncertainty-of-point-estimators-with-markov-chains"><span class="header-section-number">3.2.1</span> Estimating uncertainty of point estimators with Markov chains</a></li>
+  <li><a href="#estimating-uncertainty-of-point-estimators-with-markov-chains" id="toc-estimating-uncertainty-of-point-estimators-with-markov-chains" class="nav-link" data-scroll-target="#estimating-uncertainty-of-point-estimators-with-markov-chains"><span class="toc-section-number">3.2.1</span>  Estimating uncertainty of point estimators with Markov chains</a></li>
   </ul></li>
-  <li><a href="#markov-chain-monte-carlo-algorithms" id="toc-markov-chain-monte-carlo-algorithms" class="nav-link" data-scroll-target="#markov-chain-monte-carlo-algorithms"><span class="header-section-number">3.3</span> Markov chain Monte Carlo algorithms</a>
+  <li><a href="#markov-chain-monte-carlo-algorithms" id="toc-markov-chain-monte-carlo-algorithms" class="nav-link" data-scroll-target="#markov-chain-monte-carlo-algorithms"><span class="toc-section-number">3.3</span>  Markov chain Monte Carlo algorithms</a>
   <ul class="collapse">
-  <li><a href="#metropolishastings-algorithm" id="toc-metropolishastings-algorithm" class="nav-link" data-scroll-target="#metropolishastings-algorithm"><span class="header-section-number">3.3.1</span> Metropolis–Hastings algorithm</a></li>
+  <li><a href="#metropolishastings-algorithm" id="toc-metropolishastings-algorithm" class="nav-link" data-scroll-target="#metropolishastings-algorithm"><span class="toc-section-number">3.3.1</span>  Metropolis–Hastings algorithm</a></li>
   </ul></li>
-  <li><a href="#gibbs-sampling" id="toc-gibbs-sampling" class="nav-link" data-scroll-target="#gibbs-sampling"><span class="header-section-number">3.4</span> Gibbs sampling</a>
+  <li><a href="#gibbs-sampling" id="toc-gibbs-sampling" class="nav-link" data-scroll-target="#gibbs-sampling"><span class="toc-section-number">3.4</span>  Gibbs sampling</a>
   <ul class="collapse">
-  <li><a href="#data-augmentation-and-auxiliary-variables" id="toc-data-augmentation-and-auxiliary-variables" class="nav-link" data-scroll-target="#data-augmentation-and-auxiliary-variables"><span class="header-section-number">3.4.1</span> Data augmentation and auxiliary variables</a></li>
+  <li><a href="#data-augmentation-and-auxiliary-variables" id="toc-data-augmentation-and-auxiliary-variables" class="nav-link" data-scroll-target="#data-augmentation-and-auxiliary-variables"><span class="toc-section-number">3.4.1</span>  Data augmentation and auxiliary variables</a></li>
   </ul></li>
-  <li><a href="#bayesian-workflow-and-diagnostics-for-markov-chains" id="toc-bayesian-workflow-and-diagnostics-for-markov-chains" class="nav-link" data-scroll-target="#bayesian-workflow-and-diagnostics-for-markov-chains"><span class="header-section-number">3.5</span> Bayesian workflow and diagnostics for Markov chains</a>
+  <li><a href="#bayesian-workflow-and-diagnostics-for-markov-chains" id="toc-bayesian-workflow-and-diagnostics-for-markov-chains" class="nav-link" data-scroll-target="#bayesian-workflow-and-diagnostics-for-markov-chains"><span class="toc-section-number">3.5</span>  Bayesian workflow and diagnostics for Markov chains</a>
   <ul class="collapse">
-  <li><a href="#trace-plots" id="toc-trace-plots" class="nav-link" data-scroll-target="#trace-plots"><span class="header-section-number">3.5.1</span> Trace plots</a></li>
-  <li><a href="#diagnostics-of-convergence" id="toc-diagnostics-of-convergence" class="nav-link" data-scroll-target="#diagnostics-of-convergence"><span class="header-section-number">3.5.2</span> Diagnostics of convergence</a></li>
-  <li><a href="#posterior-predictive-checks" id="toc-posterior-predictive-checks" class="nav-link" data-scroll-target="#posterior-predictive-checks"><span class="header-section-number">3.5.3</span> Posterior predictive checks</a></li>
-  <li><a href="#information-criterion" id="toc-information-criterion" class="nav-link" data-scroll-target="#information-criterion"><span class="header-section-number">3.5.4</span> Information criterion</a></li>
+  <li><a href="#trace-plots" id="toc-trace-plots" class="nav-link" data-scroll-target="#trace-plots"><span class="toc-section-number">3.5.1</span>  Trace plots</a></li>
+  <li><a href="#diagnostics-of-convergence" id="toc-diagnostics-of-convergence" class="nav-link" data-scroll-target="#diagnostics-of-convergence"><span class="toc-section-number">3.5.2</span>  Diagnostics of convergence</a></li>
+  <li><a href="#posterior-predictive-checks" id="toc-posterior-predictive-checks" class="nav-link" data-scroll-target="#posterior-predictive-checks"><span class="toc-section-number">3.5.3</span>  Posterior predictive checks</a></li>
+  <li><a href="#information-criterion" id="toc-information-criterion" class="nav-link" data-scroll-target="#information-criterion"><span class="toc-section-number">3.5.4</span>  Information criterion</a></li>
   </ul></li>
   </ul>
 <div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/lbelzile/math80601a/edit/main/mcmc.qmd" class="toc-action">Edit this page</a></p></div></div></nav>
@@ -226,10 +242,13 @@ div.csl-indent {
 <main class="content" id="quarto-document-content">
 
 <header id="title-block-header">
-<h1 class="title display-7"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Simulation-based inference</span></h1>
+<h1 class="title d-none d-lg-block display-7"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Simulation-based inference</span></h1>
 
 </header>
 
+<div class="cell" data-file="_common.R" data-hash="mcmc_cache/html/setup_cbcb88d98b9e05e3749fd2d006c95b9f">
+
+</div>
 <p>There are two major approaches to handling the problem of the unknown normalizing constant: deterministic and stochastic approximations. The former includes Laplace and nested Laplace approximations, variational methods and expectation propagation. This chapter covers the latter, stochastic approximations, and focuses on implementation of basic Markov chain Monte Carlo algorithms. The simulation algorithms circumvent the need to calculate the normalizing constant of the posterior entirely. We present several examples of implementations, several tricks for tuning and diagnostics of convergence.</p>
 <section id="monte-carlo-methods" class="level2" data-number="3.1">
 <h2 data-number="3.1" class="anchored" data-anchor-id="monte-carlo-methods"><span class="header-section-number">3.1</span> Monte Carlo methods</h2>
@@ -246,7 +265,7 @@ div.csl-indent {
 <div id="fig-monte-carlo-path" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
 <p><img src="mcmc_files/figure-html/fig-monte-carlo-path-1.png" class="img-fluid figure-img" width="672"></p>
-<figcaption class="figure-caption">Figure&nbsp;3.1: Running mean trace plots for <span class="math inline">\(g(x)=\mathrm{I}(x&lt;1)\)</span> (left), <span class="math inline">\(g(x)=x\)</span> (middle) and <span class="math inline">\(g(x)=1/x\)</span> (right) for a Gamma distribution with shape 0.5 and rate 2, as a function of the Monte Carlo sample size.</figcaption>
+<p></p><figcaption class="figure-caption">Figure&nbsp;3.1: Running mean trace plots for <span class="math inline">\(g(x)=\mathrm{I}(x&lt;1)\)</span> (left), <span class="math inline">\(g(x)=x\)</span> (middle) and <span class="math inline">\(g(x)=1/x\)</span> (right) for a Gamma distribution with shape 0.5 and rate 2, as a function of the Monte Carlo sample size.</figcaption><p></p>
 </figure>
 </div>
 </div>
@@ -272,7 +291,7 @@ Generalized ratio-of-uniform method
 <div id="fig-acceptreject" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
 <p><img src="mcmc_files/figure-html/fig-acceptreject-1.png" class="img-fluid figure-img" width="672"></p>
-<figcaption class="figure-caption">Figure&nbsp;3.2: Target density (full) and scaled proposal density (dashed): the vertical segment at <span class="math inline">\(x=1\)</span> shows the percentage of acceptance for a uniform slice under the scaled proposal, giving an acceptance ratio of 0.58.</figcaption>
+<p></p><figcaption class="figure-caption">Figure&nbsp;3.2: Target density (full) and scaled proposal density (dashed): the vertical segment at <span class="math inline">\(x=1\)</span> shows the percentage of acceptance for a uniform slice under the scaled proposal, giving an acceptance ratio of 0.58.</figcaption><p></p>
 </figure>
 </div>
 </div>
@@ -364,7 +383,7 @@ X \sim \Phi^{-1}\left[\Phi(\alpha) + \{\Phi(\beta)-\Phi(\alpha)\}U\right]
 <div id="fig-danish-rou" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
 <p><img src="mcmc_files/figure-html/fig-danish-rou-1.png" class="img-fluid figure-img" width="672"></p>
-<figcaption class="figure-caption">Figure&nbsp;3.3: Scatterplot of posterior samples from the generalized Pareto model applied to Danish fire insurance losses above 10 millions krones, with maximal data information prior (left) and posterior predictive density on log scale (right).</figcaption>
+<p></p><figcaption class="figure-caption">Figure&nbsp;3.3: Scatterplot of posterior samples from the generalized Pareto model applied to Danish fire insurance losses above 10 millions krones, with maximal data information prior (left) and posterior predictive density on log scale (right).</figcaption><p></p>
 </figure>
 </div>
 </div>
@@ -403,12 +422,12 @@ X \sim \Phi^{-1}\left[\Phi(\alpha) + \{\Phi(\beta)-\Phi(\alpha)\}U\right]
 </div>
 <div id="exm-ar1-clt-variance" class="theorem example">
 <p><span class="theorem-title"><strong>Example 3.5 </strong></span>The lag-<span class="math inline">\(k\)</span> correlation of the stationary autoregressive process of order 1 is <span class="math inline">\(\phi^k\)</span>, so summing the series gives an asymptotic variance of <span class="math inline">\(\sigma^2(1+\phi)/(1-\phi)\)</span>. We can constrast that to the variance of the stationary distribution for an independent sample, which is <span class="math inline">\(\sigma^2/(1-\phi^2)\)</span>. The price to pay for having correlated samples is inefficiency: the higher the autocorrelation, the larger the variability of our mean estimators.</p>
-<div class="cell" data-hash="mcmc_cache/html/fig-ar1-variance_b0f5d684df739315dd311482ee0a9ae3">
+<div class="cell" data-hash="mcmc_cache/html/fig-ar1-variance_f7ba4d56ec4d829ce58c396fbefcf30c">
 <div class="cell-output-display">
 <div id="fig-ar1-variance" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
 <p><img src="mcmc_files/figure-html/fig-ar1-variance-1.png" class="img-fluid figure-img" width="672"></p>
-<figcaption class="figure-caption">Figure&nbsp;3.4: Scaled asymptotic variance of the sample mean for a stationary autoregressive first-order process with unit variance (dashed) and a corresponding sample of independent observations with the same marginal variance (full line). The plot on the right gives the variance ratio for positive correlations.</figcaption>
+<p></p><figcaption class="figure-caption">Figure&nbsp;3.4: Scaled asymptotic variance of the sample mean for a stationary autoregressive first-order process with unit variance (full line) and a corresponding sample of independent observations with the same marginal variance (dashed line). The right panel gives the ratio of variances for positive correlation coefficients.</figcaption><p></p>
 </figure>
 </div>
 </div>
@@ -429,7 +448,7 @@ X \sim \Phi^{-1}\left[\Phi(\alpha) + \{\Phi(\beta)-\Phi(\alpha)\}U\right]
 <div id="fig-mcmc-batchmean" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
 <p><img src="mcmc_files/figure-html/fig-mcmc-batchmean-1.png" class="img-fluid figure-img" width="672"></p>
-<figcaption class="figure-caption">Figure&nbsp;3.5: Calculation of the standard error of the posterior mean using the batch method.</figcaption>
+<p></p><figcaption class="figure-caption">Figure&nbsp;3.5: Calculation of the standard error of the posterior mean using the batch method.</figcaption><p></p>
 </figure>
 </div>
 </div>
@@ -460,13 +479,16 @@ P_3 = \begin{pmatrix}
 0 &amp; 0 &amp; 0 &amp;  \frac{1}{3}  &amp; \frac{2}{3} \\
 \end{pmatrix}
 \]</span> The stationary distribution is the value of the row vector <span class="math inline">\(\boldsymbol{p}\)</span>, such that <span class="math inline">\(\boldsymbol{p} = \boldsymbol{p}\mathbf{P}\)</span> for transition matrix <span class="math inline">\(\mathbf{P}\)</span>: we get <span class="math inline">\(\boldsymbol{p}_1=(0, 5/11, 6/11)\)</span> for <span class="math inline">\(P_1\)</span>, <span class="math inline">\((1/3, 1/3, 1/3)\)</span> for <span class="math inline">\(P_2\)</span> and <span class="math inline">\((1,2,2,2,1)/8\)</span> for <span class="math inline">\(P_3\)</span>.</p>
+<div class="cell" data-hash="mcmc_cache/html/unnamed-chunk-10_24aa20d6e6be22595162444ece2ffd2f">
+
+</div>
 <p><a href="#fig-discrete-markov-chain">Figure&nbsp;<span>3.6</span></a> shows the path of the walk and the empirical proportion of the time spent in each state, as time progress. Since the Markov chain has a unique stationary distribution, we expect these to converge to it.</p>
 <div class="cell" data-hash="mcmc_cache/html/fig-discrete-markov-chain_c6892019fb97cf3a2ac3c1b3660b467f">
 <div class="cell-output-display">
 <div id="fig-discrete-markov-chain" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
 <p><img src="mcmc_files/figure-html/fig-discrete-markov-chain-1.png" class="img-fluid figure-img" width="672"></p>
-<figcaption class="figure-caption">Figure&nbsp;3.6: Discrete Markov chain on integers from 1 to 5, with transition matrix <span class="math inline">\(P_3\)</span>, with traceplot of 1000 first iterations (left) and running mean plots of sample proportion of each state visited per 100 iterations (right).</figcaption>
+<p></p><figcaption class="figure-caption">Figure&nbsp;3.6: Discrete Markov chain on integers from 1 to 5, with transition matrix <span class="math inline">\(P_3\)</span>, with traceplot of 1000 first iterations (left) and running mean plots of sample proportion of each state visited per 100 iterations (right).</figcaption><p></p>
 </figure>
 </div>
 </div>
@@ -606,7 +628,7 @@ kappa  0.06673  0.06933  0.07077  0.07212  0.07463</code></pre>
 <div id="fig-traceplot" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
 <p><img src="mcmc_files/figure-html/fig-traceplot-1.png" class="img-fluid figure-img" width="672"></p>
-<figcaption class="figure-caption">Figure&nbsp;3.7: Traceplots of Markov chain of log rate and log odds rate for the Metropolis–Hastings sampler applied to the Upworthy question data.</figcaption>
+<p></p><figcaption class="figure-caption">Figure&nbsp;3.7: Traceplots of Markov chain of log rate and log odds rate for the Metropolis–Hastings sampler applied to the Upworthy question data.</figcaption><p></p>
 </figure>
 </div>
 </div>
@@ -617,7 +639,7 @@ kappa  0.06673  0.06933  0.07077  0.07212  0.07463</code></pre>
 <div id="fig-scatterplot-upworthy-question" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
 <p><img src="mcmc_files/figure-html/fig-scatterplot-upworthy-question-1.png" class="img-fluid figure-img" width="672"></p>
-<figcaption class="figure-caption">Figure&nbsp;3.8: Scatterplot of posterior draws (left) and marginal density plot of log odds rate (right).</figcaption>
+<p></p><figcaption class="figure-caption">Figure&nbsp;3.8: Scatterplot of posterior draws (left) and marginal density plot of log odds rate (right).</figcaption><p></p>
 </figure>
 </div>
 </div>
@@ -629,7 +651,7 @@ kappa  0.06673  0.06933  0.07077  0.07212  0.07463</code></pre>
 <div id="fig-goldilock-trace" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
 <p><img src="mcmc_files/figure-html/fig-goldilock-trace-1.png" class="img-fluid figure-img" width="672"></p>
-<figcaption class="figure-caption">Figure&nbsp;3.9: Example of traceplot with proposal variance that is too small (top), adequate (middle) and too large (bottom).</figcaption>
+<p></p><figcaption class="figure-caption">Figure&nbsp;3.9: Example of traceplot with proposal variance that is too small (top), adequate (middle) and too large (bottom).</figcaption><p></p>
 </figure>
 </div>
 </div>
@@ -642,7 +664,7 @@ kappa  0.06673  0.06933  0.07077  0.07212  0.07463</code></pre>
 <div id="fig-goldilock-correlogram" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
 <p><img src="mcmc_files/figure-html/fig-goldilock-correlogram-1.png" class="img-fluid figure-img" width="960"></p>
-<figcaption class="figure-caption">Figure&nbsp;3.10: Correlogram for the three Markov chains.</figcaption>
+<p></p><figcaption class="figure-caption">Figure&nbsp;3.10: Correlogram for the three Markov chains.</figcaption><p></p>
 </figure>
 </div>
 </div>
@@ -684,14 +706,17 @@ f_{\vartheta}(\vartheta)&amp;=f_{\theta}\{a+(b-a) \mathrm{expit}(\vartheta)\} (b
 p(\theta) \approx p(\theta_{t-1}) + p'(\theta_{t-1})(\theta - \theta_{t-1}) + \frac{1}{2} p''(\theta_{t-1})(\theta - \theta_{t-1})^2
 \end{align*}\]</span> plus remainder, which suggests a Gaussian approximation with mean <span class="math inline">\(\mu_{t-1} = \theta_{t-1} - f'(\theta_{t-1})/f''(\theta_{t-1})\)</span> and precision <span class="math inline">\(\tau^{-2} = -f''(\theta_{t-1})\)</span>. We can use truncated Gaussian distribution on <span class="math inline">\((a, b)\)</span> with mean <span class="math inline">\(\mu\)</span> and standard deviation <span class="math inline">\(\tau\)</span>, denoted <span class="math inline">\(\mathsf{TruncNorm}(\mu, \tau, a, b)\)</span> with corresponding density function <span class="math inline">\(q(\cdot; \mu, \tau, a, b)\)</span>. The Metropolis acceptance ratio for a proposal <span class="math inline">\(\theta^{\star}_{t} \sim \mathsf{TruncNorm}(\mu_{t-1}, \tau_{t-1}, a, b)\)</span> is <span class="math display">\[\begin{align*}
 \alpha = \frac{p(\theta^{\star}_{t})}{p(\theta_{t-1})} \frac{ q(\theta_{t-1} \mid \mu_{t}^{\star}, \tau_{t}^{\star}, a, b)}{q(\theta^{\star}_{t} \mid \mu_{t-1}, \tau_{t-1}, a, b)}
-\end{align*}\]</span> and we set <span class="math inline">\(\theta^{(t+1)} = \theta^{\star}_{t}\)</span> with probability <span class="math inline">\(\min\{1, r\}\)</span> and <span class="math inline">\(\theta^{(t+1)} = \theta_{t-1}\)</span> otherwise. To evaluate the ratio of truncated Gaussian densities <span class="math inline">\(q(\cdot; \mu, \tau, a, b)\)</span>, we need to compute the Taylor approximation from the current parameter value, but also the reverse move from the proposal <span class="math inline">\(\theta^{\star}_{t}\)</span>. Another option is to modify the move dictated by the rescaled gradient by taking instead <span class="math display">\[\mu_{t-1} = \theta_{t-1} - \eta f'(\theta_{t-1})/f''(\theta_{t-1}).\]</span> The proposal includes an additional tuning parameter, <span class="math inline">\(\eta \leq 1\)</span>, whose role is to prevent oscillations of the quadratic approximation, as in a Newton–Raphson algorithm. Relative to a random walk Metropolis–Hastings, the proposal automatically adjusts to the local geometry of the target, which guarantees a higher acceptance rate and lower autocorrelation for the Markov chain despite the higher evaluation costs. The proposal requires that both <span class="math inline">\(f''(\theta_{t-1})\)</span> and <span class="math inline">\(f''(\theta^{\star}_{t})\)</span> be negative since the variance is <span class="math inline">\(-1/f''(\theta)\)</span>: this shouldn’t be problematic in the vicinity of the mode. Otherwise, one could use a global scaling derived from the hessian at the mode.</p>
-<p>The simpler Metropolis-adjusted Langevin algorithm is equivalent to using a Gaussian random walk where the proposal has mean <span class="math inline">\(\boldsymbol{\theta}_{t-1} + \mathbf{A}\eta \nabla \ell(\boldsymbol{\theta}_{t-1})\)</span> and variance <span class="math inline">\(\tau^2\mathbf{A}\)</span>, for some mass matrix <span class="math inline">\(\mathbf{A}\)</span> and a damping factor <span class="math inline">\(\eta\)</span>. Taking <span class="math inline">\(\mathbf{A}\)</span> as the identity matrix, which assumes the parameters are isotropic (same variance, uncorrelated) is the default choice although seldom far from optimal.</p>
+\end{align*}\]</span> and we set <span class="math inline">\(\theta^{(t+1)} = \theta^{\star}_{t}\)</span> with probability <span class="math inline">\(\min\{1, r\}\)</span> and <span class="math inline">\(\theta^{(t+1)} = \theta_{t-1}\)</span> otherwise. To evaluate the ratio of truncated Gaussian densities <span class="math inline">\(q(\cdot; \mu, \tau, a, b)\)</span>, we need to compute the Taylor approximation from the current parameter value, but also the reverse move from the proposal <span class="math inline">\(\theta^{\star}_{t}\)</span>. Another option is to modify the move dictated by the rescaled gradient by taking instead <span class="math display">\[\mu_{t-1} = \theta_{t-1} - \eta f'(\theta_{t-1})/f''(\theta_{t-1}).\]</span> The proposal includes an additional learning rate parameter, <span class="math inline">\(\eta \leq 1\)</span>, whose role is to prevent oscillations of the quadratic approximation, as in a Newton–Raphson algorithm. Relative to a random walk Metropolis–Hastings, the proposal automatically adjusts to the local geometry of the target, which guarantees a higher acceptance rate and lower autocorrelation for the Markov chain despite the higher evaluation costs. The proposal requires that both <span class="math inline">\(f''(\theta_{t-1})\)</span> and <span class="math inline">\(f''(\theta^{\star}_{t})\)</span> be negative since the variance is <span class="math inline">\(-1/f''(\theta)\)</span>: this shouldn’t be problematic in the vicinity of the mode. Otherwise, one could use a global scaling derived from the hessian at the mode.</p>
+<p>The simpler Metropolis-adjusted Langevin algorithm is equivalent to using a Gaussian random walk where the proposal has mean <span class="math inline">\(\boldsymbol{\theta}_{t-1} + \mathbf{A}\eta \nabla \log p(\boldsymbol{\theta}_{t-1}; \boldsymbol{y})\)</span> and variance <span class="math inline">\(\tau^2\mathbf{A}\)</span>, for some mass matrix <span class="math inline">\(\mathbf{A}\)</span> and learning rate <span class="math inline">\(\eta &lt; 1\)</span>. Taking <span class="math inline">\(\mathbf{A}\)</span> as the identity matrix, which assumes the parameters are isotropic (same variance, uncorrelated) is the default choice although seldom far from optimal.</p>
 <p>For MALA to work well, we need both to start near stationarity, to ensure that the gradient is relatively small and to prevent oscillations. One can dampen the size of the step initially if needed to avoid overshooting. The proposal variance, the other tuning parameter, is critical to the success of the algorithm. The usual target for the variance is one that gives an acceptance rate of roughly 0.574. These more efficient methods require additional calculations of the gradient and Hessian, either numerically or analytically. Depending on the situation and the computational costs of such calculations, the additional overhead may not be worth it.</p>
 </div>
 <div id="exm-normal-question-upworthy" class="theorem example">
 <p><span class="theorem-title"><strong>Example 3.7 </strong></span>We revisit the Upworthy data, this time modelling each individual headline as a separate observation. We view <span class="math inline">\(n=\)</span><code>nimpression</code> as the sample size of a binomial distribution and <code>nclick</code> as the number of successes. Since the number of trials is large, the sample average <code>nclick</code>/<code>nimpression</code>, denoted <span class="math inline">\(y\)</span> in the sequel, is approximately Gaussian. We assume that each story has a similar population rate and capture the heterogeneity inherent to each news story by treating each mean as a sample. The variance of the sample average or click rate is proportional to <span class="math inline">\(n^{-1}\)</span>, where <span class="math inline">\(n\)</span> is the number of impressions. To allow for underdispersion or overdispersion, we thus consider a Gaussian likelihood <span class="math inline">\(Y_i \sim \mathsf{Norm}(\mu, \sigma^2/n_i)\)</span>. We perform Bayesian inference for <span class="math inline">\(\mu, \sigma\)</span> after assigning a truncated Gaussian prior for <span class="math inline">\(\mu \sim \mathsf{TruncNorm}(0.01, 0.1^2)\)</span> over <span class="math inline">\([0,1]\)</span> and an penalized complexity prior for <span class="math inline">\(\sigma \sim \mathsf{Exp}(0.7)\)</span>.</p>
 <!-- The `hecbayes` package contains an helper function `mh` that computes the step given the log likelihood, log prior and their gradients. -->
-<div class="cell" data-hash="mcmc_cache/html/unnamed-chunk-18_335db8baef33ccde2c7e628d59e10fb4">
+<div class="cell" data-hash="mcmc_cache/html/unnamed-chunk-17_90ba5d0f34676f0db081490fe9c5e497">
+
+</div>
+<div class="cell" data-hash="mcmc_cache/html/unnamed-chunk-18_3b45e9759c70b5680eb19f07050a912b">
 <div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(upworthy_question, <span class="at">package =</span> <span class="st">"hecbayes"</span>)</span>
 <span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Select data for a single question</span></span>
 <span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>qdata <span class="ot">&lt;-</span> upworthy_question <span class="sc">|&gt;</span></span>
@@ -744,10 +769,10 @@ p(\theta) \approx p(\theta_{t-1}) + p'(\theta_{t-1})(\theta - \theta_{t-1}) + \f
 <span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Create containers for MCMC</span></span>
 <span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a>B <span class="ot">&lt;-</span> <span class="fl">1e4</span>L <span class="co"># number of iterations</span></span>
 <span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a>warmup <span class="ot">&lt;-</span> <span class="fl">1e3</span>L <span class="co"># adaptation period</span></span>
-<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a>prop_sd <span class="ot">&lt;-</span> <span class="fu">rep</span>(<span class="dv">1</span>, <span class="dv">2</span>)</span>
-<span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a>npar <span class="ot">&lt;-</span> 2L</span>
+<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a>npar <span class="ot">&lt;-</span> 2L <span class="co"># number of parameters</span></span>
+<span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a>prop_sd <span class="ot">&lt;-</span> <span class="fu">rep</span>(<span class="dv">1</span>, npar) <span class="co">#updating both parameters jointly</span></span>
 <span id="cb13-13"><a href="#cb13-13" aria-hidden="true" tabindex="-1"></a>chains <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="at">nrow =</span> B, <span class="at">ncol =</span> npar)</span>
-<span id="cb13-14"><a href="#cb13-14" aria-hidden="true" tabindex="-1"></a>damping <span class="ot">&lt;-</span> <span class="fl">0.8</span></span>
+<span id="cb13-14"><a href="#cb13-14" aria-hidden="true" tabindex="-1"></a>damping <span class="ot">&lt;-</span> <span class="fl">0.8</span> <span class="co"># learning rate</span></span>
 <span id="cb13-15"><a href="#cb13-15" aria-hidden="true" tabindex="-1"></a>acceptance <span class="ot">&lt;-</span> attempts <span class="ot">&lt;-</span> <span class="dv">0</span> </span>
 <span id="cb13-16"><a href="#cb13-16" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(chains) <span class="ot">&lt;-</span> <span class="fu">names</span>(curr) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"mu"</span>,<span class="st">"sigma"</span>)</span>
 <span id="cb13-17"><a href="#cb13-17" aria-hidden="true" tabindex="-1"></a>prop_var <span class="ot">&lt;-</span> <span class="fu">diag</span>(prop_sd) <span class="sc">%*%</span> Amat <span class="sc">%*%</span> <span class="fu">diag</span>(prop_sd)</span>
@@ -815,7 +840,7 @@ R = \frac{p(\boldsymbol{\theta}_t^{[j]\star} \mid \boldsymbol{\theta}^{-[j]\star
 <div id="fig-Gibbs-steps" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
 <p><img src="mcmc_files/figure-html/fig-Gibbs-steps-1.png" class="img-fluid figure-img" width="672"></p>
-<figcaption class="figure-caption">Figure&nbsp;3.11: Sampling trajectory for a bivariate target using Gibbs sampling.</figcaption>
+<p></p><figcaption class="figure-caption">Figure&nbsp;3.11: Sampling trajectory for a bivariate target using Gibbs sampling.</figcaption><p></p>
 </figure>
 </div>
 </div>
@@ -855,7 +880,7 @@ R = \frac{p(\boldsymbol{\theta}_t^{[j]\star} \mid \boldsymbol{\theta}^{-[j]\star
 <div id="fig-gibbs-normal" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
 <p><img src="mcmc_files/figure-html/fig-gibbs-normal-1.png" class="img-fluid figure-img" width="672"></p>
-<figcaption class="figure-caption">Figure&nbsp;3.12: Trace plots (top) and correlograms (bottom) for the first component of a Gibbs sampler with <span class="math inline">\(d=20\)</span> equicorrelated Gaussian variates with correlation <span class="math inline">\(\rho=0.9\)</span> (left) and <span class="math inline">\(d=3\)</span> with equicorrelation <span class="math inline">\(\rho=0.5\)</span> (right).</figcaption>
+<p></p><figcaption class="figure-caption">Figure&nbsp;3.12: Trace plots (top) and correlograms (bottom) for the first component of a Gibbs sampler with <span class="math inline">\(d=20\)</span> equicorrelated Gaussian variates with correlation <span class="math inline">\(\rho=0.9\)</span> (left) and <span class="math inline">\(d=3\)</span> with equicorrelation <span class="math inline">\(\rho=0.5\)</span> (right).</figcaption><p></p>
 </figure>
 </div>
 </div>
@@ -863,14 +888,14 @@ R = \frac{p(\boldsymbol{\theta}_t^{[j]\star} \mid \boldsymbol{\theta}^{-[j]\star
 <p>The main bottleneck in Gibbs sampling is determining all of the relevant conditional distributions, which often relies on setting conditionally conjugate priors. In large models with multiple layers, full conditionals may only depend on a handful of parameters.</p>
 </div>
 <div id="exm-gaussian-gamma" class="theorem example">
-<p><span class="theorem-title"><strong>Example 3.8 </strong></span>Consider a Gaussian model <span class="math inline">\(Y_i \sim \mathsf{Norm}(\mu, \tau)\)</span> (<span class="math inline">\(i=1, \ldots, n\)</span>) are independent, and where we assign priors <span class="math inline">\(\mu \sim \mathsf{Norm}(\nu, \omega)\)</span> and <span class="math inline">\(\sigma \sim \mathsf{InvGamma}(\alpha, \beta)\)</span>.</p>
+<p><span class="theorem-title"><strong>Example 3.8 </strong></span>Consider a Gaussian model <span class="math inline">\(Y_i \sim \mathsf{Norm}(\mu, \tau)\)</span> (<span class="math inline">\(i=1, \ldots, n\)</span>) are independent, and where we assign priors <span class="math inline">\(\mu \sim \mathsf{Norm}(\nu, \omega)\)</span> and <span class="math inline">\(\tau \sim \mathsf{InvGamma}(\alpha, \beta)\)</span>.</p>
 <p>The joint posterior is not available in closed form, but the independent priors for the mean and variance of the observations are conditionally conjugate, since the joint posterior <span class="math display">\[\begin{align*}
 p(\mu, \tau \mid \boldsymbol{y}) \propto&amp; \tau^{-n/2}\exp\left\{-\frac{1}{2\tau}\left(\sum_{i=1}^n y_i^2 - 2\mu \sum_{i=1}^n y_i+n\mu^2 \right)\right\}\\&amp; \times \exp\left\{-\frac{(\mu-\nu)^2}{2\omega}\right\} \times \tau^{-\alpha-1}\exp(-\beta/\tau)
 \end{align*}\]</span> gives us <span class="math display">\[\begin{align*}
 p(\mu \mid \tau, \boldsymbol{y}) &amp;\propto \exp\left\{-\frac{1}{2} \left( \frac{\mu^2-2\mu\overline{y}}{\tau/n} + \frac{\mu^2-2\nu \mu}{\omega}\right)\right\}\\
 p(\tau \mid \mu, \boldsymbol{y}) &amp; \propto \tau^{-n/2-\alpha-1}\exp\left[-\left\{\frac{\sum_{i=1}^n (y_i-\mu)^2}{2} + \beta \right\}/\tau\right]
 \end{align*}\]</span> so we can simulate in turn <span class="math display">\[\begin{align*}
-\mu_t \mid \tau_{t-1}, \boldsymbol{y} &amp;\sim \mathsf{Norm}\left(\frac{n\overline{y}\omega+\tau \nu}{\omega\tau}, \frac{\omega \tau}{\tau + \omega/n}\right)\\
+\mu_t \mid \tau_{t-1}, \boldsymbol{y} &amp;\sim \mathsf{Norm}\left(\frac{n\overline{y}\omega+\tau \nu}{\tau + n\omega}, \frac{\omega \tau}{\tau + n\omega}\right)\\
 \tau_t \mid \mu_t, \boldsymbol{y} &amp;\sim \mathsf{InvGamma}\left\{\frac{n}{2}+\alpha, \frac{\sum_{i=1}^n (y_i-\mu)^2}{2} + \beta\right\}.
 \end{align*}\]</span></p>
 </div>
@@ -903,9 +928,9 @@ p_i = \Pr(Y_i=1) = \Phi(\beta_0 + \beta_1 \mathrm{X}_{i1} + \cdots + \beta_p\mat
 <p>The augmented data likelihood is <span class="math display">\[\begin{align*}
 p(\boldsymbol{z}, \boldsymbol{y} \mid \boldsymbol{\beta}) \propto \exp\left\{-\frac{1}{2}(\boldsymbol{z} - \mathbf{X}\boldsymbol{\beta})^\top(\boldsymbol{z} - \mathbf{X}\boldsymbol{\beta})\right\} \times \prod_{i=1}^n \mathsf{I}(z_i &gt; 0)^{y_i}\mathsf{I}(z_i \le 0)^{1-y_i}
 \end{align*}\]</span> Given <span class="math inline">\(Z_i\)</span>, the coefficients <span class="math inline">\(\boldsymbol{\beta}\)</span> are simply the results of ordinary linear regression with unit variance, so <span class="math display">\[\begin{align*}
-\boldsymbol{\beta} \mid \boldsymbol{z}, \boldsymbol{y} &amp;\sim \mathsf{Norm}\{\widehat{\boldsymbol{\beta}}, (\mathbf{X}^\top\mathbf{X})^{-1}\}
-\end{align*}\]</span> with <span class="math inline">\(\widehat{\boldsymbol{\beta}}=(\mathbf{X}^\top\mathbf{X})^{-1}\mathbf{X}^\top\boldsymbol{z}\)</span> the ordinary least square coefficients from the regression with <span class="math inline">\(\boldsymbol{z}\)</span>’s whereas the values of <span class="math inline">\(Z_i\)</span>, conditionally independent, are truncated Gaussian with <span class="math display">\[\begin{align*}
-Z_i \mid Y_i=y_i, \boldsymbol{\beta} \sim \begin{cases}
+\boldsymbol{\beta} \mid \boldsymbol{z}, \boldsymbol{y} &amp;\sim \mathsf{Norm}\left\{\widehat{\boldsymbol{\beta}}, (\mathbf{X}^\top\mathbf{X})^{-1}\right\}
+\end{align*}\]</span> with <span class="math inline">\(\widehat{\boldsymbol{\beta}}=(\mathbf{X}^\top\mathbf{X})^{-1}\mathbf{X}^\top\boldsymbol{z}\)</span> is the ordinary least square estimator from the regression with model matrix <span class="math inline">\(\mathbf{X}\)</span> and response vector <span class="math inline">\(\boldsymbol{z}\)</span>. The augmented variables <span class="math inline">\(Z_i\)</span> are conditionally independent and truncated Gaussian with <span class="math display">\[\begin{align*}
+Z_i \mid y_i, \boldsymbol{\beta} \sim \begin{cases}
 \mathsf{TruncNorm}(\mathbf{x}_i\boldsymbol{\beta}, -\infty, 0) &amp; y_i =0 \\
 \mathsf{TruncNorm}(\mathbf{x}_i\boldsymbol{\beta}, 0, \infty) &amp; y_i =1.
 \end{cases}
@@ -914,7 +939,7 @@ Z_i \mid Y_i=y_i, \boldsymbol{\beta} \sim \begin{cases}
 <div id="exm-student-mixture-gaussian" class="theorem example">
 <p><span class="theorem-title"><strong>Example 3.10 (Bayesian LASSO) </strong></span>The Laplace distribution with mean <span class="math inline">\(\mu\)</span> and scale <span class="math inline">\(\sigma\)</span>, which has density <span class="math display">\[\begin{align*}
 f(x; \mu, \sigma) = \frac{1}{2\sigma}\exp\left(-\frac{|x-\mu|}{\sigma}\right),
-\end{align*}\]</span> can be expressed as a scale mixture of Gaussians, where <span class="math inline">\(Y \sim \mathsf{La}(\mu, \sigma)\)</span> is equivalent to <span class="math inline">\(Z \mid W=w \sim \mathsf{Norm}(\mu, \tau)\)</span> and <span class="math inline">\(\tau \sim \mathsf{Exp}\{(2\sigma)^{-1}\}\)</span>. With the improper prior <span class="math inline">\(p(\mu, \sigma) \propto \sigma^{-1}\)</span> and with <span class="math inline">\(n\)</span> independent and identically distributed Laplace variates, the joint posterior can be written <span class="math display">\[\begin{align*}
+\end{align*}\]</span> can be expressed as a scale mixture of Gaussians, where <span class="math inline">\(Y \sim \mathsf{La}(\mu, \sigma)\)</span> is equivalent to <span class="math inline">\(Z \mid \tau \sim \mathsf{Norm}(\mu, \tau)\)</span> and <span class="math inline">\(\tau \sim \mathsf{Exp}\{(2\sigma)^{-1}\}\)</span>. With the improper prior <span class="math inline">\(p(\mu, \sigma) \propto \sigma^{-1}\)</span> and with <span class="math inline">\(n\)</span> independent and identically distributed Laplace variates, the joint posterior can be written <span class="math display">\[\begin{align*}
 p(\boldsymbol{\tau}, \mu, \sigma \mid \boldsymbol{y}) &amp;\propto \left(\prod_{i=1}^n \tau_i\right)^{-1/2}\exp\left\{-\frac{1}{2}\sum_{i=1}^n \frac{(y_i-\mu)^2}{\tau_i}\right\} \\&amp;\quad \times \frac{1}{\sigma^{n+1}}\exp\left(-\frac{1}{2\sigma}\sum_{i=1}^n \tau_i\right)
 \end{align*}\]</span> and <span class="math inline">\(\mu \mid \cdots\)</span> and <span class="math inline">\(\sigma \mid \cdots\)</span> are, as usual, Gaussian and inverse gamma, respectively. The variances, <span class="math inline">\(\tau_j\)</span>, are conditionally independent of one another with <span class="math display">\[\begin{align*}
 p(\tau_j \mid \mu, \sigma, y_j) &amp;\propto \tau_j^{-1/2}\exp\left\{-\frac{1}{2}\frac{(y_j-\mu)^2}{\tau_j} -\frac{1}{2} \frac{\tau_j}{\sigma}\right\}
@@ -925,7 +950,7 @@ f(y; \nu, \lambda) &amp;= \left(\frac{\lambda}{2\pi y^{3}}\right)^{1/2} \exp\lef
 \\ &amp;\stackrel{y}{\propto} y^{-3/2}\exp\left\{-\frac{\lambda}{2} \left(\frac{y}{\nu} + \frac{1}{y}\right)\right\}
 \end{align*}\]</span> for location <span class="math inline">\(\nu &gt;0\)</span> and shape <span class="math inline">\(\lambda&gt;0\)</span>, where <span class="math inline">\(\xi_i \sim \mathsf{Wald}(\nu_i, \lambda)\)</span> with <span class="math inline">\(\nu_i=\{\sigma/(y_i-\mu)^2\}^{1/2}\)</span> and <span class="math inline">\(\lambda=\sigma^{-1}\)</span>.</p>
 <p><span class="citation" data-cites="Park.Casella:2008">Park and Casella (<a href="references.html#ref-Park.Casella:2008" role="doc-biblioref">2008</a>)</span> use this hierarchical construction to defined the Bayesian LASSO. With a model matrix <span class="math inline">\(\mathbf{X}\)</span> whose columns are standardized to have mean zero and unit standard deviation, we may write <span class="math display">\[\begin{align*}
-\boldsymbol{Y} \mid \mu, \boldsymbol{\beta}, \sigma^2 &amp;\sim  \mathsf{Norm}_n(\nu \boldsymbol{1}_n + \mathbf{X}\boldsymbol{\beta}, \sigma \mathbf{I}_n)\\
+\boldsymbol{Y} \mid \mu, \boldsymbol{\beta}, \sigma^2 &amp;\sim  \mathsf{Norm}_n(\mu \boldsymbol{1}_n + \mathbf{X}\boldsymbol{\beta}, \sigma \mathbf{I}_n)\\
 \beta_j \mid \sigma, \tau &amp;\sim \mathsf{Norm}(0, \sigma\tau)\\
 \tau &amp;\sim \mathsf{Exp}(\lambda/2)
 \end{align*}\]</span> If we set an improper prior <span class="math inline">\(p(\mu, \sigma) \propto \sigma^{-1}\)</span>, the resulting conditional distributions are all available and thus the model is amenable to Gibbs sampling.</p>
@@ -953,7 +978,7 @@ f(y; \nu, \lambda) &amp;= \left(\frac{\lambda}{2\pi y^{3}}\right)^{1/2} \exp\lef
 <div id="fig-badstart" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
 <p><img src="mcmc_files/figure-html/fig-badstart-1.png" class="img-fluid figure-img" width="672"></p>
-<figcaption class="figure-caption">Figure&nbsp;3.13: Traceplots of three Markov chains for the same target with different initial values for the first 500 iterations (left) and trace rank plot after discarding these (right).</figcaption>
+<p></p><figcaption class="figure-caption">Figure&nbsp;3.13: Traceplots of three Markov chains for the same target with different initial values for the first 500 iterations (left) and trace rank plot after discarding these (right).</figcaption><p></p>
 </figure>
 </div>
 </div>
@@ -963,6 +988,9 @@ f(y; \nu, \lambda) &amp;= \left(\frac{\lambda}{2\pi y^{3}}\right)^{1/2} \exp\lef
 <h3 data-number="3.5.2" class="anchored" data-anchor-id="diagnostics-of-convergence"><span class="header-section-number">3.5.2</span> Diagnostics of convergence</h3>
 <p>Generally, one would run a MCMC algorithm. The first iterations, used during the burn in period to tune proposal variances and allow the chains to converge to the stationary distribution, are discarded. If visual inspection of the chains reveal that some of the chains for one or more parameters are not stationary until some iteration, we will discard all of these in addition.</p>
 <p>The target of inference is functional (i.e., one-dimensional summaries of the chain): we need to have convergence of the latter, but also sufficient effective sample size for our averages to be accurate (at least to two significant digits).</p>
+<div class="cell" data-hash="mcmc_cache/html/unnamed-chunk-24_df73685bc494f540579102b4d80c7531">
+
+</div>
 <p>For the Poisson example, the effective sample size for the <span class="math inline">\(\boldsymbol{\beta}\)</span> for the multilevel model is a bit higher than 1000 with <span class="math inline">\(B=5000\)</span> iterations, whereas we have for the simple naive model is <span class="math inline">\(10^{4}\)</span> for <span class="math inline">\(B=10000\)</span> draws, suggesting superefficient sampling. The dependency between <span class="math inline">\(\boldsymbol{\alpha}\)</span> and <span class="math inline">\(\boldsymbol{\beta}\)</span> is responsible for the drop in accuracy.</p>
 <p>The <code>coda</code> (convergence diagnosis and output analysis) <strong>R</strong> package contains many tests. For example, the Geweke <span class="math inline">\(Z\)</span>-score compares the averages for the beginning and the end of the chain: rejection of the null implies lack of convergence, or poor mixing.</p>
 <!-- The Gelman--Rubin $\widehat{R}$ diagnostic, which is advocated in STAN, is a multi-chain diagnostic that compares the within-chain variability to the between-chain variability. The value should be  -->
@@ -977,7 +1005,7 @@ f(y; \nu, \lambda) &amp;= \left(\frac{\lambda}{2\pi y^{3}}\right)^{1/2} \exp\lef
 <div id="fig-rhat" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
 <p><img src="mcmc_files/figure-html/fig-rhat-1.png" class="img-fluid figure-img" width="672"></p>
-<figcaption class="figure-caption">Figure&nbsp;3.14: Two pairs of Markov chains: the top ones seem stationary, but with different modes. This makes the between chain variance substantial, with a value of <span class="math inline">\(\widehat{R} \approx 3.4\)</span>, whereas the chains on the right hover around the same values of zero, but do not appear stable with <span class="math inline">\(\widehat{R} \approx 1.6\)</span>.</figcaption>
+<p></p><figcaption class="figure-caption">Figure&nbsp;3.14: Two pairs of Markov chains: the top ones seem stationary, but with different modes. This makes the between chain variance substantial, with a value of <span class="math inline">\(\widehat{R} \approx 3.4\)</span>, whereas the chains on the right hover around the same values of zero, but do not appear stable with <span class="math inline">\(\widehat{R} \approx 1.6\)</span>.</figcaption><p></p>
 </figure>
 </div>
 </div>
@@ -994,7 +1022,7 @@ f(y; \nu, \lambda) &amp;= \left(\frac{\lambda}{2\pi y^{3}}\right)^{1/2} \exp\lef
 <div id="fig-posterior-pred-check" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
 <p><img src="mcmc_files/figure-html/fig-posterior-pred-check-1.png" class="img-fluid figure-img" width="672"></p>
-<figcaption class="figure-caption">Figure&nbsp;3.15: Posterior predictive checks for the standard deviation (top) and density of posterior draws (bottom) for hierarchical Poisson model with individual effects (left) and simpler model with only conditions (right).</figcaption>
+<p></p><figcaption class="figure-caption">Figure&nbsp;3.15: Posterior predictive checks for the standard deviation (top) and density of posterior draws (bottom) for hierarchical Poisson model with individual effects (left) and simpler model with only conditions (right).</figcaption><p></p>
 </figure>
 </div>
 </div>
@@ -1008,6 +1036,9 @@ f(y; \nu, \lambda) &amp;= \left(\frac{\lambda}{2\pi y^{3}}\right)^{1/2} \exp\lef
 <p>As in general information criteria, we add a penalization factor that approximates the effective number of parameters in the model, with <span class="math display">\[\begin{align*}
 n\mathsf{WAIC} = -\mathsf{LPPD} + \mathsf{Va}_{\boldsymbol{\theta} \mid \boldsymbol{y}}\{\log p(y_i \mid \boldsymbol{\theta})\}
 \end{align*}\]</span> where we use again the empirical variance to compute the rightmost term. When comparing competing models, we can rely on their values of <span class="math inline">\(\mathsf{WAIC}\)</span> to discriminate about the predictive performance. To compute <span class="math inline">\(\mathsf{WAIC}\)</span>, we need to store the values of the log density of each observation, or at least minimally <a href="https://www.johndcook.com/blog/standard_deviation/">compute the running mean and variance accurately</a> pointwise at storage cost <span class="math inline">\(\mathrm{O}(n)\)</span>. Note that Section 7.2 of <span class="citation" data-cites="Gelman:2013">Gelman et al. (<a href="references.html#ref-Gelman:2013" role="doc-biblioref">2013</a>)</span> define the widely applicable information criterion as <span class="math inline">\(2n \times \mathsf{WAIC}\)</span> to make on par with other information criteria, which are defined typically on the deviance scale and so that lower values correspond to higher predictive performance. For the smartwatch model, we get a value of 3.07 for the complex model and 4.51: this suggests an improvement in using individual-specific effects.</p>
+<div class="cell" data-hash="mcmc_cache/html/unnamed-chunk-27_9f034c56a3814eeb75745fbed4e5d11a">
+
+</div>
 <p>Ideally, one would measure the predictive performance using the leave-one-out predictive distribution for observation <span class="math inline">\(i\)</span> given all the rest, <span class="math inline">\(p(y_i \mid \boldsymbol{y}_{-i})\)</span>, to avoid double dipping — the latter is computationally intractable because it would require running <span class="math inline">\(n\)</span> Markov chains with <span class="math inline">\(n-1\)</span> observations each, but we can get a good approximation using importance sampling. The <code>loo</code> package uses this with generalized Pareto smoothing to avoid overly large weights.</p>
 <p>Once we have the collection of estimated <span class="math inline">\(p(y_i \mid \boldsymbol{y}_{-i})\)</span>, we can assess the probability level of each observation. This gives us a set of values which should be approximately uniform if the model was perfectly calibrated. The probability of seeing an outcome as extreme as <span class="math inline">\(y_i\)</span> can be obtained by simulating draws from the posterior predictive given <span class="math inline">\(\boldsymbol{y}_{-i}\)</span> and computing the scaled rank of the original observation. Values close to zero or one may indicate outliers.</p>
 <div class="cell" data-hash="mcmc_cache/html/fig-loocv-qqplots_5e5ed04eb0bb01aef19947ea722ad32d">
@@ -1015,7 +1046,7 @@ n\mathsf{WAIC} = -\mathsf{LPPD} + \mathsf{Va}_{\boldsymbol{\theta} \mid \boldsym
 <div id="fig-loocv-qqplots" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
 <p><img src="mcmc_files/figure-html/fig-loocv-qqplots-1.png" class="img-fluid figure-img" width="672"></p>
-<figcaption class="figure-caption">Figure&nbsp;3.16: Quantile-quantile plots based on leave-one-out cross validation for model for the Poisson hierarchical model with the individual random effects (left) and without (right).</figcaption>
+<p></p><figcaption class="figure-caption">Figure&nbsp;3.16: Quantile-quantile plots based on leave-one-out cross validation for model for the Poisson hierarchical model with the individual random effects (left) and without (right).</figcaption><p></p>
 </figure>
 </div>
 </div>
@@ -1069,71 +1100,71 @@ A simple model, following @Gelman:2006, is to assume the effect size is Gaussian
 -->
 
 
-<div id="refs" class="references csl-bib-body hanging-indent" role="list" style="display: none">
-<div id="ref-Albert:2009" class="csl-entry" role="listitem">
+<div id="refs" class="references csl-bib-body hanging-indent" role="doc-bibliography" style="display: none">
+<div id="ref-Albert:2009" class="csl-entry" role="doc-biblioentry">
 Albert, Jim. 2009. <em>Bayesian Computation with <span>R</span></em>. 2nd ed. New York: springer. <a href="https://doi.org/10.1007/978-0-387-92298-0">https://doi.org/10.1007/978-0-387-92298-0</a>.
 </div>
-<div id="ref-Andrieu.Thoms:2008" class="csl-entry" role="listitem">
+<div id="ref-Andrieu.Thoms:2008" class="csl-entry" role="doc-biblioentry">
 Andrieu, Christophe, and Johannes Thoms. 2008. <span>“A Tutorial on Adaptive <span>MCMC</span>.”</span> <em>Statistics and Computing</em> 18 (4): 343–73. <a href="https://doi.org/10.1007/s11222-008-9110-y">https://doi.org/10.1007/s11222-008-9110-y</a>.
 </div>
-<div id="ref-LEcuyer.Botev:2017" class="csl-entry" role="listitem">
+<div id="ref-LEcuyer.Botev:2017" class="csl-entry" role="doc-biblioentry">
 Botev, Zdravko, and Pierre L’Écuyer. 2017. <span>“Simulation from the Normal Distribution Truncated to an Interval in the Tail.”</span> In <em>Proceedings of the 10th EAI International Conference on Performance Evaluation Methodologies and Tools on 10th EAI International Conference on Performance Evaluation Methodologies and Tools</em>, 23–29. <a href="https://doi.org/10.4108/eai.25-10-2016.2266879">https://doi.org/10.4108/eai.25-10-2016.2266879</a>.
 </div>
-<div id="ref-Devroye:1986" class="csl-entry" role="listitem">
+<div id="ref-Devroye:1986" class="csl-entry" role="doc-biblioentry">
 Devroye, L. 1986. <em><span>Non-Uniform Random Variate Generation</span></em>. New York: Springer. <a href="http://www.nrbook.com/devroye/">http://www.nrbook.com/devroye/</a>.
 </div>
-<div id="ref-vanDyk.Meng:2001" class="csl-entry" role="listitem">
+<div id="ref-vanDyk.Meng:2001" class="csl-entry" role="doc-biblioentry">
 Dyk, David A van, and Xiao-Li Meng. 2001. <span>“The Art of Data Augmentation.”</span> <em>Journal of Computational and Graphical Statistics</em> 10 (1): 1–50. <a href="https://doi.org/10.1198/10618600152418584">https://doi.org/10.1198/10618600152418584</a>.
 </div>
-<div id="ref-Gabry:2019" class="csl-entry" role="listitem">
+<div id="ref-Gabry:2019" class="csl-entry" role="doc-biblioentry">
 Gabry, Jonah, Daniel Simpson, Aki Vehtari, Michael Betancourt, and Andrew Gelman. 2019. <span>“<span class="nocase">Visualization in <span>B</span>ayesian Workflow</span>.”</span> <em>Journal of the Royal Statistical Society Series A: Statistics in Society</em> 182 (2): 389–402. <a href="https://doi.org/10.1111/rssa.12378">https://doi.org/10.1111/rssa.12378</a>.
 </div>
-<div id="ref-Gelman:2013" class="csl-entry" role="listitem">
+<div id="ref-Gelman:2013" class="csl-entry" role="doc-biblioentry">
 Gelman, Andrew, John B. Carlin, Hal S. Stern, David B. Dunson, Aki Vehtari, and Donald B. Rubin. 2013. <em>Bayesian Data Analysis</em>. 3rd ed. New York: Chapman; Hall/CRC. <a href="https://doi.org/10.1201/b16018">https://doi.org/10.1201/b16018</a>.
 </div>
-<div id="ref-Gelman:2020" class="csl-entry" role="listitem">
+<div id="ref-Gelman:2020" class="csl-entry" role="doc-biblioentry">
 Gelman, Andrew, Aki Vehtari, Daniel Simpson, Charles C Margossian, Bob Carpenter, Yuling Yao, Lauren Kennedy, Jonah Gabry, Paul-Christian Bürkner, and Martin Modrák. 2020. <span>“Bayesian Workflow.”</span> <em>arXiv</em>. https://doi.org/<a href="https://doi.org/10.48550/arXiv.2011.01808">https://doi.org/10.48550/arXiv.2011.01808</a>.
 </div>
-<div id="ref-Geweke:2004" class="csl-entry" role="listitem">
+<div id="ref-Geweke:2004" class="csl-entry" role="doc-biblioentry">
 Geweke, John. 2004. <span>“Getting It Right: Joint Distribution Tests of Posterior Simulators.”</span> <em>Journal of the American Statistical Association</em> 99 (467): 799–804. <a href="https://doi.org/10.1198/016214504000001132">https://doi.org/10.1198/016214504000001132</a>.
 </div>
-<div id="ref-Geyer:2011" class="csl-entry" role="listitem">
+<div id="ref-Geyer:2011" class="csl-entry" role="doc-biblioentry">
 Geyer, Charles J. 2011. <span>“Introduction to <span>M</span>arkov Chain <span>M</span>onte <span>C</span>arlo.”</span> In <em>Handbook of <span>M</span>arkov Chain <span>M</span>onte <span>C</span>arlo</em>, edited by S. Brooks, A. Gelman, G. Jones, and X. L. Meng, 3–48. Boca Raton: CRC Press. <a href="https://doi.org/10.1201/b10905">https://doi.org/10.1201/b10905</a>.
 </div>
-<div id="ref-Green:2001" class="csl-entry" role="listitem">
+<div id="ref-Green:2001" class="csl-entry" role="doc-biblioentry">
 Green, Peter J. 2001. <span>“A Primer on <span>M</span>arkov Chain <span>M</span>onte <span>C</span>arlo.”</span> <em>Monographs on Statistics and Applied Probability</em> 87: 1–62.
 </div>
-<div id="ref-Hastings:1970" class="csl-entry" role="listitem">
+<div id="ref-Hastings:1970" class="csl-entry" role="doc-biblioentry">
 Hastings, W. K. 1970. <span>“<span class="nocase">Monte <span>C</span>arlo sampling methods using <span>M</span>arkov chains and their applications</span>.”</span> <em>Biometrika</em> 57 (1): 97–109. <a href="https://doi.org/10.1093/biomet/57.1.97">https://doi.org/10.1093/biomet/57.1.97</a>.
 </div>
-<div id="ref-Hobert:2011" class="csl-entry" role="listitem">
+<div id="ref-Hobert:2011" class="csl-entry" role="doc-biblioentry">
 Hobert, James P. 2011. <span>“The Data Augmentation Algorithm: Theory and Methodology.”</span> In <em>Handbook of <span>M</span>arkov Chain <span>M</span>onte <span>C</span>arlo</em>, edited by S. Brooks, A. Gelman, G. Jones, and X. L. Meng, 253–94. Boca Raton: CRC Press. <a href="https://doi.org/10.1201/b10905">https://doi.org/10.1201/b10905</a>.
 </div>
-<div id="ref-Kinderman.Monahan:1977" class="csl-entry" role="listitem">
+<div id="ref-Kinderman.Monahan:1977" class="csl-entry" role="doc-biblioentry">
 Kinderman, Albert J, and John F Monahan. 1977. <span>“Computer Generation of Random Variables Using the Ratio of Uniform Deviates.”</span> <em>ACM Transactions on Mathematical Software (TOMS)</em> 3 (3): 257–60.
 </div>
-<div id="ref-Metropolis:1953" class="csl-entry" role="listitem">
+<div id="ref-Metropolis:1953" class="csl-entry" role="doc-biblioentry">
 Metropolis, Nicholas, Arianna W. Rosenbluth, Marshall N. Rosenbluth, Augusta H. Teller, and Edward Teller. 1953. <span>“<span class="nocase">Equation of State Calculations by Fast Computing Machines</span>.”</span> <em>The Journal of Chemical Physics</em> 21 (6): 1087–92. <a href="https://doi.org/10.1063/1.1699114">https://doi.org/10.1063/1.1699114</a>.
 </div>
-<div id="ref-Park.Casella:2008" class="csl-entry" role="listitem">
+<div id="ref-Park.Casella:2008" class="csl-entry" role="doc-biblioentry">
 Park, Trevor, and George Casella. 2008. <span>“The <span>B</span>ayesian <span>L</span>asso.”</span> <em>Journal of the American Statistical Association</em> 103 (482): 681–86. <a href="https://doi.org/10.1198/016214508000000337">https://doi.org/10.1198/016214508000000337</a>.
 </div>
-<div id="ref-Robert.Casella:2004" class="csl-entry" role="listitem">
+<div id="ref-Robert.Casella:2004" class="csl-entry" role="doc-biblioentry">
 Robert, Christian P., and George Casella. 2004. <em>Monte <span>C</span>arlo Statistical Methods</em>. New York, NY: Springer. <a href="https://doi.org/10.1007/978-1-4757-4145-2">https://doi.org/10.1007/978-1-4757-4145-2</a>.
 </div>
-<div id="ref-Roberts.Rosenthal:2001" class="csl-entry" role="listitem">
+<div id="ref-Roberts.Rosenthal:2001" class="csl-entry" role="doc-biblioentry">
 Roberts, Gareth O., and Jeffrey S. Rosenthal. 2001. <span>“Optimal Scaling for Various <span>M</span>etropolis–<span>H</span>astings Algorithms.”</span> <em>Statistical Science</em> 16 (4): 351–67. <a href="https://doi.org/10.1214/ss/1015346320">https://doi.org/10.1214/ss/1015346320</a>.
 </div>
-<div id="ref-Sherlock:2013" class="csl-entry" role="listitem">
+<div id="ref-Sherlock:2013" class="csl-entry" role="doc-biblioentry">
 Sherlock, Chris. 2013. <span>“Optimal Scaling of the Random Walk <span>M</span>etropolis: General Criteria for the 0.234 Acceptance Rule.”</span> <em>Journal of Applied Probability</em> 50 (1): 1–15. <a href="https://doi.org/10.1239/jap/1363784420">https://doi.org/10.1239/jap/1363784420</a>.
 </div>
-<div id="ref-Tanner.Wong:1987" class="csl-entry" role="listitem">
+<div id="ref-Tanner.Wong:1987" class="csl-entry" role="doc-biblioentry">
 Tanner, Martin A., and Wing Hung Wong. 1987. <span>“The Calculation of Posterior Distributions by Data Augmentation.”</span> <em>Journal of the American Statistical Association</em> 82 (398): 528–40. <a href="https://doi.org/10.1080/01621459.1987.10478458">https://doi.org/10.1080/01621459.1987.10478458</a>.
 </div>
-<div id="ref-Wakefield:1991" class="csl-entry" role="listitem">
+<div id="ref-Wakefield:1991" class="csl-entry" role="doc-biblioentry">
 Wakefield, J. C., A. E. Gelfand, and A. F. M. Smith. 1991. <span>“Efficient Generation of Random Variates via the Ratio-of-Uniforms Method.”</span> <em>Statistics and Computing</em> 1 (2): 129–33. <a href="https://doi.org/10.1007/BF01889987">https://doi.org/10.1007/BF01889987</a>.
 </div>
-<div id="ref-Watanabe:2010" class="csl-entry" role="listitem">
+<div id="ref-Watanabe:2010" class="csl-entry" role="doc-biblioentry">
 Watanabe, Sumio. 2010. <span>“Asymptotic Equivalence of <span>B</span>ayes Cross Validation and Widely Applicable Information Criterion in Singular Learning Theory.”</span> <em>Journal of Machine Learning Research</em> 11 (116): 3571–94. <a href="http://jmlr.org/papers/v11/watanabe10a.html">http://jmlr.org/papers/v11/watanabe10a.html</a>.
 </div>
 </div>
@@ -1178,23 +1209,9 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     icon: icon
   };
   anchorJS.add('.anchored');
-  const isCodeAnnotation = (el) => {
-    for (const clz of el.classList) {
-      if (clz.startsWith('code-annotation-')) {                     
-        return true;
-      }
-    }
-    return false;
-  }
   const clipboard = new window.ClipboardJS('.code-copy-button', {
-    text: function(trigger) {
-      const codeEl = trigger.previousElementSibling.cloneNode(true);
-      for (const childEl of codeEl.children) {
-        if (isCodeAnnotation(childEl)) {
-          childEl.remove();
-        }
-      }
-      return codeEl.innerText;
+    target: function(trigger) {
+      return trigger.previousElementSibling;
     }
   });
   clipboard.on('success', function(e) {
@@ -1259,92 +1276,6 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       return note.innerHTML;
     });
   }
-      let selectedAnnoteEl;
-      const selectorForAnnotation = ( cell, annotation) => {
-        let cellAttr = 'data-code-cell="' + cell + '"';
-        let lineAttr = 'data-code-annotation="' +  annotation + '"';
-        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
-        return selector;
-      }
-      const selectCodeLines = (annoteEl) => {
-        const doc = window.document;
-        const targetCell = annoteEl.getAttribute("data-target-cell");
-        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
-        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
-        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
-        const lineIds = lines.map((line) => {
-          return targetCell + "-" + line;
-        })
-        let top = null;
-        let height = null;
-        let parent = null;
-        if (lineIds.length > 0) {
-            //compute the position of the single el (top and bottom and make a div)
-            const el = window.document.getElementById(lineIds[0]);
-            top = el.offsetTop;
-            height = el.offsetHeight;
-            parent = el.parentElement.parentElement;
-          if (lineIds.length > 1) {
-            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
-            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
-            height = bottom - top;
-          }
-          if (top !== null && height !== null && parent !== null) {
-            // cook up a div (if necessary) and position it 
-            let div = window.document.getElementById("code-annotation-line-highlight");
-            if (div === null) {
-              div = window.document.createElement("div");
-              div.setAttribute("id", "code-annotation-line-highlight");
-              div.style.position = 'absolute';
-              parent.appendChild(div);
-            }
-            div.style.top = top - 2 + "px";
-            div.style.height = height + 4 + "px";
-            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
-            if (gutterDiv === null) {
-              gutterDiv = window.document.createElement("div");
-              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
-              gutterDiv.style.position = 'absolute';
-              const codeCell = window.document.getElementById(targetCell);
-              const gutter = codeCell.querySelector('.code-annotation-gutter');
-              gutter.appendChild(gutterDiv);
-            }
-            gutterDiv.style.top = top - 2 + "px";
-            gutterDiv.style.height = height + 4 + "px";
-          }
-          selectedAnnoteEl = annoteEl;
-        }
-      };
-      const unselectCodeLines = () => {
-        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
-        elementsIds.forEach((elId) => {
-          const div = window.document.getElementById(elId);
-          if (div) {
-            div.remove();
-          }
-        });
-        selectedAnnoteEl = undefined;
-      };
-      // Attach click handler to the DT
-      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
-      for (const annoteDlNode of annoteDls) {
-        annoteDlNode.addEventListener('click', (event) => {
-          const clickedEl = event.target;
-          if (clickedEl !== selectedAnnoteEl) {
-            unselectCodeLines();
-            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
-            if (activeEl) {
-              activeEl.classList.remove('code-annotation-active');
-            }
-            selectCodeLines(clickedEl);
-            clickedEl.classList.add('code-annotation-active');
-          } else {
-            // Unselect the line
-            unselectCodeLines();
-            clickedEl.classList.remove('code-annotation-active');
-          }
-        });
-      }
   const findCites = (el) => {
     const parentEl = el.parentElement;
     if (parentEl) {

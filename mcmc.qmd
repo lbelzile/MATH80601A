@@ -367,7 +367,7 @@ The lag-$k$ correlation of the stationary autoregressive process of order 1 is $
 
 ```{r}
 #| label: fig-ar1-variance
-#| fig-cap: "Scaled asymptotic variance of the sample mean for a stationary autoregressive first-order process with unit variance (dashed) and a corresponding sample of independent observations with the same marginal variance (full line). The plot on the right gives the variance ratio for positive correlations."
+#| fig-cap: "Scaled asymptotic variance of the sample mean for a stationary autoregressive first-order process with unit variance (full line) and a corresponding sample of independent observations with the same marginal variance (dashed line). The right panel gives the ratio of variances for positive correlation coefficients."
 #| message: false
 #| warning: false
 #| echo: false
@@ -822,9 +822,9 @@ plus remainder, which suggests a Gaussian approximation with mean $\mu_{t-1} = \
 \begin{align*}
  \alpha = \frac{p(\theta^{\star}_{t})}{p(\theta_{t-1})} \frac{ q(\theta_{t-1} \mid \mu_{t}^{\star}, \tau_{t}^{\star}, a, b)}{q(\theta^{\star}_{t} \mid \mu_{t-1}, \tau_{t-1}, a, b)}
 \end{align*}
-and we set $\theta^{(t+1)} = \theta^{\star}_{t}$ with probability $\min\{1, r\}$ and $\theta^{(t+1)} = \theta_{t-1}$ otherwise. To evaluate the ratio of truncated Gaussian densities $q(\cdot; \mu, \tau, a, b)$, we need to compute the Taylor approximation from the current parameter value, but also the reverse move from the proposal $\theta^{\star}_{t}$. Another option is to modify the move dictated by the rescaled gradient by taking instead $$\mu_{t-1} = \theta_{t-1} - \eta f'(\theta_{t-1})/f''(\theta_{t-1}).$$ The proposal includes an additional tuning parameter, $\eta \leq 1$, whose role is to prevent oscillations of the quadratic approximation, as in a Newton--Raphson algorithm. Relative to a random walk Metropolis--Hastings, the proposal automatically adjusts to the local geometry of the target, which guarantees a higher acceptance rate and lower autocorrelation for the Markov chain despite the higher evaluation costs. The proposal requires that both $f''(\theta_{t-1})$ and $f''(\theta^{\star}_{t})$ be negative since the variance is $-1/f''(\theta)$: this shouldn't be problematic in the vicinity of the mode. Otherwise, one could use a global scaling derived from the hessian at the mode.
+and we set $\theta^{(t+1)} = \theta^{\star}_{t}$ with probability $\min\{1, r\}$ and $\theta^{(t+1)} = \theta_{t-1}$ otherwise. To evaluate the ratio of truncated Gaussian densities $q(\cdot; \mu, \tau, a, b)$, we need to compute the Taylor approximation from the current parameter value, but also the reverse move from the proposal $\theta^{\star}_{t}$. Another option is to modify the move dictated by the rescaled gradient by taking instead $$\mu_{t-1} = \theta_{t-1} - \eta f'(\theta_{t-1})/f''(\theta_{t-1}).$$ The proposal includes an additional learning rate parameter, $\eta \leq 1$, whose role is to prevent oscillations of the quadratic approximation, as in a Newton--Raphson algorithm. Relative to a random walk Metropolis--Hastings, the proposal automatically adjusts to the local geometry of the target, which guarantees a higher acceptance rate and lower autocorrelation for the Markov chain despite the higher evaluation costs. The proposal requires that both $f''(\theta_{t-1})$ and $f''(\theta^{\star}_{t})$ be negative since the variance is $-1/f''(\theta)$: this shouldn't be problematic in the vicinity of the mode. Otherwise, one could use a global scaling derived from the hessian at the mode.
 
-The simpler Metropolis-adjusted Langevin algorithm is equivalent to using a Gaussian random walk where the proposal has mean $\boldsymbol{\theta}_{t-1} + \mathbf{A}\eta \nabla \ell(\boldsymbol{\theta}_{t-1})$ and variance $\tau^2\mathbf{A}$, for some mass matrix $\mathbf{A}$ and a damping factor $\eta$. Taking $\mathbf{A}$ as the identity matrix, which assumes the parameters are isotropic (same variance, uncorrelated) is the default choice although seldom far from optimal.
+The simpler Metropolis-adjusted Langevin algorithm is equivalent to using a Gaussian random walk where the proposal has mean $\boldsymbol{\theta}_{t-1} + \mathbf{A}\eta \nabla \log p(\boldsymbol{\theta}_{t-1}; \boldsymbol{y})$ and variance $\tau^2\mathbf{A}$, for some mass matrix $\mathbf{A}$ and learning rate $\eta < 1$. Taking $\mathbf{A}$ as the identity matrix, which assumes the parameters are isotropic (same variance, uncorrelated) is the default choice although seldom far from optimal.
 
 
 For MALA to work well, we need both to start near stationarity, to ensure that the gradient is relatively small and to prevent oscillations. One can dampen the size of the step initially if needed to avoid overshooting. The proposal variance, the other tuning parameter, is critical to the success of the algorithm. The usual target for the variance is one that gives an acceptance rate of roughly 0.574. These more efficient methods require additional calculations of the gradient and Hessian, either numerically or analytically. Depending on the situation and the computational costs of such calculations, the additional overhead may not be worth it.
@@ -922,10 +922,10 @@ cholA <- chol(Amat)
 # Create containers for MCMC
 B <- 1e4L # number of iterations
 warmup <- 1e3L # adaptation period
-prop_sd <- rep(1, 2)
-npar <- 2L
+npar <- 2L # number of parameters
+prop_sd <- rep(1, npar) #updating both parameters jointly
 chains <- matrix(nrow = B, ncol = npar)
-damping <- 0.8
+damping <- 0.8 # learning rate
 acceptance <- attempts <- 0 
 colnames(chains) <- names(curr) <- c("mu","sigma")
 prop_var <- diag(prop_sd) %*% Amat %*% diag(prop_sd)
@@ -1170,7 +1170,7 @@ The main bottleneck in Gibbs sampling is determining all of the relevant conditi
 
 :::{#exm-gaussian-gamma}
 
-Consider a Gaussian model $Y_i \sim \mathsf{Norm}(\mu, \tau)$ ($i=1, \ldots, n$) are independent, and where we assign priors $\mu \sim \mathsf{Norm}(\nu, \omega)$ and $\sigma \sim \mathsf{InvGamma}(\alpha, \beta)$.
+Consider a Gaussian model $Y_i \sim \mathsf{Norm}(\mu, \tau)$ ($i=1, \ldots, n$) are independent, and where we assign priors $\mu \sim \mathsf{Norm}(\nu, \omega)$ and $\tau \sim \mathsf{InvGamma}(\alpha, \beta)$.
 
 The joint posterior is not available in closed form, but the independent priors for the mean and variance of the observations are conditionally conjugate, since the joint posterior
 \begin{align*}
@@ -1183,7 +1183,7 @@ p(\tau \mid \mu, \boldsymbol{y}) & \propto \tau^{-n/2-\alpha-1}\exp\left[-\left\
 \end{align*}
 so we can simulate in turn 
 \begin{align*}
-\mu_t \mid \tau_{t-1}, \boldsymbol{y} &\sim \mathsf{Norm}\left(\frac{n\overline{y}\omega+\tau \nu}{\omega\tau}, \frac{\omega \tau}{\tau + \omega/n}\right)\\
+\mu_t \mid \tau_{t-1}, \boldsymbol{y} &\sim \mathsf{Norm}\left(\frac{n\overline{y}\omega+\tau \nu}{\tau + n\omega}, \frac{\omega \tau}{\tau + n\omega}\right)\\
 \tau_t \mid \mu_t, \boldsymbol{y} &\sim \mathsf{InvGamma}\left\{\frac{n}{2}+\alpha, \frac{\sum_{i=1}^n (y_i-\mu)^2}{2} + \beta\right\}.
 \end{align*}
 
@@ -1250,12 +1250,11 @@ p(\boldsymbol{z}, \boldsymbol{y} \mid \boldsymbol{\beta}) \propto \exp\left\{-\f
 \end{align*}
 Given $Z_i$, the coefficients $\boldsymbol{\beta}$ are simply the results of ordinary linear regression with unit variance, so 
 \begin{align*}
-\boldsymbol{\beta} \mid \boldsymbol{z}, \boldsymbol{y} &\sim \mathsf{Norm}\{\widehat{\boldsymbol{\beta}}, (\mathbf{X}^\top\mathbf{X})^{-1}\}
+\boldsymbol{\beta} \mid \boldsymbol{z}, \boldsymbol{y} &\sim \mathsf{Norm}\left\{\widehat{\boldsymbol{\beta}}, (\mathbf{X}^\top\mathbf{X})^{-1}\right\}
 \end{align*}
-with $\widehat{\boldsymbol{\beta}}=(\mathbf{X}^\top\mathbf{X})^{-1}\mathbf{X}^\top\boldsymbol{z}$ the ordinary least square coefficients from the regression with $\boldsymbol{z}$'s
-whereas the values of $Z_i$, conditionally independent, are truncated Gaussian with
+with $\widehat{\boldsymbol{\beta}}=(\mathbf{X}^\top\mathbf{X})^{-1}\mathbf{X}^\top\boldsymbol{z}$ is the ordinary least square estimator from the regression with model matrix $\mathbf{X}$ and response vector $\boldsymbol{z}$. The augmented variables $Z_i$ are conditionally independent and truncated Gaussian with
 \begin{align*}
-Z_i \mid Y_i=y_i, \boldsymbol{\beta} \sim \begin{cases}
+Z_i \mid y_i, \boldsymbol{\beta} \sim \begin{cases}
 \mathsf{TruncNorm}(\mathbf{x}_i\boldsymbol{\beta}, -\infty, 0) & y_i =0 \\
 \mathsf{TruncNorm}(\mathbf{x}_i\boldsymbol{\beta}, 0, \infty) & y_i =1.
 \end{cases}
@@ -1274,7 +1273,7 @@ The Laplace distribution with mean $\mu$ and scale $\sigma$, which has density
 \begin{align*}
 f(x; \mu, \sigma) = \frac{1}{2\sigma}\exp\left(-\frac{|x-\mu|}{\sigma}\right),
 \end{align*}
-can be expressed as a scale mixture of Gaussians, where $Y \sim \mathsf{La}(\mu, \sigma)$ is equivalent to $Z \mid W=w \sim \mathsf{Norm}(\mu, \tau)$ and $\tau \sim \mathsf{Exp}\{(2\sigma)^{-1}\}$.
+can be expressed as a scale mixture of Gaussians, where $Y \sim \mathsf{La}(\mu, \sigma)$ is equivalent to $Z \mid \tau \sim \mathsf{Norm}(\mu, \tau)$ and $\tau \sim \mathsf{Exp}\{(2\sigma)^{-1}\}$.
 With the improper prior $p(\mu, \sigma) \propto \sigma^{-1}$ and with $n$ independent and identically distributed Laplace variates, the joint posterior can be written
 \begin{align*}
 p(\boldsymbol{\tau}, \mu, \sigma \mid \boldsymbol{y}) &\propto \left(\prod_{i=1}^n \tau_i\right)^{-1/2}\exp\left\{-\frac{1}{2}\sum_{i=1}^n \frac{(y_i-\mu)^2}{\tau_i}\right\} \\&\quad \times \frac{1}{\sigma^{n+1}}\exp\left(-\frac{1}{2\sigma}\sum_{i=1}^n \tau_i\right)
@@ -1296,7 +1295,7 @@ for location $\nu >0$ and shape $\lambda>0$, where $\xi_i \sim \mathsf{Wald}(\nu
 
 @Park.Casella:2008 use this hierarchical construction to defined the Bayesian LASSO. With a model matrix $\mathbf{X}$ whose columns are standardized to have mean zero and unit standard deviation, we may write
 \begin{align*}
-\boldsymbol{Y} \mid \mu, \boldsymbol{\beta}, \sigma^2 &\sim  \mathsf{Norm}_n(\nu \boldsymbol{1}_n + \mathbf{X}\boldsymbol{\beta}, \sigma \mathbf{I}_n)\\
+\boldsymbol{Y} \mid \mu, \boldsymbol{\beta}, \sigma^2 &\sim  \mathsf{Norm}_n(\mu \boldsymbol{1}_n + \mathbf{X}\boldsymbol{\beta}, \sigma \mathbf{I}_n)\\
 \beta_j \mid \sigma, \tau &\sim \mathsf{Norm}(0, \sigma\tau)\\
 \tau &\sim \mathsf{Exp}(\lambda/2)
 \end{align*}

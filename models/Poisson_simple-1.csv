@@ -2,7 +2,7 @@
 # stan_version_minor = 33
 # stan_version_patch = 0
 # model = model_4ba3117b2609_model
-# start_datetime = 2023-10-17 01:10:47 UTC
+# start_datetime = 2023-10-19 17:37:48 UTC
 # method = sample (Default)
 #   sample
 #     num_samples = 10000
@@ -30,7 +30,7 @@
 #     num_chains = 1 (Default)
 # id = 1 (Default)
 # data
-#   file = /tmp/Rtmpcfke37/standata-4ced563dd2a8.json
+#   file = /tmp/Rtmp11M5CC/standata-3345382f059f.json
 # init = 2 (Default)
 # random
 #   seed = 888953425
@@ -10049,7 +10049,7 @@ lp__,accept_stat__,stepsize__,treedepth__,n_leapfrog__,divergent__,energy__,beta
 1275.67,1,0.812632,2,3,0,-1274.84,1.96441,1.87095,1.91256,2.63098
 1274.92,0.951459,0.812632,2,3,0,-1274.81,2.01309,1.86004,1.90164,2.63237
 # 
-#  Elapsed Time: 0.045 seconds (Warm-up)
-#                0.814 seconds (Sampling)
-#                0.859 seconds (Total)
+#  Elapsed Time: 0.022 seconds (Warm-up)
+#                0.369 seconds (Sampling)
+#                0.391 seconds (Total)
 # 
