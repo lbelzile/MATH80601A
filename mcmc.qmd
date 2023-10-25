@@ -1630,13 +1630,13 @@ waic2 <- round(-mean(apply(loglik_pt2, 2, mean)) +
 The widely applicable information criterion [@Watanabe:2010] is a measure of predictive performance that approximates the cross-validation loss. 
 Consider first the log pointwise predictive density, defined as the expected value over the posterior distribution $p(\boldsymbol{\theta} \mid \boldsymbol{y})$, 
 \begin{align*}
-\mathsf{LPPD} = \mathsf{E}_{\boldsymbol{\theta} \mid \boldsymbol{y}} \left\{ \log p(y_i \mid \boldsymbol{\theta})\right\}.
+\mathsf{LPPD}_i = \mathsf{E}_{\boldsymbol{\theta} \mid \boldsymbol{y}} \left\{ \log p(y_i \mid \boldsymbol{\theta})\right\}.
 \end{align*}
-We can approximate this quantity pointwise by averaging the log posterior density of each sample observation over the posterior samples via Monte Carlo. The higher the value of the predictive density $\mathsf{LPPD}$, the better the fit. 
+The higher the value of the predictive density $\mathsf{LPPD}_i$, the better the fit for that observation. 
 
-As in general information criteria, we add a penalization factor that approximates the effective number of parameters in the model, with
+As in general information criteria, we sum over all observations, adding a penalization factor that approximates the effective number of parameters in the model, with
 \begin{align*}
-n\mathsf{WAIC} = -\mathsf{LPPD} + \mathsf{Va}_{\boldsymbol{\theta} \mid \boldsymbol{y}}\{\log p(y_i \mid \boldsymbol{\theta})\}
+n\mathsf{WAIC} = -\sum_{i=1}^n \mathsf{LPPD}_i + \sum_{i=1}^n \mathsf{Va}_{\boldsymbol{\theta} \mid \boldsymbol{y}}\{\log p(y_i \mid \boldsymbol{\theta})\}
 \end{align*} 
 where we use again the empirical variance to compute the rightmost term. When comparing competing models, we can rely on their values of $\mathsf{WAIC}$ to discriminate about the predictive performance. To compute $\mathsf{WAIC}$, we need to store the values of the log density of each observation, or at least minimally [compute the running mean and variance accurately](https://www.johndcook.com/blog/standard_deviation/) pointwise at storage cost $\mathrm{O}(n)$. Note that Section 7.2 of @Gelman:2013 define the widely applicable information criterion as $2n \times \mathsf{WAIC}$  to make on par with other information criteria, which are defined typically on the deviance scale and so that lower values correspond to higher predictive performance. For the smartwatch model, we get a value of `r round(waic1,2)` for the complex model and `r round(waic2,2)`: this suggests an improvement in using individual-specific effects.
 
