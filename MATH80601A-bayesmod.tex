@@ -294,12 +294,12 @@
 \floatname{codelisting}{Listing}
 \newcommand*\listoflistings{\listof{codelisting}{List of Listings}}
 \usepackage{amsthm}
-\theoremstyle{plain}
-\newtheorem{proposition}{Proposition}[chapter]
 \theoremstyle{definition}
 \newtheorem{example}{Example}[chapter]
 \theoremstyle{definition}
 \newtheorem{definition}{Definition}[chapter]
+\theoremstyle{plain}
+\newtheorem{proposition}{Proposition}[chapter]
 \theoremstyle{remark}
 \AtBeginDocument{\renewcommand*{\proofname}{Proof}}
 \newtheorem*{remark}{Remark}
@@ -338,7 +338,7 @@
 \begin{document}
 \frontmatter
 \maketitle
-\ifdefined\Shaded\renewenvironment{Shaded}{\begin{tcolorbox}[sharp corners, borderline west={3pt}{0pt}{shadecolor}, frame hidden, enhanced, boxrule=0pt, breakable, interior hidden]}{\end{tcolorbox}}\fi
+\ifdefined\Shaded\renewenvironment{Shaded}{\begin{tcolorbox}[borderline west={3pt}{0pt}{shadecolor}, interior hidden, sharp corners, frame hidden, enhanced, breakable, boxrule=0pt]}{\end{tcolorbox}}\fi
 
 \renewcommand*\contentsname{Table of contents}
 {
@@ -360,7 +360,7 @@ a graduate course offered at HEC Montréal.
 These notes are licensed under a
 \href{http://creativecommons.org/licenses/by-nc-sa/4.0/}{Creative
 Commons Attribution-NonCommercial-ShareAlike 4.0 International License}
-and were last compiled on Wednesday, October 25 2023.
+and were last compiled on Sunday, October 29 2023.
 
 The objective of the course is to provide a hands on introduction to
 Bayesian data analysis. The course will cover the formulation,
@@ -557,7 +557,7 @@ avoided, unless there are compelling reasons for restricting the domain.
 
 \begin{figure}[ht!]
 
-{\centering \includegraphics[width=0.85\textwidth,height=\textheight]{introduction_files/figure-pdf/fig-betabinom-1.pdf}
+{\centering \includegraphics{introduction_files/figure-pdf/fig-betabinom-1.pdf}
 
 }
 
@@ -606,7 +606,7 @@ Figure~\ref{fig-binom-massvslik}
 
 \begin{figure}[ht!]
 
-{\centering \includegraphics[width=0.85\textwidth,height=\textheight]{introduction_files/figure-pdf/fig-binom-massvslik-1.pdf}
+{\centering \includegraphics{introduction_files/figure-pdf/fig-binom-massvslik-1.pdf}
 
 }
 
@@ -647,7 +647,7 @@ posterior mode moves towards the true value of the parameter (here 0.3).
 
 \begin{figure}[ht!]
 
-{\centering \includegraphics[width=0.85\textwidth,height=\textheight]{introduction_files/figure-pdf/fig-sequential-1.pdf}
+{\centering \includegraphics{introduction_files/figure-pdf/fig-sequential-1.pdf}
 
 }
 
@@ -686,15 +686,34 @@ and this can lead to arithmetic underflow.
 \FunctionTok{integrate}\NormalTok{(}\AttributeTok{f =}\NormalTok{ unnormalized\_posterior,}
           \AttributeTok{lower =} \DecValTok{0}\NormalTok{,}
           \AttributeTok{upper =} \DecValTok{1}\NormalTok{)}
-\CommentTok{\#\textgreater{} 0.0000107 with absolute error \textless{} 1e{-}12}
-\CommentTok{\# Compare with known constant}
-\FunctionTok{beta}\NormalTok{(y }\SpecialCharTok{+}\NormalTok{ alpha, n }\SpecialCharTok{{-}}\NormalTok{ y }\SpecialCharTok{+}\NormalTok{ beta)}
-\CommentTok{\#\textgreater{} [1] 0.0000107}
-\CommentTok{\# Monte Carlo integration}
-\FunctionTok{mean}\NormalTok{(}\FunctionTok{unnormalized\_posterior}\NormalTok{(}\FunctionTok{runif}\NormalTok{(}\FloatTok{1e5}\NormalTok{)))}
-\CommentTok{\#\textgreater{} [1] 0.0000106}
 \end{Highlighting}
 \end{Shaded}
+
+\begin{verbatim}
+1.066906e-05 with absolute error < 1e-12
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Compare with known constant}
+\FunctionTok{beta}\NormalTok{(y }\SpecialCharTok{+}\NormalTok{ alpha, n }\SpecialCharTok{{-}}\NormalTok{ y }\SpecialCharTok{+}\NormalTok{ beta)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+[1] 1.066906e-05
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Monte Carlo integration}
+\FunctionTok{mean}\NormalTok{(}\FunctionTok{unnormalized\_posterior}\NormalTok{(}\FunctionTok{runif}\NormalTok{(}\FloatTok{1e5}\NormalTok{)))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+[1] 1.064067e-05
+\end{verbatim}
 
 \end{example}
 
@@ -744,7 +763,7 @@ binomial mass function evaluated at the maximum likelihood estimator
 
 \begin{figure}[ht!]
 
-{\centering \includegraphics[width=0.85\textwidth,height=\textheight]{introduction_files/figure-pdf/fig-betabinompostpred-1.pdf}
+{\centering \includegraphics{introduction_files/figure-pdf/fig-betabinompostpred-1.pdf}
 
 }
 
@@ -872,7 +891,7 @@ draws.
 
 \begin{figure}[ht!]
 
-{\centering \includegraphics[width=0.85\textwidth,height=\textheight]{introduction_files/figure-pdf/fig-central-moments-1.pdf}
+{\centering \includegraphics{introduction_files/figure-pdf/fig-central-moments-1.pdf}
 
 }
 
@@ -922,7 +941,7 @@ is adequate for all but the three largest observations, which are
 
 \begin{figure}[ht!]
 
-{\centering \includegraphics[width=0.85\textwidth,height=\textheight]{introduction_files/figure-pdf/fig-danish-1.pdf}
+{\centering \includegraphics{introduction_files/figure-pdf/fig-danish-1.pdf}
 
 }
 
@@ -1013,7 +1032,7 @@ Figure~\ref{fig-lossfn}, is to the left of the posterior mean for
 
 \begin{figure}[ht!]
 
-{\centering \includegraphics[width=0.85\textwidth,height=\textheight]{introduction_files/figure-pdf/fig-lossfn-1.pdf}
+{\centering \includegraphics{introduction_files/figure-pdf/fig-lossfn-1.pdf}
 
 }
 
@@ -1054,7 +1073,7 @@ overlap between the two intervals.
 
 \begin{figure}[ht!]
 
-{\centering \includegraphics[width=0.85\textwidth,height=\textheight]{introduction_files/figure-pdf/fig-credible-intervals-1.pdf}
+{\centering \includegraphics{introduction_files/figure-pdf/fig-credible-intervals-1.pdf}
 
 }
 
@@ -1157,7 +1176,7 @@ relationships.\footnote{One can object to the prior parameters depending
 
 \begin{figure}[ht!]
 
-{\centering \includegraphics[width=0.85\textwidth,height=\textheight]{priors_files/figure-pdf/fig-bixi-1.pdf}
+{\centering \includegraphics{priors_files/figure-pdf/fig-bixi-1.pdf}
 
 }
 
@@ -1383,7 +1402,7 @@ H4 & 3083 & 9\\
 
 \begin{figure}[ht!]
 
-{\centering \includegraphics[width=0.85\textwidth,height=\textheight]{priors_files/figure-pdf/fig-upworthy-1.pdf}
+{\centering \includegraphics{priors_files/figure-pdf/fig-upworthy-1.pdf}
 
 }
 
@@ -1438,10 +1457,13 @@ offset term and a binary variable.
   \AttributeTok{family =} \FunctionTok{poisson}\NormalTok{(}\AttributeTok{link =} \StringTok{"log"}\NormalTok{),}
   \AttributeTok{data =}\NormalTok{ upworthy\_question)}
 \FunctionTok{coef}\NormalTok{(poismod)}
-\CommentTok{\#\textgreater{} (Intercept)  questionno }
-\CommentTok{\#\textgreater{}     {-}4.5126      0.0707}
 \end{Highlighting}
 \end{Shaded}
+
+\begin{verbatim}
+(Intercept)  questionno 
+-4.51264669  0.07069677 
+\end{verbatim}
 
 The coefficients represent the difference in log rate (multiplicative
 effect) relative to the baseline rate, with an increase of 6.3 percent
@@ -1478,7 +1500,7 @@ interpretable portrait that is in line with the frequentist analysis.
 
 \begin{figure}[ht!]
 
-{\centering \includegraphics[width=0.85\textwidth,height=\textheight]{priors_files/figure-pdf/fig-hist-difference_rates-1.pdf}
+{\centering \includegraphics{priors_files/figure-pdf/fig-hist-difference_rates-1.pdf}
 
 }
 
@@ -1751,7 +1773,7 @@ the tail.
 
 \begin{figure}[ht!]
 
-{\centering \includegraphics[width=0.85\textwidth,height=\textheight]{priors_files/figure-pdf/fig-gev-colestawn-quant-prior-1.pdf}
+{\centering \includegraphics{priors_files/figure-pdf/fig-gev-colestawn-quant-prior-1.pdf}
 
 }
 
@@ -1942,7 +1964,7 @@ hard to draw conclusions).
 
 \begin{figure}[ht!]
 
-{\centering \includegraphics[width=0.85\textwidth,height=\textheight]{priors_files/figure-pdf/fig-post-dist-poisson-mixed-1.pdf}
+{\centering \includegraphics{priors_files/figure-pdf/fig-post-dist-poisson-mixed-1.pdf}
 
 }
 
@@ -1987,7 +2009,7 @@ groups.
 
 \begin{figure}[ht!]
 
-{\centering \includegraphics[width=0.85\textwidth,height=\textheight]{priors_files/figure-pdf/fig-sensitivity-1.pdf}
+{\centering \includegraphics{priors_files/figure-pdf/fig-sensitivity-1.pdf}
 
 }
 
@@ -2071,7 +2093,7 @@ testimonial of this.
 
 \begin{figure}[ht!]
 
-{\centering \includegraphics[width=0.85\textwidth,height=\textheight]{mcmc_files/figure-pdf/fig-monte-carlo-path-1.pdf}
+{\centering \includegraphics{mcmc_files/figure-pdf/fig-monte-carlo-path-1.pdf}
 
 }
 
@@ -2126,7 +2148,7 @@ proposal with density \(q(\cdot)\) with nested support,
 
 \begin{figure}[ht!]
 
-{\centering \includegraphics[width=0.85\textwidth,height=\textheight]{mcmc_files/figure-pdf/fig-acceptreject-1.pdf}
+{\centering \includegraphics{mcmc_files/figure-pdf/fig-acceptreject-1.pdf}
 
 }
 
@@ -2178,12 +2200,23 @@ points from the Gaussian and accept any that falls within the bounds.
 \NormalTok{trunc\_samp }\OtherTok{\textless{}{-}}\NormalTok{ candidate[candidate }\SpecialCharTok{\textgreater{}=} \DecValTok{0} \SpecialCharTok{\&}\NormalTok{ candidate }\SpecialCharTok{\textless{}=} \DecValTok{1}\NormalTok{]}
 \CommentTok{\# Acceptance rate}
 \FunctionTok{length}\NormalTok{(trunc\_samp)}\SpecialCharTok{/}\FloatTok{1e5}
-\CommentTok{\#\textgreater{} [1] 0.342}
-\CommentTok{\# Theoretical acceptance rate}
-\FunctionTok{pnorm}\NormalTok{(}\DecValTok{1}\NormalTok{)}\SpecialCharTok{{-}}\FunctionTok{pnorm}\NormalTok{(}\DecValTok{0}\NormalTok{)}
-\CommentTok{\#\textgreater{} [1] 0.341}
 \end{Highlighting}
 \end{Shaded}
+
+\begin{verbatim}
+[1] 0.34242
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Theoretical acceptance rate}
+\FunctionTok{pnorm}\NormalTok{(}\DecValTok{1}\NormalTok{)}\SpecialCharTok{{-}}\FunctionTok{pnorm}\NormalTok{(}\DecValTok{0}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+[1] 0.3413447
+\end{verbatim}
 
 We can of course do better: if we consider a random variable with
 distribution function \(F,\) but truncated over the interval \([a,b],\)
@@ -2327,7 +2360,7 @@ variance.
 
 \begin{figure}[ht!]
 
-{\centering \includegraphics[width=0.85\textwidth,height=\textheight]{mcmc_files/figure-pdf/fig-danish-rou-1.pdf}
+{\centering \includegraphics{mcmc_files/figure-pdf/fig-danish-rou-1.pdf}
 
 }
 
@@ -2458,7 +2491,7 @@ variability of our mean estimators.
 
 \begin{figure}[ht!]
 
-{\centering \includegraphics[width=0.85\textwidth,height=\textheight]{mcmc_files/figure-pdf/fig-ar1-variance-1.pdf}
+{\centering \includegraphics{mcmc_files/figure-pdf/fig-ar1-variance-1.pdf}
 
 }
 
@@ -2525,7 +2558,7 @@ the smaller blocks.
 
 \begin{figure}[ht!]
 
-{\centering \includegraphics[width=0.85\textwidth,height=\textheight]{mcmc_files/figure-pdf/fig-mcmc-batchmean-1.pdf}
+{\centering \includegraphics{mcmc_files/figure-pdf/fig-mcmc-batchmean-1.pdf}
 
 }
 
@@ -2604,7 +2637,7 @@ we expect these to converge to it.
 
 \begin{figure}[ht!]
 
-{\centering \includegraphics[width=0.85\textwidth,height=\textheight]{mcmc_files/figure-pdf/fig-discrete-markov-chain-1.pdf}
+{\centering \includegraphics{mcmc_files/figure-pdf/fig-discrete-markov-chain-1.pdf}
 
 }
 
@@ -2813,36 +2846,47 @@ in turn or jointly.
 \NormalTok{\}}
 \CommentTok{\# Posterior summaries}
 \FunctionTok{summary}\NormalTok{(coda}\SpecialCharTok{::}\FunctionTok{as.mcmc}\NormalTok{(chain))}
-\CommentTok{\#\textgreater{} }
-\CommentTok{\#\textgreater{} Iterations = 1:10000}
-\CommentTok{\#\textgreater{} Thinning interval = 1 }
-\CommentTok{\#\textgreater{} Number of chains = 1 }
-\CommentTok{\#\textgreater{} Sample size per chain = 10000 }
-\CommentTok{\#\textgreater{} }
-\CommentTok{\#\textgreater{} 1. Empirical mean and standard deviation for each variable,}
-\CommentTok{\#\textgreater{}    plus standard error of the mean:}
-\CommentTok{\#\textgreater{} }
-\CommentTok{\#\textgreater{}          Mean      SD  Naive SE Time{-}series SE}
-\CommentTok{\#\textgreater{} beta  {-}4.5127 0.00170 0.0000170      0.0000618}
-\CommentTok{\#\textgreater{} kappa  0.0708 0.00203 0.0000203      0.0000974}
-\CommentTok{\#\textgreater{} }
-\CommentTok{\#\textgreater{} 2. Quantiles for each variable:}
-\CommentTok{\#\textgreater{} }
-\CommentTok{\#\textgreater{}          2.5\%     25\%     50\%     75\%   97.5\%}
-\CommentTok{\#\textgreater{} beta  {-}4.5159 {-}4.5138 {-}4.5127 {-}4.5115 {-}4.5093}
-\CommentTok{\#\textgreater{} kappa  0.0667  0.0693  0.0708  0.0721  0.0746}
-\CommentTok{\# Computing standard errors using batch means}
-\FunctionTok{sqrt}\NormalTok{(}\FunctionTok{diag}\NormalTok{(mcmc}\SpecialCharTok{::}\FunctionTok{olbm}\NormalTok{(chain, }\AttributeTok{batch.length =}\NormalTok{ niter}\SpecialCharTok{/}\DecValTok{40}\NormalTok{)))}
-\CommentTok{\#\textgreater{} [1] 0.0000572 0.0000822}
 \end{Highlighting}
 \end{Shaded}
+
+\begin{verbatim}
+
+Iterations = 1:10000
+Thinning interval = 1 
+Number of chains = 1 
+Sample size per chain = 10000 
+
+1. Empirical mean and standard deviation for each variable,
+   plus standard error of the mean:
+
+          Mean       SD  Naive SE Time-series SE
+beta  -4.51268 0.001697 1.697e-05      6.176e-05
+kappa  0.07075 0.002033 2.033e-05      9.741e-05
+
+2. Quantiles for each variable:
+
+          2.5%      25%      50%      75%    97.5%
+beta  -4.51591 -4.51385 -4.51273 -4.51154 -4.50929
+kappa  0.06673  0.06933  0.07077  0.07212  0.07463
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Computing standard errors using batch means}
+\FunctionTok{sqrt}\NormalTok{(}\FunctionTok{diag}\NormalTok{(mcmc}\SpecialCharTok{::}\FunctionTok{olbm}\NormalTok{(chain, }\AttributeTok{batch.length =}\NormalTok{ niter}\SpecialCharTok{/}\DecValTok{40}\NormalTok{)))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+[1] 5.717097e-05 8.220816e-05
+\end{verbatim}
 
 The acceptance rate of the algorithm is 35.1\% and the posterior means
 are \(\beta =-4.51\) and \(\kappa =0.07\).
 
 \begin{figure}[ht!]
 
-{\centering \includegraphics[width=0.85\textwidth,height=\textheight]{mcmc_files/figure-pdf/fig-traceplot-1.pdf}
+{\centering \includegraphics{mcmc_files/figure-pdf/fig-traceplot-1.pdf}
 
 }
 
@@ -2869,7 +2913,7 @@ excellent.
 
 \begin{figure}[ht!]
 
-{\centering \includegraphics[width=0.85\textwidth,height=\textheight]{mcmc_files/figure-pdf/fig-scatterplot-upworthy-question-1.pdf}
+{\centering \includegraphics{mcmc_files/figure-pdf/fig-scatterplot-upworthy-question-1.pdf}
 
 }
 
@@ -2895,7 +2939,7 @@ Figure~\ref{fig-goldilock-trace}.
 
 \begin{figure}[ht!]
 
-{\centering \includegraphics[width=0.85\textwidth,height=\textheight]{mcmc_files/figure-pdf/fig-goldilock-trace-1.pdf}
+{\centering \includegraphics{mcmc_files/figure-pdf/fig-goldilock-trace-1.pdf}
 
 }
 
@@ -2942,7 +2986,7 @@ and usually points towards inefficient sampling algorithms.
 
 \begin{figure}[ht!]
 
-{\centering \includegraphics[width=0.85\textwidth,height=\textheight]{mcmc_files/figure-pdf/fig-goldilock-correlogram-1.pdf}
+{\centering \includegraphics{mcmc_files/figure-pdf/fig-goldilock-correlogram-1.pdf}
 
 }
 
@@ -3171,7 +3215,15 @@ penalized complexity prior for \(\sigma \sim \mathsf{Exp}(0.7)\).
 \NormalTok{curr }\OtherTok{\textless{}{-}}\NormalTok{ map}\SpecialCharTok{$}\NormalTok{par }
 \CommentTok{\# Check convergence }
 \FunctionTok{logpost\_grad}\NormalTok{(curr, }\AttributeTok{data =}\NormalTok{ qdata)}
-\CommentTok{\#\textgreater{} [1] 0.0076507 0.0000558}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+[1] 7.650733e-03 5.575424e-05
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
 \CommentTok{\# Compute a mass matrix}
 \NormalTok{Amat }\OtherTok{\textless{}{-}} \FunctionTok{solve}\NormalTok{(map}\SpecialCharTok{$}\NormalTok{hessian)}
 \CommentTok{\# Cholesky root {-} for random number generation}
@@ -3288,7 +3340,7 @@ algorithm for a bivariate target.
 
 \begin{figure}[ht!]
 
-{\centering \includegraphics[width=0.85\textwidth,height=\textheight]{mcmc_files/figure-pdf/fig-Gibbs-steps-1.pdf}
+{\centering \includegraphics{mcmc_files/figure-pdf/fig-Gibbs-steps-1.pdf}
 
 }
 
@@ -3355,7 +3407,7 @@ is strong correlation, resulting in an inefficient sampler.
 
 \begin{figure}[ht!]
 
-{\centering \includegraphics[width=0.85\textwidth,height=\textheight]{mcmc_files/figure-pdf/fig-gibbs-normal-1.pdf}
+{\centering \includegraphics{mcmc_files/figure-pdf/fig-gibbs-normal-1.pdf}
 
 }
 
@@ -3476,8 +3528,8 @@ of \(n\) independent observations is
 \[L(\boldsymbol{\beta}; \boldsymbol{y}) = \prod_{i=1}^n p_i^{y_i}(1-p_i)^{1-y_i},\]
 and this prevents easy simulation. We can consider a data augmentation
 scheme where \(Y_i = \mathsf{I}(Z_i > 0)\), where
-\(Z_i \sim \mathsf{Norm}(\mathbf{x}_i\boldsymbol{\beta}, 1)\), where
-\(\mathbf{x}_i\) is the \(i\)th row of the design matrix.
+\(Z_i \sim \mathsf{Norm}(\mathbf{x}_i\boldsymbol{\beta}, 1)\), with
+\(\mathbf{x}_i\) denoting the \(i\)th row of the design matrix.
 
 The augmented data likelihood is \begin{align*}
 p(\boldsymbol{z}, \boldsymbol{y} \mid \boldsymbol{\beta}) \propto \exp\left\{-\frac{1}{2}(\boldsymbol{z} - \mathbf{X}\boldsymbol{\beta})^\top(\boldsymbol{z} - \mathbf{X}\boldsymbol{\beta})\right\} \times \prod_{i=1}^n \mathsf{I}(z_i > 0)^{y_i}\mathsf{I}(z_i \le 0)^{1-y_i}
@@ -3497,6 +3549,38 @@ Z_i \mid y_i, \boldsymbol{\beta} \sim \begin{cases}
 \end{cases}
 \end{align*} and we can use the algorithms of
 Example~\ref{exm-accept-reject-truncated} to simulate these.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{probit\_regression }\OtherTok{\textless{}{-}} \ControlFlowTok{function}\NormalTok{(y, x, }\AttributeTok{B =} \FloatTok{1e4}\NormalTok{L, }\AttributeTok{burnin =} \DecValTok{100}\NormalTok{)\{}
+\NormalTok{  y }\OtherTok{\textless{}{-}} \FunctionTok{as.numeric}\NormalTok{(y)}
+\NormalTok{  n }\OtherTok{\textless{}{-}} \FunctionTok{length}\NormalTok{(y)}
+  \CommentTok{\# Add intercept}
+\NormalTok{  x }\OtherTok{\textless{}{-}} \FunctionTok{cbind}\NormalTok{(}\DecValTok{1}\NormalTok{, }\FunctionTok{as.matrix}\NormalTok{(x))}
+\NormalTok{  xtxinv }\OtherTok{\textless{}{-}} \FunctionTok{solve}\NormalTok{(}\FunctionTok{crossprod}\NormalTok{(x))}
+  \CommentTok{\# Use MLE as initial values}
+\NormalTok{  beta.curr }\OtherTok{\textless{}{-}} \FunctionTok{coef}\NormalTok{(}\FunctionTok{glm}\NormalTok{(y }\SpecialCharTok{\textasciitilde{}}\NormalTok{ x }\SpecialCharTok{{-}} \DecValTok{1}\NormalTok{, }\AttributeTok{family=}\FunctionTok{binomial}\NormalTok{(}\AttributeTok{link =} \StringTok{"probit"}\NormalTok{)))}
+  \CommentTok{\# Containers}
+\NormalTok{  Z }\OtherTok{\textless{}{-}} \FunctionTok{rep}\NormalTok{(}\DecValTok{0}\NormalTok{, n)}
+\NormalTok{  chains }\OtherTok{\textless{}{-}} \FunctionTok{matrix}\NormalTok{(}\DecValTok{0}\NormalTok{, }\AttributeTok{nrow =}\NormalTok{ B, }\AttributeTok{ncol =} \FunctionTok{length}\NormalTok{(beta.curr))}
+  \ControlFlowTok{for}\NormalTok{(b }\ControlFlowTok{in} \FunctionTok{seq\_len}\NormalTok{(B }\SpecialCharTok{+}\NormalTok{ burnin))\{}
+\NormalTok{    ind }\OtherTok{\textless{}{-}} \FunctionTok{max}\NormalTok{(}\DecValTok{1}\NormalTok{, b }\SpecialCharTok{{-}}\NormalTok{ burnin)}
+\NormalTok{    Z }\OtherTok{\textless{}{-}}\NormalTok{ TruncatedNormal}\SpecialCharTok{::}\FunctionTok{rtnorm}\NormalTok{(}
+      \AttributeTok{n =} \DecValTok{1}\NormalTok{,}
+      \AttributeTok{mu =} \FunctionTok{as.numeric}\NormalTok{(x }\SpecialCharTok{\%*\%}\NormalTok{ beta.curr),}
+      \AttributeTok{lb =} \FunctionTok{ifelse}\NormalTok{(y }\SpecialCharTok{==} \DecValTok{0}\NormalTok{, }\SpecialCharTok{{-}}\ConstantTok{Inf}\NormalTok{, }\DecValTok{0}\NormalTok{),}
+      \AttributeTok{ub =} \FunctionTok{ifelse}\NormalTok{(y }\SpecialCharTok{==} \DecValTok{1}\NormalTok{, }\ConstantTok{Inf}\NormalTok{, }\DecValTok{0}\NormalTok{),}
+      \AttributeTok{sd =} \DecValTok{1}\NormalTok{)}
+\NormalTok{    beta.curr }\OtherTok{\textless{}{-}}\NormalTok{ chains[ind,] }\OtherTok{\textless{}{-}} \FunctionTok{as.numeric}\NormalTok{(}
+\NormalTok{      mvtnorm}\SpecialCharTok{::}\FunctionTok{rmvnorm}\NormalTok{(}
+        \AttributeTok{n =} \DecValTok{1}\NormalTok{, }
+        \AttributeTok{mean =} \FunctionTok{coef}\NormalTok{(}\FunctionTok{lm}\NormalTok{(Z }\SpecialCharTok{\textasciitilde{}}\NormalTok{ x }\SpecialCharTok{{-}} \DecValTok{1}\NormalTok{)),}
+        \AttributeTok{sigma =}\NormalTok{ xtxinv))}
+\NormalTok{  \}}
+\FunctionTok{return}\NormalTok{(chains)}
+\NormalTok{\}}
+\end{Highlighting}
+\end{Shaded}
 
 \end{example}
 
@@ -3543,8 +3627,24 @@ sampling.
 
 The Bayesian LASSO places a Laplace penalty on the regression
 coefficients, with lower values of \(\lambda\) yielding more shrinkage.
-Note that, contrary to the frequentist setting, none of the posterior
-draws of \(\boldsymbol{\beta}\) are exactly zero.
+Figure~\ref{fig-lasso-traceplot} shows a replication of Figure 1 of Park
+and Casella (\protect\hyperlink{ref-Park.Casella:2008}{2008}), fitted to
+the \texttt{diabetes} data. Note that, contrary to the frequentist
+setting, none of the posterior draws of \(\boldsymbol{\beta}\) are
+exactly zero.
+
+\begin{figure}[ht!]
+
+{\centering \includegraphics{mcmc_files/figure-pdf/fig-lasso-traceplot-1.pdf}
+
+}
+
+\caption{\label{fig-lasso-traceplot}Traceplot of \(\beta\) coefficients
+(penalized maximum likelihood estimates and median aposteriori as a
+function of the \(l_1\) norm of the coefficients, with lower values of
+the latter corresponding to higher values of the penalty \(\lambda\).}
+
+\end{figure}
 
 Many elliptical distributions can be cast as scale mixture models of
 spherical or Gaussian variables; see, e.g., Section 10.2 of Albert
@@ -3639,7 +3739,7 @@ uniformly across integers.
 
 \begin{figure}[ht!]
 
-{\centering \includegraphics[width=0.85\textwidth,height=\textheight]{mcmc_files/figure-pdf/fig-badstart-1.pdf}
+{\centering \includegraphics{mcmc_files/figure-pdf/fig-badstart-1.pdf}
 
 }
 
@@ -3668,9 +3768,9 @@ least to two significant digits).
 For the Poisson example, the effective sample size for the
 \(\boldsymbol{\beta}\) for the multilevel model is a bit higher than
 1000 with \(B=5000\) iterations, whereas we have for the simple naive
-model is \(10000\) for \(B=10000\) draws, suggesting superefficient
-sampling. The dependency between \(\boldsymbol{\alpha}\) and
-\(\boldsymbol{\beta}\) is responsible for the drop in accuracy.
+model is \(\ensuremath{10^{4}}\) for \(B=10000\) draws, suggesting
+superefficient sampling. The dependency between \(\boldsymbol{\alpha}\)
+and \(\boldsymbol{\beta}\) is responsible for the drop in accuracy.
 
 The \texttt{coda} (convergence diagnosis and output analysis) \textbf{R}
 package contains many tests. For example, the Geweke \(Z\)-score
@@ -3704,7 +3804,7 @@ is reflected by the large values of \(\widehat{R}\).
 
 \begin{figure}[ht!]
 
-{\centering \includegraphics[width=0.85\textwidth,height=\textheight]{mcmc_files/figure-pdf/fig-rhat-1.pdf}
+{\centering \includegraphics{mcmc_files/figure-pdf/fig-rhat-1.pdf}
 
 }
 
@@ -3753,7 +3853,7 @@ drawing board and consider a negative binomial model.
 
 \begin{figure}[ht!]
 
-{\centering \includegraphics[width=0.85\textwidth,height=\textheight]{mcmc_files/figure-pdf/fig-posterior-pred-check-1.pdf}
+{\centering \includegraphics{mcmc_files/figure-pdf/fig-posterior-pred-check-1.pdf}
 
 }
 
@@ -3797,6 +3897,27 @@ performance. For the smartwatch model, we get a value of 3.06 for the
 complex model and 4.51: this suggests an improvement in using
 individual-specific effects.
 
+We can also look at the predictive performance. For the
+\texttt{diabetes} data application with the Bayesian LASSO with fixed
+\(\lambda\), the predictive performance is a trade-off between the
+effective number of parameter (with larger penalties translating into
+smaller number of parameters) and the goodness-of-fit.
+Figure~\ref{fig-waic-blasso} shows that the decrease in predictive
+performance is severe when estimates are shrunk towards 0, but the model
+performs equally well for small penalties.
+
+\begin{figure}[ht!]
+
+{\centering \includegraphics{mcmc_files/figure-pdf/fig-waic-blasso-1.pdf}
+
+}
+
+\caption{\label{fig-waic-blasso}Widely applicable information criterion
+for the Bayesian LASSO problem fitted to the diabetes data, as a
+function of the penalty \(\lambda\).}
+
+\end{figure}
+
 Ideally, one would measure the predictive performance using the
 leave-one-out predictive distribution for observation \(i\) given all
 the rest, \(p(y_i \mid \boldsymbol{y}_{-i})\), to avoid double dipping
@@ -3817,7 +3938,7 @@ observation. Values close to zero or one may indicate outliers.
 
 \begin{figure}[ht!]
 
-{\centering \includegraphics[width=0.85\textwidth,height=\textheight]{mcmc_files/figure-pdf/fig-loocv-qqplots-1.pdf}
+{\centering \includegraphics{mcmc_files/figure-pdf/fig-loocv-qqplots-1.pdf}
 
 }
 

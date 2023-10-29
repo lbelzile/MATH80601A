@@ -1242,7 +1242,7 @@ p_i = \Pr(Y_i=1) = \Phi(\beta_0 + \beta_1 \mathrm{X}_{i1} + \cdots + \beta_p\mat
 where $\Phi$ is the distribution function of the standard Gaussian distribution.
 The likelihood of the probit model for a sample of $n$ independent observations is 
 $$L(\boldsymbol{\beta}; \boldsymbol{y}) = \prod_{i=1}^n p_i^{y_i}(1-p_i)^{1-y_i},$$
-and this prevents easy simulation. We can consider a data augmentation scheme where $Y_i = \mathsf{I}(Z_i > 0)$, where $Z_i \sim \mathsf{Norm}(\mathbf{x}_i\boldsymbol{\beta}, 1)$, where $\mathbf{x}_i$ is the $i$th row of the design matrix.
+and this prevents easy simulation. We can consider a data augmentation scheme where $Y_i = \mathsf{I}(Z_i > 0)$, where $Z_i \sim \mathsf{Norm}(\mathbf{x}_i\boldsymbol{\beta}, 1)$, with $\mathbf{x}_i$ denoting the $i$th row of the design matrix.
 
 The augmented data likelihood is
 \begin{align*}
@@ -1260,6 +1260,40 @@ Z_i \mid y_i, \boldsymbol{\beta} \sim \begin{cases}
 \end{cases}
 \end{align*}
 and we can use the algorithms of @exm-accept-reject-truncated to simulate these.
+
+
+```{r}
+#| eval: false
+#| echo: true
+probit_regression <- function(y, x, B = 1e4L, burnin = 100){
+  y <- as.numeric(y)
+  n <- length(y)
+  # Add intercept
+  x <- cbind(1, as.matrix(x))
+  xtxinv <- solve(crossprod(x))
+  # Use MLE as initial values
+  beta.curr <- coef(glm(y ~ x - 1, family=binomial(link = "probit")))
+  # Containers
+  Z <- rep(0, n)
+  chains <- matrix(0, nrow = B, ncol = length(beta.curr))
+  for(b in seq_len(B + burnin)){
+    ind <- max(1, b - burnin)
+    Z <- TruncatedNormal::rtnorm(
+      n = 1,
+      mu = as.numeric(x %*% beta.curr),
+      lb = ifelse(y == 0, -Inf, 0),
+      ub = ifelse(y == 1, Inf, 0),
+      sd = 1)
+    beta.curr <- chains[ind,] <- as.numeric(
+      mvtnorm::rmvnorm(
+        n = 1, 
+        mean = coef(lm(Z ~ x - 1)),
+        sigma = xtxinv))
+  }
+return(chains)
+}
+```
+
 :::
 
 
@@ -1301,7 +1335,198 @@ for location $\nu >0$ and shape $\lambda>0$, where $\xi_i \sim \mathsf{Wald}(\nu
 \end{align*}
 If we set an improper prior $p(\mu, \sigma) \propto \sigma^{-1}$, the resulting conditional distributions are all available and thus the model is amenable to Gibbs sampling.
 
-The Bayesian LASSO places a Laplace penalty on the regression coefficients, with lower values of $\lambda$ yielding more shrinkage. Note that, contrary to the frequentist setting, none of the posterior draws of $\boldsymbol{\beta}$ are exactly zero.
+The Bayesian LASSO places a Laplace penalty on the regression coefficients, with lower values of $\lambda$ yielding more shrinkage. @fig-lasso-traceplot shows a replication of Figure 1 of @Park.Casella:2008, fitted to the `diabetes` data. Note that, contrary to the frequentist setting, none of the posterior draws of $\boldsymbol{\beta}$ are exactly zero. 
+
+```{r}
+#| eval: true
+#| echo: false
+#| cache: true
+bayeslasso <- function(lambda = NULL, 
+                       B = 1e4L,
+                       x, 
+                       y){
+  stopifnot(is.matrix(x), is.vector(y))
+  # Scale inputs in case
+  x <- scale(x, center = TRUE, scale = FALSE)
+  y <- y - mean(y)
+  # Check method
+  if(is.null(lambda)){
+    method <- "empbayes"
+  } else{
+    method <- "fixed" 
+  }
+  burnin <- 250L
+  # Precompute quantities and dimensions
+  xtx <- crossprod(x)
+  p <- ncol(x)
+  n <- nrow(x)
+  # Obtain initial estimates
+  linmod <- lm(y ~ x - 1)
+  betaols <- coef(linmod)
+  beta.curr <- betaols
+  sigmasq.curr <- mean(residuals(linmod)^2)
+  tausqinv.curr <- rep(1, p)
+  # Value reported in the text for the optimal parameter: lambda = 0.237
+  beta.ind <- 1:p
+  sigmasq.ind <- p + 1L
+  tausq.ind <- seq(from = p + 2L, length.out = p, by = 1L)
+  chains <- matrix(0, nrow = B, ncol = p + 1 + p + 
+                     ifelse(method == "fixed", 0,1))
+  if(method == "fixed"){
+    colnames(chains) <- c(paste0("beta", 1:p), "sigmasq",
+                          paste0("tausq", 1:p))
+    lambdasq.curr <- lambda[1]^2
+  } else{
+    colnames(chains) <- c(paste0("beta", 1:p), "sigmasq", 
+                          paste0("tausq", 1:p), "lambda")
+    lambdasq.curr <- p*sqrt(sigmasq.curr)/sum(abs(betaols))
+    lambdasq.ind <- ncol(chains)
+  }
+# MCMC loop
+for(b in seq_len(B+burnin)){
+  ind <- pmax(1, b-burnin)
+  Ainv <- solve(xtx + diag(tausqinv.curr))
+  beta.curr <- chains[ind,beta.ind] <- as.numeric(
+    mvtnorm::rmvnorm(
+      n = 1, 
+      mean = as.numeric(Ainv %*% t(x) %*% y), 
+      sigma = sigmasq.curr*Ainv))
+  sigmasq.curr <- chains[ind, sigmasq.ind] <- 1/rgamma(
+    n = 1, 
+    shape = (n-1+p)/2,
+    rate = sum((y-x %*% beta.curr)^2)/2 + 
+      sum(beta.curr^2*tausqinv.curr)/2)
+  # Compute marginal posterior mean for lambda, using section 3.1
+  sumexpect <- 0
+  for(j in 1:p){
+    tausqinv.curr[j] <- actuar::rinvgauss(
+      n = 1, 
+      mean = sqrt(lambdasq.curr*sigmasq.curr)/abs(beta.curr[j]),
+      dispersion = 1/lambdasq.curr)
+    if(method != "fixed"){
+    sumexpect <- sumexpect + mean(1/actuar::rinvgauss(
+      n = 1000, 
+      mean = sqrt(lambdasq.curr*sigmasq.curr)/abs(beta.curr[j]),
+      dispersion = 1/lambdasq.curr))
+    }
+  }
+  chains[ind, tausq.ind] <- 1/tausqinv.curr
+  if(method != "fixed"){
+    lambdasq.curr <- chains[ind, lambdasq.ind] <- 2*p/sumexpect
+  }
+}
+  if(method != "fixed"){
+  chains[, lambdasq.ind] <- sqrt(chains[, lambdasq.ind])
+}
+# Cast Markov chains to mcmc class object.
+chains.mcmc <- coda::as.mcmc(chains)
+# Effective sample size
+ess <- as.integer(round(coda::effectiveSize(chains.mcmc), 0))
+
+# Compute WAIC from log pointwise density
+lppd <- 0
+penalty <- 0
+for(i in seq_len(n)){
+  lppd_i <- dnorm(
+    x = y[i], 
+    mean = as.numeric(chains[,beta.ind] %*% c(x[i,])), 
+    sd = sqrt(chains[,sigmasq.ind]), 
+    log = TRUE)
+  # print(paste0("Iteration", i, ": ", round(mean(lppd_i),2), " and ", round(var(lppd_i), 2)))
+  lppd <- lppd + mean(lppd_i)
+  penalty <- penalty + var(lppd_i)
+}
+waic <- (-lppd + penalty)/n
+l1norm <- mean(rowSums(abs(chains[,beta.ind])))
+
+# Parameter estimates and 95% equitailed credible intervals
+quant <- t(apply(chains, 2, 
+                quantile, prob = c(0.025, 0.5, 0.975)))
+regpar <- as.data.frame(cbind(quant,
+                colMeans(chains),
+                coda::batchSE(chains.mcmc),
+                ess))
+regpar$pars <- rownames(quant)
+rownames(regpar) <- NULL
+colnames(regpar) <- c("lower", "median", "upper", 
+                      "mean", "se", "ess", "par")
+regpar <- regpar[,c(7,4:5,1:3,6)]
+attr(regpar, "waic") <- waic
+attr(regpar, "l1norm") <- l1norm
+ return(regpar)
+}
+```
+
+
+```{r}
+#| eval: true
+#| echo: false
+#| cache: true
+#| label: fig-lasso-traceplot
+#| fig-cap: "Traceplot of $\\beta$ coefficients (penalized maximum likelihood estimates and median aposteriori as a function of the $l_1$ norm of the coefficients, with lower values of the latter corresponding to higher values of the penalty $\\lambda$."
+# Call the MCMC sampler
+set.seed(2023)
+data(diabetes, package = "lars")
+x <- as.matrix(diabetes$x)
+y <- diabetes$y - mean(diabetes$y)
+lambdaseq <- exp(seq(-2,3, length.out = 21))
+lasso_lambda <- glmnet::cv.glmnet(x = x, y = y, lambda = lambdaseq)
+#plot(lasso_lambda)
+lasso <- glmnet::glmnet(y = y, x = x, lambda = lambdaseq)
+
+lasso_empbayes <- bayeslasso(lambda = NULL, x = x, y = y, B = 1e4)
+bayesian_lasso <- list()
+for(i in seq_along(lambdaseq)){
+  bayesian_lasso[[i]] <- bayeslasso(lambda = lambdaseq[i], x = x, y = y, B = 1e4)
+}
+
+coefs_beta <- t(sapply(bayesian_lasso, function(x){x[1:10,'median']}))
+colnames(coefs_beta) <- rownames(lasso$beta)
+l1norm <- sapply(bayesian_lasso, function(x){attr(x, "l1norm")})
+# Extract the value of WAIC
+waic <- sapply(bayesian_lasso, function(x){attr(x, "waic")})
+# plot(log(lambdaseq), 2*length(diabetes$y)*waic)
+
+lasso_coefs <- tidyr::pivot_longer(data = data.frame(
+    t(as.matrix(lasso$beta)), 
+    lambda = lasso$lambda, 
+    l1norm = colSums(as.matrix(abs(lasso$beta))),
+    type = "frequentist"), 
+                    cols = 1:10, 
+                    names_to = "covariate", 
+                    values_to = "coef")
+blasso_coefs <- tidyr::pivot_longer(
+  data = data.frame(
+    coefs_beta, 
+          lambda = lambdaseq,
+          l1norm = l1norm,
+          type = "Bayesian"), 
+  cols = 1:10, 
+  names_to = "covariate", 
+  values_to = "coef")
+est <- rbind(lasso_coefs, blasso_coefs) |>
+  dplyr::mutate(covariate = factor(covariate), 
+                type = factor(type))
+ggplot(data = est,
+       mapping = aes(x = l1norm,
+                     y = coef,
+                     col = covariate,
+                     linetype = type)) +
+  geom_line(show.legend = c("colour" = FALSE, "linetype" = TRUE)) +
+  labs(x = "l1 norm",
+       y = "",
+       subtitle = "estimated regression coefficient",
+       caption = "posterior median based on 10K iterations") +
+  theme_classic() +
+  theme(legend.position = "bottom")
+# plot(lasso)
+# matplot(c(0,l1norm), rbind(rep(0,10), coefs_beta), type = "l", add = TRUE, lty = 2)
+# matplot(log(lasso$lambda), t(as.matrix(lasso$beta)), type = "l",lty = 1)
+# matplot(log(lambdaseq), coefs_beta, type = "l", add = TRUE, lty = 2)
+
+
+```
+
 
 Many elliptical distributions can be cast as scale mixture models of spherical or Gaussian variables; see, e.g.,  Section 10.2 of @Albert:2009 for a similar derivation with a Student-$t$ distribution.
 
@@ -1649,6 +1874,31 @@ WAIC <- -mean(apply(loglik_pt, 2, mean)) +
   mean(apply(loglik_pt, 2, var))
 ```
 
+We can also look at the predictive performance. For the `diabetes` data application with the Bayesian LASSO with fixed $\lambda$, the predictive performance is a trade-off between the effective number of parameter (with larger penalties translating into smaller number of parameters) and the goodness-of-fit. @fig-waic-blasso shows that the decrease in predictive performance is severe when estimates are shrunk towards 0, but the model performs equally well for small penalties.
+
+```{r}
+#| eval: true
+#| echo: false
+#| label: fig-waic-blasso
+#| fig-cap: "Widely applicable information criterion for the Bayesian LASSO problem fitted to the diabetes data, as a function of the penalty $\\lambda$."
+
+waic <- sapply(bayesian_lasso, function(x){attr(x, "waic")})
+ggplot(data = data.frame(penalty =log(lambdaseq),
+                         sWAIC = 2*length(diabetes$y)*waic),
+       mapping = aes(x = penalty, y = sWAIC)) +
+  geom_line() +
+  geom_point() + 
+  geom_vline(xintercept = lambdaseq[which.min(waic)]) +
+  labs(x = expression(log(lambda)),
+       y = "",
+       subtitle = "scaled WAIC") + 
+  theme_classic()
+
+
+```
+
+
+
 Ideally, one would measure the predictive performance using the leave-one-out predictive distribution for observation $i$ given all the rest, $p(y_i \mid \boldsymbol{y}_{-i})$, to avoid double dipping --- the latter is computationally intractable because it would require running $n$ Markov chains with $n-1$ observations each, but we can get a good approximation using importance sampling.  The `loo` package uses this with generalized Pareto smoothing to avoid overly large weights.
 
 Once we have the collection of estimated  $p(y_i \mid \boldsymbol{y}_{-i})$, we can assess the probability level of each observation. This gives us a set of values which should be  approximately uniform if the model was perfectly calibrated. The probability of seeing an outcome as extreme as $y_i$ can be obtained by simulating draws from the posterior predictive given $\boldsymbol{y}_{-i}$ and computing the scaled rank of the original observation. Values close to zero or one may indicate outliers.
@@ -1702,35 +1952,7 @@ mle_pareto <- function(x){
 ```
 
 
-
--->
-<!-- ## Gibbs sampling -->
-
 <!--
-Given initial values for the state vector $\boldsymbol{\theta}_0$, we simulate in turn 
-$\theta_i \mid \boldsymbol{\theta}_{-i}$ ($i=1,\ldots, p$)
-Gibbs with Normal - inverse gamma (not necessarily conjugate) (Geyer page 17)
-
-Basic conditions: irreducibility, aperiodic and what they mean in layman terms
-
-A toy example with a discrete state space
-
-Autocorrelation: correlogram 
-Burnin period
-Thinning: only for storage
-
-Newer approaches: 
-
-
-Diagnostics
-
-- running multiple chains and evaluating convergence
-(example of multimodal, etc.)
-- trace plots, trace rank plots, correlograms, effective sample size
-- Not all algorithms are born equal: reparametrization example
-- Bayesian workflow
-- LOOCV
-
 Examples
 
 - Meta analysis? Table 5.4 of Gelman, check for data from researchbox

@@ -899,7 +899,7 @@ p(\boldsymbol{\beta}, \sigma^2 \mid y) = p(\sigma^2 \mid y) p(\boldsymbol{\beta}
 <div id="exm-probit-regression" class="theorem example">
 <p><span class="theorem-title"><strong>Example 3.9 </strong></span>Consider binary responses <span class="math inline">\(\boldsymbol{Y}_i\)</span>, for which we postulate a probit regression model, <span class="math display">\[\begin{align*}
 p_i = \Pr(Y_i=1) = \Phi(\beta_0 + \beta_1 \mathrm{X}_{i1} + \cdots + \beta_p\mathrm{X}_{ip}),
-\end{align*}\]</span> where <span class="math inline">\(\Phi\)</span> is the distribution function of the standard Gaussian distribution. The likelihood of the probit model for a sample of <span class="math inline">\(n\)</span> independent observations is <span class="math display">\[L(\boldsymbol{\beta}; \boldsymbol{y}) = \prod_{i=1}^n p_i^{y_i}(1-p_i)^{1-y_i},\]</span> and this prevents easy simulation. We can consider a data augmentation scheme where <span class="math inline">\(Y_i = \mathsf{I}(Z_i &gt; 0)\)</span>, where <span class="math inline">\(Z_i \sim \mathsf{Norm}(\mathbf{x}_i\boldsymbol{\beta}, 1)\)</span>, where <span class="math inline">\(\mathbf{x}_i\)</span> is the <span class="math inline">\(i\)</span>th row of the design matrix.</p>
+\end{align*}\]</span> where <span class="math inline">\(\Phi\)</span> is the distribution function of the standard Gaussian distribution. The likelihood of the probit model for a sample of <span class="math inline">\(n\)</span> independent observations is <span class="math display">\[L(\boldsymbol{\beta}; \boldsymbol{y}) = \prod_{i=1}^n p_i^{y_i}(1-p_i)^{1-y_i},\]</span> and this prevents easy simulation. We can consider a data augmentation scheme where <span class="math inline">\(Y_i = \mathsf{I}(Z_i &gt; 0)\)</span>, where <span class="math inline">\(Z_i \sim \mathsf{Norm}(\mathbf{x}_i\boldsymbol{\beta}, 1)\)</span>, with <span class="math inline">\(\mathbf{x}_i\)</span> denoting the <span class="math inline">\(i\)</span>th row of the design matrix.</p>
 <p>The augmented data likelihood is <span class="math display">\[\begin{align*}
 p(\boldsymbol{z}, \boldsymbol{y} \mid \boldsymbol{\beta}) \propto \exp\left\{-\frac{1}{2}(\boldsymbol{z} - \mathbf{X}\boldsymbol{\beta})^\top(\boldsymbol{z} - \mathbf{X}\boldsymbol{\beta})\right\} \times \prod_{i=1}^n \mathsf{I}(z_i &gt; 0)^{y_i}\mathsf{I}(z_i \le 0)^{1-y_i}
 \end{align*}\]</span> Given <span class="math inline">\(Z_i\)</span>, the coefficients <span class="math inline">\(\boldsymbol{\beta}\)</span> are simply the results of ordinary linear regression with unit variance, so <span class="math display">\[\begin{align*}
@@ -910,6 +910,35 @@ Z_i \mid y_i, \boldsymbol{\beta} \sim \begin{cases}
 \mathsf{TruncNorm}(\mathbf{x}_i\boldsymbol{\beta}, 0, \infty) &amp; y_i =1.
 \end{cases}
 \end{align*}\]</span> and we can use the algorithms of <a href="#exm-accept-reject-truncated">Example&nbsp;<span>3.2</span></a> to simulate these.</p>
+<div class="cell" data-hash="mcmc_cache/html/unnamed-chunk-22_d8b1038de410d535c9f072659e74d100">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>probit_regression <span class="ot">&lt;-</span> <span class="cf">function</span>(y, x, <span class="at">B =</span> <span class="fl">1e4</span>L, <span class="at">burnin =</span> <span class="dv">100</span>){</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>  y <span class="ot">&lt;-</span> <span class="fu">as.numeric</span>(y)</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>  n <span class="ot">&lt;-</span> <span class="fu">length</span>(y)</span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Add intercept</span></span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>  x <span class="ot">&lt;-</span> <span class="fu">cbind</span>(<span class="dv">1</span>, <span class="fu">as.matrix</span>(x))</span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>  xtxinv <span class="ot">&lt;-</span> <span class="fu">solve</span>(<span class="fu">crossprod</span>(x))</span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Use MLE as initial values</span></span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>  beta.curr <span class="ot">&lt;-</span> <span class="fu">coef</span>(<span class="fu">glm</span>(y <span class="sc">~</span> x <span class="sc">-</span> <span class="dv">1</span>, <span class="at">family=</span><span class="fu">binomial</span>(<span class="at">link =</span> <span class="st">"probit"</span>)))</span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Containers</span></span>
+<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a>  Z <span class="ot">&lt;-</span> <span class="fu">rep</span>(<span class="dv">0</span>, n)</span>
+<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a>  chains <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="dv">0</span>, <span class="at">nrow =</span> B, <span class="at">ncol =</span> <span class="fu">length</span>(beta.curr))</span>
+<span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span>(b <span class="cf">in</span> <span class="fu">seq_len</span>(B <span class="sc">+</span> burnin)){</span>
+<span id="cb15-13"><a href="#cb15-13" aria-hidden="true" tabindex="-1"></a>    ind <span class="ot">&lt;-</span> <span class="fu">max</span>(<span class="dv">1</span>, b <span class="sc">-</span> burnin)</span>
+<span id="cb15-14"><a href="#cb15-14" aria-hidden="true" tabindex="-1"></a>    Z <span class="ot">&lt;-</span> TruncatedNormal<span class="sc">::</span><span class="fu">rtnorm</span>(</span>
+<span id="cb15-15"><a href="#cb15-15" aria-hidden="true" tabindex="-1"></a>      <span class="at">n =</span> <span class="dv">1</span>,</span>
+<span id="cb15-16"><a href="#cb15-16" aria-hidden="true" tabindex="-1"></a>      <span class="at">mu =</span> <span class="fu">as.numeric</span>(x <span class="sc">%*%</span> beta.curr),</span>
+<span id="cb15-17"><a href="#cb15-17" aria-hidden="true" tabindex="-1"></a>      <span class="at">lb =</span> <span class="fu">ifelse</span>(y <span class="sc">==</span> <span class="dv">0</span>, <span class="sc">-</span><span class="cn">Inf</span>, <span class="dv">0</span>),</span>
+<span id="cb15-18"><a href="#cb15-18" aria-hidden="true" tabindex="-1"></a>      <span class="at">ub =</span> <span class="fu">ifelse</span>(y <span class="sc">==</span> <span class="dv">1</span>, <span class="cn">Inf</span>, <span class="dv">0</span>),</span>
+<span id="cb15-19"><a href="#cb15-19" aria-hidden="true" tabindex="-1"></a>      <span class="at">sd =</span> <span class="dv">1</span>)</span>
+<span id="cb15-20"><a href="#cb15-20" aria-hidden="true" tabindex="-1"></a>    beta.curr <span class="ot">&lt;-</span> chains[ind,] <span class="ot">&lt;-</span> <span class="fu">as.numeric</span>(</span>
+<span id="cb15-21"><a href="#cb15-21" aria-hidden="true" tabindex="-1"></a>      mvtnorm<span class="sc">::</span><span class="fu">rmvnorm</span>(</span>
+<span id="cb15-22"><a href="#cb15-22" aria-hidden="true" tabindex="-1"></a>        <span class="at">n =</span> <span class="dv">1</span>, </span>
+<span id="cb15-23"><a href="#cb15-23" aria-hidden="true" tabindex="-1"></a>        <span class="at">mean =</span> <span class="fu">coef</span>(<span class="fu">lm</span>(Z <span class="sc">~</span> x <span class="sc">-</span> <span class="dv">1</span>)),</span>
+<span id="cb15-24"><a href="#cb15-24" aria-hidden="true" tabindex="-1"></a>        <span class="at">sigma =</span> xtxinv))</span>
+<span id="cb15-25"><a href="#cb15-25" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb15-26"><a href="#cb15-26" aria-hidden="true" tabindex="-1"></a><span class="fu">return</span>(chains)</span>
+<span id="cb15-27"><a href="#cb15-27" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
 </div>
 <div id="exm-student-mixture-gaussian" class="theorem example">
 <p><span class="theorem-title"><strong>Example 3.10 (Bayesian LASSO) </strong></span>The Laplace distribution with mean <span class="math inline">\(\mu\)</span> and scale <span class="math inline">\(\sigma\)</span>, which has density <span class="math display">\[\begin{align*}
@@ -929,7 +958,17 @@ f(y; \nu, \lambda) &amp;= \left(\frac{\lambda}{2\pi y^{3}}\right)^{1/2} \exp\lef
 \beta_j \mid \sigma, \tau &amp;\sim \mathsf{Norm}(0, \sigma\tau)\\
 \tau &amp;\sim \mathsf{Exp}(\lambda/2)
 \end{align*}\]</span> If we set an improper prior <span class="math inline">\(p(\mu, \sigma) \propto \sigma^{-1}\)</span>, the resulting conditional distributions are all available and thus the model is amenable to Gibbs sampling.</p>
-<p>The Bayesian LASSO places a Laplace penalty on the regression coefficients, with lower values of <span class="math inline">\(\lambda\)</span> yielding more shrinkage. Note that, contrary to the frequentist setting, none of the posterior draws of <span class="math inline">\(\boldsymbol{\beta}\)</span> are exactly zero.</p>
+<p>The Bayesian LASSO places a Laplace penalty on the regression coefficients, with lower values of <span class="math inline">\(\lambda\)</span> yielding more shrinkage. <a href="#fig-lasso-traceplot">Figure&nbsp;<span>3.13</span></a> shows a replication of Figure 1 of <span class="citation" data-cites="Park.Casella:2008">Park and Casella (<a href="references.html#ref-Park.Casella:2008" role="doc-biblioref">2008</a>)</span>, fitted to the <code>diabetes</code> data. Note that, contrary to the frequentist setting, none of the posterior draws of <span class="math inline">\(\boldsymbol{\beta}\)</span> are exactly zero.</p>
+<div class="cell" data-hash="mcmc_cache/html/fig-lasso-traceplot_071fe340ea59183da61b4de19c9fc974">
+<div class="cell-output-display">
+<div id="fig-lasso-traceplot" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="mcmc_files/figure-html/fig-lasso-traceplot-1.png" class="img-fluid figure-img" width="672"></p>
+<figcaption class="figure-caption">Figure&nbsp;3.13: Traceplot of <span class="math inline">\(\beta\)</span> coefficients (penalized maximum likelihood estimates and median aposteriori as a function of the <span class="math inline">\(l_1\)</span> norm of the coefficients, with lower values of the latter corresponding to higher values of the penalty <span class="math inline">\(\lambda\)</span>.</figcaption>
+</figure>
+</div>
+</div>
+</div>
 <p>Many elliptical distributions can be cast as scale mixture models of spherical or Gaussian variables; see, e.g., Section 10.2 of <span class="citation" data-cites="Albert:2009">Albert (<a href="references.html#ref-Albert:2009" role="doc-biblioref">2009</a>)</span> for a similar derivation with a Student-<span class="math inline">\(t\)</span> distribution.</p>
 </div>
 <div id="exm-mixture" class="theorem example">
@@ -946,14 +985,14 @@ f(y; \nu, \lambda) &amp;= \left(\frac{\lambda}{2\pi y^{3}}\right)^{1/2} \exp\lef
 <p>To illustrate these, we revisit the model from <a href="priors.html#exm-randomeffects">Example&nbsp;<span>2.15</span></a> with a penalized complexity prior for the individual effect <span class="math inline">\(\alpha_i\)</span> and vague normal priors. We also fit a simple Poisson model with only the fixed effect, taking <span class="math inline">\(Y_{ij} \sim \mathsf{Pois}\{\exp(\beta_j)\}\)</span> with <span class="math inline">\(\beta_j \sim \mathsf{Norm}(0,100)\)</span> has much too little variability relative to the observations.</p>
 <section id="trace-plots" class="level3" data-number="3.5.1">
 <h3 data-number="3.5.1" class="anchored" data-anchor-id="trace-plots"><span class="header-section-number">3.5.1</span> Trace plots</h3>
-<p>It is useful to inspect visually the Markov chain, as it may indicate several problems. If the chain drifts around without stabilizing around the posterior mode, then we can suspect that it hasn’t reached it’s stationary distribution (likely due to poor starting values). In such cases, we need to disregard the dubious draws from the chain by discarding the so-called warm up or <strong>burn in</strong> period. While there are some guarantees of convergence in the long term, silly starting values may translate into tens of thousands of iterations lost wandering around in regions with low posterior mass. Preliminary optimization and plausible starting values help alleviate these problems. <a href="#fig-badstart">Figure&nbsp;<span>3.13</span></a> shows the effect of bad starting values on a toy problem where convergence to the mode is relatively fast. If the proposal is in a flat region of the space, it can wander around for a very long time before converging to the stationary distribution.</p>
-<p>If we run several chains, as in <a href="#fig-badstart">Figure&nbsp;<span>3.13</span></a>, with different starting values, we can monitor convergence by checking whether these chains converge to the same target. A <strong>trace rank</strong> plots, shown on right panel of <a href="#fig-badstart">Figure&nbsp;<span>3.13</span></a>, compares the rank of the values of the different chain at a given iteration: with good mixing, the ranks should switch frequently and be distributed uniformly across integers.</p>
+<p>It is useful to inspect visually the Markov chain, as it may indicate several problems. If the chain drifts around without stabilizing around the posterior mode, then we can suspect that it hasn’t reached it’s stationary distribution (likely due to poor starting values). In such cases, we need to disregard the dubious draws from the chain by discarding the so-called warm up or <strong>burn in</strong> period. While there are some guarantees of convergence in the long term, silly starting values may translate into tens of thousands of iterations lost wandering around in regions with low posterior mass. Preliminary optimization and plausible starting values help alleviate these problems. <a href="#fig-badstart">Figure&nbsp;<span>3.14</span></a> shows the effect of bad starting values on a toy problem where convergence to the mode is relatively fast. If the proposal is in a flat region of the space, it can wander around for a very long time before converging to the stationary distribution.</p>
+<p>If we run several chains, as in <a href="#fig-badstart">Figure&nbsp;<span>3.14</span></a>, with different starting values, we can monitor convergence by checking whether these chains converge to the same target. A <strong>trace rank</strong> plots, shown on right panel of <a href="#fig-badstart">Figure&nbsp;<span>3.14</span></a>, compares the rank of the values of the different chain at a given iteration: with good mixing, the ranks should switch frequently and be distributed uniformly across integers.</p>
 <div class="cell" data-hash="mcmc_cache/html/fig-badstart_a65284234d35eecfade40ee68a825a16">
 <div class="cell-output-display">
 <div id="fig-badstart" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
 <p><img src="mcmc_files/figure-html/fig-badstart-1.png" class="img-fluid figure-img" width="672"></p>
-<figcaption class="figure-caption">Figure&nbsp;3.13: Traceplots of three Markov chains for the same target with different initial values for the first 500 iterations (left) and trace rank plot after discarding these (right).</figcaption>
+<figcaption class="figure-caption">Figure&nbsp;3.14: Traceplots of three Markov chains for the same target with different initial values for the first 500 iterations (left) and trace rank plot after discarding these (right).</figcaption>
 </figure>
 </div>
 </div>
@@ -971,13 +1010,13 @@ f(y; \nu, \lambda) &amp;= \left(\frac{\lambda}{2\pi y^{3}}\right)^{1/2} \exp\lef
 \mathsf{Va}_{\text{within}} &amp;= \frac{1}{M}\sum_{m=1}^m \widehat{\sigma}^2_m
 \end{align*}\]</span> and we can compute <span class="math display">\[\begin{align*}
 \widehat{R} = \left(\frac{\mathsf{Va}_{\text{within}}(B-1) + \mathsf{Va}_{\text{between}}}{B\mathsf{Va}_{\text{within}}}\right)^{1/2}
-\end{align*}\]</span> The potential scale reduction statistic must be, by construction, larger than 1 in large sample. Any value larger than this is indicative of problems of convergence. While the Gelman–Rubin diagnostic is frequently reported, and any value larger than 1 deemed problematic, it is not enough to have approximately <span class="math inline">\(\widehat{R}=1\)</span> to guarantee convergence, but large values are usually indication of something being amiss. <a href="#fig-rhat">Figure&nbsp;<span>3.14</span></a> shows two instances where the chains are visually very far from having the same average and this is reflected by the large values of <span class="math inline">\(\widehat{R}\)</span>.</p>
+\end{align*}\]</span> The potential scale reduction statistic must be, by construction, larger than 1 in large sample. Any value larger than this is indicative of problems of convergence. While the Gelman–Rubin diagnostic is frequently reported, and any value larger than 1 deemed problematic, it is not enough to have approximately <span class="math inline">\(\widehat{R}=1\)</span> to guarantee convergence, but large values are usually indication of something being amiss. <a href="#fig-rhat">Figure&nbsp;<span>3.15</span></a> shows two instances where the chains are visually very far from having the same average and this is reflected by the large values of <span class="math inline">\(\widehat{R}\)</span>.</p>
 <div class="cell" data-hash="mcmc_cache/html/fig-rhat_868f3872dd10db162560bc208e0e8fa1">
 <div class="cell-output-display">
 <div id="fig-rhat" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
 <p><img src="mcmc_files/figure-html/fig-rhat-1.png" class="img-fluid figure-img" width="672"></p>
-<figcaption class="figure-caption">Figure&nbsp;3.14: Two pairs of Markov chains: the top ones seem stationary, but with different modes. This makes the between chain variance substantial, with a value of <span class="math inline">\(\widehat{R} \approx 3.4\)</span>, whereas the chains on the right hover around the same values of zero, but do not appear stable with <span class="math inline">\(\widehat{R} \approx 1.6\)</span>.</figcaption>
+<figcaption class="figure-caption">Figure&nbsp;3.15: Two pairs of Markov chains: the top ones seem stationary, but with different modes. This makes the between chain variance substantial, with a value of <span class="math inline">\(\widehat{R} \approx 3.4\)</span>, whereas the chains on the right hover around the same values of zero, but do not appear stable with <span class="math inline">\(\widehat{R} \approx 1.6\)</span>.</figcaption>
 </figure>
 </div>
 </div>
@@ -988,13 +1027,13 @@ f(y; \nu, \lambda) &amp;= \left(\frac{\lambda}{2\pi y^{3}}\right)^{1/2} \exp\lef
 <section id="posterior-predictive-checks" class="level3" data-number="3.5.3">
 <h3 data-number="3.5.3" class="anchored" data-anchor-id="posterior-predictive-checks"><span class="header-section-number">3.5.3</span> Posterior predictive checks</h3>
 <p>Posterior predictive checks can be used to compare models of varying complexity.One of the visual diagnostics, outlined in <span class="citation" data-cites="Gabry:2019">Gabry et al. (<a href="references.html#ref-Gabry:2019" role="doc-biblioref">2019</a>)</span>, consists in computing a summary statistic of interest from the posterior predictive (whether mean, median, quantile, skewness, etc.) which is relevant for the problem at hand and which we hope our model can adequately capture.</p>
-<p>Suppose we have <span class="math inline">\(B\)</span> draws from the posterior and simulate for each <span class="math inline">\(n\)</span> observations from the posterior predictive <span class="math inline">\(p(\widetilde{\boldsymbol{y}} \mid \boldsymbol{y})\)</span>: we can benchmark summary statistics from our original data <span class="math inline">\(\boldsymbol{y}\)</span> with the posterior predictive copies <span class="math inline">\(\widetilde{\boldsymbol{y}}_b\)</span>. <a href="#fig-posterior-pred-check">Figure&nbsp;<span>3.15</span></a> shows this for the two competing models and highlight the fact that the simpler model is not dispersed enough. Even the more complex model struggles to capture this additional heterogeneity with the additional variables. One could go back to the drawing board and consider a negative binomial model.</p>
+<p>Suppose we have <span class="math inline">\(B\)</span> draws from the posterior and simulate for each <span class="math inline">\(n\)</span> observations from the posterior predictive <span class="math inline">\(p(\widetilde{\boldsymbol{y}} \mid \boldsymbol{y})\)</span>: we can benchmark summary statistics from our original data <span class="math inline">\(\boldsymbol{y}\)</span> with the posterior predictive copies <span class="math inline">\(\widetilde{\boldsymbol{y}}_b\)</span>. <a href="#fig-posterior-pred-check">Figure&nbsp;<span>3.16</span></a> shows this for the two competing models and highlight the fact that the simpler model is not dispersed enough. Even the more complex model struggles to capture this additional heterogeneity with the additional variables. One could go back to the drawing board and consider a negative binomial model.</p>
 <div class="cell" data-hash="mcmc_cache/html/fig-posterior-pred-check_9287a56484dbfdf32d25748153b7ba41">
 <div class="cell-output-display">
 <div id="fig-posterior-pred-check" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
 <p><img src="mcmc_files/figure-html/fig-posterior-pred-check-1.png" class="img-fluid figure-img" width="672"></p>
-<figcaption class="figure-caption">Figure&nbsp;3.15: Posterior predictive checks for the standard deviation (top) and density of posterior draws (bottom) for hierarchical Poisson model with individual effects (left) and simpler model with only conditions (right).</figcaption>
+<figcaption class="figure-caption">Figure&nbsp;3.16: Posterior predictive checks for the standard deviation (top) and density of posterior draws (bottom) for hierarchical Poisson model with individual effects (left) and simpler model with only conditions (right).</figcaption>
 </figure>
 </div>
 </div>
@@ -1008,6 +1047,17 @@ f(y; \nu, \lambda) &amp;= \left(\frac{\lambda}{2\pi y^{3}}\right)^{1/2} \exp\lef
 <p>As in general information criteria, we sum over all observations, adding a penalization factor that approximates the effective number of parameters in the model, with <span class="math display">\[\begin{align*}
 n\mathsf{WAIC} = -\sum_{i=1}^n \mathsf{LPPD}_i + \sum_{i=1}^n \mathsf{Va}_{\boldsymbol{\theta} \mid \boldsymbol{y}}\{\log p(y_i \mid \boldsymbol{\theta})\}
 \end{align*}\]</span> where we use again the empirical variance to compute the rightmost term. When comparing competing models, we can rely on their values of <span class="math inline">\(\mathsf{WAIC}\)</span> to discriminate about the predictive performance. To compute <span class="math inline">\(\mathsf{WAIC}\)</span>, we need to store the values of the log density of each observation, or at least minimally <a href="https://www.johndcook.com/blog/standard_deviation/">compute the running mean and variance accurately</a> pointwise at storage cost <span class="math inline">\(\mathrm{O}(n)\)</span>. Note that Section 7.2 of <span class="citation" data-cites="Gelman:2013">Gelman et al. (<a href="references.html#ref-Gelman:2013" role="doc-biblioref">2013</a>)</span> define the widely applicable information criterion as <span class="math inline">\(2n \times \mathsf{WAIC}\)</span> to make on par with other information criteria, which are defined typically on the deviance scale and so that lower values correspond to higher predictive performance. For the smartwatch model, we get a value of 3.07 for the complex model and 4.51: this suggests an improvement in using individual-specific effects.</p>
+<p>We can also look at the predictive performance. For the <code>diabetes</code> data application with the Bayesian LASSO with fixed <span class="math inline">\(\lambda\)</span>, the predictive performance is a trade-off between the effective number of parameter (with larger penalties translating into smaller number of parameters) and the goodness-of-fit. <a href="#fig-waic-blasso">Figure&nbsp;<span>3.17</span></a> shows that the decrease in predictive performance is severe when estimates are shrunk towards 0, but the model performs equally well for small penalties.</p>
+<div class="cell" data-hash="mcmc_cache/html/fig-waic-blasso_d0736555a4206728e7cf6046d40a0ac7">
+<div class="cell-output-display">
+<div id="fig-waic-blasso" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="mcmc_files/figure-html/fig-waic-blasso-1.png" class="img-fluid figure-img" width="672"></p>
+<figcaption class="figure-caption">Figure&nbsp;3.17: Widely applicable information criterion for the Bayesian LASSO problem fitted to the diabetes data, as a function of the penalty <span class="math inline">\(\lambda\)</span>.</figcaption>
+</figure>
+</div>
+</div>
+</div>
 <p>Ideally, one would measure the predictive performance using the leave-one-out predictive distribution for observation <span class="math inline">\(i\)</span> given all the rest, <span class="math inline">\(p(y_i \mid \boldsymbol{y}_{-i})\)</span>, to avoid double dipping — the latter is computationally intractable because it would require running <span class="math inline">\(n\)</span> Markov chains with <span class="math inline">\(n-1\)</span> observations each, but we can get a good approximation using importance sampling. The <code>loo</code> package uses this with generalized Pareto smoothing to avoid overly large weights.</p>
 <p>Once we have the collection of estimated <span class="math inline">\(p(y_i \mid \boldsymbol{y}_{-i})\)</span>, we can assess the probability level of each observation. This gives us a set of values which should be approximately uniform if the model was perfectly calibrated. The probability of seeing an outcome as extreme as <span class="math inline">\(y_i\)</span> can be obtained by simulating draws from the posterior predictive given <span class="math inline">\(\boldsymbol{y}_{-i}\)</span> and computing the scaled rank of the original observation. Values close to zero or one may indicate outliers.</p>
 <div class="cell" data-hash="mcmc_cache/html/fig-loocv-qqplots_5e5ed04eb0bb01aef19947ea722ad32d">
@@ -1015,50 +1065,23 @@ n\mathsf{WAIC} = -\sum_{i=1}^n \mathsf{LPPD}_i + \sum_{i=1}^n \mathsf{Va}_{\bold
 <div id="fig-loocv-qqplots" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
 <p><img src="mcmc_files/figure-html/fig-loocv-qqplots-1.png" class="img-fluid figure-img" width="672"></p>
-<figcaption class="figure-caption">Figure&nbsp;3.16: Quantile-quantile plots based on leave-one-out cross validation for model for the Poisson hierarchical model with the individual random effects (left) and without (right).</figcaption>
+<figcaption class="figure-caption">Figure&nbsp;3.18: Quantile-quantile plots based on leave-one-out cross validation for model for the Poisson hierarchical model with the individual random effects (left) and without (right).</figcaption>
 </figure>
 </div>
 </div>
 </div>
+
 <!--
 Consider hybrid mixture of independent MH and random walk, or mean-centered
 
 
-::: {.cell hash='mcmc_cache/html/unnamed-chunk-29_602d2f2d971396b61567dc39b33ebf69'}
+::: {.cell hash='mcmc_cache/html/unnamed-chunk-33_c013821a1f2cac963ac93004a2bf5e34'}
 
 :::
 
 
 
-
--->
-<!-- ## Gibbs sampling -->
-
 <!--
-Given initial values for the state vector $\boldsymbol{\theta}_0$, we simulate in turn 
-$\theta_i \mid \boldsymbol{\theta}_{-i}$ ($i=1,\ldots, p$)
-Gibbs with Normal - inverse gamma (not necessarily conjugate) (Geyer page 17)
-
-Basic conditions: irreducibility, aperiodic and what they mean in layman terms
-
-A toy example with a discrete state space
-
-Autocorrelation: correlogram 
-Burnin period
-Thinning: only for storage
-
-Newer approaches: 
-
-
-Diagnostics
-
-- running multiple chains and evaluating convergence
-(example of multimodal, etc.)
-- trace plots, trace rank plots, correlograms, effective sample size
-- Not all algorithms are born equal: reparametrization example
-- Bayesian workflow
-- LOOCV
-
 Examples
 
 - Meta analysis? Table 5.4 of Gelman, check for data from researchbox
