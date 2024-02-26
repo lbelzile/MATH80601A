@@ -2,12 +2,12 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.3.433">
+<meta name="generator" content="quarto-1.5.21">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Bayesian modelling - 2&nbsp; Priors</title>
+<title>Bayesian modelling – 2&nbsp; Priors</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -22,7 +22,7 @@ ul.task-list li input[type="checkbox"] {
 }
 /* CSS for syntax highlighting */
 pre > code.sourceCode { white-space: pre; position: relative; }
-pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span { line-height: 1.25; }
 pre > code.sourceCode > span:empty { height: 1.2em; }
 .sourceCode { overflow: visible; }
 code.sourceCode > span { color: inherit; text-decoration: inherit; }
@@ -58,6 +58,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 div.csl-bib-body { }
 div.csl-entry {
   clear: both;
+  margin-bottom: 0em;
 }
 .hanging-indent div.csl-entry {
   margin-left:2em;
@@ -100,7 +101,13 @@ div.csl-indent {
   "collapse-after": 3,
   "panel-placement": "start",
   "type": "textbox",
-  "limit": 20,
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
   "language": {
     "search-no-results-text": "No results",
     "search-matching-documents-text": "matching documents",
@@ -109,6 +116,7 @@ div.csl-indent {
     "search-more-match-text": "more match in this document",
     "search-more-matches-text": "more matches in this document",
     "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
     "search-detached-cancel-button-title": "Cancel",
     "search-submit-button-title": "Submit",
     "search-label": "Search"
@@ -117,6 +125,33 @@ div.csl-indent {
 
   <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
   <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
 
 <link rel="stylesheet" href="style.css">
 </head>
@@ -127,12 +162,12 @@ div.csl-indent {
   <header id="quarto-header" class="headroom fixed-top">
   <nav class="quarto-secondary-nav">
     <div class="container-fluid d-flex">
-      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./priors.html"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Priors</span></a></li></ol></nav>
-      <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
-      </a>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./priors.html"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Priors</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
       <button type="button" class="btn quarto-search-button" aria-label="" onclick="window.quartoOpenSearch();">
         <i class="bi bi-search"></i>
       </button>
@@ -142,13 +177,13 @@ div.csl-indent {
 <!-- content -->
 <div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
 <!-- sidebar -->
-  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal sidebar-navigation floating overflow-auto">
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
     <div class="pt-lg-2 mt-2 text-left sidebar-header">
     <div class="sidebar-title mb-0 py-0">
       <a href="./">Bayesian modelling</a> 
         <div class="sidebar-tools-main">
-    <a href="https://github.com/lbelzile/math80601a/" rel="" title="Source Code" class="quarto-navigation-tool px-1" aria-label="Source Code"><i class="bi bi-github"></i></a>
-    <a href="./MATH80601A-bayesmod.pdf" rel="" title="Download PDF" class="quarto-navigation-tool px-1" aria-label="Download PDF"><i class="bi bi-file-pdf"></i></a>
+    <a href="https://github.com/lbelzile/MATH80601A" title="Source Code" class="quarto-navigation-tool px-1" aria-label="Source Code"><i class="bi bi-github"></i></a>
+    <a href="./MATH80601A-bayesmod.pdf" title="Download PDF" class="quarto-navigation-tool px-1" aria-label="Download PDF"><i class="bi bi-file-pdf"></i></a>
 </div>
     </div>
       </div>
@@ -186,13 +221,13 @@ div.csl-indent {
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./references.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">References</span></a>
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">References</span></span></a>
   </div>
 </li>
     </ul>
     </div>
 </nav>
-<div id="quarto-sidebar-glass" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass"></div>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
         <nav id="TOC" role="doc-toc" class="toc-active">
@@ -209,7 +244,7 @@ div.csl-indent {
   </ul></li>
   <li><a href="#sensitivity-analysis" id="toc-sensitivity-analysis" class="nav-link" data-scroll-target="#sensitivity-analysis"><span class="header-section-number">2.6</span> Sensitivity analysis</a></li>
   </ul>
-<div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/lbelzile/math80601a/edit/main/priors.qmd" class="toc-action">Edit this page</a></p></div></div></nav>
+<div class="toc-actions"><ul><li><a href="https://github.com/lbelzile/MATH80601A/edit/main/priors.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li></ul></div></nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
@@ -218,6 +253,7 @@ div.csl-indent {
 <h1 class="title display-7"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Priors</span></h1>
 
 </header>
+
 
 <p>The posterior distribution combines two ingredients: the likelihood and the prior. If the former is a standard ingredient of any likelihood-based inference, prior specification requires some care. The purpose of this chapter is to consider different standard way of constructing prior functions, and to specify the parameters of the latter: we term these hyperparameters.</p>
 <p>The posterior is a compromise prior and likelihood: the more informative the prior, the more the posterior resembles it, but in large samples, the effect of the prior is often negligible if there is enough information in the likelihood about all parameters. We can assess the robustness of the prior specification through a sensitivity analysis by comparing the outcomes of the posterior for different priors or different values of the hyperparameters.</p>
@@ -228,41 +264,45 @@ div.csl-indent {
 <p>The prior predictive is <span class="math inline">\(\int_{\boldsymbol{\Theta}} p(y \mid \boldsymbol{\theta}) p(\boldsymbol{\theta}) \mathrm{d} \boldsymbol{\theta}\)</span>: we can simulate outcomes from it by first drawing parameter values from the prior, then sampling new observations from the distribution in the likelihood and keeping only the latter. If there are sensible bounds for the range of the response, we could discard values that do not abide with these.</p>
 <p>Working with standardized inputs <span class="math inline">\(x_i \mapsto (x_i - \overline{x})/\mathrm{sd}(\boldsymbol{x})\)</span> is useful. For example, in a simple linear regression (with a sole numerical explanatory), the slope is the correlation between standardized explanatory <span class="math inline">\(\mathrm{X}\)</span> and standardized response <span class="math inline">\(Y\)</span> and the intercept should be mean zero.</p>
 <div id="exm-bixi-temp" class="theorem example">
-<p><span class="theorem-title"><strong>Example 2.1 </strong></span>Consider the daily number of Bixi bike sharing users for 2017–2019 at the Edouard Montpetit station next to HEC: we can consider a simple linear regression with log counts as a function of temperature,<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a> <span class="math display">\[\log (\texttt{nusers}) \sim \mathsf{Norm}_{+}\{\beta_0 + \beta_1 (\texttt{temp}-20), \sigma^2\}.\]</span> The <span class="math inline">\(\beta_1\)</span> slope measures units in degree Celsius per log number of person.</p>
+<p><span class="theorem-title"><strong>Example 2.1</strong></span> Consider the daily number of Bixi bike sharing users for 2017–2019 at the Edouard Montpetit station next to HEC: we can consider a simple linear regression with log counts as a function of temperature,<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a> <span class="math display">\[\log (\texttt{nusers}) \sim \mathsf{Norm}_{+}\{\beta_0 + \beta_1 (\texttt{temp}-20), \sigma^2\}.\]</span> The <span class="math inline">\(\beta_1\)</span> slope measures units in degree Celsius per log number of person.</p>
 <p>The hyperparameters depend of course on the units of the analysis, unless one standardizes response variable and explanatories: it is easier to standardize the temperature so that we consider deviations from, say 20<span class="math inline">\(^{\circ}\)</span>C, which is not far from the observed mean in the sample. After some tuning, the independent priors <span class="math inline">\(\beta_0 \sim \mathsf{Norm}(\overline{y}, 0.5^2)\)</span>, <span class="math inline">\(\beta_1 \sim \mathsf{Norm}(0, 0.05^2)\)</span> and <span class="math inline">\(\sigma \sim \mathsf{Exp}(3)\)</span> seem to yield plausible outcomes and relationships.<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a></p>
-<div class="cell" data-hash="priors_cache/html/fig-bixi_38c36008d727bca56a2cb0b8fba8fefa">
+<div class="cell">
 <div class="cell-output-display">
-<div id="fig-bixi" class="quarto-figure quarto-figure-center anchored">
-<figure class="figure">
-<p><img src="priors_files/figure-html/fig-bixi-1.png" class="img-fluid figure-img" width="672"></p>
-<figcaption class="figure-caption">Figure&nbsp;2.1: Prior draws of the linear regressions with observed data superimposed (left), and draws of observations from the prior predictive distribution (in gray) against observed data (right).</figcaption>
+<div id="fig-bixi" class="quarto-figure quarto-figure-center quarto-float anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-bixi-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="priors_files/figure-html/fig-bixi-1.png" class="img-fluid figure-img" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-bixi-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;2.1: Prior draws of the linear regressions with observed data superimposed (left), and draws of observations from the prior predictive distribution (in gray) against observed data (right).
+</figcaption>
 </figure>
 </div>
 </div>
 </div>
-<p>We can draw regression lines from the prior, as in the left panel of <a href="#fig-bixi">Figure&nbsp;<span>2.1</span></a>: while some of the negative relationships appear unlikely after seeing the data, the curves all seem to pass somewhere in the cloud of point. By contrast, a silly prior is one that would result in all observations being above or below the regression line, or yield values that are much too large near the endpoints of the explanatory variable. Indeed, given the number of bikes for rental is limited (a docking station has only 20 bikes), it is also sensible to ensure that simulations do not return overly large numbers. The maximum number of daily users in the sample is 68, so priors that return simulations with more than 200 (rougly 5.3 on the log scale) are not that plausible. The prior predictive draws can help establish this and the right panel of <a href="#fig-bixi">Figure&nbsp;<span>2.1</span></a> shows that, expect for the lack of correlation between temperature and number of users, the simulated values from the prior predictive are plausible even if overdispersed.</p>
+<p>We can draw regression lines from the prior, as in the left panel of <a href="#fig-bixi" class="quarto-xref">Figure&nbsp;<span>2.1</span></a>: while some of the negative relationships appear unlikely after seeing the data, the curves all seem to pass somewhere in the cloud of point. By contrast, a silly prior is one that would result in all observations being above or below the regression line, or yield values that are much too large near the endpoints of the explanatory variable. Indeed, given the number of bikes for rental is limited (a docking station has only 20 bikes), it is also sensible to ensure that simulations do not return overly large numbers. The maximum number of daily users in the sample is 68, so priors that return simulations with more than 200 (rougly 5.3 on the log scale) are not that plausible. The prior predictive draws can help establish this and the right panel of <a href="#fig-bixi" class="quarto-xref">Figure&nbsp;<span>2.1</span></a> shows that, expect for the lack of correlation between temperature and number of users, the simulated values from the prior predictive are plausible even if overdispersed.</p>
 </div>
 </section>
 <section id="conjugate-priors" class="level2" data-number="2.2">
 <h2 data-number="2.2" class="anchored" data-anchor-id="conjugate-priors"><span class="header-section-number">2.2</span> Conjugate priors</h2>
 <p>In very simple models, there may exists prior densities that result in a posterior distribution of the same family. We can thus directly extract characteristics of the posterior. Conjugate priors are chosen for computational convenience and because interpretation is convenient, as the parameters of the posterior will often be some weighted average of prior and likelihood component.</p>
 <div id="def-conjugate-prior" class="theorem definition">
-<p><span class="theorem-title"><strong>Definition 2.1 </strong></span>A prior density <span class="math inline">\(p(\boldsymbol{\theta})\)</span> is conjugate for likelihood <span class="math inline">\(L(\boldsymbol{\theta}; \boldsymbol{y})\)</span> if the product <span class="math inline">\(L(\boldsymbol{\theta}; \boldsymbol{y})p(\boldsymbol{\theta})\)</span>, after renormalization, is of the same parametric family as the prior.</p>
+<p><span class="theorem-title"><strong>Definition 2.1</strong></span> A prior density <span class="math inline">\(p(\boldsymbol{\theta})\)</span> is conjugate for likelihood <span class="math inline">\(L(\boldsymbol{\theta}; \boldsymbol{y})\)</span> if the product <span class="math inline">\(L(\boldsymbol{\theta}; \boldsymbol{y})p(\boldsymbol{\theta})\)</span>, after renormalization, is of the same parametric family as the prior.</p>
 <p>Exponential families (including the binomial, Poisson, exponential, Gaussian distributions) admit conjugate priors<a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a></p>
 </div>
 <div id="exm-conjugatepriors-binom" class="theorem example">
-<p><span class="theorem-title"><strong>Example 2.2 (Conjugate prior for the binomial model) </strong></span>The binomial log density with <span class="math inline">\(y\)</span> successes out of <span class="math inline">\(n\)</span> trials is proportional to <span class="math display">\[\begin{align*}
+<p><span class="theorem-title"><strong>Example 2.2 (Conjugate prior for the binomial model)</strong></span> The binomial log density with <span class="math inline">\(y\)</span> successes out of <span class="math inline">\(n\)</span> trials is proportional to <span class="math display">\[\begin{align*}
 y \log(p) + (n-y) \log(1-p) = y\log\left( \frac{p}{1-p}\right) + n \log(1-p)
 \end{align*}\]</span> with canonical parameter <span class="math inline">\(\mathrm{logit}(p)\)</span>.<a href="#fn4" class="footnote-ref" id="fnref4" role="doc-noteref"><sup>4</sup></a> The binomial distribution is thus an exponential family.</p>
 <p>Since the density of the binomial is of the form <span class="math inline">\(p^y(1-p)^{n-y}\)</span>, the beta distribution <span class="math inline">\(\mathsf{Beta}(\alpha, \beta)\)</span> with density <span class="math display">\[f(x) \propto x^{\alpha-1} (1-x)^{\beta-1}\]</span> is the conjugate prior.</p>
 <p>The beta distribution is also the conjugate prior for the negative binomial, geometric and Bernoulli distributions, since their likelihoods are all proportional to that of the beta. The fact that different sampling schemes that result in proportional likelihood functions give the same inference is called likelihood principle.</p>
 </div>
 <div id="exm-conjugatepriors-poisson" class="theorem example">
-<p><span class="theorem-title"><strong>Example 2.3 (Conjugate prior for the Poisson model) </strong></span>The Poisson distribution with mean <span class="math inline">\(\mu\)</span> has log density proportional to <span class="math inline">\(f(y; \mu) \propto y\log(\mu) -\mu\)</span>, so is an exponential family with natural parameter <span class="math inline">\(\log(\mu)\)</span>. The gamma density, <span class="math display">\[ f(x) \propto \beta^{\alpha}/\Gamma(\alpha)x^{\alpha-1} \exp(-\beta x)\]</span> with shape <span class="math inline">\(\alpha\)</span> and rate <span class="math inline">\(\beta\)</span> is the conjugate prior for the Poisson. For an <span class="math inline">\(n\)</span>-sample of independent observations <span class="math inline">\(\mathsf{Pois}(\mu)\)</span> observations with <span class="math inline">\(\mu \sim \mathsf{Gamma}(\alpha, \beta)\)</span>, the posterior is <span class="math inline">\(\mathsf{Gamma}(\sum_{i=1}^n y_i + \alpha, \beta + n)\)</span>.</p>
+<p><span class="theorem-title"><strong>Example 2.3 (Conjugate prior for the Poisson model)</strong></span> The Poisson distribution with mean <span class="math inline">\(\mu\)</span> has log density proportional to <span class="math inline">\(f(y; \mu) \propto y\log(\mu) -\mu\)</span>, so is an exponential family with natural parameter <span class="math inline">\(\log(\mu)\)</span>. The gamma density, <span class="math display">\[ f(x) \propto \beta^{\alpha}/\Gamma(\alpha)x^{\alpha-1} \exp(-\beta x)\]</span> with shape <span class="math inline">\(\alpha\)</span> and rate <span class="math inline">\(\beta\)</span> is the conjugate prior for the Poisson. For an <span class="math inline">\(n\)</span>-sample of independent observations <span class="math inline">\(\mathsf{Pois}(\mu)\)</span> observations with <span class="math inline">\(\mu \sim \mathsf{Gamma}(\alpha, \beta)\)</span>, the posterior is <span class="math inline">\(\mathsf{Gamma}(\sum_{i=1}^n y_i + \alpha, \beta + n)\)</span>.</p>
 </div>
-<p>Knowing the analytic expression for the posterior can be useful for calculations of the marginal likelihood, as <a href="#exm-poisson-negbin">Example&nbsp;<span>2.4</span></a> demonstrates.</p>
+<p>Knowing the analytic expression for the posterior can be useful for calculations of the marginal likelihood, as <a href="#exm-poisson-negbin" class="quarto-xref">Example&nbsp;<span>2.4</span></a> demonstrates.</p>
 <div id="exm-poisson-negbin" class="theorem example">
-<p><span class="theorem-title"><strong>Example 2.4 (Negative binomial as a Poisson mixture) </strong></span>&nbsp;</p>
+<p><span class="theorem-title"><strong>Example 2.4 (Negative binomial as a Poisson mixture)</strong></span> &nbsp;</p>
 <!-- Some canonical distributions have only one parameter which dictates moments: for a Poisson random variable $Y \sim \mathsf{Pois}(\lambda)$, both $\mathsf{E}(Y) = \mathsf{Va}(Y) = \lambda$, whereas if we have binomial data with $n$ independent trials, each with probability of success $p$, then $Y \sim \mathsf{Bin}(n, p)$, then the theoretical mean of successes is $\mathsf{E}(Y)=np$ and the variance $\mathsf{Va}(Y) = np(1-p)$. -->
 <!-- In generalized linear models, we model the mean as a function of covariate, but data may exhibit overdispersion relative to the theoretical mean. -->
 <p>One restriction of the Poisson model is that the restriction on its moments is often unrealistic. The most frequent problem encountered is that of <strong>overdispersion</strong>, meaning that the variability in the counts is larger than that implied by a Poisson distribution.</p>
@@ -281,7 +321,7 @@ p(y) &amp;= \frac{p(y \mid \lambda)p(\lambda)}{p(\lambda \mid y)} \\&amp;= \frac
 \end{align*}\]</span> In a negative binomial regression model, the term <span class="math inline">\(k\)</span> is a dispersion parameter, which is fixed for all observations, whereas <span class="math inline">\(\mu = \exp(\boldsymbol{\beta}\mathbf{X})\)</span> is a function of covariates <span class="math inline">\(\mathbf{X}\)</span>. As <span class="math inline">\(k \to \infty\)</span>, the distribution of <span class="math inline">\(\Lambda\)</span> degenerates to a constant at <span class="math inline">\(\mu\)</span> and we recover the Poisson model.</p>
 </div>
 <div id="exm-abtest" class="theorem example">
-<p><span class="theorem-title"><strong>Example 2.5 (Posterior rates for A/B tests using conjugate Poisson model) </strong></span>Upworthy.com, a US media publisher, revolutionized headlines online advertisement by running systematic A/B tests to compare the different wording of headlines, placement and image and what catches attention the most. The Upworthy Research Archive <span class="citation" data-cites="Matias:2021">(<a href="references.html#ref-Matias:2021" role="doc-biblioref">Matias et al. 2021</a>)</span> contains results for 22743 experiments, with a click through rate of 1.58% on average and a standard deviation of 1.23%. The <code>clickability_test_id</code> gives the unique identifier of the experiment, <code>clicks</code> the number of conversion out of <code>impressions</code>. See <a href="https://tellingstorieswithdata.com/08-hunt.html#ab-testing">Section 8.5</a> of <span class="citation" data-cites="Alexander:2023">Alexander (<a href="references.html#ref-Alexander:2023" role="doc-biblioref">2023</a>)</span> for more details about A/B testing and background information.</p>
+<p><span class="theorem-title"><strong>Example 2.5 (Posterior rates for A/B tests using conjugate Poisson model)</strong></span> Upworthy.com, a US media publisher, revolutionized headlines online advertisement by running systematic A/B tests to compare the different wording of headlines, placement and image and what catches attention the most. The Upworthy Research Archive <span class="citation" data-cites="Matias:2021">(<a href="references.html#ref-Matias:2021" role="doc-biblioref">Matias et al. 2021</a>)</span> contains results for 22743 experiments, with a click through rate of 1.58% on average and a standard deviation of 1.23%. The <code>clickability_test_id</code> gives the unique identifier of the experiment, <code>clicks</code> the number of conversion out of <code>impressions</code>. See <a href="https://tellingstorieswithdata.com/08-hunt.html#ab-testing">Section 8.5</a> of <span class="citation" data-cites="Alexander:2023">Alexander (<a href="references.html#ref-Alexander:2023" role="doc-biblioref">2023</a>)</span> for more details about A/B testing and background information.</p>
 <p>Consider an A/B test from November 23st, 2014, that compared four different headlines for a story on Sesame Street workshop with interviews of children whose parents were in jail and visiting them in prisons. The headlines tested were:</p>
 <blockquote class="blockquote">
 <ol type="1">
@@ -293,16 +333,20 @@ p(y) &amp;= \frac{p(y \mid \lambda)p(\lambda)}{p(\lambda \mid y)} \\&amp;= \frac
 </blockquote>
 <p>At first glance, the first and third headlines seem likely to lead to a curiosity gap. The wording of the second is more explicit (and searchable), whereas the first is worded as a question.</p>
 <p>We model the conversion rate <span class="math inline">\(\lambda_i\)</span> for each headline separately using a Poisson distribution and compare the posterior distributions for all four choices. Using a conjugate prior and selecting the parameters by moment matching yields approximately <span class="math inline">\(\alpha = 1.64\)</span> and <span class="math inline">\(\beta = 0.01\)</span> for the hyperparameters.</p>
-<div class="cell" data-hash="priors_cache/html/tbl-upworthy_cb5910745de87b8528f3b6847dd40abd">
+<div class="cell">
+<div id="tbl-upworthy" class="cell quarto-float anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-upworthy-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Table&nbsp;2.1: Number of views, clicks for different headlines for the Upworthy data.
+</figcaption>
+<div aria-describedby="tbl-upworthy-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <div class="cell-output-display">
-<div id="tbl-upworthy" class="anchored">
-<table data-quarto-postprocess="true" class="table table-sm table-striped small">
-<caption>Table&nbsp;2.1: Number of views, clicks for different headlines for the Upworthy data.</caption>
+<table class="do-not-create-environment cell table table-sm table-striped small">
 <thead>
 <tr class="header">
-<th style="text-align: left;" data-quarto-table-cell-role="th">headline</th>
-<th style="text-align: right;" data-quarto-table-cell-role="th">impressions</th>
-<th style="text-align: right;" data-quarto-table-cell-role="th">clicks</th>
+<th style="text-align: left;">headline</th>
+<th style="text-align: right;">impressions</th>
+<th style="text-align: right;">clicks</th>
 </tr>
 </thead>
 <tbody>
@@ -329,16 +373,20 @@ p(y) &amp;= \frac{p(y \mid \lambda)p(\lambda)}{p(\lambda \mid y)} \\&amp;= \frac
 </tbody>
 </table>
 </div>
-
-
+</div>
+</figure>
 </div>
 </div>
-<div class="cell" data-hash="priors_cache/html/fig-upworthy_1816e2f901b84d71ca1340bd8dffed24">
+<div class="cell">
 <div class="cell-output-display">
-<div id="fig-upworthy" class="quarto-figure quarto-figure-center anchored">
-<figure class="figure">
-<p><img src="priors_files/figure-html/fig-upworthy-1.png" class="img-fluid figure-img" width="672"></p>
-<figcaption class="figure-caption">Figure&nbsp;2.2: Gamma posterior for conversion rate of the different Upworthy Sesame Street headline.</figcaption>
+<div id="fig-upworthy" class="quarto-figure quarto-figure-center quarto-float anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-upworthy-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="priors_files/figure-html/fig-upworthy-1.png" class="img-fluid figure-img" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-upworthy-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;2.2: Gamma posterior for conversion rate of the different Upworthy Sesame Street headline.
+</figcaption>
 </figure>
 </div>
 </div>
@@ -346,9 +394,9 @@ p(y) &amp;= \frac{p(y \mid \lambda)p(\lambda)}{p(\lambda \mid y)} \\&amp;= \frac
 <p>We can visualize the posterior distributions. In this context, the large sample size lead to the dominance of the likelihood contribution <span class="math inline">\(p(Y_i \mid \lambda_i) \sim \mathsf{Pois}(n_i\lambda_i)\)</span> relative to the prior. We can see there is virtually no overlap between different rates for headers H1 (preferred) relative to H4 (least favorable). The probability that the conversion rate for Headline 3 is higher than Headline 1 can be approximated by simulating samples from both posteriors and computing the proportion of times one is larger: we get 1.7% for <code>H3</code> relative to <code>H1</code>, indicating a clear preference for the first headline <code>H1</code>.</p>
 </div>
 <div id="exm-poisson-upworthy-question" class="theorem example">
-<p><span class="theorem-title"><strong>Example 2.6 (Should you phrase your headline as a question?) </strong></span>We can also consider aggregate records for Upworthy, as <span class="citation" data-cites="Alexander:2023">Alexander (<a href="references.html#ref-Alexander:2023" role="doc-biblioref">2023</a>)</span> did. The <code>upworthy_question</code> database contains a balanced sample of all headlines where at least one of the choices featured a question, with at least one alternative statement. Whether a headline contains a question or not is determined by querying for the question mark. We consider aggregated counts for all such headlines, with the <code>question</code> factor encoding whether there was a question, <code>yes</code> or <code>no</code>. For simplicity, we treat the number of views as fixed, but keep in mind that A/B tests are often sequential experiments with a stopping rule.<a href="#fn5" class="footnote-ref" id="fnref5" role="doc-noteref"><sup>5</sup></a></p>
+<p><span class="theorem-title"><strong>Example 2.6 (Should you phrase your headline as a question?)</strong></span> We can also consider aggregate records for Upworthy, as <span class="citation" data-cites="Alexander:2023">Alexander (<a href="references.html#ref-Alexander:2023" role="doc-biblioref">2023</a>)</span> did. The <code>upworthy_question</code> database contains a balanced sample of all headlines where at least one of the choices featured a question, with at least one alternative statement. Whether a headline contains a question or not is determined by querying for the question mark. We consider aggregated counts for all such headlines, with the <code>question</code> factor encoding whether there was a question, <code>yes</code> or <code>no</code>. For simplicity, we treat the number of views as fixed, but keep in mind that A/B tests are often sequential experiments with a stopping rule.<a href="#fn5" class="footnote-ref" id="fnref5" role="doc-noteref"><sup>5</sup></a></p>
 <p>We model first the rates using a Poisson regression; the corresponding frequentist analysis would include an offset to account for differences in views. If <span class="math inline">\(\lambda_{j}\)</span> <span class="math inline">\((j=1, 2)\)</span> are the average rate for each factor level (yes and no), then <span class="math inline">\(\mathsf{E}(Y_{ij}/n_{ij}) = \lambda_j\)</span>. In the frequentist setting, we can fit a simple Poisson generalized linear regression model with an offset term and a binary variable.</p>
-<div class="cell" data-hash="priors_cache/html/unnamed-chunk-6_5ba1a7f021d588eba71717d3e905bcf9">
+<div class="cell">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(upworthy_question, <span class="at">package =</span> <span class="st">"hecbayes"</span>)</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>poismod <span class="ot">&lt;-</span> <span class="fu">glm</span>(</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>  clicks <span class="sc">~</span> <span class="fu">offset</span>(<span class="fu">log</span>(impressions)) <span class="sc">+</span> question, </span>
@@ -363,13 +411,17 @@ p(y) &amp;= \frac{p(y \mid \lambda)p(\lambda)}{p(\lambda \mid y)} \\&amp;= \frac
 <p>The coefficients represent the difference in log rate (multiplicative effect) relative to the baseline rate, with an increase of 6.3 percent when the headline does not contain a question. A likelihood ratio test can be performed by comparing the deviance of the null model (intercept-only), indicating strong evidence that including question leads to significatively different rates. This is rather unsurprising given the enormous sample sizes.</p>
 <p>Consider instead a Bayesian analysis with conjugate prior: we model separately the rates of each group (question or not). Suppose we think apriori that the click-rate is on average 1%, with a standard deviation of 2%, with no difference between questions or not. For a <span class="math inline">\(\mathsf{Gamma}(\alpha, \beta)\)</span> prior, this would translate, using moment matching, into a rate of <span class="math inline">\(\beta = 0.04 = \mathsf{Var}_0(\lambda_j)/\mathsf{E}_0(\lambda_j)\)</span> and a shape of <span class="math inline">\(\alpha = 2.5\)</span> (<span class="math inline">\(j=1, 2\)</span>). If <span class="math inline">\(\lambda_{j}\)</span> is the average rate for each factor level (yes and no), then <span class="math inline">\(\mathsf{E}(Y_{ij}/n_{ij}) = \lambda_j\)</span> so the log likelihood is proportional, as a function of <span class="math inline">\(\lambda_1\)</span> and <span class="math inline">\(\lambda_2\)</span>, to <span class="math display">\[\begin{align*}
 \ell(\boldsymbol{\lambda}; \boldsymbol{y}, \boldsymbol{n}) \stackrel{\boldsymbol{\lambda}}{\propto} \sum_{i=1}^n \sum_{j=1}^2 y_{ij}\log \lambda_j - \lambda_jn_{ij}
-\end{align*}\]</span> and we can recognize that the posterior for <span class="math inline">\(\lambda_i\)</span> is gamma with shape <span class="math inline">\(\alpha + \sum_{i=1}^n y_{ij}\)</span> and rate <span class="math inline">\(\beta + \sum_{i=1}^n n_{ij}.\)</span> For inference, we thus only need to select hyperparameters and calculate the total number of clicks and impressions per group. We can then consider the posterior difference <span class="math inline">\(\lambda_1 - \lambda_2\)</span> or, to mimic the Poisson multiplicative model, of the ratio <span class="math inline">\(\lambda_1/\lambda_2\)</span>. The former suggests very small differences, but one must keep in mind that rates are also small. The ratio, shown in the right-hand panel of <a href="#fig-hist-difference_rates">Figure&nbsp;<span>2.3</span></a>, gives a more easily interpretable portrait that is in line with the frequentist analysis.</p>
-<div class="cell" data-hash="priors_cache/html/fig-hist-difference_rates_0a3e1f8a15cfa1dac11a6544ecf57cbd">
+\end{align*}\]</span> and we can recognize that the posterior for <span class="math inline">\(\lambda_i\)</span> is gamma with shape <span class="math inline">\(\alpha + \sum_{i=1}^n y_{ij}\)</span> and rate <span class="math inline">\(\beta + \sum_{i=1}^n n_{ij}.\)</span> For inference, we thus only need to select hyperparameters and calculate the total number of clicks and impressions per group. We can then consider the posterior difference <span class="math inline">\(\lambda_1 - \lambda_2\)</span> or, to mimic the Poisson multiplicative model, of the ratio <span class="math inline">\(\lambda_1/\lambda_2\)</span>. The former suggests very small differences, but one must keep in mind that rates are also small. The ratio, shown in the right-hand panel of <a href="#fig-hist-difference_rates" class="quarto-xref">Figure&nbsp;<span>2.3</span></a>, gives a more easily interpretable portrait that is in line with the frequentist analysis.</p>
+<div class="cell">
 <div class="cell-output-display">
-<div id="fig-hist-difference_rates" class="quarto-figure quarto-figure-center anchored">
-<figure class="figure">
-<p><img src="priors_files/figure-html/fig-hist-difference_rates-1.png" class="img-fluid figure-img" width="672"></p>
-<figcaption class="figure-caption">Figure&nbsp;2.3: Histograms of posterior summaries for differences (left) and rates (right) based on 1000 simulations from the independent gamma posteriors.</figcaption>
+<div id="fig-hist-difference_rates" class="quarto-figure quarto-figure-center quarto-float anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-hist-difference_rates-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="priors_files/figure-html/fig-hist-difference_rates-1.png" class="img-fluid figure-img" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-hist-difference_rates-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;2.3: Histograms of posterior summaries for differences (left) and rates (right) based on 1000 simulations from the independent gamma posteriors.
+</figcaption>
 </figure>
 </div>
 </div>
@@ -377,7 +429,7 @@ p(y) &amp;= \frac{p(y \mid \lambda)p(\lambda)}{p(\lambda \mid y)} \\&amp;= \frac
 <p>To get an approximation to the posterior mean of the ratio <span class="math inline">\(\lambda_1/\lambda_2,\)</span> it suffices to draw independent observations from their respective posterior, compute the ratio and take the sample mean of those draws. We can see that the sampling distribution of the ratio is nearly symmetrical, so we can expect Wald intervals to perform well should one be interested in building confidence intervals. This is however hardly surprising given the sample size at play.</p>
 </div>
 <div id="exm-conjugatepriors-normal" class="theorem example">
-<p><span class="theorem-title"><strong>Example 2.7 (Conjugate prior for Gaussian mean with known variance) </strong></span>Consider an <span class="math inline">\(n\)</span> simple random sample of independent and identically distributed Gaussian variables with mean <span class="math inline">\(\mu\)</span> and standard deviation <span class="math inline">\(\sigma\)</span>, denoted <span class="math inline">\(Y_i \sim \mathsf{Norm}(\mu, \sigma^2)\)</span>. We pick a Gaussian prior for the location parameter, <span class="math inline">\(\mu \sim \mathsf{Norm}(\nu, \tau^2)\)</span> where we assume <span class="math inline">\(\mu, \tau\)</span> are fixed hyperparameter values. For now, we consider only inference for <span class="math inline">\(p(\mu \mid \sigma)\)</span>: discarding any term that is not a function of <span class="math inline">\(\mu\)</span>, the conditional posterior is <span class="math display">\[\begin{align*}
+<p><span class="theorem-title"><strong>Example 2.7 (Conjugate prior for Gaussian mean with known variance)</strong></span> Consider an <span class="math inline">\(n\)</span> simple random sample of independent and identically distributed Gaussian variables with mean <span class="math inline">\(\mu\)</span> and standard deviation <span class="math inline">\(\sigma\)</span>, denoted <span class="math inline">\(Y_i \sim \mathsf{Norm}(\mu, \sigma^2)\)</span>. We pick a Gaussian prior for the location parameter, <span class="math inline">\(\mu \sim \mathsf{Norm}(\nu, \tau^2)\)</span> where we assume <span class="math inline">\(\mu, \tau\)</span> are fixed hyperparameter values. For now, we consider only inference for <span class="math inline">\(p(\mu \mid \sigma)\)</span>: discarding any term that is not a function of <span class="math inline">\(\mu\)</span>, the conditional posterior is <span class="math display">\[\begin{align*}
 p(\mu \mid \sigma) &amp;\propto \exp\left\{ -\frac{1}{2\sigma^2}\sum_{i=1}^n (y_{i}-\mu)^2\right\} \exp\left\{-\frac{1}{2\tau^2}(\mu - \nu)^2\right\}
 \\&amp;\propto \exp\left\{\left(\frac{\sum_{i=1}^n y_{i}}{\sigma^2} + \frac{\nu}{\tau^2}\right)\mu - \left( \frac{n}{2\sigma^2} +\frac{1}{2\tau^2}\right)\mu^2\right\}.
 \end{align*}\]</span> The log of the posterior density conditional on <span class="math inline">\(\sigma\)</span> is quadratic in <span class="math inline">\(\mu\)</span>, it must be a Gaussian distribution truncated over the positive half line. This can be seen by completing the square in <span class="math inline">\(\mu\)</span>, or by comparing this expression to the density of <span class="math inline">\(\mathsf{Norm}(\mu, \sigma^2)\)</span>, <span class="math display">\[\begin{align*}
@@ -390,13 +442,13 @@ f(x; \mu, \sigma) \stackrel{\mu}{\propto} \exp\left(-\frac{1}{2 \sigma^2}\mu^2 +
 <section id="uninformative-priors" class="level2" data-number="2.3">
 <h2 data-number="2.3" class="anchored" data-anchor-id="uninformative-priors"><span class="header-section-number">2.3</span> Uninformative priors</h2>
 <div id="def-properprior" class="theorem definition">
-<p><span class="theorem-title"><strong>Definition 2.2 (Proper prior) </strong></span>We call a prior function <em>proper</em> if it’s integral is finite over the parameter space; such prior function automatically leads to a valid posterior.</p>
+<p><span class="theorem-title"><strong>Definition 2.2 (Proper prior)</strong></span> We call a prior function <em>proper</em> if it’s integral is finite over the parameter space; such prior function automatically leads to a valid posterior.</p>
 </div>
 <p>The best example of prior priors arise from probability density function. We can still employ this rule for improper priors: for example, taking <span class="math inline">\(\alpha, \beta \to 0\)</span> in the beta prior leads to a prior proportional to <span class="math inline">\(x^{-1}(1-x)^{-1}\)</span>, the integral of which diverges on the unit interval <span class="math inline">\([0,1]\)</span>. However, as long as the number of success and the number of failures is larger than 1, meaning <span class="math inline">\(k \geq 1, n-k \geq 1\)</span>, the posterior distribution would be proper, i.e., integrable. To find the posterior, normalizing constants are also superfluous.</p>
 <p>Many uninformative priors are flat, or proportional to a uniform on some subset of the real line and therefore improper. It may be superficially tempting to set a uniform prior on a large range to ensure posterior property, but the major problem is that a flat prior may be informative in a different parametrization, as the following example suggests.</p>
 <p><span class="citation" data-cites="Gelman:2013">Gelman et al. (<a href="references.html#ref-Gelman:2013" role="doc-biblioref">2013</a>)</span> uses the following taxonomy for various levels of prior information: uninformative priors are generally flat or uniform priors with <span class="math inline">\(p(\beta) \propto 1\)</span>, vague priors are typically nearly flat even if proper, e.g., <span class="math inline">\(\beta \sim \mathsf{Norm}(0, 100)\)</span>, weakly informative priors provide little constraints <span class="math inline">\(\beta \sim \mathsf{Norm}(0, 10)\)</span>, and informative prior are typically application-specific, but constrain the ranges. Uninformative and vague priors are generally not recommended unless they are known to give valid posterior inference and the amount of information from the likelihood is high.</p>
 <div id="exm-scaleflatprior" class="theorem example">
-<p><span class="theorem-title"><strong>Example 2.8 (Transformation of flat prior for scales) </strong></span>Consider the parameter <span class="math inline">\(\log(\tau) \in \mathbb{R}\)</span> and the prior <span class="math inline">\(p( \log \tau) \propto 1\)</span>. If we reparametrize the model in terms of <span class="math inline">\(\tau\)</span>, the new prior (including the Jacobian of the transformation) is <span class="math inline">\(\tau^{-1}\)</span></p>
+<p><span class="theorem-title"><strong>Example 2.8 (Transformation of flat prior for scales)</strong></span> Consider the parameter <span class="math inline">\(\log(\tau) \in \mathbb{R}\)</span> and the prior <span class="math inline">\(p( \log \tau) \propto 1\)</span>. If we reparametrize the model in terms of <span class="math inline">\(\tau\)</span>, the new prior (including the Jacobian of the transformation) is <span class="math inline">\(\tau^{-1}\)</span></p>
 </div>
 <p>Some priors are standard and widely used. In location scale families with location <span class="math inline">\(\nu\)</span> and scale <span class="math inline">\(\tau\)</span>, the density is such that <span class="math display">\[\begin{align*}
 f(x; \nu, \tau) =  \frac{1}{\tau} f\left(\frac{x - \nu}{\tau}\right), \qquad \nu \in \mathbb{R}, \tau &gt;0.
@@ -406,7 +458,7 @@ f(x; \nu, \tau) =  \frac{1}{\tau} f\left(\frac{x - \nu}{\tau}\right), \qquad \nu
 <p>One criticism of the Bayesian approach is the arbitrariness of prior functions. However, the role of the prior is often negligible in large samples (consider for example the posterior of exponential families with conjugate priors). Moreover, the likelihood is also chosen for convenience, and arguably has a bigger influence on the conclusion. Data fitted using a linear regression model seldom follow Gaussian distributions conditionally, in the same way that the linearity is a convenience (and first order approximation).</p>
 </div>
 <div id="def-jeffreys" class="theorem definition">
-<p><span class="theorem-title"><strong>Definition 2.3 (Jeffrey’s prior) </strong></span>In single parameter models, taking a prior function for <span class="math inline">\(\theta\)</span> proportional to the square root of the determinant of the information matrix, <span class="math inline">\(p(\theta) \propto |\imath(\theta)|^{1/2}\)</span> yields a prior that is invariant to reparametrization, so that inferences conducted in different parametrizations are equivalent.<a href="#fn6" class="footnote-ref" id="fnref6" role="doc-noteref"><sup>6</sup></a></p>
+<p><span class="theorem-title"><strong>Definition 2.3 (Jeffrey’s prior)</strong></span> In single parameter models, taking a prior function for <span class="math inline">\(\theta\)</span> proportional to the square root of the determinant of the information matrix, <span class="math inline">\(p(\theta) \propto |\imath(\theta)|^{1/2}\)</span> yields a prior that is invariant to reparametrization, so that inferences conducted in different parametrizations are equivalent.<a href="#fn6" class="footnote-ref" id="fnref6" role="doc-noteref"><sup>6</sup></a></p>
 <!--
 From notes of M. Jordan for MATH 260.
 -->
@@ -419,7 +471,7 @@ i(\vartheta) &amp;= - \mathsf{E} \left(\frac{\partial^2 \ell(\vartheta)}{\partia
 <p>In multiparameter models, the system isn’t invariant to reparametrization if we consider the determinant of the Fisher information.</p>
 </div>
 <div id="exm-jeffreysbinom" class="theorem example">
-<p><span class="theorem-title"><strong>Example 2.9 (Jeffrey’s prior for the binomial distribution) </strong></span>Consider the binomial distribution <span class="math inline">\(\mathsf{Bin}(1, \theta)\)</span> with density <span class="math inline">\(f(y; \theta) \propto \theta^y(1-\theta)^{1-y}\mathsf{I}_{\theta \in [0,1]}\)</span>. The negative of the second derivative of the log likelihood with respect to <span class="math inline">\(p\)</span> is <span class="math display">\[\jmath(\theta) = - \partial^2 \ell(\theta; y) / \partial \theta^2 = y/\theta^2 + (1-y)/(1-\theta)^2\]</span> and since <span class="math inline">\(\mathsf{E}(Y)=\theta\)</span>, the Fisher information is <span class="math display">\[\imath(\vartheta) = \mathsf{E}\{\jmath(\theta)\}=1/\theta + 1/(1-\theta) = 1/\{\theta(1-\theta)\}\]</span> Jeffrey’s prior is thus <span class="math inline">\(p(\theta) \propto \theta^{-1/2}(1-\theta)^{-1/2}\)</span>, a conjugate Beta prior <span class="math inline">\(\mathsf{Beta}(0.5,0.5)\)</span>.</p>
+<p><span class="theorem-title"><strong>Example 2.9 (Jeffrey’s prior for the binomial distribution)</strong></span> Consider the binomial distribution <span class="math inline">\(\mathsf{Bin}(1, \theta)\)</span> with density <span class="math inline">\(f(y; \theta) \propto  \theta^y(1-\theta)^{1-y}\mathsf{I}_{\theta \in [0,1]}\)</span>. The negative of the second derivative of the log likelihood with respect to <span class="math inline">\(p\)</span> is <span class="math display">\[\jmath(\theta) = - \partial^2 \ell(\theta; y) / \partial \theta^2 = y/\theta^2 + (1-y)/(1-\theta)^2\]</span> and since <span class="math inline">\(\mathsf{E}(Y)=\theta\)</span>, the Fisher information is <span class="math display">\[\imath(\vartheta) = \mathsf{E}\{\jmath(\theta)\}=1/\theta + 1/(1-\theta) = 1/\{\theta(1-\theta)\}\]</span> Jeffrey’s prior is thus <span class="math inline">\(p(\theta) \propto \theta^{-1/2}(1-\theta)^{-1/2}\)</span>, a conjugate Beta prior <span class="math inline">\(\mathsf{Beta}(0.5,0.5)\)</span>.</p>
 </div>
 </section>
 <div id="exer-jeffreysnormal">
@@ -429,13 +481,13 @@ i(\vartheta) &amp;= - \mathsf{E} \left(\frac{\partial^2 \ell(\vartheta)}{\partia
 </section>
 </div>
 <div id="exm-jeffreyspoisson" class="theorem example">
-<p><span class="theorem-title"><strong>Example 2.10 (Jeffrey’s prior for the Poisson distribution) </strong></span>The Poisson distribution with <span class="math inline">\(\ell(\lambda) \propto -\lambda + y\log \lambda\)</span>, with second derivative <span class="math inline">\(-\partial^2 \ell(\lambda)/\partial \lambda^2 = y/\lambda^2\)</span>. Since the mean of the Poisson distribution is <span class="math inline">\(\lambda\)</span>, the Fisher information is <span class="math inline">\(\imath(\lambda) = \lambda^{-1}\)</span> and Jeffrey’s prior is <span class="math inline">\(\lambda^{-1/2}\)</span>.</p>
+<p><span class="theorem-title"><strong>Example 2.10 (Jeffrey’s prior for the Poisson distribution)</strong></span> The Poisson distribution with <span class="math inline">\(\ell(\lambda) \propto -\lambda + y\log \lambda\)</span>, with second derivative <span class="math inline">\(-\partial^2 \ell(\lambda)/\partial \lambda^2 = y/\lambda^2\)</span>. Since the mean of the Poisson distribution is <span class="math inline">\(\lambda\)</span>, the Fisher information is <span class="math inline">\(\imath(\lambda) = \lambda^{-1}\)</span> and Jeffrey’s prior is <span class="math inline">\(\lambda^{-1/2}\)</span>.</p>
 </div>
 <section id="informative-priors" class="level2" data-number="2.5">
 <h2 data-number="2.5" class="anchored" data-anchor-id="informative-priors"><span class="header-section-number">2.5</span> Informative priors</h2>
-<p>One strength of the Bayesian approach is the capability of incorporating expert and domain-based knowledge through priors. Often, these will take the form of moment constraints, so one common way to derive a prior is to perform moment matching to related ellicited quantities with moments of the prior distribution. It may be easier to set priors on a different scale than those of the observations, as <a href="#exm-colestawn">Example&nbsp;<span>2.11</span></a> demonstrates.</p>
+<p>One strength of the Bayesian approach is the capability of incorporating expert and domain-based knowledge through priors. Often, these will take the form of moment constraints, so one common way to derive a prior is to perform moment matching to related ellicited quantities with moments of the prior distribution. It may be easier to set priors on a different scale than those of the observations, as <a href="#exm-colestawn" class="quarto-xref">Example&nbsp;<span>2.11</span></a> demonstrates.</p>
 <div id="exm-colestawn" class="theorem example">
-<p><span class="theorem-title"><strong>Example 2.11 (Gamma quantile difference priors for extreme value distributions) </strong></span>The generalized extreme value distribution arises as the limiting distribution for the maximum of <span class="math inline">\(m\)</span> independent observations from some common distribution <span class="math inline">\(F\)</span>. The <span class="math inline">\(\mathsf{GEV}(\mu, \sigma, \xi)\)</span> distribution is a location-scale with distribution function <span class="math display">\[\begin{align*}
+<p><span class="theorem-title"><strong>Example 2.11 (Gamma quantile difference priors for extreme value distributions)</strong></span> The generalized extreme value distribution arises as the limiting distribution for the maximum of <span class="math inline">\(m\)</span> independent observations from some common distribution <span class="math inline">\(F\)</span>. The <span class="math inline">\(\mathsf{GEV}(\mu, \sigma, \xi)\)</span> distribution is a location-scale with distribution function <span class="math display">\[\begin{align*}
 F(x) = \exp\left[ - \left\{1+\xi(x-\mu)/\sigma\right\}^{-1/\xi}_{+}\right]
 \end{align*}\]</span> where <span class="math inline">\(x_{+} = \max\{0, x\}\)</span>.</p>
 <p>Inverting the distribution function yields the quantile function <span class="math display">\[\begin{align*}
@@ -446,13 +498,17 @@ Q(p) \mu + \sigma \frac{(-\log p)^{-\xi}-1}{\xi}
 p(\boldsymbol{q}) \propto q_1^{\alpha_1-1}\exp(-\beta_1 q_1) \prod_{i=2}^3 (q_i-q_{i-1})^{\alpha_i-1} \exp\{\beta_i(q_i-q_{i-1})\}.
 \end{align*}\]</span> where <span class="math inline">\(0 \leq q_1 \leq q_2 \leq q_3\)</span>. The fact that these quantities refer to moments or risk estimates which practitioners often must compute as part of regulatory requirements makes it easier to specify sensible values for hyperparameters.</p>
 <p>As illustrating example, consider maximum daily cumulated rainfall in Abisko, Sweden. The time series spans from 1913 until December 2014; we compute the 102 yearly maximum, which range from 11mm to 62mm, and fit a generalized extreme value distribution to these.</p>
-<p>For the priors, suppose an expert elicits quantiles of the 10, 50 and 100 years return levels; say 30mm, 45mm and 70mm, respectively, for the median and likewise 40mm, 70mm and 120mm for the 90% percentile of the return levels. We can compute the differences and calculate the parameters of the gamma distribution through moment-matching: this gives roughly a shape of <span class="math inline">\(\alpha_1=18.27\)</span> and <span class="math inline">\(\beta_1=0.6\)</span>, etc. <a href="#fig-gev-colestawn-quant-prior">Figure&nbsp;<span>2.4</span></a> shows the transfer from the prior predictive to the posterior distribution. The prior is much more dispersed and concentrated on the tail, which translates in a less peaked posterior than using a weakly informative prior (dotted line): the mode of the latter is slightly to the left and with lower density in the tail.</p>
-<div class="cell" data-hash="priors_cache/html/fig-gev-colestawn-quant-prior_1f481534ab01691e9ab699608ffab9a0">
+<p>For the priors, suppose an expert elicits quantiles of the 10, 50 and 100 years return levels; say 30mm, 45mm and 70mm, respectively, for the median and likewise 40mm, 70mm and 120mm for the 90% percentile of the return levels. We can compute the differences and calculate the parameters of the gamma distribution through moment-matching: this gives roughly a shape of <span class="math inline">\(\alpha_1=18.27\)</span> and <span class="math inline">\(\beta_1=0.6\)</span>, etc. <a href="#fig-gev-colestawn-quant-prior" class="quarto-xref">Figure&nbsp;<span>2.4</span></a> shows the transfer from the prior predictive to the posterior distribution. The prior is much more dispersed and concentrated on the tail, which translates in a less peaked posterior than using a weakly informative prior (dotted line): the mode of the latter is slightly to the left and with lower density in the tail.</p>
+<div class="cell">
 <div class="cell-output-display">
-<div id="fig-gev-colestawn-quant-prior" class="quarto-figure quarto-figure-center anchored">
-<figure class="figure">
-<p><img src="priors_files/figure-html/fig-gev-colestawn-quant-prior-1.png" class="img-fluid figure-img" width="672"></p>
-<figcaption class="figure-caption">Figure&nbsp;2.4: Kernel density estimates of draws from the posterior distribution of 100 year return levels with a Coles–Tawn quantile prior (full line) and from the corresponding prior predictive (dashed). The dotted line gives the posterior distribution for a maximum domain information prior on the shape with improper priors on location and scale.</figcaption>
+<div id="fig-gev-colestawn-quant-prior" class="quarto-figure quarto-figure-center quarto-float anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-gev-colestawn-quant-prior-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="priors_files/figure-html/fig-gev-colestawn-quant-prior-1.png" class="img-fluid figure-img" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-gev-colestawn-quant-prior-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;2.4: Kernel density estimates of draws from the posterior distribution of 100 year return levels with a Coles–Tawn quantile prior (full line) and from the corresponding prior predictive (dashed). The dotted line gives the posterior distribution for a maximum domain information prior on the shape with improper priors on location and scale.
+</figcaption>
 </figure>
 </div>
 </div>
@@ -465,29 +521,30 @@ p(\boldsymbol{q}) \propto q_1^{\alpha_1-1}\exp(-\beta_1 q_1) \prod_{i=2}^3 (q_i-
 <section id="penalized-complexity-priors" class="level3" data-number="2.5.1">
 <h3 data-number="2.5.1" class="anchored" data-anchor-id="penalized-complexity-priors"><span class="header-section-number">2.5.1</span> Penalized complexity priors</h3>
 <p>Oftentimes, there will be a natural family of prior density to impose on some model component, <span class="math inline">\(p(\boldsymbol{\theta} \mid \zeta)\)</span>, with hyperparameter <span class="math inline">\(\zeta\)</span>. The flexibility of the underlying construction leads itself to overfitting. Penalized complexity priors <span class="citation" data-cites="Simpson:2017">(<a href="references.html#ref-Simpson:2017" role="doc-biblioref">Simpson et al. 2017</a>)</span> aim to palliate this by penalizing models far away from a simple baseline model, which correspond to a fixed value <span class="math inline">\(\zeta_0\)</span>. The prior will favour the simpler parsimonious model the more prior mass one places on <span class="math inline">\(\zeta_0\)</span>, which is in line with Occam’s razor principle.</p>
-<p>To construct a penalized-complexity prior, we compute the Kullback–Leibler divergence between the model <span class="math inline">\(p_\zeta \equiv p(\boldsymbol{\theta} \mid \zeta)\)</span> relative to the baseline with <span class="math inline">\(\zeta_0\)</span>, <span class="math inline">\(p_0 \equiv p(\boldsymbol{\theta} \mid \zeta_0)\)</span>; the Kullback–Leibler divergence is</p>
+<p>To construct a penalized-complexity prior, we compute the Kullback–Leibler divergence between the model <span class="math inline">\(p_\zeta \equiv p(\boldsymbol{\theta} \mid \zeta)\)</span> relative to the baseline with <span class="math inline">\(\zeta_0\)</span>, <span class="math inline">\(p_0 \equiv p(\boldsymbol{\theta} \mid
+\zeta_0)\)</span>; the Kullback–Leibler divergence is</p>
 <p><span class="math display">\[
 \mathsf{KL}(p_\zeta \Vert\, p_0)=\int p_\zeta \log\left(\frac{p_\zeta}{p_0}\right) \mathrm{d} \boldsymbol{\theta}.
 \]</span> The distance between the prior densities is then set to <span class="math inline">\(d(\zeta) = \{2\mathsf{KL}(p_\zeta \mid\mid p_0)\}^{1/2}\)</span>. which is zero at the model with <span class="math inline">\(\zeta_0\)</span>. The PC prior then constructs an exponential prior on the distance scale, which after back-transformation gives <span class="math inline">\(p(\zeta \mid \lambda) = \lambda\exp(-\lambda d(\zeta)) \left| {\partial d(\zeta)}/{\partial \zeta}\right|\)</span>. To choose <span class="math inline">\(\lambda\)</span>, the authors recommend elicitation of a pair <span class="math inline">\((U, \alpha)\)</span> such that <span class="math inline">\(\Pr(\lambda &gt; U)=\alpha\)</span>.</p>
 <div id="exm-pcprior-randomeffect" class="theorem example">
-<p><span class="theorem-title"><strong>Example 2.12 (Penalized complexity prior for random effects models) </strong></span><span class="citation" data-cites="Simpson:2017">Simpson et al. (<a href="references.html#ref-Simpson:2017" role="doc-biblioref">2017</a>)</span> give the example of a Gaussian prior for random effects <span class="math inline">\(\boldsymbol{\alpha}\)</span>, of the form <span class="math inline">\(\boldsymbol{\alpha} \mid \zeta \sim \mathsf{Norm}_J(\boldsymbol{0}_J, \zeta^2 \mathbf{I}_J)\)</span> where <span class="math inline">\(\zeta_0=0\)</span> corresponds to the absence of random subject-variability. The penalized complexity prior for the scale <span class="math inline">\(\zeta\)</span> is then an exponential with rate <span class="math inline">\(\lambda\)</span>,<a href="#fn8" class="footnote-ref" id="fnref8" role="doc-noteref"><sup>8</sup></a> with density <span class="math inline">\(p(\zeta \mid \lambda) = \lambda \exp(-\lambda \zeta)\)</span>. Using the recommendation for setting <span class="math inline">\(\lambda\)</span>, we get that <span class="math inline">\(\lambda = -\ln(\alpha/U)\)</span> and this can be directly interpreted in terms of standard deviation of <span class="math inline">\(\zeta\)</span>; simulation from the prior predictive may also be used for calibration.</p>
+<p><span class="theorem-title"><strong>Example 2.12 (Penalized complexity prior for random effects models)</strong></span> <span class="citation" data-cites="Simpson:2017">Simpson et al. (<a href="references.html#ref-Simpson:2017" role="doc-biblioref">2017</a>)</span> give the example of a Gaussian prior for random effects <span class="math inline">\(\boldsymbol{\alpha}\)</span>, of the form <span class="math inline">\(\boldsymbol{\alpha} \mid \zeta \sim \mathsf{Norm}_J(\boldsymbol{0}_J, \zeta^2 \mathbf{I}_J)\)</span> where <span class="math inline">\(\zeta_0=0\)</span> corresponds to the absence of random subject-variability. The penalized complexity prior for the scale <span class="math inline">\(\zeta\)</span> is then an exponential with rate <span class="math inline">\(\lambda\)</span>,<a href="#fn8" class="footnote-ref" id="fnref8" role="doc-noteref"><sup>8</sup></a> with density <span class="math inline">\(p(\zeta \mid \lambda) = \lambda \exp(-\lambda \zeta)\)</span>. Using the recommendation for setting <span class="math inline">\(\lambda\)</span>, we get that <span class="math inline">\(\lambda = -\ln(\alpha/U)\)</span> and this can be directly interpreted in terms of standard deviation of <span class="math inline">\(\zeta\)</span>; simulation from the prior predictive may also be used for calibration.</p>
 </div>
 <div id="exm-pcprior-arorder" class="theorem example">
-<p><span class="theorem-title"><strong>Example 2.13 (Penalized complexity prior for autoregressive model of order 1) </strong></span><span class="citation" data-cites="Sorbye.Rue:2017">Sørbye and Rue (<a href="references.html#ref-Sorbye.Rue:2017" role="doc-biblioref">2017</a>)</span> derive penalized complexity prior for the Gaussian stationary AR(1) model with autoregressive parameter <span class="math inline">\(\phi \in (-1,1)\)</span>, where <span class="math inline">\(Y_t \mid Y_{t-1}, \phi, \sigma^2 \sim \mathsf{Norm}(\phi Y_{t-1}, \sigma^2)\)</span>. There are two based models that could be of interest: one with <span class="math inline">\(\phi=0\)</span>, corresponding to a memoryless model with no autocorrelation, and a static mean <span class="math inline">\(\phi=1\)</span> for no change in time; note that the latter is not stationary. For the former, the penalized complexity prior is <span class="math display">\[\begin{align*}
+<p><span class="theorem-title"><strong>Example 2.13 (Penalized complexity prior for autoregressive model of order 1)</strong></span> <span class="citation" data-cites="Sorbye.Rue:2017">Sørbye and Rue (<a href="references.html#ref-Sorbye.Rue:2017" role="doc-biblioref">2017</a>)</span> derive penalized complexity prior for the Gaussian stationary AR(1) model with autoregressive parameter <span class="math inline">\(\phi \in (-1,1)\)</span>, where <span class="math inline">\(Y_t \mid Y_{t-1}, \phi, \sigma^2 \sim \mathsf{Norm}(\phi Y_{t-1}, \sigma^2)\)</span>. There are two based models that could be of interest: one with <span class="math inline">\(\phi=0\)</span>, corresponding to a memoryless model with no autocorrelation, and a static mean <span class="math inline">\(\phi=1\)</span> for no change in time; note that the latter is not stationary. For the former, the penalized complexity prior is <span class="math display">\[\begin{align*}
 p(\phi \mid \lambda) = \frac{\lambda}{2} \exp\left[-\lambda \left\{-\ln(1-\phi^2)\right\}^{1/2}\right] \frac{|\phi|}{(1-\phi^2)\left\{-\ln(1-\phi^2)\right\}^{1/2}}.
 \end{align*}\]</span> One can set <span class="math inline">\(\lambda\)</span> by considering plausible values by relating the parameter to the variance of the one-step ahead forecast error.</p>
 </div>
 <p>Gaussian components are widespread: not only for linear regression models, but more generally for the specification of random effects that capture group-specific effects, residuals spatial or temporal variability. In the Bayesian paradigm, there is no difference between fixed effects <span class="math inline">\(\boldsymbol{\beta}\)</span> and the random effect parameters: both are random quantities that get assigned priors, but we will treat these priors differently.</p>
 <p>The reason why we would like to use a penalized complexity prior for a random effect, say <span class="math inline">\(\alpha_j \sim \mathsf{Norm}(0, \zeta^2)\)</span>, is because we don’t know a prior if there is variability between groups. The inverse gamma prior for <span class="math inline">\(\zeta\)</span>, <span class="math inline">\(\zeta \sim \mathsf{InvGamma}(\epsilon, \epsilon)\)</span> does not have a mode at zero unless it is improper with <span class="math inline">\(\epsilon \to 0\)</span>. Generally, we want our prior for the variance to have significant probability density at the null <span class="math inline">\(\zeta=0\)</span>. The penalized complexity prior is not the only sensible choice. Posterior inference is unfortunately sensitive to the value of <span class="math inline">\(\epsilon\)</span> in hierarchical models when the random effect variance is close to zero, and more so when there are few levels for the groups since the relative weight of the prior relative to that of the likelihood contribution is then large.</p>
 <div id="exm-random-effect-variance" class="theorem example">
-<p><span class="theorem-title"><strong>Example 2.14 (Student-t prior for variance components) </strong></span><span class="citation" data-cites="Gelman:2006">Gelman (<a href="references.html#ref-Gelman:2006" role="doc-biblioref">2006</a>)</span> recommends a Student-<span class="math inline">\(t\)</span> distribution truncated below at <span class="math inline">\(0\)</span>, with low degrees of freedom. The rationale for this choice comes from the simple two level model with <span class="math inline">\(n_j\)</span> independent in each group <span class="math inline">\(j=1, \ldots, J\)</span>: for observation <span class="math inline">\(i\)</span> in group <span class="math inline">\(j\)</span>, <span class="math display">\[\begin{align*}
+<p><span class="theorem-title"><strong>Example 2.14 (Student-t prior for variance components)</strong></span> <span class="citation" data-cites="Gelman:2006">Gelman (<a href="references.html#ref-Gelman:2006" role="doc-biblioref">2006</a>)</span> recommends a Student-<span class="math inline">\(t\)</span> distribution truncated below at <span class="math inline">\(0\)</span>, with low degrees of freedom. The rationale for this choice comes from the simple two level model with <span class="math inline">\(n_j\)</span> independent in each group <span class="math inline">\(j=1, \ldots, J\)</span>: for observation <span class="math inline">\(i\)</span> in group <span class="math inline">\(j\)</span>, <span class="math display">\[\begin{align*}
 Y_{ij} &amp;\sim \mathsf{Norm}(\mu + \alpha_j, \sigma^2),\\
 \alpha_j &amp;\sim \mathsf{Norm}(0, \tau^2_\alpha),
 \end{align*}\]</span> The conditionally conjugate prior <span class="math inline">\(p(\tau \mid \boldsymbol{\alpha}, \mu, \sigma)\)</span> is inverse gamma. Standard inference with this parametrization is however complicated, because there is strong dependence between parameters.</p>
 <p>To reduce this dependence, one can add a parameter, taking <span class="math inline">\(\alpha_j = \xi \eta_j\)</span> and <span class="math inline">\(\tau_\alpha=|\xi|\tau_{\eta}\)</span>; the model is now overparametrized. Suppose <span class="math inline">\(\eta_j \sim \mathsf{Norm}(0, \tau^2_\eta)\)</span> and consider the likelihood conditional on <span class="math inline">\(\mu, \eta_j\)</span>: we have that <span class="math inline">\((y_{ij} - \mu)/\eta_j \sim \mathsf{Norm}(\xi, \sigma^2/\eta_j)\)</span> so conditionally conjugate priors for <span class="math inline">\(\xi\)</span> and <span class="math inline">\(\tau_\eta\)</span> are respectively Gaussian and inverse gamma. This translates into a prior distribution for <span class="math inline">\(\tau_\alpha\)</span> which is that of the absolute value of a noncentral Student-<span class="math inline">\(t\)</span> with location, scale and degrees of freedom <span class="math inline">\(\nu\)</span>. If we set the location to zero, the prior puts high mass at the origin, but is heavy tailed with polynomial decay. We recommend to set degrees of freedom so that the variance is heavy-tailed, e.g., <span class="math inline">\(\nu=3\)</span>. While this prior is not conjugate, it compares favorably to the <span class="math inline">\(\mathsf{IGa}(\epsilon, \epsilon)\)</span>.</p>
 </div>
 <div id="exm-randomeffects" class="theorem example">
-<p><span class="theorem-title"><strong>Example 2.15 (Poisson random effect models) </strong></span>We consider data from an experimental study conducted at Tech3Lab on road safety. In <span class="citation" data-cites="Brodeur:2021">Brodeur et al. (<a href="references.html#ref-Brodeur:2021" role="doc-biblioref">2021</a>)</span>, 31 participants were asked to drive in a virtual environment; the number of road violation was measured for different type of distractions (phone notification, phone on speaker, texting and smartwatch). The data are balanced, with each participant exposed to each task exactly once.</p>
+<p><span class="theorem-title"><strong>Example 2.15 (Poisson random effect models)</strong></span> We consider data from an experimental study conducted at Tech3Lab on road safety. In <span class="citation" data-cites="Brodeur:2021">Brodeur et al. (<a href="references.html#ref-Brodeur:2021" role="doc-biblioref">2021</a>)</span>, 31 participants were asked to drive in a virtual environment; the number of road violation was measured for different type of distractions (phone notification, phone on speaker, texting and smartwatch). The data are balanced, with each participant exposed to each task exactly once.</p>
 <p>We model the data using a Poisson mixed model to measure the number of violations, <code>nviolation</code>, with a fixed effect for <code>task</code>, which captures the type of distraction, and a random effect for participant <code>id</code>. The hierarchical model fitted for individual <span class="math inline">\(i\)</span> <span class="math inline">\((i=1, \ldots, 34)\)</span> and distraction type <span class="math inline">\(j\)</span> <span class="math inline">\((j=1, \ldots, 4)\)</span> is <span class="math display">\[\begin{align*}
 Y_{ij} &amp;\sim \mathsf{Pois}\{\mu = \exp(\beta_{j} + \alpha_i)\},\\
 \beta_j &amp;\sim \mathsf{Norm}(0, 100), \\
@@ -496,12 +553,16 @@ Y_{ij} &amp;\sim \mathsf{Pois}\{\mu = \exp(\beta_{j} + \alpha_i)\},\\
 \end{align*}\]</span> so observations are conditionally independent given hyperparameters <span class="math inline">\(\boldsymbol{\alpha}\)</span> and <span class="math inline">\(\boldsymbol{\beta}\)</span>.</p>
 <p>In frequentist statistics, there is a distinction made in mixed-effect models between parameters that are treated as constants, termed fixed effects and corresponding in this example to <span class="math inline">\(\boldsymbol{\beta}\)</span>, and random effects, equivalent to <span class="math inline">\(\boldsymbol{\alpha}\)</span>. There is no such distinction in the Bayesian paradigm, except perhaps for the choice of prior.</p>
 <p>We can look at some of posterior distribution of the 31 random effects (here the first five individuals) and the fixed effect parameters <span class="math inline">\(\boldsymbol{\beta}\)</span>, plus the variance of the random effect <span class="math inline">\(\kappa\)</span>: there is strong evidence that the latter is non-zero, suggesting strong heterogeneity between individuals. The distraction which results in the largest number of violation is texting, while the other conditions all seem equally distracting on average (note that there is no control group with no distraction to compare with, so it is hard to draw conclusions).</p>
-<div class="cell" data-hash="priors_cache/html/fig-post-dist-poisson-mixed_a75ccbdf2221761285932cef18b626de">
+<div class="cell">
 <div class="cell-output-display">
-<div id="fig-post-dist-poisson-mixed" class="quarto-figure quarto-figure-center anchored">
-<figure class="figure">
-<p><img src="priors_files/figure-html/fig-post-dist-poisson-mixed-1.png" class="img-fluid figure-img" width="672"></p>
-<figcaption class="figure-caption">Figure&nbsp;2.5: Posterior density plots with 50% credible intervals and median value for the random effects of the first five individuals (left) and the fixed effects and random effect variance (right).</figcaption>
+<div id="fig-post-dist-poisson-mixed" class="quarto-figure quarto-figure-center quarto-float anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-post-dist-poisson-mixed-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="priors_files/figure-html/fig-post-dist-poisson-mixed-1.png" class="img-fluid figure-img" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-post-dist-poisson-mixed-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;2.5: Posterior density plots with 50% credible intervals and median value for the random effects of the first five individuals (left) and the fixed effects and random effect variance (right).
+</figcaption>
 </figure>
 </div>
 </div>
@@ -513,19 +574,22 @@ Y_{ij} &amp;\sim \mathsf{Pois}\{\mu = \exp(\beta_{j} + \alpha_i)\},\\
 <h2 data-number="2.6" class="anchored" data-anchor-id="sensitivity-analysis"><span class="header-section-number">2.6</span> Sensitivity analysis</h2>
 <p>Do priors matter? The answer to that question depends strongly on the model, and how much information the data provides about hyperparameters. While this question is easily answered in conjugate models (the relative weight of hyperparameters relative to data can be derived from the posterior parameters), it is not so simple in hierarchical models, where the interplay between prior distributions is often more intricate. To see the impact, one often has to rely on doing several analyses with different values fr the prior and see the sensitivity of the conclusions to these changes, for example by considering a vague prior or modifying the parameters values (say halving or doubling). If the changes are immaterial, then this provides reassurance that our analyses are robust.</p>
 <div id="exm-sensitivity-poisson-mixed" class="theorem example">
-<p><span class="theorem-title"><strong>Example 2.16 </strong></span>To check the sensitivity of the conclusion, we revisit the modelling of the <code>smartwatch</code> experiment data using a Poisson regression and compare four priors: a uniform prior truncated to <span class="math inline">\([0, 10]\)</span>, an inverse gamma <span class="math inline">\(\mathsf{InvGamma}(0.01, 0.01)\)</span> prior, a penalized complexity prior such that the 0.95 percentile of the scale is 5, corresponding to <span class="math inline">\(\mathsf{Exp}(0.6)\)</span>. Since each distraction type appears 31 times, there is plenty of information to reliably estimate the dispersion <span class="math inline">\(\kappa\)</span> of the random effects <span class="math inline">\(\alpha\)</span>: the different density plots in <a href="#fig-sensitivity">Figure&nbsp;<span>2.6</span></a> are virtually indistinguishable from one another. This is perhaps unsurprising given the large number of replicates, and the significant variability between groups.</p>
-<div class="cell" data-hash="priors_cache/html/fig-sensitivity_7643a668287766185fa445c2259f7ebd">
+<p><span class="theorem-title"><strong>Example 2.16</strong></span> To check the sensitivity of the conclusion, we revisit the modelling of the <code>smartwatch</code> experiment data using a Poisson regression and compare four priors: a uniform prior truncated to <span class="math inline">\([0, 10]\)</span>, an inverse gamma <span class="math inline">\(\mathsf{InvGamma}(0.01, 0.01)\)</span> prior, a penalized complexity prior such that the 0.95 percentile of the scale is 5, corresponding to <span class="math inline">\(\mathsf{Exp}(0.6)\)</span>. Since each distraction type appears 31 times, there is plenty of information to reliably estimate the dispersion <span class="math inline">\(\kappa\)</span> of the random effects <span class="math inline">\(\alpha\)</span>: the different density plots in <a href="#fig-sensitivity" class="quarto-xref">Figure&nbsp;<span>2.6</span></a> are virtually indistinguishable from one another. This is perhaps unsurprising given the large number of replicates, and the significant variability between groups.</p>
+<div class="cell">
 <div class="cell-output-display">
-<div id="fig-sensitivity" class="quarto-figure quarto-figure-center anchored">
-<figure class="figure">
-<p><img src="priors_files/figure-html/fig-sensitivity-1.png" class="img-fluid figure-img" width="672"></p>
-<figcaption class="figure-caption">Figure&nbsp;2.6: Posterior density of the scale of the random effects with uniform, inverse gamma, penalized complexity and folded Student-t with three degrees of freedom. The circle denotes the median and the bars the 50% and 95% percentile credible intervals.</figcaption>
+<div id="fig-sensitivity" class="quarto-figure quarto-figure-center quarto-float anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-sensitivity-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="priors_files/figure-html/fig-sensitivity-1.png" class="img-fluid figure-img" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-sensitivity-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;2.6: Posterior density of the scale of the random effects with uniform, inverse gamma, penalized complexity and folded Student-t with three degrees of freedom. The circle denotes the median and the bars the 50% and 95% percentile credible intervals.
+</figcaption>
 </figure>
 </div>
 </div>
 </div>
 </div>
-
 <!--
 
 Hierarchical linear model with half-t prior
@@ -564,7 +628,7 @@ https://haakonbakkagit.github.io/btopic115.html
 <!-- Zellner's $g$-prior for model selection -->
 
 
-<div id="refs" class="references csl-bib-body hanging-indent" role="list" style="display: none">
+<div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list" style="display: none">
 <div id="ref-Alexander:2023" class="csl-entry" role="listitem">
 Alexander, Rohan. 2023. <em>Telling Stories with Data: With Applications in <span>R</span></em>. Boca Raton, FL: CRC Press.
 </div>
@@ -691,10 +755,27 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     // clear code selection
     e.clearSelection();
   });
-  function tippyHover(el, contentFn) {
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp("https:\/\/lbelzile\.github\.io\/MATH80601A\/");
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
     const config = {
       allowHTML: true,
-      content: contentFn,
       maxWidth: 500,
       delay: 100,
       arrow: false,
@@ -704,8 +785,17 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       interactive: true,
       interactiveBorder: 10,
       theme: 'quarto',
-      placement: 'bottom-start'
+      placement: 'bottom-start',
     };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
     window.tippy(el, config); 
   }
   const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
@@ -717,7 +807,130 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       try { href = new URL(href).hash; } catch {}
       const id = href.replace(/^#\/?/, "");
       const note = window.document.getElementById(id);
-      return note.innerHTML;
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
     });
   }
       let selectedAnnoteEl;
@@ -761,6 +974,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
             }
             div.style.top = top - 2 + "px";
             div.style.height = height + 4 + "px";
+            div.style.left = 0;
             let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
             if (gutterDiv === null) {
               gutterDiv = window.document.createElement("div");
@@ -786,6 +1000,32 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
         });
         selectedAnnoteEl = undefined;
       };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
       // Attach click handler to the DT
       const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
       for (const annoteDlNode of annoteDls) {
@@ -847,12 +1087,12 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="./introduction.html" class="pagination-link">
+      <a href="./introduction.html" class="pagination-link" aria-label="Bayesics">
         <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Bayesics</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="./mcmc.html" class="pagination-link">
+      <a href="./mcmc.html" class="pagination-link" aria-label="Simulation-based inference">
         <span class="nav-page-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Simulation-based inference</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
@@ -861,4 +1101,5 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 
 
 
-</body></html>
+
+<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/lbelzile/MATH80601A/edit/main/priors.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li></ul></div></div></div></footer></body></html>

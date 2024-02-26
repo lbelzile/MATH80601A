@@ -26,8 +26,8 @@ book:
   - priors.qmd
   - mcmc.qmd
   - references.qmd
-  site-url: https://lbelzile.github.io/math80601a/
-  repo-url: https://github.com/lbelzile/math80601a/
+  site-url: https://lbelzile.github.io/MATH80601A/
+  repo-url: https://github.com/lbelzile/MATH80601A
   repo-branch: main
   repo-actions: [edit]
   search: true
@@ -37,8 +37,6 @@ format:
     title-block-style: none
     theme: custom.scss
     toc-author: Léo Belzile
-    template-partials:
-      - title-block.html 
     sidebar: 
       header: "###Léo Belzile"
     css: style.css
