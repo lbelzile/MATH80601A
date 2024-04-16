@@ -241,7 +241,8 @@ ggplot() +
         y = "") + 
    scale_color_manual(values = cols) + 
    theme_classic() +
-   theme(legend.position = c(0.9,0.9))
+   theme(legend.position = "inside", 
+         legend.position.inside = c(0.9,0.9))
 ```
 
 ```{r}
