@@ -147,7 +147,7 @@ div.csl-indent {
     <div class="sidebar-title mb-0 py-0">
       <a href="./">Bayesian modelling</a> 
         <div class="sidebar-tools-main">
-    <a href="https://github.com/lbelzile/math80601a/" rel="" title="Source Code" class="quarto-navigation-tool px-1" aria-label="Source Code"><i class="bi bi-github"></i></a>
+    <a href="https://github.com/lbelzile/MATH80601A" rel="" title="Source Code" class="quarto-navigation-tool px-1" aria-label="Source Code"><i class="bi bi-github"></i></a>
     <a href="./MATH80601A-bayesmod.pdf" rel="" title="Download PDF" class="quarto-navigation-tool px-1" aria-label="Download PDF"><i class="bi bi-file-pdf"></i></a>
 </div>
     </div>
@@ -186,7 +186,7 @@ div.csl-indent {
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./references.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">References</span></a>
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">References</span></span></a>
   </div>
 </li>
     </ul>
@@ -208,7 +208,7 @@ div.csl-indent {
   </ul></li>
   <li><a href="#sensitivity-analysis" id="toc-sensitivity-analysis" class="nav-link" data-scroll-target="#sensitivity-analysis"><span class="header-section-number">2.5</span> Sensitivity analysis</a></li>
   </ul>
-<div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/lbelzile/math80601a/edit/main/priors.qmd" class="toc-action">Edit this page</a></p></div></div></nav>
+<div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/lbelzile/MATH80601A/edit/main/priors.qmd" class="toc-action">Edit this page</a></p></div></div></nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
@@ -229,7 +229,7 @@ div.csl-indent {
 <div id="exm-bixi-temp" class="theorem example">
 <p><span class="theorem-title"><strong>Example 2.1 </strong></span>Consider the daily number of Bixi bike sharing users for 2017–2019 at the Edouard Montpetit station next to HEC: we can consider a simple linear regression with log counts as a function of temperature,<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a> <span class="math display">\[\log (\texttt{nusers}) \sim \mathsf{Norm}_{+}\{\beta_0 + \beta_1 (\texttt{temp}-20), \sigma^2\}.\]</span> The <span class="math inline">\(\beta_1\)</span> slope measures units in degree Celsius per log number of person.</p>
 <p>The hyperparameters depend of course on the units of the analysis, unless one standardizes response variable and explanatories: it is easier to standardize the temperature so that we consider deviations from, say 20<span class="math inline">\(^{\circ}\)</span>C, which is not far from the observed mean in the sample. After some tuning, the independent priors <span class="math inline">\(\beta_0 \sim \mathsf{Norm}(\overline{y}, 0.5^2)\)</span>, <span class="math inline">\(\beta_1 \sim \mathsf{Norm}(0, 0.05^2)\)</span> and <span class="math inline">\(\sigma \sim \mathsf{Exp}(3)\)</span> seem to yield plausible outcomes and relationships.<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a></p>
-<div class="cell" data-hash="priors_cache/html/fig-bixi_38c36008d727bca56a2cb0b8fba8fefa">
+<div class="cell" data-hash="priors_cache/html/fig-bixi_c97595ce59278d559a7c16b631b57950">
 <div class="cell-output-display">
 <div id="fig-bixi" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
@@ -330,12 +330,7 @@ p(y) &amp;= \frac{p(y \mid \lambda)p(\lambda)}{p(\lambda \mid y)} \\&amp;= \frac
 </div>
 </div>
 </div>
-<div class="cell" data-hash="priors_cache/html/fig-upworthy_582432457e42feada1799ad8c8723bec">
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning: A numeric `legend.position` argument in `theme()` was deprecated in ggplot2
-3.5.0.
-ℹ Please use the `legend.position.inside` argument of `theme()` instead.</code></pre>
-</div>
+<div class="cell" data-hash="priors_cache/html/fig-upworthy_69c91c25a505fade2e273faaa412d57a">
 <div class="cell-output-display">
 <div id="fig-upworthy" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
@@ -351,12 +346,12 @@ p(y) &amp;= \frac{p(y \mid \lambda)p(\lambda)}{p(\lambda \mid y)} \\&amp;= \frac
 <p><span class="theorem-title"><strong>Example 2.6 (Should you phrase your headline as a question?) </strong></span>We can also consider aggregate records for Upworthy, as <span class="citation" data-cites="Alexander:2023">Alexander (<a href="references.html#ref-Alexander:2023" role="doc-biblioref">2023</a>)</span> did. The <code>upworthy_question</code> database contains a balanced sample of all headlines where at least one of the choices featured a question, with at least one alternative statement. Whether a headline contains a question or not is determined by querying for the question mark. We consider aggregated counts for all such headlines, with the <code>question</code> factor encoding whether there was a question, <code>yes</code> or <code>no</code>. For simplicity, we treat the number of views as fixed, but keep in mind that A/B tests are often sequential experiments with a stopping rule.<a href="#fn5" class="footnote-ref" id="fnref5" role="doc-noteref"><sup>5</sup></a></p>
 <p>We model first the rates using a Poisson regression; the corresponding frequentist analysis would include an offset to account for differences in views. If <span class="math inline">\(\lambda_{j}\)</span> <span class="math inline">\((j=1, 2)\)</span> are the average rate for each factor level (yes and no), then <span class="math inline">\(\mathsf{E}(Y_{ij}/n_{ij}) = \lambda_j\)</span>. In the frequentist setting, we can fit a simple Poisson generalized linear regression model with an offset term and a binary variable.</p>
 <div class="cell" data-hash="priors_cache/html/unnamed-chunk-6_5ba1a7f021d588eba71717d3e905bcf9">
-<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(upworthy_question, <span class="at">package =</span> <span class="st">"hecbayes"</span>)</span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>poismod <span class="ot">&lt;-</span> <span class="fu">glm</span>(</span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  clicks <span class="sc">~</span> <span class="fu">offset</span>(<span class="fu">log</span>(impressions)) <span class="sc">+</span> question, </span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">family =</span> <span class="fu">poisson</span>(<span class="at">link =</span> <span class="st">"log"</span>),</span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> upworthy_question)</span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="fu">coef</span>(poismod)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(upworthy_question, <span class="at">package =</span> <span class="st">"hecbayes"</span>)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>poismod <span class="ot">&lt;-</span> <span class="fu">glm</span>(</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>  clicks <span class="sc">~</span> <span class="fu">offset</span>(<span class="fu">log</span>(impressions)) <span class="sc">+</span> question, </span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">family =</span> <span class="fu">poisson</span>(<span class="at">link =</span> <span class="st">"log"</span>),</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> upworthy_question)</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="fu">coef</span>(poismod)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>(Intercept)  questionno 
 -4.51264669  0.07069677 </code></pre>

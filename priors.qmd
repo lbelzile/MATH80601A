@@ -49,17 +49,18 @@ sigma_prior <- rexp(n = nsamp, rate = 3)
 beta0_prior <- rnorm(n = nsamp, 
                      mean = mean(log(bixi$nusers)), 
                      sd = 0.5)
-beta1_prior <- TruncatedNormal::rtnorm(n = nsamp, mu = 0, sd = 0.05, lb = -Inf, ub = Inf)
+beta1_prior <- rnorm(n = nsamp, mean = 0, sd = 0.05)
 
 xsamp <- sample(bixi$temp, nsamp)
 postpriorsamp <- TruncatedNormal::rtnorm(
-  n = nsamp, 
+  n = 1, 
   mu = beta0_prior + (xsamp - 20)*beta1_prior, 
   sd = sigma_prior, lb = 0, ub = Inf)
-g1 <- ggplot(data = bixi,
+g1 <- 
+  ggplot() +
+  geom_point(data = bixi,
        mapping = aes(y = log(nusers),
                      x = temp - 20)) +
-  geom_point() +
   geom_abline(intercept = beta0_prior,
               slope = beta1_prior,
               alpha = 0.1) +
@@ -240,7 +241,8 @@ ggplot() +
         y = "") + 
    scale_color_manual(values = cols) + 
    theme_classic() +
-   theme(legend.position = c(0.9,0.9))
+   theme(legend.position = "inside", 
+         legend.position.inside = c(0.9,0.9))
 ```
 
 ```{r}
