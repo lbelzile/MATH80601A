@@ -188,7 +188,7 @@ Consider an A/B test from November 23st, 2014, that compared four different head
 
 At first glance, the first and third headlines seem likely to lead to a curiosity gap. The wording of the second is more explicit (and searchable), whereas the first is worded as a question.
 
-We model the conversion rate $\lambda_i$ for each headline separately using a Poisson distribution and compare the posterior distributions for all four choices. Using a conjugate prior and selecting the parameters by moment matching yields approximately $\alpha = 1.64$ and $\beta = 0.01$ for the hyperparameters. 
+We model the conversion rate $\lambda_i$ for each headline separately using a Poisson distribution and compare the posterior distributions for all four choices. Using a conjugate prior and selecting the parameters by moment matching yields approximately $\alpha = 1.65$ and $\beta = 0.01$ for the hyperparameters, setting $\alpha\beta = 0.0158$ and $\alpha\beta^2=0.0123^2$ and solving for the two unknown parameters.
 
 ```{r}
 #| label: tbl-upworthy
@@ -200,7 +200,7 @@ abtest <- tibble::tibble(
    headline = factor(paste0("H",1:4)),
    impressions = c(3060L, 2982L, 3112L, 3083L), 
    clicks = c(49L, 20L, 31L, 9L))
-knitr::kable(abtest)
+knitr::kable(abtest, booktabs = TRUE)
 ```
 
 ```{r}
@@ -213,22 +213,22 @@ names(cols) <- paste0("H", 1:4)
 library(ggplot2)
 ggplot() + 
    geom_function(fun = dgamma, 
-                 args = list(shape = 0.01 + 49, rate = 3060 + 1.64), 
+                 args = list(shape = 0.01 + 49, rate = 3060 + 1.65),
                  xlim = c(0, 0.03),
                  mapping = aes(col = "H1"),
                  n = 1e3) + 
    stat_function(fun = dgamma, 
-                 args = list(shape = 0.01 + 20, rate = 2982 + 1.64), 
+                 args = list(shape = 0.01 + 20, rate = 2982 + 1.65),
                  xlim = c(0, 0.03),
                  mapping = aes(col = "H2"),
                  n = 1e3) + 
    stat_function(fun = dgamma, 
-                 args = list(shape = 0.01 + 31, rate = 3112 + 1.64), 
+                 args = list(shape = 0.01 + 31, rate = 3112 + 1.65),
                  xlim = c(0, 0.03),
                  mapping = aes(col = "H3"),
                  n = 1e3) + 
    stat_function(fun = dgamma, 
-                 args = list(shape = 0.01 + 9, rate = 3083 + 1.64), 
+                 args = list(shape = 0.01 + 9, rate = 3083 + 1.65),
                  xlim = c(0, 0.03),
                  mapping = aes(col = "H4"),
                  n = 1e3) +
@@ -440,7 +440,7 @@ Jeffrey's prior is thus $p(\theta) \propto \theta^{-1/2}(1-\theta)^{-1/2}$, a co
 
 :::
 
-:::{#exer-jeffreysnormal}
+:::{#exr-jeffreysnormal}
 
 ## Jeffrey's prior for the normal distribution
 
@@ -477,12 +477,23 @@ Inverting the distribution function yields the quantile function
 Q(p) \mu + \sigma \frac{(-\log p)^{-\xi}-1}{\xi}
 \end{align*}
 
-In environmental data, we often model annual maximum. Engineering designs are often specified in terms of the $k$-year return levels, defined as the quantile of the annual maximum exceeded with probability $1/k$ in any given year. Using a $\mathsf{GEV}$ for annual maximum, @Coles.Tawn:1996 proposed modelling annual daily rainfall and specifying a prior on the quantile scale $q_1 < q_2 < q_3$ for tail probabilities $p_1> p_2 > p_3$. To deal with the ordering constraints, gamma priors are imposed on the differences $q_1 - o \sim \mathsf{Gamma}(\alpha_1, \beta_1)$, $q_2 - q_1 \sim \mathsf{Gamma}(\alpha_2, \beta_2)$ and $q_3-q_2 \sim \mathsf{Gamma}(\alpha_3, \beta_3)$, where $o$ is the lower bound of the support. The prior is thus of the form
+In environmental data, we often model annual maximum. Engineering designs are often specified in terms of the $k$-year return levels, defined as the quantile of the annual maximum exceeded with probability $1/k$ in any given year. Using a $\mathsf{GEV}$ for annual maximum, @Coles.Tawn:1996 proposed modelling annual daily rainfall and specifying a prior on the quantile scale $q_1 < q_2 < q_3$ for tail probabilities $p_1> p_2 > p_3$. To deal with the ordering constraints, gamma priors are imposed on the differences
 
+- $q_1 - o \sim \mathsf{Gamma}(\alpha_1, \beta_1)$,
+- $q_2 - q_1 \sim \mathsf{Gamma}(\alpha_2, \beta_2)$ and
+- $q_3-q_2 \sim \mathsf{Gamma}(\alpha_3, \beta_3)$,
+
+where $o$ is the lower bound of the support. The prior is thus of the form
 \begin{align*}
 p(\boldsymbol{q}) \propto q_1^{\alpha_1-1}\exp(-\beta_1 q_1) \prod_{i=2}^3 (q_i-q_{i-1})^{\alpha_i-1} \exp\{\beta_i(q_i-q_{i-1})\}.
 \end{align*}
 where $0 \leq q_1 \leq q_2 \leq q_3$. The fact that these quantities refer to moments or risk estimates which practitioners often must compute as part of regulatory requirements makes it easier to specify sensible values for hyperparameters.
+
+:::
+
+:::{#exm-rainfall-abisko}
+
+## Extreme rainfall in Abisko, Sweden
 
 As illustrating example, consider maximum daily cumulated rainfall in Abisko, Sweden. The time series spans from 1913 until December 2014; we compute the 102 yearly maximum, which range from 11mm to 62mm, and fit a generalized extreme value distribution to these. 
 

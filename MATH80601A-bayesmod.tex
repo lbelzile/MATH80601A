@@ -295,11 +295,13 @@
 \newcommand*\listoflistings{\listof{codelisting}{List of Listings}}
 \usepackage{amsthm}
 \theoremstyle{definition}
-\newtheorem{example}{Example}[chapter]
+\newtheorem{exercise}{Exercise}[chapter]
 \theoremstyle{definition}
 \newtheorem{definition}{Definition}[chapter]
 \theoremstyle{plain}
 \newtheorem{proposition}{Proposition}[chapter]
+\theoremstyle{definition}
+\newtheorem{example}{Example}[chapter]
 \theoremstyle{remark}
 \AtBeginDocument{\renewcommand*{\proofname}{Proof}}
 \newtheorem*{remark}{Remark}
@@ -338,7 +340,7 @@
 \begin{document}
 \frontmatter
 \maketitle
-\ifdefined\Shaded\renewenvironment{Shaded}{\begin{tcolorbox}[borderline west={3pt}{0pt}{shadecolor}, interior hidden, sharp corners, frame hidden, enhanced, breakable, boxrule=0pt]}{\end{tcolorbox}}\fi
+\ifdefined\Shaded\renewenvironment{Shaded}{\begin{tcolorbox}[interior hidden, boxrule=0pt, borderline west={3pt}{0pt}{shadecolor}, enhanced, sharp corners, breakable, frame hidden]}{\end{tcolorbox}}\fi
 
 \renewcommand*\contentsname{Table of contents}
 {
@@ -1085,16 +1087,6 @@ the cutoff for the HDP region.}
 
 \end{figure}
 
-\begin{verbatim}
-
-
-
-`<!-- quarto-file-metadata: eyJyZXNvdXJjZURpciI6Ii4ifQ== -->`{=html}
-
-```{=html}
-<!-- quarto-file-metadata: eyJyZXNvdXJjZURpciI6Ii4iLCJib29rSXRlbVR5cGUiOiJjaGFwdGVyIiwiYm9va0l0ZW1OdW1iZXIiOjIsImJvb2tJdGVtRmlsZSI6InByaW9ycy5xbWQiLCJib29rSXRlbURlcHRoIjowfQ== -->
-\end{verbatim}
-
 \bookmarksetup{startatroot}
 
 \hypertarget{priors}{%
@@ -1377,28 +1369,36 @@ searchable), whereas the first is worded as a question.
 We model the conversion rate \(\lambda_i\) for each headline separately
 using a Poisson distribution and compare the posterior distributions for
 all four choices. Using a conjugate prior and selecting the parameters
-by moment matching yields approximately \(\alpha = 1.64\) and
-\(\beta = 0.01\) for the hyperparameters.
+by moment matching yields approximately \(\alpha = 1.65\) and
+\(\beta = 0.01\) for the hyperparameters, setting
+\(\alpha\beta = 0.0158\) and \(\alpha\beta^2=0.0123^2\) and solving for
+the two unknown parameters.
 
 \hypertarget{tbl-upworthy}{}
-\begin{table}
-\caption{\label{tbl-upworthy}Number of views, clicks for different headlines for the Upworthy data. }\tabularnewline
+\begin{longtable}[]{@{}lrr@{}}
+\caption{\label{tbl-upworthy}Number of views, clicks for different
+headlines for the Upworthy data.}\tabularnewline
+\toprule\noalign{}
+headline & impressions & clicks \\
+\midrule\noalign{}
+\endfirsthead
+\toprule\noalign{}
+headline & impressions & clicks \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+H1 & 3060 & 49 \\
+H2 & 2982 & 20 \\
+H3 & 3112 & 31 \\
+H4 & 3083 & 9 \\
+\end{longtable}
 
-\centering
-\begin{tabular}{l|r|r}
-\hline
-headline & impressions & clicks\\
-\hline
-H1 & 3060 & 49\\
-\hline
-H2 & 2982 & 20\\
-\hline
-H3 & 3112 & 31\\
-\hline
-H4 & 3083 & 9\\
-\hline
-\end{tabular}
-\end{table}
+\begin{verbatim}
+Warning: A numeric `legend.position` argument in `theme()` was deprecated in ggplot2
+3.5.0.
+i Please use the `legend.position.inside` argument of `theme()` instead.
+\end{verbatim}
 
 \begin{figure}[ht!]
 
@@ -1682,16 +1682,16 @@ prior \(\mathsf{Beta}(0.5,0.5)\).
 
 \end{example}
 
-\hypertarget{exer-jeffreysnormal}{}
-\hypertarget{jeffreys-prior-for-the-normal-distribution}{%
-\section{Jeffrey's prior for the normal
-distribution}\label{jeffreys-prior-for-the-normal-distribution}}
+\begin{exercise}[Jeffrey's prior for the normal
+distribution]\protect\hypertarget{exr-jeffreysnormal}{}\label{exr-jeffreysnormal}
 
 Check that for the Gaussian distribution
 \(\mathsf{Norm}(\mu, \sigma^2)\), the Jeffrey's prior obtained by
 treating each parameter as fixed in turn, are \(p(\mu) \propto 1\) and
 \(p(\sigma) \propto 1/\sigma\), which also correspond to the default
 uninformative priors for location-scale families.
+
+\end{exercise}
 
 \begin{example}[Jeffrey's prior for the Poisson
 distribution]\protect\hypertarget{exm-jeffreyspoisson}{}\label{exm-jeffreyspoisson}
@@ -1741,17 +1741,30 @@ Coles and Tawn (\protect\hyperlink{ref-Coles.Tawn:1996}{1996}) proposed
 modelling annual daily rainfall and specifying a prior on the quantile
 scale \(q_1 < q_2 < q_3\) for tail probabilities \(p_1> p_2 > p_3\). To
 deal with the ordering constraints, gamma priors are imposed on the
-differences \(q_1 - o \sim \mathsf{Gamma}(\alpha_1, \beta_1)\),
-\(q_2 - q_1 \sim \mathsf{Gamma}(\alpha_2, \beta_2)\) and
-\(q_3-q_2 \sim \mathsf{Gamma}(\alpha_3, \beta_3)\), where \(o\) is the
-lower bound of the support. The prior is thus of the form
+differences
 
-\begin{align*}
+\begin{itemize}
+\tightlist
+\item
+  \(q_1 - o \sim \mathsf{Gamma}(\alpha_1, \beta_1)\),
+\item
+  \(q_2 - q_1 \sim \mathsf{Gamma}(\alpha_2, \beta_2)\) and
+\item
+  \(q_3-q_2 \sim \mathsf{Gamma}(\alpha_3, \beta_3)\),
+\end{itemize}
+
+where \(o\) is the lower bound of the support. The prior is thus of the
+form \begin{align*}
 p(\boldsymbol{q}) \propto q_1^{\alpha_1-1}\exp(-\beta_1 q_1) \prod_{i=2}^3 (q_i-q_{i-1})^{\alpha_i-1} \exp\{\beta_i(q_i-q_{i-1})\}.
 \end{align*} where \(0 \leq q_1 \leq q_2 \leq q_3\). The fact that these
 quantities refer to moments or risk estimates which practitioners often
 must compute as part of regulatory requirements makes it easier to
 specify sensible values for hyperparameters.
+
+\end{example}
+
+\begin{example}[Extreme rainfall in Abisko,
+Sweden]\protect\hypertarget{exm-rainfall-abisko}{}\label{exm-rainfall-abisko}
 
 As illustrating example, consider maximum daily cumulated rainfall in
 Abisko, Sweden. The time series spans from 1913 until December 2014; we
