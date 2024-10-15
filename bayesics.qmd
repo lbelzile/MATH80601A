@@ -1,0 +1,1058 @@
+# Bayesics
+
+```{r}
+#| label: setup
+#| file: "_common.R"
+#| include: true
+#| message: false
+#| warning: false
+#| echo: false
+```
+
+The Bayesian paradigm is an inferential framework that is used widespread in data science. Numerical challenges that prevented it's widespread adoption until the 90's, when the Markov chain Monte Carlo revolution allowed models estimation.
+
+Bayesian inference, which builds on likelihood-based inference, offers a natural framework for prediction and for uncertainty quantification. The interpretation is more natural than that of classical (i.e., frequentist) paradigm, and it is more easy to generalized models to complex settings, notably through hierarchical constructions. The main source of controversy is the role of the prior distribution, which allows one to incorporate subject-matter expertise but leads to different inferences being drawn by different practitioners; this subjectivity is not to the taste of many and has been the subject of many controversies.
+
+The Bayesian paradigm includes multiples notions that are not covered in undergraduate introductory courses. The purpose of this chapter is to introduce these concepts and put them in perspective; the reader is assumed to be familiar with basics of likelihood-based inference. We begin with a discussion of the notion of probability, then define priors, posterior distributions, marginal likelihood and posterior predictive distributions. We focus on the interpretation of posterior distributions and explain how to summarize the posterior, leading leading to definitions of high posterior density region, credible intervals, posterior mode for cases where we either have a (correlated) sample from the posterior, or else have access to the whole distribution. Several notions, including sequentiality, prior elicitation and estimation of the marginal likelihood, are mentioned in passing. A brief discussion of Bayesian hypothesis testing (and alternatives) is presented.
+
+
+
+
+## Probability and frequency
+
+In classical (frequentist) parametric statistic, we treat observations $\boldsymbol{Y}$ as realizations of a distribution whose parameters $\boldsymbol{\theta}$ are unknown. All of the information about parameters is encoded by the likelihood function.
+
+The interpretation of probability in the classical statistic is in terms of long run frequency, which is why we term this approach frequentist statistic. Think of a fair die: when we state that values $\{1, \ldots, 6\}$ are equiprobable, we mean that repeatedly tossing the die should result, in large sample, in each outcome being realized roughly $1/6$ of the time (the symmetry of the object also implies that each facet should be equally likely to lie face up). This interpretation also carries over to confidence intervals: a $(1-\alpha)$ confidence interval either contains the true parameter value or it doesn't, so the probability level $(1-\alpha)$ is only the long-run proportion of intervals created by the procedure that should contain the true fixed value, not the probability that a single interval contains the true value. This is counter-intuitive to most.
+
+In practice, the true value of the parameter $\boldsymbol{\theta}$ vector is unknown to the practitioner, thus uncertain: Bayesians would argue that we should treat the latter as a random quantity rather than a fixed constant. Since different people may have different knowledge about these potential values, the prior knowledge is a form of **subjective probability**. For example, if you play cards, one person may have recorded the previous cards that were played, whereas other may not. They thus assign different probability of certain cards being played. In Bayesian inference, we consider $\boldsymbol{\theta}$ as random variables to reflect our lack of knowledge about potential values taken. Italian scientist Bruno de Finetti, who is famous for the claim ``Probability does not exist'', stated in the preface of @deFinetti:1974:
+
+> Probabilistic reasoning --- always to be understood as subjective --- merely stems from our being uncertain about something. It makes no difference whether the uncertainty relates to an unforseeable future, or to an unnoticed past, or to a past doubtfully reported or forgotten: it may even relate to something more or less knowable (by means of a computation, a logical deduction, etc.) but for which we are not willing or able tho make the effort; and so on [...]
+ The only relevant thing is uncertainty --- the extent of our knowledge and ignorance. The actual fact of whether or not the events considered are in some sense *determined*, or known by other people, and so on, is of no consequence.
+
+On page 3, de Finetti continues [@deFinetti:1974]
+
+> only subjective probabilities exist --- i.e., the degree of belief in the occurrence of an event attributed by a given person at a given instant and with a given set of information. 
+
+
+## Posterior distribution
+
+We consider a parametric model with parameters $\boldsymbol{\theta}$ defined on  $\boldsymbol{\Theta} \subseteq \mathbb{R}^p$. In Bayesian learning, we adjoin to the likelihood $\mathcal{L}(\boldsymbol{\theta}; \boldsymbol{y}) \equiv p(\boldsymbol{y} \mid \boldsymbol{\theta})$ a **prior** function $p(\boldsymbol{\theta})$ that reflects the prior knowledge about potential values taken by the $p$-dimensional parameter vector, before observing the data $\boldsymbol{y}$. The prior makes $\boldsymbol{\theta}$ random and the distribution of the parameter reflects our uncertainty about the true value of the model parameters. 
+
+
+In a Bayesian analysis, observations are random variables but inference is performed conditional on the observed sample values. By Bayes' theorem, our target is therefore the posterior density $p(\boldsymbol{\theta} \mid \boldsymbol{y})$, defined as
+
+$$
+\underbracket[0.25pt]{p(\boldsymbol{\theta} \mid \boldsymbol{y})}_{\text{posterior}} = \frac{\overbracket[0.25pt]{p(\boldsymbol{y} \mid \boldsymbol{\theta})}^{\text{likelihood}} \times  \overbracket[0.25pt]{p(\boldsymbol{\theta})}^{\text{prior}}}{\underbracket[0.25pt]{\int p(\boldsymbol{y} \mid \boldsymbol{\theta}) p(\boldsymbol{\theta}) \mathrm{d} \boldsymbol{\theta}}_{\text{marginal likelihood }p(\boldsymbol{y})}}.
+$$ {#eq-posterior}
+
+The posterior $p(\boldsymbol{\theta} \mid \boldsymbol{y})$ is proportional, as a function of $\theta,$ to the product of the likelihood and the prior function. 
+
+
+For the posterior to be **proper**, we need the product of the prior and the likelihood on the right hand side to be integrable as a function of $\boldsymbol{\theta}$ over the parameter domain $\boldsymbol{\Theta}$. The integral in the denominator, termed marginal likelihood or prior predictive distribution and denoted $p(\boldsymbol{y}) = \mathsf{E}_{\boldsymbol{\theta}}\{p(\boldsymbol{y} \mid \boldsymbol{\theta})\}$. It represents the distribution of the data before data collection, the respective weights being governed by the prior probability of different parameters values. The denominator of @eq-posterior is a normalizing constant, making the posterior density integrate to unity. The marginal likelihood plays a central role in Bayesian testing. 
+
+If $\boldsymbol{\theta}$ is low dimensional, numerical integration such as quadrature methods can be used to compute the marginal likelihood. 
+
+To fix ideas, we consider next a simple one-parameter model where the marginal likelihood can be computed explicitly.
+
+:::{#exm-betabinomconjugate}
+
+## Binomial model with beta prior
+
+Consider a binomial likelihood with probability of success $\theta \in [0,1]$ and $n$ trials, $Y \sim \mathsf{Binom}(n, \theta)$. If we take a beta prior, $\theta \sim \mathsf{Beta}(\alpha, \beta)$ and observe $y$ successes, the posterior is 
+\begin{align*}
+p(\theta \mid y = y) &\propto \binom{n}{y} \theta^y (1-\theta)^{n-y} \frac{\Gamma(\alpha + \beta)}{\Gamma(\alpha) \Gamma(\beta)}\theta^{\alpha-1} (1-\theta)^{\beta-1}
+\\&\stackrel{\theta}{\propto} \theta^{y+\alpha-1}(1-\theta)^{n-y+\beta-1}
+\end{align*}
+and is $$\int_{0}^{1} \theta^{y+\alpha-1}(1-\theta)^{n-y+\beta-1}\mathrm{d} \theta = \frac{\Gamma(y+\alpha)\Gamma(n-y+\beta)}{\Gamma(n+\alpha+\beta)},$$ a Beta function. Since we need only to keep track of the terms that are function of the parameter $\theta$, we could recognize directly that the posterior distribution is $\mathsf{Beta}(y+\alpha, n-y+\beta)$ and deduce the normalizing constant from there.
+
+If $Y \sim \mathsf{Binom}(n, \theta)$, the expected number of success is $n\theta$ and the expected number of failures $n(1-\theta)$ and so the likelihood contribution, relative to the prior, will dominate as the sample size $n$ grows. 
+
+Another way to see this is to track moments (expectation, variance, etc.)
+The Beta distribution, whose density is $f(x; \alpha, \beta) \propto x^{\alpha-1} (1-x)^{\beta-1}$, has expectation $\alpha/(\alpha+\beta)$ and variance $\alpha\beta/\{(\alpha+\beta)^2(\alpha+\beta+1)\}$. The posterior mean is
+ \begin{align*}
+ \mathsf{E}(\theta \mid y) = w\frac{y}{n} + (1-w) \frac{\alpha}{\alpha+\beta}, 
+ \qquad w = \frac{n}{n+\alpha + \beta},
+ \end{align*} 
+a weighted average of the maximum likelihood estimator and the prior mean. We can think of the parameter $\alpha$ (respectively $\beta$) as representing the fixed prior number of success (resp. failures). The variance term is $\mathrm{O}(n^{-1})$ and, as the sample size increases, the likelihood weight $w$ dominates.
+
+@fig-betabinom shows three different posterior distributions with different beta priors: the first prior, which favors values closer to 1/2, leads to a more peaked posterior density, contrary to the second which is symmetric, but concentrated toward more extreme values near endpoints of the support. The rightmost panel is truncated: as such, the posterior is zero for any value of $\theta$ beyond 1/2 and so the posterior mode may be close to the endpoint of the prior. The influence of such a prior will not necessarily vanish as sample size and should be avoided, unless there are compelling reasons for restricting the domain. 
+
+```{r}
+#| label: fig-betabinom
+#| eval: true
+#| echo: false
+#| fig-cap: "Scaled binomial likelihood for six successes out of 14 trials, with $\\mathsf{Beta}(3/2, 3/2)$ prior (left), $\\mathsf{Beta}(1/4, 1/4)$ (middle) and truncated uniform on $[0,1/2]$ (right), with the corresponding posterior distributions."
+library(ggplot2)
+library(MetBrewer)
+library(patchwork)
+
+set.seed(1234)
+n <- 14L
+p <- 0.4
+y <- 6L
+binlik <- function(p){dbinom(x = y, size = n, prob = p) * (n + 1) }
+alpha <- 1.5
+beta <- 1.5
+
+g1 <- ggplot() +
+    stat_function(fun =  function(x){
+        dbeta(x, shape1 = y, shape2 = n - y)},
+        mapping = aes(fill = "likelihood",
+                      col = "likelihood"),
+        alpha = 0.2,
+        geom = "area") +
+    stat_function(fun = function(x){
+        dbeta(x, shape1 = 1.5, shape2 = 1.5)}, 
+        alpha = 0.2,
+        group = factor(2),
+        mapping = aes(fill = "prior",
+                      col = "prior"),
+        geom = "area") +
+    stat_function(fun = function(x){
+        dbeta(x, shape1 = y + 1.5, shape2 = n - y + 1.5)},
+        mapping = aes(fill = "posterior", 
+                      col = "posterior"), 
+        group = factor(3),
+        alpha = 0.2,
+        geom = "area") +
+    scale_x_continuous(limits = c(0,1),
+                       expand = c(0,0),
+                       breaks = seq(0, 1, by = 0.25),
+                       labels = c("0", "0.25", "0.5", "0.75", "1")) +
+    scale_y_continuous(expand = c(0,0)) +
+    scale_color_manual(values = met.brewer("Renoir", 3), 
+                       labels = c("likelihood","posterior","prior"),
+                       aesthetics = c("colour", "fill")) +
+    labs(y = "",
+         colour = "",
+         fill = "") + 
+    theme_classic() 
+
+g2 <- ggplot() +
+    stat_function(fun =  function(x){
+        dbeta(x, shape1 = y, shape2 = n - y)},
+        mapping = aes(fill = "likelihood",
+                      col = "likelihood"),
+        alpha = 0.2,
+        geom = "area") +
+    stat_function(fun = function(x){
+        dbeta(x, shape1 = 0.25, shape2 = 0.25)}, 
+        alpha = 0.2,
+        group = factor(2),
+        mapping = aes(fill = "prior",
+                      col = "prior"),
+        geom = "area") +
+    stat_function(fun = function(x){
+        dbeta(x, shape1 = y + 0.25, shape2 = n - y + 0.25)},
+        mapping = aes(fill = "posterior", 
+                      col = "posterior"), 
+        group = factor(3),
+        alpha = 0.2,
+        geom = "area") +
+    scale_x_continuous(limits = c(0,1),
+                       expand = c(0,0),
+                       breaks = seq(0, 1, by = 0.25),
+                       labels = c("0", "0.25", "0.5", "0.75", "1")) +
+    scale_y_continuous(expand = c(0,0)) +
+    scale_color_manual(values = met.brewer("Renoir", 3), 
+                       labels = c("likelihood","posterior","prior"),
+                       aesthetics = c("colour", "fill")) +
+    labs(y = "",
+         colour = "",
+         fill = "") + 
+    theme_classic()
+
+g3 <- ggplot() +
+    stat_function(fun =  function(x){
+        dbeta(x, shape1 = y, shape2 = n - y)},
+        mapping = aes(fill = "likelihood",
+                      col = "likelihood"),
+        alpha = 0.2,
+        geom = "area") +
+    stat_function(fun = function(x){
+        dunif(x, 0, 0.5)},
+        alpha = 0.2,
+        group = factor(2),
+        mapping = aes(fill = "prior",
+                      col = "prior"),
+        geom = "area") +
+    stat_function(fun = function(x){
+        dbeta(x, shape1 = y + 1, shape2 = n - y + 1) / pbeta(0.5, shape1 = y + 1, shape2 = n - y + 1)},
+        mapping = aes(fill = "posterior", 
+                      col = "posterior"), 
+        group = factor(3),
+        alpha = 0.2,
+        geom = "area",
+        xlim = c(0, 0.5)) +
+    scale_x_continuous(limits = c(0,1),
+                       expand = c(0,0),
+                       breaks = seq(0, 1, by = 0.25),
+                       labels = c("0", "0.25", "0.5", "0.75", "1")) +
+    scale_y_continuous(expand = c(0,0)) +
+    scale_color_manual(values = met.brewer("Renoir", 3), 
+                       labels = c("likelihood","posterior","prior"),
+                       aesthetics = c("colour", "fill")) +
+    labs(y = "",
+         colour = "",
+         fill = "") + 
+    theme_classic()
+g1 + g2 + g3 + 
+  plot_layout(guides = 'collect') & theme(legend.position = "bottom")
+```
+
+:::
+
+
+:::{.remark}
+
+## Proportionality
+
+Any term appearing in the likelihood times prior function that does not depend on parameters can be omitted since they will be absorbed by the normalizing constant.  This makes it useful to compute normalizing constants or likelihood ratios.
+
+:::
+
+:::{.remark }
+
+An alternative parametrization for the beta distribution sets $\alpha=\mu \kappa$, $\beta = (1-\mu)\kappa$ for $\mu \in (0,1)$ and $\kappa>0$, so that the model is parametrized directly in terms of mean $\mu$, with $\kappa$ capturing the dispersion.
+
+:::
+
+::: {.remark}
+
+A density integrates to 1 over the range of possible outcomes, but there is no guarantee that the likelihood function, as a function of $\boldsymbol{\theta}$, integrates to one over the parameter domain $\boldsymbol{\Theta}$.
+
+For example, the binomial likelihood with $n$ trials and $y$ successes satisfies $$\int_0^1 \binom{n}{y}\theta^y(1-\theta)^{n-y} \mathrm{d} \theta = \frac{1}{n+1}.$$ 
+
+Moreover, the binomial distribution is discrete with support $0, \ldots, n$, whereas the likelihood is continuous as a function of the probability of success, as evidenced by @fig-binom-massvslik
+
+```{r}
+#| label: fig-binom-massvslik
+#| eval: true
+#| warning: false
+#| echo: false
+#| cache: true
+#| fig-cap: "Binomial mass function (left) and scaled likelihood function (right)."
+#Binomial mass function versus 
+binlik <- function(p){dbinom(x = y, size = n, prob = p) * (n + 1) }
+g1 <- ggplot() +
+    stat_function(fun =  binlik) +
+    scale_x_continuous(limits = c(0,1),
+                       expand = c(0,0),
+                       breaks = seq(0, 1, by = 0.25),
+                       labels = c("0", "0.25", "0.5", "0.75", "1")) +
+    scale_y_continuous(expand = c(0,0)) +
+    labs(y = "",
+         subtitle = "likelihood",
+         x = "probability of success") + 
+    theme_classic()
+g2 <- ggplot() +
+    stat_function(fun =  function(x){
+        dbinom(x, size = n, prob = 0.4)},
+        xlim = c(0L, 14L), n = 15,
+        geom = "bar",
+        width = 0.2) +
+    scale_x_continuous(limits = c(0,14)) +
+    scale_y_continuous(expand = c(0,0)) +
+    labs(y = "",
+         subtitle = "mass function",
+         x = "number of successes") + 
+    theme_classic()
+g2 + g1
+```
+
+:::
+
+:::{#prp-sequentiality}
+
+## Sequentiality and Bayesian updating
+
+The likelihood is invariant to the order of the observations if they are independent
+Thus, if we consider two blocks of observations $\boldsymbol{y}_1$ and $\boldsymbol{y}_2$ $$p(\boldsymbol{\theta} \mid \boldsymbol{y}_1, \boldsymbol{y}_2) = p(\boldsymbol{\theta} \mid \boldsymbol{y}_1) p(\boldsymbol{\theta} \mid \boldsymbol{y}_2),$$
+so it makes no difference if we treat data all at once or in blocks.
+More generally, for data exhibiting spatial or serial dependence, it makes sense to consider rather the conditional (sequential) decomposition
+$$f(\boldsymbol{y}; \boldsymbol{\theta}) = f(\boldsymbol{y}_1; \boldsymbol{\theta}) f(\boldsymbol{y}_2; \boldsymbol{\theta}, \boldsymbol{y}_1) \cdots f(\boldsymbol{y}_n; \boldsymbol{\theta}, \boldsymbol{y}_1, \ldots, \boldsymbol{y}_{n-1})$$
+where $f(\boldsymbol{y}_k; \boldsymbol{y}_1, \ldots, \boldsymbol{y}_{k-1})$ denotes the conditional density function given observations $\boldsymbol{y}_1, \ldots, \boldsymbol{y}_{k-1}$.
+
+
+By Bayes' rule, we can consider *updating* the posterior by adding terms to the likelihood, noting that
+\begin{align*}
+p(\boldsymbol{\theta} \mid \boldsymbol{y}_1, \boldsymbol{y}_2) \propto p(\boldsymbol{y}_2 \mid \boldsymbol{y}_1, \boldsymbol{\theta}) p(\boldsymbol{\theta} \mid \boldsymbol{y}_1)
+\end{align*}
+which amounts to treating the posterior $p(\boldsymbol{\theta} \mid \boldsymbol{y}_1)$ as a prior.  If data are exchangeable, the order in which observations are collected and the order of the belief updating is irrelevant to the full posterior. @fig-sequential shows how the posterior becomes gradually closer to the scaled likelihood as we increase the sample size, and the posterior mode moves towards the true value of the parameter (here 0.3).
+
+```{r}
+#| label: fig-sequential
+#| eval: true
+#| echo: false
+#| fig-height: 4
+#| fig-width: 12
+#| fig-cap: "Beta posterior and binomial likelihood with a uniform prior for increasing number of observations (from left to right) out of a total of 100 trials."
+library(MetBrewer)
+# Illustration of data concentration as sample size increases
+set.seed(1234)
+n <- c(10L, 20L, 50L)
+diffn <- diff(c(0,n))
+y <- cumsum(c(rbinom(n = 1, size = diffn[1], prob = 0.3),
+              rbinom(n = 1, size = diffn[2], prob = 0.3),
+              rbinom(n = 1, size = diffn[3], prob = 0.3)))
+
+g1 <- ggplot() +
+    stat_function(fun =  function(x){
+        dbeta(x, shape1 = y[1], shape2 = n[1] - y[1])},
+        mapping = aes(fill = "likelihood",
+                      col = "likelihood"),
+        alpha = 0.2,
+        geom = "area") +
+    stat_function(fun = function(x){
+        dbeta(x, shape1 = 1, shape2 = 1)}, 
+        alpha = 0.2,
+        group = factor(2),
+        mapping = aes(fill = "prior",
+                      col = "prior"),
+        geom = "area") +
+    stat_function(fun = function(x){
+        dbeta(x, shape1 = y[1] + 1, shape2 = n[1] - y[1] + 1)},
+        mapping = aes(fill = "posterior", 
+                      col = "posterior"), 
+        group = factor(3),
+        alpha = 0.2,
+        geom = "area") +
+    scale_x_continuous(limits = c(0,1),
+                       expand = c(0,0),
+                       breaks = seq(0, 1, by = 0.25),
+                       labels = c("0", "0.25", "0.5", "0.75", "1")) +
+    scale_y_continuous(expand = c(0,0)) +
+    scale_color_manual(values = met.brewer("Renoir", 3), 
+                       labels = c("likelihood","posterior","prior"),
+                       aesthetics = c("colour", "fill")) +
+    labs(y = "",
+         colour = "",
+         fill = "",
+         subtitle = paste0(y[1], " successes, ", n[1], " trials")) + 
+    theme_classic()
+g2 <- ggplot() +
+    stat_function(fun =  function(x){
+        dbeta(x, shape1 = y[2], shape2 = n[2] - y[2])},
+        mapping = aes(fill = "likelihood",
+                      col = "likelihood"),
+        alpha = 0.2,
+        geom = "area") +
+    stat_function(fun = function(x){
+        dbeta(x, shape1 = 1, shape2 = 1)}, 
+        alpha = 0.2,
+        group = factor(2),
+        mapping = aes(fill = "prior",
+                      col = "prior"),
+        geom = "area") +
+    stat_function(fun = function(x){
+        dbeta(x, shape1 = y[2] + 1, shape2 = n[2] - y[2] + 1)},
+        mapping = aes(fill = "posterior", 
+                      col = "posterior"), 
+        group = factor(3),
+        alpha = 0.2,
+        geom = "area") +
+    scale_x_continuous(limits = c(0,1),
+                       expand = c(0,0),
+                       breaks = seq(0, 1, by = 0.25),
+                       labels = c("0", "0.25", "0.5", "0.75", "1")) +
+    scale_y_continuous(expand = c(0,0)) +
+    scale_color_manual(values = met.brewer("Renoir", 3), 
+                       labels = c("likelihood","posterior","prior"),
+                       aesthetics = c("colour", "fill")) +
+    labs(y = "",
+         colour = "",
+         fill = "",
+         subtitle = paste0(y[2], " successes, ", n[2], " trials")) + 
+    theme_classic()
+g3 <- ggplot() +
+    stat_function(fun =  function(x){
+        dbeta(x, shape1 = y[3], shape2 = n[3] - y[3])},
+        mapping = aes(fill = "likelihood",
+                      col = "likelihood"),
+        alpha = 0.2,
+        geom = "area") +
+    stat_function(fun = function(x){
+        dbeta(x, shape1 = 1, shape2 = 1)}, 
+        alpha = 0.2,
+        group = factor(2),
+        mapping = aes(fill = "prior",
+                      col = "prior"),
+        geom = "area") +
+    stat_function(fun = function(x){
+        dbeta(x, shape1 = y[3] + 1, shape2 = n[3] - y[3] + 1)},
+        mapping = aes(fill = "posterior", 
+                      col = "posterior"), 
+        group = factor(3),
+        alpha = 0.2,
+        geom = "area") +
+    scale_x_continuous(limits = c(0,1),
+                       expand = c(0,0),
+                       breaks = seq(0, 1, by = 0.25),
+                       labels = c("0", "0.25", "0.5", "0.75", "1")) +
+    scale_y_continuous(expand = c(0,0)) +
+    scale_color_manual(values = met.brewer("Renoir", 3), 
+                       labels = c("likelihood","posterior","prior"),
+                       aesthetics = c("colour", "fill")) +
+    labs(y = "",
+         colour = "",
+         fill = "",
+         subtitle = paste0(y[3], " successes, ", n[3], " trials")) + 
+    theme_classic()
+g1 + g2 + g3 + plot_layout(guides = 'collect') & theme(legend.position = "bottom")
+```
+
+:::
+
+:::{#exm-numericalintegration}
+
+While we can calculate analytically the value of the normalizing constant for the beta-binomial model, we could also for arbitrary priors use numerical integration or Monte Carlo methods in the event the parameter vector $\boldsymbol{\theta}$ is low-dimensional. 
+
+While estimation of the normalizing constant is possible in simple models, the following highlights some challenges that are worth keeping in mind.
+In a model for discrete data (that is, assigning probability mass to a countable set of outcomes), the terms in the likelihood are probabilities and thus the likelihood becomes smaller as we gather more observations (since we multiply terms between zero or one). The marginal likelihood term becomes smaller and smaller, so it's reciprocal is big and this can lead to arithmetic underflow.
+
+```{r}
+#| label: betabinom-calculate-marg-lik
+#| eval: true
+#| echo: true
+#| cache: true
+y <- 6L # number of successes 
+n <- 14L # number of trials
+alpha <- beta <- 1.5 # prior parameters
+unnormalized_posterior <- function(theta){
+  theta^(y+alpha-1) * (1-theta)^(n-y + beta - 1)
+}
+integrate(f = unnormalized_posterior,
+          lower = 0,
+          upper = 1)
+# Compare with known constant
+beta(y + alpha, n - y + beta)
+# Monte Carlo integration
+mean(unnormalized_posterior(runif(1e5)))
+```
+
+```{r}
+#| label: betabinom-montecarlo-prior-marginal-lik
+#| eval: false
+#| echo: false
+# Alternative Monte Carlo estimator, sampling from the prior
+# This is less efficient
+mean(dbinom(x = y, 
+            size = n, 
+            prob = rbeta(n = 1e6, alpha, beta))) *
+  beta(alpha, beta) / choose(n, y)
+```
+
+:::
+
+
+When $\boldsymbol{\theta}$ is high-dimensional, the marginal likelihood is intractable. This is one of the main challenges of Bayesian statistics and the popularity and applicability has grown drastically with the development and popularity of numerical algorithms, following the publication of @Geman.Geman:1984 and @Gelfand.Smith:1990. Markov chain Monte Carlo methods circumvent the calculation of the denominator by drawing approximate samples from the posterior. 
+
+## Posterior predictive distribution
+
+Prediction in the Bayesian paradigm is obtained by considering the *posterior predictive distribution*,
+\begin{align*}
+p(y_{\text{new}} \mid \boldsymbol{y}) =
+\int_{\Theta} p(y_{\text{new}}  \mid \boldsymbol{\theta}) p(\boldsymbol{\theta} \mid  \boldsymbol{y}) \mathrm{d} \boldsymbol{\theta}
+\end{align*}
+
+Given draws from the posterior distribution, say $\boldsymbol{\theta}_b$ $(b=1, \ldots, B)$, we sample from each a new realization from the distribution appearing in the likelihood $p(y_{\text{new}}  \mid \boldsymbol{\theta}_b)$. This is different from the frequentist setting, which fixes the value of the parameter to some estimate $\widehat{\boldsymbol{\theta}}$; by contrast, the posterior predictive, here a beta-binomial distribution $\mathsf{BetaBin}(n, \alpha + y, n - y + \beta)$, carries over the uncertainty so will typically be wider and overdispersed relative to the corresponding binomial model. This can be easily seen from the left-panel of @fig-betabinompostpred, which contrasts the binomial mass function evaluated at the maximum likelihood estimator $\widehat{\theta}=6/14$ with the posterior predictive.
+
+:::{.exm-betabinompred}
+
+```{r}
+#| label: post-samp-betabinom
+#| eval: true
+#| echo: true
+npost <- 1e4L
+# Sample draws from the posterior distribution
+post_samp <- rbeta(n = npost, y + alpha, n - y + beta)
+# For each draw, sample new observation
+post_pred <- rbinom(n = npost, size = n, prob = post_samp)
+```
+
+
+```{r}
+#| label: fig-betabinompostpred
+#| eval: true
+#| echo: false
+#| warning: false
+#| cache: true
+#| fig-cap: "Beta-binomial posterior predictive distribution with corresponding binomial mass function evaluated at the maximum likelihood estimator."
+dbetabinom <- function(x, size, shape1, shape2, log = FALSE){
+	stopifnot(shape1 > 0, shape2 > 0, size >= x, all(x >= 0))
+	ldens <- lchoose(size, x) + 
+		 lbeta(x + shape1, size - x + shape2) - 
+		 lbeta(shape1, shape2)
+	   if(isTRUE(log)){
+	    return(ldens)
+	   } else{
+	   return(exp(ldens))
+	   }
+}
+
+y <- 6L # number of successes 
+size <- 14L # number of trials
+alpha <- beta <- 1.5 # prior parameters
+x = 0:size
+pmf_post <- dbetabinom(x = x, 
+                       size = size, 
+                       shape1 = alpha + y, 
+                       shape2 = beta + size - y)
+pmf_lik <- dbinom(x = x, size = size, prob = y/size)
+g1 <- ggplot(data = data.frame(
+    x = c(x, x),
+    pmf = c(pmf_post, pmf_lik),
+    group = rep(c("posterior predictive", "binomial distribution"), 
+                each = length(x))),
+  mapping = aes(x = x, y = pmf, col = group, fill = group)) +
+  geom_col(position = position_dodge(),
+           width = 0.5) +
+  scale_color_manual(values = MetBrewer::met.brewer("Renoir", 2)) + 
+  scale_fill_manual(values = MetBrewer::met.brewer("Renoir", 2)) + 
+  labs(col = "",
+       fill = "",
+       y = "",
+       subtitle = "probability of outcome",
+       x = "number of successes") +
+  scale_y_continuous(limits = c(0, 0.22), expand = c(0,0)) + 
+  scale_x_continuous(limits = c(0, 14), breaks = 0:14) + 
+  theme_classic() +
+  theme(legend.position = "bottom")
+g1
+# g2 <- ggplot(data = data.frame(
+#           x = sort(unique(post_pred)),
+#           y = as.numeric(table(post_pred))/length(post_pred)),
+#        mapping = aes(x = x, y = y)) +
+#   geom_col() +
+#   labs(y = "",
+#        x = "number of successes",
+#        subtitle = "probability of outcome") +
+#   theme_classic()
+# g1 + g2
+```
+
+:::
+
+:::{#exm-normal-post-pred}
+
+## Posterior predictive distribution of univariate Gaussian with known mean
+
+Consider an $n$ sample of independent and identically distributed Gaussian, $Y_i \sim \mathsf{Norm}(0, \tau^{-1})$ ($i=1, \ldots, n$), where we assign a gamma prior on the precision $\tau \sim \mathsf{Ga}(\alpha, \beta)$. The posterior is
+\begin{align*}
+p(\tau \mid \boldsymbol{y}) \stackrel{\tau}{\propto} \prod_{i=1}^n \tau^{n/2}\exp\left(-\tau \frac{\sum_{i=1}^n{y_i^2}}{2}\right) \times \tau^{\alpha-1} \exp(-\beta \tau)
+\end{align*}
+and rearranging the terms to collect powers of $\tau$, etc. we find that the posterior for $\tau$ must also be gamma, with shape parameter $\alpha^* = \alpha + n/2$ and rate $\beta^* = \beta + \sum_{i=1}^n y_i^2/2$.
+
+The posterior predictive is
+\begin{align*}
+p(y_{\text{new}} \mid \boldsymbol{y}) &= \int_0^\infty \frac{\tau^{1/2}}{(2\pi)^{1/2}}\exp(-\tau y_{\text{new}}^2/2) \frac{\beta^{*\alpha^*}}{\Gamma(\alpha^*)}\tau^{\alpha^*-1}\exp(-\beta^* \tau) \mathrm{d} \tau 
+\\&= (2\pi)^{-1/2} \frac{\beta^{*\alpha^*}}{\Gamma(\alpha^*)} \int_0^\infty\tau^{\alpha^*-1/2} \exp\left\{- \tau (y_{\text{new}}^2/2 + \beta^*)\right\} \mathrm{d} \tau
+\\&= (2\pi)^{-1/2} \frac{\beta^{*\alpha^*}}{\Gamma(\alpha^*)} \frac{\Gamma(\alpha^* + 1/2)}{(y_{\text{new}}^2/2 + \beta^*)^{\alpha^*+1/2}}
+\\&= \frac{\Gamma\left(\frac{2\alpha^* + 1}{2}\right)}{\sqrt{2\pi}\Gamma\left(\frac{2\alpha^*}{2}\right)\beta^{*1/2}} \left( 1+ \frac{y_{\text{new}}^2}{2\beta^*}\right)^{-\alpha^*-1/2}
+\\&= \frac{\Gamma\left(\frac{2\alpha^* + 1}{2}\right)}{\sqrt{\pi}\sqrt{ 2\alpha^*}\Gamma\left(\frac{2\alpha^*}{2}\right)(\beta^*/\alpha^*)^{1/2}} \left( 1+ \frac{1}{2\alpha^*}\frac{y_{\text{new}}^2}{(\beta^*/\alpha^*)}\right)^{-\alpha^*-1/2}
+\end{align*}
+which entails that $Y_{\text{new}}$ is a scaled Student-$t$ distribution with scale $(\beta^*/\alpha^*)^{1/2}$ and $2\alpha+n$ degrees of freedom. This example also exemplifies the additional variability relative to the distribution generating the data: indeed, the Student-$t$ distribution is more heavy-tailed than the Gaussian, but since the degrees of freedom increase linearly with $n$, the distribution converges to a Gaussian as $n \to \infty$, reflecting the added information as we collect more and more data points and the variance gets better estimated through $\sum_{i=1}^n y_i^2/n$.
+
+:::
+
+
+## Summarizing posterior distributions
+
+
+The output of the Bayesian learning problem will be either of:
+
+1. a fully characterized distribution
+2. a numerical approximation to the posterior distribution (pointwise)
+3. an exact or approximate sample drawn from the posterior distribution
+
+In the first case, we will be able to directly evaluate quantities of interest if there are closed-form expressions for the latter, or else we could draw samples from the distribution and evaluate them via Monte-Carlo. In case of numerical approximations, we will need to resort to numerical integration or otherwise to get our answers.
+
+Often, we will also be interested in the marginal posterior distribution of each component $\theta_j$ in turn ($j=1, \ldots, J$). To get these, we carry out additional integration steps, $$p(\theta_j \mid \boldsymbol{y}) = \int p(\boldsymbol{\theta} \mid \boldsymbol{y}) \mathrm{d} \boldsymbol{\theta}_{-j}.$$
+With a posterior sample, this is trivial: it suffices to keep the column corresponding to $\theta_j$ and discard the others. 
+
+
+Most of the field of Bayesian statistics revolves around the creation of algorithms that either circumvent the calculation of the normalizing constant (notably using Monte Carlo and Markov chain Monte Carlo methods) or else provide accurate numerical approximation of the posterior pointwise, including for marginalizing out all but one parameters (integrated nested Laplace approximations, variational inference, etc.) The target of inference is the whole posterior distribution, a potentially high-dimensional object which may be difficult to summarize or visualize. We can thus report only characteristics of the the latter.
+
+The choice of point summary to keep has it's root in decision theory.
+
+:::{#def-lossfunction}
+
+## Loss function
+
+A loss function $c(\boldsymbol{\theta}, \boldsymbol{\upsilon})$ is a mapping from $\boldsymbol{\Theta} \to \mathbb{R}^k$ that assigns a weight to each value of $\boldsymbol{\theta}$, corresponding to the regret or loss arising from choosing this value. The corresponding point estimator $\widehat{\boldsymbol{\upsilon}}$ is the minimizer of the expected loss,
+
+\begin{align*}
+\widehat{\boldsymbol{\upsilon}} &= \mathop{\mathrm{argmin}}_{\boldsymbol{\upsilon}}\mathsf{E}_{\boldsymbol{\Theta} \mid \boldsymbol{Y}}\{c(\boldsymbol{\theta}, \boldsymbol{v})\} \\&=\mathop{\mathrm{argmin}}_{\boldsymbol{\upsilon}} \int_{\boldsymbol{\Theta}} c(\boldsymbol{\theta}, \boldsymbol{\upsilon})p(\boldsymbol{\theta} \mid \boldsymbol{y}) \mathrm{d} \boldsymbol{\theta}
+\end{align*}
+
+:::
+
+For example, in a univariate setting, the quadratic loss $c(\theta, \upsilon) = (\theta-\upsilon)^2$ returns the posterior mean, the absolute loss $c(\theta, \upsilon)=|\theta - \upsilon|$ returns the posterior median and the 0-1 loss $c(\theta, \upsilon) = \mathrm{I}(\upsilon \neq \theta)$ returns the posterior mode. All of these point estimators are central tendency measures, but some may be more adequate depending on the setting as they can correspond to potentially different values, as shown in the left-panel of @fig-central-moments. The choice is application specific: for multimodal distributions, the mode is likely a better choice.
+
+If we know how to evaluate the distribution numerically, we can optimize to find the mode or else return the value for the pointwise evaluation on a grid at which the density achieves it's maximum. The mean and median would have to be evaluated by numerical integration if there is no closed-form expression for the latter.
+
+If we have rather a sample from the posterior with associated posterior density values, then we can obtain the mode as the parameter combination with the highest posterior, the median from the value at rank $\lfloor n/2\rfloor$ and the mean through the sample mean of posterior draws.
+
+
+```{r}
+#| label: fig-central-moments
+#| eval: true
+#| echo: false
+#| warning: false
+#| fig-cap: "Point estimators from a right-skewed distribution (left) and from a multimodal distribution (right)."
+shape <- 2
+rate <- 2
+cols <- MetBrewer::met.brewer("Renoir", 3)
+med <- qgamma(0.5, shape = shape, rate = rate)
+g1 <- ggplot() + 
+  stat_function(fun = function(x){dgamma(x, shape = shape, rate = rate)},
+                xlim = c(0,5),
+                n = 1001) +
+  geom_vline(xintercept = (shape - 1)/rate, 
+             linetype = "dotted",
+             colour = cols[1]) + #mode
+  geom_vline(xintercept = shape/rate,
+             colour = cols[2]) + # mean
+  geom_vline(xintercept = med, 
+             linetype = "dashed",
+             colour = cols[3]) + # median
+  geom_label(mapping = aes(x = (shape - 1)/rate, 
+                           y = 0.5, 
+                           label = "mode"), 
+             colour = cols[1],
+             fill = "white", 
+             label.r = unit(0, "lines")) +
+  geom_label(mapping = aes(x = shape/rate, y = 0.1, label = "mean"),
+             fill = "white",
+             colour = cols[2],
+             label.r = unit(0, "lines")) +
+  geom_label(mapping = aes(x = med, y = 0.3, label = "median"),
+             fill = "white",
+             colour = cols[3],
+             label.r = unit(0, "lines")) +
+  scale_y_continuous(expand = c(0,0), limits = c(0, 0.8)) + 
+  scale_x_continuous(expand = c(0,0), limits = c(0, 5.2)) + 
+  labs(y = "", subtitle = "density", x = "") + 
+  theme_classic()
+
+mu <- 5
+sigma <- 1
+we <- 0.4
+mixt_mean <- integrate(f = function(x){
+  x*(we*dgamma(x, shape = shape, rate = rate) + 
+       (1-we)*dnorm(x, mean = mu, sd = sigma))}, 
+  lower = -2, upper = 10)$value
+mixt_median <- uniroot(f = function(x){
+  we*pgamma(x, shape = shape, rate = rate) + (1-we)*pnorm(x, mean = mu, sd = sigma) - 0.5}, 
+  interval = c(-2, 10))$root
+hpeaks <- c((1-we)*dnorm(mu, mean = mu, sd = sigma), 
+            we*dgamma((shape-1)/rate, rate = rate, shape = shape))
+height <- max(hpeaks)
+mixt_mode <- c(mu, (shape-1)/rate)[which.max(hpeaks)]
+
+g2 <- ggplot() + 
+  stat_function(fun = function(x){we*dgamma(x, shape = shape, rate = rate) + (1-we)*dnorm(x, mean = mu, sd = sigma)},
+                xlim = c(-2,10), n = 1001) +
+  geom_vline(xintercept = mixt_mode, 
+             linetype = "dotted",
+             colour = cols[1]) + 
+  geom_vline(xintercept = mixt_mean, 
+             colour = cols[2]) + 
+  geom_vline(xintercept = mixt_median,
+             linetype = "dashed",
+             colour = cols[3]) + 
+  geom_label(mapping = aes(x = mixt_mode, y = 0.9*height, label = "mode"), 
+             fill = "white", label.r = unit(0, "lines"),
+             colour = cols[1]) +
+  geom_label(mapping = aes(x = mixt_mean, y = 0.5*height, label = "mean"),
+             fill = "white", label.r = unit(0, "lines"),
+             colour = cols[2]) +
+  geom_label(mapping = aes(x = mixt_median, y = 0.1*height, label = "median"),
+             fill = "white", label.r = unit(0, "lines"),
+             colour = cols[3]) +
+  scale_y_continuous(expand = c(0,0)) + 
+  scale_x_continuous(expand = c(0,0)) + 
+  labs(y = "", subtitle = "density", x = "") + 
+  theme_classic()  
+  g1 + g2
+```
+The loss function is often a functional (meaning a one-dimensional summary) from the posterior. The following example shows how it reduces a three-dimensional problem into a single risk measure.
+
+:::{#exm-loss-extremes}
+
+## Danish insurance losses
+
+In extreme value, we are often interested in assessing the risk of events that are rare enough that they lie beyond the range of observed data. To provide a scientific extrapolation, it often is justified to fit a generalized Pareto distribution to exceedances of $Z=Y-u$, for some user-specified threshold $u$ which is often taken as a large quantile of the distribution of $Y$. The generalized Pareto distribution function is
+\begin{align*}
+F(z; \tau, \xi) = 1- \begin{cases}
+\left(1+\xi/\tau z\right)^{-1/\xi}_{+}, & \xi \neq 0\\
+\exp(-z/\tau), & \xi = 0. \end{cases}
+\end{align*}
+The shape $\xi$ governs how heavy-tailed the distribution is, while $\tau$ is a scale parameter.
+
+Insurance companies provide coverage in exchange for premiums, but need to safeguard themselves against very high claims by buying reinsurance products. These risks are often communicated through the value-at-risk (VaR), a high quantile exceeded with probability $p$. We model Danish fire insurance claim amounts for inflation-adjusted data collected from January 1980 until December 1990 that are in excess of a million Danish kroner, found in the `evir` package and analyzed in Example 7.23 of @McNeil.Frey.Embrechts:2005. These claims are denoted $Y$ and there are 2167 observations.
+
+We fit a generalized Pareto distribution to exceedances above 10 millions krones, keeping 109 observations or roughly the largest 5% of the original sample. Preliminary analysis shows that we can treat data as roughly independent and identically distributed and goodness-of-fit diagnostics (not shown) for the generalized Pareto suggest that the fit is adequate for all but the three largest observations, which are (somewhat severely) underestimated by the model.
+
+```{r}
+#| eval: true
+#| echo: false
+#| cache: true
+#| label: fig-danish
+#| fig-cap: "Time series of Danish fire claims exceeding a million krone (left) and posterior samples from the scale $\\tau$ and shape $\\xi$ of the generalized Pareto model fitted to exceedances above 10 million krone (right)."
+data(danish, package = "evir")
+danish_ts <- xts::xts(danish, order.by = attr(danish, "times"))
+g1 <- zoo::autoplot.zoo(danish_ts) + 
+  scale_y_continuous(breaks = seq(0L, 250L, by = 50L), 
+                     minor_breaks = seq(0, 275, by = 25),
+                     expand = c(0,0)) + 
+  theme_classic() + 
+  labs(x = "", y = "",
+       subtitle = "Danish fire insurance claims (in million krone)")
+library(revdbayes)
+post_samp <- revdbayes::rpost_rcpp(
+  n = 1000L, 
+  model = "bingp", 
+  data = danish,
+  prior = revdbayes::set_prior(prior = "mdi", model = "gp"),
+  thresh = 10)
+post_samp <- cbind(post_samp$sim_vals, post_samp$bin_sim_vals)
+colnames(post_samp) <- c('scale','shape',"probexc")
+post_samp <- as.data.frame(post_samp)
+g2 <- ggplot(data = post_samp,
+             mapping = aes(x = scale,
+                           y = shape)) +
+  geom_point() +
+  labs(x = expression(tau), 
+       y = expression(xi)) + 
+  theme_classic() + 
+  theme(axis.title.y = element_text(angle = 0))
+g1 + g2
+```
+
+The generalized Pareto model only describes the $n_u$ exceedances above $u=10$, so we need to incorporate in the likelihood a binomial contribution for the probability $\zeta_u$ of exceeding the threshold $u$. 
+<!-- The log likelihood for the full model is -->
+<!-- \begin{align*} -->
+<!-- -109 \log \tau + \sum_{i=1}^{109} (1+1/\xi)\log\left(1+\xi\frac{y_i-10}{\tau}\right)_{+} + \\& \quad  \log \binom{2167}{109} + 109\log \zeta_u + 2058 \log(1-\zeta_u) -->
+<!-- \end{align*} -->
+<!-- and, p -->
+Provided that the priors for $(\tau, \xi)$ are independent of those for $\zeta_u$, the posterior also factorizes as a product, so $\zeta_u$ and $(\tau, \xi)$ are a posteriori independent.
+
+Suppose for now that we set a $\mathsf{Beta}(0.5, 0.5)$ prior for $\zeta_u$ and a non-informative prior for the generalized Pareto parameters. 
+
+:::
+
+
+::: {#prp-ratio-uniform}
+## Ratio of uniform method
+
+The ratio-of-uniform method [@Kinderman.Monahan:1977; @Wakefield:1991] is a variant of accept-reject used to draw samples from a unnormalized density $f(\boldsymbol{\theta})$ for $\boldsymbol{\theta} \in \boldsymbol{\Theta} \subseteq \mathbb{R}^d$. For some $r \geq 0$, consider the set \begin{align*}
+\mathcal{C}_r = \left\{ (u_0, \ldots, u_d): 0 < u_0 \leq \left[f(u_1/u_0^r, \ldots, u_d/u_0^r)\right]^{\frac{1}{rd+1}}\right\}.
+\end{align*} If we can generate $u_0, \ldots, u_d$ uniformly over $\mathcal{C}_R$, then the draws $(u_1/u_0^r, \ldots, u_d/u_0^r)$ are from the normalized density $f$. Rejection sampling is used to obtain uniform draws over $\mathcal{C}_r$ under some conditions on the density and marginal moments. See [the `rust` package vignette](https://paulnorthrop.github.io/rust/articles/rust-a-vignette.html) for technical details and examples. Like with other accept-reject algorithms, the acceptance rate of the proposal goes down with the dimension of the problem. 
+:::
+
+:::{#exm-rust}
+
+We use the ratio-of-uniform algorithm for the data from @exm-loss-extremes to generate draws from the posterior. We illustrate below the `rust` package with a user-specified prior and posterior. We fit a generalized Pareto distribution $Y \sim \mathsf{GP}(\sigma, \xi)$ to exceedances above 10 millions krones to the `danish` fire insurance data, using a truncated maximal data information prior $p(\sigma, \xi) \propto \sigma^{-1}\exp(-\xi+1)\mathrm{I}(\xi > -1)$.
+
+```{r}
+#| eval: true
+#| echo: true
+#| label: danish-rou-demo
+data(danish, package = "evir")
+# Extract threshold exceedances
+exc <- danish[danish > 10] - 10
+# Create a function for the log prior
+logmdiprior <- function(par, ...){
+  if(isTRUE(any(par[1] <= 0, par[2] < -1))){
+    return(-Inf)
+  }
+  -log(par[1]) - par[2]
+}
+# Same for log likelihood, assuming independent data
+loglik_gp <- function(par, data = exc, ...){
+  if(isTRUE(any(par[1] <= 0, par[2] < -1))){
+    return(-Inf)
+  }
+  sum(mev::dgp(x = data, scale = par[1], shape = par[2], log = TRUE))
+}
+logpost <- function(par, ...){
+  logmdiprior(par) + loglik_gp(par)
+}
+# Sampler using ratio-of-uniform method
+ru_output <- rust::ru(
+  logf = logpost,  # log posterior function
+  n = 10000, # number of posterior draws
+  d = 2, # dimension of the parameter vector
+  init = mev::fit.gpd(danish, thresh = 10)$par,
+  lower = c(0, -1))
+## Acceptance rate 
+# ru_output$pa
+## Posterior samples
+postsamp <- ru_output$sim_vals
+```
+
+Even without modification, the acceptance rate is `r round(100*ru_output$pa, 0)`%, which is quite efficient in the context. The generalized Pareto approximation suggests a very heavy tail: values of $\xi \geq 1$ correspond to distributions with infinite first moment, and those with $\xi \geq 1/2$ to infinite variance.
+
+```{r}
+#| eval: true
+#| echo: false
+#| label: fig-danish-rou
+#| fig-cap: "Scatterplot of posterior samples from the generalized Pareto model applied to Danish fire insurance losses above 10 millions krones, with maximal data information prior (left) and posterior predictive density on log scale (right)."
+colnames(postsamp) <- c("scale","shape")
+g1 <- ggplot(data = data.frame(postsamp),
+        mapping = aes(x = scale, y = shape)) +
+  geom_point(alpha = 0.1) +
+  labs(x = expression(sigma), y = expression(xi)) +
+  theme_classic()
+postpred <- revdbayes::rgp(n = 10000, 
+                           loc = 10, 
+                           scale = postsamp[,1],
+                           shape = postsamp[,2])
+g2 <- ggplot(data = data.frame(x = postpred),
+             mapping = aes(x = x)) +
+  geom_density() + 
+  scale_x_continuous(trans = "log10") +
+  labs(x = "insurance claims (in millions krones)") +
+  theme_classic()
+g1 + g2 
+```
+
+
+
+The `post_samp` matrix contains exact samples from the posterior distribution of $(\tau, \xi, \zeta_u)$, obtained using a Monte Carlo algorithm. Our aim is to evaluate the posterior distribution for the value-at-risk, the $\alpha$ quantile of $Y$ for high values of $\alpha$ and see what point estimator one would obtain depending on our choice of loss function. For any $\alpha > 1-\zeta_u$, the $q_{\alpha}$ is
+\begin{align*}
+1- \alpha  &= \Pr(Y > q_\alpha \mid Y > u) \Pr(Y > u) 
+\\ &= \left(1+\xi \frac{q_{\alpha}-u}{\tau}\right)_{+}^{-1/\xi}\zeta_u
+\end{align*}
+and solving for $q_{\alpha}$ gives 
+\begin{align*}
+q_{\alpha} = u+ \frac{\tau}{\xi} \left\{\left(\frac{\zeta_u}{1-\alpha}\right)^\xi-1\right\}.
+\end{align*}
+
+To obtain the posterior distribution of the $\alpha$ quantile, $q_{\alpha}$, it suffices to plug in each posterior sample and evaluate the function: the uncertainty is carried over from the simulated values of the parameters to those of the quantile $q_{\alpha}$. The left panel of @fig-lossfn shows the posterior density estimate of the $\mathsf{VaR}(0.99)$ along with the maximum a posteriori (mode) of the latter.
+
+Suppose that we prefer to under-estimate the value-at-risk rather than overestimate: this could be captured by the custom loss function
+\begin{align*}
+c(q, q_0) = 
+\begin{cases}
+0.5(0.99q - q_0), & q > q_0 \\
+0.75(q_0 - 1.01q), & q < q_0.
+\end{cases}
+\end{align*}
+For a given value of the value-at-risk $q_0$ evaluated on a grid, we thus compute
+\begin{align*}
+ r(q_0) = \int_{\boldsymbol{\Theta}}c(q(\boldsymbol{\theta}), q_0) p (\boldsymbol{\theta} \mid \boldsymbol{y}) \mathrm{d} \boldsymbol{\theta}
+\end{align*}
+and we seek to minimize the risk, $\widehat{q} =\mathrm{argmin}_{q_0 \in \mathbb{R}_{+}} r(q_0)$. The value returned that minimizes the loss, shown in @fig-lossfn, is to the left of the posterior mean for $q_\alpha$.
+
+```{r}
+#| label: lossfn
+#| eval: false
+#| echo: true
+# Compute value at risk from generalized Pareto distribution quantile fn
+VaR_post <- with(post_samp,   # data frame of posterior draws
+            revdbayes::qgp(   # with columns 'probexc', 'scale', 'shape'
+  p = 0.01/probexc, 
+  loc = 10, 
+  scale = scale, 
+  shape = shape, 
+  lower.tail = FALSE))
+# Loss function
+loss <- function(qhat, q){
+    mean(ifelse(q > qhat,
+           0.5*(0.99*q-qhat),
+           0.75*(qhat-1.01*q)))
+}
+# Create a grid of values over which to estimate the loss for VaR
+nvals <- 101L
+VaR_grid <- seq(
+  from = quantile(VaR_post, 0.01),
+  to = quantile(VaR_post, 0.99), 
+  length.out = nvals)
+# Create a container to store results
+risk <- numeric(length = nvals)
+for(i in seq_len(nvals)){
+  # Compute integral (Monte Carlo average over draws)
+ risk[i] <- loss(q = VaR_post, qhat = VaR_grid[i])
+}
+
+```
+
+```{r}
+#| label: fig-lossfn
+#| eval: true
+#| echo: false
+#| warning: false
+#| fig-align: 'center'
+#| fig-cap: "Posterior density (left) and losses functions for the 0.99 value-at-risk for the Danish fire insurance data. The vertical lines denote point estimates of the quantiles that minimize the loss functions."
+VaR_post <- with(post_samp,   # data frame of posterior draws
+            revdbayes::qgp(   # with columns 'probexc', 'scale', 'shape'
+  p = 0.01/probexc, 
+  loc = 10, 
+  scale = scale, 
+  shape = shape, 
+  lower.tail = FALSE))
+# Loss functions
+loss1 <- function(qhat, q){
+    mean(ifelse(q > qhat,
+           0.5*(0.99*q-qhat),
+           0.75*(qhat-1.01*q)))
+}
+  # squared error loss
+loss2 <- function(qhat, q){
+  0.3*mean((q-qhat)^2)
+}
+# Create a grid of values over which to estimate the loss for VaR
+nvals <- 101L
+VaR_grid <- seq(
+  from = quantile(VaR_post, 0.01),
+  to = quantile(VaR_post, 0.99), 
+  length.out = nvals)
+# Create a container to store results
+risk1 <- risk2 <- numeric(length = nvals)
+for(i in seq_len(nvals)){
+  # Compute integral (Monte Carlo average over draws)
+ risk1[i] <- loss1(q = VaR_post, qhat = VaR_grid[i])
+ risk2[i] <- loss2(q = VaR_post, qhat = VaR_grid[i])
+}
+g1 <- ggplot(data = data.frame(x = VaR_post)) +
+  geom_density(mapping = aes(x = x)) +
+  labs(subtitle = "posterior density",
+       x = "value-at-risk 0.99 (in millions krone)",
+       y = "") +
+  scale_y_continuous(limits = c(0, 0.15), expand = c(0,0)) +
+  theme_classic()
+# Plot loss function
+g2 <- ggplot(data = data.frame(
+  loss1 = risk1 - min(risk1), 
+  loss2 = risk2 - min(risk2),
+  quantile = VaR_grid)) +
+  geom_line(mapping = aes(x = quantile, y = loss1)) +
+  geom_line(mapping = aes(x = quantile, y = loss2), linetype = "dashed") +
+  geom_vline(xintercept = VaR_grid[which.min(risk1)], linewidth = 0.1) +
+  geom_vline(xintercept = mean(VaR_post), linetype = "dashed", linewidth = 0.1) +
+  scale_y_continuous(limits = c(0, 9), expand = c(0,0)) +
+  labs(x = "value-at-risk 0.99 (in millions krone)",
+       subtitle = "custom loss function (full)\nand squared error loss (dashed)") +
+  theme_classic()
+g1 + g2
+```
+
+:::
+
+
+To communicate uncertainty, we may resort to credible regions and intervals.
+
+:::{#def-credible-region}
+A $(1-\alpha)$ **credible region** (or credible interval in the univariate setting) is a set $\mathcal{S}_\alpha$ such that, with probability level $\alpha$, 
+\begin{align*}
+\Pr(\boldsymbol{\theta} \in \mathcal{S}_\alpha \mid \boldsymbol{Y}=\boldsymbol{y}) = 1-\alpha
+\end{align*}
+
+:::
+
+These intervals are not unique, as are confidence sets. In the univariate setting, the central or equitailed interval are the most popular, and easily obtained by considering the $\alpha/2, 1-\alpha/2$ quantiles. These are easily obtained from samples by simply taking empirical quantiles. An alternative, highest posterior density credible sets, which may be a set of disjoint intervals obtained by considering the parts of the posterior with the highest density, may be more informative. The top panel @fig-credible-intervals shows the distinction for a bimodal mixture distribution, and a even more striking difference for 50% credible intervals for a symmetric beta distribution whose mass lie near the endpoints of the distribution, leading to no overlap between the two intervals.
+
+
+
+```{r}
+#| label: fig-credible-intervals
+#| eval: true
+#| echo: false
+#| fig-cap: "Density plots with 89% (top) and 50% (bottom) equitailed or central credible (left) and highest posterior density (right) regions for two data sets, highlighted in grey. The horizontal lign gives the posterior density value determining the cutoff for the HDP region." 
+# ggproto from
+# https://stackoverflow.com/questions/20355849/ggplot2-shade-area-under-density-curve-by-group
+
+StatAreaUnderDensity <- ggproto(
+  "StatAreaUnderDensity", Stat,
+  required_aes = "x",
+  compute_group = function(data, scales, xlim = NULL, n = 50) {
+    fun <- approxfun(density(data$x))
+    StatFunction$compute_group(data, scales, fun = fun, xlim = xlim, n = n)
+  }
+)
+
+stat_aud <- function(mapping = NULL, data = NULL, geom = "area",
+                    position = "identity", na.rm = FALSE, show.legend = NA, 
+                    inherit.aes = TRUE, n = 50, xlim=NULL,  
+                    ...) {
+  layer(
+    stat = StatAreaUnderDensity, data = data, mapping = mapping, geom = geom, 
+    position = position, show.legend = show.legend, inherit.aes = inherit.aes,
+    params = list(xlim = xlim, n = n, ...))
+}
+set.seed(2023)
+nsamp <- 1e5
+# Sample data from a mixture model
+ mixt <- sort(c(rnorm(0.5*nsamp, 20, 4), 
+                rnorm(0.2*nsamp, 55, 10),
+                55 + rexp(0.3*nsamp, 0.08)))
+dmixt <- function(x){0.5*dnorm(x, 20, 4) + 0.2*dnorm(x, 55, 10) + 0.3*dexp(55+x, 0.08)}                
+# mixt <- rbeta(nsamp, shape1 = 0.5, shape2 = 0.2)
+# Compute equitailed interval bounds
+
+g1 <- ggplot(data = data.frame(x = mixt),
+       mapping = aes(x = x)) +
+  stat_aud(geom="area",
+           xlim = c(quantile(mixt, probs = c(0.055, 0.945))), 
+           alpha = .2) +
+  geom_density() + 
+  labs(x = "", y = "") +
+  scale_y_continuous(limits = c(0,0.05), expand = c(0,0)) +
+  theme_classic() 
+hdiD <- HDInterval::hdi(density(mixt), credMass = 0.89, allowSplit = TRUE)
+g2 <- ggplot(data = data.frame(x = mixt),
+       mapping = aes(x = x)) +
+    geom_hline(yintercept = attr(hdiD, "height"),
+             alpha = 0.2, linetype = "dashed") +
+    stat_aud(geom = "area",
+           xlim = hdiD[1,], 
+           alpha = .2) +
+   stat_aud(geom = "area",
+           xlim = hdiD[2,], 
+           alpha = .2) +
+  geom_density() +
+  # stat_function(fun = dmixt, 
+  #               xlim = c(0,100),
+  #               n = 1001) +
+  labs(y = "", x = "") +
+  scale_y_continuous(limits = c(0,0.05), expand = c(0,0)) +
+  theme_classic() 
+
+
+shape <- 0.8
+g3 <- ggplot()  +
+  stat_function(fun = dbeta, 
+                args = list(shape1 = shape, shape2 = shape), 
+                fill = "gray", xlim = c(0, qbeta(p = 0.25, shape, shape)),
+                geom = "area",n = 1001) +
+  stat_function(fun = dbeta, 
+                args = list(shape1 = shape, shape2 = shape), 
+                fill = "gray", xlim = c(qbeta(p = 0.75, shape, shape), 1),
+                geom = "area",n = 1001) +
+  stat_function(fun = dbeta, 
+                args = list(shape1 = shape, shape2 = shape), 
+                xlim = c(0,1),n = 1001) +
+  geom_hline(yintercept = dbeta(qbeta(p = 0.75, shape, shape),shape, shape),
+             alpha = 0.5, linetype = "dashed") +
+  labs(x = "", y = "") +
+  scale_x_continuous(limits = c(0,1), expand = c(0,0)) +
+  scale_y_continuous(limits = c(0,5), expand = c(0,0)) +
+  theme_classic()
+g4 <- ggplot() +
+   stat_function(fun = dbeta, 
+                args = list(shape1 = shape, shape2 = shape), 
+                fill = "gray", 
+                xlim = qbeta(p = c(0.25, 0.75), shape, shape),
+                geom = "area", n = 1001) +
+   stat_function(fun = dbeta, 
+                args = list(shape1 = shape, shape2 = shape), 
+                xlim = c(0,1), n = 1001) +
+  labs(x = "", y = "") +
+  scale_x_continuous(limits = c(0,1), expand = c(0,0)) +
+  scale_y_continuous(limits = c(0,5), expand = c(0,0)) +
+  theme_classic()
+(g1 + g2) / (g4 + g3)
+```
+
