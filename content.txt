@@ -1,5 +1,58 @@
 # 1: Introduction
 
+
+### Transformations
+
+
+:::{#prp-change-variable}
+
+## Change of variable
+
+Let $\boldsymbol{X}$ be a random vector and consider 
+
+:::
+
+:::{#exm-change-variable-lognormal}
+
+If $Y \sim \mathsf{normal}(\mu, \sigma^2)$, then $g(Y) = \log Y$ has density
+\begin{align*}
+f_{g(Y)}(y) = \frac{1}{\sigma}\phi\left(\frac{y-\mu}{\sigma}\right)
+\end{align*}
+
+:::
+
+
+
+
+
+Density and distribution function
+Joint, marginal, conditional distribution
+Expectation
+Likelihood
+ - example with independent data
+ - serial dependence and AR(1)
+ - truncated or censored observations
+Law of total probability
+Bayes theorem
+Random vectors and multivariate distributions
+ - Expected values and covariance
+ - Conditional independence
+  - Tower property (law of iterated expectation)
+ - Change of variables and Jacobians
+
+Taylor series and Newton-Raphson 
+
+
+
+
+
+
+
+
+
+
+
+
 Subjective probability [@Villani:2023]
 
 Bayes formula (example with Covid rapid tests, sensitivity vs specificity) +  Bayesian updating

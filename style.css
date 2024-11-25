@@ -17,11 +17,12 @@ pre code {
 .book .book-body .page-wrapper .page-inner section.normal a {
   max-width: 90% !important;
   margin-right: 10px;
-  font-size: 1.3em
+  font-size: 1.3em;
+  text-align: justify !important;
 }
 
 .book-summary {
- font-size: 1.2em !important;
+ font-size: 1.4em !important;
 }
 
 
