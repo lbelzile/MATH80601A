@@ -18,7 +18,9 @@ There are two major approaches to handling the problem of the unknown normalizin
 
 ## Markov chain Monte Carlo
 
-Plain ordinary Monte Carlo is great, but few algorithms are generic enough to be useful in complex high-dimensional problems. Instead, we will construct a Markov chain with a given invariant distribution corresponding to the posterior. Markov chain Monte Carlo methods generate correlated draws that will target the posterior under suitable conditions.[^mcmc-3]
+Ordinary Monte Carlo methods suffer from the curse of dimensionality, with few algorithms are generic enough to be useful in complex high-dimensional problems. Instead, we will construct a Markov chain with a given invariant distribution corresponding to the posterior. Markov chain Monte Carlo methods generate correlated draws that will target the posterior under suitable conditions.[^mcmc-3]
+
+[^mcmc-3]: While we won't focus on the fine prints of the contract, there are conditions for validity and these matter!
 
 [^mcmc-3]: While we won't focus on the fine prints of the contract, there are conditions for validity and these matter!
 

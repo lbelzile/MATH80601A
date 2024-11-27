@@ -266,8 +266,7 @@ g2 + g1
 
 ## Sequentiality and Bayesian updating
 
-The likelihood is invariant to the order of the observations if they are independent
-Thus, if we consider two blocks of observations $\boldsymbol{y}_1$ and $\boldsymbol{y}_2$ $$p(\boldsymbol{\theta} \mid \boldsymbol{y}_1, \boldsymbol{y}_2) = p(\boldsymbol{\theta} \mid \boldsymbol{y}_1) p(\boldsymbol{\theta} \mid \boldsymbol{y}_2),$$
+The likelihood is invariant to the order of the observations if they are independent. Thus, if we consider two blocks of observations $\boldsymbol{y}_1$ and $\boldsymbol{y}_2$ $$p(\boldsymbol{\theta} \mid \boldsymbol{y}_1, \boldsymbol{y}_2) = p(\boldsymbol{\theta} \mid \boldsymbol{y}_1) p(\boldsymbol{\theta} \mid \boldsymbol{y}_2),$$
 so it makes no difference if we treat data all at once or in blocks.
 More generally, for data exhibiting spatial or serial dependence, it makes sense to consider rather the conditional (sequential) decomposition
 $$f(\boldsymbol{y}; \boldsymbol{\theta}) = f(\boldsymbol{y}_1; \boldsymbol{\theta}) f(\boldsymbol{y}_2; \boldsymbol{\theta}, \boldsymbol{y}_1) \cdots f(\boldsymbol{y}_n; \boldsymbol{\theta}, \boldsymbol{y}_1, \ldots, \boldsymbol{y}_{n-1})$$

@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.5.56">
+<meta name="generator" content="quarto-1.6.1">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -240,7 +240,7 @@ window.Quarto = {
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#random-variables" id="toc-random-variables" class="nav-link active" data-scroll-target="#random-variables"><span class="header-section-number">1.1</span> Random variables</a>
+  <li><a href="#random-vectors" id="toc-random-vectors" class="nav-link active" data-scroll-target="#random-vectors"><span class="header-section-number">1.1</span> Random vectors</a>
   <ul class="collapse">
   <li><a href="#common-distributions" id="toc-common-distributions" class="nav-link" data-scroll-target="#common-distributions"><span class="header-section-number">1.1.1</span> Common distributions</a></li>
   </ul></li>
@@ -262,55 +262,80 @@ window.Quarto = {
 
 
 <p>This section review basic concepts in probability theory that will be used in the sequel. The overview begins with basic statistical concepts, random variables, their distribution and density, moments and likelihood derivations.</p>
-<section id="random-variables" class="level2" data-number="1.1">
-<h2 data-number="1.1" class="anchored" data-anchor-id="random-variables"><span class="header-section-number">1.1</span> Random variables</h2>
+<section id="random-vectors" class="level2" data-number="1.1">
+<h2 data-number="1.1" class="anchored" data-anchor-id="random-vectors"><span class="header-section-number">1.1</span> Random vectors</h2>
+<p>In the sequel, we characterize random vectors and their marginal, conditional and joint distributions. A good reference for this material is Chapter 3 of <span class="citation" data-cites="McNeil.Frey.Embrechts:2005">McNeil, Frey, and Embrechts (<a href="references.html#ref-McNeil.Frey.Embrechts:2005" role="doc-biblioref">2005</a>)</span>.</p>
 <div id="def-cdf" class="theorem definition">
-<p><span class="theorem-title"><strong>Definition 1.1 (Density and distribution function)</strong></span> &nbsp;</p>
+<p><span class="theorem-title"><strong>Definition 1.1 (Density and distribution function)</strong></span> Let <span class="math inline">\(\boldsymbol{X}\)</span> denote a <span class="math inline">\(d\)</span>-dimensional vector with real entries in <span class="math inline">\(\mathbb{R}^d\)</span>. The distribution function of <span class="math inline">\(\boldsymbol{X}\)</span> is <span class="math display">\[\begin{align*}
+F_{1:d}(\boldsymbol{x}) = \Pr(\boldsymbol{X} \leq \boldsymbol{x}) = \Pr(X_1 \leq x_1, \ldots, X_d \leq x_d).
+\end{align*}\]</span> We use indices <span class="math inline">\(1:d = \{1, \ldots, d\}\)</span> to explicit which components of <span class="math inline">\(\boldsymbol{X}\)</span> are under consideration.</p>
+<p>If the distribution of <span class="math inline">\(\boldsymbol{X}\)</span> is absolutely continuous, we may write <span class="math display">\[\begin{align*}
+F_{1:d}(\boldsymbol{x}) = \int_{-\infty}^{x_d} \cdots \int_{-\infty}^{x_1} f_{1:d}(z_1, \ldots, z_d) \mathrm{d} z_1 \cdots \mathrm{d} z_d,
+\end{align*}\]</span> where <span class="math inline">\(f_{1:d}(\boldsymbol{x})\)</span> is the joint <strong>density function</strong>. The density function can be obtained as the derivative of the distribution function with respect to all of it’s arguments.</p>
+<!--
+We use the same notation and talk about the density function (rather than mass function) in the discrete case where $f_{\boldsymbol{X}}(\boldsymbol{x}) = \Pr(X_1 = x_1, \ldots, X_d = x_d)$, where the integral is understood to mean a summation over all values lower or equal to $\boldsymbol{x}$ in the support.
+-->
+<p>The <strong>marginal distribution</strong> of a subvector <span class="math inline">\(\boldsymbol{X}_{1:k}=(X_1, \ldots, X_k)^\top\)</span>, without loss of generality consisting of the <span class="math inline">\(k\)</span> first components of <span class="math inline">\(\boldsymbol{X}\)</span> <span class="math inline">\((1 \leq k \leq d)\)</span> is <span class="math display">\[\begin{align*}
+F_{1:k}(\boldsymbol{x}_{1:d}) = \Pr(\boldsymbol{X}_{1:k} \leq \boldsymbol{x}_{1:k}) = F_{1:d}(x_1, \ldots, x_k, \infty, \ldots, \infty).
+\end{align*}\]</span> and thus the marginal distribution of component <span class="math inline">\(j\)</span>, <span class="math inline">\(F_j(x_j)\)</span>, is obtained by evaluating all components but the <span class="math inline">\(j\)</span>th at <span class="math inline">\(\infty\)</span>.</p>
+<p>We likewise obtain the marginal density <span class="math display">\[\begin{align*}
+f_{1:k}(\boldsymbol{x}_{1:k}) = \frac{\partial^k F_{1:k}(\boldsymbol{x}_{1:k})}{\partial x_1 \cdots \partial x_{k}},
+\end{align*}\]</span> or through integration from the joint density as <span class="math display">\[\begin{align*}
+f_{1:k}(\boldsymbol{x}_{1:k}) = \int_{-\infty}^\infty \cdots  \int_{-\infty}^\infty  f_{1:d}(x_1, \ldots, x_k, z_{k+1}, \ldots, z_{d}) \mathrm{d} z_{k+1} \cdots \mathrm{d}z_d.
+\end{align*}\]</span></p>
+</div>
+<div id="def-conditional-dist" class="theorem definition">
+<p><span class="theorem-title"><strong>Definition 1.2 (Conditional distribution)</strong></span> Let <span class="math inline">\(\boldsymbol{X}_{1:d} = (\boldsymbol{X}_{1:k}^\top, \boldsymbol{X}_{(k+1):d}^\top)^\top\)</span> be a <span class="math inline">\(d\)</span>-dimensional random vector with absolutely continuous margins and joint density <span class="math inline">\(f_{1:d}\)</span>, or else a discrete distribution with mass function <span class="math inline">\(f_{1:d}\)</span>. The conditional distribution function of <span class="math inline">\(\boldsymbol{X}_{1:k}\)</span> given <span class="math inline">\(\boldsymbol{X}_{(k+1):d}\)</span>, is defined implicitly from the relationship <span class="math display">\[\begin{align*}
+f_{1:k \mid (k+1):d}(\boldsymbol{x}_{1:k}; \boldsymbol{x}_{(k+1):d}) = \frac{f_{1:d}(\boldsymbol{x}_{1:d})}{f_{(k+1):d}(\boldsymbol{x}_{(k+1):d})}
+\end{align*}\]</span> for any value of <span class="math inline">\(\boldsymbol{x}\)</span> in the support of <span class="math inline">\(\boldsymbol{X}\)</span>, i.e., the set of values with non-zero density or mass and <span class="math inline">\(f_{(k+1):d}(\boldsymbol{x}_{(k+1):d})&gt;0\)</span>; it is undefined otherwise.</p>
 </div>
 <div id="def-independence" class="theorem definition">
-<p><span class="theorem-title"><strong>Definition 1.2 (Independence)</strong></span> Let <span class="math inline">\(\boldsymbol{X}_1\)</span>, <span class="math inline">\(\boldsymbol{X}_2\)</span> be two random vectors. We say that <span class="math inline">\(\boldsymbol{X}_1\)</span> and <span class="math inline">\(\boldsymbol{X}_2\)</span> are independent if their joint distribution function factorizes as <span class="math display">\[\begin{align*}
-F_{(\boldsymbol{X}_1, \boldsymbol{X}_2)}(\boldsymbol{x}_1, \boldsymbol{x_2}) = F_{\boldsymbol{X}_1}(\boldsymbol{x}_1)F_{\boldsymbol{X}_2}(\boldsymbol{x_2})
-\end{align*}\]</span> for any value of <span class="math inline">\(\boldsymbol{x}_1\)</span> and <span class="math inline">\(\boldsymbol{x}_2\)</span>.</p>
+<p><span class="theorem-title"><strong>Definition 1.3 (Independence)</strong></span> Let <span class="math inline">\(\boldsymbol{X}_{1:d} = (\boldsymbol{X}_{1:k}^\top, \boldsymbol{X}_{(k+1):d}^\top)^\top\)</span> be a <span class="math inline">\(d\)</span>-dimensional random vector. We say that <span class="math inline">\(\boldsymbol{X}_{1:k}\)</span> and <span class="math inline">\(\boldsymbol{X}_{(k+1):d}\)</span> are independent if their joint distribution function factorizes as <span class="math display">\[\begin{align*}
+F_{1:d}(\boldsymbol{x}_{1:k}, \boldsymbol{x}_{(k+1):d}) = F_{1:k}(\boldsymbol{x}_{1:k})F_{(k+1):d}(\boldsymbol{x}_{(k+1):d})
+\end{align*}\]</span> for any value of <span class="math inline">\(\boldsymbol{x}_{1:k}\)</span>, <span class="math inline">\(\boldsymbol{x}_{(k+1):d}\)</span>. It follows from the definition of joint density that, should the latter exists, it also factorizes as <span class="math display">\[\begin{align*}
+f_{1:d}(\boldsymbol{x}_{1:k}, \boldsymbol{x}_{(k+1):d}) = f_{1:k}(\boldsymbol{x}_{1:k})f_{(k+1):d}(\boldsymbol{x}_{(k+1):d}).
+\end{align*}\]</span></p>
+<p>If two subvectors <span class="math inline">\(\boldsymbol{X}_{1:k}\)</span> and <span class="math inline">\(\boldsymbol{X}_{(k+1):d}\)</span> are independent, then the conditional density <span class="math inline">\(f_{1:k \mid (k+1):d}\)</span> equals the marginal <span class="math inline">\(f_{1:k}\)</span>.</p>
 </div>
 <section id="common-distributions" class="level3" data-number="1.1.1">
 <h3 data-number="1.1.1" class="anchored" data-anchor-id="common-distributions"><span class="header-section-number">1.1.1</span> Common distributions</h3>
 <div id="def-gamma" class="theorem definition">
-<p><span class="theorem-title"><strong>Definition 1.3 (Gamma, chi-square and exponential distributions)</strong></span> A random variable follows a gamma distribution with shape <span class="math inline">\(\alpha&gt;0\)</span> and rate <span class="math inline">\(\beta&gt;0\)</span>, denoted <span class="math inline">\(Y \sim \mathsf{gamma}(\alpha, \beta)\)</span>, if it’s density is <span class="math display">\[\begin{align*}
+<p><span class="theorem-title"><strong>Definition 1.4 (Gamma, chi-square and exponential distributions)</strong></span> A random variable follows a gamma distribution with shape <span class="math inline">\(\alpha&gt;0\)</span> and rate <span class="math inline">\(\beta&gt;0\)</span>, denoted <span class="math inline">\(Y \sim \mathsf{gamma}(\alpha, \beta)\)</span>, if it’s density is <span class="math display">\[\begin{align*}
 f(x) = \frac{\beta^\alpha}{\Gamma(\alpha)}x^{\alpha-1}\exp(-\beta x), \qquad x \in (0, \infty),
 \end{align*}\]</span> where <span class="math inline">\(\Gamma(\alpha)\coloneqq\int_0^\infty t^{\alpha-1}\exp(-t)\mathrm{d} t\)</span> is the gamma function.</p>
 <p>If <span class="math inline">\(\alpha=1\)</span>, the density simplifies to <span class="math inline">\(\beta \exp(-\beta x)\)</span> and we recover the <strong>exponential distribution</strong>. The case <span class="math inline">\(\mathsf{gamma}(\nu/2, 1/2)\)</span> corresponds to the chi-square distribution <span class="math inline">\(\chi^2_\nu\)</span>.</p>
 </div>
 <div id="def-beta" class="theorem definition">
-<p><span class="theorem-title"><strong>Definition 1.4 (Beta and uniform distribution)</strong></span> The beta distribution <span class="math inline">\(\mathsf{Beta}(\alpha_1, \alpha_2)\)</span> is a distribution supported on the unit interval <span class="math inline">\([0,1]\)</span> with shape parameters <span class="math inline">\(\alpha_1&gt;0\)</span> and <span class="math inline">\(\alpha_2&gt;0.\)</span> It’s density is <span class="math display">\[\begin{align*}
+<p><span class="theorem-title"><strong>Definition 1.5 (beta and uniform distribution)</strong></span> The beta distribution <span class="math inline">\(\mathsf{beta}(\alpha_1, \alpha_2)\)</span> is a distribution supported on the unit interval <span class="math inline">\([0,1]\)</span> with shape parameters <span class="math inline">\(\alpha_1&gt;0\)</span> and <span class="math inline">\(\alpha_2&gt;0.\)</span> It’s density is <span class="math display">\[\begin{align*}
 f(x) = \frac{\Gamma(\alpha_1)\Gamma(\alpha_2)}{\Gamma(\alpha_1+\alpha_2)}x^{\alpha_1-1}(1-x)^{1-\alpha_2}, \qquad x \in [0,1].
-\end{align*}\]</span> The case <span class="math inline">\(\mathsf{Beta}(1,1)\)</span>, also denoted <span class="math inline">\(\mathsf{unif}(0,1)\)</span>, corresponds to a standard uniform distribution.</p>
+\end{align*}\]</span> The case <span class="math inline">\(\mathsf{beta}(1,1)\)</span>, also denoted <span class="math inline">\(\mathsf{unif}(0,1)\)</span>, corresponds to a standard uniform distribution.</p>
 </div>
 <p>The beta distribution is commonly used to model proportions, and can be generalized to the multivariate setting as follows.</p>
 <div id="def-dirichlet-dist" class="theorem definition">
-<p><span class="theorem-title"><strong>Definition 1.5 (Dirichlet distribution)</strong></span> Let <span class="math inline">\(\boldsymbol{\alpha} \in (0, \infty)^d\)</span> denote shape parameters and cosider a random vector of size <span class="math inline">\(d\)</span> with positive components on the simplex <span class="math display">\[\mathbb{S}_{d-1}: \{ 0 \leq x_j \leq 1; j=1, \ldots, d: x_1 + \cdots + x_d=1\}.\]</span> The density of a <strong>Dirichlet</strong> random vector, denoted <span class="math inline">\(\boldsymbol{Y} \sim \mathsf{Dirichlet}(\boldsymbol{\alpha})\)</span>, is <span class="math display">\[\begin{align*}
+<p><span class="theorem-title"><strong>Definition 1.6 (Dirichlet distribution)</strong></span> Let <span class="math inline">\(\boldsymbol{\alpha} \in (0, \infty)^d\)</span> denote shape parameters and cosider a random vector of size <span class="math inline">\(d\)</span> with positive components on the simplex <span class="math display">\[\mathbb{S}_{d-1}: \{ 0 \leq x_j \leq 1; j=1, \ldots, d: x_1 + \cdots + x_d=1\}.\]</span> The density of a <strong>Dirichlet</strong> random vector, denoted <span class="math inline">\(\boldsymbol{Y} \sim \mathsf{Dirichlet}(\boldsymbol{\alpha})\)</span>, is <span class="math display">\[\begin{align*}
 f(\boldsymbol{x}) = \frac{\prod_{j=1}^{d-1}\Gamma(\alpha_j)}{\Gamma(\alpha_1 + \cdots + \alpha_d)}\prod_{j=1}^{d} x_j^{\alpha_j-1}, \qquad \boldsymbol{x} \in \mathbb{S}_{d-1}
 \end{align*}\]</span></p>
 <p>Due to the linear dependence, the <span class="math inline">\(d\)</span>th component <span class="math inline">\(x_d = 1- x_1 - \cdots - x_{d-1}\)</span> is fully determined.</p>
 </div>
 <div id="def-binomial" class="theorem definition">
-<p><span class="theorem-title"><strong>Definition 1.6 (Binomial distribution)</strong></span> The density of the binomial distribution, denoted <span class="math inline">\(Y \sim \mathsf{Binom}(n, p)\)</span>, is <span class="math display">\[\begin{align*}
+<p><span class="theorem-title"><strong>Definition 1.7 (Binomial distribution)</strong></span> The density of the binomial distribution, denoted <span class="math inline">\(Y \sim \mathsf{Binom}(n, p)\)</span>, is <span class="math display">\[\begin{align*}
 f(x) = \mathsf{Pr}(Y=x) = \binom{m}{x}p^x (1-p)^{m-x}, \quad x=0, 1, \ldots, n.
 \end{align*}\]</span></p>
 <p>If <span class="math inline">\(n=1\)</span>, we recover the Bernoulli distribution with density <span class="math inline">\(f(x) = p^{y}(1-p)^{1-y}\)</span>. The binomial distribution is closed under convolution, meaning that the number the number of successes <span class="math inline">\(Y\)</span> out of <span class="math inline">\(n\)</span> Bernoulli trials is binomial</p>
 </div>
 <div id="def-multinom-dist" class="theorem definition">
-<p><span class="theorem-title"><strong>Definition 1.7 (Multinomial distribution)</strong></span> If there are more than two outcomes, say <span class="math inline">\(d\)</span>, we can generalize this mass function. Suppose that <span class="math inline">\(\boldsymbol{Y}=(Y_1, \ldots, Y_d)\)</span> denotes the number of realizations of each of the <span class="math inline">\(d\)</span> outcomes based on <span class="math inline">\(n\)</span> trials, so that <span class="math inline">\(0 \leq Y_j \leq n (j=1, \ldots, d)\)</span> and <span class="math inline">\(Y_1 + \cdots + Y_d=n\)</span>. The joint density of the multinomial vector <span class="math inline">\(\boldsymbol{Y} \sim \mathsf{multinom}(\boldsymbol{p})\)</span> with probability vector <span class="math inline">\(\boldsymbol{p} \in \mathbb{S}_{d-1}\)</span> is <span class="math display">\[\begin{align*}
+<p><span class="theorem-title"><strong>Definition 1.8 (Multinomial distribution)</strong></span> If there are more than two outcomes, say <span class="math inline">\(d\)</span>, we can generalize this mass function. Suppose that <span class="math inline">\(\boldsymbol{Y}=(Y_1, \ldots, Y_d)\)</span> denotes the number of realizations of each of the <span class="math inline">\(d\)</span> outcomes based on <span class="math inline">\(n\)</span> trials, so that <span class="math inline">\(0 \leq Y_j \leq n (j=1, \ldots, d)\)</span> and <span class="math inline">\(Y_1 + \cdots + Y_d=n\)</span>. The joint density of the multinomial vector <span class="math inline">\(\boldsymbol{Y} \sim \mathsf{multinom}(\boldsymbol{p})\)</span> with probability vector <span class="math inline">\(\boldsymbol{p} \in \mathbb{S}_{d-1}\)</span> is <span class="math display">\[\begin{align*}
 f(\boldsymbol{x}) = \frac{n!}{\prod_{j=1}^d x_j!} \prod_{j=1}^d p_j^{x_j}, \qquad \boldsymbol{y}/n \in \mathbb{S}_{d-1},
 \end{align*}\]</span> where <span class="math inline">\(x! = \Gamma(x+1)\)</span> denotes the factorial function.</p>
 </div>
 <div id="def-poissondist" class="theorem definition">
-<p><span class="theorem-title"><strong>Definition 1.8 (Poisson distribution)</strong></span> If the probability of success <span class="math inline">\(p\)</span> of a Bernoulli event is small in the sense that <span class="math inline">\(np \to \lambda\)</span> when the number of trials <span class="math inline">\(n\)</span> increases, then the number of success follows approximately a Poisson distribution with mass function <span class="math display">\[\begin{align*}
-\mathsf{Pr}(Y=y) = \frac{\exp(-\lambda)\lambda^y}{\Gamma(y+1)}, \quad y=0, 1, 2, \ldots
-\end{align*}\]</span> where <span class="math inline">\(\Gamma(\cdot)\)</span> denotes the gamma function. The parameter <span class="math inline">\(\lambda\)</span> of the Poisson distribution is both the expectation and the variance of the distribution, meaning <span class="math inline">\(\mathsf{E}(Y)=\mathsf{Va}(Y)=\lambda.\)</span></p>
+<p><span class="theorem-title"><strong>Definition 1.9 (Poisson distribution)</strong></span> If the probability of success <span class="math inline">\(p\)</span> of a Bernoulli event is small in the sense that <span class="math inline">\(np \to \lambda\)</span> when the number of trials <span class="math inline">\(n\)</span> increases, then the number of success follows approximately a Poisson distribution with mass function <span class="math display">\[\begin{align*}
+f(x)=\mathsf{Pr}(Y=x) = \frac{\exp(-\lambda)\lambda^y}{\Gamma(y+1)}, \quad x=0, 1, 2, \ldots
+\end{align*}\]</span> where <span class="math inline">\(\Gamma(\cdot)\)</span> denotes the gamma function. The parameter <span class="math inline">\(\lambda\)</span> of the Poisson distribution is both the expectation and the variance of the distribution, meaning <span class="math inline">\(\mathsf{E}(Y)=\mathsf{Va}(Y)=\lambda.\)</span> We denote the distribution as <span class="math inline">\(Y \sim \mathsf{Poisson}(\lambda)\)</span>.</p>
 </div>
 <p>The most frequently encountered distribution is termed normal, but we use the terminology Gaussian</p>
 <div id="def-gaussian" class="theorem definition">
-<p><span class="theorem-title"><strong>Definition 1.9 (Gaussian distribution)</strong></span> Consider a <span class="math inline">\(d\)</span> dimensional vector <span class="math inline">\(\boldsymbol{Y} \sim \mathsf{normal}_d(\boldsymbol{\mu}, \boldsymbol{Q}^{-1})\)</span> with density <span class="math display">\[\begin{align*}
+<p><span class="theorem-title"><strong>Definition 1.10 (Gaussian distribution)</strong></span> Consider a <span class="math inline">\(d\)</span> dimensional vector <span class="math inline">\(\boldsymbol{Y} \sim \mathsf{normal}_d(\boldsymbol{\mu}, \boldsymbol{Q}^{-1})\)</span> with density <span class="math display">\[\begin{align*}
 f(\boldsymbol{x}) = (2\pi)^{-d/2} |\boldsymbol{Q}|^{1/2} \exp \left\{ - \frac{1}{2} (\boldsymbol{x}-\boldsymbol{\mu})^\top \boldsymbol{Q}(\boldsymbol{x}-\boldsymbol{\mu})\right\}, \qquad \boldsymbol{x} \in \mathbb{R}^d
 \end{align*}\]</span></p>
 <p>The mean vector <span class="math inline">\(\boldsymbol{\mu}\)</span> is the vector of expectation of individual observations, whereas <span class="math inline">\(\boldsymbol{Q}^{-1}\)</span>, often denoted <span class="math inline">\(\boldsymbol{\Sigma}\)</span> is the <span class="math inline">\(d \times d\)</span> covariance matrix of <span class="math inline">\(\boldsymbol{Y}\)</span> and <span class="math inline">\(\boldsymbol{Q}\)</span>, the canonical parameter, is the precision matrix.</p>
@@ -357,7 +382,8 @@ Joint distribution, conditional
 \boldsymbol{\mu} = \begin{pmatrix} \boldsymbol{\mu}_1 \\ \boldsymbol{\mu}_2\end{pmatrix}, \quad
 \boldsymbol{\Sigma} = \begin{pmatrix} \boldsymbol{\Sigma}_{11} &amp; \boldsymbol{\Sigma}_{12}\\ \boldsymbol{\Sigma}_{21} &amp; \boldsymbol{\Sigma}_{22}\end{pmatrix},
 \end{align*}\]</span> where <span class="math inline">\(\boldsymbol{Y}_1\)</span> is a <span class="math inline">\(k \times 1\)</span> and <span class="math inline">\(\boldsymbol{Y}_2\)</span> is a <span class="math inline">\((d-k) \times 1\)</span> vector for some <span class="math inline">\(1\leq k &lt; d.\)</span> Show that the conditional distribution <span class="math display">\[\begin{align*}
-\boldsymbol{Y}_1 \mid \boldsymbol{Y}_2 =\boldsymbol{y}_2 \sim \mathsf{normal}_k(\boldsymbol{\mu}_1+\boldsymbol{\Sigma}_{12} \boldsymbol{\Sigma}_{22}^{-1}(\boldsymbol{y}_2-\boldsymbol{\mu}_2), \boldsymbol{\Sigma}_{1|2}) \\&amp; \sim
+\boldsymbol{Y}_1 \mid \boldsymbol{Y}_2 =\boldsymbol{y}_2 \sim \mathsf{normal}_k(\boldsymbol{\mu}_1+\boldsymbol{\Sigma}_{12} \boldsymbol{\Sigma}_{22}^{-1}(\boldsymbol{y}_2-\boldsymbol{\mu}_2), \boldsymbol{\Sigma}_{1|2})
+\\&amp; \sim  \mathsf{normal}_k(\boldsymbol{\mu}_1-\boldsymbol{Q}_{11}^{-1}\boldsymbol{Q}_{12}(\boldsymbol{y}_2-\boldsymbol{\mu}_2), \boldsymbol{Q}^{-1}_{11})
 \end{align*}\]</span> and <span class="math inline">\(\boldsymbol{\Sigma}_{1|2}=\boldsymbol{\Sigma}_{11}-\boldsymbol{\Sigma}_{12}\boldsymbol{\Sigma}_{22}^{-1}\boldsymbol{\Sigma}_{21}\)</span> is the Schur complement of <span class="math inline">\(\boldsymbol{\Sigma}_{22}\)</span>.</p>
 <p>It is easier to obtain this result by expressing the density of the Gaussian distribution in terms of the precision matrix <span class="math inline">\(\boldsymbol{Q}= \left(\begin{smallmatrix}\boldsymbol{Q}_{11} &amp; \boldsymbol{Q}_{12}\\
 \boldsymbol{Q}_{21} &amp; \boldsymbol{Q}_{22}\end{smallmatrix}\right)\)</span> rather than in terms of the covariance matrix <span class="math inline">\(\boldsymbol{\Sigma}\)</span>.</p>
@@ -389,7 +415,7 @@ f_{\boldsymbol{Y}}(\boldsymbol{y}_1, \boldsymbol{y}_2) = f_{\boldsymbol{Y}_1 \mi
 \end{align*}\]</span> making use of the identity <span class="math inline">\(|\boldsymbol{Q}| = |\boldsymbol{Q}_{11}||\boldsymbol{\Sigma}_{22}|^{-1}.\)</span></p>
 </div>
 <div id="def-student-dist" class="theorem definition">
-<p><span class="theorem-title"><strong>Definition 1.10 (Student-<span class="math inline">\(t\)</span> distribution)</strong></span> The name “Student” comes from the pseudonym used by William Gosset in <span class="citation" data-cites="Student:1908">Gosset (<a href="references.html#ref-Student:1908" role="doc-biblioref">1908</a>)</span>, who introduced the asymptotic distribution of the <span class="math inline">\(t\)</span>-statistic.</p>
+<p><span class="theorem-title"><strong>Definition 1.11 (Student-<span class="math inline">\(t\)</span> distribution)</strong></span> The name “Student” comes from the pseudonym used by William Gosset in <span class="citation" data-cites="Student:1908">Gosset (<a href="references.html#ref-Student:1908" role="doc-biblioref">1908</a>)</span>, who introduced the asymptotic distribution of the <span class="math inline">\(t\)</span>-statistic.</p>
 <p>The density of <span class="math inline">\(\boldsymbol{Y} \sim \mathsf{Student}_d(\boldsymbol{\mu}, \boldsymbol{Q}^{-1}, \nu)\)</span>, with location vector <span class="math inline">\(\boldsymbol{\mu}\)</span>, scale matrix <span class="math inline">\(\boldsymbol{Q}^{-1}\)</span> and <span class="math inline">\(\nu\)</span> degrees of freedom is <span class="math display">\[\begin{align*}
 f(\boldsymbol{x}) = \frac{\Gamma \left( \frac{\nu+d}{2}\right)|\boldsymbol{Q}|^{1/2}}{\Gamma\left(\frac{\nu}{2}\right)
 (\nu\pi)^{d/2}}\left(1+\frac{1}{\nu} (\boldsymbol{x}-\boldsymbol{\mu})^\top\boldsymbol{Q}(\boldsymbol{x}-\boldsymbol{\mu})\right)^{-\frac{\nu+d}{2}}, \qquad \boldsymbol{x} \in \mathbb{R}^d
@@ -511,7 +537,7 @@ X \sim \Phi^{-1}\left[\Phi(\alpha) + \{\Phi(\beta)-\Phi(\alpha)\}U\right]
 <h2 data-number="1.3" class="anchored" data-anchor-id="markov-chains"><span class="header-section-number">1.3</span> Markov chains</h2>
 <p>Before going forward with algorithms for sampling, we introduce some terminology that should be familiar to people with a background in time series analysis.</p>
 <div id="def-weak-stationarity" class="theorem definition">
-<p><span class="theorem-title"><strong>Definition 1.11 (Stationarity and Markov property)</strong></span> A stochastic (i.e., random) process is (weakly) stationary if the distribution of <span class="math inline">\(\{X_1, \ldots, X_t\}\)</span> is the same as that of <span class="math inline">\(\{X_{n+1}, \ldots X_{t+n}\}\)</span> for any value of <span class="math inline">\(n\)</span> and given <span class="math inline">\(t\)</span>.</p>
+<p><span class="theorem-title"><strong>Definition 1.12 (Stationarity and Markov property)</strong></span> A stochastic (i.e., random) process is (weakly) stationary if the distribution of <span class="math inline">\(\{X_1, \ldots, X_t\}\)</span> is the same as that of <span class="math inline">\(\{X_{n+1}, \ldots X_{t+n}\}\)</span> for any value of <span class="math inline">\(n\)</span> and given <span class="math inline">\(t\)</span>.</p>
 <p>It is Markov if it satisfies the Markov property: given the current state of the chain, the future only depends on the current state and not on the past.</p>
 </div>
 <div id="exm-autoregressive-one" class="theorem example">
@@ -635,6 +661,9 @@ Geyer, Charles J. 2011. <span>“Introduction to <span>M</span>arkov Chain <span
 </div>
 <div id="ref-Student:1908" class="csl-entry" role="listitem">
 Gosset, William Sealy. 1908. <span>“The Probable Error of a Mean.”</span> <em>Biometrika</em> 6 (1): 1–25. <a href="https://doi.org/10.1093/biomet/6.1.1">https://doi.org/10.1093/biomet/6.1.1</a>.
+</div>
+<div id="ref-McNeil.Frey.Embrechts:2005" class="csl-entry" role="listitem">
+McNeil, A. J., R. Frey, and P. Embrechts. 2005. <em>Quantitative Risk Management: Concepts, Techniques, and Tools</em>. 1st ed. Princeton, NJ: Princeton University Press.
 </div>
 </div>
 </section>

@@ -2,7 +2,7 @@
 # stan_version_minor = 33
 # stan_version_patch = 0
 # model = model_4ba3117b2609_model
-# start_datetime = 2023-10-29 23:42:46 UTC
+# start_datetime = 2024-11-27 02:16:40 UTC
 # method = sample (Default)
 #   sample
 #     num_samples = 10000
@@ -30,16 +30,16 @@
 #     num_chains = 1 (Default)
 # id = 1 (Default)
 # data
-#   file = /tmp/RtmpPH5mHu/standata-19a41c274856.json
+#   file = /tmp/RtmpK84DLx/standata-1196f7d59a85a.json
 # init = 2 (Default)
 # random
 #   seed = 888953425
 # output
-#   file = /home/lbelzile/Documents/Dropbox/Enseignement/MATH80601A/models/Poisson_simple-1.csv
+#   file = /home/lbelzile/Documents/Personnel/MEGAsync/Website/MATH80601A/models/Poisson_simple-1.csv
 #   diagnostic_file =  (Default)
 #   refresh = 0
 #   sig_figs = -1 (Default)
-#   profile_file = /home/lbelzile/Documents/Dropbox/Enseignement/MATH80601A/models/poisson_simple-profile-1.csv
+#   profile_file = /home/lbelzile/Documents/Personnel/MEGAsync/Website/MATH80601A/models/poisson_simple-profile-1.csv
 # num_threads = 1 (Default)
 # stanc_version = stanc3 v2.33.1
 # stancflags = 
@@ -10049,7 +10049,7 @@ lp__,accept_stat__,stepsize__,treedepth__,n_leapfrog__,divergent__,energy__,beta
 1275.67,1,0.812632,2,3,0,-1274.84,1.96441,1.87095,1.91256,2.63098
 1274.92,0.951459,0.812632,2,3,0,-1274.81,2.01309,1.86004,1.90164,2.63237
 # 
-#  Elapsed Time: 0.077 seconds (Warm-up)
-#                1.044 seconds (Sampling)
-#                1.121 seconds (Total)
+#  Elapsed Time: 0.065 seconds (Warm-up)
+#                0.758 seconds (Sampling)
+#                0.823 seconds (Total)
 # 

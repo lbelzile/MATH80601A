@@ -264,6 +264,20 @@
 \DeclareMathAlphabet{\mathcrl}{U}{rsfs}{m}{n}
 \usepackage{utopia}
 \DeclareMathAlphabet{\mathcal}{OMS}{cmsy}{m}{n}
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{wrapfig}
+\usepackage{float}
+\usepackage{colortbl}
+\usepackage{pdflscape}
+\usepackage{tabu}
+\usepackage{threeparttable}
+\usepackage{threeparttablex}
+\usepackage[normalem]{ulem}
+\usepackage{makecell}
+\usepackage{xcolor}
 \makeatletter
 \@ifpackageloaded{bookmark}{}{\usepackage{bookmark}}
 \makeatother
@@ -303,13 +317,13 @@
 \newcommand*\listoflistings{\listof{codelisting}{List of Listings}}
 \usepackage{amsthm}
 \theoremstyle{definition}
-\newtheorem{exercise}{Exercise}[chapter]
-\theoremstyle{plain}
-\newtheorem{proposition}{Proposition}[chapter]
-\theoremstyle{definition}
 \newtheorem{definition}{Definition}[chapter]
 \theoremstyle{definition}
 \newtheorem{example}{Example}[chapter]
+\theoremstyle{definition}
+\newtheorem{exercise}{Exercise}[chapter]
+\theoremstyle{plain}
+\newtheorem{proposition}{Proposition}[chapter]
 \theoremstyle{remark}
 \AtBeginDocument{\renewcommand*{\proofname}{Proof}}
 \newtheorem*{remark}{Remark}
@@ -366,7 +380,7 @@ a graduate course offered at HEC Montréal.
 These notes are licensed under a
 \href{http://creativecommons.org/licenses/by-nc-sa/4.0/}{Creative
 Commons Attribution-NonCommercial-ShareAlike 4.0 International License}
-and were last compiled on lundi, novembre 25 2024.
+and were last compiled on Tuesday, November 26 2024.
 
 The objective of the course is to provide a hands on introduction to
 Bayesian data analysis. The course will cover the formulation,
@@ -382,23 +396,86 @@ used in the sequel. The overview begins with basic statistical concepts,
 random variables, their distribution and density, moments and likelihood
 derivations.
 
-\section{Random variables}\label{random-variables}
+\section{Random vectors}\label{random-vectors}
+
+In the sequel, we characterize random vectors and their marginal,
+conditional and joint distributions. A good reference for this material
+is Chapter 3 of McNeil, Frey, and Embrechts
+(\citeproc{ref-McNeil.Frey.Embrechts:2005}{2005}).
 
 \begin{definition}[Density and distribution
 function]\protect\hypertarget{def-cdf}{}\label{def-cdf}
 
-~
+Let \(\boldsymbol{X}\) denote a \(d\)-dimensional vector with real
+entries in \(\mathbb{R}^d\). The distribution function of
+\(\boldsymbol{X}\) is \begin{align*}
+ F_{1:d}(\boldsymbol{x}) = \Pr(\boldsymbol{X} \leq \boldsymbol{x}) = \Pr(X_1 \leq x_1, \ldots, X_d \leq x_d).
+\end{align*} We use indices \(1:d = \{1, \ldots, d\}\) to explicit which
+components of \(\boldsymbol{X}\) are under consideration.
+
+If the distribution of \(\boldsymbol{X}\) is absolutely continuous, we
+may write \begin{align*}
+ F_{1:d}(\boldsymbol{x}) = \int_{-\infty}^{x_d} \cdots \int_{-\infty}^{x_1} f_{1:d}(z_1, \ldots, z_d) \mathrm{d} z_1 \cdots \mathrm{d} z_d,
+\end{align*} where \(f_{1:d}(\boldsymbol{x})\) is the joint
+\textbf{density function}. The density function can be obtained as the
+derivative of the distribution function with respect to all of it's
+arguments.
+
+The \textbf{marginal distribution} of a subvector
+\(\boldsymbol{X}_{1:k}=(X_1, \ldots, X_k)^\top\), without loss of
+generality consisting of the \(k\) first components of
+\(\boldsymbol{X}\) \((1 \leq k \leq d)\) is \begin{align*}
+ F_{1:k}(\boldsymbol{x}_{1:d}) = \Pr(\boldsymbol{X}_{1:k} \leq \boldsymbol{x}_{1:k}) = F_{1:d}(x_1, \ldots, x_k, \infty, \ldots, \infty).
+\end{align*} and thus the marginal distribution of component \(j\),
+\(F_j(x_j)\), is obtained by evaluating all components but the \(j\)th
+at \(\infty\).
+
+We likewise obtain the marginal density \begin{align*}
+f_{1:k}(\boldsymbol{x}_{1:k}) = \frac{\partial^k F_{1:k}(\boldsymbol{x}_{1:k})}{\partial x_1 \cdots \partial x_{k}},
+\end{align*} or through integration from the joint density as
+\begin{align*}
+ f_{1:k}(\boldsymbol{x}_{1:k}) = \int_{-\infty}^\infty \cdots  \int_{-\infty}^\infty  f_{1:d}(x_1, \ldots, x_k, z_{k+1}, \ldots, z_{d}) \mathrm{d} z_{k+1} \cdots \mathrm{d}z_d.
+\end{align*}
+
+\end{definition}
+
+\begin{definition}[Conditional
+distribution]\protect\hypertarget{def-conditional-dist}{}\label{def-conditional-dist}
+
+Let
+\(\boldsymbol{X}_{1:d} = (\boldsymbol{X}_{1:k}^\top, \boldsymbol{X}_{(k+1):d}^\top)^\top\)
+be a \(d\)-dimensional random vector with absolutely continuous margins
+and joint density \(f_{1:d}\), or else a discrete distribution with mass
+function \(f_{1:d}\). The conditional distribution function of
+\(\boldsymbol{X}_{1:k}\) given \(\boldsymbol{X}_{(k+1):d}\), is defined
+implicitly from the relationship \begin{align*}
+f_{1:k \mid (k+1):d}(\boldsymbol{x}_{1:k}; \boldsymbol{x}_{(k+1):d}) = \frac{f_{1:d}(\boldsymbol{x}_{1:d})}{f_{(k+1):d}(\boldsymbol{x}_{(k+1):d})}
+\end{align*} for any value of \(\boldsymbol{x}\) in the support of
+\(\boldsymbol{X}\), i.e., the set of values with non-zero density or
+mass and \(f_{(k+1):d}(\boldsymbol{x}_{(k+1):d})>0\); it is undefined
+otherwise.
 
 \end{definition}
 
 \begin{definition}[Independence]\protect\hypertarget{def-independence}{}\label{def-independence}
 
-Let \(\boldsymbol{X}_1\), \(\boldsymbol{X}_2\) be two random vectors. We
-say that \(\boldsymbol{X}_1\) and \(\boldsymbol{X}_2\) are independent
-if their joint distribution function factorizes as \begin{align*}
-F_{(\boldsymbol{X}_1, \boldsymbol{X}_2)}(\boldsymbol{x}_1, \boldsymbol{x_2}) = F_{\boldsymbol{X}_1}(\boldsymbol{x}_1)F_{\boldsymbol{X}_2}(\boldsymbol{x_2})
-\end{align*} for any value of \(\boldsymbol{x}_1\) and
-\(\boldsymbol{x}_2\).
+Let
+\(\boldsymbol{X}_{1:d} = (\boldsymbol{X}_{1:k}^\top, \boldsymbol{X}_{(k+1):d}^\top)^\top\)
+be a \(d\)-dimensional random vector. We say that
+\(\boldsymbol{X}_{1:k}\) and \(\boldsymbol{X}_{(k+1):d}\) are
+independent if their joint distribution function factorizes as
+\begin{align*}
+F_{1:d}(\boldsymbol{x}_{1:k}, \boldsymbol{x}_{(k+1):d}) = F_{1:k}(\boldsymbol{x}_{1:k})F_{(k+1):d}(\boldsymbol{x}_{(k+1):d})
+\end{align*} for any value of \(\boldsymbol{x}_{1:k}\),
+\(\boldsymbol{x}_{(k+1):d}\). It follows from the definition of joint
+density that, should the latter exists, it also factorizes as
+\begin{align*}
+f_{1:d}(\boldsymbol{x}_{1:k}, \boldsymbol{x}_{(k+1):d}) = f_{1:k}(\boldsymbol{x}_{1:k})f_{(k+1):d}(\boldsymbol{x}_{(k+1):d}).
+\end{align*}
+
+If two subvectors \(\boldsymbol{X}_{1:k}\) and
+\(\boldsymbol{X}_{(k+1):d}\) are independent, then the conditional
+density \(f_{1:k \mid (k+1):d}\) equals the marginal \(f_{1:k}\).
 
 \end{definition}
 
@@ -422,15 +499,15 @@ distribution \(\chi^2_\nu\).
 
 \end{definition}
 
-\begin{definition}[Beta and uniform
+\begin{definition}[beta and uniform
 distribution]\protect\hypertarget{def-beta}{}\label{def-beta}
 
-The beta distribution \(\mathsf{Beta}(\alpha_1, \alpha_2)\) is a
+The beta distribution \(\mathsf{beta}(\alpha_1, \alpha_2)\) is a
 distribution supported on the unit interval \([0,1]\) with shape
 parameters \(\alpha_1>0\) and \(\alpha_2>0.\) It's density is
 \begin{align*}
 f(x) = \frac{\Gamma(\alpha_1)\Gamma(\alpha_2)}{\Gamma(\alpha_1+\alpha_2)}x^{\alpha_1-1}(1-x)^{1-\alpha_2}, \qquad x \in [0,1].
-\end{align*} The case \(\mathsf{Beta}(1,1)\), also denoted
+\end{align*} The case \(\mathsf{beta}(1,1)\), also denoted
 \(\mathsf{unif}(0,1)\), corresponds to a standard uniform distribution.
 
 \end{definition}
@@ -494,11 +571,12 @@ If the probability of success \(p\) of a Bernoulli event is small in the
 sense that \(np \to \lambda\) when the number of trials \(n\) increases,
 then the number of success follows approximately a Poisson distribution
 with mass function \begin{align*}
-\mathsf{Pr}(Y=y) = \frac{\exp(-\lambda)\lambda^y}{\Gamma(y+1)}, \quad y=0, 1, 2, \ldots
+f(x)=\mathsf{Pr}(Y=x) = \frac{\exp(-\lambda)\lambda^y}{\Gamma(y+1)}, \quad x=0, 1, 2, \ldots
 \end{align*} where \(\Gamma(\cdot)\) denotes the gamma function. The
 parameter \(\lambda\) of the Poisson distribution is both the
 expectation and the variance of the distribution, meaning
-\(\mathsf{E}(Y)=\mathsf{Va}(Y)=\lambda.\)
+\(\mathsf{E}(Y)=\mathsf{Va}(Y)=\lambda.\) We denote the distribution as
+\(Y \sim \mathsf{Poisson}(\lambda)\).
 
 \end{definition}
 
@@ -607,7 +685,8 @@ and consider the partition \begin{align*}
 \end{align*} where \(\boldsymbol{Y}_1\) is a \(k \times 1\) and
 \(\boldsymbol{Y}_2\) is a \((d-k) \times 1\) vector for some
 \(1\leq k < d.\) Show that the conditional distribution \begin{align*}
-\boldsymbol{Y}_1 \mid \boldsymbol{Y}_2 =\boldsymbol{y}_2 \sim \mathsf{normal}_k(\boldsymbol{\mu}_1+\boldsymbol{\Sigma}_{12} \boldsymbol{\Sigma}_{22}^{-1}(\boldsymbol{y}_2-\boldsymbol{\mu}_2), \boldsymbol{\Sigma}_{1|2}) \\& \sim 
+\boldsymbol{Y}_1 \mid \boldsymbol{Y}_2 =\boldsymbol{y}_2 \sim \mathsf{normal}_k(\boldsymbol{\mu}_1+\boldsymbol{\Sigma}_{12} \boldsymbol{\Sigma}_{22}^{-1}(\boldsymbol{y}_2-\boldsymbol{\mu}_2), \boldsymbol{\Sigma}_{1|2}) 
+\\& \sim  \mathsf{normal}_k(\boldsymbol{\mu}_1-\boldsymbol{Q}_{11}^{-1}\boldsymbol{Q}_{12}(\boldsymbol{y}_2-\boldsymbol{\mu}_2), \boldsymbol{Q}^{-1}_{11})
 \end{align*} and
 \(\boldsymbol{\Sigma}_{1|2}=\boldsymbol{\Sigma}_{11}-\boldsymbol{\Sigma}_{12}\boldsymbol{\Sigma}_{22}^{-1}\boldsymbol{\Sigma}_{21}\)
 is the Schur complement of \(\boldsymbol{\Sigma}_{22}\).
@@ -1483,7 +1562,7 @@ scaled likelihood function (right).}
 updating]\protect\hypertarget{prp-sequentiality}{}\label{prp-sequentiality}
 
 The likelihood is invariant to the order of the observations if they are
-independent Thus, if we consider two blocks of observations
+independent. Thus, if we consider two blocks of observations
 \(\boldsymbol{y}_1\) and \(\boldsymbol{y}_2\)
 \[p(\boldsymbol{\theta} \mid \boldsymbol{y}_1, \boldsymbol{y}_2) = p(\boldsymbol{\theta} \mid \boldsymbol{y}_1) p(\boldsymbol{\theta} \mid \boldsymbol{y}_2),\]
 so it makes no difference if we treat data all at once or in blocks.
@@ -3012,13 +3091,14 @@ and diagnostics of convergence.
 
 \section{Markov chain Monte Carlo}\label{markov-chain-monte-carlo}
 
-Plain ordinary Monte Carlo is great, but few algorithms are generic
-enough to be useful in complex high-dimensional problems. Instead, we
-will construct a Markov chain with a given invariant distribution
-corresponding to the posterior. Markov chain Monte Carlo methods
-generate correlated draws that will target the posterior under suitable
-conditions.\footnote{While we won't focus on the fine prints of the
-  contract, there are conditions for validity and these matter!}
+Ordinary Monte Carlo methods suffer from the curse of dimensionality,
+with few algorithms are generic enough to be useful in complex
+high-dimensional problems. Instead, we will construct a Markov chain
+with a given invariant distribution corresponding to the posterior.
+Markov chain Monte Carlo methods generate correlated draws that will
+target the posterior under suitable conditions.\footnote{While we won't
+  focus on the fine prints of the contract, there are conditions for
+  validity and these matter!}
 
 \section{Markov chain Monte Carlo
 algorithms}\label{markov-chain-monte-carlo-algorithms}
@@ -4261,7 +4341,7 @@ running mean and variance accurately} pointwise at storage cost
 information criterion as \(2n \times \mathsf{WAIC}\) to make on par with
 other information criteria, which are defined typically on the deviance
 scale and so that lower values correspond to higher predictive
-performance. For the smartwatch model, we get a value of 3.06 for the
+performance. For the smartwatch model, we get a value of 3.07 for the
 complex model and 4.51: this suggests an improvement in using
 individual-specific effects.
 
