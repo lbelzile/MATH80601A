@@ -1,7 +1,7 @@
 
 # Welcome {-}
 
-This book is a web complement to MATH 80601A *Bayesian modelling*, a graduate course offered at HEC Montréal.
+This book is a web complement to MATH 80601A *Bayesian modelling*, a graduate course offered at HEC Montréal. Consult the [course webpage](https://lbelzile.github.io/bayesmod) for more details.
 
 ```{r}
 #| eval: true

@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.6.1">
+<meta name="generator" content="quarto-1.7.3">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -55,10 +55,10 @@ div.csl-indent {
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="site_libs/quarto-html/anchor.min.js"></script>
 <link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-81b5c3e63835cfde897ecd3d35a35a41.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-6bbbd0764ac2422ca6db9ae5da2ac490.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
   "copy-button": false,
@@ -174,10 +174,10 @@ div.csl-indent {
         
     </div>
 <!-- main -->
-<main class="content" id="quarto-document-content">
+<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block"><h1 class="title display-7"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">References</span></h1></header>
 
 <header id="title-block-header">
-<h1 class="title display-7"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">References</span></h1>
+
 
 </header>
 
@@ -279,6 +279,10 @@ Raton: CRC Press. <a href="https://doi.org/10.1201/b10905">https://doi.org/10.12
 Gosset, William Sealy. 1908. <span>“The Probable Error of a
 Mean.”</span> <em>Biometrika</em> 6 (1): 1–25. <a href="https://doi.org/10.1093/biomet/6.1.1">https://doi.org/10.1093/biomet/6.1.1</a>.
 </div>
+<div id="ref-Gradshteyn.Ryzhik:2014" class="csl-entry" role="listitem">
+Gradshteyn, I. S., and I. M. Ryzhik. 2014. <em>Table of Integrals,
+Series, and Products</em>. 8th ed. Academic Press. <a href="https://doi.org/10.1016/C2010-0-64839-5">https://doi.org/10.1016/C2010-0-64839-5</a>.
+</div>
 <div id="ref-Green:2001" class="csl-entry" role="listitem">
 Green, Peter J. 2001. <span>“A Primer on <span>M</span>arkov Chain
 <span>M</span>onte <span>C</span>arlo.”</span> <em>Monographs on
@@ -296,11 +300,24 @@ and Methodology.”</span> In <em>Handbook of <span>M</span>arkov Chain
 <span>M</span>onte <span>C</span>arlo</em>, edited by S. Brooks, A.
 Gelman, G. Jones, and X. L. Meng, 253–94. Boca Raton: CRC Press. <a href="https://doi.org/10.1201/b10905">https://doi.org/10.1201/b10905</a>.
 </div>
+<div id="ref-Jegerlehner:2021" class="csl-entry" role="listitem">
+Jegerlehner, Sabrina, Franziska Suter-Riniker, Philipp Jent, Pascal
+Bittel, and Michael Nagler. 2021. <span>“Diagnostic Accuracy of a
+<span>SARS-CoV-2</span> Rapid Antigen Test in Real-Life Clinical
+Settings.”</span> <em>International Journal of Infectious Diseases</em>
+109 (August): 118–22. <a href="https://doi.org/10.1016/j.ijid.2021.07.010">https://doi.org/10.1016/j.ijid.2021.07.010</a>.
+</div>
 <div id="ref-Kinderman.Monahan:1977" class="csl-entry" role="listitem">
 Kinderman, Albert J, and John F Monahan. 1977. <span>“Computer
 Generation of Random Variables Using the Ratio of Uniform
 Deviates.”</span> <em>ACM Transactions on Mathematical Software
 (TOMS)</em> 3 (3): 257–60.
+</div>
+<div id="ref-owidcoronavirus" class="csl-entry" role="listitem">
+Mathieu, Edouard, Hannah Ritchie, Lucas Rodés-Guirao, Cameron Appel,
+Charlie Giattino, Joe Hasell, Bobbie Macdonald, et al. 2020.
+<span>“Coronavirus Pandemic (COVID-19).”</span> <em>Our World in
+Data</em>.
 </div>
 <div id="ref-Matias:2021" class="csl-entry" role="listitem">
 Matias, J. Nathan, Kevin Munger, Marianne Aubin Le Quere, and Charles
@@ -447,8 +464,6 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
   });
   clipboard.on('success', onCopySuccess);
   if (window.document.getElementById('quarto-embedded-source-code-modal')) {
-    // For code content inside modals, clipBoardJS needs to be initialized with a container option
-    // TODO: Check when it could be a function (https://github.com/zenorocha/clipboard.js/issues/860)
     const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
       text: getTextToCopy,
       container: window.document.getElementById('quarto-embedded-source-code-modal')
@@ -559,7 +574,6 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       if (window.Quarto?.typesetMath) {
         window.Quarto.typesetMath(note);
       }
-      // TODO in 1.5, we should make sure this works without a callout special case
       if (note.classList.contains("callout")) {
         return note.outerHTML;
       } else {

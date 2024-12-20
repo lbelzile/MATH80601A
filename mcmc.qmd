@@ -15,14 +15,217 @@ There are two major approaches to handling the problem of the unknown normalizin
 
 
 
-
-## Markov chain Monte Carlo
-
 Ordinary Monte Carlo methods suffer from the curse of dimensionality, with few algorithms are generic enough to be useful in complex high-dimensional problems. Instead, we will construct a Markov chain with a given invariant distribution corresponding to the posterior. Markov chain Monte Carlo methods generate correlated draws that will target the posterior under suitable conditions.[^mcmc-3]
 
 [^mcmc-3]: While we won't focus on the fine prints of the contract, there are conditions for validity and these matter!
 
-[^mcmc-3]: While we won't focus on the fine prints of the contract, there are conditions for validity and these matter!
+
+
+## Markov chains
+
+Before going forward with algorithms for sampling, we introduce some terminology that should be familiar to people with a background in time series analysis.
+
+::: {#def-weak-stationarity}
+## Stationarity and Markov property
+
+A stochastic (i.e., random) process is (weakly) stationary if the distribution of $\{X_1, \ldots, X_t\}$ is the same as that of $\{X_{n+1}, \ldots X_{t+n}\}$ for any value of $n$ and given $t$.
+
+It is Markov if it satisfies the Markov property: given the current state of the chain, the future only depends on the current state and not on the past.
+:::
+
+
+Autoregressive processes are not the only ones we can consider, although their simplicity lends itself to analytic calculations. More generally, for a correlated sequence, the variance of the stationary distribution is
+\begin{align*}
+\mathsf{Va}(Y_t) + 2 \sum_{k=1}^\infty \mathsf{Co}(Y_t, Y_{t-k})
+\end{align*}
+
+::: {#prp-variance-clt}
+## Effective sample size
+
+Intuitively, a sample of correlated observations carries less information than an independent sample of draws. If we want to compute sample averages $\overline{Y}_T=(Y_1+ \cdots + Y_T)/T$, the variance will be \begin{align*}
+\mathsf{Va}\left(\overline{Y}_T\right) = \frac{1}{T}\sum_{t=1}^T \mathsf{Va}(Y_t) + \frac{2}{T} \sum_{t=1}^{T-1}\sum_{s = t+1}^T \mathsf{Co}(Y_t, Y_s).
+\end{align*}
+
+In the independent case, the covariance is zero so we get the sum of variances. If the process is stationary, the covariances at lag $k$ are the same regardless of the time index and the variance is some constant, say $\sigma^2$; this allows us to simplify calculations, \begin{align*}
+\mathsf{Va}(\overline{Y}_T) = \sigma^2 \left\{ 1 + \frac{2}{T}\sum_{t=1}^{T-1} (T-t) \mathsf{Cor}(Y_{T-k}, Y_{T})\right\}.
+\end{align*} Denote the lag-$k$ autocorrelation $\mathsf{Cor}(Y_{t}, Y_{t+k})$ by $\gamma_k$. Under technical conditions[^mcmc-4], a central limit theorem applies and we get an asymptotic variance for the mean of \begin{align*}
+\lim_{T \to \infty} T\mathsf{Va}\left(\overline{Y}_T\right) = \sigma^2 \left\{1+2\sum_{t=1}^\infty \gamma_t\right\}.
+\end{align*} This statement holds only if we start with draws from the stationary distribution, otherwise bets are off.
+
+
+
+We need the **effective sample size** of our Monte Carlo averages based on a Markov chain of length $B$ to be sufficient for the estimates to be meaningful. The effective sample size is, loosely speaking, the equivalent number of observations if the marginal posterior draws where independent and more formally
+$$
+\mathsf{ESS} = \frac{B}{\left\{1+2\sum_{t=1}^\infty \gamma_t\right\}}
+$$ {#eq-effective-sample-size}
+where $\gamma_t$ is the lag $t$ correlation. The relative effective sample size is simply the fraction of the effective sample size over the Monte Carlo number of replications: small values of $\mathsf{ESS}/B$ indicate pathological or inefficient samplers. If the ratio is larger than one, it indicates the sample is superefficient (as it generates negatively correlated draws).
+
+In practice, we replace the unknown autocorrelations by sample estimates and truncate the series in @eq-effective-sample-size at the point where they become negligible --- typically when the consecutive sum of two consecutive becomes negative; see Section 1.4 of the [Stan manual](https://mc-stan.org/docs/reference-manual/effective-sample-size.html) or Section 1.10.2 of @Geyer:2011 for details.
+
+:::
+
+[^mcmc-4]: Geometric ergodicity and existence of moments, among other things.
+
+
+::: {#exm-ar1-clt-variance}
+The lag-$k$ correlation of the stationary autoregressive process of order 1 is $\phi^k$, so summing the series gives an asymptotic variance of $\sigma^2(1+\phi)/(1-\phi).$ We can constrast that to the variance of the stationary distribution for an independent sample, which is $\sigma^2/(1-\phi^2)$. The price to pay for having correlated samples is inefficiency: the higher the autocorrelation, the larger the variability of our mean estimators.
+
+```{r}
+#| label: fig-ar1-variance
+#| fig-cap: "Scaled asymptotic variance of the sample mean for a stationary autoregressive first-order process with unit variance (full line) and a corresponding sample of independent observations with the same marginal variance (dashed line). The right panel gives the ratio of variances for positive correlation coefficients."
+#| message: false
+#| warning: false
+#| echo: false
+#| eval: true
+var2 <- function(rho){(1+rho)/(1-rho)}
+var1 <- function(rho){1/(1-rho^2)}
+var_ratio <- function(rho){var2(rho)/var1(rho)}
+g1 <- ggplot() +
+  stat_function(fun = var1, xlim = c(-0.9,0.9), n = 1001L, linetype = "dashed") +
+  stat_function(fun = var2, xlim = c(-0.9,0.9), n = 1001L) +
+  labs(y = "", x = expression(phi)) +
+  theme_classic()
+g2 <- ggplot() +
+  stat_function(fun = var_ratio,
+                xlim = c(0,1),
+                n = 1001L) +
+  labs(y = "") +
+  theme_classic()
+g1 + g2
+```
+
+We can see from @fig-ar1-variance that, when the autocorrelation is positive (as will be the cause in all applications of interest), we will suffer from variance inflation. To get the same uncertainty estimates for the mean with an $\mathsf{AR}(1)$ process with $\phi \approx 0.75$ than with an iid sample, we would need nine times as many observations: this is the prize to pay.
+:::
+
+### Uncertainty estimation with Markov chains
+
+With a simple random sample containing independent and identically distributed observations, the standard error of the sample mean is $\sigma/\sqrt{n}$ and we can use the empirical standard deviation $\widehat{\sigma}$ to estimate the first term. For Markov chains, the correlation prevents us from using this approach. The output of the`coda` package are based on fitting a high order autoregressive process to the Markov chain and using the formula of the unconditional variance of the $\mathsf{AR}(p)$ to obtain the central limit theorem variance. An alternative method recommended by @Geyer:2011 and implemented in his **R** package `mcmc`, is to segment the time series into batch, compute the means of each non-overlapping segment and use this standard deviation with suitable rescaling to get the central limit variance for the posterior mean. @fig-mcmc-batchmean illustrate the method of batch means.
+
+1. Break the chain of length $B$ (after burn in) in $K$ blocks of size $\approx K/B$.
+2. Compute the sample mean of each segment. These values form a Markov chain and should be approximately uncorrelated.
+3. Compute the standard deviation of the segments mean. Rescale by $K^{-1/2}$ to get standard error of the global mean.
+
+Why does the approach work? If the chain samples from the stationary distribution, all samples have the same mean. If we partition the sample into long enough, the sample mean of each blocks should be roughly independent (otherwise we could remove an overlapping portion). We can then compute the empirical standard deviation of the estimators. We can then compute the overall mean and use a scaling argument to relate the variability of the global estimator with the variability of the means of the smaller blocks.
+
+
+```{r}
+#| label: fig-mcmc-batchmean
+#| eval: true
+#| echo: false
+#| fig-cap: "Calculation of the standard error of the posterior mean using the batch method."
+set.seed(123450)
+chain <- as.numeric(arima.sim(model = list(ar = c(0.9)), n = 2000)) + 0.4
+batchMean <- function(x, batchSize = 100){
+  niter <- length(x)
+    nbatch <- niter%/%batchSize
+    niter <- nbatch * batchSize
+    ibatch <- rep(1:nbatch, each = batchSize)[1:niter]
+    batchMeans <- t(sapply(split(data.frame(x[1:niter]), ibatch),
+        function(batch) apply(batch, 2, mean)))
+    return(as.numeric(batchMeans))
+}
+ggplot() +
+  geom_line(data = data.frame(t = 1:2000,
+                         chain = chain),
+       mapping = aes(x = t,
+                     y = chain),
+       alpha = 0.1) +
+  geom_segment(data = data.frame(x0 = seq(1, 2000, by = 100),
+                                 x1 = seq(100, 2000, by = 100),
+                                 y = batchMean(chain, batchSize = 100)),
+               mapping = aes(x = x0, y = y, yend = y, xend = x1),
+               linetype = "dashed") +
+  geom_hline(yintercept = mean(chain)) +
+  labs(x = "iteration number", y = "") +
+  theme_classic()
+```
+
+
+
+When can we use output from a Markov chain in place of independent Monte Carlo draws? The assumptions laid out in the ergodic theorem are that the chain is irreducible and acyclic, ensuring that the chain has a unique stationary distribution. The ergodic theorem is a result about convergence of averages.
+
+To make sense of these concepts, we consider a discrete Markov chain over the integers $1, 2, 3$. A discrete-time stochastic process is a random sequences whose elements are part of some set, the state space, here the integers. We can encode the probability of moving from one state to the next via a transition matrix, whose rows contain the probabilities of moving from one state to the next and thus sum to one. We can run a Markov chain by sampling an initial state $X_0$ at random from $\{1, \ldots, 5\}$ and then consider the transitions from the conditional distribution, sampling $p(X_t \mid X_{t-1})$. Because of the Markov property, the history of the chain does not matter: we only need to read the value $i=X_{t-1}$ of the state and pick the $i$th row of $P_3$ to know the probability of the different moves from the current state.
+
+Irreducible means that the chain can move from anywhere to anywhere, so it doesn't get stuck in part of the space forever. A transition matrix such as $P_1$ below describes a reducible Markov chain, because once you get into state $2$ or $3$, you won't escape. With reducible chains, the stationary distribution need not be unique, and so the target would depend on the starting values.
+
+Cyclical chains loop around and visit periodically a state: $P_2$ is an instance of transition matrix describing a chain that cycles from $1$ to $3$, $3$ to $2$ and $2$ to $1$ every three iteration. An acyclic chain is needed for convergence of marginals.
+
+$$
+P_1 = \begin{pmatrix}
+0.5 & 0.3 & 0.2 \\
+0 & 0.4 & 0.6 \\
+0 & 0.5 & 0.5
+\end{pmatrix},
+\qquad
+P_2 = \begin{pmatrix}
+0 & 0 & 1 \\
+1 & 0 & 0 \\
+0 & 1 & 0
+\end{pmatrix}.
+$$
+
+If a chain is irreducible and aperiodic, it has a unique stationary distribution and the limiting distribution of the Markov chain will converge there. For example, we consider a transition $P_3$ on $1, \ldots, 5$ defined as $$
+P_3 = \begin{pmatrix}
+\frac{2}{3} & \frac{1}{3} &  0 & 0 & 0 \\
+\frac{1}{6} & \frac{2}{3} & \frac{1}{6} & 0 & 0 \\
+0 & \frac{1}{6} & \frac{2}{3} & \frac{1}{6} & 0 \\
+0 & 0 & \frac{1}{6} & \frac{2}{3} & \frac{1}{6} \\
+0 & 0 & 0 &  \frac{1}{3}  & \frac{2}{3} \\
+\end{pmatrix}
+$$ The stationary distribution is the value of the row vector $\boldsymbol{p}$, such that $\boldsymbol{p} = \boldsymbol{p}\mathbf{P}$ for transition matrix $\mathbf{P}$: we get $\boldsymbol{p}_1=(0, 5/11, 6/11)$ for $P_1$, $(1/3, 1/3, 1/3)$ for $P_2$ and $(1,2,2,2,1)/8$ for $P_3$.
+
+```{r}
+set.seed(1234)
+P3 <- rbind(c(4,2,0,0,0),
+            c(1,4,1,0,0),
+            c(0,1,4,1,0),
+            c(0,0,1,4,1),
+            c(0,0,0,2,4)) / 6
+chain <- integer(1e5L)
+state <- sample.int(n = 5, size = 1)
+for(i in seq_along(chain)){
+  state <- sample.int(n = 5, size = 1, prob = P3[state,])
+  chain[i] <- state
+}
+```
+
+@fig-discrete-markov-chain shows the path of the walk and the empirical proportion of the time spent in each state, as time progress. Since the Markov chain has a unique stationary distribution, we expect these to converge to it.
+
+```{r}
+#| label: fig-discrete-markov-chain
+#| eval: true
+#| echo: false
+#| fig-cap: "Discrete Markov chain on integers from 1 to 5, with transition matrix $P_3$, with traceplot of 1000 first iterations (left) and running mean plots of sample proportion of each state visited per 100 iterations (right)."
+g1 <- ggplot(data = data.frame(iteration = 1:1000,
+                               state = chain[1:1000]),
+             mapping = aes(x = iteration, y = state)) +
+  geom_line() +
+  theme_classic() +
+  labs(y = "", subtitle = "state")
+iter <- seq(from = 100, to = length(chain), by = 100)
+sub <- sapply(iter,
+              function(n){
+                as.numeric(table(chain[seq_len(n)])/n)
+                })
+g2 <- ggplot(
+  data = data.frame(
+    x = rep(iter, each =5),
+    y = c(sub),
+    state = factor(rep(1:5, length.out = length(sub)))),
+  mapping = aes(x = x, group = state, color = state, y = y)) +
+  geom_line() +
+  scale_x_continuous(trans = "sqrt",
+                     labels = scales::unit_format(unit = "K", scale = 1e-3)) +
+  labs(y = "",
+       subtitle = "probability of state",
+       x = "iteration") +
+  MetBrewer:::scale_color_met_d("Hiroshige") +
+  theme_classic() +
+  theme(legend.position = "bottom")
+g1 + g2
+```
+
+
 
 ## Markov chain Monte Carlo algorithms
 
@@ -105,8 +308,8 @@ Consider again the Upworthy data from @exm-poisson-upworthy-question. We model t
 Y_{i} &\sim \mathsf{Po}(n_i\lambda_i), \qquad (i=1,2)\\
 \lambda_1 &= \exp(\beta + \kappa) \\
 \lambda_2 &= \exp(\beta) \\
-\beta & \sim \mathsf{Norm}(\log 0.01, 1.5) \\
-\kappa &\sim \mathsf{Norm}(0, 1)
+\beta & \sim \mathsf{Gauss}(\log 0.01, 1.5) \\
+\kappa &\sim \mathsf{Gauss}(0, 1)
 \end{align*}
 There are two parameters in the model, which can be updated in turn or jointly.
 
@@ -299,7 +502,7 @@ For example, we can use of the following transformations for finite $a, b$ in th
 f_{\vartheta}(\vartheta)&=f_{\theta}\{a+(b-a) \mathrm{expit}(\vartheta)\} (b-a)\\&\quad \times \mathrm{expit}(\vartheta)\{1-\mathrm{expit}(\vartheta)\}
 \end{align*}
 
-To guarantee that our proposals fall in the support of $\theta$, we can thus run a symmetric random walk proposal on the *transformed scale* by drawing $\vartheta_{t}^{\star} \sim \vartheta_{t-1}+\tau Z$ where $Z\sim\mathsf{Norm}(0, 1)$. Due to the transformation, the kernel ratio now contains the Jacobian.
+To guarantee that our proposals fall in the support of $\theta$, we can thus run a symmetric random walk proposal on the *transformed scale* by drawing $\vartheta_{t}^{\star} \sim \vartheta_{t-1}+\tau Z$ where $Z\sim\mathsf{Gauss}(0, 1)$. Due to the transformation, the kernel ratio now contains the Jacobian.
 
 :::
 
@@ -337,7 +540,7 @@ For MALA to work well, we need both to start near stationarity, to ensure that t
 
 :::{#exm-normal-question-upworthy}
 
-We revisit the Upworthy data, this time modelling each individual headline as a separate observation. We view $n=$`nimpression` as the sample size of a binomial distribution and `nclick` as the number of successes. Since the number of trials is large, the sample average `nclick`/`nimpression`, denoted $y$ in the sequel, is approximately Gaussian. We assume that each story has a similar population rate and capture the heterogeneity inherent to each news story by treating each mean as a sample. The variance of the sample average or click rate is proportional to $n^{-1}$, where $n$ is the number of impressions. To allow for underdispersion or overdispersion, we thus consider a Gaussian likelihood $Y_i \sim \mathsf{Norm}(\mu, \sigma^2/n_i)$. We perform Bayesian inference for $\mu, \sigma$ after assigning a truncated Gaussian prior for $\mu \sim \mathsf{TruncNorm}(0.01, 0.1^2)$ over $[0,1]$ and an penalized complexity prior for $\sigma \sim \mathsf{Exp}(0.7)$.
+We revisit the Upworthy data, this time modelling each individual headline as a separate observation. We view $n=$`nimpression` as the sample size of a binomial distribution and `nclick` as the number of successes. Since the number of trials is large, the sample average `nclick`/`nimpression`, denoted $y$ in the sequel, is approximately Gaussian. We assume that each story has a similar population rate and capture the heterogeneity inherent to each news story by treating each mean as a sample. The variance of the sample average or click rate is proportional to $n^{-1}$, where $n$ is the number of impressions. To allow for underdispersion or overdispersion, we thus consider a Gaussian likelihood $Y_i \sim \mathsf{Gauss}(\mu, \sigma^2/n_i)$. We perform Bayesian inference for $\mu, \sigma$ after assigning a truncated Gaussian prior for $\mu \sim \mathsf{TruncNorm}(0.01, 0.1^2)$ over $[0,1]$ and an penalized complexity prior for $\sigma \sim \mathsf{Exp}(0.7)$.
 
 
 <!-- The `hecbayes` package contains an helper function `mh` that computes the step given the log likelihood, log prior and their gradients. -->
@@ -555,10 +758,10 @@ ggplot() +
 
 As a toy illustration, we use Gibbs sampling to simulate data from a $d$-dimensional multivariate Gaussian target with mean $\boldsymbol{\mu}$ and equicorrelation covariance matrix $\mathbf{\Sigma} = (1-\rho)\mathbf{I}_d + \rho\boldsymbol{1}_{d}\boldsymbol{1}^\top_d$ with inverse $$\mathbf{Q} = \boldsymbol{\Sigma}^{-1}=(1-\rho)^{-1}\left\{\mathbf{I}_d - \rho \mathbf{1}_d\mathbf{1}_d/(1+(d-1)\rho)\right\},$$ for known correlation coefficient $\rho$. While we can easily sample independent observations, the exercise is insightful to see how well the methods works as the dimension increases, and when the correlation between pairs becomes stronger.
 
-Consider $\boldsymbol{Y} \sim \mathsf{Norm}_d(\boldsymbol{\mu}, \boldsymbol{\Sigma})$ and a partition $(\boldsymbol{Y}_1^\top, \boldsymbol{Y}_2^\top)^\top$: the conditional distribution of the $k$ subvector $\boldsymbol{Y}_1$ given the $d-k$ other components $\boldsymbol{Y}_2$ is, in terms of either the covariance (first line) or the precision (second line), Gaussian where
+Consider $\boldsymbol{Y} \sim \mathsf{Gauss}_d(\boldsymbol{\mu}, \boldsymbol{\Sigma})$ and a partition $(\boldsymbol{Y}_1^\top, \boldsymbol{Y}_2^\top)^\top$: the conditional distribution of the $k$ subvector $\boldsymbol{Y}_1$ given the $d-k$ other components $\boldsymbol{Y}_2$ is, in terms of either the covariance (first line) or the precision (second line), Gaussian where
 \begin{align*}
-\boldsymbol{Y}_1 \mid \boldsymbol{Y}_2=\boldsymbol{y}_2 &\sim \mathsf{Norm}_{k}\left\{ \boldsymbol{\mu}_1 + \boldsymbol{\Sigma}_{12} \boldsymbol{\Sigma}_{22}^{-1}(\boldsymbol{y}_2 - \boldsymbol{\mu}_2), \boldsymbol{\Sigma}_{11} - \boldsymbol{\Sigma}_{12}\boldsymbol{\Sigma}_{22}^{-1}\boldsymbol{\Sigma}_{21}\right\}
-\\&\sim \mathsf{Norm}_{k}\left\{ \boldsymbol{\mu}_1 -\mathbf{Q}_{11}^{-1}\mathbf{Q}_{12}(\boldsymbol{y}_2 - \boldsymbol{\mu}_2), \mathbf{Q}_{11}^{-1}\right\}.
+\boldsymbol{Y}_1 \mid \boldsymbol{Y}_2=\boldsymbol{y}_2 &\sim \mathsf{Gauss}_{k}\left\{ \boldsymbol{\mu}_1 + \boldsymbol{\Sigma}_{12} \boldsymbol{\Sigma}_{22}^{-1}(\boldsymbol{y}_2 - \boldsymbol{\mu}_2), \boldsymbol{\Sigma}_{11} - \boldsymbol{\Sigma}_{12}\boldsymbol{\Sigma}_{22}^{-1}\boldsymbol{\Sigma}_{21}\right\}
+\\&\sim \mathsf{Gauss}_{k}\left\{ \boldsymbol{\mu}_1 -\mathbf{Q}_{11}^{-1}\mathbf{Q}_{12}(\boldsymbol{y}_2 - \boldsymbol{\mu}_2), \mathbf{Q}_{11}^{-1}\right\}.
 \end{align*}
 
 
@@ -674,7 +877,7 @@ The main bottleneck in Gibbs sampling is determining all of the relevant conditi
 
 :::{#exm-gaussian-gamma}
 
-Consider a Gaussian model $Y_i \sim \mathsf{Norm}(\mu, \tau)$ ($i=1, \ldots, n$) are independent, and where we assign priors $\mu \sim \mathsf{Norm}(\nu, \omega)$ and $\tau \sim \mathsf{InvGamma}(\alpha, \beta)$.
+Consider a Gaussian model $Y_i \sim \mathsf{Gauss}(\mu, \tau)$ ($i=1, \ldots, n$) are independent, and where we assign priors $\mu \sim \mathsf{Gauss}(\nu, \omega)$ and $\tau \sim \mathsf{InvGamma}(\alpha, \beta)$.
 
 The joint posterior is not available in closed form, but the independent priors for the mean and variance of the observations are conditionally conjugate, since the joint posterior
 \begin{align*}
@@ -687,8 +890,8 @@ p(\tau \mid \mu, \boldsymbol{y}) & \propto \tau^{-n/2-\alpha-1}\exp\left[-\left\
 \end{align*}
 so we can simulate in turn 
 \begin{align*}
-\mu_t \mid \tau_{t-1}, \boldsymbol{y} &\sim \mathsf{Norm}\left(\frac{n\overline{y}\omega+\tau \nu}{\tau + n\omega}, \frac{\omega \tau}{\tau + n\omega}\right)\\
-\tau_t \mid \mu_t, \boldsymbol{y} &\sim \mathsf{InvGamma}\left\{\frac{n}{2}+\alpha, \frac{\sum_{i=1}^n (y_i-\mu)^2}{2} + \beta\right\}.
+\mu_t \mid \tau_{t-1}, \boldsymbol{y} &\sim \mathsf{Gauss}\left(\frac{n\overline{y}\omega+\tau \nu}{\tau + n\omega}, \frac{\omega \tau}{\tau + n\omega}\right)\\
+\tau_t \mid \mu_t, \boldsymbol{y} &\sim \mathsf{inv. gamma}\left\{\frac{n}{2}+\alpha, \frac{\sum_{i=1}^n (y_i-\mu)^2}{2} + \beta\right\}.
 \end{align*}
 
 :::
@@ -711,7 +914,7 @@ Consider a linear regression model with observation-specific mean $\mu_i = \math
 
 Concatenating records, $\boldsymbol{Y} \sim \mathsf{No}_n(\mathbf{X}\boldsymbol{\beta}, \sigma^2 \mathbf{Q}_y^{-1})$, for a known precision matrix $\mathbf{Q}_y$, typically $\mathbf{I}_n$. To construct a conjugate joint prior for $p(\boldsymbol{\beta}, \sigma^2)$, we consider the sequential formulation
 \begin{align*}
-\boldsymbol{\beta} \mid \sigma^2 \sim \mathsf{Norm}_p(\boldsymbol{\nu}_\beta, \sigma^2 \mathbf{Q}^{-1}_\beta), \qquad \sigma^2 \sim \mathsf{InvGamma}(\alpha,\beta)
+\boldsymbol{\beta} \mid \sigma^2 \sim \mathsf{Gauss}_p(\boldsymbol{\nu}_\beta, \sigma^2 \mathbf{Q}^{-1}_\beta), \qquad \sigma^2 \sim \mathsf{InvGamma}(\alpha,\beta)
 \end{align*}
 where $\mathsf{InvGamma}$ denotes the inverse gamma distribution^[This simply means that the precision $\sigma^{-2}$, the reciprocal of the variance, has a gamma distribution with shape $\alpha$ and rate $\beta$.]
 
@@ -746,7 +949,7 @@ p_i = \Pr(Y_i=1) = \Phi(\beta_0 + \beta_1 \mathrm{X}_{i1} + \cdots + \beta_p\mat
 where $\Phi$ is the distribution function of the standard Gaussian distribution.
 The likelihood of the probit model for a sample of $n$ independent observations is 
 $$L(\boldsymbol{\beta}; \boldsymbol{y}) = \prod_{i=1}^n p_i^{y_i}(1-p_i)^{1-y_i},$$
-and this prevents easy simulation. We can consider a data augmentation scheme where $Y_i = \mathsf{I}(Z_i > 0)$, where $Z_i \sim \mathsf{Norm}(\mathbf{x}_i\boldsymbol{\beta}, 1)$, with $\mathbf{x}_i$ denoting the $i$th row of the design matrix.
+and this prevents easy simulation. We can consider a data augmentation scheme where $Y_i = \mathsf{I}(Z_i > 0)$, where $Z_i \sim \mathsf{Gauss}(\mathbf{x}_i\boldsymbol{\beta}, 1)$, with $\mathbf{x}_i$ denoting the $i$th row of the design matrix.
 
 The augmented data likelihood is
 \begin{align*}
@@ -754,7 +957,7 @@ p(\boldsymbol{z}, \boldsymbol{y} \mid \boldsymbol{\beta}) \propto \exp\left\{-\f
 \end{align*}
 Given $Z_i$, the coefficients $\boldsymbol{\beta}$ are simply the results of ordinary linear regression with unit variance, so 
 \begin{align*}
-\boldsymbol{\beta} \mid \boldsymbol{z}, \boldsymbol{y} &\sim \mathsf{Norm}\left\{\widehat{\boldsymbol{\beta}}, (\mathbf{X}^\top\mathbf{X})^{-1}\right\}
+\boldsymbol{\beta} \mid \boldsymbol{z}, \boldsymbol{y} &\sim \mathsf{Gauss}\left\{\widehat{\boldsymbol{\beta}}, (\mathbf{X}^\top\mathbf{X})^{-1}\right\}
 \end{align*}
 with $\widehat{\boldsymbol{\beta}}=(\mathbf{X}^\top\mathbf{X})^{-1}\mathbf{X}^\top\boldsymbol{z}$ is the ordinary least square estimator from the regression with model matrix $\mathbf{X}$ and response vector $\boldsymbol{z}$. The augmented variables $Z_i$ are conditionally independent and truncated Gaussian with
 \begin{align*}
@@ -811,7 +1014,7 @@ The Laplace distribution with mean $\mu$ and scale $\sigma$, which has density
 \begin{align*}
 f(x; \mu, \sigma) = \frac{1}{2\sigma}\exp\left(-\frac{|x-\mu|}{\sigma}\right),
 \end{align*}
-can be expressed as a scale mixture of Gaussians, where $Y \sim \mathsf{La}(\mu, \sigma)$ is equivalent to $Z \mid \tau \sim \mathsf{Norm}(\mu, \tau)$ and $\tau \sim \mathsf{Exp}\{(2\sigma)^{-1}\}$.
+can be expressed as a scale mixture of Gaussians, where $Y \sim \mathsf{La}(\mu, \sigma)$ is equivalent to $Z \mid \tau \sim \mathsf{Gauss}(\mu, \tau)$ and $\tau \sim \mathsf{Exp}\{(2\sigma)^{-1}\}$.
 With the improper prior $p(\mu, \sigma) \propto \sigma^{-1}$ and with $n$ independent and identically distributed Laplace variates, the joint posterior can be written
 \begin{align*}
 p(\boldsymbol{\tau}, \mu, \sigma \mid \boldsymbol{y}) &\propto \left(\prod_{i=1}^n \tau_i\right)^{-1/2}\exp\left\{-\frac{1}{2}\sum_{i=1}^n \frac{(y_i-\mu)^2}{\tau_i}\right\} \\&\quad \times \frac{1}{\sigma^{n+1}}\exp\left(-\frac{1}{2\sigma}\sum_{i=1}^n \tau_i\right)
@@ -833,8 +1036,8 @@ for location $\nu >0$ and shape $\lambda>0$, where $\xi_i \sim \mathsf{Wald}(\nu
 
 @Park.Casella:2008 use this hierarchical construction to defined the Bayesian LASSO. With a model matrix $\mathbf{X}$ whose columns are standardized to have mean zero and unit standard deviation, we may write
 \begin{align*}
-\boldsymbol{Y} \mid \mu, \boldsymbol{\beta}, \sigma^2 &\sim  \mathsf{Norm}_n(\mu \boldsymbol{1}_n + \mathbf{X}\boldsymbol{\beta}, \sigma \mathbf{I}_n)\\
-\beta_j \mid \sigma, \tau &\sim \mathsf{Norm}(0, \sigma\tau)\\
+\boldsymbol{Y} \mid \mu, \boldsymbol{\beta}, \sigma^2 &\sim  \mathsf{Gauss}_n(\mu \boldsymbol{1}_n + \mathbf{X}\boldsymbol{\beta}, \sigma \mathbf{I}_n)\\
+\beta_j \mid \sigma, \tau &\sim \mathsf{Gauss}(0, \sigma\tau)\\
 \tau &\sim \mathsf{Exp}(\lambda/2)
 \end{align*}
 If we set an improper prior $p(\mu, \sigma) \propto \sigma^{-1}$, the resulting conditional distributions are all available and thus the model is amenable to Gibbs sampling.
@@ -1060,7 +1263,7 @@ The Bayesian workflow is a coherent framework for model construction, estimation
 
 
 
-To illustrate these, we revisit the model from @exm-randomeffects with a penalized complexity prior for the individual effect $\alpha_i$ and vague normal priors. We also fit a simple Poisson model with only the fixed effect, taking $Y_{ij} \sim \mathsf{Pois}\{\exp(\beta_j)\}$ with $\beta_j \sim \mathsf{Norm}(0,100)$ has much too little variability relative to the observations. 
+To illustrate these, we revisit the model from @exm-randomeffects with a penalized complexity prior for the individual effect $\alpha_i$ and vague normal priors. We also fit a simple Poisson model with only the fixed effect, taking $Y_{ij} \sim \mathsf{Poisson}\{\exp(\beta_j)\}$ with $\beta_j \sim \mathsf{Gauss}(0,100)$ has much too little variability relative to the observations.
 
 ### Trace plots
 

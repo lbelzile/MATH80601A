@@ -119,15 +119,17 @@
 \makesavenoteenv{longtable}
 \usepackage{graphicx}
 \makeatletter
-\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
-\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
-\makeatother
-% Scale images if necessary, so that they will not overflow the page
-% margins by default, and it is still possible to overwrite the defaults
-% using explicit options in \includegraphics[width, height, ...]{}
-\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+\newsavebox\pandoc@box
+\newcommand*\pandocbounded[1]{% scales image to fit in text height/width
+  \sbox\pandoc@box{#1}%
+  \Gscale@div\@tempa{\textheight}{\dimexpr\ht\pandoc@box+\dp\pandoc@box\relax}%
+  \Gscale@div\@tempb{\linewidth}{\wd\pandoc@box}%
+  \ifdim\@tempb\p@<\@tempa\p@\let\@tempa\@tempb\fi% select the smaller of both
+  \ifdim\@tempa\p@<\p@\scalebox{\@tempa}{\usebox\pandoc@box}%
+  \else\usebox{\pandoc@box}%
+  \fi%
+}
 % Set default figure placement to htbp
-\makeatletter
 \def\fps@figure{htbp}
 \makeatother
 % definitions for citeproc citations
@@ -264,20 +266,6 @@
 \DeclareMathAlphabet{\mathcrl}{U}{rsfs}{m}{n}
 \usepackage{utopia}
 \DeclareMathAlphabet{\mathcal}{OMS}{cmsy}{m}{n}
-\usepackage{booktabs}
-\usepackage{longtable}
-\usepackage{array}
-\usepackage{multirow}
-\usepackage{wrapfig}
-\usepackage{float}
-\usepackage{colortbl}
-\usepackage{pdflscape}
-\usepackage{tabu}
-\usepackage{threeparttable}
-\usepackage{threeparttablex}
-\usepackage[normalem]{ulem}
-\usepackage{makecell}
-\usepackage{xcolor}
 \makeatletter
 \@ifpackageloaded{bookmark}{}{\usepackage{bookmark}}
 \makeatother
@@ -317,11 +305,11 @@
 \newcommand*\listoflistings{\listof{codelisting}{List of Listings}}
 \usepackage{amsthm}
 \theoremstyle{definition}
-\newtheorem{definition}{Definition}[chapter]
+\newtheorem{exercise}{Exercise}[chapter]
 \theoremstyle{definition}
 \newtheorem{example}{Example}[chapter]
 \theoremstyle{definition}
-\newtheorem{exercise}{Exercise}[chapter]
+\newtheorem{definition}{Definition}[chapter]
 \theoremstyle{plain}
 \newtheorem{proposition}{Proposition}[chapter]
 \theoremstyle{remark}
@@ -338,9 +326,6 @@
 \@ifpackageloaded{subcaption}{}{\usepackage{subcaption}}
 \makeatother
 
-\ifLuaTeX
-  \usepackage{selnolig}  % disable illegal ligatures
-\fi
 \usepackage{bookmark}
 
 \IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
@@ -375,12 +360,14 @@
 \markboth{Welcome}{Welcome}
 
 This book is a web complement to MATH 80601A \emph{Bayesian modelling},
-a graduate course offered at HEC Montréal.
+a graduate course offered at HEC Montréal. Consult the
+\href{https://lbelzile.github.io/bayesmod}{course webpage} for more
+details.
 
 These notes are licensed under a
 \href{http://creativecommons.org/licenses/by-nc-sa/4.0/}{Creative
 Commons Attribution-NonCommercial-ShareAlike 4.0 International License}
-and were last compiled on Tuesday, November 26 2024.
+and were last compiled on Thursday, December 19 2024.
 
 The objective of the course is to provide a hands on introduction to
 Bayesian data analysis. The course will cover the formulation,
@@ -410,8 +397,9 @@ Let \(\boldsymbol{X}\) denote a \(d\)-dimensional vector with real
 entries in \(\mathbb{R}^d\). The distribution function of
 \(\boldsymbol{X}\) is \begin{align*}
  F_{1:d}(\boldsymbol{x}) = \Pr(\boldsymbol{X} \leq \boldsymbol{x}) = \Pr(X_1 \leq x_1, \ldots, X_d \leq x_d).
-\end{align*} We use indices \(1:d = \{1, \ldots, d\}\) to explicit which
-components of \(\boldsymbol{X}\) are under consideration.
+\end{align*} We use indices to explicit which components of
+\(\boldsymbol{X}\) are under consideration, with the convention
+\({1\!:\!d} = \{1, \ldots, d\}\).
 
 If the distribution of \(\boldsymbol{X}\) is absolutely continuous, we
 may write \begin{align*}
@@ -421,61 +409,11 @@ may write \begin{align*}
 derivative of the distribution function with respect to all of it's
 arguments.
 
-The \textbf{marginal distribution} of a subvector
-\(\boldsymbol{X}_{1:k}=(X_1, \ldots, X_k)^\top\), without loss of
-generality consisting of the \(k\) first components of
-\(\boldsymbol{X}\) \((1 \leq k \leq d)\) is \begin{align*}
- F_{1:k}(\boldsymbol{x}_{1:d}) = \Pr(\boldsymbol{X}_{1:k} \leq \boldsymbol{x}_{1:k}) = F_{1:d}(x_1, \ldots, x_k, \infty, \ldots, \infty).
-\end{align*} and thus the marginal distribution of component \(j\),
-\(F_j(x_j)\), is obtained by evaluating all components but the \(j\)th
-at \(\infty\).
-
-We likewise obtain the marginal density \begin{align*}
-f_{1:k}(\boldsymbol{x}_{1:k}) = \frac{\partial^k F_{1:k}(\boldsymbol{x}_{1:k})}{\partial x_1 \cdots \partial x_{k}},
-\end{align*} or through integration from the joint density as
-\begin{align*}
- f_{1:k}(\boldsymbol{x}_{1:k}) = \int_{-\infty}^\infty \cdots  \int_{-\infty}^\infty  f_{1:d}(x_1, \ldots, x_k, z_{k+1}, \ldots, z_{d}) \mathrm{d} z_{k+1} \cdots \mathrm{d}z_d.
-\end{align*}
-
-\end{definition}
-
-\begin{definition}[Conditional
-distribution]\protect\hypertarget{def-conditional-dist}{}\label{def-conditional-dist}
-
-Let
-\(\boldsymbol{X}_{1:d} = (\boldsymbol{X}_{1:k}^\top, \boldsymbol{X}_{(k+1):d}^\top)^\top\)
-be a \(d\)-dimensional random vector with absolutely continuous margins
-and joint density \(f_{1:d}\), or else a discrete distribution with mass
-function \(f_{1:d}\). The conditional distribution function of
-\(\boldsymbol{X}_{1:k}\) given \(\boldsymbol{X}_{(k+1):d}\), is defined
-implicitly from the relationship \begin{align*}
-f_{1:k \mid (k+1):d}(\boldsymbol{x}_{1:k}; \boldsymbol{x}_{(k+1):d}) = \frac{f_{1:d}(\boldsymbol{x}_{1:d})}{f_{(k+1):d}(\boldsymbol{x}_{(k+1):d})}
-\end{align*} for any value of \(\boldsymbol{x}\) in the support of
-\(\boldsymbol{X}\), i.e., the set of values with non-zero density or
-mass and \(f_{(k+1):d}(\boldsymbol{x}_{(k+1):d})>0\); it is undefined
-otherwise.
-
-\end{definition}
-
-\begin{definition}[Independence]\protect\hypertarget{def-independence}{}\label{def-independence}
-
-Let
-\(\boldsymbol{X}_{1:d} = (\boldsymbol{X}_{1:k}^\top, \boldsymbol{X}_{(k+1):d}^\top)^\top\)
-be a \(d\)-dimensional random vector. We say that
-\(\boldsymbol{X}_{1:k}\) and \(\boldsymbol{X}_{(k+1):d}\) are
-independent if their joint distribution function factorizes as
-\begin{align*}
-F_{1:d}(\boldsymbol{x}_{1:k}, \boldsymbol{x}_{(k+1):d}) = F_{1:k}(\boldsymbol{x}_{1:k})F_{(k+1):d}(\boldsymbol{x}_{(k+1):d})
-\end{align*} for any value of \(\boldsymbol{x}_{1:k}\),
-\(\boldsymbol{x}_{(k+1):d}\). It follows from the definition of joint
-density that, should the latter exists, it also factorizes as
-\begin{align*}
-f_{1:d}(\boldsymbol{x}_{1:k}, \boldsymbol{x}_{(k+1):d}) = f_{1:k}(\boldsymbol{x}_{1:k})f_{(k+1):d}(\boldsymbol{x}_{(k+1):d}).
-\end{align*}
-
-If two subvectors \(\boldsymbol{X}_{1:k}\) and
-\(\boldsymbol{X}_{(k+1):d}\) are independent, then the conditional
-density \(f_{1:k \mid (k+1):d}\) equals the marginal \(f_{1:k}\).
+We use the same notation and talk about the density function (rather
+than mass function) in the discrete case where
+\(f_{\boldsymbol{X}}(\boldsymbol{x}) = \Pr(X_1 = x_1, \ldots, X_d = x_d)\),
+where the integral is understood to mean a summation over all values
+lower or equal to \(\boldsymbol{x}\) in the support.
 
 \end{definition}
 
@@ -493,13 +431,13 @@ f(x) = \frac{\beta^\alpha}{\Gamma(\alpha)}x^{\alpha-1}\exp(-\beta x), \qquad x \
 is the gamma function.
 
 If \(\alpha=1\), the density simplifies to \(\beta \exp(-\beta x)\) and
-we recover the \textbf{exponential distribution}. The case
-\(\mathsf{gamma}(\nu/2, 1/2)\) corresponds to the chi-square
-distribution \(\chi^2_\nu\).
+we recover the \textbf{exponential distribution}, denote
+\(\mathsf{expo}(\beta)\). The case \(\mathsf{gamma}(\nu/2, 1/2)\)
+corresponds to the chi-square distribution \(\chi^2_\nu\).
 
 \end{definition}
 
-\begin{definition}[beta and uniform
+\begin{definition}[Beta and uniform
 distribution]\protect\hypertarget{def-beta}{}\label{def-beta}
 
 The beta distribution \(\mathsf{beta}(\alpha_1, \alpha_2)\) is a
@@ -537,7 +475,7 @@ Due to the linear dependence, the \(d\)th component
 distribution]\protect\hypertarget{def-binomial}{}\label{def-binomial}
 
 The density of the binomial distribution, denoted
-\(Y \sim \mathsf{Binom}(n, p)\), is \begin{align*}
+\(Y \sim \mathsf{binom}(n, p)\), is \begin{align*}
 f(x) = \mathsf{Pr}(Y=x) = \binom{m}{x}p^x (1-p)^{m-x}, \quad x=0, 1, \ldots, n.
 \end{align*}
 
@@ -580,28 +518,353 @@ expectation and the variance of the distribution, meaning
 
 \end{definition}
 
+\begin{proposition}[Location and scale
+distribution]\protect\hypertarget{prp-location-scale}{}\label{prp-location-scale}
+
+A distribution is said to belong to a location scale family with
+location \(\boldsymbol{\nu}\) and
+
+\end{proposition}
+
 The most frequently encountered distribution is termed normal, but we
-use the terminology Gaussian
+use the terminology Gaussian in these notes.
 
 \begin{definition}[Gaussian
 distribution]\protect\hypertarget{def-gaussian}{}\label{def-gaussian}
 
 Consider a \(d\) dimensional vector
-\(\boldsymbol{Y} \sim \mathsf{normal}_d(\boldsymbol{\mu}, \boldsymbol{Q}^{-1})\)
+\(\boldsymbol{Y} \sim \mathsf{Gauss}_d(\boldsymbol{\mu}, \boldsymbol{Q}^{-1})\)
 with density \begin{align*}
 f(\boldsymbol{x}) = (2\pi)^{-d/2} |\boldsymbol{Q}|^{1/2} \exp \left\{ - \frac{1}{2} (\boldsymbol{x}-\boldsymbol{\mu})^\top \boldsymbol{Q}(\boldsymbol{x}-\boldsymbol{\mu})\right\}, \qquad \boldsymbol{x} \in \mathbb{R}^d
 \end{align*}
 
 The mean vector \(\boldsymbol{\mu}\) is the vector of expectation of
-individual observations, whereas \(\boldsymbol{Q}^{-1}\), often denoted
-\(\boldsymbol{\Sigma}\) is the \(d \times d\) covariance matrix of
-\(\boldsymbol{Y}\) and \(\boldsymbol{Q}\), the canonical parameter, is
-the precision matrix.
+individual observations, whereas
+\(\boldsymbol{Q}^{-1}\equiv \boldsymbol{\Sigma}\) is the \(d \times d\)
+covariance matrix of \(\boldsymbol{Y}\) and \(\boldsymbol{Q}\), the
+canonical parameter, is called the precision matrix.
 
-In the univariate case, the density of
-\(\mathsf{normal}(\mu, \sigma^2)\) reduces to \begin{align*}
+In the univariate case, the density of \(\mathsf{Gauss}(\mu, \sigma^2)\)
+reduces to \begin{align*}
 f(x) = (2\pi\sigma^2)^{-1/2} \exp \left\{ - \frac{(x-\mu)^2}{2\sigma^2}\right\}, \qquad x \in \mathbb{R}.
 \end{align*}
+
+\end{definition}
+
+\begin{proposition}[Simulation of Gaussian
+vectors]\protect\hypertarget{prp-gaussian-dist-property}{}\label{prp-gaussian-dist-property}
+
+The Gaussian distribution is an elliptical distribution and a
+location-scale family: if
+\(\boldsymbol{L} = \mathrm{chol}(\boldsymbol{Q})\), meaning
+\(\boldsymbol{Q}=\boldsymbol{LL}^\top\) for some lower triangular matrix
+\(\boldsymbol{L}\), then
+\[\boldsymbol{L}^\top(\boldsymbol{Y}-\boldsymbol{\mu}) \sim \mathsf{Gauss}_d(\boldsymbol{0}_d, \mathbf{I}_d).\]
+Conversely, we can use the Cholesky root to sample multivariate Gaussian
+vectors by first drawing \(d\) independent standard Gaussians
+\(\boldsymbol{Z}=(Z_1, \ldots, Z_d)^\top\), then computing
+\[\boldsymbol{Y} \gets \boldsymbol{L}^{-1}\boldsymbol{Z}+ \boldsymbol{\mu}.\]
+
+\end{proposition}
+
+\begin{definition}[Student-\(t\)
+distribution]\protect\hypertarget{def-student-dist}{}\label{def-student-dist}
+
+The name ``Student'' comes from the pseudonym used by William Gosset in
+Gosset (\citeproc{ref-Student:1908}{1908}), who introduced the
+asymptotic distribution of the \(t\)-statistic. The density of the
+standard Student-\(t\) univariate distribution with \(\nu\) degrees of
+freedom is \begin{align*}
+f(y; \nu) = \frac{\Gamma \left( \frac{\nu+1}{2}\right)}{\Gamma\left(\frac{\nu}{2}\right)
+\sqrt{\nu\pi}}\left(1+\frac{y^{2}}{\nu}\right)^{-\frac{\nu+1}{2}}.
+\end{align*} The density of the random vector
+\(\boldsymbol{Y} \sim \mathsf{Student}_d(\boldsymbol{\mu}, \boldsymbol{Q}^{-1}, \nu)\),
+with location vector \(\boldsymbol{\mu}\), scale matrix
+\(\boldsymbol{Q}^{-1}\) and \(\nu\) degrees of freedom is \begin{align*}
+f(\boldsymbol{x}) = \frac{\Gamma \left( \frac{\nu+d}{2}\right)|\boldsymbol{Q}|^{1/2}}{\Gamma\left(\frac{\nu}{2}\right)
+(\nu\pi)^{d/2}}\left(1+\frac{(\boldsymbol{x}-\boldsymbol{\mu})^\top\boldsymbol{Q}(\boldsymbol{x}-\boldsymbol{\mu})}{\nu} \right)^{-\frac{\nu+d}{2}}, \qquad \boldsymbol{x} \in \mathbb{R}^d
+\end{align*} The Student distribution is a location-scale family and an
+elliptical distribution. The distribution has polynomial tails, is
+symmetric around \(\boldsymbol{\mu}\) and is unimodal. As
+\(\nu \to \infty\), the Student distribution converges to a normal
+distribution. It has heavier tails than the normal distribution and only
+the first \(\nu-1\) moments of the distribution exist. The case
+\(\nu=1\) is termed Cauchy distribution.
+
+\end{definition}
+
+\begin{definition}[Weibull
+distribution]\protect\hypertarget{def-weibull}{}\label{def-weibull}
+
+The distribution function of a \textbf{Weibull} random variable with
+scale \(\lambda>0\) and shape \(\alpha>0\) is \begin{align*}
+F(x; \lambda, \alpha) &= 1 - \exp\left\{-(x/\lambda)^\alpha\right\}, \qquad x \geq 0, \lambda>0, \alpha>0,
+\end{align*} while the corresponding density is \begin{align*}
+f(x; \lambda, \alpha) &= \frac{\alpha}{\lambda^\alpha} x^{\alpha-1}\exp\left\{-(x/\lambda)^\alpha\right\}, \qquad x \geq 0, \lambda>0, \alpha>0.
+\end{align*} The quantile function, the inverse of the distribution
+function, is \(Q(p) = \lambda\{-\ln(1-p)\}^{1/\alpha}.\) The Weibull
+distribution includes the exponential as special case when \(\alpha=1.\)
+The expected value of \(Y \sim \mathsf{Weibull}(\lambda, \alpha)\) is
+\(\mathsf{E}(Y) = \lambda \Gamma(1+1/\alpha).\)
+
+\end{definition}
+
+\subsection{Marginal and conditional
+distributions}\label{marginal-and-conditional-distributions}
+
+\begin{definition}[Marginal
+distribution]\protect\hypertarget{def-marginal}{}\label{def-marginal}
+
+The \textbf{marginal distribution} of a subvector
+\(\boldsymbol{X}_{1:k}=(X_1, \ldots, X_k)^\top\), without loss of
+generality consisting of the \(k\) first components of
+\(\boldsymbol{X}\) \((1 \leq k < d)\) is \begin{align*}
+ F_{1:k}(\boldsymbol{x}_{1:d}) = \Pr(\boldsymbol{X}_{1:k} \leq \boldsymbol{x}_{1:k}) = F_{1:d}(x_1, \ldots, x_k, \infty, \ldots, \infty).
+\end{align*} and thus the marginal distribution of component \(j\),
+\(F_j(x_j)\), is obtained by evaluating all components but the \(j\)th
+at \(\infty\).
+
+We likewise obtain the marginal density \begin{align*}
+f_{1:k}(\boldsymbol{x}_{1:k}) = \frac{\partial^k F_{1:k}(\boldsymbol{x}_{1:k})}{\partial x_1 \cdots \partial x_{k}},
+\end{align*} or through integration from the joint density as
+\begin{align*}
+ f_{1:k}(\boldsymbol{x}_{1:k}) = \int_{-\infty}^\infty \cdots  \int_{-\infty}^\infty  f_{1:d}(x_1, \ldots, x_k, z_{k+1}, \ldots, z_{d}) \mathrm{d} z_{k+1} \cdots \mathrm{d}z_d.
+\end{align*}
+
+\end{definition}
+
+\begin{definition}[Conditional
+distribution]\protect\hypertarget{def-conditional-dist}{}\label{def-conditional-dist}
+
+Let \((\boldsymbol{X}^\top, \boldsymbol{Y}^\top)^\top\) be a
+\(d\)-dimensional random vector with joint density or mass function
+\(f_{\boldsymbol{X}, \boldsymbol{Y}}(\boldsymbol{x}, \boldsymbol{y})\)
+and marginal distribution \(f_{\boldsymbol{X}}(\boldsymbol{x})\). The
+conditional distribution function of \(\boldsymbol{Y}\) given
+\(\boldsymbol{X}=\boldsymbol{x}\), is \begin{align*}
+f_{\boldsymbol{Y} \mid \boldsymbol{X}}(\boldsymbol{y}; \boldsymbol{x}) = \frac{f_{\boldsymbol{X}, \boldsymbol{Y}}(\boldsymbol{x}, \boldsymbol{y})}{f_{\boldsymbol{X}}(\boldsymbol{x})}
+\end{align*} for any value of \(\boldsymbol{x}\) in the support of
+\(\boldsymbol{X}\), i.e., the set of values with non-zero density or
+mass, meaning \(f_{\boldsymbol{X}}(\boldsymbol{x})>0\); it is undefined
+otherwise.
+
+\end{definition}
+
+\bookmarksetup{startatroot}
+
+\chapter{Complementary material}\label{complementary-material}
+
+\section{Bayes theorem}\label{bayes-theorem}
+
+Denote by \(p(X) \equiv\Pr(X)\) denotes the marginal density of \(X\),
+\(p(X \mid Y)\) the conditional of \(X\) given \(Y\) and \(p(X, Y)\) the
+joint density. Bayes' theorem states that \begin{align*}
+p(X = x \mid Y=y) = \frac{p(Y = y \mid X = x)p(X=x)}{p(Y=y)}
+\end{align*}
+
+In the case of discrete random variable \(X\) with support
+\(\mathcal{X},\) the denominator can be evaluated using the law of total
+probability as
+\[\Pr(Y=y) = \sum_{x \in \mathcal{X}}\Pr(Y =y \mid X=x)\Pr(X=x).\]
+
+\begin{example}[Covid rapid
+tests]\protect\hypertarget{exm-covidrapidtest}{}\label{exm-covidrapidtest}
+
+Back in January 2021, the Quebec government was debating whether or not
+to distribute antigen rapid test, with
+\href{https://www.cbc.ca/news/canada/montreal/quebec-avoids-relying-on-rapid-covid-19-tests-as-pressure-mounts-to-follow-ontario-s-lead-1.5896738}{strong
+reluctance} from authorities given the paucity of available resources
+and the poor sensitivity.
+
+A Swiss study analyse the efficiency of rapid antigen tests, comparing
+them to repeated polymerase chain reaction (PCR) test output, taken as
+benchmark (\citeproc{ref-Jegerlehner:2021}{Jegerlehner et al. 2021}).
+The results are presented in Table~\ref{tbl-covid19}
+
+\begin{longtable}[]{@{}lrr@{}}
+\caption{Confusion matrix of Covid test results for PCR tests versus
+rapid antigen tests, from Jegerlehner et al.
+(\citeproc{ref-Jegerlehner:2021}{2021}).}\label{tbl-covid19}\tabularnewline
+\toprule\noalign{}
+& PCR \(+\) & PCR \(-\) \\
+\midrule\noalign{}
+\endfirsthead
+\toprule\noalign{}
+& PCR \(+\) & PCR \(-\) \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+rapid \(+\) & 92 & 2 \\
+rapid \(-\) & 49 & 1319 \\
+total & 141 & 1321 \\
+\end{longtable}
+
+Estimated seropositivity at the end of January 2021 according to
+projections of the Institute for Health Metrics and Evaluation (IHME) of
+8.18M out of 38M inhabitants (\citeproc{ref-owidcoronavirus}{Mathieu et
+al. 2020}), a prevalence of 21.4\%. Assuming the latter holds uniformly
+over the country, what is the probability of having Covid if I get a
+negative result to a rapid test?
+
+Let \(R^{-}\) (\(R^{+}\)) denote a negative (positive) rapid test result
+and \(C^{+}\) (\(C^{-}\)) Covid positivity (negativity). Bayes' formula
+gives \begin{align*}
+\Pr(C^{+} \mid R^{-}) & = \frac{\Pr(R^{-} \mid C^{+})\Pr(C^{+})}{\Pr(R^{-} \mid C^{+})\Pr(C^{+}) + \Pr(R^{-} \mid C^{-})\Pr(C^{-})} \\&=
+\frac{49/141 \cdot 0.214}{49/141 \cdot 0.214 + 1319/1321 \cdot 0.786}
+\end{align*} so there is a small, but non-negligible probability of
+8.66\% that the rapid test result is misleading. Jegerlehner et al.
+(\citeproc{ref-Jegerlehner:2021}{2021}) indeed found that the
+sensitivity was 65.3\% among symptomatic individuals, but dropped down
+to 44\% for asymptomatic cases. This may have fueled government experts
+skepticism.
+
+\end{example}
+
+\begin{example}[Conditional and marginal for contingency
+table]\protect\hypertarget{exm-discrete-conditional-marginal}{}\label{exm-discrete-conditional-marginal}
+
+Consider a bivariate distribution for \((Y_1, Y_2)\) supported on
+\(\{1,2\} \times \{1, 2, 3\}\) whose joint probability mass function is
+given in Table~\ref{tbl-bivardiscrete}
+
+\begin{longtable}[]{@{}lrrr@{}}
+
+\caption{\label{tbl-bivardiscrete}Bivariate mass function with
+probability of each outcome for \((Y_1, Y_2)\).}
+
+\tabularnewline
+
+\toprule\noalign{}
+& \(Y_1=1\) & \(Y_1=2\) & \(Y_1=3\) \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+\(Y_2=1\) & 0.20 & 0.3 & 0.10 \\
+\(Y_2=2\) & 0.15 & 0.2 & 0.05 \\
+
+\end{longtable}
+
+The marginal distribution of \(Y_1\) is obtain by looking at the total
+probability for each column, as
+\[\Pr(Y_1=i) = \Pr(Y_1=i, Y_2=1)+ \Pr(Y_1=i, Y_2=2).\] This gives
+\(\Pr(Y_1=1)=0.35\), \(\Pr(Y_1=2)=0.5\) and \(\Pr(Y_1=3) = 0.15\).
+Similarly, we find that \(\Pr(Y_2=1)=0.6\) and \(\Pr(Y_2=2)=0.4\) for
+the other random variable.
+
+The conditional distribution
+\[\Pr(Y_2 = i \mid Y_1=2) = \frac{\Pr(Y_1=2, Y_2=i)}{\Pr(Y_1=2)},\] so
+\(\Pr(Y_2 = 1 \mid Y_1=2) = 0.3/0.5 = 0.6\) and
+\(\Pr(Y_2=2 \mid Y_1=2) = 0.4\). We can condition on more complicated
+events, for example \begin{align*}
+\Pr(Y_2 = i \mid Y_1 \ge 2) = \frac{\Pr(Y_1=2, Y_2=i) + \Pr(Y_1=3, Y_2=i)}{\Pr(Y_1=2) + \Pr(Y_1=3)}.
+\end{align*}
+
+\end{example}
+
+\begin{example}[Margins and conditional distributions of multinomial
+vectors]\protect\hypertarget{exm-marginal-multinom}{}\label{exm-marginal-multinom}
+
+Consider \(\boldsymbol{Y} = (Y_1, Y_2, n-Y_1-Y_2)\) a trinomial vector
+giving the number of observations in group \(j \in \{1,2,3\}\) with
+\(n\) trials and probabilities of each component respectively
+\((p_1, p_2, 1-p_1-p_2)\). The marginal distribution of \(Y_2\) is
+obtained by summing over all possible values of \(Y_1\), which ranges
+from \(0\) to \(n\), so \begin{align*}
+f(y_2) &= \frac{n!p_2^{y_2}}{y_2!}\sum_{y_1=1}^n \frac{p_1^{y_1}(1-p_1 -p_2)^{n-y_1-y_2}}{y_1!(n-y_1-y_2)!}
+\end{align*}
+
+A useful trick is to complete the expression on the right so that it sum
+(in the discrete case) or integrate (in the continuous case) to \(1.\)
+If we multiply and divide by \((1-p_2)^{n-y_2} /(n-y_2)!\), we get
+\(p_1^*=p_1/(1-p_2)\) and
+
+\begin{align*}
+f(y_2) &= \frac{n!p_2^{y_2}}{(1-p_2)^{n-y_2} y_2!(n-y_2)!}\sum_{y_1=1}^n \binom{n-y_2}{y_1} p_1^{\star y_1}(1-p^{\star}_1)^{n-y_2}
+\\&= \frac{n!p_2^{y_2}}{(1-p_2)^{n-y_2} y_2!(n-y_2)!}
+\end{align*} is binomial with \(n\) trials and probability of success
+\(p_2\). We can generalize this argument to multinomials of arbitrary
+dimensions.
+
+The conditional density of \(Y_2 \mid Y_1=y_1\) is, up to
+proportionality, \begin{align*}
+f_{Y_2 \mid Y_1}(y_2; y_1) &\propto \frac{p_2^{y_2}(1-p_1 -p_2)^{n-y_1-y_2}}{y_2!(n-y_1-y_2)!}
+\end{align*} If we write \(p_2^\star=p_2/(1-p_1)\), we find that
+\(Y_2 \mid Y_1 \sim \mathsf{binom}(n-y_1, p_2^\star)\). Indeed, we can
+see that \begin{align*}
+f_{\boldsymbol{Y}}(\boldsymbol{y}) &= f_{Y_2 \mid Y_1}(y_2; y_1) f_{Y_1}(y_1) 
+\\&= \binom{n-y_1}{y_2} \left( \frac{p_2}{1-p_1}\right)^{y_2}\left(\frac{1-p_1-p_2}{1-p_1}\right)^{n-y_1-y_2}\!\!\cdot\binom{n}{y_1} p_1^{y_1}(1-p_1)^{n-y_1}.
+\end{align*}
+
+\end{example}
+
+\begin{example}[]\protect\hypertarget{exm-conditional-marginal}{}\label{exm-conditional-marginal}
+
+Consider the bivariate density function of the pair \((X, Y)\), where
+for \(\lambda>0\), \begin{align*}
+f(x,y) = \frac{\lambda y^{1/2}}{(2\pi)^{1/2}}\exp\left\{ - y(x^2 + \lambda)\right\}, \qquad x \in \mathbb{R}, y>0.
+\end{align*} We see that the conditional distribution of
+\(X \mid Y=y \sim \mathsf{Gauss}(0, y^{-1})\). The marginals are
+\begin{align*}
+f(y) &= \int_{-\infty}^\infty \frac{\lambda y^{1/2}}{(2\pi)^{1/2}}\exp\left\{ - y(x^2 + \lambda)\right\} \mathrm{d} x
+\\&= \lambda \exp(-\lambda y)
+\end{align*} so marginally \(Y\) follows an exponential distribution
+with rate \(\lambda\). The marginal of \(X\) can be obtained by noting
+that the joint distribution, as a function of \(y\), is proportional to
+the kernel of a gamma distribution with shape \(3/2\) and rate
+\(x^2+\lambda\), with
+\(Y \mid X=x \sim \mathsf{gamma}(3/2, x^2+\lambda)\). If we pull out the
+normalizing constant, we find \begin{align*}
+f(x) &= \int_{0}^{\infty} \frac{\lambda y^{1/2}}{(2\pi)^{1/2}}\exp\left\{ - y(x^2 + \lambda)\right\} \mathrm{d} y\\&=
+\frac{\lambda \Gamma(3/2)}{(2\pi)^{1/2}(x^2+\lambda)^{3/2}} \int_0^\infty f_{Y \mid X}(y \mid x) \mathrm{d} y \\ &= \frac{\lambda}{2^{3/2}(x^2+\lambda)^{3/2}}
+\end{align*} since \(\Gamma(a+1) = a\Gamma(a)\) for \(a>0\) and
+\(\Gamma(1/2) = \sqrt{\pi}\). We conclude that marginally
+\(X \sim \mathsf{Student}(0, \lambda, 2)\), a Student distribution with
+scale \(\lambda\) and two degrees of freedom.
+
+\end{example}
+
+\begin{example}[Poisson counts conditional on their
+sum]\protect\hypertarget{exm-conditional-poisson-sum}{}\label{exm-conditional-poisson-sum}
+
+Suppose that \(Y_j\sim \mathsf{Poisson}(\lambda_j)\) are independent
+\((j=1, \ldots, J),\) so that the sum
+\(S = Y_1 + \cdots Y_J \sim \mathsf{Poisson}(\lambda_1 + \ldots \lambda_J)\).
+One may prove this fact using moment generating functions, since the
+Poisson is infinitely divisible.
+
+Let \(f(y; \lambda_j)\) denote the Poisson mass function with rate
+\(\lambda_j\). Since the random variables \(Y_1, \ldots, Y_J\) are
+independent, the joint mass function factorizes as \begin{align*}
+&f(y_1, \ldots, y_J=y_j \mid S=n) 
+= \frac{\prod_{j=1}^J f(y_j; \lambda_j)}{f(n; \lambda_1 + \cdots + \lambda_J)}
+\\&\quad=\prod_{j=1}^J\frac{\exp(-\lambda_j)\lambda_j^{y_j}}{y_j!}\frac{n!}{\exp(-\lambda_1 + \cdots \lambda_J) \lambda^{n}}
+\\&\quad= \frac{n!}{ (\lambda_1 + \cdots + \lambda_J)^{n}}\prod_{j=1}^J\frac{\lambda_j^{y_j}}{y_j!} 
+\\&\quad=\frac{n!}{y_1! \cdots y_J!}\prod_{j=1}^J \left(\frac{\lambda_j}{\lambda_1 + \cdots + \lambda_J}\right)^{y_j}
+\end{align*} for \(y_j \geq 0\) for all \(j=1, \ldots, J\) such that
+\(y_1 + \cdots + y_j = n\), and the joint mass is zero otherwise. If we
+define \(p_j = \lambda_j/(\lambda_1 + \cdots + \lambda_J)\), we
+recognize a multinomial distribution with vector of probability of
+success \(\boldsymbol{p}\) with \(p_1 + \cdots p_J=1\) and \(n\) trials.
+
+\end{example}
+
+\begin{definition}[Independence]\protect\hypertarget{def-independence}{}\label{def-independence}
+
+We say that \(\boldsymbol{Y}\) and \(\boldsymbol{X}\) are independent if
+their joint distribution function factorizes as \begin{align*}
+F_{\boldsymbol{X}, \boldsymbol{Y}}(\boldsymbol{x}, \boldsymbol{y}) = F_{\boldsymbol{X}}(\boldsymbol{x})F_{\boldsymbol{Y}}(\boldsymbol{y})
+\end{align*} for any value of \(\boldsymbol{x}\), \(\boldsymbol{y}\). It
+follows from the definition of joint density that, should the latter
+exists, it also factorizes as \begin{align*}
+f_{\boldsymbol{X}, \boldsymbol{Y}}(\boldsymbol{x}, \boldsymbol{y}) = f_{\boldsymbol{X}}(\boldsymbol{x})f_{\boldsymbol{Y}}(\boldsymbol{y}).
+\end{align*}
+
+If two subvectors \(\boldsymbol{X}\) and \(\boldsymbol{Y}\) are
+independent, then the conditional density
+\(f_{\boldsymbol{Y} \mid \boldsymbol{X}}(\boldsymbol{y}; \boldsymbol{x})\)
+equals the marginal \(f_{\boldsymbol{Y}}(\boldsymbol{y})\).
 
 \end{definition}
 
@@ -621,24 +884,38 @@ given the other components.
 
 \end{proposition}
 
-The Gaussian distribution is an elliptical distribution which is
-symmetric around it's mode, and it is a location-scale family: if
-\(\boldsymbol{L} = \mathrm{chol}(\boldsymbol{Q})\), meaning
-\(\boldsymbol{Q}=\boldsymbol{LL}^\top\) for some lower triangular matrix
-\(\boldsymbol{L}\), then
-\[\boldsymbol{L}^\top(\boldsymbol{Y}-\boldsymbol{\mu}) \sim \mathsf{normal}_d(\boldsymbol{0}_d, \mathbf{I}_d).\]
-Conversely, we can use the Cholesky root to sample multivariate Gaussian
-vectors by forward solving
+\begin{proposition}[Law of iterated expectation and
+variance]\protect\hypertarget{prp-iteratedexpectation}{}\label{prp-iteratedexpectation}
 
-The canonical parameter for the scale is the \textbf{precision matrix}
-\(\boldsymbol{Q} = \boldsymbol{\Sigma}^{-1},\) the inverse covariance.
+Let \(\boldsymbol{Z}\) and \(\boldsymbol{Y}\) be random vectors. The
+expected value of \(\boldsymbol{Y}\) is \begin{align*}
+\mathsf{E}_{\boldsymbol{Y}}(\boldsymbol{Y}) = \mathsf{E}_{\boldsymbol{Z}}\left\{\mathsf{E}_{\boldsymbol{Y} \mid \boldsymbol{Z}}(\boldsymbol{Y})\right\}.
+\end{align*}
 
-Quadratic forms of Gaussians
-\((\boldsymbol{Y}-\boldsymbol{\mu})^\top\boldsymbol{\Sigma}^{-1}(\boldsymbol{Y}-\boldsymbol{\mu})\sim \chi^2(n).\)
+The \textbf{tower} property gives a law of iterated variance
+\begin{align*}
+\mathsf{Va}_{\boldsymbol{Y}}(\boldsymbol{Y}) = \mathsf{E}_{\boldsymbol{Z}}\left\{\mathsf{Va}_{\boldsymbol{Y} \mid \boldsymbol{Z}}(\boldsymbol{Y})\right\} + \mathsf{Va}_{\boldsymbol{Z}}\left\{\mathsf{E}_{\boldsymbol{Y} \mid \boldsymbol{Z}}(\boldsymbol{Y})\right\}.
+\end{align*}
 
-:::
+We can deduce that, in a hierarchical model, the variance of the
+unconditional distribution is larger
 
-\begin{proposition}[Partitionning of covariance
+\end{proposition}
+
+\begin{example}[]\protect\hypertarget{exm-iteratedmean-gauss}{}\label{exm-iteratedmean-gauss}
+
+Let \(Y \mid X\sim \mathsf{Gauss}(X, \sigma^2)\) and
+\(X \sim \mathsf{Gauss}(0, \tau^2)\). The unconditional mean and
+variance of \(Y\) are \begin{align*}
+\mathsf{E}(Y) = \mathsf{E}_{X}\{\mathsf{E}_{Y\mid X}(Y)\}= \mathsf{E}_{X}(X) = 0
+\end{align*} and \begin{align*}
+\mathsf{Va}(Y) &= \mathsf{E}_{X}\{\mathsf{Va}_{Y\mid X}(Y)\} + \mathsf{Va}_{X}\{\mathsf{E}_{Y\mid X}(Y)\} \\&= \mathsf{E}_{X}(\sigma^2) + \mathsf{Va}_{X}(X)
+\\&= \sigma^2 + \tau^2
+\end{align*}
+
+\end{example}
+
+\begin{proposition}[Partitioning of covariance
 matrices]\protect\hypertarget{prp-partition-matrix}{}\label{prp-partition-matrix}
 
 Let \(\boldsymbol{\Sigma}\) be a \(d \times d\) positive definite
@@ -677,20 +954,24 @@ following relationships:
 vectors]\protect\hypertarget{prp-conditional-gaussian}{}\label{prp-conditional-gaussian}
 
 Let
-\(\boldsymbol{Y} \sim \mathsf{normal}_d(\boldsymbol{\mu}, \boldsymbol{\Sigma})\)
+\(\boldsymbol{Y} \sim \mathsf{Gauss}_d(\boldsymbol{\mu}, \boldsymbol{\Sigma})\)
 and consider the partition \begin{align*}
  \boldsymbol{Y} = \begin{pmatrix} \boldsymbol{Y}_1 \\ \boldsymbol{Y}_2\end{pmatrix}, \quad 
  \boldsymbol{\mu} = \begin{pmatrix} \boldsymbol{\mu}_1 \\ \boldsymbol{\mu}_2\end{pmatrix}, \quad 
  \boldsymbol{\Sigma} = \begin{pmatrix} \boldsymbol{\Sigma}_{11} & \boldsymbol{\Sigma}_{12}\\ \boldsymbol{\Sigma}_{21} & \boldsymbol{\Sigma}_{22}\end{pmatrix},
 \end{align*} where \(\boldsymbol{Y}_1\) is a \(k \times 1\) and
 \(\boldsymbol{Y}_2\) is a \((d-k) \times 1\) vector for some
-\(1\leq k < d.\) Show that the conditional distribution \begin{align*}
-\boldsymbol{Y}_1 \mid \boldsymbol{Y}_2 =\boldsymbol{y}_2 \sim \mathsf{normal}_k(\boldsymbol{\mu}_1+\boldsymbol{\Sigma}_{12} \boldsymbol{\Sigma}_{22}^{-1}(\boldsymbol{y}_2-\boldsymbol{\mu}_2), \boldsymbol{\Sigma}_{1|2}) 
-\\& \sim  \mathsf{normal}_k(\boldsymbol{\mu}_1-\boldsymbol{Q}_{11}^{-1}\boldsymbol{Q}_{12}(\boldsymbol{y}_2-\boldsymbol{\mu}_2), \boldsymbol{Q}^{-1}_{11})
+\(1\leq k < d.\) Then, we have the conditional distribution
+\begin{align*}
+\boldsymbol{Y}_1 \mid \boldsymbol{Y}_2 =\boldsymbol{y}_2 &\sim \mathsf{Gauss}_k(\boldsymbol{\mu}_1+\boldsymbol{\Sigma}_{12} \boldsymbol{\Sigma}_{22}^{-1}(\boldsymbol{y}_2-\boldsymbol{\mu}_2), \boldsymbol{\Sigma}_{1|2})
+\\& \sim  \mathsf{Gauss}_k(\boldsymbol{\mu}_1-\boldsymbol{Q}_{11}^{-1}\boldsymbol{Q}_{12}(\boldsymbol{y}_2-\boldsymbol{\mu}_2), \boldsymbol{Q}^{-1}_{11})
 \end{align*} and
 \(\boldsymbol{\Sigma}_{1|2}=\boldsymbol{\Sigma}_{11}-\boldsymbol{\Sigma}_{12}\boldsymbol{\Sigma}_{22}^{-1}\boldsymbol{\Sigma}_{21}\)
 is the Schur complement of \(\boldsymbol{\Sigma}_{22}\).
 
+\end{proposition}
+
+\begin{proof}
 It is easier to obtain this result by expressing the density of the
 Gaussian distribution in terms of the precision matrix
 \(\boldsymbol{Q}= \left(\begin{smallmatrix}\boldsymbol{Q}_{11} & \boldsymbol{Q}_{12}\\
@@ -698,14 +979,15 @@ Gaussian distribution in terms of the precision matrix
 rather than in terms of the covariance matrix \(\boldsymbol{\Sigma}\).
 
 Consider the partition
-\(\boldsymbol{Y}=(\boldsymbol{Y}_1, \boldsymbol{Y}_2)\). The conditional
-density as a function of \(\boldsymbol{y}_1\) is given, up to
-proportionality, by \begin{align*}
-f(\boldsymbol{y}_1 \mid \boldsymbol{y}_2) &\stackrel{\boldsymbol{y}_1}{\propto} \exp \left\{ -\frac{1}{2}\left(\boldsymbol{y}_1-\boldsymbol{\mu}_1\right)^\top 
+\(\boldsymbol{Y}=(\boldsymbol{Y}_1, \boldsymbol{Y}_2)\). The log
+conditional density \(\log f(\boldsymbol{y}_1 \mid \boldsymbol{y}_2)\)
+as a function of \(\boldsymbol{y}_1\) is, up to proportionality,
+\begin{align*}
+ &-\frac{1}{2}\left(\boldsymbol{y}_1-\boldsymbol{\mu}_1\right)^\top
 \boldsymbol{Q}_{11}\left(\boldsymbol{y}_1-\boldsymbol{\mu}_1\right) - \left(\boldsymbol{y}_1-\boldsymbol{\mu}_1\right)^\top 
-\boldsymbol{Q}_{12}\left(\boldsymbol{y}_2-\boldsymbol{\mu}_2\right)\right\}\\
-&\stackrel{\boldsymbol{y}_1}{\propto} \exp\left[-\frac{1}{2}\boldsymbol{y}_1^\top\boldsymbol{Q}_{11}\boldsymbol{y}_1-\boldsymbol{y}_1^\top 
-\left\{\boldsymbol{Q}_{11}\boldsymbol{\mu}_1-\boldsymbol{Q}_{12}\left(\boldsymbol{y}_2-\boldsymbol{\mu}_2\right)\right\} \right]
+\boldsymbol{Q}_{12}\left(\boldsymbol{y}_2-\boldsymbol{\mu}_2\right)\\
+&-\frac{1}{2}\boldsymbol{y}_1^\top\boldsymbol{Q}_{11}\boldsymbol{y}_1-\boldsymbol{y}_1^\top
+\left\{\boldsymbol{Q}_{11}\boldsymbol{\mu}_1-\boldsymbol{Q}_{12}\left(\boldsymbol{y}_2-\boldsymbol{\mu}_2\right)\right\}
 \end{align*} upon completing the square in \(\boldsymbol{y}_1\). This
 integrand is proportional to the density of a Gaussian distribution (and
 hence must be Gaussian) with precision matrix \(\boldsymbol{Q}_{11}\),
@@ -718,7 +1000,7 @@ while the mean vector and covariance matrix are \begin{align*}
 \(\boldsymbol{\Sigma}_{1|2}=\boldsymbol{Q}_{11}^{-1}\) corresponds to
 the Schur complement of \(\boldsymbol{\Sigma}_{22}\).
 
-Remark that the above is sufficient (why?). The quadratic form appearing
+Remark that the above is sufficient (why?) The quadratic form appearing
 in the exponential term of the density of a Gaussian vector with mean
 \(\boldsymbol{\nu}\) and precision \(\boldsymbol{\varPsi}\) is
 \begin{align*}
@@ -731,69 +1013,255 @@ location vector. Since any (conditional) density function integrates to
 one, there is a unique normalizing constant and the latter need not be
 computed.
 
-An alternative derivation of the result is given below. Suppose without
-loss of generality that \(\boldsymbol{\mu}=\boldsymbol{0}_n\). One can
-write the joint density as the product of the marginal and conditional
-densities \begin{align*}
-f_{\boldsymbol{Y}}(\boldsymbol{y}_1, \boldsymbol{y}_2) = f_{\boldsymbol{Y}_1 \mid \boldsymbol{Y}_2}(\boldsymbol{y}_1 \mid \boldsymbol{y}_2)f_{\boldsymbol{Y}_2}(\boldsymbol{y}_2).
-\end{align*} Completing the square in \(\boldsymbol{y}_1\) in the
-exponential gives \begin{align}
-\boldsymbol{y}^\top \boldsymbol{Q}\boldsymbol{y} = (\boldsymbol{y}_1+ \boldsymbol{Q}_{11}^{-1}\boldsymbol{Q}_{12}\boldsymbol{y}_2)^\top\boldsymbol{Q}_{11}(\boldsymbol{y}_1+ 
-\boldsymbol{Q}_{11}^{-1}\boldsymbol{Q}_{12}\boldsymbol{y}_2) + \boldsymbol{y}_2^\top \boldsymbol{\Sigma}_{22}^{-1}\boldsymbol{y}_2 \tag{S1} \label{eq:square}
- \end{align} and we can interpret the first term on the right hand side
-as a function of \(\boldsymbol{y}_1\) given \(\boldsymbol{y}_2\) and the
-second as \(\boldsymbol{y}_2\) alone. By using the transformation matrix
-\(\mathbf{A}=(\mathbf{I}_k, \mathbf{O}_{k, n-k})^\top\), we conclude
-that
-\(\boldsymbol{Y}_2 \sim \mathsf{normal}_{n-k}(\boldsymbol{\mu}_2, \boldsymbol{\Sigma}_{22})\).
-The marginal distribution can also be obtained by integrating out
-\(\boldsymbol{y}_1\) in
-\(f_{\boldsymbol{Y}}(\boldsymbol{y}_1, \boldsymbol{y}_2)\). Thus, the
-conditional density is the ratio \begin{align*}
- \frac{f_{\boldsymbol{Y}}(\boldsymbol{y}_1, \boldsymbol{y}_2)}{f_{\boldsymbol{Y}_2}(\boldsymbol{y}_2)}&= \frac{(2\pi)^{-n/2} |\boldsymbol{Q}|^{1/2}\exp\left\{-\frac{1}{2} 
-\left(\boldsymbol{y}_1^\top\boldsymbol{Q}_{11}\boldsymbol{y}_1+\boldsymbol{y}_1^\top\boldsymbol{Q}_{12}\boldsymbol{y}_2+\boldsymbol{y}_2^\top\boldsymbol{Q}_{21}\boldsymbol{y}_1+\boldsymbol{y}_2^\top\boldsymbol{ \Psi}_{22}\boldsymbol{y}_2\right)\right\}}{(2\pi)^{-(n-k)/2}|\boldsymbol{\Sigma}_{22}|^{-1/2}\exp\left(-\frac{1}{2} \boldsymbol{y}_2 \boldsymbol{\Sigma}^{-1}_{22}\boldsymbol{y}_2\right)}
-\\&=(2\pi)^{-k/2}|\boldsymbol{Q}|^{1/2} \frac{\exp \left\{ -\frac{1}{2}\left(\boldsymbol{y}_1^\top\boldsymbol{Q}_{11}\boldsymbol{y}_1+2\boldsymbol{y}_1^\top\boldsymbol{Q}_{12}\boldsymbol{y}_2 + \boldsymbol{y}_2^\top\boldsymbol{Q}_{21}\boldsymbol{Q}_{11}^{-1}\boldsymbol{Q}_{12}\boldsymbol{y}_2 \right)\right\}}{\exp\left\{-\frac{1}{2} \left(\boldsymbol{y}_2 \boldsymbol{\Sigma}^{-1}_{22}\boldsymbol{y}_2 + \boldsymbol{y}_2^\top\boldsymbol{Q}_{22}\boldsymbol{y}_2-\boldsymbol{y}_2^\top\boldsymbol{Q}_{21}\boldsymbol{Q}_{11}^{-1}\boldsymbol{Q}_{12}\boldsymbol{y}_2\right)\right\}}
-\end{align*} making use of the identity
-\(|\boldsymbol{Q}| = |\boldsymbol{Q}_{11}||\boldsymbol{\Sigma}_{22}|^{-1}.\)
+\end{proof}
 
-\end{proposition}
+\section{Likelihood}\label{likelihood}
 
-\begin{definition}[Student-\(t\)
-distribution]\protect\hypertarget{def-student-dist}{}\label{def-student-dist}
+\begin{definition}[Likelihood]\protect\hypertarget{def-likelihood}{}\label{def-likelihood}
 
-The name ``Student'' comes from the pseudonym used by William Gosset in
-Gosset (\citeproc{ref-Student:1908}{1908}), who introduced the
-asymptotic distribution of the \(t\)-statistic.
+The \textbf{likelihood} \(L(\boldsymbol{\theta})\) is a function of the
+parameter vector \(\boldsymbol{\theta}\) that gives the probability (or
+density) of observing a sample under a postulated distribution, treating
+the observations as fixed, \begin{align*}
+L(\boldsymbol{\theta}; \boldsymbol{y}) = f(\boldsymbol{y}; \boldsymbol{\theta}),
+\end{align*} where \(f(\boldsymbol{y}; \boldsymbol{\theta})\) denotes
+the joint density or mass function of the \(n\)-vector containing the
+observations.
 
-The density of
-\(\boldsymbol{Y} \sim \mathsf{Student}_d(\boldsymbol{\mu}, \boldsymbol{Q}^{-1}, \nu)\),
-with location vector \(\boldsymbol{\mu}\), scale matrix
-\(\boldsymbol{Q}^{-1}\) and \(\nu\) degrees of freedom is \begin{align*}
-f(\boldsymbol{x}) = \frac{\Gamma \left( \frac{\nu+d}{2}\right)|\boldsymbol{Q}|^{1/2}}{\Gamma\left(\frac{\nu}{2}\right)
-(\nu\pi)^{d/2}}\left(1+\frac{1}{\nu} (\boldsymbol{x}-\boldsymbol{\mu})^\top\boldsymbol{Q}(\boldsymbol{x}-\boldsymbol{\mu})\right)^{-\frac{\nu+d}{2}}, \qquad \boldsymbol{x} \in \mathbb{R}^d
-\end{align*} The Student distribution is a location-scale family and an
-elliptical distribution. The distribution has polynomial tails, is
-symmetric around \(\boldsymbol{0}_d\) and unimodal. As
-\(\nu \to \infty\), the Student distribution converges to a normal
-distribution. It has heavier tails than the normal distribution and only
-the first \(\nu-1\) moments of the distribution exist. The case
-\(\nu=1\) is termed Cauchy distribution.
-
-\begin{figure}[ht!]
-
-\centering{
-
-\includegraphics[width=0.5\textwidth,height=\textheight]{introduction_files/figure-pdf/fig-student-density-1.pdf}
-
-}
-
-\caption{\label{fig-student-density}Comparison between the Student-\(t\)
-density for varying degrees of freedom, with \(\nu=2\) (dotted),
-\(\nu=10\) (dashed) and the normal density (\(\nu = \infty).\)}
-
-\end{figure}%
+If the latter are independent, the joint density factorizes as the
+product of the density of individual observations, and the likelihood
+becomes \begin{align*}
+L(\boldsymbol{\theta}; \boldsymbol{y})=\prod_{i=1}^n f_i(y_i; \boldsymbol{\theta}) = f_1(y_1; \boldsymbol{\theta}) \times \cdots \times f_n(y_n; \boldsymbol{\theta}).
+\end{align*} The corresponding log likelihood function for independent
+and identically distributions observations is \begin{align*}
+\ell(\boldsymbol{\theta}; \boldsymbol{y}) = \sum_{i=1}^n \ln f(y_i; \boldsymbol{\theta})
+\end{align*}
 
 \end{definition}
+
+\begin{definition}[Score and information
+matrix]\protect\hypertarget{def-information}{}\label{def-information}
+
+Let \(\ell(\boldsymbol{\theta}),\)
+\(\boldsymbol{\theta} \in \boldsymbol{\Theta} \subseteq \mathbb{R}^p,\)
+be the log likelihood function. The gradient of the log likelihood
+\(U(\boldsymbol{\theta}) = \partial \ell(\boldsymbol{\theta}) / \partial \boldsymbol{\theta}\)
+is termed \textbf{score} function.
+
+The \textbf{observed information matrix} is the hessian of the negative
+log likelihood \begin{align*}
+j(\boldsymbol{\theta}; \boldsymbol{y})=-\frac{\partial^2 \ell(\boldsymbol{\theta}; \boldsymbol{y})}{\partial \boldsymbol{\theta} \partial \boldsymbol{\theta}^\top},
+\end{align*} evaluated at the maximum likelihood estimate
+\(\widehat{\boldsymbol{\theta}},\) so
+\(j(\widehat{\boldsymbol{\theta}}).\) Under regularity conditions, the
+\textbf{expected information}, also called \textbf{Fisher information}
+matrix, is \begin{align*}
+i(\boldsymbol{\theta}) = \mathsf{E}\left\{U(\boldsymbol{\theta}; \boldsymbol{Y}) U(\boldsymbol{\theta}; \boldsymbol{Y})^\top\right\} = \mathsf{E}\left\{j(\boldsymbol{\theta}; \boldsymbol{Y})\right\}
+\end{align*} Both the Fisher (or expected) and the observed information
+matrices are symmetric and encode the curvature of the log likelihood
+and provide information about the variability of
+\(\widehat{\boldsymbol{\theta}}.\)
+
+The information of an independent and identically distributed sample of
+size \(n\) is \(n\) times that of a single observation, so information
+accumulates at a linear rate.
+
+\end{definition}
+
+\begin{example}[Likelihood for
+right-censoring]\protect\hypertarget{exm-likelihood-survival}{}\label{exm-likelihood-survival}
+
+Consider a survival analysis problem for independent time-to-event data
+subject to (noninformative) random right-censoring. We assume failure
+times \(Y_i (i=1, \ldots, n)\) are drawn from a common distribution
+\(F(\cdot; \boldsymbol{\theta})\) supported on \((0, \infty)\) and
+complemented with an independent censoring indicator
+\(C_i \in \{0,1\}\), with \(0\) indicating right-censoring and \(C_i=1\)
+observed failure time. If individual observation \(i\) has not
+experienced the event at the end of the collection period, then the
+likelihood contribution \(\Pr(Y > y) = 1-F(y; \boldsymbol{\theta})\),
+where \(y_i\) is the maximum time observed for \(Y_i\).
+
+We write the log likelihood in terms of the right-censoring binary
+indicator as \begin{align*}
+\ell(\boldsymbol{\theta}) = \sum_{i: c_i=0} \log \{1- F(y_i; \boldsymbol{\theta})\} + \sum_{i: c_i=1} \log f(y_i; \boldsymbol{\theta})
+\end{align*}
+
+Suppose for simplicity that \(Y_i \sim \mathsf{expo}(\lambda)\) and let
+\(m=c_1 + \cdots + c_n\) denote the number of observed failure times.
+Then, the log likelihood and the Fisher information are \begin{align*}
+\ell(\lambda) &= \lambda \sum_{i=1}^n y_i + \log \lambda m\\
+i(\lambda) &= m/\lambda^2
+\end{align*} and the right-censored observations for the exponential
+model do not contribute to the information.
+
+\end{example}
+
+\begin{example}[Information for the Gaussian
+distribution]\protect\hypertarget{exm-gauss}{}\label{exm-gauss}
+
+Consider \(Y \sim \mathsf{Gauss}(\mu, \tau^{-1})\), parametrized in
+terms of precision \(\tau\). The likelihood contribution for an \(n\)
+sample is, up to proportionality, \begin{align*}
+\ell(\mu, \tau) \propto \frac{n}{2}\log(\tau) - \frac{\tau}{2}\sum_{i=1}^n(Y_i^2-2\mu Y_i+\mu^2)
+\end{align*}
+
+The observed and Fisher information matrices are is \begin{align*}
+j(\mu, \tau) &= \begin{pmatrix}
+n\tau & -\sum_{i=1}^n (Y_i-\mu)\\
+-\sum_{i=1}^n (Y_i-\mu) & \frac{n}{2\tau^2}
+\end{pmatrix}, \\
+i(\mu, \tau) &= n\begin{pmatrix}
+\tau & 0\\
+0 & \frac{1}{2\tau^2}
+\end{pmatrix}
+\end{align*} Since \(\mathsf{E}(Y_i) = \mu\), the expected value of the
+off-diagonal entries of the Fisher information matrix are zero.
+
+\end{example}
+
+\begin{example}[Likelihood, score and information of the Weibull
+distribution]\protect\hypertarget{exm-weibull-info}{}\label{exm-weibull-info}
+
+The log likelihood for a simple random sample whose realizations are
+\(y_1, \ldots, y_n\) of size \(n\) from a
+\(\mathsf{Weibull}(\lambda, \alpha)\) model is \begin{align*}
+\ell(\lambda, \alpha) = n \ln(\alpha) - n\alpha\ln(\lambda) + (\alpha-1) \sum_{i=1}^n \ln y_i  - \lambda^{-\alpha}\sum_{i=1}^n y_i^\alpha.
+\end{align*}
+
+The score, which is the gradient of the log likelihood, is easily
+obtained by differentiation\footnote{Using for example a symbolic
+  calculator.} \begin{align*}
+U(\lambda, \alpha) &= \begin{pmatrix}\frac{\partial \ell(\lambda, \alpha)}{\partial \lambda} \\
+\frac{\partial \ell(\lambda, \alpha)}{\partial \alpha} \end{pmatrix} \\&=
+\begin{pmatrix}
+ -\frac{n\alpha}{\lambda} +\alpha\lambda^{-\alpha-1}\sum_{i=1}^n y_i^\alpha
+ \\
+ \frac{n}{\alpha} + \sum_{i=1}^n \ln (y_i/\lambda)  - \sum_{i=1}^n \left(\frac{y_i}{\lambda}\right)^{\alpha} \times\ln\left(\frac{y_i}{\lambda}\right).
+ \end{pmatrix}
+\end{align*} and the observed information is the \(2 \times 2\)
+matrix-valued function \begin{align*}
+j(\lambda, \alpha) &= - \begin{pmatrix}
+\frac{\partial^2 \ell(\lambda, \alpha)}{\partial \lambda^2} &  \frac{\partial^2 \ell(\lambda, \alpha)}{\partial \lambda \partial \alpha} \\ \frac{\partial^2 \ell(\lambda, \alpha)}{\partial \alpha \partial \lambda} & \frac{\partial^2 \ell(\lambda, \alpha)}{\partial \alpha^2}
+\end{pmatrix}  = \begin{pmatrix} j_{\lambda, \lambda} & j_{\lambda, \alpha} \\ j_{\lambda, \alpha} & j_{\alpha, \alpha} \end{pmatrix}
+\end{align*} whose entries are \begin{align*}
+j_{\lambda, \lambda} &= \lambda^{-2}\left\{-n\alpha + \alpha(\alpha+1)\sum_{i=1}^n (y_i/\lambda)^\alpha\right\} \\
+j_{\lambda, \alpha} &= \lambda^{-1}\sum_{i=1}^n [1-(y_i/\lambda)^\alpha\{1+\alpha\ln(y_i/\lambda)\}] \\
+j_{\alpha,\alpha} &= n\alpha^{-2} + \sum_{i=1}^n (y_i/\lambda)^\alpha \{\ln(y_i/\lambda)\}^2
+\end{align*} To compute the expected information matrix, we need to
+compute expectation of \(\mathsf{E}\{(Y/\lambda)^\alpha\}\),
+\(\mathsf{E}[(Y/\lambda)^\alpha\ln\{(Y/\lambda)^\alpha\}]\) and
+\(\mathsf{E}[(Y/\lambda)^\alpha\ln^2\{(Y/\lambda)^\alpha\}]\). By
+definition, \begin{align*}
+\mathsf{E}\left\{(Y/\lambda)^\alpha\right\} & = \int_0^\infty (x/\lambda)^\alpha \frac{\alpha}{\lambda^\alpha} x^{\alpha-1}\exp\left\{-(x/\lambda)^\alpha\right\} \mathrm{d} x \\
+ &= \int_0^\infty s\exp(-s) \mathrm{d} s =1
+\end{align*} making a change of variable
+\(S = (Y/\lambda)^\alpha\sim \mathsf{Exp}(1)\). The two other integrals
+are tabulated in Gradshteyn and Ryzhik
+(\citeproc{ref-Gradshteyn.Ryzhik:2014}{2014}), and are equal to
+\(1-\gamma\) and \(\gamma^2-2\gamma + \pi^2/6\), respectively, where
+\(\gamma \approx 0.577\) is the Euler--Mascherroni constant. The
+expected information matrix of the Weibull distribution has entries
+\begin{align*}
+i_{\lambda, \lambda} & = n \lambda^{-2}\alpha\left\{ (\alpha+1)-1\right\} \\
+i_{\lambda, \alpha} & = -n\lambda^{-1} (1-\gamma) \\
+i_{\alpha, \alpha} & = n\alpha^{-2}(1 + \gamma^2-2\gamma+\pi^2/6)
+\end{align*}
+
+We can check this result numerically by comparing the expected value of
+the observed information matrix
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{exp\_info\_weib }\OtherTok{\textless{}{-}} \ControlFlowTok{function}\NormalTok{(scale, shape)\{}
+\NormalTok{  i11 }\OtherTok{\textless{}{-}}\NormalTok{ shape}\SpecialCharTok{*}\NormalTok{((shape }\SpecialCharTok{+} \DecValTok{1}\NormalTok{) }\SpecialCharTok{{-}} \DecValTok{1}\NormalTok{)}\SpecialCharTok{/}\NormalTok{(scale}\SpecialCharTok{\^{}}\DecValTok{2}\NormalTok{)}
+\NormalTok{  i12 }\OtherTok{\textless{}{-}} \SpecialCharTok{{-}}\NormalTok{(}\DecValTok{1}\SpecialCharTok{+}\FunctionTok{digamma}\NormalTok{(}\DecValTok{1}\NormalTok{))}\SpecialCharTok{/}\NormalTok{scale}
+\NormalTok{  i22 }\OtherTok{\textless{}{-}}\NormalTok{ (}\DecValTok{1}\SpecialCharTok{+}\FunctionTok{digamma}\NormalTok{(}\DecValTok{1}\NormalTok{)}\SpecialCharTok{\^{}}\DecValTok{2}\SpecialCharTok{+}\DecValTok{2}\SpecialCharTok{*}\FunctionTok{digamma}\NormalTok{(}\DecValTok{1}\NormalTok{)}\SpecialCharTok{+}\NormalTok{pi}\SpecialCharTok{\^{}}\DecValTok{2}\SpecialCharTok{/}\DecValTok{6}\NormalTok{)}\SpecialCharTok{/}\NormalTok{(shape}\SpecialCharTok{\^{}}\DecValTok{2}\NormalTok{)}
+  \FunctionTok{matrix}\NormalTok{(}\FunctionTok{c}\NormalTok{(i11, i12, i12, i22), }\AttributeTok{nrow =} \DecValTok{2}\NormalTok{, }\AttributeTok{ncol =} \DecValTok{2}\NormalTok{)}
+\NormalTok{\}}
+\NormalTok{obs\_info\_weib }\OtherTok{\textless{}{-}} \ControlFlowTok{function}\NormalTok{(y, scale, shape)\{}
+\NormalTok{  ys }\OtherTok{\textless{}{-}}\NormalTok{ y}\SpecialCharTok{/}\NormalTok{scale }\CommentTok{\# scale family}
+\NormalTok{  o11 }\OtherTok{\textless{}{-}}\NormalTok{ shape}\SpecialCharTok{*}\NormalTok{((shape }\SpecialCharTok{+} \DecValTok{1}\NormalTok{)}\SpecialCharTok{*}\FunctionTok{mean}\NormalTok{(ys}\SpecialCharTok{\^{}}\NormalTok{shape)}\SpecialCharTok{{-}}\DecValTok{1}\NormalTok{)}\SpecialCharTok{/}\NormalTok{scale}\SpecialCharTok{\^{}}\DecValTok{2}
+\NormalTok{  o12 }\OtherTok{\textless{}{-}}\NormalTok{ (}\DecValTok{1}\SpecialCharTok{{-}}\FunctionTok{mean}\NormalTok{(ys}\SpecialCharTok{\^{}}\NormalTok{shape}\SpecialCharTok{*}\NormalTok{(}\DecValTok{1}\SpecialCharTok{+}\NormalTok{shape}\SpecialCharTok{*}\FunctionTok{log}\NormalTok{(ys))))}\SpecialCharTok{/}\NormalTok{scale}
+\NormalTok{  o22 }\OtherTok{\textless{}{-}} \DecValTok{1}\SpecialCharTok{/}\NormalTok{(shape}\SpecialCharTok{*}\NormalTok{shape) }\SpecialCharTok{+} \FunctionTok{mean}\NormalTok{(ys}\SpecialCharTok{\^{}}\NormalTok{shape}\SpecialCharTok{*}\NormalTok{(}\FunctionTok{log}\NormalTok{(ys))}\SpecialCharTok{\^{}}\DecValTok{2}\NormalTok{)}
+  \FunctionTok{matrix}\NormalTok{(}\FunctionTok{c}\NormalTok{(o11, o12, o12, o22), }\AttributeTok{nrow =} \DecValTok{2}\NormalTok{, }\AttributeTok{ncol =} \DecValTok{2}\NormalTok{)}
+\NormalTok{\}}
+\NormalTok{nll\_weib }\OtherTok{\textless{}{-}} \ControlFlowTok{function}\NormalTok{(pars, y)\{}
+  \SpecialCharTok{{-}}\FunctionTok{sum}\NormalTok{(}\FunctionTok{dweibull}\NormalTok{(}\AttributeTok{x =}\NormalTok{ y, }\AttributeTok{scale =}\NormalTok{ pars[}\DecValTok{1}\NormalTok{], }\AttributeTok{shape =}\NormalTok{ pars[}\DecValTok{2}\NormalTok{], }\AttributeTok{log =} \ConstantTok{TRUE}\NormalTok{))\}}
+\CommentTok{\# Fix parameters}
+\NormalTok{scale }\OtherTok{\textless{}{-}} \FunctionTok{rexp}\NormalTok{(}\AttributeTok{n =} \DecValTok{1}\NormalTok{, }\AttributeTok{rate =} \FloatTok{0.5}\NormalTok{)}
+\NormalTok{shape }\OtherTok{\textless{}{-}} \FunctionTok{rexp}\NormalTok{(}\AttributeTok{n =} \DecValTok{1}\NormalTok{)}
+\NormalTok{nobs }\OtherTok{\textless{}{-}} \DecValTok{1000}\NormalTok{L}
+\NormalTok{dat }\OtherTok{\textless{}{-}} \FunctionTok{rweibull}\NormalTok{(}\AttributeTok{n =}\NormalTok{ nobs, }\AttributeTok{scale =}\NormalTok{ scale, }\AttributeTok{shape =}\NormalTok{ shape)}
+\CommentTok{\# Compare Hessian with numerical differentiation}
+\NormalTok{o\_info }\OtherTok{\textless{}{-}} \FunctionTok{obs\_info\_weib}\NormalTok{(dat, }\AttributeTok{scale =}\NormalTok{ scale, }\AttributeTok{shape =}\NormalTok{ shape)}
+\FunctionTok{all.equal}\NormalTok{(}
+\NormalTok{  numDeriv}\SpecialCharTok{::}\FunctionTok{hessian}\NormalTok{(nll\_weib, }\AttributeTok{x =} \FunctionTok{c}\NormalTok{(scale, shape), }\AttributeTok{y =}\NormalTok{ dat) }\SpecialCharTok{/}\NormalTok{ nobs,}
+\NormalTok{  o\_info)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+[1] TRUE
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Compute approximation to Fisher information}
+\NormalTok{exp\_info\_sim }\OtherTok{\textless{}{-}} \FunctionTok{replicate}\NormalTok{(}\AttributeTok{n =} \DecValTok{1000}\NormalTok{, }\AttributeTok{expr =}\NormalTok{ \{}
+  \FunctionTok{obs\_info\_weib}\NormalTok{(}\AttributeTok{y =} \FunctionTok{rweibull}\NormalTok{(}\AttributeTok{n =}\NormalTok{ nobs,}
+                        \AttributeTok{shape =}\NormalTok{ shape,}
+                        \AttributeTok{scale =}\NormalTok{ scale),}
+           \AttributeTok{scale =}\NormalTok{ scale, }\AttributeTok{shape =}\NormalTok{ shape)\})}
+\FunctionTok{all.equal}\NormalTok{(}\FunctionTok{apply}\NormalTok{(exp\_info\_sim, }\DecValTok{1}\SpecialCharTok{:}\DecValTok{2}\NormalTok{, mean),}
+          \FunctionTok{exp\_info\_weib}\NormalTok{(scale, shape))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+[1] "Mean relative difference: 0.002375594"
+\end{verbatim}
+
+\end{example}
+
+The joint density function only factorizes for independent data, but an
+alternative sequential decomposition can be helpful. For example, we can
+write the joint density \(f(y_1, \ldots, y_n)\) using the factorization
+\begin{align*}
+f(\boldsymbol{y}) = f(y_1) \times f(y_2 \mid y_1) \times \ldots f(y_n \mid y_1, \ldots, y_n)
+\end{align*} in terms of conditional. Such a decomposition is
+particularly useful in the context of time series, where data are
+ordered from time \(1\) until time \(n\) and models typically relate
+observation \(y_n\) to it's past.
+
+\begin{example}[First-order autoregressive
+process]\protect\hypertarget{exm-autoregressive-one}{}\label{exm-autoregressive-one}
+
+Consider a Gaussian \(\mathsf{AR}(1)\) model of the form
+\[Y_t = \mu + \phi(Y_{t-1} - \mu) + \varepsilon_t,\] where \(\phi\) is
+the lag-one correlation, \(\mu\) the global mean and \(\varepsilon_t\)
+is an iid innovation with mean zero and variance \(\sigma^2\). If
+\(|\phi| < 1\), the process is stationary, and the variance does not
+increase with \(t\).
+
+The Markov property states that the current realization depends on the
+past, \(Y_t \mid Y_1, \ldots, Y_{t-1},\) only through the most recent
+value \(Y_{t-1}.\) The log likelihood thus becomes \begin{align*}
+\ell(\boldsymbol{\theta}) = \ln f(y_1) + \sum_{i=2}^n f(y_i \mid y_{i-1}).
+\end{align*}
+
+If innovations are Gaussian, we have
+\[Y_t \mid Y_{t-1}=y_{t-1} \sim \mathsf{Gauss}\{\mu(1-\phi)+ \phi y_{t-1}, \sigma^2\}, \qquad t>1.\]
+
+The \(\mathsf{AR}(1)\) stationarity process \(Y_t\), marginally, has
+mean \(\mu\) and unconditional variance \(\sigma^2/(1-\phi^2)\). The
+\(\mathsf{AR}(1)\) process is first-order Markov since the conditional
+distribution \(p(Y_t \mid Y_{t-1}, \ldots, Y_{t-p})\) equals
+\(p(Y_t \mid Y_{t-1})\). This means the likelihood is \begin{align*}
+\ell(\mu, \phi,\sigma^2)& = -\frac{n}{2}\log(2\pi) - n\log \sigma + \frac{1}{2}\log(1-\phi^2) \\&\quad -\frac{(1-\phi^2)(y_1- \mu)^2}{2\sigma^2} - \sum_{i=2}^n \frac{(y_t - \mu(1-\phi)- \phi y_{t-1})^2}{2\sigma^2}
+\end{align*}
+
+\end{example}
 
 \section{Monte Carlo methods}\label{monte-carlo-methods}
 
@@ -851,7 +1319,7 @@ testimonial of this.
 
 \centering{
 
-\includegraphics{introduction_files/figure-pdf/fig-monte-carlo-path-1.pdf}
+\pandocbounded{\includegraphics[keepaspectratio]{introduction_files/figure-pdf/fig-monte-carlo-path-1.pdf}}
 
 }
 
@@ -908,7 +1376,7 @@ proposal with density \(q(\cdot)\) with nested support,
 
 \centering{
 
-\includegraphics{introduction_files/figure-pdf/fig-acceptreject-1.pdf}
+\pandocbounded{\includegraphics[keepaspectratio]{introduction_files/figure-pdf/fig-acceptreject-1.pdf}}
 
 }
 
@@ -936,7 +1404,7 @@ analytically.
 distribution]\protect\hypertarget{exm-accept-reject-truncated}{}\label{exm-accept-reject-truncated}
 
 Consider the problem of sampling from a Gaussian distribution
-\(Y \sim \mathsf{Norm}(\mu, \sigma^2)\) truncated in the interval
+\(Y \sim \mathsf{Gauss}(\mu, \sigma^2)\) truncated in the interval
 \([a, b],\) which has density \begin{align*}
 f(x; \mu, \sigma, a, b) = \frac{1}{\sigma}\frac{\phi\left(\frac{x-\mu}{\sigma}\right)}{\Phi\{(b-\mu)/\sigma\}-\Phi\{(a-\mu)/\sigma\}}.
 \end{align*} where \(\phi(\cdot), \Phi(\cdot)\) are respectively the
@@ -1041,276 +1509,6 @@ target, we can resort to numerical methods to compute the mode of the
 ratio \(f/g\) and obtain the bound \(C\); see Albert
 (\citeproc{ref-Albert:2009}{2009}), Section 5.8 for an insightful
 example.
-
-\section{Markov chains}\label{markov-chains}
-
-Before going forward with algorithms for sampling, we introduce some
-terminology that should be familiar to people with a background in time
-series analysis.
-
-\begin{definition}[Stationarity and Markov
-property]\protect\hypertarget{def-weak-stationarity}{}\label{def-weak-stationarity}
-
-A stochastic (i.e., random) process is (weakly) stationary if the
-distribution of \(\{X_1, \ldots, X_t\}\) is the same as that of
-\(\{X_{n+1}, \ldots X_{t+n}\}\) for any value of \(n\) and given \(t\).
-
-It is Markov if it satisfies the Markov property: given the current
-state of the chain, the future only depends on the current state and not
-on the past.
-
-\end{definition}
-
-\begin{example}[]\protect\hypertarget{exm-autoregressive-one}{}\label{exm-autoregressive-one}
-
-Consider a first-order autoregressive process, or \(\mathsf{AR}(1)\), of
-the form
-
-\[Y_t = \mu + \phi(Y_{t-1} - \mu) + \varepsilon_t,\] where \(\phi\) is
-the lag-one correlation, \(\mu\) the global mean and \(\varepsilon_t\)
-is an iid innovation with mean zer o and variance \(\sigma^2\). If
-\(|\phi| < 1\), the process is stationary, and the variance does not
-increase with \(t\). If innovations are Gaussian, we have
-\[Y_t \mid Y_{t-1}=y_{t-1} \sim \mathsf{Norm}\{\mu(1-\phi)+ \phi y_{t-1}, \sigma^2\}.\]
-
-The \(\mathsf{AR}(1)\) stationarity process \(Y_t\), marginally, has
-mean \(\mu\) and unconditional variance \(\sigma^2/(1-\phi^2)\). The
-\(\mathsf{AR}(1)\) process is first-order Markov since the conditional
-distribution \(p(Y_t \mid Y_{t-1}, \ldots, Y_{t-p})\) equals
-\(p(Y_t \mid Y_{t-1})\).
-
-\end{example}
-
-Autoregressive processes are not the only ones we can consider, although
-their simplicity lends itself to analytic calculations. More generally,
-for a correlated sequence, the variance of the stationary distribution
-is \begin{align*}
-\mathsf{Va}(Y_t) + 2 \sum_{k=1}^\infty \mathsf{Co}(Y_t, Y_{t-k})
-\end{align*}
-
-\begin{proposition}[Effective sample
-size]\protect\hypertarget{prp-variance-clt}{}\label{prp-variance-clt}
-
-Intuitively, a sample of correlated observations carries less
-information than an independent sample of draws. If we want to compute
-sample averages \(\overline{Y}_T=(Y_1+ \cdots + Y_T)/T\), the variance
-will be \begin{align*}
-\mathsf{Va}\left(\overline{Y}_T\right) = \frac{1}{T}\sum_{t=1}^T \mathsf{Va}(Y_t) + \frac{2}{T} \sum_{t=1}^{T-1}\sum_{s = t+1}^T \mathsf{Co}(Y_t, Y_s).
-\end{align*}
-
-In the independent case, the covariance is zero so we get the sum of
-variances. If the process is stationary, the covariances at lag \(k\)
-are the same regardless of the time index and the variance is some
-constant, say \(\sigma^2\); this allows us to simplify calculations,
-\begin{align*}
-\mathsf{Va}(\overline{Y}_T) = \sigma^2 \left\{ 1 + \frac{2}{T}\sum_{t=1}^{T-1} (T-t) \mathsf{Cor}(Y_{T-k}, Y_{T})\right\}.
-\end{align*} Denote the lag-\(k\) autocorrelation
-\(\mathsf{Cor}(Y_{t}, Y_{t+k})\) by \(\gamma_k\). Under technical
-conditions\footnote{Geometric ergodicity and existence of moments, among
-  other things.}, a central limit theorem applies and we get an
-asymptotic variance for the mean of \begin{align*}
-\lim_{T \to \infty} T\mathsf{Va}\left(\overline{Y}_T\right) = \sigma^2 \left\{1+2\sum_{t=1}^\infty \gamma_t\right\}.
-\end{align*} This statement holds only if we start with draws from the
-stationary distribution, otherwise bets are off.
-
-We need the \textbf{effective sample size} of our Monte Carlo averages
-based on a Markov chain of length \(B\) to be sufficient for the
-estimates to be meaningful. The effective sample size is, loosely
-speaking, the equivalent number of observations if the marginal
-posterior draws where independent and more formally
-\begin{equation}\phantomsection\label{eq-effective-sample-size}{
-\mathsf{ESS} = \frac{B}{\left\{1+2\sum_{t=1}^\infty \gamma_t\right\}}
-}\end{equation} where \(\gamma_t\) is the lag \(t\) correlation. The
-relative effective sample size is simply the fraction of the effective
-sample size over the Monte Carlo number of replications: small values of
-\(\mathsf{ESS}/B\) indicate pathological or inefficient samplers. If the
-ratio is larger than one, it indicates the sample is superefficient (as
-it generates negatively correlated draws).
-
-In practice, we replace the unknown autocorrelations by sample estimates
-and truncate the series in Equation~\ref{eq-effective-sample-size} at
-the point where they become negligible --- typically when the
-consecutive sum of two consecutive becomes negative; see Section 1.4 of
-the
-\href{https://mc-stan.org/docs/reference-manual/effective-sample-size.html}{Stan
-manual} or Section 1.10.2 of Geyer (\citeproc{ref-Geyer:2011}{2011}) for
-details.
-
-\end{proposition}
-
-\begin{example}[]\protect\hypertarget{exm-ar1-clt-variance}{}\label{exm-ar1-clt-variance}
-
-The lag-\(k\) correlation of the stationary autoregressive process of
-order 1 is \(\phi^k\), so summing the series gives an asymptotic
-variance of \(\sigma^2(1+\phi)/(1-\phi)\). We can constrast that to the
-variance of the stationary distribution for an independent sample, which
-is \(\sigma^2/(1-\phi^2)\). The price to pay for having correlated
-samples is inefficiency: the higher the autocorrelation, the larger the
-variability of our mean estimators.
-
-\begin{figure}[ht!]
-
-\centering{
-
-\includegraphics{introduction_files/figure-pdf/fig-ar1-variance-1.pdf}
-
-}
-
-\caption{\label{fig-ar1-variance}Scaled asymptotic variance of the
-sample mean for a stationary autoregressive first-order process with
-unit variance (full line) and a corresponding sample of independent
-observations with the same marginal variance (dashed line). The right
-panel gives the ratio of variances for positive correlation
-coefficients.}
-
-\end{figure}%
-
-We can see from Figure~\ref{fig-ar1-variance} that, when the
-autocorrelation is positive (as will be the cause in all applications of
-interest), we will suffer from variance inflation. To get the same
-uncertainty estimates for the mean with an \(\mathsf{AR}(1)\) process
-with \(\phi \approx 0.75\) than with an iid sample, we would need nine
-times as many observations: this is the prize to pay.
-
-\end{example}
-
-\subsection{Estimating uncertainty of point estimators with Markov
-chains}\label{estimating-uncertainty-of-point-estimators-with-markov-chains}
-
-With a simple random sample containing independent and identically
-distributed observations, the standard error of the sample mean is
-\(\sigma/\sqrt{n}\) and we can use the empirical standard deviation
-\(\widehat{\sigma}\) to estimate the first term. For Markov chains, the
-correlation prevents us from using this approach. The output of
-the\texttt{coda} package are based on fitting a high order
-autoregressive process to the Markov chain and using the formula of the
-unconditional variance of the \(\mathsf{AR}(p)\) to obtain the central
-limit theorem variance. An alternative method recommended by Geyer
-(\citeproc{ref-Geyer:2011}{2011}) and implemented in his \textbf{R}
-package \texttt{mcmc}, is to segment the time series into batch, compute
-the means of each non-overlapping segment and use this standard
-deviation with suitable rescaling to get the central limit variance for
-the posterior mean. Figure~\ref{fig-mcmc-batchmean} illustrate the
-method of batch means.
-
-\begin{enumerate}
-\def\labelenumi{\arabic{enumi}.}
-\tightlist
-\item
-  Break the chain of length \(B\) (after burn in) in \(K\) blocks of
-  size \(\approx K/B\).
-\item
-  Compute the sample mean of each segment. These values form a Markov
-  chain and should be approximately uncorrelated.
-\item
-  Compute the standard deviation of the segments mean. Rescale by
-  \(K^{-1/2}\) to get standard error of the global mean.
-\end{enumerate}
-
-Why does the approach work? If the chain samples from the stationary
-distribution, all samples have the same mean. If we partition the sample
-into long enough, the sample mean of each blocks should be roughly
-independent (otherwise we could remove an overlapping portion). We can
-then compute the empirical standard deviation of the estimators. We can
-then compute the overall mean and use a scaling argument to relate the
-variability of the global estimator with the variability of the means of
-the smaller blocks.
-
-\begin{figure}[ht!]
-
-\centering{
-
-\includegraphics{introduction_files/figure-pdf/fig-mcmc-batchmean-1.pdf}
-
-}
-
-\caption{\label{fig-mcmc-batchmean}Calculation of the standard error of
-the posterior mean using the batch method.}
-
-\end{figure}%
-
-When can we use output from a Markov chain in place of independent Monte
-Carlo draws? The assumptions laid out in the ergodic theorem are that
-the chain is irreducible and acyclic, ensuring that the chain has a
-unique stationary distribution. The ergodic theorem is a result about
-convergence of averages.
-
-To make sense of these concepts, we consider a discrete Markov chain
-over the integers \(1, 2, 3\). A discrete-time stochastic process is a
-random sequences whose elements are part of some set, the state space,
-here the integers. We can encode the probability of moving from one
-state to the next via a transition matrix, whose rows contain the
-probabilities of moving from one state to the next and thus sum to one.
-We can run a Markov chain by sampling an initial state \(X_0\) at random
-from \(\{1, \ldots, 5\}\) and then consider the transitions from the
-conditional distribution, sampling \(p(X_t \mid X_{t-1})\). Because of
-the Markov property, the history of the chain does not matter: we only
-need to read the value \(i=X_{t-1}\) of the state and pick the \(i\)th
-row of \(P_3\) to know the probability of the different moves from the
-current state.
-
-Irreducible means that the chain can move from anywhere to anywhere, so
-it doesn't get stuck in part of the space forever. A transition matrix
-such as \(P_1\) below describes a reducible Markov chain, because once
-you get into state \(2\) or \(3\), you won't escape. With reducible
-chains, the stationary distribution need not be unique, and so the
-target would depend on the starting values.
-
-Cyclical chains loop around and visit periodically a state: \(P_2\) is
-an instance of transition matrix describing a chain that cycles from
-\(1\) to \(3\), \(3\) to \(2\) and \(2\) to \(1\) every three iteration.
-An acyclic chain is needed for convergence of marginals.
-
-\[
-P_1 = \begin{pmatrix}
-0.5 & 0.3 & 0.2 \\
-0 & 0.4 & 0.6 \\
-0 & 0.5 & 0.5
-\end{pmatrix}, 
-\qquad 
-P_2 = \begin{pmatrix}
-0 & 0 & 1 \\
-1 & 0 & 0 \\
-0 & 1 & 0
-\end{pmatrix}.
-\]
-
-If a chain is irreducible and aperiodic, it has a unique stationary
-distribution and the limiting distribution of the Markov chain will
-converge there. For example, we consider a transition \(P_3\) on
-\(1, \ldots, 5\) defined as \[
-P_3 = \begin{pmatrix}
-\frac{2}{3} & \frac{1}{3} &  0 & 0 & 0 \\
-\frac{1}{6} & \frac{2}{3} & \frac{1}{6} & 0 & 0 \\
-0 & \frac{1}{6} & \frac{2}{3} & \frac{1}{6} & 0 \\
-0 & 0 & \frac{1}{6} & \frac{2}{3} & \frac{1}{6} \\
-0 & 0 & 0 &  \frac{1}{3}  & \frac{2}{3} \\
-\end{pmatrix}
-\] The stationary distribution is the value of the row vector
-\(\boldsymbol{p}\), such that
-\(\boldsymbol{p} = \boldsymbol{p}\mathbf{P}\) for transition matrix
-\(\mathbf{P}\): we get \(\boldsymbol{p}_1=(0, 5/11, 6/11)\) for \(P_1\),
-\((1/3, 1/3, 1/3)\) for \(P_2\) and \((1,2,2,2,1)/8\) for \(P_3\).
-
-Figure~\ref{fig-discrete-markov-chain} shows the path of the walk and
-the empirical proportion of the time spent in each state, as time
-progress. Since the Markov chain has a unique stationary distribution,
-we expect these to converge to it.
-
-\begin{figure}[ht!]
-
-\centering{
-
-\includegraphics{introduction_files/figure-pdf/fig-discrete-markov-chain-1.pdf}
-
-}
-
-\caption{\label{fig-discrete-markov-chain}Discrete Markov chain on
-integers from 1 to 5, with transition matrix \(P_3\), with traceplot of
-1000 first iterations (left) and running mean plots of sample proportion
-of each state visited per 100 iterations (right).}
-
-\end{figure}%
 
 \bookmarksetup{startatroot}
 
@@ -1501,7 +1699,7 @@ avoided, unless there are compelling reasons for restricting the domain.
 
 \centering{
 
-\includegraphics{bayesics_files/figure-pdf/fig-betabinom-1.pdf}
+\pandocbounded{\includegraphics[keepaspectratio]{bayesics_files/figure-pdf/fig-betabinom-1.pdf}}
 
 }
 
@@ -1547,7 +1745,7 @@ Figure~\ref{fig-binom-massvslik}
 
 \centering{
 
-\includegraphics{bayesics_files/figure-pdf/fig-binom-massvslik-1.pdf}
+\pandocbounded{\includegraphics[keepaspectratio]{bayesics_files/figure-pdf/fig-binom-massvslik-1.pdf}}
 
 }
 
@@ -1590,7 +1788,7 @@ posterior mode moves towards the true value of the parameter (here 0.3).
 
 \centering{
 
-\includegraphics{bayesics_files/figure-pdf/fig-sequential-1.pdf}
+\pandocbounded{\includegraphics[keepaspectratio]{bayesics_files/figure-pdf/fig-sequential-1.pdf}}
 
 }
 
@@ -1707,7 +1905,7 @@ binomial mass function evaluated at the maximum likelihood estimator
 
 \centering{
 
-\includegraphics{bayesics_files/figure-pdf/fig-betabinompostpred-1.pdf}
+\pandocbounded{\includegraphics[keepaspectratio]{bayesics_files/figure-pdf/fig-betabinompostpred-1.pdf}}
 
 }
 
@@ -1722,9 +1920,9 @@ with known
 mean]\protect\hypertarget{exm-normal-post-pred}{}\label{exm-normal-post-pred}
 
 Consider an \(n\) sample of independent and identically distributed
-Gaussian, \(Y_i \sim \mathsf{Norm}(0, \tau^{-1})\) (\(i=1, \ldots, n\)),
-where we assign a gamma prior on the precision
-\(\tau \sim \mathsf{Ga}(\alpha, \beta)\). The posterior is
+Gaussian, \(Y_i \sim \mathsf{Gauss}(0, \tau^{-1})\)
+(\(i=1, \ldots, n\)), where we assign a gamma prior on the precision
+\(\tau \sim \mathsf{gamma}(\alpha, \beta)\). The posterior is
 \begin{align*}
 p(\tau \mid \boldsymbol{y}) \stackrel{\tau}{\propto} \prod_{i=1}^n \tau^{n/2}\exp\left(-\tau \frac{\sum_{i=1}^n{y_i^2}}{2}\right) \times \tau^{\alpha-1} \exp(-\beta \tau)
 \end{align*} and rearranging the terms to collect powers of \(\tau\),
@@ -1836,7 +2034,7 @@ draws.
 
 \centering{
 
-\includegraphics{bayesics_files/figure-pdf/fig-central-moments-1.pdf}
+\pandocbounded{\includegraphics[keepaspectratio]{bayesics_files/figure-pdf/fig-central-moments-1.pdf}}
 
 }
 
@@ -1888,7 +2086,7 @@ is adequate for all but the three largest observations, which are
 
 \centering{
 
-\includegraphics{bayesics_files/figure-pdf/fig-danish-1.pdf}
+\pandocbounded{\includegraphics[keepaspectratio]{bayesics_files/figure-pdf/fig-danish-1.pdf}}
 
 }
 
@@ -1992,7 +2190,7 @@ variance.
 
 \centering{
 
-\includegraphics{bayesics_files/figure-pdf/fig-danish-rou-1.pdf}
+\pandocbounded{\includegraphics[keepaspectratio]{bayesics_files/figure-pdf/fig-danish-rou-1.pdf}}
 
 }
 
@@ -2076,7 +2274,7 @@ Figure~\ref{fig-lossfn}, is to the left of the posterior mean for
 
 \centering{
 
-\includegraphics{bayesics_files/figure-pdf/fig-lossfn-1.pdf}
+\pandocbounded{\includegraphics[keepaspectratio]{bayesics_files/figure-pdf/fig-lossfn-1.pdf}}
 
 }
 
@@ -2119,7 +2317,7 @@ overlap between the two intervals.
 
 \centering{
 
-\includegraphics{bayesics_files/figure-pdf/fig-credible-intervals-1.pdf}
+\pandocbounded{\includegraphics[keepaspectratio]{bayesics_files/figure-pdf/fig-credible-intervals-1.pdf}}
 
 }
 
@@ -2191,7 +2389,7 @@ the Edouard Montpetit station next to HEC: we can consider a simple
 linear regression with log counts as a function of
 temperature,\footnote{If counts are Poisson, then the log transform is
   variance stabilizing.}
-\[\log (\texttt{nusers}) \sim \mathsf{Norm}_{+}\{\beta_0 + \beta_1 (\texttt{temp}-20), \sigma^2\}.\]
+\[\log (\texttt{nusers}) \sim \mathsf{Gauss}_{+}\{\beta_0 + \beta_1 (\texttt{temp}-20), \sigma^2\}.\]
 The \(\beta_1\) slope measures units in degree Celsius per log number of
 person.
 
@@ -2200,8 +2398,8 @@ unless one standardizes response variable and explanatories: it is
 easier to standardize the temperature so that we consider deviations
 from, say 20\(^{\circ}\)C, which is not far from the observed mean in
 the sample. After some tuning, the independent priors
-\(\beta_0 \sim \mathsf{Norm}(\overline{y}, 0.5^2)\),
-\(\beta_1 \sim \mathsf{Norm}(0, 0.05^2)\) and
+\(\beta_0 \sim \mathsf{Gauss}(\overline{y}, 0.5^2)\),
+\(\beta_1 \sim \mathsf{Gauss}(0, 0.05^2)\) and
 \(\sigma \sim \mathsf{Exp}(3)\) seem to yield plausible outcomes and
 relationships.\footnote{One can object to the prior parameters depending
   on the data, but an alternative would be to model centered data
@@ -2212,7 +2410,7 @@ relationships.\footnote{One can object to the prior parameters depending
 
 \centering{
 
-\includegraphics{priors_files/figure-pdf/fig-bixi-1.pdf}
+\pandocbounded{\includegraphics[keepaspectratio]{priors_files/figure-pdf/fig-bixi-1.pdf}}
 
 }
 
@@ -2312,7 +2510,7 @@ with natural parameter \(\log(\mu)\). The gamma density,
 \[ f(x) \propto \beta^{\alpha}/\Gamma(\alpha)x^{\alpha-1} \exp(-\beta x)\]
 with shape \(\alpha\) and rate \(\beta\) is the conjugate prior for the
 Poisson. For an \(n\)-sample of independent observations
-\(\mathsf{Pois}(\mu)\) observations with
+\(\mathsf{Poisson}(\mu)\) observations with
 \(\mu \sim \mathsf{Gamma}(\alpha, \beta)\), the posterior is
 \(\mathsf{Gamma}(\sum_{i=1}^n y_i + \alpha, \beta + n)\).
 
@@ -2333,10 +2531,10 @@ that of \textbf{overdispersion}, meaning that the variability in the
 counts is larger than that implied by a Poisson distribution.
 
 One common framework for handling overdispersion is to have
-\(Y \mid \Lambda = \lambda \sim \mathsf{Pois}(\lambda)\), where the mean
-of the Poisson distribution is itself a positive random variable with
-mean \(\mu\), if \(\Lambda\) follows a conjugate gamma distribution with
-shape \(k\mu\) and rate \(k>0\),
+\(Y \mid \Lambda = \lambda \sim \mathsf{Poisson}(\lambda)\), where the
+mean of the Poisson distribution is itself a positive random variable
+with mean \(\mu\), if \(\Lambda\) follows a conjugate gamma distribution
+with shape \(k\mu\) and rate \(k>0\),
 \(\Lambda \sim \mathsf{Gamma}(k\mu, k)\), the posterior
 \(\Lambda \mid Y=y \sim \mathsf{Gamma}(k\mu + y, k+1)\).
 
@@ -2440,7 +2638,7 @@ H4 & 3083 & 9 \\
 
 \centering{
 
-\includegraphics{priors_files/figure-pdf/fig-upworthy-1.pdf}
+\pandocbounded{\includegraphics[keepaspectratio]{priors_files/figure-pdf/fig-upworthy-1.pdf}}
 
 }
 
@@ -2451,8 +2649,8 @@ different Upworthy Sesame Street headline.}
 
 We can visualize the posterior distributions. In this context, the large
 sample size lead to the dominance of the likelihood contribution
-\(p(Y_i \mid \lambda_i) \sim \mathsf{Pois}(n_i\lambda_i)\) relative to
-the prior. We can see there is virtually no overlap between different
+\(p(Y_i \mid \lambda_i) \sim \mathsf{Poisson}(n_i\lambda_i)\) relative
+to the prior. We can see there is virtually no overlap between different
 rates for headers H1 (preferred) relative to H4 (least favorable). The
 probability that the conversion rate for Headline 3 is higher than
 Headline 1 can be approximated by simulating samples from both
@@ -2540,7 +2738,7 @@ interpretable portrait that is in line with the frequentist analysis.
 
 \centering{
 
-\includegraphics{priors_files/figure-pdf/fig-hist-difference_rates-1.pdf}
+\pandocbounded{\includegraphics[keepaspectratio]{priors_files/figure-pdf/fig-hist-difference_rates-1.pdf}}
 
 }
 
@@ -2565,9 +2763,9 @@ variance]\protect\hypertarget{exm-conjugatepriors-normal}{}\label{exm-conjugatep
 
 Consider an \(n\) simple random sample of independent and identically
 distributed Gaussian variables with mean \(\mu\) and standard deviation
-\(\sigma\), denoted \(Y_i \sim \mathsf{Norm}(\mu, \sigma^2)\). We pick a
-Gaussian prior for the location parameter,
-\(\mu \sim \mathsf{Norm}(\nu, \tau^2)\) where we assume \(\mu, \tau\)
+\(\sigma\), denoted \(Y_i \sim \mathsf{Gauss}(\mu, \sigma^2)\). We pick
+a Gaussian prior for the location parameter,
+\(\mu \sim \mathsf{Gauss}(\nu, \tau^2)\) where we assume \(\mu, \tau\)
 are fixed hyperparameter values. For now, we consider only inference for
 \(p(\mu \mid \sigma)\): discarding any term that is not a function of
 \(\mu\), the conditional posterior is \begin{align*}
@@ -2577,7 +2775,7 @@ p(\mu \mid \sigma) &\propto \exp\left\{ -\frac{1}{2\sigma^2}\sum_{i=1}^n (y_{i}-
 is quadratic in \(\mu\), it must be a Gaussian distribution truncated
 over the positive half line. This can be seen by completing the square
 in \(\mu\), or by comparing this expression to the density of
-\(\mathsf{Norm}(\mu, \sigma^2)\), \begin{align*}
+\(\mathsf{Gauss}(\mu, \sigma^2)\), \begin{align*}
 f(x; \mu, \sigma) \stackrel{\mu}{\propto} \exp\left(-\frac{1}{2 \sigma^2}\mu^2 + \frac{x}{\sigma^2}\mu\right)
 \end{align*} we can deduce by matching mean and variance that the
 conditional posterior \(p(\mu \mid \sigma)\) is Gaussian with reciprocal
@@ -2634,8 +2832,8 @@ Gelman et al. (\citeproc{ref-Gelman:2013}{2013}) uses the following
 taxonomy for various levels of prior information: uninformative priors
 are generally flat or uniform priors with \(p(\beta) \propto 1\), vague
 priors are typically nearly flat even if proper, e.g.,
-\(\beta \sim \mathsf{Norm}(0, 100)\), weakly informative priors provide
-little constraints \(\beta \sim \mathsf{Norm}(0, 10)\), and informative
+\(\beta \sim \mathsf{Gauss}(0, 100)\), weakly informative priors provide
+little constraints \(\beta \sim \mathsf{Gauss}(0, 10)\), and informative
 prior are typically application-specific, but constrain the ranges.
 Uninformative and vague priors are generally not recommended unless they
 are known to give valid posterior inference and the amount of
@@ -2725,7 +2923,7 @@ prior \(\mathsf{Beta}(0.5,0.5)\).
 distribution]\protect\hypertarget{exr-jeffreysnormal}{}\label{exr-jeffreysnormal}
 
 Check that for the Gaussian distribution
-\(\mathsf{Norm}(\mu, \sigma^2)\), the Jeffrey's prior obtained by
+\(\mathsf{Gauss}(\mu, \sigma^2)\), the Jeffrey's prior obtained by
 treating each parameter as fixed in turn, are \(p(\mu) \propto 1\) and
 \(p(\sigma) \propto 1/\sigma\), which also correspond to the default
 uninformative priors for location-scale families.
@@ -2826,7 +3024,7 @@ the tail.
 
 \centering{
 
-\includegraphics{priors_files/figure-pdf/fig-gev-colestawn-quant-prior-1.pdf}
+\pandocbounded{\includegraphics[keepaspectratio]{priors_files/figure-pdf/fig-gev-colestawn-quant-prior-1.pdf}}
 
 }
 
@@ -2883,7 +3081,7 @@ models]\protect\hypertarget{exm-pcprior-randomeffect}{}\label{exm-pcprior-random
 
 Simpson et al. (\citeproc{ref-Simpson:2017}{2017}) give the example of a
 Gaussian prior for random effects \(\boldsymbol{\alpha}\), of the form
-\(\boldsymbol{\alpha} \mid \zeta \sim \mathsf{Norm}_J(\boldsymbol{0}_J, \zeta^2 \mathbf{I}_J)\)
+\(\boldsymbol{\alpha} \mid \zeta \sim \mathsf{Gauss}_J(\boldsymbol{0}_J, \zeta^2 \mathbf{I}_J)\)
 where \(\zeta_0=0\) corresponds to the absence of random
 subject-variability. The penalized complexity prior for the scale
 \(\zeta\) is then an exponential with rate \(\lambda\),\footnote{Possibly
@@ -2903,7 +3101,7 @@ order
 Sørbye and Rue (\citeproc{ref-Sorbye.Rue:2017}{2017}) derive penalized
 complexity prior for the Gaussian stationary AR(1) model with
 autoregressive parameter \(\phi \in (-1,1)\), where
-\(Y_t \mid Y_{t-1}, \phi, \sigma^2 \sim \mathsf{Norm}(\phi Y_{t-1}, \sigma^2)\).
+\(Y_t \mid Y_{t-1}, \phi, \sigma^2 \sim \mathsf{Gauss}(\phi Y_{t-1}, \sigma^2)\).
 There are two based models that could be of interest: one with
 \(\phi=0\), corresponding to a memoryless model with no autocorrelation,
 and a static mean \(\phi=1\) for no change in time; note that the latter
@@ -2925,7 +3123,7 @@ both are random quantities that get assigned priors, but we will treat
 these priors differently.
 
 The reason why we would like to use a penalized complexity prior for a
-random effect, say \(\alpha_j \sim \mathsf{Norm}(0, \zeta^2)\), is
+random effect, say \(\alpha_j \sim \mathsf{Gauss}(0, \zeta^2)\), is
 because we don't know a prior if there is variability between groups.
 The inverse gamma prior for \(\zeta\),
 \(\zeta \sim \mathsf{InvGamma}(\epsilon, \epsilon)\) does not have a
@@ -2946,8 +3144,8 @@ distribution truncated below at \(0\), with low degrees of freedom. The
 rationale for this choice comes from the simple two level model with
 \(n_j\) independent in each group \(j=1, \ldots, J\): for observation
 \(i\) in group \(j\), \begin{align*}
-Y_{ij} &\sim \mathsf{Norm}(\mu + \alpha_j, \sigma^2),\\
-\alpha_j &\sim \mathsf{Norm}(0, \tau^2_\alpha), 
+Y_{ij} &\sim \mathsf{Gauss}(\mu + \alpha_j, \sigma^2),\\
+\alpha_j &\sim \mathsf{Gauss}(0, \tau^2_\alpha),
 \end{align*} The conditionally conjugate prior
 \(p(\tau \mid \boldsymbol{\alpha}, \mu, \sigma)\) is inverse gamma.
 Standard inference with this parametrization is however complicated,
@@ -2956,9 +3154,9 @@ because there is strong dependence between parameters.
 To reduce this dependence, one can add a parameter, taking
 \(\alpha_j = \xi \eta_j\) and \(\tau_\alpha=|\xi|\tau_{\eta}\); the
 model is now overparametrized. Suppose
-\(\eta_j \sim \mathsf{Norm}(0, \tau^2_\eta)\) and consider the
+\(\eta_j \sim \mathsf{Gauss}(0, \tau^2_\eta)\) and consider the
 likelihood conditional on \(\mu, \eta_j\): we have that
-\((y_{ij} - \mu)/\eta_j \sim \mathsf{Norm}(\xi, \sigma^2/\eta_j)\) so
+\((y_{ij} - \mu)/\eta_j \sim \mathsf{Gauss}(\xi, \sigma^2/\eta_j)\) so
 conditionally conjugate priors for \(\xi\) and \(\tau_\eta\) are
 respectively Gaussian and inverse gamma. This translates into a prior
 distribution for \(\tau_\alpha\) which is that of the absolute value of
@@ -2967,7 +3165,7 @@ a noncentral Student-\(t\) with location, scale and degrees of freedom
 origin, but is heavy tailed with polynomial decay. We recommend to set
 degrees of freedom so that the variance is heavy-tailed, e.g.,
 \(\nu=3\). While this prior is not conjugate, it compares favorably to
-the \(\mathsf{IGa}(\epsilon, \epsilon)\).
+the \(\mathsf{inv. gamma}(\epsilon, \epsilon)\).
 
 \end{example}
 
@@ -2987,10 +3185,10 @@ which captures the type of distraction, and a random effect for
 participant \texttt{id}. The hierarchical model fitted for individual
 \(i\) \((i=1, \ldots, 34)\) and distraction type \(j\)
 \((j=1, \ldots, 4)\) is \begin{align*}
-Y_{ij} &\sim \mathsf{Pois}\{\mu = \exp(\beta_{j} + \alpha_i)\},\\
-\beta_j &\sim \mathsf{Norm}(0, 100), \\
-\alpha_i &\sim \mathsf{Norm}(0, \kappa^2), \\
-\kappa &\sim \mathsf{St}_{+}(3).
+Y_{ij} &\sim \mathsf{Poisson}\{\mu = \exp(\beta_{j} + \alpha_i)\},\\
+\beta_j &\sim \mathsf{Gauss}(0, 100), \\
+\alpha_i &\sim \mathsf{Gauss}(0, \kappa^2), \\
+\kappa &\sim \mathsf{Student}_{+}(3).
 \end{align*} so observations are conditionally independent given
 hyperparameters \(\boldsymbol{\alpha}\) and \(\boldsymbol{\beta}\).
 
@@ -3015,7 +3213,7 @@ hard to draw conclusions).
 
 \centering{
 
-\includegraphics{priors_files/figure-pdf/fig-post-dist-poisson-mixed-1.pdf}
+\pandocbounded{\includegraphics[keepaspectratio]{priors_files/figure-pdf/fig-post-dist-poisson-mixed-1.pdf}}
 
 }
 
@@ -3061,7 +3259,7 @@ groups.
 
 \centering{
 
-\includegraphics{priors_files/figure-pdf/fig-sensitivity-1.pdf}
+\pandocbounded{\includegraphics[keepaspectratio]{priors_files/figure-pdf/fig-sensitivity-1.pdf}}
 
 }
 
@@ -3089,8 +3287,6 @@ need to calculate the normalizing constant of the posterior entirely. We
 present several examples of implementations, several tricks for tuning
 and diagnostics of convergence.
 
-\section{Markov chain Monte Carlo}\label{markov-chain-monte-carlo}
-
 Ordinary Monte Carlo methods suffer from the curse of dimensionality,
 with few algorithms are generic enough to be useful in complex
 high-dimensional problems. Instead, we will construct a Markov chain
@@ -3099,6 +3295,256 @@ Markov chain Monte Carlo methods generate correlated draws that will
 target the posterior under suitable conditions.\footnote{While we won't
   focus on the fine prints of the contract, there are conditions for
   validity and these matter!}
+
+\section{Markov chains}\label{markov-chains}
+
+Before going forward with algorithms for sampling, we introduce some
+terminology that should be familiar to people with a background in time
+series analysis.
+
+\begin{definition}[Stationarity and Markov
+property]\protect\hypertarget{def-weak-stationarity}{}\label{def-weak-stationarity}
+
+A stochastic (i.e., random) process is (weakly) stationary if the
+distribution of \(\{X_1, \ldots, X_t\}\) is the same as that of
+\(\{X_{n+1}, \ldots X_{t+n}\}\) for any value of \(n\) and given \(t\).
+
+It is Markov if it satisfies the Markov property: given the current
+state of the chain, the future only depends on the current state and not
+on the past.
+
+\end{definition}
+
+Autoregressive processes are not the only ones we can consider, although
+their simplicity lends itself to analytic calculations. More generally,
+for a correlated sequence, the variance of the stationary distribution
+is \begin{align*}
+\mathsf{Va}(Y_t) + 2 \sum_{k=1}^\infty \mathsf{Co}(Y_t, Y_{t-k})
+\end{align*}
+
+\begin{proposition}[Effective sample
+size]\protect\hypertarget{prp-variance-clt}{}\label{prp-variance-clt}
+
+Intuitively, a sample of correlated observations carries less
+information than an independent sample of draws. If we want to compute
+sample averages \(\overline{Y}_T=(Y_1+ \cdots + Y_T)/T\), the variance
+will be \begin{align*}
+\mathsf{Va}\left(\overline{Y}_T\right) = \frac{1}{T}\sum_{t=1}^T \mathsf{Va}(Y_t) + \frac{2}{T} \sum_{t=1}^{T-1}\sum_{s = t+1}^T \mathsf{Co}(Y_t, Y_s).
+\end{align*}
+
+In the independent case, the covariance is zero so we get the sum of
+variances. If the process is stationary, the covariances at lag \(k\)
+are the same regardless of the time index and the variance is some
+constant, say \(\sigma^2\); this allows us to simplify calculations,
+\begin{align*}
+\mathsf{Va}(\overline{Y}_T) = \sigma^2 \left\{ 1 + \frac{2}{T}\sum_{t=1}^{T-1} (T-t) \mathsf{Cor}(Y_{T-k}, Y_{T})\right\}.
+\end{align*} Denote the lag-\(k\) autocorrelation
+\(\mathsf{Cor}(Y_{t}, Y_{t+k})\) by \(\gamma_k\). Under technical
+conditions\footnote{Geometric ergodicity and existence of moments, among
+  other things.}, a central limit theorem applies and we get an
+asymptotic variance for the mean of \begin{align*}
+\lim_{T \to \infty} T\mathsf{Va}\left(\overline{Y}_T\right) = \sigma^2 \left\{1+2\sum_{t=1}^\infty \gamma_t\right\}.
+\end{align*} This statement holds only if we start with draws from the
+stationary distribution, otherwise bets are off.
+
+We need the \textbf{effective sample size} of our Monte Carlo averages
+based on a Markov chain of length \(B\) to be sufficient for the
+estimates to be meaningful. The effective sample size is, loosely
+speaking, the equivalent number of observations if the marginal
+posterior draws where independent and more formally
+\begin{equation}\phantomsection\label{eq-effective-sample-size}{
+\mathsf{ESS} = \frac{B}{\left\{1+2\sum_{t=1}^\infty \gamma_t\right\}}
+}\end{equation} where \(\gamma_t\) is the lag \(t\) correlation. The
+relative effective sample size is simply the fraction of the effective
+sample size over the Monte Carlo number of replications: small values of
+\(\mathsf{ESS}/B\) indicate pathological or inefficient samplers. If the
+ratio is larger than one, it indicates the sample is superefficient (as
+it generates negatively correlated draws).
+
+In practice, we replace the unknown autocorrelations by sample estimates
+and truncate the series in Equation~\ref{eq-effective-sample-size} at
+the point where they become negligible --- typically when the
+consecutive sum of two consecutive becomes negative; see Section 1.4 of
+the
+\href{https://mc-stan.org/docs/reference-manual/effective-sample-size.html}{Stan
+manual} or Section 1.10.2 of Geyer (\citeproc{ref-Geyer:2011}{2011}) for
+details.
+
+\end{proposition}
+
+\begin{example}[]\protect\hypertarget{exm-ar1-clt-variance}{}\label{exm-ar1-clt-variance}
+
+The lag-\(k\) correlation of the stationary autoregressive process of
+order 1 is \(\phi^k\), so summing the series gives an asymptotic
+variance of \(\sigma^2(1+\phi)/(1-\phi).\) We can constrast that to the
+variance of the stationary distribution for an independent sample, which
+is \(\sigma^2/(1-\phi^2)\). The price to pay for having correlated
+samples is inefficiency: the higher the autocorrelation, the larger the
+variability of our mean estimators.
+
+\begin{figure}[ht!]
+
+\centering{
+
+\pandocbounded{\includegraphics[keepaspectratio]{mcmc_files/figure-pdf/fig-ar1-variance-1.pdf}}
+
+}
+
+\caption{\label{fig-ar1-variance}Scaled asymptotic variance of the
+sample mean for a stationary autoregressive first-order process with
+unit variance (full line) and a corresponding sample of independent
+observations with the same marginal variance (dashed line). The right
+panel gives the ratio of variances for positive correlation
+coefficients.}
+
+\end{figure}%
+
+We can see from Figure~\ref{fig-ar1-variance} that, when the
+autocorrelation is positive (as will be the cause in all applications of
+interest), we will suffer from variance inflation. To get the same
+uncertainty estimates for the mean with an \(\mathsf{AR}(1)\) process
+with \(\phi \approx 0.75\) than with an iid sample, we would need nine
+times as many observations: this is the prize to pay.
+
+\end{example}
+
+\subsection{Uncertainty estimation with Markov
+chains}\label{uncertainty-estimation-with-markov-chains}
+
+With a simple random sample containing independent and identically
+distributed observations, the standard error of the sample mean is
+\(\sigma/\sqrt{n}\) and we can use the empirical standard deviation
+\(\widehat{\sigma}\) to estimate the first term. For Markov chains, the
+correlation prevents us from using this approach. The output of
+the\texttt{coda} package are based on fitting a high order
+autoregressive process to the Markov chain and using the formula of the
+unconditional variance of the \(\mathsf{AR}(p)\) to obtain the central
+limit theorem variance. An alternative method recommended by Geyer
+(\citeproc{ref-Geyer:2011}{2011}) and implemented in his \textbf{R}
+package \texttt{mcmc}, is to segment the time series into batch, compute
+the means of each non-overlapping segment and use this standard
+deviation with suitable rescaling to get the central limit variance for
+the posterior mean. Figure~\ref{fig-mcmc-batchmean} illustrate the
+method of batch means.
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  Break the chain of length \(B\) (after burn in) in \(K\) blocks of
+  size \(\approx K/B\).
+\item
+  Compute the sample mean of each segment. These values form a Markov
+  chain and should be approximately uncorrelated.
+\item
+  Compute the standard deviation of the segments mean. Rescale by
+  \(K^{-1/2}\) to get standard error of the global mean.
+\end{enumerate}
+
+Why does the approach work? If the chain samples from the stationary
+distribution, all samples have the same mean. If we partition the sample
+into long enough, the sample mean of each blocks should be roughly
+independent (otherwise we could remove an overlapping portion). We can
+then compute the empirical standard deviation of the estimators. We can
+then compute the overall mean and use a scaling argument to relate the
+variability of the global estimator with the variability of the means of
+the smaller blocks.
+
+\begin{figure}[ht!]
+
+\centering{
+
+\pandocbounded{\includegraphics[keepaspectratio]{mcmc_files/figure-pdf/fig-mcmc-batchmean-1.pdf}}
+
+}
+
+\caption{\label{fig-mcmc-batchmean}Calculation of the standard error of
+the posterior mean using the batch method.}
+
+\end{figure}%
+
+When can we use output from a Markov chain in place of independent Monte
+Carlo draws? The assumptions laid out in the ergodic theorem are that
+the chain is irreducible and acyclic, ensuring that the chain has a
+unique stationary distribution. The ergodic theorem is a result about
+convergence of averages.
+
+To make sense of these concepts, we consider a discrete Markov chain
+over the integers \(1, 2, 3\). A discrete-time stochastic process is a
+random sequences whose elements are part of some set, the state space,
+here the integers. We can encode the probability of moving from one
+state to the next via a transition matrix, whose rows contain the
+probabilities of moving from one state to the next and thus sum to one.
+We can run a Markov chain by sampling an initial state \(X_0\) at random
+from \(\{1, \ldots, 5\}\) and then consider the transitions from the
+conditional distribution, sampling \(p(X_t \mid X_{t-1})\). Because of
+the Markov property, the history of the chain does not matter: we only
+need to read the value \(i=X_{t-1}\) of the state and pick the \(i\)th
+row of \(P_3\) to know the probability of the different moves from the
+current state.
+
+Irreducible means that the chain can move from anywhere to anywhere, so
+it doesn't get stuck in part of the space forever. A transition matrix
+such as \(P_1\) below describes a reducible Markov chain, because once
+you get into state \(2\) or \(3\), you won't escape. With reducible
+chains, the stationary distribution need not be unique, and so the
+target would depend on the starting values.
+
+Cyclical chains loop around and visit periodically a state: \(P_2\) is
+an instance of transition matrix describing a chain that cycles from
+\(1\) to \(3\), \(3\) to \(2\) and \(2\) to \(1\) every three iteration.
+An acyclic chain is needed for convergence of marginals.
+
+\[
+P_1 = \begin{pmatrix}
+0.5 & 0.3 & 0.2 \\
+0 & 0.4 & 0.6 \\
+0 & 0.5 & 0.5
+\end{pmatrix},
+\qquad
+P_2 = \begin{pmatrix}
+0 & 0 & 1 \\
+1 & 0 & 0 \\
+0 & 1 & 0
+\end{pmatrix}.
+\]
+
+If a chain is irreducible and aperiodic, it has a unique stationary
+distribution and the limiting distribution of the Markov chain will
+converge there. For example, we consider a transition \(P_3\) on
+\(1, \ldots, 5\) defined as \[
+P_3 = \begin{pmatrix}
+\frac{2}{3} & \frac{1}{3} &  0 & 0 & 0 \\
+\frac{1}{6} & \frac{2}{3} & \frac{1}{6} & 0 & 0 \\
+0 & \frac{1}{6} & \frac{2}{3} & \frac{1}{6} & 0 \\
+0 & 0 & \frac{1}{6} & \frac{2}{3} & \frac{1}{6} \\
+0 & 0 & 0 &  \frac{1}{3}  & \frac{2}{3} \\
+\end{pmatrix}
+\] The stationary distribution is the value of the row vector
+\(\boldsymbol{p}\), such that
+\(\boldsymbol{p} = \boldsymbol{p}\mathbf{P}\) for transition matrix
+\(\mathbf{P}\): we get \(\boldsymbol{p}_1=(0, 5/11, 6/11)\) for \(P_1\),
+\((1/3, 1/3, 1/3)\) for \(P_2\) and \((1,2,2,2,1)/8\) for \(P_3\).
+
+Figure~\ref{fig-discrete-markov-chain} shows the path of the walk and
+the empirical proportion of the time spent in each state, as time
+progress. Since the Markov chain has a unique stationary distribution,
+we expect these to converge to it.
+
+\begin{figure}[ht!]
+
+\centering{
+
+\pandocbounded{\includegraphics[keepaspectratio]{mcmc_files/figure-pdf/fig-discrete-markov-chain-1.pdf}}
+
+}
+
+\caption{\label{fig-discrete-markov-chain}Discrete Markov chain on
+integers from 1 to 5, with transition matrix \(P_3\), with traceplot of
+1000 first iterations (left) and running mean plots of sample proportion
+of each state visited per 100 iterations (right).}
+
+\end{figure}%
 
 \section{Markov chain Monte Carlo
 algorithms}\label{markov-chain-monte-carlo-algorithms}
@@ -3226,8 +3672,8 @@ parametrization in terms of log rate for the baseline \text{yes},
 Y_{i} &\sim \mathsf{Po}(n_i\lambda_i), \qquad (i=1,2)\\
 \lambda_1 &= \exp(\beta + \kappa) \\
 \lambda_2 &= \exp(\beta) \\
-\beta & \sim \mathsf{Norm}(\log 0.01, 1.5) \\
-\kappa &\sim \mathsf{Norm}(0, 1)
+\beta & \sim \mathsf{Gauss}(\log 0.01, 1.5) \\
+\kappa &\sim \mathsf{Gauss}(0, 1)
 \end{align*} There are two parameters in the model, which can be updated
 in turn or jointly.
 
@@ -3329,7 +3775,7 @@ are \(\beta =-4.51\) and \(\kappa =0.07\).
 
 \centering{
 
-\includegraphics{mcmc_files/figure-pdf/fig-traceplot-1.pdf}
+\pandocbounded{\includegraphics[keepaspectratio]{mcmc_files/figure-pdf/fig-traceplot-1.pdf}}
 
 }
 
@@ -3358,7 +3804,7 @@ excellent.
 
 \centering{
 
-\includegraphics{mcmc_files/figure-pdf/fig-scatterplot-upworthy-question-1.pdf}
+\pandocbounded{\includegraphics[keepaspectratio]{mcmc_files/figure-pdf/fig-scatterplot-upworthy-question-1.pdf}}
 
 }
 
@@ -3386,7 +3832,7 @@ Figure~\ref{fig-goldilock-trace}.
 
 \centering{
 
-\includegraphics{mcmc_files/figure-pdf/fig-goldilock-trace-1.pdf}
+\pandocbounded{\includegraphics[keepaspectratio]{mcmc_files/figure-pdf/fig-goldilock-trace-1.pdf}}
 
 }
 
@@ -3435,7 +3881,7 @@ and usually points towards inefficient sampling algorithms.
 
 \centering{
 
-\includegraphics{mcmc_files/figure-pdf/fig-goldilock-correlogram-1.pdf}
+\pandocbounded{\includegraphics[keepaspectratio]{mcmc_files/figure-pdf/fig-goldilock-correlogram-1.pdf}}
 
 }
 
@@ -3508,7 +3954,7 @@ for finite \(a, b\) in the software:
 To guarantee that our proposals fall in the support of \(\theta\), we
 can thus run a symmetric random walk proposal on the \emph{transformed
 scale} by drawing \(\vartheta_{t}^{\star} \sim \vartheta_{t-1}+\tau Z\)
-where \(Z\sim\mathsf{Norm}(0, 1)\). Due to the transformation, the
+where \(Z\sim\mathsf{Gauss}(0, 1)\). Due to the transformation, the
 kernel ratio now contains the Jacobian.
 
 \end{proposition}
@@ -3616,7 +4062,7 @@ news story by treating each mean as a sample. The variance of the sample
 average or click rate is proportional to \(n^{-1}\), where \(n\) is the
 number of impressions. To allow for underdispersion or overdispersion,
 we thus consider a Gaussian likelihood
-\(Y_i \sim \mathsf{Norm}(\mu, \sigma^2/n_i)\). We perform Bayesian
+\(Y_i \sim \mathsf{Gauss}(\mu, \sigma^2/n_i)\). We perform Bayesian
 inference for \(\mu, \sigma\) after assigning a truncated Gaussian prior
 for \(\mu \sim \mathsf{TruncNorm}(0.01, 0.1^2)\) over \([0,1]\) and an
 penalized complexity prior for \(\sigma \sim \mathsf{Exp}(0.7)\).
@@ -3787,7 +4233,7 @@ algorithm for a bivariate target.
 
 \centering{
 
-\includegraphics{mcmc_files/figure-pdf/fig-Gibbs-steps-1.pdf}
+\pandocbounded{\includegraphics[keepaspectratio]{mcmc_files/figure-pdf/fig-Gibbs-steps-1.pdf}}
 
 }
 
@@ -3808,14 +4254,14 @@ methods works as the dimension increases, and when the correlation
 between pairs becomes stronger.
 
 Consider
-\(\boldsymbol{Y} \sim \mathsf{Norm}_d(\boldsymbol{\mu}, \boldsymbol{\Sigma})\)
+\(\boldsymbol{Y} \sim \mathsf{Gauss}_d(\boldsymbol{\mu}, \boldsymbol{\Sigma})\)
 and a partition \((\boldsymbol{Y}_1^\top, \boldsymbol{Y}_2^\top)^\top\):
 the conditional distribution of the \(k\) subvector \(\boldsymbol{Y}_1\)
 given the \(d-k\) other components \(\boldsymbol{Y}_2\) is, in terms of
 either the covariance (first line) or the precision (second line),
 Gaussian where \begin{align*}
-\boldsymbol{Y}_1 \mid \boldsymbol{Y}_2=\boldsymbol{y}_2 &\sim \mathsf{Norm}_{k}\left\{ \boldsymbol{\mu}_1 + \boldsymbol{\Sigma}_{12} \boldsymbol{\Sigma}_{22}^{-1}(\boldsymbol{y}_2 - \boldsymbol{\mu}_2), \boldsymbol{\Sigma}_{11} - \boldsymbol{\Sigma}_{12}\boldsymbol{\Sigma}_{22}^{-1}\boldsymbol{\Sigma}_{21}\right\}
-\\&\sim \mathsf{Norm}_{k}\left\{ \boldsymbol{\mu}_1 -\mathbf{Q}_{11}^{-1}\mathbf{Q}_{12}(\boldsymbol{y}_2 - \boldsymbol{\mu}_2), \mathbf{Q}_{11}^{-1}\right\}.
+\boldsymbol{Y}_1 \mid \boldsymbol{Y}_2=\boldsymbol{y}_2 &\sim \mathsf{Gauss}_{k}\left\{ \boldsymbol{\mu}_1 + \boldsymbol{\Sigma}_{12} \boldsymbol{\Sigma}_{22}^{-1}(\boldsymbol{y}_2 - \boldsymbol{\mu}_2), \boldsymbol{\Sigma}_{11} - \boldsymbol{\Sigma}_{12}\boldsymbol{\Sigma}_{22}^{-1}\boldsymbol{\Sigma}_{21}\right\}
+\\&\sim \mathsf{Gauss}_{k}\left\{ \boldsymbol{\mu}_1 -\mathbf{Q}_{11}^{-1}\mathbf{Q}_{12}(\boldsymbol{y}_2 - \boldsymbol{\mu}_2), \mathbf{Q}_{11}^{-1}\right\}.
 \end{align*}
 
 \begin{Shaded}
@@ -3856,7 +4302,7 @@ is strong correlation, resulting in an inefficient sampler.
 
 \centering{
 
-\includegraphics{mcmc_files/figure-pdf/fig-gibbs-normal-1.pdf}
+\pandocbounded{\includegraphics[keepaspectratio]{mcmc_files/figure-pdf/fig-gibbs-normal-1.pdf}}
 
 }
 
@@ -3874,9 +4320,9 @@ conditionals may only depend on a handful of parameters.
 
 \begin{example}[]\protect\hypertarget{exm-gaussian-gamma}{}\label{exm-gaussian-gamma}
 
-Consider a Gaussian model \(Y_i \sim \mathsf{Norm}(\mu, \tau)\)
+Consider a Gaussian model \(Y_i \sim \mathsf{Gauss}(\mu, \tau)\)
 (\(i=1, \ldots, n\)) are independent, and where we assign priors
-\(\mu \sim \mathsf{Norm}(\nu, \omega)\) and
+\(\mu \sim \mathsf{Gauss}(\nu, \omega)\) and
 \(\tau \sim \mathsf{InvGamma}(\alpha, \beta)\).
 
 The joint posterior is not available in closed form, but the independent
@@ -3887,8 +4333,8 @@ p(\mu, \tau \mid \boldsymbol{y}) \propto& \tau^{-n/2}\exp\left\{-\frac{1}{2\tau}
 p(\mu \mid \tau, \boldsymbol{y}) &\propto \exp\left\{-\frac{1}{2} \left( \frac{\mu^2-2\mu\overline{y}}{\tau/n} + \frac{\mu^2-2\nu \mu}{\omega}\right)\right\}\\
 p(\tau \mid \mu, \boldsymbol{y}) & \propto \tau^{-n/2-\alpha-1}\exp\left[-\left\{\frac{\sum_{i=1}^n (y_i-\mu)^2}{2} + \beta \right\}/\tau\right]
 \end{align*} so we can simulate in turn \begin{align*}
-\mu_t \mid \tau_{t-1}, \boldsymbol{y} &\sim \mathsf{Norm}\left(\frac{n\overline{y}\omega+\tau \nu}{\tau + n\omega}, \frac{\omega \tau}{\tau + n\omega}\right)\\
-\tau_t \mid \mu_t, \boldsymbol{y} &\sim \mathsf{InvGamma}\left\{\frac{n}{2}+\alpha, \frac{\sum_{i=1}^n (y_i-\mu)^2}{2} + \beta\right\}.
+\mu_t \mid \tau_{t-1}, \boldsymbol{y} &\sim \mathsf{Gauss}\left(\frac{n\overline{y}\omega+\tau \nu}{\tau + n\omega}, \frac{\omega \tau}{\tau + n\omega}\right)\\
+\tau_t \mid \mu_t, \boldsymbol{y} &\sim \mathsf{inv. gamma}\left\{\frac{n}{2}+\alpha, \frac{\sum_{i=1}^n (y_i-\mu)^2}{2} + \beta\right\}.
 \end{align*}
 
 \end{example}
@@ -3913,7 +4359,7 @@ for a known precision matrix \(\mathbf{Q}_y\), typically
 \(\mathbf{I}_n\). To construct a conjugate joint prior for
 \(p(\boldsymbol{\beta}, \sigma^2)\), we consider the sequential
 formulation \begin{align*}
-\boldsymbol{\beta} \mid \sigma^2 \sim \mathsf{Norm}_p(\boldsymbol{\nu}_\beta, \sigma^2 \mathbf{Q}^{-1}_\beta), \qquad \sigma^2 \sim \mathsf{InvGamma}(\alpha,\beta)
+\boldsymbol{\beta} \mid \sigma^2 \sim \mathsf{Gauss}_p(\boldsymbol{\nu}_\beta, \sigma^2 \mathbf{Q}^{-1}_\beta), \qquad \sigma^2 \sim \mathsf{InvGamma}(\alpha,\beta)
 \end{align*} where \(\mathsf{InvGamma}\) denotes the inverse gamma
 distribution\footnote{This simply means that the precision
   \(\sigma^{-2}\), the reciprocal of the variance, has a gamma
@@ -3974,7 +4420,7 @@ of \(n\) independent observations is
 \[L(\boldsymbol{\beta}; \boldsymbol{y}) = \prod_{i=1}^n p_i^{y_i}(1-p_i)^{1-y_i},\]
 and this prevents easy simulation. We can consider a data augmentation
 scheme where \(Y_i = \mathsf{I}(Z_i > 0)\), where
-\(Z_i \sim \mathsf{Norm}(\mathbf{x}_i\boldsymbol{\beta}, 1)\), with
+\(Z_i \sim \mathsf{Gauss}(\mathbf{x}_i\boldsymbol{\beta}, 1)\), with
 \(\mathbf{x}_i\) denoting the \(i\)th row of the design matrix.
 
 The augmented data likelihood is \begin{align*}
@@ -3982,7 +4428,7 @@ p(\boldsymbol{z}, \boldsymbol{y} \mid \boldsymbol{\beta}) \propto \exp\left\{-\f
 \end{align*} Given \(Z_i\), the coefficients \(\boldsymbol{\beta}\) are
 simply the results of ordinary linear regression with unit variance, so
 \begin{align*}
-\boldsymbol{\beta} \mid \boldsymbol{z}, \boldsymbol{y} &\sim \mathsf{Norm}\left\{\widehat{\boldsymbol{\beta}}, (\mathbf{X}^\top\mathbf{X})^{-1}\right\}
+\boldsymbol{\beta} \mid \boldsymbol{z}, \boldsymbol{y} &\sim \mathsf{Gauss}\left\{\widehat{\boldsymbol{\beta}}, (\mathbf{X}^\top\mathbf{X})^{-1}\right\}
 \end{align*} with
 \(\widehat{\boldsymbol{\beta}}=(\mathbf{X}^\top\mathbf{X})^{-1}\mathbf{X}^\top\boldsymbol{z}\)
 is the ordinary least square estimator from the regression with model
@@ -4038,7 +4484,7 @@ has density \begin{align*}
 f(x; \mu, \sigma) = \frac{1}{2\sigma}\exp\left(-\frac{|x-\mu|}{\sigma}\right),
 \end{align*} can be expressed as a scale mixture of Gaussians, where
 \(Y \sim \mathsf{La}(\mu, \sigma)\) is equivalent to
-\(Z \mid \tau \sim \mathsf{Norm}(\mu, \tau)\) and
+\(Z \mid \tau \sim \mathsf{Gauss}(\mu, \tau)\) and
 \(\tau \sim \mathsf{Exp}\{(2\sigma)^{-1}\}\). With the improper prior
 \(p(\mu, \sigma) \propto \sigma^{-1}\) and with \(n\) independent and
 identically distributed Laplace variates, the joint posterior can be
@@ -4063,8 +4509,8 @@ Park and Casella (\citeproc{ref-Park.Casella:2008}{2008}) use this
 hierarchical construction to defined the Bayesian LASSO. With a model
 matrix \(\mathbf{X}\) whose columns are standardized to have mean zero
 and unit standard deviation, we may write \begin{align*}
-\boldsymbol{Y} \mid \mu, \boldsymbol{\beta}, \sigma^2 &\sim  \mathsf{Norm}_n(\mu \boldsymbol{1}_n + \mathbf{X}\boldsymbol{\beta}, \sigma \mathbf{I}_n)\\
-\beta_j \mid \sigma, \tau &\sim \mathsf{Norm}(0, \sigma\tau)\\
+\boldsymbol{Y} \mid \mu, \boldsymbol{\beta}, \sigma^2 &\sim  \mathsf{Gauss}_n(\mu \boldsymbol{1}_n + \mathbf{X}\boldsymbol{\beta}, \sigma \mathbf{I}_n)\\
+\beta_j \mid \sigma, \tau &\sim \mathsf{Gauss}(0, \sigma\tau)\\
 \tau &\sim \mathsf{Exp}(\lambda/2)
 \end{align*} If we set an improper prior
 \(p(\mu, \sigma) \propto \sigma^{-1}\), the resulting conditional
@@ -4082,7 +4528,7 @@ none of the posterior draws of \(\boldsymbol{\beta}\) are exactly zero.
 
 \centering{
 
-\includegraphics{mcmc_files/figure-pdf/fig-lasso-traceplot-1.pdf}
+\pandocbounded{\includegraphics[keepaspectratio]{mcmc_files/figure-pdf/fig-lasso-traceplot-1.pdf}}
 
 }
 
@@ -4153,8 +4599,8 @@ To illustrate these, we revisit the model from
 Example~\ref{exm-randomeffects} with a penalized complexity prior for
 the individual effect \(\alpha_i\) and vague normal priors. We also fit
 a simple Poisson model with only the fixed effect, taking
-\(Y_{ij} \sim \mathsf{Pois}\{\exp(\beta_j)\}\) with
-\(\beta_j \sim \mathsf{Norm}(0,100)\) has much too little variability
+\(Y_{ij} \sim \mathsf{Poisson}\{\exp(\beta_j)\}\) with
+\(\beta_j \sim \mathsf{Gauss}(0,100)\) has much too little variability
 relative to the observations.
 
 \subsection{Trace plots}\label{trace-plots}
@@ -4186,7 +4632,7 @@ uniformly across integers.
 
 \centering{
 
-\includegraphics{mcmc_files/figure-pdf/fig-badstart-1.pdf}
+\pandocbounded{\includegraphics[keepaspectratio]{mcmc_files/figure-pdf/fig-badstart-1.pdf}}
 
 }
 
@@ -4252,7 +4698,7 @@ is reflected by the large values of \(\widehat{R}\).
 
 \centering{
 
-\includegraphics{mcmc_files/figure-pdf/fig-rhat-1.pdf}
+\pandocbounded{\includegraphics[keepaspectratio]{mcmc_files/figure-pdf/fig-rhat-1.pdf}}
 
 }
 
@@ -4302,7 +4748,7 @@ drawing board and consider a negative binomial model.
 
 \centering{
 
-\includegraphics{mcmc_files/figure-pdf/fig-posterior-pred-check-1.pdf}
+\pandocbounded{\includegraphics[keepaspectratio]{mcmc_files/figure-pdf/fig-posterior-pred-check-1.pdf}}
 
 }
 
@@ -4358,7 +4804,7 @@ performs equally well for small penalties.
 
 \centering{
 
-\includegraphics{mcmc_files/figure-pdf/fig-waic-blasso-1.pdf}
+\pandocbounded{\includegraphics[keepaspectratio]{mcmc_files/figure-pdf/fig-waic-blasso-1.pdf}}
 
 }
 
@@ -4390,7 +4836,7 @@ observation. Values close to zero or one may indicate outliers.
 
 \centering{
 
-\includegraphics{mcmc_files/figure-pdf/fig-loocv-qqplots-1.pdf}
+\pandocbounded{\includegraphics[keepaspectratio]{mcmc_files/figure-pdf/fig-loocv-qqplots-1.pdf}}
 
 }
 
@@ -4506,6 +4952,11 @@ Gosset, William Sealy. 1908. {``The Probable Error of a Mean.''}
 \emph{Biometrika} 6 (1): 1--25.
 \url{https://doi.org/10.1093/biomet/6.1.1}.
 
+\bibitem[\citeproctext]{ref-Gradshteyn.Ryzhik:2014}
+Gradshteyn, I. S., and I. M. Ryzhik. 2014. \emph{Table of Integrals,
+Series, and Products}. 8th ed. Academic Press.
+\url{https://doi.org/10.1016/C2010-0-64839-5}.
+
 \bibitem[\citeproctext]{ref-Green:2001}
 Green, Peter J. 2001. {``A Primer on {M}arkov Chain {M}onte {C}arlo.''}
 \emph{Monographs on Statistics and Applied Probability} 87: 1--62.
@@ -4521,10 +4972,22 @@ Methodology.''} In \emph{Handbook of {M}arkov Chain {M}onte {C}arlo},
 edited by S. Brooks, A. Gelman, G. Jones, and X. L. Meng, 253--94. Boca
 Raton: CRC Press. \url{https://doi.org/10.1201/b10905}.
 
+\bibitem[\citeproctext]{ref-Jegerlehner:2021}
+Jegerlehner, Sabrina, Franziska Suter-Riniker, Philipp Jent, Pascal
+Bittel, and Michael Nagler. 2021. {``Diagnostic Accuracy of a
+{SARS-CoV-2} Rapid Antigen Test in Real-Life Clinical Settings.''}
+\emph{International Journal of Infectious Diseases} 109 (August):
+118--22. \url{https://doi.org/10.1016/j.ijid.2021.07.010}.
+
 \bibitem[\citeproctext]{ref-Kinderman.Monahan:1977}
 Kinderman, Albert J, and John F Monahan. 1977. {``Computer Generation of
 Random Variables Using the Ratio of Uniform Deviates.''} \emph{ACM
 Transactions on Mathematical Software (TOMS)} 3 (3): 257--60.
+
+\bibitem[\citeproctext]{ref-owidcoronavirus}
+Mathieu, Edouard, Hannah Ritchie, Lucas Rodés-Guirao, Cameron Appel,
+Charlie Giattino, Joe Hasell, Bobbie Macdonald, et al. 2020.
+{``Coronavirus Pandemic (COVID-19).''} \emph{Our World in Data}.
 
 \bibitem[\citeproctext]{ref-Matias:2021}
 Matias, J. Nathan, Kevin Munger, Marianne Aubin Le Quere, and Charles

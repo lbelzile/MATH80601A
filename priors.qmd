@@ -31,10 +31,10 @@ Working with standardized inputs $x_i \mapsto (x_i - \overline{x})/\mathrm{sd}(\
 :::{#exm-bixi-temp}
 
 Consider the daily number of Bixi bike sharing users for 2017--2019 at the Edouard Montpetit station next to HEC: we can consider a simple linear regression with log counts as a function of temperature,^[If counts are Poisson, then the log transform is variance stabilizing.] 
-$$\log (\texttt{nusers}) \sim \mathsf{Norm}_{+}\{\beta_0 + \beta_1 (\texttt{temp}-20), \sigma^2\}.$$
+$$\log (\texttt{nusers}) \sim \mathsf{Gauss}_{+}\{\beta_0 + \beta_1 (\texttt{temp}-20), \sigma^2\}.$$
 The $\beta_1$ slope measures units in degree Celsius per log number of person.
 
-The hyperparameters depend of course on the units of the analysis, unless one standardizes response variable and explanatories: it is easier to standardize the temperature so that we consider deviations from, say 20$^{\circ}$C, which is not far from the observed mean in the sample. After some tuning, the independent priors $\beta_0 \sim \mathsf{Norm}(\overline{y}, 0.5^2)$, $\beta_1 \sim \mathsf{Norm}(0, 0.05^2)$ and $\sigma \sim \mathsf{Exp}(3)$ seem to yield plausible outcomes and relationships.^[One can object to the prior parameters depending on the data, but an alternative would be to model centered data $y-\overline{y}$, in which case the prior for the intercept parameter $\beta_0$ would be zero.]
+The hyperparameters depend of course on the units of the analysis, unless one standardizes response variable and explanatories: it is easier to standardize the temperature so that we consider deviations from, say 20$^{\circ}$C, which is not far from the observed mean in the sample. After some tuning, the independent priors $\beta_0 \sim \mathsf{Gauss}(\overline{y}, 0.5^2)$, $\beta_1 \sim \mathsf{Gauss}(0, 0.05^2)$ and $\sigma \sim \mathsf{Exp}(3)$ seem to yield plausible outcomes and relationships.^[One can object to the prior parameters depending on the data, but an alternative would be to model centered data $y-\overline{y}$, in which case the prior for the intercept parameter $\beta_0$ would be zero.]
 
 
 ```{r}
@@ -132,7 +132,7 @@ The beta distribution is also the conjugate prior for the negative binomial, geo
 
 The Poisson distribution with mean $\mu$ has log density proportional to $f(y; \mu) \propto y\log(\mu) -\mu$, so is an exponential family with natural parameter $\log(\mu)$. 
 The gamma density, 
-$$ f(x) \propto \beta^{\alpha}/\Gamma(\alpha)x^{\alpha-1} \exp(-\beta x)$$ with shape $\alpha$ and rate $\beta$ is the conjugate prior for the Poisson. For an $n$-sample of independent observations $\mathsf{Pois}(\mu)$ observations with $\mu \sim \mathsf{Gamma}(\alpha, \beta)$, the posterior is $\mathsf{Gamma}(\sum_{i=1}^n y_i + \alpha, \beta + n)$.
+$$ f(x) \propto \beta^{\alpha}/\Gamma(\alpha)x^{\alpha-1} \exp(-\beta x)$$ with shape $\alpha$ and rate $\beta$ is the conjugate prior for the Poisson. For an $n$-sample of independent observations $\mathsf{Poisson}(\mu)$ observations with $\mu \sim \mathsf{Gamma}(\alpha, \beta)$, the posterior is $\mathsf{Gamma}(\sum_{i=1}^n y_i + \alpha, \beta + n)$.
 
 
 :::
@@ -143,11 +143,11 @@ Knowing the analytic expression for the posterior can be useful for calculations
 
 ## Negative binomial as a Poisson mixture
 
-<!-- Some canonical distributions have only one parameter which dictates moments: for a Poisson random variable $Y \sim \mathsf{Pois}(\lambda)$, both $\mathsf{E}(Y) = \mathsf{Va}(Y) = \lambda$, whereas if we have binomial data with $n$ independent trials, each with probability of success $p$, then $Y \sim \mathsf{Bin}(n, p)$, then the theoretical mean of successes is $\mathsf{E}(Y)=np$ and the variance $\mathsf{Va}(Y) = np(1-p)$. -->
+<!-- Some canonical distributions have only one parameter which dictates moments: for a Poisson random variable $Y \sim \mathsf{Poisson}(\lambda)$, both $\mathsf{E}(Y) = \mathsf{Va}(Y) = \lambda$, whereas if we have binomial data with $n$ independent trials, each with probability of success $p$, then $Y \sim \mathsf{Bin}(n, p)$, then the theoretical mean of successes is $\mathsf{E}(Y)=np$ and the variance $\mathsf{Va}(Y) = np(1-p)$. -->
 <!-- In generalized linear models, we model the mean as a function of covariate, but data may exhibit overdispersion relative to the theoretical mean. -->
 One restriction of the Poisson model is that the restriction on its moments is often unrealistic. The most frequent problem encountered is that of **overdispersion**, meaning that the variability in the counts is larger than that implied by a Poisson distribution. 
 
-One common framework for handling overdispersion is to have $Y \mid \Lambda = \lambda \sim \mathsf{Pois}(\lambda)$, where the mean of the Poisson distribution is itself a positive random variable with mean $\mu$, if $\Lambda$ follows a conjugate gamma distribution with shape $k\mu$ and rate $k>0$, $\Lambda \sim \mathsf{Gamma}(k\mu, k)$, the posterior $\Lambda \mid Y=y \sim \mathsf{Gamma}(k\mu + y, k+1)$.
+One common framework for handling overdispersion is to have $Y \mid \Lambda = \lambda \sim \mathsf{Poisson}(\lambda)$, where the mean of the Poisson distribution is itself a positive random variable with mean $\mu$, if $\Lambda$ follows a conjugate gamma distribution with shape $k\mu$ and rate $k>0$, $\Lambda \sim \mathsf{Gamma}(k\mu, k)$, the posterior $\Lambda \mid Y=y \sim \mathsf{Gamma}(k\mu + y, k+1)$.
 
 Since the joint density of $Y$ and $\Lambda$ can be written
 $$
@@ -253,7 +253,7 @@ postH3 <- rgamma(1e5, shape = 0.01 + 31, rate = 3112 + 1.64)
 prob_sup <- mean(postH3 > postH1)
 ```
 
-We can visualize the posterior distributions. In this context, the large sample size lead to the dominance of the likelihood contribution $p(Y_i \mid \lambda_i) \sim \mathsf{Pois}(n_i\lambda_i)$ relative to the prior. We can see there is virtually no overlap between different rates for headers H1 (preferred) relative to H4 (least favorable). The probability that the conversion rate for Headline 3 is higher than Headline 1 can be approximated by simulating samples from both posteriors and computing the proportion of times one is larger: we get `r round(100*prob_sup, 1)`% for `H3` relative to `H1`, indicating a clear preference for the first headline `H1`.
+We can visualize the posterior distributions. In this context, the large sample size lead to the dominance of the likelihood contribution $p(Y_i \mid \lambda_i) \sim \mathsf{Poisson}(n_i\lambda_i)$ relative to the prior. We can see there is virtually no overlap between different rates for headers H1 (preferred) relative to H4 (least favorable). The probability that the conversion rate for Headline 3 is higher than Headline 1 can be approximated by simulating samples from both posteriors and computing the proportion of times one is larger: we get `r round(100*prob_sup, 1)`% for `H3` relative to `H1`, indicating a clear preference for the first headline `H1`.
 
 :::
 
@@ -340,12 +340,12 @@ To get an approximation to the posterior mean of the ratio $\lambda_1/\lambda_2,
 
 ## Conjugate prior for Gaussian mean with known variance
 
-Consider an $n$ simple random sample of independent and identically distributed Gaussian variables with mean $\mu$ and standard deviation $\sigma$, denoted $Y_i \sim \mathsf{Norm}(\mu, \sigma^2)$. We pick a Gaussian prior for the location parameter, $\mu \sim \mathsf{Norm}(\nu, \tau^2)$ where we assume $\mu, \tau$ are fixed hyperparameter values. For now, we consider only inference for $p(\mu \mid \sigma)$: discarding any term that is not a function of $\mu$, the conditional posterior is 
+Consider an $n$ simple random sample of independent and identically distributed Gaussian variables with mean $\mu$ and standard deviation $\sigma$, denoted $Y_i \sim \mathsf{Gauss}(\mu, \sigma^2)$. We pick a Gaussian prior for the location parameter, $\mu \sim \mathsf{Gauss}(\nu, \tau^2)$ where we assume $\mu, \tau$ are fixed hyperparameter values. For now, we consider only inference for $p(\mu \mid \sigma)$: discarding any term that is not a function of $\mu$, the conditional posterior is
 \begin{align*}
 p(\mu \mid \sigma) &\propto \exp\left\{ -\frac{1}{2\sigma^2}\sum_{i=1}^n (y_{i}-\mu)^2\right\} \exp\left\{-\frac{1}{2\tau^2}(\mu - \nu)^2\right\}
 \\&\propto \exp\left\{\left(\frac{\sum_{i=1}^n y_{i}}{\sigma^2} + \frac{\nu}{\tau^2}\right)\mu - \left( \frac{n}{2\sigma^2} +\frac{1}{2\tau^2}\right)\mu^2\right\}.
 \end{align*}
-The log of the posterior density conditional on $\sigma$ is quadratic in $\mu$, it must be a Gaussian distribution truncated over the positive half line. This can be seen by completing the square in $\mu$, or by comparing this expression to the density of $\mathsf{Norm}(\mu, \sigma^2)$,
+The log of the posterior density conditional on $\sigma$ is quadratic in $\mu$, it must be a Gaussian distribution truncated over the positive half line. This can be seen by completing the square in $\mu$, or by comparing this expression to the density of $\mathsf{Gauss}(\mu, \sigma^2)$,
 \begin{align*}
 f(x; \mu, \sigma) \stackrel{\mu}{\propto} \exp\left(-\frac{1}{2 \sigma^2}\mu^2 + \frac{x}{\sigma^2}\mu\right)
 \end{align*}
@@ -379,7 +379,7 @@ The best example of prior priors arise from probability density function. We can
 
 Many uninformative priors are flat, or proportional to a uniform on some subset of the real line and therefore improper. It may be superficially tempting to set a uniform prior on a large range to ensure posterior property, but the major problem is that a flat prior may be informative in a different parametrization, as the following example suggests.
 
-@Gelman:2013 uses the following taxonomy for various levels of prior information: uninformative priors are generally flat or uniform priors with $p(\beta) \propto 1$, vague priors are typically nearly flat even if proper, e.g., $\beta \sim \mathsf{Norm}(0, 100)$, weakly informative priors provide little constraints $\beta \sim \mathsf{Norm}(0, 10)$, and informative prior are typically application-specific, but constrain the ranges. Uninformative and vague priors are generally not recommended unless they are known to give valid posterior inference and the amount of information from the likelihood is high.
+@Gelman:2013 uses the following taxonomy for various levels of prior information: uninformative priors are generally flat or uniform priors with $p(\beta) \propto 1$, vague priors are typically nearly flat even if proper, e.g., $\beta \sim \mathsf{Gauss}(0, 100)$, weakly informative priors provide little constraints $\beta \sim \mathsf{Gauss}(0, 10)$, and informative prior are typically application-specific, but constrain the ranges. Uninformative and vague priors are generally not recommended unless they are known to give valid posterior inference and the amount of information from the likelihood is high.
 
 :::{#exm-scaleflatprior}
 
@@ -446,7 +446,7 @@ Jeffrey's prior is thus $p(\theta) \propto \theta^{-1/2}(1-\theta)^{-1/2}$, a co
 
 ## Jeffrey's prior for the normal distribution
 
-Check that for the Gaussian distribution $\mathsf{Norm}(\mu, \sigma^2)$, the Jeffrey's prior obtained by treating each parameter as fixed in turn, are $p(\mu) \propto 1$ and $p(\sigma) \propto 1/\sigma$, which also correspond to the default uninformative priors for location-scale families. 
+Check that for the Gaussian distribution $\mathsf{Gauss}(\mu, \sigma^2)$, the Jeffrey's prior obtained by treating each parameter as fixed in turn, are $p(\mu) \propto 1$ and $p(\sigma) \propto 1/\sigma$, which also correspond to the default uninformative priors for location-scale families.
 
 
 :::
@@ -625,7 +625,7 @@ which is zero at the model with $\zeta_0$. The PC prior then constructs an expon
 
 ## Penalized complexity prior for random effects models
 
-@Simpson:2017 give the example of a Gaussian prior for random effects $\boldsymbol{\alpha}$, of the form $\boldsymbol{\alpha} \mid \zeta \sim \mathsf{Norm}_J(\boldsymbol{0}_J, \zeta^2 \mathbf{I}_J)$ where $\zeta_0=0$ corresponds to the absence of random subject-variability. The penalized complexity prior for the scale $\zeta$ is then an exponential with rate $\lambda$,^[Possibly truncated above if the support of $\zeta$ has a finite upper bound.] with density $p(\zeta \mid \lambda) = \lambda \exp(-\lambda \zeta)$. Using the recommendation for setting $\lambda$, we get that $\lambda = -\ln(\alpha/U)$ and this can be directly interpreted in terms of standard deviation of $\zeta$; simulation from the prior predictive may also be used for calibration.
+@Simpson:2017 give the example of a Gaussian prior for random effects $\boldsymbol{\alpha}$, of the form $\boldsymbol{\alpha} \mid \zeta \sim \mathsf{Gauss}_J(\boldsymbol{0}_J, \zeta^2 \mathbf{I}_J)$ where $\zeta_0=0$ corresponds to the absence of random subject-variability. The penalized complexity prior for the scale $\zeta$ is then an exponential with rate $\lambda$,^[Possibly truncated above if the support of $\zeta$ has a finite upper bound.] with density $p(\zeta \mid \lambda) = \lambda \exp(-\lambda \zeta)$. Using the recommendation for setting $\lambda$, we get that $\lambda = -\ln(\alpha/U)$ and this can be directly interpreted in terms of standard deviation of $\zeta$; simulation from the prior predictive may also be used for calibration.
 
 :::
 
@@ -634,7 +634,7 @@ which is zero at the model with $\zeta_0$. The PC prior then constructs an expon
 
 ## Penalized complexity prior for autoregressive model of order 1
 
-@Sorbye.Rue:2017 derive penalized complexity prior for the Gaussian stationary AR(1) model with autoregressive parameter $\phi \in (-1,1)$, where $Y_t \mid Y_{t-1}, \phi, \sigma^2 \sim \mathsf{Norm}(\phi Y_{t-1}, \sigma^2)$. There are two based models that could be of interest: one with $\phi=0$, corresponding to a memoryless model with no autocorrelation, and a static mean $\phi=1$ for no change in time;  note that the latter is not stationary. For the former, the penalized complexity prior is 
+@Sorbye.Rue:2017 derive penalized complexity prior for the Gaussian stationary AR(1) model with autoregressive parameter $\phi \in (-1,1)$, where $Y_t \mid Y_{t-1}, \phi, \sigma^2 \sim \mathsf{Gauss}(\phi Y_{t-1}, \sigma^2)$. There are two based models that could be of interest: one with $\phi=0$, corresponding to a memoryless model with no autocorrelation, and a static mean $\phi=1$ for no change in time;  note that the latter is not stationary. For the former, the penalized complexity prior is
 \begin{align*}
 p(\phi \mid \lambda) = \frac{\lambda}{2} \exp\left[-\lambda \left\{-\ln(1-\phi^2)\right\}^{1/2}\right] \frac{|\phi|}{(1-\phi^2)\left\{-\ln(1-\phi^2)\right\}^{1/2}}.
 \end{align*}
@@ -645,7 +645,7 @@ One can set $\lambda$ by considering plausible values by relating the parameter 
 
 Gaussian components are widespread: not only for linear regression models, but more generally for the specification of random effects that capture group-specific effects, residuals spatial or temporal variability. In the Bayesian paradigm, there is no difference between fixed effects $\boldsymbol{\beta}$ and the random effect parameters: both are random quantities that get assigned priors, but we will treat these priors differently. 
 
-The reason why we would like to use a penalized complexity prior for a random effect, say $\alpha_j \sim \mathsf{Norm}(0, \zeta^2)$, is because we don't know a prior if there is variability between groups. The inverse gamma prior for $\zeta$, $\zeta \sim \mathsf{InvGamma}(\epsilon, \epsilon)$ does not have a mode at zero unless it is improper with $\epsilon \to 0$. Generally, we want our prior for the variance to have significant probability density at the null $\zeta=0$. The penalized complexity prior is not the only sensible choice. Posterior inference is unfortunately sensitive to the value of $\epsilon$ in hierarchical models when the random effect variance is close to zero, and more so when there are few levels for the groups since the relative weight of the prior relative to that of the likelihood contribution is then large.
+The reason why we would like to use a penalized complexity prior for a random effect, say $\alpha_j \sim \mathsf{Gauss}(0, \zeta^2)$, is because we don't know a prior if there is variability between groups. The inverse gamma prior for $\zeta$, $\zeta \sim \mathsf{InvGamma}(\epsilon, \epsilon)$ does not have a mode at zero unless it is improper with $\epsilon \to 0$. Generally, we want our prior for the variance to have significant probability density at the null $\zeta=0$. The penalized complexity prior is not the only sensible choice. Posterior inference is unfortunately sensitive to the value of $\epsilon$ in hierarchical models when the random effect variance is close to zero, and more so when there are few levels for the groups since the relative weight of the prior relative to that of the likelihood contribution is then large.
 
 :::{#exm-random-effect-variance}
 
@@ -654,12 +654,12 @@ The reason why we would like to use a penalized complexity prior for a random ef
 
 @Gelman:2006 recommends a Student-$t$ distribution truncated below at $0$, with low degrees of freedom. The rationale for this choice comes from the simple two level model with $n_j$ independent in each group $j=1, \ldots, J$: for observation $i$ in group $j$,
 \begin{align*}
-Y_{ij} &\sim \mathsf{Norm}(\mu + \alpha_j, \sigma^2),\\
-\alpha_j &\sim \mathsf{Norm}(0, \tau^2_\alpha), 
+Y_{ij} &\sim \mathsf{Gauss}(\mu + \alpha_j, \sigma^2),\\
+\alpha_j &\sim \mathsf{Gauss}(0, \tau^2_\alpha),
 \end{align*}
 The conditionally conjugate prior $p(\tau \mid \boldsymbol{\alpha}, \mu, \sigma)$ is inverse gamma. Standard inference with this parametrization is however complicated, because there is strong dependence between parameters.
 
-To reduce this dependence, one can add a parameter, taking $\alpha_j = \xi \eta_j$ and $\tau_\alpha=|\xi|\tau_{\eta}$; the model is now overparametrized. Suppose  $\eta_j \sim \mathsf{Norm}(0, \tau^2_\eta)$ and consider the likelihood conditional on $\mu, \eta_j$: we have that $(y_{ij} - \mu)/\eta_j \sim \mathsf{Norm}(\xi, \sigma^2/\eta_j)$ so conditionally conjugate priors for $\xi$ and $\tau_\eta$ are respectively Gaussian and inverse gamma. This translates into a prior distribution for $\tau_\alpha$ which is that of the absolute value of a noncentral Student-$t$ with location, scale and degrees of freedom $\nu$. If we set the location to zero, the prior puts high mass at the origin, but is heavy tailed with polynomial decay. We recommend to set degrees of freedom so that the variance is heavy-tailed, e.g., $\nu=3$. While this prior is not conjugate, it compares favorably to the $\mathsf{IGa}(\epsilon, \epsilon)$.
+To reduce this dependence, one can add a parameter, taking $\alpha_j = \xi \eta_j$ and $\tau_\alpha=|\xi|\tau_{\eta}$; the model is now overparametrized. Suppose  $\eta_j \sim \mathsf{Gauss}(0, \tau^2_\eta)$ and consider the likelihood conditional on $\mu, \eta_j$: we have that $(y_{ij} - \mu)/\eta_j \sim \mathsf{Gauss}(\xi, \sigma^2/\eta_j)$ so conditionally conjugate priors for $\xi$ and $\tau_\eta$ are respectively Gaussian and inverse gamma. This translates into a prior distribution for $\tau_\alpha$ which is that of the absolute value of a noncentral Student-$t$ with location, scale and degrees of freedom $\nu$. If we set the location to zero, the prior puts high mass at the origin, but is heavy tailed with polynomial decay. We recommend to set degrees of freedom so that the variance is heavy-tailed, e.g., $\nu=3$. While this prior is not conjugate, it compares favorably to the $\mathsf{inv. gamma}(\epsilon, \epsilon)$.
 
 
 :::
@@ -672,10 +672,10 @@ We consider data from an experimental study conducted at Tech3Lab on road safety
 
 We model the data using a Poisson mixed model to measure the number of violations, `nviolation`, with a fixed effect for `task`, which captures the type of distraction, and a random effect for participant `id`. The hierarchical model fitted for individual $i$ $(i=1, \ldots, 34)$ and distraction type $j$  $(j=1, \ldots, 4)$ is
 \begin{align*}
-Y_{ij} &\sim \mathsf{Pois}\{\mu = \exp(\beta_{j} + \alpha_i)\},\\
-\beta_j &\sim \mathsf{Norm}(0, 100), \\
-\alpha_i &\sim \mathsf{Norm}(0, \kappa^2), \\
-\kappa &\sim \mathsf{St}_{+}(3).
+Y_{ij} &\sim \mathsf{Poisson}\{\mu = \exp(\beta_{j} + \alpha_i)\},\\
+\beta_j &\sim \mathsf{Gauss}(0, 100), \\
+\alpha_i &\sim \mathsf{Gauss}(0, \kappa^2), \\
+\kappa &\sim \mathsf{Student}_{+}(3).
 \end{align*}
 so observations are conditionally independent given hyperparameters $\boldsymbol{\alpha}$ and $\boldsymbol{\beta}$.
 

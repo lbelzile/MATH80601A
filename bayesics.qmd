@@ -536,7 +536,7 @@ g1
 
 ## Posterior predictive distribution of univariate Gaussian with known mean
 
-Consider an $n$ sample of independent and identically distributed Gaussian, $Y_i \sim \mathsf{Norm}(0, \tau^{-1})$ ($i=1, \ldots, n$), where we assign a gamma prior on the precision $\tau \sim \mathsf{Ga}(\alpha, \beta)$. The posterior is
+Consider an $n$ sample of independent and identically distributed Gaussian, $Y_i \sim \mathsf{Gauss}(0, \tau^{-1})$ ($i=1, \ldots, n$), where we assign a gamma prior on the precision $\tau \sim \mathsf{gamma}(\alpha, \beta)$. The posterior is
 \begin{align*}
 p(\tau \mid \boldsymbol{y}) \stackrel{\tau}{\propto} \prod_{i=1}^n \tau^{n/2}\exp\left(-\tau \frac{\sum_{i=1}^n{y_i^2}}{2}\right) \times \tau^{\alpha-1} \exp(-\beta \tau)
 \end{align*}
