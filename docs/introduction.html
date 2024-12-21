@@ -245,12 +245,8 @@ window.Quarto = {
   <li><a href="#common-distributions" id="toc-common-distributions" class="nav-link" data-scroll-target="#common-distributions"><span class="header-section-number">1.1.1</span> Common distributions</a></li>
   <li><a href="#marginal-and-conditional-distributions" id="toc-marginal-and-conditional-distributions" class="nav-link" data-scroll-target="#marginal-and-conditional-distributions"><span class="header-section-number">1.1.2</span> Marginal and conditional distributions</a></li>
   </ul></li>
-  <li><a href="#complementary-material" id="toc-complementary-material" class="nav-link" data-scroll-target="#complementary-material"><span class="header-section-number">2</span> Complementary material</a>
-  <ul class="collapse">
-  <li><a href="#bayes-theorem" id="toc-bayes-theorem" class="nav-link" data-scroll-target="#bayes-theorem"><span class="header-section-number">2.1</span> Bayes theorem</a></li>
-  <li><a href="#likelihood" id="toc-likelihood" class="nav-link" data-scroll-target="#likelihood"><span class="header-section-number">2.2</span> Likelihood</a></li>
-  <li><a href="#monte-carlo-methods" id="toc-monte-carlo-methods" class="nav-link" data-scroll-target="#monte-carlo-methods"><span class="header-section-number">2.3</span> Monte Carlo methods</a></li>
-  </ul></li>
+  <li><a href="#likelihood" id="toc-likelihood" class="nav-link" data-scroll-target="#likelihood"><span class="header-section-number">1.2</span> Likelihood</a></li>
+  <li><a href="#monte-carlo-methods" id="toc-monte-carlo-methods" class="nav-link" data-scroll-target="#monte-carlo-methods"><span class="header-section-number">1.3</span> Monte Carlo methods</a></li>
   </ul>
 <div class="toc-actions"><ul><li><a href="https://github.com/lbelzile/MATH80601A/edit/main/introduction.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li></ul></div></nav>
     </div>
@@ -263,61 +259,68 @@ window.Quarto = {
 </header>
 
 
-<p>This section review basic concepts in probability theory that will be used in the sequel. The overview begins with basic statistical concepts, random variables, their distribution and density, moments and likelihood derivations.</p>
+<p>This section review basic concepts in probability theory that will be used throughout the course. The overview begins with basic statistical concepts, random variables, their distribution and density, moments and likelihood derivations.</p>
 <section id="random-vectors" class="level2" data-number="1.1">
 <h2 data-number="1.1" class="anchored" data-anchor-id="random-vectors"><span class="header-section-number">1.1</span> Random vectors</h2>
-<p>In the sequel, we characterize random vectors and their marginal, conditional and joint distributions. A good reference for this material is Chapter 3 of <span class="citation" data-cites="McNeil.Frey.Embrechts:2005">McNeil, Frey, and Embrechts (<a href="references.html#ref-McNeil.Frey.Embrechts:2005" role="doc-biblioref">2005</a>)</span>.</p>
+<p>We begin with a characterization of random vectors and their marginal, conditional and joint distributions. A good reference for this material is Chapter 3 of <span class="citation" data-cites="McNeil.Frey.Embrechts:2005">McNeil, Frey, and Embrechts (<a href="references.html#ref-McNeil.Frey.Embrechts:2005" role="doc-biblioref">2005</a>)</span>.</p>
 <div id="def-cdf" class="theorem definition">
 <p><span class="theorem-title"><strong>Definition 1.1 (Density and distribution function)</strong></span> Let <span class="math inline">\(\boldsymbol{X}\)</span> denote a <span class="math inline">\(d\)</span>-dimensional vector with real entries in <span class="math inline">\(\mathbb{R}^d\)</span>. The distribution function of <span class="math inline">\(\boldsymbol{X}\)</span> is <span class="math display">\[\begin{align*}
-F_{1:d}(\boldsymbol{x}) = \Pr(\boldsymbol{X} \leq \boldsymbol{x}) = \Pr(X_1 \leq x_1, \ldots, X_d \leq x_d).
-\end{align*}\]</span> We use indices to explicit which components of <span class="math inline">\(\boldsymbol{X}\)</span> are under consideration, with the convention <span class="math inline">\({1\!:\!d} = \{1, \ldots, d\}\)</span>.</p>
+F_{\boldsymbol{X}}(\boldsymbol{x}) = \Pr(\boldsymbol{X} \leq \boldsymbol{x}) = \Pr(X_1 \leq x_1, \ldots, X_d \leq x_d).
+\end{align*}\]</span></p>
 <p>If the distribution of <span class="math inline">\(\boldsymbol{X}\)</span> is absolutely continuous, we may write <span class="math display">\[\begin{align*}
-F_{1:d}(\boldsymbol{x}) = \int_{-\infty}^{x_d} \cdots \int_{-\infty}^{x_1} f_{1:d}(z_1, \ldots, z_d) \mathrm{d} z_1 \cdots \mathrm{d} z_d,
-\end{align*}\]</span> where <span class="math inline">\(f_{1:d}(\boldsymbol{x})\)</span> is the joint <strong>density function</strong>. The density function can be obtained as the derivative of the distribution function with respect to all of it’s arguments.</p>
-<p>We use the same notation and talk about the density function (rather than mass function) in the discrete case where <span class="math inline">\(f_{\boldsymbol{X}}(\boldsymbol{x}) = \Pr(X_1 = x_1, \ldots, X_d = x_d)\)</span>, where the integral is understood to mean a summation over all values lower or equal to <span class="math inline">\(\boldsymbol{x}\)</span> in the support.</p>
+F_{\boldsymbol{X}}(\boldsymbol{x}) = \int_{-\infty}^{x_d} \cdots \int_{-\infty}^{x_1} f_{\boldsymbol{X}}(z_1, \ldots, z_d) \mathrm{d} z_1 \cdots \mathrm{d} z_d,
+\end{align*}\]</span> where <span class="math inline">\(f_{\boldsymbol{X}}(\boldsymbol{x})\)</span> is the joint <strong>density function</strong>. The density function can be obtained as the derivative of the distribution function with respect to all of it’s arguments.</p>
+<p>We use the same notation for the mass function in the discrete case where <span class="math inline">\(f_{\boldsymbol{X}}(\boldsymbol{x}) = \Pr(X_1 = x_1, \ldots, X_d = x_d)\)</span>, where the integral is understood to mean a summation over all values lower or equal to <span class="math inline">\(\boldsymbol{x}\)</span> in the support. In the discrete case, <span class="math inline">\(0 \leq f_{\boldsymbol{X}}(\boldsymbol{x}) \leq 1\)</span> is a probability and the total probability over all points in the support sum to one, meaning <span class="math inline">\(\sum_{\boldsymbol{x} \in \mathsf{supp}(\boldsymbol{X})} f_{\boldsymbol{X}}(\boldsymbol{x}) = 1.\)</span></p>
+</div>
+<div id="def-location-scale" class="theorem definition">
+<p><span class="theorem-title"><strong>Definition 1.2 (Location and scale distribution)</strong></span> A random variable <span class="math inline">\(Y\)</span> is said to belong to a location scale family with location parameter <span class="math inline">\(b\)</span> and scale <span class="math inline">\(a&gt;0\)</span> if it is equal in distribution to a location and scale transformation of a standard variable <span class="math inline">\(X\)</span> with location zero and unit scale, denoted <span class="math inline">\(Y \stackrel{\mathrm{d}}{=} aX + b\)</span> and meaning, <span class="math display">\[\Pr(Y \leq y) = \Pr(aX + b \leq y).\]</span> If the density exists, then <span class="math inline">\(f_Y(y) = a^{-1}f_X\{(y-b)/a\}\)</span>.</p>
+<p>We can extend this definition to the multivariate setting for location vector <span class="math inline">\(\boldsymbol{b} \in \mathbb{R}^d\)</span> and positive definite scale matrix <span class="math inline">\(\mathbf{A}\)</span>, such that <span class="math display">\[\Pr(\boldsymbol{Y} \leq \boldsymbol{y}) = \Pr(\boldsymbol{b} + \mathbf{A}\boldsymbol{X} \leq \boldsymbol{y}).\]</span></p>
+</div>
+<div id="def-exponential-family" class="theorem definition">
+<p><span class="theorem-title"><strong>Definition 1.3 (Exponential family)</strong></span> A univariate distribution is an exponential family if it’s density or mass function can be written for all <span class="math inline">\(y \in \mathbb{R}\)</span> as <span class="math display">\[\begin{align*}
+f(y; \boldsymbol{\theta}) = \exp\left\{ \sum_{k=1}^K Q_k(\boldsymbol{\theta}) t_k(y) + D(\boldsymbol{\theta}) + h(y)\right\},
+\end{align*}\]</span> where functions <span class="math inline">\(Q_1(\cdot), \ldots, Q_K(\cdot)\)</span> and <span class="math inline">\(D(\cdot)\)</span> depend only on <span class="math inline">\(\boldsymbol{\theta}\)</span> and not on the data, and conversely <span class="math inline">\(t_1(\cdot), \ldots, t_K(\cdot)\)</span> and <span class="math inline">\(h(\cdot)\)</span> do not depend on the vector of parameters <span class="math inline">\(\boldsymbol{\theta}\)</span>.</p>
+<p>The support of <span class="math inline">\(f\)</span> must not depend on <span class="math inline">\(\boldsymbol{\theta}\)</span>. The transformed parameters <span class="math inline">\(Q_k(\boldsymbol{\theta})\)</span> <span class="math inline">\((k=1, \ldots, K)\)</span> are termed canonical parameters.</p>
 </div>
 <section id="common-distributions" class="level3" data-number="1.1.1">
 <h3 data-number="1.1.1" class="anchored" data-anchor-id="common-distributions"><span class="header-section-number">1.1.1</span> Common distributions</h3>
 <div id="def-gamma" class="theorem definition">
-<p><span class="theorem-title"><strong>Definition 1.2 (Gamma, chi-square and exponential distributions)</strong></span> A random variable follows a gamma distribution with shape <span class="math inline">\(\alpha&gt;0\)</span> and rate <span class="math inline">\(\beta&gt;0\)</span>, denoted <span class="math inline">\(Y \sim \mathsf{gamma}(\alpha, \beta)\)</span>, if it’s density is <span class="math display">\[\begin{align*}
+<p><span class="theorem-title"><strong>Definition 1.4 (Gamma, chi-square and exponential distributions)</strong></span> A random variable follows a gamma distribution with shape <span class="math inline">\(\alpha&gt;0\)</span> and rate <span class="math inline">\(\beta&gt;0\)</span>, denoted <span class="math inline">\(Y \sim \mathsf{gamma}(\alpha, \beta)\)</span>, if it’s density is <span class="math display">\[\begin{align*}
 f(x) = \frac{\beta^\alpha}{\Gamma(\alpha)}x^{\alpha-1}\exp(-\beta x), \qquad x \in (0, \infty),
 \end{align*}\]</span> where <span class="math inline">\(\Gamma(\alpha)\coloneqq\int_0^\infty t^{\alpha-1}\exp(-t)\mathrm{d} t\)</span> is the gamma function.</p>
 <p>If <span class="math inline">\(\alpha=1\)</span>, the density simplifies to <span class="math inline">\(\beta \exp(-\beta x)\)</span> and we recover the <strong>exponential distribution</strong>, denote <span class="math inline">\(\mathsf{expo}(\beta)\)</span>. The case <span class="math inline">\(\mathsf{gamma}(\nu/2, 1/2)\)</span> corresponds to the chi-square distribution <span class="math inline">\(\chi^2_\nu\)</span>.</p>
 </div>
 <div id="def-beta" class="theorem definition">
-<p><span class="theorem-title"><strong>Definition 1.3 (Beta and uniform distribution)</strong></span> The beta distribution <span class="math inline">\(\mathsf{beta}(\alpha_1, \alpha_2)\)</span> is a distribution supported on the unit interval <span class="math inline">\([0,1]\)</span> with shape parameters <span class="math inline">\(\alpha_1&gt;0\)</span> and <span class="math inline">\(\alpha_2&gt;0.\)</span> It’s density is <span class="math display">\[\begin{align*}
+<p><span class="theorem-title"><strong>Definition 1.5 (Beta and uniform distribution)</strong></span> The beta distribution <span class="math inline">\(\mathsf{beta}(\alpha_1, \alpha_2)\)</span> is a distribution supported on the unit interval <span class="math inline">\([0,1]\)</span> with shape parameters <span class="math inline">\(\alpha_1&gt;0\)</span> and <span class="math inline">\(\alpha_2&gt;0.\)</span> It’s density is <span class="math display">\[\begin{align*}
 f(x) = \frac{\Gamma(\alpha_1)\Gamma(\alpha_2)}{\Gamma(\alpha_1+\alpha_2)}x^{\alpha_1-1}(1-x)^{1-\alpha_2}, \qquad x \in [0,1].
 \end{align*}\]</span> The case <span class="math inline">\(\mathsf{beta}(1,1)\)</span>, also denoted <span class="math inline">\(\mathsf{unif}(0,1)\)</span>, corresponds to a standard uniform distribution.</p>
 </div>
 <p>The beta distribution is commonly used to model proportions, and can be generalized to the multivariate setting as follows.</p>
 <div id="def-dirichlet-dist" class="theorem definition">
-<p><span class="theorem-title"><strong>Definition 1.4 (Dirichlet distribution)</strong></span> Let <span class="math inline">\(\boldsymbol{\alpha} \in (0, \infty)^d\)</span> denote shape parameters and cosider a random vector of size <span class="math inline">\(d\)</span> with positive components on the simplex <span class="math display">\[\mathbb{S}_{d-1}: \{ 0 \leq x_j \leq 1; j=1, \ldots, d: x_1 + \cdots + x_d=1\}.\]</span> The density of a <strong>Dirichlet</strong> random vector, denoted <span class="math inline">\(\boldsymbol{Y} \sim \mathsf{Dirichlet}(\boldsymbol{\alpha})\)</span>, is <span class="math display">\[\begin{align*}
+<p><span class="theorem-title"><strong>Definition 1.6 (Dirichlet distribution)</strong></span> Let <span class="math inline">\(\boldsymbol{\alpha} \in (0, \infty)^d\)</span> denote shape parameters and cosider a random vector of size <span class="math inline">\(d\)</span> with positive components on the simplex <span class="math display">\[\mathbb{S}_{d-1}: \{ 0 \leq x_j \leq 1; j=1, \ldots, d: x_1 + \cdots + x_d=1\}.\]</span> The density of a <strong>Dirichlet</strong> random vector, denoted <span class="math inline">\(\boldsymbol{Y} \sim \mathsf{Dirichlet}(\boldsymbol{\alpha})\)</span>, is <span class="math display">\[\begin{align*}
 f(\boldsymbol{x}) = \frac{\prod_{j=1}^{d-1}\Gamma(\alpha_j)}{\Gamma(\alpha_1 + \cdots + \alpha_d)}\prod_{j=1}^{d} x_j^{\alpha_j-1}, \qquad \boldsymbol{x} \in \mathbb{S}_{d-1}
 \end{align*}\]</span></p>
 <p>Due to the linear dependence, the <span class="math inline">\(d\)</span>th component <span class="math inline">\(x_d = 1- x_1 - \cdots - x_{d-1}\)</span> is fully determined.</p>
 </div>
 <div id="def-binomial" class="theorem definition">
-<p><span class="theorem-title"><strong>Definition 1.5 (Binomial distribution)</strong></span> The density of the binomial distribution, denoted <span class="math inline">\(Y \sim \mathsf{binom}(n, p)\)</span>, is <span class="math display">\[\begin{align*}
+<p><span class="theorem-title"><strong>Definition 1.7 (Binomial distribution)</strong></span> The density of the binomial distribution, denoted <span class="math inline">\(Y \sim \mathsf{binom}(n, p)\)</span>, is <span class="math display">\[\begin{align*}
 f(x) = \mathsf{Pr}(Y=x) = \binom{m}{x}p^x (1-p)^{m-x}, \quad x=0, 1, \ldots, n.
 \end{align*}\]</span></p>
 <p>If <span class="math inline">\(n=1\)</span>, we recover the Bernoulli distribution with density <span class="math inline">\(f(x) = p^{y}(1-p)^{1-y}\)</span>. The binomial distribution is closed under convolution, meaning that the number the number of successes <span class="math inline">\(Y\)</span> out of <span class="math inline">\(n\)</span> Bernoulli trials is binomial</p>
 </div>
 <div id="def-multinom-dist" class="theorem definition">
-<p><span class="theorem-title"><strong>Definition 1.6 (Multinomial distribution)</strong></span> If there are more than two outcomes, say <span class="math inline">\(d\)</span>, we can generalize this mass function. Suppose that <span class="math inline">\(\boldsymbol{Y}=(Y_1, \ldots, Y_d)\)</span> denotes the number of realizations of each of the <span class="math inline">\(d\)</span> outcomes based on <span class="math inline">\(n\)</span> trials, so that <span class="math inline">\(0 \leq Y_j \leq n (j=1, \ldots, d)\)</span> and <span class="math inline">\(Y_1 + \cdots + Y_d=n\)</span>. The joint density of the multinomial vector <span class="math inline">\(\boldsymbol{Y} \sim \mathsf{multinom}(\boldsymbol{p})\)</span> with probability vector <span class="math inline">\(\boldsymbol{p} \in \mathbb{S}_{d-1}\)</span> is <span class="math display">\[\begin{align*}
+<p><span class="theorem-title"><strong>Definition 1.8 (Multinomial distribution)</strong></span> If there are more than two outcomes, say <span class="math inline">\(d\)</span>, we can generalize this mass function. Suppose that <span class="math inline">\(\boldsymbol{Y}=(Y_1, \ldots, Y_d)\)</span> denotes the number of realizations of each of the <span class="math inline">\(d\)</span> outcomes based on <span class="math inline">\(n\)</span> trials, so that <span class="math inline">\(0 \leq Y_j \leq n (j=1, \ldots, d)\)</span> and <span class="math inline">\(Y_1 + \cdots + Y_d=n\)</span>. The joint density of the multinomial vector <span class="math inline">\(\boldsymbol{Y} \sim \mathsf{multinom}(\boldsymbol{p})\)</span> with probability vector <span class="math inline">\(\boldsymbol{p} \in \mathbb{S}_{d-1}\)</span> is <span class="math display">\[\begin{align*}
 f(\boldsymbol{x}) = \frac{n!}{\prod_{j=1}^d x_j!} \prod_{j=1}^d p_j^{x_j}, \qquad \boldsymbol{y}/n \in \mathbb{S}_{d-1},
 \end{align*}\]</span> where <span class="math inline">\(x! = \Gamma(x+1)\)</span> denotes the factorial function.</p>
 </div>
 <div id="def-poissondist" class="theorem definition">
-<p><span class="theorem-title"><strong>Definition 1.7 (Poisson distribution)</strong></span> If the probability of success <span class="math inline">\(p\)</span> of a Bernoulli event is small in the sense that <span class="math inline">\(np \to \lambda\)</span> when the number of trials <span class="math inline">\(n\)</span> increases, then the number of success follows approximately a Poisson distribution with mass function <span class="math display">\[\begin{align*}
+<p><span class="theorem-title"><strong>Definition 1.9 (Poisson distribution)</strong></span> If the probability of success <span class="math inline">\(p\)</span> of a Bernoulli event is small in the sense that <span class="math inline">\(np \to \lambda\)</span> when the number of trials <span class="math inline">\(n\)</span> increases, then the number of success follows approximately a Poisson distribution with mass function <span class="math display">\[\begin{align*}
 f(x)=\mathsf{Pr}(Y=x) = \frac{\exp(-\lambda)\lambda^y}{\Gamma(y+1)}, \quad x=0, 1, 2, \ldots
 \end{align*}\]</span> where <span class="math inline">\(\Gamma(\cdot)\)</span> denotes the gamma function. The parameter <span class="math inline">\(\lambda\)</span> of the Poisson distribution is both the expectation and the variance of the distribution, meaning <span class="math inline">\(\mathsf{E}(Y)=\mathsf{Va}(Y)=\lambda.\)</span> We denote the distribution as <span class="math inline">\(Y \sim \mathsf{Poisson}(\lambda)\)</span>.</p>
 </div>
-<div id="prp-location-scale" class="theorem proposition">
-<p><span class="theorem-title"><strong>Proposition 1.1 (Location and scale distribution)</strong></span> A distribution is said to belong to a location scale family with location <span class="math inline">\(\boldsymbol{\nu}\)</span> and</p>
-</div>
-<p>The most frequently encountered distribution is termed normal, but we use the terminology Gaussian in these notes.</p>
+<p>The most frequently encountered location-scale distribution is termed normal, but we use the terminology Gaussian in these notes.</p>
 <div id="def-gaussian" class="theorem definition">
-<p><span class="theorem-title"><strong>Definition 1.8 (Gaussian distribution)</strong></span> Consider a <span class="math inline">\(d\)</span> dimensional vector <span class="math inline">\(\boldsymbol{Y} \sim \mathsf{Gauss}_d(\boldsymbol{\mu}, \boldsymbol{Q}^{-1})\)</span> with density <span class="math display">\[\begin{align*}
+<p><span class="theorem-title"><strong>Definition 1.10 (Gaussian distribution)</strong></span> Consider a <span class="math inline">\(d\)</span> dimensional vector <span class="math inline">\(\boldsymbol{Y} \sim \mathsf{Gauss}_d(\boldsymbol{\mu}, \boldsymbol{Q}^{-1})\)</span> with density <span class="math display">\[\begin{align*}
 f(\boldsymbol{x}) = (2\pi)^{-d/2} |\boldsymbol{Q}|^{1/2} \exp \left\{ - \frac{1}{2} (\boldsymbol{x}-\boldsymbol{\mu})^\top \boldsymbol{Q}(\boldsymbol{x}-\boldsymbol{\mu})\right\}, \qquad \boldsymbol{x} \in \mathbb{R}^d
 \end{align*}\]</span></p>
 <p>The mean vector <span class="math inline">\(\boldsymbol{\mu}\)</span> is the vector of expectation of individual observations, whereas <span class="math inline">\(\boldsymbol{Q}^{-1}\equiv \boldsymbol{\Sigma}\)</span> is the <span class="math inline">\(d \times d\)</span> covariance matrix of <span class="math inline">\(\boldsymbol{Y}\)</span> and <span class="math inline">\(\boldsymbol{Q}\)</span>, the canonical parameter, is called the precision matrix.</p>
@@ -326,13 +329,13 @@ f(x) = (2\pi\sigma^2)^{-1/2} \exp \left\{ - \frac{(x-\mu)^2}{2\sigma^2}\right\},
 \end{align*}\]</span></p>
 </div>
 <div id="prp-gaussian-dist-property" class="theorem proposition">
-<p><span class="theorem-title"><strong>Proposition 1.2 (Simulation of Gaussian vectors)</strong></span> The Gaussian distribution is an elliptical distribution and a location-scale family: if <span class="math inline">\(\boldsymbol{L} = \mathrm{chol}(\boldsymbol{Q})\)</span>, meaning <span class="math inline">\(\boldsymbol{Q}=\boldsymbol{LL}^\top\)</span> for some lower triangular matrix <span class="math inline">\(\boldsymbol{L}\)</span>, then <span class="math display">\[\boldsymbol{L}^\top(\boldsymbol{Y}-\boldsymbol{\mu}) \sim \mathsf{Gauss}_d(\boldsymbol{0}_d, \mathbf{I}_d).\]</span> Conversely, we can use the Cholesky root to sample multivariate Gaussian vectors by first drawing <span class="math inline">\(d\)</span> independent standard Gaussians <span class="math inline">\(\boldsymbol{Z}=(Z_1, \ldots, Z_d)^\top\)</span>, then computing <span class="math display">\[\boldsymbol{Y} \gets \boldsymbol{L}^{-1}\boldsymbol{Z}+ \boldsymbol{\mu}.\]</span></p>
+<p><span class="theorem-title"><strong>Proposition 1.1 (Simulation of Gaussian vectors)</strong></span> The Gaussian distribution is an elliptical distribution and a location-scale family: if <span class="math inline">\(\boldsymbol{L} = \mathrm{chol}(\boldsymbol{Q})\)</span>, meaning <span class="math inline">\(\boldsymbol{Q}=\boldsymbol{LL}^\top\)</span> for some lower triangular matrix <span class="math inline">\(\boldsymbol{L}\)</span>, then <span class="math display">\[\boldsymbol{L}^\top(\boldsymbol{Y}-\boldsymbol{\mu}) \sim \mathsf{Gauss}_d(\boldsymbol{0}_d, \mathbf{I}_d).\]</span> Conversely, we can use the Cholesky root to sample multivariate Gaussian vectors by first drawing <span class="math inline">\(d\)</span> independent standard Gaussians <span class="math inline">\(\boldsymbol{Z}=(Z_1, \ldots, Z_d)^\top\)</span>, then computing <span class="math display">\[\boldsymbol{Y} \gets \boldsymbol{L}^{-1}\boldsymbol{Z}+ \boldsymbol{\mu}.\]</span></p>
 <!--
 Quadratic forms of Gaussians $(\boldsymbol{Y}-\boldsymbol{\mu})^\top\boldsymbol{\Sigma}^{-1}(\boldsymbol{Y}-\boldsymbol{\mu})\sim \chi^2(n).$
 -->
 </div>
 <div id="def-student-dist" class="theorem definition">
-<p><span class="theorem-title"><strong>Definition 1.9 (Student-<span class="math inline">\(t\)</span> distribution)</strong></span> The name “Student” comes from the pseudonym used by William Gosset in <span class="citation" data-cites="Student:1908">Gosset (<a href="references.html#ref-Student:1908" role="doc-biblioref">1908</a>)</span>, who introduced the asymptotic distribution of the <span class="math inline">\(t\)</span>-statistic. The density of the standard Student-<span class="math inline">\(t\)</span> univariate distribution with <span class="math inline">\(\nu\)</span> degrees of freedom is <span class="math display">\[\begin{align*}
+<p><span class="theorem-title"><strong>Definition 1.11 (Student-<span class="math inline">\(t\)</span> distribution)</strong></span> The name “Student” comes from the pseudonym used by William Gosset in <span class="citation" data-cites="Student:1908">Gosset (<a href="references.html#ref-Student:1908" role="doc-biblioref">1908</a>)</span>, who introduced the asymptotic distribution of the <span class="math inline">\(t\)</span>-statistic. The density of the standard Student-<span class="math inline">\(t\)</span> univariate distribution with <span class="math inline">\(\nu\)</span> degrees of freedom is <span class="math display">\[\begin{align*}
 f(y; \nu) = \frac{\Gamma \left( \frac{\nu+1}{2}\right)}{\Gamma\left(\frac{\nu}{2}\right)
 \sqrt{\nu\pi}}\left(1+\frac{y^{2}}{\nu}\right)^{-\frac{\nu+1}{2}}.
 \end{align*}\]</span> The density of the random vector <span class="math inline">\(\boldsymbol{Y} \sim \mathsf{Student}_d(\boldsymbol{\mu}, \boldsymbol{Q}^{-1}, \nu)\)</span>, with location vector <span class="math inline">\(\boldsymbol{\mu}\)</span>, scale matrix <span class="math inline">\(\boldsymbol{Q}^{-1}\)</span> and <span class="math inline">\(\nu\)</span> degrees of freedom is <span class="math display">\[\begin{align*}
@@ -341,47 +344,46 @@ f(\boldsymbol{x}) = \frac{\Gamma \left( \frac{\nu+d}{2}\right)|\boldsymbol{Q}|^{
 \end{align*}\]</span> The Student distribution is a location-scale family and an elliptical distribution. The distribution has polynomial tails, is symmetric around <span class="math inline">\(\boldsymbol{\mu}\)</span> and is unimodal. As <span class="math inline">\(\nu \to \infty\)</span>, the Student distribution converges to a normal distribution. It has heavier tails than the normal distribution and only the first <span class="math inline">\(\nu-1\)</span> moments of the distribution exist. The case <span class="math inline">\(\nu=1\)</span> is termed Cauchy distribution.</p>
 </div>
 <div id="def-weibull" class="theorem definition">
-<p><span class="theorem-title"><strong>Definition 1.10 (Weibull distribution)</strong></span> The distribution function of a <strong>Weibull</strong> random variable with scale <span class="math inline">\(\lambda&gt;0\)</span> and shape <span class="math inline">\(\alpha&gt;0\)</span> is <span class="math display">\[\begin{align*}
+<p><span class="theorem-title"><strong>Definition 1.12 (Weibull distribution)</strong></span> The distribution function of a <strong>Weibull</strong> random variable with scale <span class="math inline">\(\lambda&gt;0\)</span> and shape <span class="math inline">\(\alpha&gt;0\)</span> is <span class="math display">\[\begin{align*}
 F(x; \lambda, \alpha) &amp;= 1 - \exp\left\{-(x/\lambda)^\alpha\right\}, \qquad x \geq 0, \lambda&gt;0, \alpha&gt;0,
 \end{align*}\]</span> while the corresponding density is <span class="math display">\[\begin{align*}
 f(x; \lambda, \alpha) &amp;= \frac{\alpha}{\lambda^\alpha} x^{\alpha-1}\exp\left\{-(x/\lambda)^\alpha\right\}, \qquad x \geq 0, \lambda&gt;0, \alpha&gt;0.
-\end{align*}\]</span> The quantile function, the inverse of the distribution function, is <span class="math inline">\(Q(p) = \lambda\{-\ln(1-p)\}^{1/\alpha}.\)</span> The Weibull distribution includes the exponential as special case when <span class="math inline">\(\alpha=1.\)</span> The expected value of <span class="math inline">\(Y \sim \mathsf{Weibull}(\lambda, \alpha)\)</span> is <span class="math inline">\(\mathsf{E}(Y) = \lambda \Gamma(1+1/\alpha).\)</span></p>
+\end{align*}\]</span></p>
+<!--
+The quantile function, the inverse of the distribution function, is $Q(p) = \lambda\{-\ln(1-p)\}^{1/\alpha}.$ The Weibull distribution includes the exponential as special case when $\alpha=1.$ The expected value of $Y \sim \mathsf{Weibull}(\lambda, \alpha)$ is $\mathsf{E}(Y) = \lambda \Gamma(1+1/\alpha).$
+-->
 </div>
 </section>
 <section id="marginal-and-conditional-distributions" class="level3" data-number="1.1.2">
 <h3 data-number="1.1.2" class="anchored" data-anchor-id="marginal-and-conditional-distributions"><span class="header-section-number">1.1.2</span> Marginal and conditional distributions</h3>
 <div id="def-marginal" class="theorem definition">
-<p><span class="theorem-title"><strong>Definition 1.11 (Marginal distribution)</strong></span> The <strong>marginal distribution</strong> of a subvector <span class="math inline">\(\boldsymbol{X}_{1:k}=(X_1, \ldots, X_k)^\top\)</span>, without loss of generality consisting of the <span class="math inline">\(k\)</span> first components of <span class="math inline">\(\boldsymbol{X}\)</span> <span class="math inline">\((1 \leq k &lt; d)\)</span> is <span class="math display">\[\begin{align*}
-F_{1:k}(\boldsymbol{x}_{1:d}) = \Pr(\boldsymbol{X}_{1:k} \leq \boldsymbol{x}_{1:k}) = F_{1:d}(x_1, \ldots, x_k, \infty, \ldots, \infty).
+<p><span class="theorem-title"><strong>Definition 1.13 (Marginal distribution)</strong></span> The <strong>marginal distribution</strong> of a subvector <span class="math inline">\(\boldsymbol{X}_{1:k}=(X_1, \ldots, X_k)^\top\)</span>, without loss of generality consisting of the <span class="math inline">\(k\)</span> first components of <span class="math inline">\(\boldsymbol{X}\)</span> <span class="math inline">\((1 \leq k &lt; d)\)</span> is <span class="math display">\[\begin{align*}
+F_{1:k}(\boldsymbol{x}_{\boldsymbol{X}}) = \Pr(\boldsymbol{X}_{1:k} \leq \boldsymbol{x}_{1:k}) = F_{\boldsymbol{X}}(x_1, \ldots, x_k, \infty, \ldots, \infty).
 \end{align*}\]</span> and thus the marginal distribution of component <span class="math inline">\(j\)</span>, <span class="math inline">\(F_j(x_j)\)</span>, is obtained by evaluating all components but the <span class="math inline">\(j\)</span>th at <span class="math inline">\(\infty\)</span>.</p>
 <p>We likewise obtain the marginal density <span class="math display">\[\begin{align*}
 f_{1:k}(\boldsymbol{x}_{1:k}) = \frac{\partial^k F_{1:k}(\boldsymbol{x}_{1:k})}{\partial x_1 \cdots \partial x_{k}},
 \end{align*}\]</span> or through integration from the joint density as <span class="math display">\[\begin{align*}
-f_{1:k}(\boldsymbol{x}_{1:k}) = \int_{-\infty}^\infty \cdots  \int_{-\infty}^\infty  f_{1:d}(x_1, \ldots, x_k, z_{k+1}, \ldots, z_{d}) \mathrm{d} z_{k+1} \cdots \mathrm{d}z_d.
+f_{1:k}(\boldsymbol{x}_{1:k}) = \int_{-\infty}^\infty \cdots  \int_{-\infty}^\infty  f_{\boldsymbol{X}}(x_1, \ldots, x_k, z_{k+1}, \ldots, z_{d}) \mathrm{d} z_{k+1} \cdots \mathrm{d}z_d.
 \end{align*}\]</span></p>
 </div>
 <div id="def-conditional-dist" class="theorem definition">
-<p><span class="theorem-title"><strong>Definition 1.12 (Conditional distribution)</strong></span> Let <span class="math inline">\((\boldsymbol{X}^\top, \boldsymbol{Y}^\top)^\top\)</span> be a <span class="math inline">\(d\)</span>-dimensional random vector with joint density or mass function <span class="math inline">\(f_{\boldsymbol{X}, \boldsymbol{Y}}(\boldsymbol{x}, \boldsymbol{y})\)</span> and marginal distribution <span class="math inline">\(f_{\boldsymbol{X}}(\boldsymbol{x})\)</span>. The conditional distribution function of <span class="math inline">\(\boldsymbol{Y}\)</span> given <span class="math inline">\(\boldsymbol{X}=\boldsymbol{x}\)</span>, is <span class="math display">\[\begin{align*}
+<p><span class="theorem-title"><strong>Definition 1.14 (Conditional distribution)</strong></span> Let <span class="math inline">\((\boldsymbol{X}^\top, \boldsymbol{Y}^\top)^\top\)</span> be a <span class="math inline">\(d\)</span>-dimensional random vector with joint density or mass function <span class="math inline">\(f_{\boldsymbol{X}, \boldsymbol{Y}}(\boldsymbol{x}, \boldsymbol{y})\)</span> and marginal distribution <span class="math inline">\(f_{\boldsymbol{X}}(\boldsymbol{x})\)</span>. The conditional distribution function of <span class="math inline">\(\boldsymbol{Y}\)</span> given <span class="math inline">\(\boldsymbol{X}=\boldsymbol{x}\)</span>, is <span class="math display">\[\begin{align*}
 f_{\boldsymbol{Y} \mid \boldsymbol{X}}(\boldsymbol{y}; \boldsymbol{x}) = \frac{f_{\boldsymbol{X}, \boldsymbol{Y}}(\boldsymbol{x}, \boldsymbol{y})}{f_{\boldsymbol{X}}(\boldsymbol{x})}
 \end{align*}\]</span> for any value of <span class="math inline">\(\boldsymbol{x}\)</span> in the support of <span class="math inline">\(\boldsymbol{X}\)</span>, i.e., the set of values with non-zero density or mass, meaning <span class="math inline">\(f_{\boldsymbol{X}}(\boldsymbol{x})&gt;0\)</span>; it is undefined otherwise.</p>
 </div>
-</section>
-</section>
-<section id="complementary-material" class="level1" data-number="2">
-<h1 data-number="2"><span class="header-section-number">2</span> Complementary material</h1>
-<section id="bayes-theorem" class="level2" data-number="2.1">
-<h2 data-number="2.1" class="anchored" data-anchor-id="bayes-theorem"><span class="header-section-number">2.1</span> Bayes theorem</h2>
-<p>Denote by <span class="math inline">\(p(X) \equiv\Pr(X)\)</span> denotes the marginal density of <span class="math inline">\(X\)</span>, <span class="math inline">\(p(X \mid Y)\)</span> the conditional of <span class="math inline">\(X\)</span> given <span class="math inline">\(Y\)</span> and <span class="math inline">\(p(X, Y)\)</span> the joint density. Bayes’ theorem states that <span class="math display">\[\begin{align*}
+<div id="thm-Bayes" class="theorem">
+<p><span class="theorem-title"><strong>Theorem 1.1 (Bayes theorem)</strong></span> Denote by <span class="math inline">\(p(X) \equiv\Pr(X)\)</span> denotes the marginal density of <span class="math inline">\(X\)</span>, <span class="math inline">\(p(X \mid Y)\)</span> the conditional of <span class="math inline">\(X\)</span> given <span class="math inline">\(Y\)</span> and <span class="math inline">\(p(X, Y)\)</span> the joint density. Bayes’ theorem states that <span class="math display">\[\begin{align*}
 p(X = x \mid Y=y) = \frac{p(Y = y \mid X = x)p(X=x)}{p(Y=y)}
 \end{align*}\]</span></p>
 <p>In the case of discrete random variable <span class="math inline">\(X\)</span> with support <span class="math inline">\(\mathcal{X},\)</span> the denominator can be evaluated using the law of total probability as <span class="math display">\[\Pr(Y=y) = \sum_{x \in \mathcal{X}}\Pr(Y =y \mid X=x)\Pr(X=x).\]</span></p>
+</div>
 <div id="exm-covidrapidtest" class="theorem example">
-<p><span class="theorem-title"><strong>Example 2.1 (Covid rapid tests)</strong></span> Back in January 2021, the Quebec government was debating whether or not to distribute antigen rapid test, with <a href="https://www.cbc.ca/news/canada/montreal/quebec-avoids-relying-on-rapid-covid-19-tests-as-pressure-mounts-to-follow-ontario-s-lead-1.5896738">strong reluctance</a> from authorities given the paucity of available resources and the poor sensitivity.</p>
-<p>A Swiss study analyse the efficiency of rapid antigen tests, comparing them to repeated polymerase chain reaction (PCR) test output, taken as benchmark <span class="citation" data-cites="Jegerlehner:2021">(<a href="references.html#ref-Jegerlehner:2021" role="doc-biblioref">Jegerlehner et al. 2021</a>)</span>. The results are presented in <a href="#tbl-covid19" class="quarto-xref">Table&nbsp;<span>2.1</span></a></p>
+<p><span class="theorem-title"><strong>Example 1.1 (Covid rapid tests)</strong></span> Back in January 2021, the Quebec government was debating whether or not to distribute antigen rapid test, with <a href="https://www.cbc.ca/news/canada/montreal/quebec-avoids-relying-on-rapid-covid-19-tests-as-pressure-mounts-to-follow-ontario-s-lead-1.5896738">strong reluctance</a> from authorities given the paucity of available resources and the poor sensitivity.</p>
+<p>A Swiss study analyse the efficiency of rapid antigen tests, comparing them to repeated polymerase chain reaction (PCR) test output, taken as benchmark <span class="citation" data-cites="Jegerlehner:2021">(<a href="references.html#ref-Jegerlehner:2021" role="doc-biblioref">Jegerlehner et al. 2021</a>)</span>. The results are presented in <a href="#tbl-covid19" class="quarto-xref">Table&nbsp;<span>1.1</span></a></p>
 <div id="tbl-covid19" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-tbl figure">
 <figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-covid19-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Table&nbsp;2.1: Confusion matrix of Covid test results for PCR tests versus rapid antigen tests, from <span class="citation" data-cites="Jegerlehner:2021">Jegerlehner et al. (<a href="references.html#ref-Jegerlehner:2021" role="doc-biblioref">2021</a>)</span>.
+Table&nbsp;1.1: Confusion matrix of Covid test results for PCR tests versus rapid antigen tests, from <span class="citation" data-cites="Jegerlehner:2021">Jegerlehner et al. (<a href="references.html#ref-Jegerlehner:2021" role="doc-biblioref">2021</a>)</span>.
 </figcaption>
 <div aria-describedby="tbl-covid19-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <table class="caption-top table">
@@ -419,13 +421,14 @@ Table&nbsp;2.1: Confusion matrix of Covid test results for PCR tests versus rapi
 \frac{49/141 \cdot 0.214}{49/141 \cdot 0.214 + 1319/1321 \cdot 0.786}
 \end{align*}\]</span> so there is a small, but non-negligible probability of 8.66% that the rapid test result is misleading. <span class="citation" data-cites="Jegerlehner:2021">Jegerlehner et al. (<a href="references.html#ref-Jegerlehner:2021" role="doc-biblioref">2021</a>)</span> indeed found that the sensitivity was 65.3% among symptomatic individuals, but dropped down to 44% for asymptomatic cases. This may have fueled government experts skepticism.</p>
 </div>
+<p>Bayes’ rule is central to updating beliefs: given initial beliefs (priors) and information in the form of data, we update our beliefs. We can apply</p>
 <div id="exm-discrete-conditional-marginal" class="theorem example">
-<p><span class="theorem-title"><strong>Example 2.2 (Conditional and marginal for contingency table)</strong></span> Consider a bivariate distribution for <span class="math inline">\((Y_1, Y_2)\)</span> supported on <span class="math inline">\(\{1,2\} \times \{1, 2, 3\}\)</span> whose joint probability mass function is given in <a href="#tbl-bivardiscrete" class="quarto-xref">Table&nbsp;<span>2.2</span></a></p>
+<p><span class="theorem-title"><strong>Example 1.2 (Conditional and marginal for contingency table)</strong></span> Consider a bivariate distribution for <span class="math inline">\((Y_1, Y_2)\)</span> supported on <span class="math inline">\(\{1,2\} \times \{1, 2, 3\}\)</span> whose joint probability mass function is given in <a href="#tbl-bivardiscrete" class="quarto-xref">Table&nbsp;<span>1.2</span></a></p>
 <div class="cell" data-tbl-align="center">
 <div id="tbl-bivardiscrete" class="cell quarto-float quarto-figure quarto-figure-center anchored" data-tbl-align="center">
 <figure class="quarto-float quarto-float-tbl figure">
 <figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-bivardiscrete-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Table&nbsp;2.2: Bivariate mass function with probability of each outcome for <span class="math inline">\((Y_1, Y_2)\)</span>.
+Table&nbsp;1.2: Bivariate mass function with probability of each outcome for <span class="math inline">\((Y_1, Y_2)\)</span>.
 </figcaption>
 <div aria-describedby="tbl-bivardiscrete-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <div class="cell-output-display">
@@ -464,7 +467,7 @@ Table&nbsp;2.2: Bivariate mass function with probability of each outcome for <sp
 \end{align*}\]</span></p>
 </div>
 <div id="exm-marginal-multinom" class="theorem example">
-<p><span class="theorem-title"><strong>Example 2.3 (Margins and conditional distributions of multinomial vectors)</strong></span> Consider <span class="math inline">\(\boldsymbol{Y} = (Y_1, Y_2, n-Y_1-Y_2)\)</span> a trinomial vector giving the number of observations in group <span class="math inline">\(j \in \{1,2,3\}\)</span> with <span class="math inline">\(n\)</span> trials and probabilities of each component respectively <span class="math inline">\((p_1, p_2, 1-p_1-p_2)\)</span>. The marginal distribution of <span class="math inline">\(Y_2\)</span> is obtained by summing over all possible values of <span class="math inline">\(Y_1\)</span>, which ranges from <span class="math inline">\(0\)</span> to <span class="math inline">\(n\)</span>, so <span class="math display">\[\begin{align*}
+<p><span class="theorem-title"><strong>Example 1.3 (Margins and conditional distributions of multinomial vectors)</strong></span> Consider <span class="math inline">\(\boldsymbol{Y} = (Y_1, Y_2, n-Y_1-Y_2)\)</span> a trinomial vector giving the number of observations in group <span class="math inline">\(j \in \{1,2,3\}\)</span> with <span class="math inline">\(n\)</span> trials and probabilities of each component respectively <span class="math inline">\((p_1, p_2, 1-p_1-p_2)\)</span>. The marginal distribution of <span class="math inline">\(Y_2\)</span> is obtained by summing over all possible values of <span class="math inline">\(Y_1\)</span>, which ranges from <span class="math inline">\(0\)</span> to <span class="math inline">\(n\)</span>, so <span class="math display">\[\begin{align*}
 f(y_2) &amp;= \frac{n!p_2^{y_2}}{y_2!}\sum_{y_1=1}^n \frac{p_1^{y_1}(1-p_1 -p_2)^{n-y_1-y_2}}{y_1!(n-y_1-y_2)!}
 \end{align*}\]</span></p>
 <p>A useful trick is to complete the expression on the right so that it sum (in the discrete case) or integrate (in the continuous case) to <span class="math inline">\(1.\)</span> If we multiply and divide by <span class="math inline">\((1-p_2)^{n-y_2} /(n-y_2)!\)</span>, we get <span class="math inline">\(p_1^*=p_1/(1-p_2)\)</span> and</p>
@@ -497,7 +500,7 @@ is again multinomial with $n$ trials, but probability of success $p_j/(1-p_2-\cd
 -->
 </div>
 <div id="exm-conditional-marginal" class="theorem example">
-<p><span class="theorem-title"><strong>Example 2.4</strong></span> Consider the bivariate density function of the pair <span class="math inline">\((X, Y)\)</span>, where for <span class="math inline">\(\lambda&gt;0\)</span>, <span class="math display">\[\begin{align*}
+<p><span class="theorem-title"><strong>Example 1.4</strong></span> Consider the bivariate density function of the pair <span class="math inline">\((X, Y)\)</span>, where for <span class="math inline">\(\lambda&gt;0\)</span>, <span class="math display">\[\begin{align*}
 f(x,y) = \frac{\lambda y^{1/2}}{(2\pi)^{1/2}}\exp\left\{ - y(x^2 + \lambda)\right\}, \qquad x \in \mathbb{R}, y&gt;0.
 \end{align*}\]</span> We see that the conditional distribution of <span class="math inline">\(X \mid Y=y \sim \mathsf{Gauss}(0, y^{-1})\)</span>. The marginals are <span class="math display">\[\begin{align*}
 f(y) &amp;= \int_{-\infty}^\infty \frac{\lambda y^{1/2}}{(2\pi)^{1/2}}\exp\left\{ - y(x^2 + \lambda)\right\} \mathrm{d} x
@@ -508,7 +511,7 @@ f(x) &amp;= \int_{0}^{\infty} \frac{\lambda y^{1/2}}{(2\pi)^{1/2}}\exp\left\{ - 
 \end{align*}\]</span> since <span class="math inline">\(\Gamma(a+1) = a\Gamma(a)\)</span> for <span class="math inline">\(a&gt;0\)</span> and <span class="math inline">\(\Gamma(1/2) = \sqrt{\pi}\)</span>. We conclude that marginally <span class="math inline">\(X \sim \mathsf{Student}(0, \lambda, 2)\)</span>, a Student distribution with scale <span class="math inline">\(\lambda\)</span> and two degrees of freedom.</p>
 </div>
 <div id="exm-conditional-poisson-sum" class="theorem example">
-<p><span class="theorem-title"><strong>Example 2.5 (Poisson counts conditional on their sum)</strong></span> Suppose that <span class="math inline">\(Y_j\sim \mathsf{Poisson}(\lambda_j)\)</span> are independent <span class="math inline">\((j=1, \ldots, J),\)</span> so that the sum <span class="math inline">\(S = Y_1 + \cdots Y_J \sim \mathsf{Poisson}(\lambda_1 + \ldots \lambda_J)\)</span>. One may prove this fact using moment generating functions, since the Poisson is infinitely divisible.</p>
+<p><span class="theorem-title"><strong>Example 1.5 (Poisson counts conditional on their sum)</strong></span> Suppose that <span class="math inline">\(Y_j\sim \mathsf{Poisson}(\lambda_j)\)</span> are independent <span class="math inline">\((j=1, \ldots, J),\)</span> so that the sum <span class="math inline">\(S = Y_1 + \cdots Y_J \sim \mathsf{Poisson}(\lambda_1 + \ldots \lambda_J)\)</span>. One may prove this fact using moment generating functions, since the Poisson is infinitely divisible.</p>
 <p>Let <span class="math inline">\(f(y; \lambda_j)\)</span> denote the Poisson mass function with rate <span class="math inline">\(\lambda_j\)</span>. Since the random variables <span class="math inline">\(Y_1, \ldots, Y_J\)</span> are independent, the joint mass function factorizes as <span class="math display">\[\begin{align*}
 &amp;f(y_1, \ldots, y_J=y_j \mid S=n)
 = \frac{\prod_{j=1}^J f(y_j; \lambda_j)}{f(n; \lambda_1 + \cdots + \lambda_J)}
@@ -517,8 +520,36 @@ f(x) &amp;= \int_{0}^{\infty} \frac{\lambda y^{1/2}}{(2\pi)^{1/2}}\exp\left\{ - 
 \\&amp;\quad=\frac{n!}{y_1! \cdots y_J!}\prod_{j=1}^J \left(\frac{\lambda_j}{\lambda_1 + \cdots + \lambda_J}\right)^{y_j}
 \end{align*}\]</span> for <span class="math inline">\(y_j \geq 0\)</span> for all <span class="math inline">\(j=1, \ldots, J\)</span> such that <span class="math inline">\(y_1 + \cdots + y_j = n\)</span>, and the joint mass is zero otherwise. If we define <span class="math inline">\(p_j = \lambda_j/(\lambda_1 + \cdots + \lambda_J)\)</span>, we recognize a multinomial distribution with vector of probability of success <span class="math inline">\(\boldsymbol{p}\)</span> with <span class="math inline">\(p_1 + \cdots p_J=1\)</span> and <span class="math inline">\(n\)</span> trials.</p>
 </div>
+<div id="exm-biv-geometric" class="theorem example">
+<p><span class="theorem-title"><strong>Example 1.6 (Bivariate geometric distribution of Marshall and Olkin)</strong></span> Consider a couple <span class="math inline">\((U_1, U_2)\)</span> of Bernoulli random variables whose mass function is <span class="math inline">\(\Pr(U_1=i, U_2=j=p_{ij}\)</span> for <span class="math inline">\((i,j) \in \{0,1\}^2\)</span>. The marginal distributions are, by the law of total probability <span class="math display">\[\begin{align*}
+\Pr(U_1=i) &amp;= \Pr(U_1=i, U_2=0) + \Pr(U_1=i, U_2=1) = p_{i0} + p_{i1} = p_{i\bullet}\\
+\Pr(U_2=j) &amp;= \Pr(U_1=0, U_2=j) + \Pr(U_1=1, U_2=j) = p_{0j} + p_{1j} = p_{\bullet j}
+\end{align*}\]</span> We consider a joint geometric distribution (<span class="citation" data-cites="Marshall.Olkin:1985">Marshall and Olkin (<a href="references.html#ref-Marshall.Olkin:1985" role="doc-biblioref">1985</a>)</span>, Section 6) and the pair <span class="math inline">\((Y_1, Y_2)\)</span> giving the number of zeros for <span class="math inline">\((U_1, U_2)\)</span> before the variable equals one for the first time. The bivariate mass function is <span class="citation" data-cites="Nadarajah:2008">(<a href="references.html#ref-Nadarajah:2008" role="doc-biblioref">Nadarajah 2008</a>)</span> <span class="math display">\[\begin{align*}
+\Pr(Y_1 = k, Y_2 = l) &amp;=
+\begin{cases}
+p_{00}^kp_{01}p_{0 \bullet}^{l-k-1}p_{1 \bullet} &amp; 0 \leq k &lt; l; \\
+p_{00}^kp_{11} &amp; k=l; \\
+p_{00}^lp_{10}p_{\bullet 0}^{k-l-1}p_{\bullet 1} &amp; 0 \leq l &lt; k.
+\end{cases}
+\end{align*}\]</span> We can compute the joint survival function <span class="math inline">\(\Pr(Y_1 \ge k, Y_2 \ge l)\)</span> by using properties of the partial sum of geometric series, using the fact <span class="math inline">\(\sum_{i=0}^n p^i = p^n/(1-p)\)</span>. Thus, for the case <span class="math inline">\(0\leq k &lt; l\)</span>, we have <span class="math display">\[\begin{align*}
+\Pr(Y_1 \ge k, Y_2 \ge l) &amp;= \sum_{i=k}^\infty \sum_{j=l}^\infty \Pr(Y_1 = i, Y_2 = j)\\
+&amp;= \sum_{i=k}^\infty p_{00}^ip_{01}p_{0 \bullet}^{-i-1}p_{1 \bullet} \sum_{j=l}^\infty p_{0 \bullet}^{j}
+\\&amp;=\sum_{i=k}^\infty p_{00}^ip_{01}p_{0 \bullet}^{-i-1}p_{1 \bullet} \frac{p_{0 \bullet}^{l}}{1-p_{0\bullet}} \\&amp;= p_{0 \bullet}^{l-1}p_{01} \sum_{i=k}^\infty \left(\frac{p_{00}}{p_{0 \bullet}}\right)^{i}
+\\&amp; = p_{00}^k p_{0 \bullet}^{l-k}
+\end{align*}\]</span> since <span class="math inline">\(p_{0\bullet} + p_{1\bullet} = 1\)</span>. We can proceed similarly with other subcases to find <span class="math display">\[\begin{align*}
+\Pr(Y_1 \ge k, Y_2 \ge l) = \begin{cases}
+p_{00}^k p_{0 \bullet}^{l-k} &amp; 0\leq k &lt; l\\
+p_{00}^k &amp; 0 \leq k=l \\
+p_{00}^l p_{\bullet 0}^{k-l} &amp; 0\leq l &lt; k\\
+\end{cases}
+\end{align*}\]</span> and we can obtain the marginal survival function by considering <span class="math inline">\(\Pr(Y_1 \ge 0, Y_2 \ge l)\)</span>, etc., which yields <span class="math inline">\(\Pr(Y_2 \ge l) = p_{0 \bullet}^{l}\)</span>, whence <span class="math display">\[\begin{align*}
+\Pr(Y_2 = l) &amp;= \Pr(Y_2 \ge l) -\Pr(Y_2 \ge l+1)
+\\&amp;= p_{0 \bullet}^{l} (1-p_{0 \bullet})
+\\&amp;=p_{0 \bullet}^{l}p_{1\bullet}
+\end{align*}\]</span> and so both margins are geometric.</p>
+</div>
 <div id="def-independence" class="theorem definition">
-<p><span class="theorem-title"><strong>Definition 2.1 (Independence)</strong></span> We say that <span class="math inline">\(\boldsymbol{Y}\)</span> and <span class="math inline">\(\boldsymbol{X}\)</span> are independent if their joint distribution function factorizes as <span class="math display">\[\begin{align*}
+<p><span class="theorem-title"><strong>Definition 1.15 (Independence)</strong></span> We say that <span class="math inline">\(\boldsymbol{Y}\)</span> and <span class="math inline">\(\boldsymbol{X}\)</span> are independent if their joint distribution function factorizes as <span class="math display">\[\begin{align*}
 F_{\boldsymbol{X}, \boldsymbol{Y}}(\boldsymbol{x}, \boldsymbol{y}) = F_{\boldsymbol{X}}(\boldsymbol{x})F_{\boldsymbol{Y}}(\boldsymbol{y})
 \end{align*}\]</span> for any value of <span class="math inline">\(\boldsymbol{x}\)</span>, <span class="math inline">\(\boldsymbol{y}\)</span>. It follows from the definition of joint density that, should the latter exists, it also factorizes as <span class="math display">\[\begin{align*}
 f_{\boldsymbol{X}, \boldsymbol{Y}}(\boldsymbol{x}, \boldsymbol{y}) = f_{\boldsymbol{X}}(\boldsymbol{x})f_{\boldsymbol{Y}}(\boldsymbol{y}).
@@ -526,7 +557,7 @@ f_{\boldsymbol{X}, \boldsymbol{Y}}(\boldsymbol{x}, \boldsymbol{y}) = f_{\boldsym
 <p>If two subvectors <span class="math inline">\(\boldsymbol{X}\)</span> and <span class="math inline">\(\boldsymbol{Y}\)</span> are independent, then the conditional density <span class="math inline">\(f_{\boldsymbol{Y} \mid \boldsymbol{X}}(\boldsymbol{y}; \boldsymbol{x})\)</span> equals the marginal <span class="math inline">\(f_{\boldsymbol{Y}}(\boldsymbol{y})\)</span>.</p>
 </div>
 <div id="prp-independence" class="theorem proposition">
-<p><span class="theorem-title"><strong>Proposition 2.1 (Gaussian vectors, independence and conditional independence properties)</strong></span> &nbsp;</p>
+<p><span class="theorem-title"><strong>Proposition 1.2 (Gaussian vectors, independence and conditional independence properties)</strong></span> &nbsp;</p>
 <!--
 Simulation via Cholesky root
 Kriging
@@ -536,7 +567,7 @@ Joint distribution, conditional
 <p>If <span class="math inline">\(q_{ij}=0\)</span>, then <span class="math inline">\(Y_i\)</span> and <span class="math inline">\(Y_j\)</span> are conditionally independent given the other components.</p>
 </div>
 <div id="prp-iteratedexpectation" class="theorem proposition">
-<p><span class="theorem-title"><strong>Proposition 2.2 (Law of iterated expectation and variance)</strong></span> Let <span class="math inline">\(\boldsymbol{Z}\)</span> and <span class="math inline">\(\boldsymbol{Y}\)</span> be random vectors. The expected value of <span class="math inline">\(\boldsymbol{Y}\)</span> is <span class="math display">\[\begin{align*}
+<p><span class="theorem-title"><strong>Proposition 1.3 (Law of iterated expectation and variance)</strong></span> Let <span class="math inline">\(\boldsymbol{Z}\)</span> and <span class="math inline">\(\boldsymbol{Y}\)</span> be random vectors. The expected value of <span class="math inline">\(\boldsymbol{Y}\)</span> is <span class="math display">\[\begin{align*}
 \mathsf{E}_{\boldsymbol{Y}}(\boldsymbol{Y}) = \mathsf{E}_{\boldsymbol{Z}}\left\{\mathsf{E}_{\boldsymbol{Y} \mid \boldsymbol{Z}}(\boldsymbol{Y})\right\}.
 \end{align*}\]</span></p>
 <p>The <strong>tower</strong> property gives a law of iterated variance <span class="math display">\[\begin{align*}
@@ -545,15 +576,34 @@ Joint distribution, conditional
 <p>We can deduce that, in a hierarchical model, the variance of the unconditional distribution is larger</p>
 </div>
 <div id="exm-iteratedmean-gauss" class="theorem example">
-<p><span class="theorem-title"><strong>Example 2.6</strong></span> Let <span class="math inline">\(Y \mid X\sim \mathsf{Gauss}(X, \sigma^2)\)</span> and <span class="math inline">\(X \sim \mathsf{Gauss}(0, \tau^2)\)</span>. The unconditional mean and variance of <span class="math inline">\(Y\)</span> are <span class="math display">\[\begin{align*}
+<p><span class="theorem-title"><strong>Example 1.7</strong></span> Let <span class="math inline">\(Y \mid X\sim \mathsf{Gauss}(X, \sigma^2)\)</span> and <span class="math inline">\(X \sim \mathsf{Gauss}(0, \tau^2)\)</span>. The unconditional mean and variance of <span class="math inline">\(Y\)</span> are <span class="math display">\[\begin{align*}
 \mathsf{E}(Y) = \mathsf{E}_{X}\{\mathsf{E}_{Y\mid X}(Y)\}= \mathsf{E}_{X}(X) = 0
 \end{align*}\]</span> and <span class="math display">\[\begin{align*}
 \mathsf{Va}(Y) &amp;= \mathsf{E}_{X}\{\mathsf{Va}_{Y\mid X}(Y)\} + \mathsf{Va}_{X}\{\mathsf{E}_{Y\mid X}(Y)\} \\&amp;= \mathsf{E}_{X}(\sigma^2) + \mathsf{Va}_{X}(X)
 \\&amp;= \sigma^2 + \tau^2
 \end{align*}\]</span></p>
 </div>
+<div id="exm-poisson-negbin" class="theorem example">
+<p><span class="theorem-title"><strong>Example 1.8 (Negative binomial as a Poisson mixture)</strong></span> &nbsp;</p>
+<!-- Some canonical distributions have only one parameter which dictates moments: for a Poisson random variable $Y \sim \mathsf{Poisson}(\lambda)$, both $\mathsf{E}(Y) = \mathsf{Va}(Y) = \lambda$, whereas if we have binomial data with $n$ independent trials, each with probability of success $p$, then $Y \sim \mathsf{Bin}(n, p)$, then the theoretical mean of successes is $\mathsf{E}(Y)=np$ and the variance $\mathsf{Va}(Y) = np(1-p)$. -->
+<!-- In generalized linear models, we model the mean as a function of covariate, but data may exhibit overdispersion relative to the theoretical mean. -->
+<p>One restriction of the Poisson model is that the restriction on its moments is often unrealistic. The most frequent problem encountered is that of <strong>overdispersion</strong>, meaning that the variability in the counts is larger than that implied by a Poisson distribution.</p>
+<p>One common framework for handling overdispersion is to have <span class="math inline">\(Y \mid \Lambda = \lambda \sim \mathsf{Poisson}(\lambda)\)</span>, where the mean of the Poisson distribution is itself a positive random variable with mean <span class="math inline">\(\mu\)</span>, if <span class="math inline">\(\Lambda\)</span> follows a conjugate gamma distribution with shape <span class="math inline">\(k\mu\)</span> and rate <span class="math inline">\(k&gt;0\)</span>, <span class="math inline">\(\Lambda \sim \mathsf{Gamma}(k\mu, k)\)</span>, the posterior <span class="math inline">\(\Lambda \mid Y=y \sim \mathsf{Gamma}(k\mu + y, k+1)\)</span>.</p>
+<p>Since the joint density of <span class="math inline">\(Y\)</span> and <span class="math inline">\(\Lambda\)</span> can be written <span class="math display">\[
+p(y, \lambda) = p(y \mid \lambda)p(\lambda) = p(\lambda \mid y) p(y)
+\]</span> we can isolate the marginal density <span class="math display">\[\begin{align*}
+p(y) &amp;= \frac{p(y \mid \lambda)p(\lambda)}{p(\lambda \mid y)} \\&amp;= \frac{\frac{\lambda^y\exp(-\lambda)}{\Gamma(y+1)}  \frac{k^{k\mu}\lambda^{k\mu-1}\exp(-k\lambda)}{\Gamma(k\mu)}}{ \frac{(k+1)^{k\mu+y}\lambda^{k\mu+y-1}\exp\{-(k+1)\lambda\}}{\Gamma(k\mu+y)}}\\
+&amp;= \frac{\Gamma(k\mu+y)}{\Gamma(k\mu)\Gamma(y+1)}k^{k\mu} (k+1)^{-k\mu-y}\\&amp;= \frac{\Gamma(k\mu+y)}{\Gamma(k\mu)\Gamma(y+1)}\left(1-\frac{1}{k+1}\right)^{k\mu} \left(\frac{1}{k+1}\right)^y
+\end{align*}\]</span> and this is the density of a negative binomial distribution with probability of success <span class="math inline">\(1/(k+1)\)</span>. We can thus view the negative binomial as a Poisson mean mixture.</p>
+<p>By the laws of iterated expectation and iterative variance, <span class="math display">\[\begin{align*}
+\mathsf{E}(Y) &amp;= \mathsf{E}_{\Lambda}\{\mathsf{E}(Y \mid \Lambda\} \\&amp; = \mathsf{E}(\Lambda) = \mu\\
+\mathsf{Va}(Y) &amp;= \mathsf{E}_{\Lambda}\{\mathsf{Va}(Y \mid \Lambda)\} + \mathsf{Va}_{\Lambda}\{\mathsf{E}(Y \mid \Lambda)\} \\&amp;= \mathsf{E}(\Lambda) + \mathsf{Va}(\Lambda) \\&amp;= \mu + \mu/k.
+\end{align*}\]</span> The marginal distribution of <span class="math inline">\(Y\)</span>, unconditionally, has a variance which exceeds its mean, as <span class="math display">\[\begin{align*}
+\mathsf{E}(Y) = \mu, \qquad \mathsf{Va}(Y) = \mu (1+1/k).
+\end{align*}\]</span> In a negative binomial regression model, the term <span class="math inline">\(k\)</span> is a dispersion parameter, which is fixed for all observations, whereas <span class="math inline">\(\mu = \exp(\boldsymbol{\beta}\mathbf{X})\)</span> is a function of covariates <span class="math inline">\(\mathbf{X}\)</span>. As <span class="math inline">\(k \to \infty\)</span>, the distribution of <span class="math inline">\(\Lambda\)</span> degenerates to a constant at <span class="math inline">\(\mu\)</span> and we recover the Poisson model.</p>
+</div>
 <div id="prp-partition-matrix" class="theorem proposition">
-<p><span class="theorem-title"><strong>Proposition 2.3 (Partitioning of covariance matrices)</strong></span> Let <span class="math inline">\(\boldsymbol{\Sigma}\)</span> be a <span class="math inline">\(d \times d\)</span> positive definite covariance matrix. We define the precision matrix <span class="math inline">\(\boldsymbol{Q} = \boldsymbol{\Sigma}^{-1}\)</span>. Suppose the matrices are partitioned into blocks, <span class="math display">\[\begin{align*}
+<p><span class="theorem-title"><strong>Proposition 1.4 (Partitioning of covariance matrices)</strong></span> Let <span class="math inline">\(\boldsymbol{\Sigma}\)</span> be a <span class="math inline">\(d \times d\)</span> positive definite covariance matrix. We define the precision matrix <span class="math inline">\(\boldsymbol{Q} = \boldsymbol{\Sigma}^{-1}\)</span>. Suppose the matrices are partitioned into blocks, <span class="math display">\[\begin{align*}
 \boldsymbol{\Sigma}=
 \begin{pmatrix}
 \boldsymbol{\Sigma}_{11} &amp; \boldsymbol{\Sigma}_{12} \\
@@ -572,7 +622,7 @@ Joint distribution, conditional
 </ul>
 </div>
 <div id="prp-conditional-gaussian" class="theorem proposition">
-<p><span class="theorem-title"><strong>Proposition 2.4 (Conditional distribution of Gaussian vectors)</strong></span> Let <span class="math inline">\(\boldsymbol{Y} \sim \mathsf{Gauss}_d(\boldsymbol{\mu}, \boldsymbol{\Sigma})\)</span> and consider the partition <span class="math display">\[\begin{align*}
+<p><span class="theorem-title"><strong>Proposition 1.5 (Conditional distribution of Gaussian vectors)</strong></span> Let <span class="math inline">\(\boldsymbol{Y} \sim \mathsf{Gauss}_d(\boldsymbol{\mu}, \boldsymbol{\Sigma})\)</span> and consider the partition <span class="math display">\[\begin{align*}
 \boldsymbol{Y} = \begin{pmatrix} \boldsymbol{Y}_1 \\ \boldsymbol{Y}_2\end{pmatrix}, \quad
 \boldsymbol{\mu} = \begin{pmatrix} \boldsymbol{\mu}_1 \\ \boldsymbol{\mu}_2\end{pmatrix}, \quad
 \boldsymbol{\Sigma} = \begin{pmatrix} \boldsymbol{\Sigma}_{11} &amp; \boldsymbol{\Sigma}_{12}\\ \boldsymbol{\Sigma}_{21} &amp; \boldsymbol{\Sigma}_{22}\end{pmatrix},
@@ -624,10 +674,11 @@ making use of the identity $|\boldsymbol{Q}| = |\boldsymbol{Q}_{11}||\boldsymbol
 -->
 </div>
 </section>
-<section id="likelihood" class="level2" data-number="2.2">
-<h2 data-number="2.2" class="anchored" data-anchor-id="likelihood"><span class="header-section-number">2.2</span> Likelihood</h2>
+</section>
+<section id="likelihood" class="level2" data-number="1.2">
+<h2 data-number="1.2" class="anchored" data-anchor-id="likelihood"><span class="header-section-number">1.2</span> Likelihood</h2>
 <div id="def-likelihood" class="theorem definition">
-<p><span class="theorem-title"><strong>Definition 2.2 (Likelihood)</strong></span> The <strong>likelihood</strong> <span class="math inline">\(L(\boldsymbol{\theta})\)</span> is a function of the parameter vector <span class="math inline">\(\boldsymbol{\theta}\)</span> that gives the probability (or density) of observing a sample under a postulated distribution, treating the observations as fixed, <span class="math display">\[\begin{align*}
+<p><span class="theorem-title"><strong>Definition 1.16 (Likelihood)</strong></span> The <strong>likelihood</strong> <span class="math inline">\(L(\boldsymbol{\theta})\)</span> is a function of the parameter vector <span class="math inline">\(\boldsymbol{\theta}\)</span> that gives the probability (or density) of observing a sample under a postulated distribution, treating the observations as fixed, <span class="math display">\[\begin{align*}
 L(\boldsymbol{\theta}; \boldsymbol{y}) = f(\boldsymbol{y}; \boldsymbol{\theta}),
 \end{align*}\]</span> where <span class="math inline">\(f(\boldsymbol{y}; \boldsymbol{\theta})\)</span> denotes the joint density or mass function of the <span class="math inline">\(n\)</span>-vector containing the observations.</p>
 <p>If the latter are independent, the joint density factorizes as the product of the density of individual observations, and the likelihood becomes <span class="math display">\[\begin{align*}
@@ -637,7 +688,7 @@ L(\boldsymbol{\theta}; \boldsymbol{y})=\prod_{i=1}^n f_i(y_i; \boldsymbol{\theta
 \end{align*}\]</span></p>
 </div>
 <div id="def-information" class="theorem definition">
-<p><span class="theorem-title"><strong>Definition 2.3 (Score and information matrix)</strong></span> Let <span class="math inline">\(\ell(\boldsymbol{\theta}),\)</span> <span class="math inline">\(\boldsymbol{\theta} \in \boldsymbol{\Theta} \subseteq \mathbb{R}^p,\)</span> be the log likelihood function. The gradient of the log likelihood <span class="math inline">\(U(\boldsymbol{\theta}) = \partial \ell(\boldsymbol{\theta}) / \partial \boldsymbol{\theta}\)</span> is termed <strong>score</strong> function.</p>
+<p><span class="theorem-title"><strong>Definition 1.17 (Score and information matrix)</strong></span> Let <span class="math inline">\(\ell(\boldsymbol{\theta}),\)</span> <span class="math inline">\(\boldsymbol{\theta} \in \boldsymbol{\Theta} \subseteq \mathbb{R}^p,\)</span> be the log likelihood function. The gradient of the log likelihood <span class="math inline">\(U(\boldsymbol{\theta}) = \partial \ell(\boldsymbol{\theta}) / \partial \boldsymbol{\theta}\)</span> is termed <strong>score</strong> function.</p>
 <p>The <strong>observed information matrix</strong> is the hessian of the negative log likelihood <span class="math display">\[\begin{align*}
 j(\boldsymbol{\theta}; \boldsymbol{y})=-\frac{\partial^2 \ell(\boldsymbol{\theta}; \boldsymbol{y})}{\partial \boldsymbol{\theta} \partial \boldsymbol{\theta}^\top},
 \end{align*}\]</span> evaluated at the maximum likelihood estimate <span class="math inline">\(\widehat{\boldsymbol{\theta}},\)</span> so <span class="math inline">\(j(\widehat{\boldsymbol{\theta}}).\)</span> Under regularity conditions, the <strong>expected information</strong>, also called <strong>Fisher information</strong> matrix, is <span class="math display">\[\begin{align*}
@@ -646,7 +697,7 @@ i(\boldsymbol{\theta}) = \mathsf{E}\left\{U(\boldsymbol{\theta}; \boldsymbol{Y})
 <p>The information of an independent and identically distributed sample of size <span class="math inline">\(n\)</span> is <span class="math inline">\(n\)</span> times that of a single observation, so information accumulates at a linear rate.</p>
 </div>
 <div id="exm-likelihood-survival" class="theorem example">
-<p><span class="theorem-title"><strong>Example 2.7 (Likelihood for right-censoring)</strong></span> Consider a survival analysis problem for independent time-to-event data subject to (noninformative) random right-censoring. We assume failure times <span class="math inline">\(Y_i (i=1, \ldots, n)\)</span> are drawn from a common distribution <span class="math inline">\(F(\cdot; \boldsymbol{\theta})\)</span> supported on <span class="math inline">\((0, \infty)\)</span> and complemented with an independent censoring indicator <span class="math inline">\(C_i \in \{0,1\}\)</span>, with <span class="math inline">\(0\)</span> indicating right-censoring and <span class="math inline">\(C_i=1\)</span> observed failure time. If individual observation <span class="math inline">\(i\)</span> has not experienced the event at the end of the collection period, then the likelihood contribution <span class="math inline">\(\Pr(Y &gt; y) = 1-F(y; \boldsymbol{\theta})\)</span>, where <span class="math inline">\(y_i\)</span> is the maximum time observed for <span class="math inline">\(Y_i\)</span>.</p>
+<p><span class="theorem-title"><strong>Example 1.9 (Likelihood for right-censoring)</strong></span> Consider a survival analysis problem for independent time-to-event data subject to (noninformative) random right-censoring. We assume failure times <span class="math inline">\(Y_i (i=1, \ldots, n)\)</span> are drawn from a common distribution <span class="math inline">\(F(\cdot; \boldsymbol{\theta})\)</span> supported on <span class="math inline">\((0, \infty)\)</span> and complemented with an independent censoring indicator <span class="math inline">\(C_i \in \{0,1\}\)</span>, with <span class="math inline">\(0\)</span> indicating right-censoring and <span class="math inline">\(C_i=1\)</span> observed failure time. If individual observation <span class="math inline">\(i\)</span> has not experienced the event at the end of the collection period, then the likelihood contribution <span class="math inline">\(\Pr(Y &gt; y) = 1-F(y; \boldsymbol{\theta})\)</span>, where <span class="math inline">\(y_i\)</span> is the maximum time observed for <span class="math inline">\(Y_i\)</span>.</p>
 <p>We write the log likelihood in terms of the right-censoring binary indicator as <span class="math display">\[\begin{align*}
 \ell(\boldsymbol{\theta}) = \sum_{i: c_i=0} \log \{1- F(y_i; \boldsymbol{\theta})\} + \sum_{i: c_i=1} \log f(y_i; \boldsymbol{\theta})
 \end{align*}\]</span></p>
@@ -656,7 +707,7 @@ i(\lambda) &amp;= m/\lambda^2
 \end{align*}\]</span> and the right-censored observations for the exponential model do not contribute to the information.</p>
 </div>
 <div id="exm-gauss" class="theorem example">
-<p><span class="theorem-title"><strong>Example 2.8 (Information for the Gaussian distribution)</strong></span> Consider <span class="math inline">\(Y \sim \mathsf{Gauss}(\mu, \tau^{-1})\)</span>, parametrized in terms of precision <span class="math inline">\(\tau\)</span>. The likelihood contribution for an <span class="math inline">\(n\)</span> sample is, up to proportionality, <span class="math display">\[\begin{align*}
+<p><span class="theorem-title"><strong>Example 1.10 (Information for the Gaussian distribution)</strong></span> Consider <span class="math inline">\(Y \sim \mathsf{Gauss}(\mu, \tau^{-1})\)</span>, parametrized in terms of precision <span class="math inline">\(\tau\)</span>. The likelihood contribution for an <span class="math inline">\(n\)</span> sample is, up to proportionality, <span class="math display">\[\begin{align*}
 \ell(\mu, \tau) \propto \frac{n}{2}\log(\tau) - \frac{\tau}{2}\sum_{i=1}^n(Y_i^2-2\mu Y_i+\mu^2)
 \end{align*}\]</span></p>
 <p>The observed and Fisher information matrices are is <span class="math display">\[\begin{align*}
@@ -671,7 +722,7 @@ i(\mu, \tau) &amp;= n\begin{pmatrix}
 \end{align*}\]</span> Since <span class="math inline">\(\mathsf{E}(Y_i) = \mu\)</span>, the expected value of the off-diagonal entries of the Fisher information matrix are zero.</p>
 </div>
 <div id="exm-weibull-info" class="theorem example">
-<p><span class="theorem-title"><strong>Example 2.9 (Likelihood, score and information of the Weibull distribution)</strong></span> The log likelihood for a simple random sample whose realizations are <span class="math inline">\(y_1, \ldots, y_n\)</span> of size <span class="math inline">\(n\)</span> from a <span class="math inline">\(\mathsf{Weibull}(\lambda, \alpha)\)</span> model is <span class="math display">\[\begin{align*}
+<p><span class="theorem-title"><strong>Example 1.11 (Likelihood, score and information of the Weibull distribution)</strong></span> The log likelihood for a simple random sample whose realizations are <span class="math inline">\(y_1, \ldots, y_n\)</span> of size <span class="math inline">\(n\)</span> from a <span class="math inline">\(\mathsf{Weibull}(\lambda, \alpha)\)</span> model is <span class="math display">\[\begin{align*}
 \ell(\lambda, \alpha) = n \ln(\alpha) - n\alpha\ln(\lambda) + (\alpha-1) \sum_{i=1}^n \ln y_i  - \lambda^{-\alpha}\sum_{i=1}^n y_i^\alpha.
 \end{align*}\]</span></p>
 <p>The score, which is the gradient of the log likelihood, is easily obtained by differentiation<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a> <span class="math display">\[\begin{align*}
@@ -724,28 +775,22 @@ i_{\alpha, \alpha} &amp; = n\alpha^{-2}(1 + \gamma^2-2\gamma+\pi^2/6)
 <span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>o_info <span class="ot">&lt;-</span> <span class="fu">obs_info_weib</span>(dat, <span class="at">scale =</span> scale, <span class="at">shape =</span> shape)</span>
 <span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a><span class="fu">all.equal</span>(</span>
 <span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a>  numDeriv<span class="sc">::</span><span class="fu">hessian</span>(nll_weib, <span class="at">x =</span> <span class="fu">c</span>(scale, shape), <span class="at">y =</span> dat) <span class="sc">/</span> nobs,</span>
-<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a>  o_info)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] TRUE</code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Compute approximation to Fisher information</span></span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>exp_info_sim <span class="ot">&lt;-</span> <span class="fu">replicate</span>(<span class="at">n =</span> <span class="dv">1000</span>, <span class="at">expr =</span> {</span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">obs_info_weib</span>(<span class="at">y =</span> <span class="fu">rweibull</span>(<span class="at">n =</span> nobs,</span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>                        <span class="at">shape =</span> shape,</span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>                        <span class="at">scale =</span> scale),</span>
-<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>           <span class="at">scale =</span> scale, <span class="at">shape =</span> shape)})</span>
-<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="fu">all.equal</span>(<span class="fu">apply</span>(exp_info_sim, <span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>, mean),</span>
-<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>          <span class="fu">exp_info_weib</span>(scale, shape))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] "Mean relative difference: 0.001915713"</code></pre>
-</div>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a>  o_info)</span>
+<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a><span class="co"># Compute approximation to Fisher information</span></span>
+<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a>exp_info_sim <span class="ot">&lt;-</span> <span class="fu">replicate</span>(<span class="at">n =</span> <span class="dv">1000</span>, <span class="at">expr =</span> {</span>
+<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a>  <span class="fu">obs_info_weib</span>(<span class="at">y =</span> <span class="fu">rweibull</span>(<span class="at">n =</span> nobs,</span>
+<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a>                        <span class="at">shape =</span> shape,</span>
+<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a>                        <span class="at">scale =</span> scale),</span>
+<span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a>           <span class="at">scale =</span> scale, <span class="at">shape =</span> shape)})</span>
+<span id="cb1-32"><a href="#cb1-32" aria-hidden="true" tabindex="-1"></a><span class="fu">all.equal</span>(<span class="fu">apply</span>(exp_info_sim, <span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>, mean),</span>
+<span id="cb1-33"><a href="#cb1-33" aria-hidden="true" tabindex="-1"></a>          <span class="fu">exp_info_weib</span>(scale, shape))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </div>
 <p>The joint density function only factorizes for independent data, but an alternative sequential decomposition can be helpful. For example, we can write the joint density <span class="math inline">\(f(y_1, \ldots, y_n)\)</span> using the factorization <span class="math display">\[\begin{align*}
 f(\boldsymbol{y}) = f(y_1) \times f(y_2 \mid y_1) \times \ldots f(y_n \mid y_1, \ldots, y_n)
 \end{align*}\]</span> in terms of conditional. Such a decomposition is particularly useful in the context of time series, where data are ordered from time <span class="math inline">\(1\)</span> until time <span class="math inline">\(n\)</span> and models typically relate observation <span class="math inline">\(y_n\)</span> to it’s past.</p>
 <div id="exm-autoregressive-one" class="theorem example">
-<p><span class="theorem-title"><strong>Example 2.10 (First-order autoregressive process)</strong></span> Consider a Gaussian <span class="math inline">\(\mathsf{AR}(1)\)</span> model of the form <span class="math display">\[Y_t = \mu + \phi(Y_{t-1} - \mu) + \varepsilon_t,\]</span> where <span class="math inline">\(\phi\)</span> is the lag-one correlation, <span class="math inline">\(\mu\)</span> the global mean and <span class="math inline">\(\varepsilon_t\)</span> is an iid innovation with mean zero and variance <span class="math inline">\(\sigma^2\)</span>. If <span class="math inline">\(|\phi| &lt; 1\)</span>, the process is stationary, and the variance does not increase with <span class="math inline">\(t\)</span>.</p>
+<p><span class="theorem-title"><strong>Example 1.12 (First-order autoregressive process)</strong></span> Consider a Gaussian <span class="math inline">\(\mathsf{AR}(1)\)</span> model of the form <span class="math display">\[Y_t = \mu + \phi(Y_{t-1} - \mu) + \varepsilon_t,\]</span> where <span class="math inline">\(\phi\)</span> is the lag-one correlation, <span class="math inline">\(\mu\)</span> the global mean and <span class="math inline">\(\varepsilon_t\)</span> is an iid innovation with mean zero and variance <span class="math inline">\(\sigma^2\)</span>. If <span class="math inline">\(|\phi| &lt; 1\)</span>, the process is stationary, and the variance does not increase with <span class="math inline">\(t\)</span>.</p>
 <p>The Markov property states that the current realization depends on the past, <span class="math inline">\(Y_t \mid Y_1, \ldots, Y_{t-1},\)</span> only through the most recent value <span class="math inline">\(Y_{t-1}.\)</span> The log likelihood thus becomes <span class="math display">\[\begin{align*}
 \ell(\boldsymbol{\theta}) = \ln f(y_1) + \sum_{i=2}^n f(y_i \mid y_{i-1}).
 \end{align*}\]</span></p>
@@ -755,16 +800,16 @@ f(\boldsymbol{y}) = f(y_1) \times f(y_2 \mid y_1) \times \ldots f(y_n \mid y_1, 
 \end{align*}\]</span></p>
 </div>
 </section>
-<section id="monte-carlo-methods" class="level2" data-number="2.3">
-<h2 data-number="2.3" class="anchored" data-anchor-id="monte-carlo-methods"><span class="header-section-number">2.3</span> Monte Carlo methods</h2>
+<section id="monte-carlo-methods" class="level2" data-number="1.3">
+<h2 data-number="1.3" class="anchored" data-anchor-id="monte-carlo-methods"><span class="header-section-number">1.3</span> Monte Carlo methods</h2>
 <p>Consider a target distribution with finite expected value. The law of large numbers guarantees that, if we can draw observations from our target distribution, then the sample average will converge to the expected value of that distribution, as the sample size becomes larger and larger, provided the expectation is finite.</p>
 <p>We can thus compute the probability of any event or the expected value of any (integrable) function by computing sample averages; the cost to pay for this generality is randomness.</p>
 <p>Specifically, suppose we are interested in the average <span class="math inline">\(\mathsf{E}\{g(X)\}\)</span> of <span class="math inline">\(X \sim F\)</span> for some function <span class="math inline">\(g\)</span>.</p>
 <div id="exm-expectation-demo" class="theorem example">
-<p><span class="theorem-title"><strong>Example 2.11</strong></span> Consider <span class="math inline">\(X \sim \mathsf{Gamma}(\alpha, \beta)\)</span>, a gamma distribution with shape <span class="math inline">\(\alpha\)</span> and rate <span class="math inline">\(\beta\)</span>. We can compute the probability that <span class="math inline">\(X &lt; 1\)</span> easily by Monte Carlo since <span class="math inline">\(\Pr(X &lt;1) = \mathsf{E}\{\mathrm{I}(X&lt;1)\}\)</span> and this means we only need to compute the proportion of draws less than one. We can likewise compute the mean <span class="math inline">\(g(x) = x\)</span> or variance.</p>
+<p><span class="theorem-title"><strong>Example 1.13</strong></span> Consider <span class="math inline">\(X \sim \mathsf{Gamma}(\alpha, \beta)\)</span>, a gamma distribution with shape <span class="math inline">\(\alpha\)</span> and rate <span class="math inline">\(\beta\)</span>. We can compute the probability that <span class="math inline">\(X &lt; 1\)</span> easily by Monte Carlo since <span class="math inline">\(\Pr(X &lt;1) = \mathsf{E}\{\mathrm{I}(X&lt;1)\}\)</span> and this means we only need to compute the proportion of draws less than one. We can likewise compute the mean <span class="math inline">\(g(x) = x\)</span> or variance.</p>
 <p>Suppose we have drawn a Monte Carlo sample of size <span class="math inline">\(B\)</span>. If the function <span class="math inline">\(g(\cdot)\)</span> is square integrable,<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a> with variance <span class="math inline">\(\sigma^2_g\)</span>, then a central limit theorem applies. In large samples and for independent observations, our Monte Carlo average <span class="math inline">\(\widehat{\mu}_g = B^{-1}\sum_{b=1}^B g(X_i)\)</span> has variance <span class="math inline">\(\sigma^2_g/B\)</span>. We can approximate the unknown variance <span class="math inline">\(\sigma^2_g\)</span> by it’s empirical counterpart.<a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a>. Note that, while the variance decreases linearly with <span class="math inline">\(B\)</span>, the choice of <span class="math inline">\(g\)</span> impacts the speed of convergence: we can compute <span class="math display">\[\sigma^2_g =\Pr(X \leq 1)\{1-\Pr(X \leq 1)\}=0.0434\]</span> (left) and <span class="math inline">\(\sigma^2_g=\alpha/\beta^2=1/8\)</span> (middle plot).</p>
-<p><a href="#fig-monte-carlo-path" class="quarto-xref">Figure&nbsp;<span>2.1</span></a> shows the empirical trace plot of the Monte Carlo average (note the <span class="math inline">\(\sqrt{B}\)</span> <span class="math inline">\(x\)</span>-axis scale!) as a function of the Monte Carlo sample size <span class="math inline">\(B\)</span> along with 95% Wald-based confidence intervals (gray shaded region), <span class="math inline">\(\widehat{\mu}_g \pm 1.96 \times \sigma_g/\sqrt{B}\)</span>. We can see that the ‘likely region’ for the average shrinks with <span class="math inline">\(B\)</span>.</p>
-<p>What happens if our function is not integrable? The right-hand plot of <a href="#fig-monte-carlo-path" class="quarto-xref">Figure&nbsp;<span>2.1</span></a> shows empirical averages of <span class="math inline">\(g(x) = x^{-1}\)</span>, which is not integrable if <span class="math inline">\(\alpha &lt; 1\)</span>. We can compute the empirical average, but the result won’t converge to any meaningful quantity regardless of the sample size. The large jumps are testimonial of this.</p>
+<p><a href="#fig-monte-carlo-path" class="quarto-xref">Figure&nbsp;<span>1.1</span></a> shows the empirical trace plot of the Monte Carlo average (note the <span class="math inline">\(\sqrt{B}\)</span> <span class="math inline">\(x\)</span>-axis scale!) as a function of the Monte Carlo sample size <span class="math inline">\(B\)</span> along with 95% Wald-based confidence intervals (gray shaded region), <span class="math inline">\(\widehat{\mu}_g \pm 1.96 \times \sigma_g/\sqrt{B}\)</span>. We can see that the ‘likely region’ for the average shrinks with <span class="math inline">\(B\)</span>.</p>
+<p>What happens if our function is not integrable? The right-hand plot of <a href="#fig-monte-carlo-path" class="quarto-xref">Figure&nbsp;<span>1.1</span></a> shows empirical averages of <span class="math inline">\(g(x) = x^{-1}\)</span>, which is not integrable if <span class="math inline">\(\alpha &lt; 1\)</span>. We can compute the empirical average, but the result won’t converge to any meaningful quantity regardless of the sample size. The large jumps are testimonial of this.</p>
 <div class="cell">
 <div class="cell-output-display">
 <div id="fig-monte-carlo-path" class="quarto-float quarto-figure quarto-figure-center anchored">
@@ -773,7 +818,7 @@ f(\boldsymbol{y}) = f(y_1) \times f(y_2 \mid y_1) \times \ldots f(y_n \mid y_1, 
 <img src="introduction_files/figure-html/fig-monte-carlo-path-1.png" class="img-fluid figure-img" width="672">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-monte-carlo-path-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;2.1: Running mean trace plots for <span class="math inline">\(g(x)=\mathrm{I}(x&lt;1)\)</span> (left), <span class="math inline">\(g(x)=x\)</span> (middle) and <span class="math inline">\(g(x)=1/x\)</span> (right) for a Gamma distribution with shape 0.5 and rate 2, as a function of the Monte Carlo sample size.
+Figure&nbsp;1.1: Running mean trace plots for <span class="math inline">\(g(x)=\mathrm{I}(x&lt;1)\)</span> (left), <span class="math inline">\(g(x)=x\)</span> (middle) and <span class="math inline">\(g(x)=1/x\)</span> (right) for a Gamma distribution with shape 0.5 and rate 2, as a function of the Monte Carlo sample size.
 </figcaption>
 </figure>
 </div>
@@ -788,7 +833,7 @@ Exponential tilting
 Generalized ratio-of-uniform method
 -->
 <div id="prp-rejection-sampling" class="theorem proposition">
-<p><span class="theorem-title"><strong>Proposition 2.5 (Rejection sampling)</strong></span> Rejection sampling (also termed accept-reject algorithm) samples from a random vector with density <span class="math inline">\(p(\cdot)\)</span> by drawing candidates from a proposal with density <span class="math inline">\(q(\cdot)\)</span> with nested support, <span class="math inline">\(\mathrm{supp}(p) \subseteq \mathrm{supp}(q)\)</span>. The density <span class="math inline">\(q(\cdot)\)</span> must be such that <span class="math inline">\(p(\boldsymbol{\theta}) \leq C q(\boldsymbol{\theta})\)</span> for <span class="math inline">\(C \geq 1\)</span> for all values of <span class="math inline">\(\boldsymbol{\theta}\)</span> in the support of <span class="math inline">\(p(\cdot)\)</span>. A proof can be found in <span class="citation" data-cites="Devroye:1986">Devroye (<a href="references.html#ref-Devroye:1986" role="doc-biblioref">1986</a>, Theorem 3.1)</span></p>
+<p><span class="theorem-title"><strong>Proposition 1.6 (Rejection sampling)</strong></span> Rejection sampling (also termed accept-reject algorithm) samples from a random vector with density <span class="math inline">\(p(\cdot)\)</span> by drawing candidates from a proposal with density <span class="math inline">\(q(\cdot)\)</span> with nested support, <span class="math inline">\(\mathrm{supp}(p) \subseteq \mathrm{supp}(q)\)</span>. The density <span class="math inline">\(q(\cdot)\)</span> must be such that <span class="math inline">\(p(\boldsymbol{\theta}) \leq C q(\boldsymbol{\theta})\)</span> for <span class="math inline">\(C \geq 1\)</span> for all values of <span class="math inline">\(\boldsymbol{\theta}\)</span> in the support of <span class="math inline">\(p(\cdot)\)</span>. A proof can be found in <span class="citation" data-cites="Devroye:1986">Devroye (<a href="references.html#ref-Devroye:1986" role="doc-biblioref">1986</a>, Theorem 3.1)</span></p>
 <ol type="1">
 <li>Generate <span class="math inline">\(\boldsymbol{\theta}^{\star}\)</span> from the proposal with density <span class="math inline">\(q\)</span> and <span class="math inline">\(U \sim \mathsf{U}(0,1)\)</span></li>
 <li>Compute the ratio <span class="math inline">\(R \gets p(\boldsymbol{\theta}^{\star})/ q(\boldsymbol{\theta}^{\star})\)</span>.</li>
@@ -803,7 +848,7 @@ Generalized ratio-of-uniform method
 <img src="introduction_files/figure-html/fig-acceptreject-1.png" class="img-fluid figure-img" width="672">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-acceptreject-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;2.2: Target density (full) and scaled proposal density (dashed): the vertical segment at <span class="math inline">\(x=1\)</span> shows the percentage of acceptance for a uniform slice under the scaled proposal, giving an acceptance ratio of 0.58.
+Figure&nbsp;1.2: Target density (full) and scaled proposal density (dashed): the vertical segment at <span class="math inline">\(x=1\)</span> shows the percentage of acceptance for a uniform slice under the scaled proposal, giving an acceptance ratio of 0.58.
 </figcaption>
 </figure>
 </div>
@@ -811,22 +856,22 @@ Figure&nbsp;2.2: Target density (full) and scaled proposal density (dashed): the
 </div>
 <p>Rejection sampling requires the proposal <span class="math inline">\(q\)</span> to have a support at least as large as that of <span class="math inline">\(p\)</span> and resemble closely the density. It should be chosen so that the upper bound <span class="math inline">\(C\)</span> is as sharp as possible and close to 1. The dominating density <span class="math inline">\(q\)</span> must have heavier tails than the density of interest. The expected number of simulations needed to accept one proposal is <span class="math inline">\(C.\)</span> Finally, for the method to be useful, we need to be able to simulate easily and cheaply from the proposal. The optimal value of <span class="math inline">\(C\)</span> is <span class="math inline">\(C = \sup_{\boldsymbol{\theta}} p(\boldsymbol{\theta}) / q(\boldsymbol{\theta})\)</span>. This quantity may be obtained by numerical optimization, by finding the mode of the ratio of the log densities if the maximum is not known analytically.</p>
 <div id="exm-accept-reject-truncated" class="theorem example">
-<p><span class="theorem-title"><strong>Example 2.12 (Truncated Gaussian distribution)</strong></span> Consider the problem of sampling from a Gaussian distribution <span class="math inline">\(Y \sim \mathsf{Gauss}(\mu, \sigma^2)\)</span> truncated in the interval <span class="math inline">\([a, b],\)</span> which has density <span class="math display">\[\begin{align*}
+<p><span class="theorem-title"><strong>Example 1.14 (Truncated Gaussian distribution)</strong></span> Consider the problem of sampling from a Gaussian distribution <span class="math inline">\(Y \sim \mathsf{Gauss}(\mu, \sigma^2)\)</span> truncated in the interval <span class="math inline">\([a, b],\)</span> which has density <span class="math display">\[\begin{align*}
 f(x; \mu, \sigma, a, b) = \frac{1}{\sigma}\frac{\phi\left(\frac{x-\mu}{\sigma}\right)}{\Phi\{(b-\mu)/\sigma\}-\Phi\{(a-\mu)/\sigma\}}.
 \end{align*}\]</span> where <span class="math inline">\(\phi(\cdot), \Phi(\cdot)\)</span> are respectively the density and distribution function of the standard Gaussian distribution.</p>
 <p>Since the Gaussian is a location-scale family, we can reduce the problem to sampling <span class="math inline">\(X\)</span> from a standard Gaussian truncated on <span class="math inline">\(\alpha = (a-\mu)/\sigma\)</span> and <span class="math inline">\(\beta = (b-\mu)/\sigma\)</span> and back transform the result as <span class="math inline">\(Y = \mu + \sigma X\)</span>.</p>
 <p>A crude accept-reject sampling algorithm would consider sampling from the same untruncated distribution with density <span class="math inline">\(g(X) = \sigma^{-1}\phi\{(x-\mu)/\sigma\}\)</span>, and the acceptance ratio is <span class="math inline">\(C^{-1}=\{\Phi(\beta) - \Phi(\alpha)\}\)</span>. We thus simply simulate points from the Gaussian and accept any that falls within the bounds.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Standard Gaussian truncated on [0,1]</span></span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>candidate <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(<span class="fl">1e5</span>)</span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>trunc_samp <span class="ot">&lt;-</span> candidate[candidate <span class="sc">&gt;=</span> <span class="dv">0</span> <span class="sc">&amp;</span> candidate <span class="sc">&lt;=</span> <span class="dv">1</span>]</span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Acceptance rate</span></span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="fu">length</span>(trunc_samp)<span class="sc">/</span><span class="fl">1e5</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Standard Gaussian truncated on [0,1]</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>candidate <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(<span class="fl">1e5</span>)</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>trunc_samp <span class="ot">&lt;-</span> candidate[candidate <span class="sc">&gt;=</span> <span class="dv">0</span> <span class="sc">&amp;</span> candidate <span class="sc">&lt;=</span> <span class="dv">1</span>]</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Acceptance rate</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="fu">length</span>(trunc_samp)<span class="sc">/</span><span class="fl">1e5</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 0.34242</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Theoretical acceptance rate</span></span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="fu">pnorm</span>(<span class="dv">1</span>)<span class="sc">-</span><span class="fu">pnorm</span>(<span class="dv">0</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Theoretical acceptance rate</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="fu">pnorm</span>(<span class="dv">1</span>)<span class="sc">-</span><span class="fu">pnorm</span>(<span class="dv">0</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 0.3413447</code></pre>
 </div>
@@ -843,10 +888,10 @@ X \sim \Phi^{-1}\left[\Phi(\alpha) + \{\Phi(\beta)-\Phi(\alpha)\}U\right]
 </ol>
 <p>Should we wish to obtain samples on <span class="math inline">\([a,b]\)</span>, we could instead propose from a Rayleigh truncated above at <span class="math inline">\(b\)</span> <span class="citation" data-cites="LEcuyer.Botev:2017">(<a href="references.html#ref-LEcuyer.Botev:2017" role="doc-biblioref">Botev and L’Écuyer 2017</a>)</span>.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>a <span class="ot">&lt;-</span> <span class="fl">8.3</span></span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>niter <span class="ot">&lt;-</span> <span class="dv">1000</span>L</span>
-<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>X <span class="ot">&lt;-</span> <span class="fu">sqrt</span>(a<span class="sc">^</span><span class="dv">2</span> <span class="sc">+</span> <span class="dv">2</span><span class="sc">*</span><span class="fu">rexp</span>(niter))</span>
-<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>samp <span class="ot">&lt;-</span> X[<span class="fu">runif</span>(niter)<span class="sc">*</span>X <span class="sc">&lt;=</span> a]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>a <span class="ot">&lt;-</span> <span class="fl">8.3</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>niter <span class="ot">&lt;-</span> <span class="dv">1000</span>L</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>X <span class="ot">&lt;-</span> <span class="fu">sqrt</span>(a<span class="sc">^</span><span class="dv">2</span> <span class="sc">+</span> <span class="dv">2</span><span class="sc">*</span><span class="fu">rexp</span>(niter))</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>samp <span class="ot">&lt;-</span> X[<span class="fu">runif</span>(niter)<span class="sc">*</span>X <span class="sc">&lt;=</span> a]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </div>
 <p>For a given candidate density <span class="math inline">\(g\)</span> which has a heavier tail than the target, we can resort to numerical methods to compute the mode of the ratio <span class="math inline">\(f/g\)</span> and obtain the bound <span class="math inline">\(C\)</span>; see <span class="citation" data-cites="Albert:2009">Albert (<a href="references.html#ref-Albert:2009" role="doc-biblioref">2009</a>)</span>, Section 5.8 for an insightful example.</p>
@@ -871,14 +916,19 @@ Gradshteyn, I. S., and I. M. Ryzhik. 2014. <em>Table of Integrals, Series, and P
 <div id="ref-Jegerlehner:2021" class="csl-entry" role="listitem">
 Jegerlehner, Sabrina, Franziska Suter-Riniker, Philipp Jent, Pascal Bittel, and Michael Nagler. 2021. <span>“Diagnostic Accuracy of a <span>SARS-CoV-2</span> Rapid Antigen Test in Real-Life Clinical Settings.”</span> <em>International Journal of Infectious Diseases</em> 109 (August): 118–22. <a href="https://doi.org/10.1016/j.ijid.2021.07.010">https://doi.org/10.1016/j.ijid.2021.07.010</a>.
 </div>
+<div id="ref-Marshall.Olkin:1985" class="csl-entry" role="listitem">
+Marshall, Albert W., and Ingram Olkin. 1985. <span>“A Family of Bivariate Distributions Generated by the Bivariate <span>B</span>ernoulli Distribution.”</span> <em>Journal of the American Statistical Association</em> 80 (390): 332–38. <a href="https://doi.org/10.1080/01621459.1985.10478116">https://doi.org/10.1080/01621459.1985.10478116</a>.
+</div>
 <div id="ref-owidcoronavirus" class="csl-entry" role="listitem">
 Mathieu, Edouard, Hannah Ritchie, Lucas Rodés-Guirao, Cameron Appel, Charlie Giattino, Joe Hasell, Bobbie Macdonald, et al. 2020. <span>“Coronavirus Pandemic (COVID-19).”</span> <em>Our World in Data</em>.
 </div>
 <div id="ref-McNeil.Frey.Embrechts:2005" class="csl-entry" role="listitem">
 McNeil, A. J., R. Frey, and P. Embrechts. 2005. <em>Quantitative Risk Management: Concepts, Techniques, and Tools</em>. 1st ed. Princeton, NJ: Princeton University Press.
 </div>
+<div id="ref-Nadarajah:2008" class="csl-entry" role="listitem">
+Nadarajah, Saralees. 2008. <span>“<span>M</span>arshall and <span>O</span>lkin’s Distributions.”</span> <em>Acta Applicandae Mathematicae</em> 103 (1): 87–100. <a href="https://doi.org/10.1007/s10440-008-9221-7">https://doi.org/10.1007/s10440-008-9221-7</a>.
 </div>
-</section>
+</div>
 </section>
 <section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes">
 <hr>
