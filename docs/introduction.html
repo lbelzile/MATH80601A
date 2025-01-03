@@ -94,7 +94,7 @@ div.csl-indent {
 <link href="site_libs/quarto-html/quarto-syntax-highlighting-81b5c3e63835cfde897ecd3d35a35a41.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-6bbbd0764ac2422ca6db9ae5da2ac490.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-ad5ef081d17d57ab2b6cc5e45efb5d90.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
   "copy-button": false,
@@ -296,6 +296,20 @@ f(x) = \frac{\Gamma(\alpha_1)\Gamma(\alpha_2)}{\Gamma(\alpha_1+\alpha_2)}x^{\alp
 \end{align*}\]</span> The case <span class="math inline">\(\mathsf{beta}(1,1)\)</span>, also denoted <span class="math inline">\(\mathsf{unif}(0,1)\)</span>, corresponds to a standard uniform distribution.</p>
 </div>
 <p>The beta distribution is commonly used to model proportions, and can be generalized to the multivariate setting as follows.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-beta-dens" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-beta-dens-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="introduction_files/figure-html/fig-beta-dens-1.png" class="img-fluid figure-img" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-beta-dens-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;1.1: Density of beta random variables with different shape parameters
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
 <div id="def-dirichlet-dist" class="theorem definition">
 <p><span class="theorem-title"><strong>Definition 1.6 (Dirichlet distribution)</strong></span> Let <span class="math inline">\(\boldsymbol{\alpha} \in (0, \infty)^d\)</span> denote shape parameters and cosider a random vector of size <span class="math inline">\(d\)</span> with positive components on the simplex <span class="math display">\[\mathbb{S}_{d-1}: \{ 0 \leq x_j \leq 1; j=1, \ldots, d: x_1 + \cdots + x_d=1\}.\]</span> The density of a <strong>Dirichlet</strong> random vector, denoted <span class="math inline">\(\boldsymbol{Y} \sim \mathsf{Dirichlet}(\boldsymbol{\alpha})\)</span>, is <span class="math display">\[\begin{align*}
 f(\boldsymbol{x}) = \frac{\prod_{j=1}^{d-1}\Gamma(\alpha_j)}{\Gamma(\alpha_1 + \cdots + \alpha_d)}\prod_{j=1}^{d} x_j^{\alpha_j-1}, \qquad \boldsymbol{x} \in \mathbb{S}_{d-1}
@@ -358,7 +372,7 @@ The quantile function, the inverse of the distribution function, is $Q(p) = \lam
 <h3 data-number="1.1.2" class="anchored" data-anchor-id="marginal-and-conditional-distributions"><span class="header-section-number">1.1.2</span> Marginal and conditional distributions</h3>
 <div id="def-marginal" class="theorem definition">
 <p><span class="theorem-title"><strong>Definition 1.13 (Marginal distribution)</strong></span> The <strong>marginal distribution</strong> of a subvector <span class="math inline">\(\boldsymbol{X}_{1:k}=(X_1, \ldots, X_k)^\top\)</span>, without loss of generality consisting of the <span class="math inline">\(k\)</span> first components of <span class="math inline">\(\boldsymbol{X}\)</span> <span class="math inline">\((1 \leq k &lt; d)\)</span> is <span class="math display">\[\begin{align*}
-F_{1:k}(\boldsymbol{x}_{\boldsymbol{X}}) = \Pr(\boldsymbol{X}_{1:k} \leq \boldsymbol{x}_{1:k}) = F_{\boldsymbol{X}}(x_1, \ldots, x_k, \infty, \ldots, \infty).
+F_{\boldsymbol{X}_{1:k}}(\boldsymbol{x}_{1:k}) = \Pr(\boldsymbol{X}_{1:k} \leq \boldsymbol{x}_{1:k}) = F_{\boldsymbol{X}}(x_1, \ldots, x_k, \infty, \ldots, \infty).
 \end{align*}\]</span> and thus the marginal distribution of component <span class="math inline">\(j\)</span>, <span class="math inline">\(F_j(x_j)\)</span>, is obtained by evaluating all components but the <span class="math inline">\(j\)</span>th at <span class="math inline">\(\infty\)</span>.</p>
 <p>We likewise obtain the marginal density <span class="math display">\[\begin{align*}
 f_{1:k}(\boldsymbol{x}_{1:k}) = \frac{\partial^k F_{1:k}(\boldsymbol{x}_{1:k})}{\partial x_1 \cdots \partial x_{k}},
@@ -423,7 +437,7 @@ Table&nbsp;1.1: Confusion matrix of Covid test results for PCR tests versus rapi
 </div>
 <p>Bayes’ rule is central to updating beliefs: given initial beliefs (priors) and information in the form of data, we update our beliefs. We can apply</p>
 <div id="exm-discrete-conditional-marginal" class="theorem example">
-<p><span class="theorem-title"><strong>Example 1.2 (Conditional and marginal for contingency table)</strong></span> Consider a bivariate distribution for <span class="math inline">\((Y_1, Y_2)\)</span> supported on <span class="math inline">\(\{1,2\} \times \{1, 2, 3\}\)</span> whose joint probability mass function is given in <a href="#tbl-bivardiscrete" class="quarto-xref">Table&nbsp;<span>1.2</span></a></p>
+<p><span class="theorem-title"><strong>Example 1.2 (Conditional and marginal for contingency table)</strong></span> Consider a bivariate distribution for <span class="math inline">\((Y_1, Y_2)\)</span> supported on <span class="math inline">\(\{1, 2, 3\} \times \{1, 2\}\)</span>, whose joint probability mass function is given in <a href="#tbl-bivardiscrete" class="quarto-xref">Table&nbsp;<span>1.2</span></a></p>
 <div class="cell" data-tbl-align="center">
 <div id="tbl-bivardiscrete" class="cell quarto-float quarto-figure quarto-figure-center anchored" data-tbl-align="center">
 <figure class="quarto-float quarto-float-tbl figure">
@@ -439,6 +453,7 @@ Table&nbsp;1.2: Bivariate mass function with probability of each outcome for <sp
 <th style="text-align: right;"><span class="math inline">\(Y_1=1\)</span></th>
 <th style="text-align: right;"><span class="math inline">\(Y_1=2\)</span></th>
 <th style="text-align: right;"><span class="math inline">\(Y_1=3\)</span></th>
+<th style="text-align: right;">total</th>
 </tr>
 </thead>
 <tbody>
@@ -447,12 +462,21 @@ Table&nbsp;1.2: Bivariate mass function with probability of each outcome for <sp
 <td style="text-align: right;">0.20</td>
 <td style="text-align: right;">0.3</td>
 <td style="text-align: right;">0.10</td>
+<td style="text-align: right;">0.6</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;"><span class="math inline">\(Y_2=2\)</span></td>
 <td style="text-align: right;">0.15</td>
 <td style="text-align: right;">0.2</td>
 <td style="text-align: right;">0.05</td>
+<td style="text-align: right;">0.4</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">total</td>
+<td style="text-align: right;">0.35</td>
+<td style="text-align: right;">0.5</td>
+<td style="text-align: right;">0.15</td>
+<td style="text-align: right;">1.0</td>
 </tr>
 </tbody>
 </table>
@@ -461,8 +485,8 @@ Table&nbsp;1.2: Bivariate mass function with probability of each outcome for <sp
 </figure>
 </div>
 </div>
-<p>The marginal distribution of <span class="math inline">\(Y_1\)</span> is obtain by looking at the total probability for each column, as <span class="math display">\[\Pr(Y_1=i) = \Pr(Y_1=i, Y_2=1)+ \Pr(Y_1=i, Y_2=2).\]</span> This gives <span class="math inline">\(\Pr(Y_1=1)=0.35\)</span>, <span class="math inline">\(\Pr(Y_1=2)=0.5\)</span> and <span class="math inline">\(\Pr(Y_1=3) = 0.15\)</span>. Similarly, we find that <span class="math inline">\(\Pr(Y_2=1)=0.6\)</span> and <span class="math inline">\(\Pr(Y_2=2)=0.4\)</span> for the other random variable.</p>
-<p>The conditional distribution <span class="math display">\[\Pr(Y_2 = i \mid Y_1=2) = \frac{\Pr(Y_1=2, Y_2=i)}{\Pr(Y_1=2)},\]</span> so <span class="math inline">\(\Pr(Y_2 = 1 \mid Y_1=2) = 0.3/0.5 = 0.6\)</span> and <span class="math inline">\(\Pr(Y_2=2 \mid Y_1=2) = 0.4\)</span>. We can condition on more complicated events, for example <span class="math display">\[\begin{align*}
+<p>The marginal distribution of <span class="math inline">\(Y_1\)</span> is obtain by looking at the total probability for each column, as <span class="math display">\[\Pr(Y_1=i) = \Pr(Y_1=i, Y_2=1)+ \Pr(Y_1=i, Y_2=2).\]</span> This gives <span class="math inline">\(\Pr(Y_1=1)=0.35\)</span>, <span class="math inline">\(\Pr(Y_1=2)=0.5\)</span> and <span class="math inline">\(\Pr(Y_1=3) = 0.15.\)</span> Similarly, we find that <span class="math inline">\(\Pr(Y_2=1)=0.6\)</span> and <span class="math inline">\(\Pr(Y_2=2)=0.4\)</span> for the other random variable.</p>
+<p>The conditional distribution <span class="math display">\[\Pr(Y_2 = i \mid Y_1=2) = \frac{\Pr(Y_1=2, Y_2=i)}{\Pr(Y_1=2)},\]</span> so <span class="math inline">\(\Pr(Y_2 = 1 \mid Y_1=2) = 0.3/0.5 = 0.6\)</span> and <span class="math inline">\(\Pr(Y_2=2 \mid Y_1=2) = 0.4.\)</span> We can condition on more complicated events, for example <span class="math display">\[\begin{align*}
 \Pr(Y_2 = i \mid Y_1 \ge 2) = \frac{\Pr(Y_1=2, Y_2=i) + \Pr(Y_1=3, Y_2=i)}{\Pr(Y_1=2) + \Pr(Y_1=3)}.
 \end{align*}\]</span></p>
 </div>
@@ -510,18 +534,29 @@ f(x) &amp;= \int_{0}^{\infty} \frac{\lambda y^{1/2}}{(2\pi)^{1/2}}\exp\left\{ - 
 \frac{\lambda \Gamma(3/2)}{(2\pi)^{1/2}(x^2+\lambda)^{3/2}} \int_0^\infty f_{Y \mid X}(y \mid x) \mathrm{d} y \\ &amp;= \frac{\lambda}{2^{3/2}(x^2+\lambda)^{3/2}}
 \end{align*}\]</span> since <span class="math inline">\(\Gamma(a+1) = a\Gamma(a)\)</span> for <span class="math inline">\(a&gt;0\)</span> and <span class="math inline">\(\Gamma(1/2) = \sqrt{\pi}\)</span>. We conclude that marginally <span class="math inline">\(X \sim \mathsf{Student}(0, \lambda, 2)\)</span>, a Student distribution with scale <span class="math inline">\(\lambda\)</span> and two degrees of freedom.</p>
 </div>
-<div id="exm-conditional-poisson-sum" class="theorem example">
-<p><span class="theorem-title"><strong>Example 1.5 (Poisson counts conditional on their sum)</strong></span> Suppose that <span class="math inline">\(Y_j\sim \mathsf{Poisson}(\lambda_j)\)</span> are independent <span class="math inline">\((j=1, \ldots, J),\)</span> so that the sum <span class="math inline">\(S = Y_1 + \cdots Y_J \sim \mathsf{Poisson}(\lambda_1 + \ldots \lambda_J)\)</span>. One may prove this fact using moment generating functions, since the Poisson is infinitely divisible.</p>
-<p>Let <span class="math inline">\(f(y; \lambda_j)\)</span> denote the Poisson mass function with rate <span class="math inline">\(\lambda_j\)</span>. Since the random variables <span class="math inline">\(Y_1, \ldots, Y_J\)</span> are independent, the joint mass function factorizes as <span class="math display">\[\begin{align*}
-&amp;f(y_1, \ldots, y_J=y_j \mid S=n)
+<!--
+
+:::{#exm-conditional-poisson-sum}
+
+## Poisson counts conditional on their sum
+
+Suppose that $Y_j\sim \mathsf{Poisson}(\lambda_j)$ are independent $(j=1, \ldots, J),$ so that the sum $S = Y_1 + \cdots Y_J \sim \mathsf{Poisson}(\lambda_1 + \ldots \lambda_J)$. One may prove this fact using moment generating functions, since the Poisson is infinitely divisible.
+
+Let $f(y; \lambda_j)$ denote the Poisson mass function with rate $\lambda_j$. Since the random variables $Y_1, \ldots, Y_J$ are independent, the joint mass function factorizes as
+\begin{align*}
+&f(y_1, \ldots, y_J=y_j \mid S=n) 
 = \frac{\prod_{j=1}^J f(y_j; \lambda_j)}{f(n; \lambda_1 + \cdots + \lambda_J)}
-\\&amp;\quad=\prod_{j=1}^J\frac{\exp(-\lambda_j)\lambda_j^{y_j}}{y_j!}\frac{n!}{\exp(-\lambda_1 + \cdots \lambda_J) \lambda^{n}}
-\\&amp;\quad= \frac{n!}{ (\lambda_1 + \cdots + \lambda_J)^{n}}\prod_{j=1}^J\frac{\lambda_j^{y_j}}{y_j!}
-\\&amp;\quad=\frac{n!}{y_1! \cdots y_J!}\prod_{j=1}^J \left(\frac{\lambda_j}{\lambda_1 + \cdots + \lambda_J}\right)^{y_j}
-\end{align*}\]</span> for <span class="math inline">\(y_j \geq 0\)</span> for all <span class="math inline">\(j=1, \ldots, J\)</span> such that <span class="math inline">\(y_1 + \cdots + y_j = n\)</span>, and the joint mass is zero otherwise. If we define <span class="math inline">\(p_j = \lambda_j/(\lambda_1 + \cdots + \lambda_J)\)</span>, we recognize a multinomial distribution with vector of probability of success <span class="math inline">\(\boldsymbol{p}\)</span> with <span class="math inline">\(p_1 + \cdots p_J=1\)</span> and <span class="math inline">\(n\)</span> trials.</p>
-</div>
+\\&\quad=\prod_{j=1}^J\frac{\exp(-\lambda_j)\lambda_j^{y_j}}{y_j!}\frac{n!}{\exp(-\lambda_1 + \cdots \lambda_J) \lambda^{n}}
+\\&\quad= \frac{n!}{ (\lambda_1 + \cdots + \lambda_J)^{n}}\prod_{j=1}^J\frac{\lambda_j^{y_j}}{y_j!} 
+\\&\quad=\frac{n!}{y_1! \cdots y_J!}\prod_{j=1}^J \left(\frac{\lambda_j}{\lambda_1 + \cdots + \lambda_J}\right)^{y_j}
+\end{align*}
+for $y_j \geq 0$ for all $j=1, \ldots, J$ such that $y_1 + \cdots + y_j = n$, and the joint mass is zero otherwise. If we define $p_j = \lambda_j/(\lambda_1 + \cdots + \lambda_J)$, we recognize a multinomial distribution with vector of probability of success $\boldsymbol{p}$ with $p_1 + \cdots p_J=1$ and $n$ trials.
+
+:::
+
+-->
 <div id="exm-biv-geometric" class="theorem example">
-<p><span class="theorem-title"><strong>Example 1.6 (Bivariate geometric distribution of Marshall and Olkin)</strong></span> Consider a couple <span class="math inline">\((U_1, U_2)\)</span> of Bernoulli random variables whose mass function is <span class="math inline">\(\Pr(U_1=i, U_2=j=p_{ij}\)</span> for <span class="math inline">\((i,j) \in \{0,1\}^2\)</span>. The marginal distributions are, by the law of total probability <span class="math display">\[\begin{align*}
+<p><span class="theorem-title"><strong>Example 1.5 (Bivariate geometric distribution of Marshall and Olkin)</strong></span> Consider a couple <span class="math inline">\((U_1, U_2)\)</span> of Bernoulli random variables whose mass function is <span class="math inline">\(\Pr(U_1=i, U_2=j=p_{ij}\)</span> for <span class="math inline">\((i,j) \in \{0,1\}^2\)</span>. The marginal distributions are, by the law of total probability <span class="math display">\[\begin{align*}
 \Pr(U_1=i) &amp;= \Pr(U_1=i, U_2=0) + \Pr(U_1=i, U_2=1) = p_{i0} + p_{i1} = p_{i\bullet}\\
 \Pr(U_2=j) &amp;= \Pr(U_1=0, U_2=j) + \Pr(U_1=1, U_2=j) = p_{0j} + p_{1j} = p_{\bullet j}
 \end{align*}\]</span> We consider a joint geometric distribution (<span class="citation" data-cites="Marshall.Olkin:1985">Marshall and Olkin (<a href="references.html#ref-Marshall.Olkin:1985" role="doc-biblioref">1985</a>)</span>, Section 6) and the pair <span class="math inline">\((Y_1, Y_2)\)</span> giving the number of zeros for <span class="math inline">\((U_1, U_2)\)</span> before the variable equals one for the first time. The bivariate mass function is <span class="citation" data-cites="Nadarajah:2008">(<a href="references.html#ref-Nadarajah:2008" role="doc-biblioref">Nadarajah 2008</a>)</span> <span class="math display">\[\begin{align*}
@@ -573,10 +608,10 @@ Joint distribution, conditional
 <p>The <strong>tower</strong> property gives a law of iterated variance <span class="math display">\[\begin{align*}
 \mathsf{Va}_{\boldsymbol{Y}}(\boldsymbol{Y}) = \mathsf{E}_{\boldsymbol{Z}}\left\{\mathsf{Va}_{\boldsymbol{Y} \mid \boldsymbol{Z}}(\boldsymbol{Y})\right\} + \mathsf{Va}_{\boldsymbol{Z}}\left\{\mathsf{E}_{\boldsymbol{Y} \mid \boldsymbol{Z}}(\boldsymbol{Y})\right\}.
 \end{align*}\]</span></p>
-<p>We can deduce that, in a hierarchical model, the variance of the unconditional distribution is larger</p>
+<p>In a hierarchical model, the variance of the unconditional distribution is larger than that of the conditional distribution.</p>
 </div>
 <div id="exm-iteratedmean-gauss" class="theorem example">
-<p><span class="theorem-title"><strong>Example 1.7</strong></span> Let <span class="math inline">\(Y \mid X\sim \mathsf{Gauss}(X, \sigma^2)\)</span> and <span class="math inline">\(X \sim \mathsf{Gauss}(0, \tau^2)\)</span>. The unconditional mean and variance of <span class="math inline">\(Y\)</span> are <span class="math display">\[\begin{align*}
+<p><span class="theorem-title"><strong>Example 1.6</strong></span> Let <span class="math inline">\(Y \mid X\sim \mathsf{Gauss}(X, \sigma^2)\)</span> and <span class="math inline">\(X \sim \mathsf{Gauss}(0, \tau^2)\)</span>. The unconditional mean and variance of <span class="math inline">\(Y\)</span> are <span class="math display">\[\begin{align*}
 \mathsf{E}(Y) = \mathsf{E}_{X}\{\mathsf{E}_{Y\mid X}(Y)\}= \mathsf{E}_{X}(X) = 0
 \end{align*}\]</span> and <span class="math display">\[\begin{align*}
 \mathsf{Va}(Y) &amp;= \mathsf{E}_{X}\{\mathsf{Va}_{Y\mid X}(Y)\} + \mathsf{Va}_{X}\{\mathsf{E}_{Y\mid X}(Y)\} \\&amp;= \mathsf{E}_{X}(\sigma^2) + \mathsf{Va}_{X}(X)
@@ -584,15 +619,18 @@ Joint distribution, conditional
 \end{align*}\]</span></p>
 </div>
 <div id="exm-poisson-negbin" class="theorem example">
-<p><span class="theorem-title"><strong>Example 1.8 (Negative binomial as a Poisson mixture)</strong></span> &nbsp;</p>
+<p><span class="theorem-title"><strong>Example 1.7 (Negative binomial as a Poisson mixture)</strong></span> &nbsp;</p>
 <!-- Some canonical distributions have only one parameter which dictates moments: for a Poisson random variable $Y \sim \mathsf{Poisson}(\lambda)$, both $\mathsf{E}(Y) = \mathsf{Va}(Y) = \lambda$, whereas if we have binomial data with $n$ independent trials, each with probability of success $p$, then $Y \sim \mathsf{Bin}(n, p)$, then the theoretical mean of successes is $\mathsf{E}(Y)=np$ and the variance $\mathsf{Va}(Y) = np(1-p)$. -->
 <!-- In generalized linear models, we model the mean as a function of covariate, but data may exhibit overdispersion relative to the theoretical mean. -->
 <p>One restriction of the Poisson model is that the restriction on its moments is often unrealistic. The most frequent problem encountered is that of <strong>overdispersion</strong>, meaning that the variability in the counts is larger than that implied by a Poisson distribution.</p>
-<p>One common framework for handling overdispersion is to have <span class="math inline">\(Y \mid \Lambda = \lambda \sim \mathsf{Poisson}(\lambda)\)</span>, where the mean of the Poisson distribution is itself a positive random variable with mean <span class="math inline">\(\mu\)</span>, if <span class="math inline">\(\Lambda\)</span> follows a conjugate gamma distribution with shape <span class="math inline">\(k\mu\)</span> and rate <span class="math inline">\(k&gt;0\)</span>, <span class="math inline">\(\Lambda \sim \mathsf{Gamma}(k\mu, k)\)</span>, the posterior <span class="math inline">\(\Lambda \mid Y=y \sim \mathsf{Gamma}(k\mu + y, k+1)\)</span>.</p>
-<p>Since the joint density of <span class="math inline">\(Y\)</span> and <span class="math inline">\(\Lambda\)</span> can be written <span class="math display">\[
-p(y, \lambda) = p(y \mid \lambda)p(\lambda) = p(\lambda \mid y) p(y)
-\]</span> we can isolate the marginal density <span class="math display">\[\begin{align*}
-p(y) &amp;= \frac{p(y \mid \lambda)p(\lambda)}{p(\lambda \mid y)} \\&amp;= \frac{\frac{\lambda^y\exp(-\lambda)}{\Gamma(y+1)}  \frac{k^{k\mu}\lambda^{k\mu-1}\exp(-k\lambda)}{\Gamma(k\mu)}}{ \frac{(k+1)^{k\mu+y}\lambda^{k\mu+y-1}\exp\{-(k+1)\lambda\}}{\Gamma(k\mu+y)}}\\
+<p>One common framework for handling overdispersion is to have <span class="math inline">\(Y \mid \Lambda = \lambda \sim \mathsf{Poisson}(\lambda)\)</span>, where the mean of the Poisson distribution is itself a positive random variable with mean <span class="math inline">\(\mu\)</span>, if <span class="math inline">\(\Lambda\)</span> follows a gamma distribution with shape <span class="math inline">\(k\mu\)</span> and rate <span class="math inline">\(k&gt;0\)</span>, <span class="math inline">\(\Lambda \sim \mathsf{gamma}(k\mu, k)\)</span>. Since the joint density of <span class="math inline">\(Y\)</span> and <span class="math inline">\(\Lambda\)</span> can be written <span class="math display">\[\begin{align*}
+p(y, \lambda) &amp;= p(y \mid \lambda)p(\lambda) \\
+&amp;= \frac{\lambda^y\exp(-\lambda)}{\Gamma(y+1)}  \frac{k^{k\mu}\lambda^{k\mu-1}\exp(-k\lambda)}{\Gamma(k\mu)}
+\end{align*}\]</span> so the conditional distribution of <span class="math inline">\(\Lambda \mid Y=y\)</span> can be found by considering only terms that are function of <span class="math inline">\(\lambda\)</span>, whence <span class="math display">\[\begin{align*}
+f(\lambda \mid Y=y) \stackrel{\lambda}{\propto}\lambda^{y+k\mu-1}\exp(-(k+1)\lambda)
+\end{align*}\]</span> and the conditional distribution is <span class="math inline">\(\Lambda \mid Y=y \sim \mathsf{gamma}(k\mu + y, k+1)\)</span>.</p>
+<p>We can isolate the marginal density <span class="math display">\[\begin{align*}
+p(y) &amp;= \frac{p(y, \lambda)}{p(\lambda \mid y)} \\&amp;= \frac{\frac{\lambda^y\exp(-\lambda)}{\Gamma(y+1)}  \frac{k^{k\mu}\lambda^{k\mu-1}\exp(-k\lambda)}{\Gamma(k\mu)}}{ \frac{(k+1)^{k\mu+y}\lambda^{k\mu+y-1}\exp\{-(k+1)\lambda\}}{\Gamma(k\mu+y)}}\\
 &amp;= \frac{\Gamma(k\mu+y)}{\Gamma(k\mu)\Gamma(y+1)}k^{k\mu} (k+1)^{-k\mu-y}\\&amp;= \frac{\Gamma(k\mu+y)}{\Gamma(k\mu)\Gamma(y+1)}\left(1-\frac{1}{k+1}\right)^{k\mu} \left(\frac{1}{k+1}\right)^y
 \end{align*}\]</span> and this is the density of a negative binomial distribution with probability of success <span class="math inline">\(1/(k+1)\)</span>. We can thus view the negative binomial as a Poisson mean mixture.</p>
 <p>By the laws of iterated expectation and iterative variance, <span class="math display">\[\begin{align*}
@@ -697,7 +735,7 @@ i(\boldsymbol{\theta}) = \mathsf{E}\left\{U(\boldsymbol{\theta}; \boldsymbol{Y})
 <p>The information of an independent and identically distributed sample of size <span class="math inline">\(n\)</span> is <span class="math inline">\(n\)</span> times that of a single observation, so information accumulates at a linear rate.</p>
 </div>
 <div id="exm-likelihood-survival" class="theorem example">
-<p><span class="theorem-title"><strong>Example 1.9 (Likelihood for right-censoring)</strong></span> Consider a survival analysis problem for independent time-to-event data subject to (noninformative) random right-censoring. We assume failure times <span class="math inline">\(Y_i (i=1, \ldots, n)\)</span> are drawn from a common distribution <span class="math inline">\(F(\cdot; \boldsymbol{\theta})\)</span> supported on <span class="math inline">\((0, \infty)\)</span> and complemented with an independent censoring indicator <span class="math inline">\(C_i \in \{0,1\}\)</span>, with <span class="math inline">\(0\)</span> indicating right-censoring and <span class="math inline">\(C_i=1\)</span> observed failure time. If individual observation <span class="math inline">\(i\)</span> has not experienced the event at the end of the collection period, then the likelihood contribution <span class="math inline">\(\Pr(Y &gt; y) = 1-F(y; \boldsymbol{\theta})\)</span>, where <span class="math inline">\(y_i\)</span> is the maximum time observed for <span class="math inline">\(Y_i\)</span>.</p>
+<p><span class="theorem-title"><strong>Example 1.8 (Likelihood for right-censoring)</strong></span> Consider a survival analysis problem for independent time-to-event data subject to (noninformative) random right-censoring. We assume failure times <span class="math inline">\(Y_i (i=1, \ldots, n)\)</span> are drawn from a common distribution <span class="math inline">\(F(\cdot; \boldsymbol{\theta})\)</span> supported on <span class="math inline">\((0, \infty)\)</span> and complemented with an independent censoring indicator <span class="math inline">\(C_i \in \{0,1\}\)</span>, with <span class="math inline">\(0\)</span> indicating right-censoring and <span class="math inline">\(C_i=1\)</span> observed failure time. If individual observation <span class="math inline">\(i\)</span> has not experienced the event at the end of the collection period, then the likelihood contribution <span class="math inline">\(\Pr(Y &gt; y) = 1-F(y; \boldsymbol{\theta})\)</span>, where <span class="math inline">\(y_i\)</span> is the maximum time observed for <span class="math inline">\(Y_i\)</span>.</p>
 <p>We write the log likelihood in terms of the right-censoring binary indicator as <span class="math display">\[\begin{align*}
 \ell(\boldsymbol{\theta}) = \sum_{i: c_i=0} \log \{1- F(y_i; \boldsymbol{\theta})\} + \sum_{i: c_i=1} \log f(y_i; \boldsymbol{\theta})
 \end{align*}\]</span></p>
@@ -707,7 +745,7 @@ i(\lambda) &amp;= m/\lambda^2
 \end{align*}\]</span> and the right-censored observations for the exponential model do not contribute to the information.</p>
 </div>
 <div id="exm-gauss" class="theorem example">
-<p><span class="theorem-title"><strong>Example 1.10 (Information for the Gaussian distribution)</strong></span> Consider <span class="math inline">\(Y \sim \mathsf{Gauss}(\mu, \tau^{-1})\)</span>, parametrized in terms of precision <span class="math inline">\(\tau\)</span>. The likelihood contribution for an <span class="math inline">\(n\)</span> sample is, up to proportionality, <span class="math display">\[\begin{align*}
+<p><span class="theorem-title"><strong>Example 1.9 (Information for the Gaussian distribution)</strong></span> Consider <span class="math inline">\(Y \sim \mathsf{Gauss}(\mu, \tau^{-1})\)</span>, parametrized in terms of precision <span class="math inline">\(\tau\)</span>. The likelihood contribution for an <span class="math inline">\(n\)</span> sample is, up to proportionality, <span class="math display">\[\begin{align*}
 \ell(\mu, \tau) \propto \frac{n}{2}\log(\tau) - \frac{\tau}{2}\sum_{i=1}^n(Y_i^2-2\mu Y_i+\mu^2)
 \end{align*}\]</span></p>
 <p>The observed and Fisher information matrices are is <span class="math display">\[\begin{align*}
@@ -722,7 +760,7 @@ i(\mu, \tau) &amp;= n\begin{pmatrix}
 \end{align*}\]</span> Since <span class="math inline">\(\mathsf{E}(Y_i) = \mu\)</span>, the expected value of the off-diagonal entries of the Fisher information matrix are zero.</p>
 </div>
 <div id="exm-weibull-info" class="theorem example">
-<p><span class="theorem-title"><strong>Example 1.11 (Likelihood, score and information of the Weibull distribution)</strong></span> The log likelihood for a simple random sample whose realizations are <span class="math inline">\(y_1, \ldots, y_n\)</span> of size <span class="math inline">\(n\)</span> from a <span class="math inline">\(\mathsf{Weibull}(\lambda, \alpha)\)</span> model is <span class="math display">\[\begin{align*}
+<p><span class="theorem-title"><strong>Example 1.10 (Likelihood, score and information of the Weibull distribution)</strong></span> The log likelihood for a simple random sample whose realizations are <span class="math inline">\(y_1, \ldots, y_n\)</span> of size <span class="math inline">\(n\)</span> from a <span class="math inline">\(\mathsf{Weibull}(\lambda, \alpha)\)</span> model is <span class="math display">\[\begin{align*}
 \ell(\lambda, \alpha) = n \ln(\alpha) - n\alpha\ln(\lambda) + (\alpha-1) \sum_{i=1}^n \ln y_i  - \lambda^{-\alpha}\sum_{i=1}^n y_i^\alpha.
 \end{align*}\]</span></p>
 <p>The score, which is the gradient of the log likelihood, is easily obtained by differentiation<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a> <span class="math display">\[\begin{align*}
@@ -790,7 +828,7 @@ i_{\alpha, \alpha} &amp; = n\alpha^{-2}(1 + \gamma^2-2\gamma+\pi^2/6)
 f(\boldsymbol{y}) = f(y_1) \times f(y_2 \mid y_1) \times \ldots f(y_n \mid y_1, \ldots, y_n)
 \end{align*}\]</span> in terms of conditional. Such a decomposition is particularly useful in the context of time series, where data are ordered from time <span class="math inline">\(1\)</span> until time <span class="math inline">\(n\)</span> and models typically relate observation <span class="math inline">\(y_n\)</span> to it’s past.</p>
 <div id="exm-autoregressive-one" class="theorem example">
-<p><span class="theorem-title"><strong>Example 1.12 (First-order autoregressive process)</strong></span> Consider a Gaussian <span class="math inline">\(\mathsf{AR}(1)\)</span> model of the form <span class="math display">\[Y_t = \mu + \phi(Y_{t-1} - \mu) + \varepsilon_t,\]</span> where <span class="math inline">\(\phi\)</span> is the lag-one correlation, <span class="math inline">\(\mu\)</span> the global mean and <span class="math inline">\(\varepsilon_t\)</span> is an iid innovation with mean zero and variance <span class="math inline">\(\sigma^2\)</span>. If <span class="math inline">\(|\phi| &lt; 1\)</span>, the process is stationary, and the variance does not increase with <span class="math inline">\(t\)</span>.</p>
+<p><span class="theorem-title"><strong>Example 1.11 (First-order autoregressive process)</strong></span> Consider a Gaussian <span class="math inline">\(\mathsf{AR}(1)\)</span> model of the form <span class="math display">\[Y_t = \mu + \phi(Y_{t-1} - \mu) + \varepsilon_t,\]</span> where <span class="math inline">\(\phi\)</span> is the lag-one correlation, <span class="math inline">\(\mu\)</span> the global mean and <span class="math inline">\(\varepsilon_t\)</span> is an iid innovation with mean zero and variance <span class="math inline">\(\sigma^2\)</span>. If <span class="math inline">\(|\phi| &lt; 1\)</span>, the process is stationary, and the variance does not increase with <span class="math inline">\(t\)</span>.</p>
 <p>The Markov property states that the current realization depends on the past, <span class="math inline">\(Y_t \mid Y_1, \ldots, Y_{t-1},\)</span> only through the most recent value <span class="math inline">\(Y_{t-1}.\)</span> The log likelihood thus becomes <span class="math display">\[\begin{align*}
 \ell(\boldsymbol{\theta}) = \ln f(y_1) + \sum_{i=2}^n f(y_i \mid y_{i-1}).
 \end{align*}\]</span></p>
@@ -806,10 +844,10 @@ f(\boldsymbol{y}) = f(y_1) \times f(y_2 \mid y_1) \times \ldots f(y_n \mid y_1, 
 <p>We can thus compute the probability of any event or the expected value of any (integrable) function by computing sample averages; the cost to pay for this generality is randomness.</p>
 <p>Specifically, suppose we are interested in the average <span class="math inline">\(\mathsf{E}\{g(X)\}\)</span> of <span class="math inline">\(X \sim F\)</span> for some function <span class="math inline">\(g\)</span>.</p>
 <div id="exm-expectation-demo" class="theorem example">
-<p><span class="theorem-title"><strong>Example 1.13</strong></span> Consider <span class="math inline">\(X \sim \mathsf{Gamma}(\alpha, \beta)\)</span>, a gamma distribution with shape <span class="math inline">\(\alpha\)</span> and rate <span class="math inline">\(\beta\)</span>. We can compute the probability that <span class="math inline">\(X &lt; 1\)</span> easily by Monte Carlo since <span class="math inline">\(\Pr(X &lt;1) = \mathsf{E}\{\mathrm{I}(X&lt;1)\}\)</span> and this means we only need to compute the proportion of draws less than one. We can likewise compute the mean <span class="math inline">\(g(x) = x\)</span> or variance.</p>
+<p><span class="theorem-title"><strong>Example 1.12</strong></span> Consider <span class="math inline">\(X \sim \mathsf{gamma}(\alpha, \beta)\)</span>, a gamma distribution with shape <span class="math inline">\(\alpha\)</span> and rate <span class="math inline">\(\beta\)</span>. We can compute the probability that <span class="math inline">\(X &lt; 1\)</span> easily by Monte Carlo since <span class="math inline">\(\Pr(X &lt;1) = \mathsf{E}\{\mathrm{I}(X&lt;1)\}\)</span> and this means we only need to compute the proportion of draws less than one. We can likewise compute the mean <span class="math inline">\(g(x) = x\)</span> or variance.</p>
 <p>Suppose we have drawn a Monte Carlo sample of size <span class="math inline">\(B\)</span>. If the function <span class="math inline">\(g(\cdot)\)</span> is square integrable,<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a> with variance <span class="math inline">\(\sigma^2_g\)</span>, then a central limit theorem applies. In large samples and for independent observations, our Monte Carlo average <span class="math inline">\(\widehat{\mu}_g = B^{-1}\sum_{b=1}^B g(X_i)\)</span> has variance <span class="math inline">\(\sigma^2_g/B\)</span>. We can approximate the unknown variance <span class="math inline">\(\sigma^2_g\)</span> by it’s empirical counterpart.<a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a>. Note that, while the variance decreases linearly with <span class="math inline">\(B\)</span>, the choice of <span class="math inline">\(g\)</span> impacts the speed of convergence: we can compute <span class="math display">\[\sigma^2_g =\Pr(X \leq 1)\{1-\Pr(X \leq 1)\}=0.0434\]</span> (left) and <span class="math inline">\(\sigma^2_g=\alpha/\beta^2=1/8\)</span> (middle plot).</p>
-<p><a href="#fig-monte-carlo-path" class="quarto-xref">Figure&nbsp;<span>1.1</span></a> shows the empirical trace plot of the Monte Carlo average (note the <span class="math inline">\(\sqrt{B}\)</span> <span class="math inline">\(x\)</span>-axis scale!) as a function of the Monte Carlo sample size <span class="math inline">\(B\)</span> along with 95% Wald-based confidence intervals (gray shaded region), <span class="math inline">\(\widehat{\mu}_g \pm 1.96 \times \sigma_g/\sqrt{B}\)</span>. We can see that the ‘likely region’ for the average shrinks with <span class="math inline">\(B\)</span>.</p>
-<p>What happens if our function is not integrable? The right-hand plot of <a href="#fig-monte-carlo-path" class="quarto-xref">Figure&nbsp;<span>1.1</span></a> shows empirical averages of <span class="math inline">\(g(x) = x^{-1}\)</span>, which is not integrable if <span class="math inline">\(\alpha &lt; 1\)</span>. We can compute the empirical average, but the result won’t converge to any meaningful quantity regardless of the sample size. The large jumps are testimonial of this.</p>
+<p><a href="#fig-monte-carlo-path" class="quarto-xref">Figure&nbsp;<span>1.2</span></a> shows the empirical trace plot of the Monte Carlo average (note the <span class="math inline">\(\sqrt{B}\)</span> <span class="math inline">\(x\)</span>-axis scale!) as a function of the Monte Carlo sample size <span class="math inline">\(B\)</span> along with 95% Wald-based confidence intervals (gray shaded region), <span class="math inline">\(\widehat{\mu}_g \pm 1.96 \times \sigma_g/\sqrt{B}\)</span>. We can see that the ‘likely region’ for the average shrinks with <span class="math inline">\(B\)</span>.</p>
+<p>What happens if our function is not integrable? The right-hand plot of <a href="#fig-monte-carlo-path" class="quarto-xref">Figure&nbsp;<span>1.2</span></a> shows empirical averages of <span class="math inline">\(g(x) = x^{-1}\)</span>, which is not integrable if <span class="math inline">\(\alpha &lt; 1\)</span>. We can compute the empirical average, but the result won’t converge to any meaningful quantity regardless of the sample size. The large jumps are testimonial of this.</p>
 <div class="cell">
 <div class="cell-output-display">
 <div id="fig-monte-carlo-path" class="quarto-float quarto-figure quarto-figure-center anchored">
@@ -818,7 +856,7 @@ f(\boldsymbol{y}) = f(y_1) \times f(y_2 \mid y_1) \times \ldots f(y_n \mid y_1, 
 <img src="introduction_files/figure-html/fig-monte-carlo-path-1.png" class="img-fluid figure-img" width="672">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-monte-carlo-path-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;1.1: Running mean trace plots for <span class="math inline">\(g(x)=\mathrm{I}(x&lt;1)\)</span> (left), <span class="math inline">\(g(x)=x\)</span> (middle) and <span class="math inline">\(g(x)=1/x\)</span> (right) for a Gamma distribution with shape 0.5 and rate 2, as a function of the Monte Carlo sample size.
+Figure&nbsp;1.2: Running mean trace plots for <span class="math inline">\(g(x)=\mathrm{I}(x&lt;1)\)</span> (left), <span class="math inline">\(g(x)=x\)</span> (middle) and <span class="math inline">\(g(x)=1/x\)</span> (right) for a Gamma distribution with shape 0.5 and rate 2, as a function of the Monte Carlo sample size.
 </figcaption>
 </figure>
 </div>
@@ -848,7 +886,7 @@ Generalized ratio-of-uniform method
 <img src="introduction_files/figure-html/fig-acceptreject-1.png" class="img-fluid figure-img" width="672">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-acceptreject-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;1.2: Target density (full) and scaled proposal density (dashed): the vertical segment at <span class="math inline">\(x=1\)</span> shows the percentage of acceptance for a uniform slice under the scaled proposal, giving an acceptance ratio of 0.58.
+Figure&nbsp;1.3: Target density (full) and scaled proposal density (dashed): the vertical segment at <span class="math inline">\(x=1\)</span> shows the percentage of acceptance for a uniform slice under the scaled proposal, giving an acceptance ratio of 0.58.
 </figcaption>
 </figure>
 </div>
@@ -856,7 +894,7 @@ Figure&nbsp;1.2: Target density (full) and scaled proposal density (dashed): the
 </div>
 <p>Rejection sampling requires the proposal <span class="math inline">\(q\)</span> to have a support at least as large as that of <span class="math inline">\(p\)</span> and resemble closely the density. It should be chosen so that the upper bound <span class="math inline">\(C\)</span> is as sharp as possible and close to 1. The dominating density <span class="math inline">\(q\)</span> must have heavier tails than the density of interest. The expected number of simulations needed to accept one proposal is <span class="math inline">\(C.\)</span> Finally, for the method to be useful, we need to be able to simulate easily and cheaply from the proposal. The optimal value of <span class="math inline">\(C\)</span> is <span class="math inline">\(C = \sup_{\boldsymbol{\theta}} p(\boldsymbol{\theta}) / q(\boldsymbol{\theta})\)</span>. This quantity may be obtained by numerical optimization, by finding the mode of the ratio of the log densities if the maximum is not known analytically.</p>
 <div id="exm-accept-reject-truncated" class="theorem example">
-<p><span class="theorem-title"><strong>Example 1.14 (Truncated Gaussian distribution)</strong></span> Consider the problem of sampling from a Gaussian distribution <span class="math inline">\(Y \sim \mathsf{Gauss}(\mu, \sigma^2)\)</span> truncated in the interval <span class="math inline">\([a, b],\)</span> which has density <span class="math display">\[\begin{align*}
+<p><span class="theorem-title"><strong>Example 1.13 (Truncated Gaussian distribution)</strong></span> Consider the problem of sampling from a Gaussian distribution <span class="math inline">\(Y \sim \mathsf{Gauss}(\mu, \sigma^2)\)</span> truncated in the interval <span class="math inline">\([a, b],\)</span> which has density <span class="math display">\[\begin{align*}
 f(x; \mu, \sigma, a, b) = \frac{1}{\sigma}\frac{\phi\left(\frac{x-\mu}{\sigma}\right)}{\Phi\{(b-\mu)/\sigma\}-\Phi\{(a-\mu)/\sigma\}}.
 \end{align*}\]</span> where <span class="math inline">\(\phi(\cdot), \Phi(\cdot)\)</span> are respectively the density and distribution function of the standard Gaussian distribution.</p>
 <p>Since the Gaussian is a location-scale family, we can reduce the problem to sampling <span class="math inline">\(X\)</span> from a standard Gaussian truncated on <span class="math inline">\(\alpha = (a-\mu)/\sigma\)</span> and <span class="math inline">\(\beta = (b-\mu)/\sigma\)</span> and back transform the result as <span class="math inline">\(Y = \mu + \sigma X\)</span>.</p>
@@ -878,7 +916,7 @@ f(x; \mu, \sigma, a, b) = \frac{1}{\sigma}\frac{\phi\left(\frac{x-\mu}{\sigma}\r
 </div>
 <p>We can of course do better: if we consider a random variable with distribution function <span class="math inline">\(F,\)</span> but truncated over the interval <span class="math inline">\([a,b],\)</span> then the resulting distribution function is <span class="math display">\[\frac{F(x) - F(a)}{F(b)-F(a)}, \qquad a \leq x \leq b,\]</span> and we can invert this expression to get the quantile function of the truncated variable in terms of the distribution function <span class="math inline">\(F\)</span> and the quantile function <span class="math inline">\(F^{-1}\)</span> of the original untruncated variable.</p>
 <p>For the Gaussian, this gives <span class="math display">\[\begin{align*}
-X \sim \Phi^{-1}\left[\Phi(\alpha) + \{\Phi(\beta)-\Phi(\alpha)\}U\right]
+X \sim \Phi^{-1}\left[\Phi(a) + \{\Phi(b)-\Phi(a)\}U\right]
 \end{align*}\]</span> for <span class="math inline">\(U \sim \mathsf{U}(0,1)\)</span>. Although the quantile and distribution functions of the Gaussian, <code>pnorm</code> and <code>qnorm</code> in <strong>R</strong>, are very accurate, this method will fail for rare event simulation because it will return <span class="math inline">\(\Phi(x) = 0\)</span> for <span class="math inline">\(x \leq -39\)</span> and <span class="math inline">\(\Phi(x)=1\)</span> for <span class="math inline">\(x \geq 8.3\)</span>, implying that <span class="math inline">\(a \leq 8.3\)</span> for this approach to work <span class="citation" data-cites="LEcuyer.Botev:2017">(<a href="references.html#ref-LEcuyer.Botev:2017" role="doc-biblioref">Botev and L’Écuyer 2017</a>)</span>.</p>
 <p>Consider the problem of simulating events in the right tail for a standard Gaussian where <span class="math inline">\(a &gt; 0\)</span>; Marsaglia’s method <span class="citation" data-cites="Devroye:1986">(<a href="references.html#ref-Devroye:1986" role="doc-biblioref">Devroye 1986, 381</a>)</span>, can be used for that purpose. Write the density of the Gaussian as <span class="math inline">\(f(x) = \exp(-x^2/2)/c_1\)</span>, where <span class="math inline">\(c_1 = \int_{a}^{\infty}\exp(-z^2/2)\mathrm{d} z\)</span>, and note that <span class="math display">\[c_1f(x) \leq \frac{x}{a}\exp\left(-\frac{x^2}{2}\right)= a^{-1}\exp\left(-\frac{a^2}{2}\right)g(x), \qquad x \geq a;\]</span> where <span class="math inline">\(g(x)\)</span> is the density of a Rayleigh variable shifted by <span class="math inline">\(a\)</span>, which has distribution function <span class="math inline">\(G(x) = 1-\exp\{(a^2-x^2)/2\}\)</span> for <span class="math inline">\(x \geq a\)</span>. We can simulate such a random variate <span class="math inline">\(X\)</span> through the inversion method. The constant <span class="math inline">\(C= \exp(-a^2/2)(c_1a)^{-1}\)</span> approaches 1 quickly as <span class="math inline">\(a \to \infty\)</span>.</p>
 <p>The accept-reject thus proceeds with</p>

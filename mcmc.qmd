@@ -144,7 +144,10 @@ ggplot() +
 
 When can we use output from a Markov chain in place of independent Monte Carlo draws? The assumptions laid out in the ergodic theorem are that the chain is irreducible and acyclic, ensuring that the chain has a unique stationary distribution. The ergodic theorem is a result about convergence of averages.
 
-To make sense of these concepts, we consider a discrete Markov chain over the integers $1, 2, 3$. A discrete-time stochastic process is a random sequences whose elements are part of some set, the state space, here the integers. We can encode the probability of moving from one state to the next via a transition matrix, whose rows contain the probabilities of moving from one state to the next and thus sum to one. We can run a Markov chain by sampling an initial state $X_0$ at random from $\{1, \ldots, 5\}$ and then consider the transitions from the conditional distribution, sampling $p(X_t \mid X_{t-1})$. Because of the Markov property, the history of the chain does not matter: we only need to read the value $i=X_{t-1}$ of the state and pick the $i$th row of $P_3$ to know the probability of the different moves from the current state.
+A discrete-time stochastic process is a random sequences whose elements are part of some set (finite or countable), termed state space $\mathcal{S}$. We can encode the probability of moving from one state to the next via a transition matrix, whose rows contain the probabilities of moving from one state to the next and thus sum to one. We can run a Markov chain by sampling an initial state $X_0$ at random from $\mathcal{S}$ and then consider the transitions from the conditional distribution, sampling $p(X_t \mid X_{t-1})$. 
+
+
+Consider a Markov chain on integers $\{1, 2, 3\}$. Because of the Markov property, the history of the chain does not matter: we only need to read the value $i=X_{t-1}$ of the state and pick the $i$th row of the transition matrix $\mathbf{P}$ to know the probability of the different moves from the current state.
 
 Irreducible means that the chain can move from anywhere to anywhere, so it doesn't get stuck in part of the space forever. A transition matrix such as $P_1$ below describes a reducible Markov chain, because once you get into state $2$ or $3$, you won't escape. With reducible chains, the stationary distribution need not be unique, and so the target would depend on the starting values.
 
@@ -243,7 +246,7 @@ Named after @Metropolis:1953, @Hastings:1970, its relevance took a long time to 
 
 We consider from a density function $p(\boldsymbol{\theta})$, known up to a normalizing factor not depending on $\boldsymbol{\theta}$. We use a (conditional) proposal density $q(\boldsymbol{\theta} \mid \boldsymbol{\theta}^*)$ which has non-zero probability over the support of $p(\cdot)$, as transition kernel to generate proposals.
 
-The Metropolis--Hastings build a Markov chain starting from an initial value $\boldsymbol{\theta}_0$:
+The Metropolis--Hastings build a Markov chain starting from an initial value $\boldsymbol{\theta}_0:$
 
 1.  draw a proposal value $\boldsymbol{\theta}_t^{\star} \sim q(\boldsymbol{\theta} \mid \boldsymbol{\theta}_{t-1})$.
 2.  Compute the acceptance ratio $$
@@ -255,12 +258,12 @@ The Metropolis--Hastings build a Markov chain starting from an initial value $\b
 
 The Metropolis--Hastings algorithm generates samples from the posterior $p(\boldsymbol{\theta} \mid \boldsymbol{y})$ if the Markov chain it defines is reversible: we say it satisfies the *detailed balance condition* when the density of $\boldsymbol{\theta}_{t+1} \mid \boldsymbol{\theta}_{t}$, say $f(\boldsymbol{\theta}_{t+1} \mid \boldsymbol{\theta}_{t})$. Detailed balance means
 \begin{align*}
-f(\boldsymbol{\theta}_{t+1} \mid \boldsymbol{\theta}_{t})p(\boldsymbol{\theta}_{t} \mid \boldsymbol{y}) = f(\boldsymbol{\theta}_{t} \mid \boldsymbol{\theta}_{t+1})p(\boldsymbol{\theta}_{t+1} \mid \boldsymbol{y})
+f(\boldsymbol{\theta}_{t+1} \mid \boldsymbol{\theta}_{t})p(\boldsymbol{\theta}_{t} \mid \boldsymbol{y}) = f(\boldsymbol{\theta}_{t} \mid \boldsymbol{\theta}_{t+1})p(\boldsymbol{\theta}_{t+1} \mid \boldsymbol{y}).
 \end{align*}
 This guarantees that, if $\boldsymbol{\theta}_{t}$ is drawn from the posterior, then the left hand side is the joint density of $(\boldsymbol{\theta}_{t}, \boldsymbol{\theta}_{t+1})$ and the marginal distribution obtained by integrating over $\boldsymbol{\theta}_{t}$,
 \begin{align*}
-&\int f(\boldsymbol{\theta}_{t+1} \mid \boldsymbol{\theta}_{t})p(\boldsymbol{\theta}_{t} \mid \boldsymbol{y})\mathrm{d} \boldsymbol{\theta}_{t}
-\\&\quad = \int f(\boldsymbol{\theta}_{t} \mid \boldsymbol{\theta}_{t+1})p(\boldsymbol{\theta}_{t+1} \mid \boldsymbol{y})\mathrm{d} \boldsymbol{\theta}_{t} 
+\int f(\boldsymbol{\theta}_{t+1} \mid \boldsymbol{\theta}_{t})p(\boldsymbol{\theta}_{t} \mid \boldsymbol{y})\mathrm{d} \boldsymbol{\theta}_{t}
+& = \int f(\boldsymbol{\theta}_{t} \mid \boldsymbol{\theta}_{t+1})p(\boldsymbol{\theta}_{t+1} \mid \boldsymbol{y})\mathrm{d} \boldsymbol{\theta}_{t} 
 \\&\quad= p(\boldsymbol{\theta}_{t+1} \mid \boldsymbol{y})
 \end{align*}
 and any draw from the posterior will generate a new realization from the posterior. We also ensure that, provided the starting value as non-zero probability under the posterior, the chain will converge to the stationarity distribution (albeit perhaps slowly).
@@ -440,7 +443,7 @@ bayesplot::mcmc_trace(x = coda::as.mcmc(chains_goldi),
 
 ```
 
-One way to calibrate is to track the acceptance rate of the proposals: for the three chains in @fig-goldilock-trace, these are `r paste0(accept, collapse = ", ")`. In one-dimensional toy problems with Gaussian distributions, an acceptance rate of 0.44 is optimal, and this ratio decreases to 0.234 when $D \geq 2$ [@Roberts.Rosenthal:2001,@Sherlock:2013]. This need not generalize to other settings and depends on the context. Optimal rate for alternative algorithms, such as Metropolis-adjusted Langevin algorithm, are typically higher. 
+One way to calibrate is to track the acceptance rate of the proposals: for the three chains in @fig-goldilock-trace, these are `r paste0(accept, collapse = ", ")`. In one-dimensional toy problems with Gaussian distributions, an acceptance rate of 0.44 is optimal, and this ratio decreases to 0.234 when $D \geq 2$ [@Roberts.Rosenthal:2001;@Sherlock:2013]. This need not generalize to other settings and depends on the context. Optimal rate for alternative algorithms, such as Metropolis-adjusted Langevin algorithm, are typically higher. 
 
 
 We can tune the variance of the global proposal [@Andrieu.Thoms:2008] to improve the  mixing of the chains at approximate stationarity. This is done by increasing (decreasing) the variance if the historical acceptance rate is too high (respectively low) during the burn in period, and reinitializing after any change with an acceptance target of $0.44$. We stop adapting to ensure convergence to the posterior after a suitable number of initial iterations.
@@ -510,7 +513,7 @@ To guarantee that our proposals fall in the support of $\theta$, we can thus run
 
 ## Truncated proposals
 
-As an alternative, if we are dealing with parameters that are restricted in $[a,b]$, we can simulate using a random walk but with truncated Gaussian steps, taking $\theta^{\star}_{t} \sim \mathsf{TruncNorm}(\vartheta_{t-1}, \tau^2, a, b).$ The benefits of using the truncated proposal becomes more apparent when we move to more advanced proposals whose mean and variance depends on the gradient and or the hessian of the underlying unnormalized log posterior, as the mean can be lower than $a$ or larger than $b$: this would garantee zero acceptance with regular Gaussian random walk. The `TruncatedNormal` package can be used to efficiently evaluate such instances using results from @LEcuyer.Botev:2017 even when the truncation bounds are far from the mode. the normalizing constant of the truncated Gaussian in the denominator of the density is a function of the location and scale parameters: if these depend on the current value of $\boldsymbol{\theta}_{t-1}$, as is the case for a random walk, we need to keep these terms as part of the Metropolis ratio. The mean and standard deviation of the truncated Gaussian are not equal to the parameters $\mu$ (which corresponds to the mode, provided $a < \mu < b$) and $\sigma$.
+As an alternative, if we are dealing with parameters that are restricted in $[a,b]$, we can simulate using a random walk but with truncated Gaussian steps, taking $\theta^{\star}_{t} \sim \mathsf{trunc. Gauss}(\vartheta_{t-1}, \tau^2, a, b).$ The benefits of using the truncated proposal becomes more apparent when we move to more advanced proposals whose mean and variance depends on the gradient and or the hessian of the underlying unnormalized log posterior, as the mean can be lower than $a$ or larger than $b$: this would garantee zero acceptance with regular Gaussian random walk. The `TruncatedNormal` package can be used to efficiently evaluate such instances using results from @LEcuyer.Botev:2017 even when the truncation bounds are far from the mode. the normalizing constant of the truncated Gaussian in the denominator of the density is a function of the location and scale parameters: if these depend on the current value of $\boldsymbol{\theta}_{t-1}$, as is the case for a random walk, we need to keep these terms as part of the Metropolis ratio. The mean and standard deviation of the truncated Gaussian are not equal to the parameters $\mu$ (which corresponds to the mode, provided $a < \mu < b$) and $\sigma$.
 
 :::
 
@@ -525,7 +528,7 @@ Let $p(\theta)$ denote the conditional (unnormalized) log posterior for a scalar
 \begin{align*}
  p(\theta) \approx p(\theta_{t-1}) + p'(\theta_{t-1})(\theta - \theta_{t-1}) + \frac{1}{2} p''(\theta_{t-1})(\theta - \theta_{t-1})^2
 \end{align*}
-plus remainder, which suggests a Gaussian approximation with mean $\mu_{t-1} = \theta_{t-1} - f'(\theta_{t-1})/f''(\theta_{t-1})$ and precision $\tau^{-2} = -f''(\theta_{t-1})$. We can use truncated Gaussian distribution on $(a, b)$ with mean $\mu$ and standard deviation $\tau$, denoted $\mathsf{TruncNorm}(\mu, \tau, a, b)$ with corresponding density function $q(\cdot; \mu, \tau, a, b)$. The Metropolis acceptance ratio for a proposal $\theta^{\star}_{t} \sim \mathsf{TruncNorm}(\mu_{t-1}, \tau_{t-1}, a, b)$ is 
+plus remainder, which suggests a Gaussian approximation with mean $\mu_{t-1} = \theta_{t-1} - f'(\theta_{t-1})/f''(\theta_{t-1})$ and precision $\tau^{-2} = -f''(\theta_{t-1})$. We can use truncated Gaussian distribution on $(a, b)$ with mean $\mu$ and standard deviation $\tau$, denoted $\mathsf{trunc. Gauss}(\mu, \tau, a, b)$ with corresponding density function $q(\cdot; \mu, \tau, a, b)$. The Metropolis acceptance ratio for a proposal $\theta^{\star}_{t} \sim \mathsf{trunc. Gauss}(\mu_{t-1}, \tau_{t-1}, a, b)$ is 
 \begin{align*}
  \alpha = \frac{p(\theta^{\star}_{t})}{p(\theta_{t-1})} \frac{ q(\theta_{t-1} \mid \mu_{t}^{\star}, \tau_{t}^{\star}, a, b)}{q(\theta^{\star}_{t} \mid \mu_{t-1}, \tau_{t-1}, a, b)}
 \end{align*}
@@ -540,7 +543,7 @@ For MALA to work well, we need both to start near stationarity, to ensure that t
 
 :::{#exm-normal-question-upworthy}
 
-We revisit the Upworthy data, this time modelling each individual headline as a separate observation. We view $n=$`nimpression` as the sample size of a binomial distribution and `nclick` as the number of successes. Since the number of trials is large, the sample average `nclick`/`nimpression`, denoted $y$ in the sequel, is approximately Gaussian. We assume that each story has a similar population rate and capture the heterogeneity inherent to each news story by treating each mean as a sample. The variance of the sample average or click rate is proportional to $n^{-1}$, where $n$ is the number of impressions. To allow for underdispersion or overdispersion, we thus consider a Gaussian likelihood $Y_i \sim \mathsf{Gauss}(\mu, \sigma^2/n_i)$. We perform Bayesian inference for $\mu, \sigma$ after assigning a truncated Gaussian prior for $\mu \sim \mathsf{TruncNorm}(0.01, 0.1^2)$ over $[0,1]$ and an penalized complexity prior for $\sigma \sim \mathsf{Exp}(0.7)$.
+We revisit the Upworthy data, this time modelling each individual headline as a separate observation. We view $n=$`nimpression` as the sample size of a binomial distribution and `nclick` as the number of successes. Since the number of trials is large, the sample average `nclick`/`nimpression`, denoted $y$ in the sequel, is approximately Gaussian. We assume that each story has a similar population rate and capture the heterogeneity inherent to each news story by treating each mean as a sample. The variance of the sample average or click rate is proportional to $n^{-1}$, where $n$ is the number of impressions. To allow for underdispersion or overdispersion, we thus consider a Gaussian likelihood $Y_i \sim \mathsf{Gauss}(\mu, \sigma^2/n_i)$. We perform Bayesian inference for $\mu, \sigma$ after assigning a truncated Gaussian prior for $\mu \sim \mathsf{trunc. Gauss}(0.01, 0.1^2)$ over $[0,1]$ and an penalized complexity prior for $\sigma \sim \mathsf{Exp}(0.7)$.
 
 
 <!-- The `hecbayes` package contains an helper function `mh` that computes the step given the log likelihood, log prior and their gradients. -->
@@ -962,8 +965,8 @@ Given $Z_i$, the coefficients $\boldsymbol{\beta}$ are simply the results of ord
 with $\widehat{\boldsymbol{\beta}}=(\mathbf{X}^\top\mathbf{X})^{-1}\mathbf{X}^\top\boldsymbol{z}$ is the ordinary least square estimator from the regression with model matrix $\mathbf{X}$ and response vector $\boldsymbol{z}$. The augmented variables $Z_i$ are conditionally independent and truncated Gaussian with
 \begin{align*}
 Z_i \mid y_i, \boldsymbol{\beta} \sim \begin{cases}
-\mathsf{TruncNorm}(\mathbf{x}_i\boldsymbol{\beta}, -\infty, 0) & y_i =0 \\
-\mathsf{TruncNorm}(\mathbf{x}_i\boldsymbol{\beta}, 0, \infty) & y_i =1.
+\mathsf{trunc. Gauss}(\mathbf{x}_i\boldsymbol{\beta}, -\infty, 0) & y_i =0 \\
+\mathsf{trunc. Gauss}(\mathbf{x}_i\boldsymbol{\beta}, 0, \infty) & y_i =1.
 \end{cases}
 \end{align*}
 and we can use the algorithms of @exm-accept-reject-truncated to simulate these.

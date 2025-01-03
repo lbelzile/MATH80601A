@@ -101,33 +101,42 @@ The case $\mathsf{beta}(1,1)$, also denoted $\mathsf{unif}(0,1)$, corresponds to
 The beta distribution is commonly used to model proportions, and can be generalized to the multivariate setting as follows.
 
 ```{r}
-#| eval: false
+#| eval: true
 #| echo: false
 #| label: fig-beta-dens
 #| fig-cap: "Density of beta random variables with different shape parameters"
 cols <- MetBrewer::met.brewer("Hiroshige", n = 3)
 ggplot() +
- stat_function(
-    fun = dbeta, 
-    args = list(shape1 = 1, shape2 = 0.5), 
-    xlim = c(0,1), 
-    n = 1001L,
-col = cols[1]) +
- stat_function(
-    fun = dbeta, 
-    args = list(shape1 = 2, shape2 = 1.1), 
-    xlim = c(0,1), 
-    n = 1001L,
-col = cols[2]) +
- stat_function(
-    fun = dbeta, 
-    args = list(shape1 = 0.9, shape2 = 0.9), 
-    xlim = c(0,1), 
-    n = 1001L,
-col = cols[3]) +
-scale_y_continuous(limits = c(0, 10)) +
-theme_classic()
-
+  stat_function(
+    fun = \(x) dbeta(x, 6, 4), geom = "line", 
+    aes(color = "beta(6,4)"),
+    linewidth = 1
+  ) +
+    stat_function(
+    fun = \(x) dbeta(x, 3, 2), geom = "line", 
+    aes(color = "beta(3,2)"),
+    linewidth = 1
+  ) +
+  stat_function(
+    fun = \(x) dbeta(x, 9, 1), geom = "line", 
+    aes(color = "beta(9,1)"),
+    linewidth = 1
+  ) +
+  stat_function(
+    fun = \(x) dbeta(x, 2, 11), geom = "line", 
+    aes(color = "beta(2,1)"),
+    linewidth = 1
+  ) +
+  scale_color_viridis_d(
+    option = "plasma", end = 0.8, name = NULL
+  ) +
+  scale_x_continuous(
+     breaks = seq(0,1, by= 0.25), 
+     labels = c("0","0.25","0.5","0.75","1"),
+     expand = expansion()
+   ) +
+  theme_classic() +
+  theme(legend.position = "bottom") 
 ```
 
 
@@ -342,7 +351,7 @@ The quantile function, the inverse of the distribution function, is $Q(p) = \lam
 
 The **marginal distribution** of a subvector $\boldsymbol{X}_{1:k}=(X_1, \ldots, X_k)^\top$, without loss of generality consisting of the $k$ first components of $\boldsymbol{X}$ $(1 \leq k < d)$ is
 \begin{align*}
- F_{1:k}(\boldsymbol{x}_{\boldsymbol{X}}) = \Pr(\boldsymbol{X}_{1:k} \leq \boldsymbol{x}_{1:k}) = F_{\boldsymbol{X}}(x_1, \ldots, x_k, \infty, \ldots, \infty).
+ F_{\boldsymbol{X}_{1:k}}(\boldsymbol{x}_{1:k}) = \Pr(\boldsymbol{X}_{1:k} \leq \boldsymbol{x}_{1:k}) = F_{\boldsymbol{X}}(x_1, \ldots, x_k, \infty, \ldots, \infty).
 \end{align*}
 and thus the marginal distribution of component $j$, $F_j(x_j)$, is obtained by evaluating all components but the $j$th at $\infty$.
 
@@ -423,7 +432,7 @@ Bayes' rule is central to updating beliefs: given initial beliefs (priors) and i
 
 ## Conditional and marginal for contingency table
 
-Consider a bivariate distribution for $(Y_1, Y_2)$ supported on $\{1,2\} \times \{1, 2, 3\}$ whose joint probability mass function is given in @tbl-bivardiscrete
+Consider a bivariate distribution for $(Y_1, Y_2)$ supported on $\{1, 2, 3\} \times \{1, 2\}$, whose joint probability mass function is given in @tbl-bivardiscrete
 
 ```{r}
 #| eval: true
@@ -431,15 +440,17 @@ Consider a bivariate distribution for $(Y_1, Y_2)$ supported on $\{1,2\} \times 
 #| label: tbl-bivardiscrete
 #| tbl-cap: "Bivariate mass function with probability of each outcome for $(Y_1, Y_2)$."
 #| tbl-align: 'center'
-tab <- rbind(c(0.2, 0.3, 0.1), c(0.15, 0.2, 0.05))
-colnames(tab) <- c("$Y_1=1$","$Y_1=2$","$Y_1=3$")
-rownames(tab) <- c("$Y_2=1$","$Y_2=2$")
+tab <- rbind(c(0.2, 0.3, 0.1, 0.6), 
+             c(0.15, 0.2, 0.05, 0.4),
+             c(0.35, 0.5, 0.15, 1))
+colnames(tab) <- c("$Y_1=1$","$Y_1=2$","$Y_1=3$","total")
+rownames(tab) <- c("$Y_2=1$","$Y_2=2$","total")
 knitr::kable(tab, escape = FALSE)
 ```
 
-The marginal distribution of $Y_1$ is obtain by looking at the total probability for each column, as $$\Pr(Y_1=i) = \Pr(Y_1=i, Y_2=1)+ \Pr(Y_1=i, Y_2=2).$$ This gives $\Pr(Y_1=1)=0.35$, $\Pr(Y_1=2)=0.5$ and $\Pr(Y_1=3) = 0.15$. Similarly, we find that $\Pr(Y_2=1)=0.6$ and $\Pr(Y_2=2)=0.4$ for the other random variable.
+The marginal distribution of $Y_1$ is obtain by looking at the total probability for each column, as $$\Pr(Y_1=i) = \Pr(Y_1=i, Y_2=1)+ \Pr(Y_1=i, Y_2=2).$$ This gives $\Pr(Y_1=1)=0.35$, $\Pr(Y_1=2)=0.5$ and $\Pr(Y_1=3) = 0.15.$ Similarly, we find that $\Pr(Y_2=1)=0.6$ and $\Pr(Y_2=2)=0.4$ for the other random variable.
 
-The conditional distribution $$\Pr(Y_2 = i \mid Y_1=2) = \frac{\Pr(Y_1=2, Y_2=i)}{\Pr(Y_1=2)},$$ so $\Pr(Y_2 = 1 \mid Y_1=2) = 0.3/0.5 = 0.6$ and $\Pr(Y_2=2 \mid Y_1=2) = 0.4$. We can condition on more complicated events, for example
+The conditional distribution $$\Pr(Y_2 = i \mid Y_1=2) = \frac{\Pr(Y_1=2, Y_2=i)}{\Pr(Y_1=2)},$$ so $\Pr(Y_2 = 1 \mid Y_1=2) = 0.3/0.5 = 0.6$ and $\Pr(Y_2=2 \mid Y_1=2) = 0.4.$ We can condition on more complicated events, for example
 \begin{align*}
 \Pr(Y_2 = i \mid Y_1 \ge 2) = \frac{\Pr(Y_1=2, Y_2=i) + \Pr(Y_1=3, Y_2=i)}{\Pr(Y_1=2) + \Pr(Y_1=3)}.
 \end{align*}
@@ -518,6 +529,7 @@ since $\Gamma(a+1) = a\Gamma(a)$ for $a>0$ and $\Gamma(1/2) = \sqrt{\pi}$. We co
 
 :::
 
+<!--
 
 :::{#exm-conditional-poisson-sum}
 
@@ -537,6 +549,7 @@ for $y_j \geq 0$ for all $j=1, \ldots, J$ such that $y_1 + \cdots + y_j = n$, an
 
 :::
 
+-->
 
 :::{#exm-biv-geometric}
 
@@ -636,7 +649,8 @@ The **tower** property gives a law of iterated variance
 \mathsf{Va}_{\boldsymbol{Y}}(\boldsymbol{Y}) = \mathsf{E}_{\boldsymbol{Z}}\left\{\mathsf{Va}_{\boldsymbol{Y} \mid \boldsymbol{Z}}(\boldsymbol{Y})\right\} + \mathsf{Va}_{\boldsymbol{Z}}\left\{\mathsf{E}_{\boldsymbol{Y} \mid \boldsymbol{Z}}(\boldsymbol{Y})\right\}.
 \end{align*}
 
-We can deduce that, in a hierarchical model, the variance of the unconditional distribution is larger
+In a hierarchical model, the variance of the unconditional distribution is larger than that of the conditional distribution. 
+
 :::
 
 :::{#exm-iteratedmean-gauss}
@@ -662,15 +676,22 @@ and
 <!-- In generalized linear models, we model the mean as a function of covariate, but data may exhibit overdispersion relative to the theoretical mean. -->
 One restriction of the Poisson model is that the restriction on its moments is often unrealistic. The most frequent problem encountered is that of **overdispersion**, meaning that the variability in the counts is larger than that implied by a Poisson distribution. 
 
-One common framework for handling overdispersion is to have $Y \mid \Lambda = \lambda \sim \mathsf{Poisson}(\lambda)$, where the mean of the Poisson distribution is itself a positive random variable with mean $\mu$, if $\Lambda$ follows a conjugate gamma distribution with shape $k\mu$ and rate $k>0$, $\Lambda \sim \mathsf{Gamma}(k\mu, k)$, the posterior $\Lambda \mid Y=y \sim \mathsf{Gamma}(k\mu + y, k+1)$.
-
+One common framework for handling overdispersion is to have $Y \mid \Lambda = \lambda \sim \mathsf{Poisson}(\lambda)$, where the mean of the Poisson distribution is itself a positive random variable with mean $\mu$, if $\Lambda$ follows a gamma distribution with shape $k\mu$ and rate $k>0$, $\Lambda \sim \mathsf{gamma}(k\mu, k)$. 
 Since the joint density of $Y$ and $\Lambda$ can be written
-$$
-p(y, \lambda) = p(y \mid \lambda)p(\lambda) = p(\lambda \mid y) p(y)
-$$
-we can isolate the marginal density
 \begin{align*}
-p(y) &= \frac{p(y \mid \lambda)p(\lambda)}{p(\lambda \mid y)} \\&= \frac{\frac{\lambda^y\exp(-\lambda)}{\Gamma(y+1)}  \frac{k^{k\mu}\lambda^{k\mu-1}\exp(-k\lambda)}{\Gamma(k\mu)}}{ \frac{(k+1)^{k\mu+y}\lambda^{k\mu+y-1}\exp\{-(k+1)\lambda\}}{\Gamma(k\mu+y)}}\\
+p(y, \lambda) &= p(y \mid \lambda)p(\lambda) \\
+&= \frac{\lambda^y\exp(-\lambda)}{\Gamma(y+1)}  \frac{k^{k\mu}\lambda^{k\mu-1}\exp(-k\lambda)}{\Gamma(k\mu)}
+\end{align*}
+so the conditional distribution of $\Lambda \mid Y=y$ can be found by considering only terms that are function of $\lambda$, whence
+\begin{align*}
+f(\lambda \mid Y=y) \stackrel{\lambda}{\propto}\lambda^{y+k\mu-1}\exp(-(k+1)\lambda)
+\end{align*}
+and the conditional distribution is $\Lambda \mid Y=y \sim \mathsf{gamma}(k\mu + y, k+1)$.
+
+
+We can isolate the marginal density
+\begin{align*}
+p(y) &= \frac{p(y, \lambda)}{p(\lambda \mid y)} \\&= \frac{\frac{\lambda^y\exp(-\lambda)}{\Gamma(y+1)}  \frac{k^{k\mu}\lambda^{k\mu-1}\exp(-k\lambda)}{\Gamma(k\mu)}}{ \frac{(k+1)^{k\mu+y}\lambda^{k\mu+y-1}\exp\{-(k+1)\lambda\}}{\Gamma(k\mu+y)}}\\
 &= \frac{\Gamma(k\mu+y)}{\Gamma(k\mu)\Gamma(y+1)}k^{k\mu} (k+1)^{-k\mu-y}\\&= \frac{\Gamma(k\mu+y)}{\Gamma(k\mu)\Gamma(y+1)}\left(1-\frac{1}{k+1}\right)^{k\mu} \left(\frac{1}{k+1}\right)^y
 \end{align*}
 and this is the density of a negative binomial distribution with probability of success $1/(k+1)$. We can thus view the negative binomial as a Poisson mean mixture.
@@ -1030,7 +1051,7 @@ We can thus compute the probability of any event or the expected value of any (i
 Specifically, suppose we are interested in the average $\mathsf{E}\{g(X)\}$ of $X \sim F$ for some function $g$.
 
 ::: {#exm-expectation-demo}
-Consider $X \sim \mathsf{Gamma}(\alpha, \beta)$, a gamma distribution with shape $\alpha$ and rate $\beta$. We can compute the probability that $X < 1$ easily by Monte Carlo since $\Pr(X <1) = \mathsf{E}\{\mathrm{I}(X<1)\}$ and this means we only need to compute the proportion of draws less than one. We can likewise compute the mean $g(x) = x$ or variance.
+Consider $X \sim \mathsf{gamma}(\alpha, \beta)$, a gamma distribution with shape $\alpha$ and rate $\beta$. We can compute the probability that $X < 1$ easily by Monte Carlo since $\Pr(X <1) = \mathsf{E}\{\mathrm{I}(X<1)\}$ and this means we only need to compute the proportion of draws less than one. We can likewise compute the mean $g(x) = x$ or variance.
 
 Suppose we have drawn a Monte Carlo sample of size $B$. If the function $g(\cdot)$ is square integrable,[^mcmc-1] with variance $\sigma^2_g$, then a central limit theorem applies. In large samples and for independent observations, our Monte Carlo average $\widehat{\mu}_g = B^{-1}\sum_{b=1}^B g(X_i)$ has variance $\sigma^2_g/B$. We can approximate the unknown variance $\sigma^2_g$ by it's empirical counterpart.[^mcmc-2]. Note that, while the variance decreases linearly with $B$, the choice of $g$ impacts the speed of convergence: we can compute $$\sigma^2_g =\Pr(X \leq 1)\{1-\Pr(X \leq 1)\}=0.0434$$ (left) and $\sigma^2_g=\alpha/\beta^2=1/8$ (middle plot).
 
@@ -1206,7 +1227,7 @@ and we can invert this expression to get the quantile function of the truncated 
 
 For the Gaussian, this gives
 \begin{align*}
-X \sim \Phi^{-1}\left[\Phi(\alpha) + \{\Phi(\beta)-\Phi(\alpha)\}U\right]
+X \sim \Phi^{-1}\left[\Phi(a) + \{\Phi(b)-\Phi(a)\}U\right]
 \end{align*}
 for $U \sim \mathsf{U}(0,1)$. Although the quantile and distribution functions of the Gaussian, `pnorm` and `qnorm` in **R**, are very accurate, this method will fail for rare event simulation because it will return $\Phi(x) = 0$ for $x \leq -39$ and $\Phi(x)=1$ for $x \geq 8.3$, implying that $a \leq 8.3$ for this approach to work [@LEcuyer.Botev:2017].
 

@@ -266,6 +266,20 @@
 \DeclareMathAlphabet{\mathcrl}{U}{rsfs}{m}{n}
 \usepackage{utopia}
 \DeclareMathAlphabet{\mathcal}{OMS}{cmsy}{m}{n}
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{wrapfig}
+\usepackage{float}
+\usepackage{colortbl}
+\usepackage{pdflscape}
+\usepackage{tabu}
+\usepackage{threeparttable}
+\usepackage{threeparttablex}
+\usepackage[normalem]{ulem}
+\usepackage{makecell}
+\usepackage{xcolor}
 \makeatletter
 \@ifpackageloaded{bookmark}{}{\usepackage{bookmark}}
 \makeatother
@@ -305,15 +319,15 @@
 \newcommand*\listoflistings{\listof{codelisting}{List of Listings}}
 \usepackage{amsthm}
 \theoremstyle{definition}
+\newtheorem{exercise}{Exercise}[chapter]
+\theoremstyle{definition}
 \newtheorem{example}{Example}[chapter]
-\theoremstyle{plain}
-\newtheorem{theorem}{Theorem}[chapter]
 \theoremstyle{definition}
 \newtheorem{definition}{Definition}[chapter]
-\theoremstyle{definition}
-\newtheorem{exercise}{Exercise}[chapter]
 \theoremstyle{plain}
 \newtheorem{proposition}{Proposition}[chapter]
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}[chapter]
 \theoremstyle{remark}
 \AtBeginDocument{\renewcommand*{\proofname}{Proof}}
 \newtheorem*{remark}{Remark}
@@ -369,7 +383,7 @@ details.
 These notes are licensed under a
 \href{http://creativecommons.org/licenses/by-nc-sa/4.0/}{Creative
 Commons Attribution-NonCommercial-ShareAlike 4.0 International License}
-and were last compiled on Friday, December 20 2024.
+and were last compiled on Friday, January 03 2025.
 
 The objective of the course is to provide a hands on introduction to
 Bayesian data analysis. The course will cover the formulation,
@@ -492,6 +506,19 @@ f(x) = \frac{\Gamma(\alpha_1)\Gamma(\alpha_2)}{\Gamma(\alpha_1+\alpha_2)}x^{\alp
 
 The beta distribution is commonly used to model proportions, and can be
 generalized to the multivariate setting as follows.
+
+\begin{figure}[ht!]
+
+\centering{
+
+\pandocbounded{\includegraphics[keepaspectratio]{introduction_files/figure-pdf/fig-beta-dens-1.pdf}}
+
+}
+
+\caption{\label{fig-beta-dens}Density of beta random variables with
+different shape parameters}
+
+\end{figure}%
 
 \begin{definition}[Dirichlet
 distribution]\protect\hypertarget{def-dirichlet-dist}{}\label{def-dirichlet-dist}
@@ -647,7 +674,7 @@ The \textbf{marginal distribution} of a subvector
 \(\boldsymbol{X}_{1:k}=(X_1, \ldots, X_k)^\top\), without loss of
 generality consisting of the \(k\) first components of
 \(\boldsymbol{X}\) \((1 \leq k < d)\) is \begin{align*}
- F_{1:k}(\boldsymbol{x}_{\boldsymbol{X}}) = \Pr(\boldsymbol{X}_{1:k} \leq \boldsymbol{x}_{1:k}) = F_{\boldsymbol{X}}(x_1, \ldots, x_k, \infty, \ldots, \infty).
+ F_{\boldsymbol{X}_{1:k}}(\boldsymbol{x}_{1:k}) = \Pr(\boldsymbol{X}_{1:k} \leq \boldsymbol{x}_{1:k}) = F_{\boldsymbol{X}}(x_1, \ldots, x_k, \infty, \ldots, \infty).
 \end{align*} and thus the marginal distribution of component \(j\),
 \(F_j(x_j)\), is obtained by evaluating all components but the \(j\)th
 at \(\infty\).
@@ -756,10 +783,10 @@ can apply
 table]\protect\hypertarget{exm-discrete-conditional-marginal}{}\label{exm-discrete-conditional-marginal}
 
 Consider a bivariate distribution for \((Y_1, Y_2)\) supported on
-\(\{1,2\} \times \{1, 2, 3\}\) whose joint probability mass function is
-given in Table~\ref{tbl-bivardiscrete}
+\(\{1, 2, 3\} \times \{1, 2\}\), whose joint probability mass function
+is given in Table~\ref{tbl-bivardiscrete}
 
-\begin{longtable}[]{@{}lrrr@{}}
+\begin{longtable}[]{@{}lrrrr@{}}
 
 \caption{\label{tbl-bivardiscrete}Bivariate mass function with
 probability of each outcome for \((Y_1, Y_2)\).}
@@ -767,27 +794,28 @@ probability of each outcome for \((Y_1, Y_2)\).}
 \tabularnewline
 
 \toprule\noalign{}
-& \(Y_1=1\) & \(Y_1=2\) & \(Y_1=3\) \\
+& \(Y_1=1\) & \(Y_1=2\) & \(Y_1=3\) & total \\
 \midrule\noalign{}
 \endhead
 \bottomrule\noalign{}
 \endlastfoot
-\(Y_2=1\) & 0.20 & 0.3 & 0.10 \\
-\(Y_2=2\) & 0.15 & 0.2 & 0.05 \\
+\(Y_2=1\) & 0.20 & 0.3 & 0.10 & 0.6 \\
+\(Y_2=2\) & 0.15 & 0.2 & 0.05 & 0.4 \\
+total & 0.35 & 0.5 & 0.15 & 1.0 \\
 
 \end{longtable}
 
 The marginal distribution of \(Y_1\) is obtain by looking at the total
 probability for each column, as
 \[\Pr(Y_1=i) = \Pr(Y_1=i, Y_2=1)+ \Pr(Y_1=i, Y_2=2).\] This gives
-\(\Pr(Y_1=1)=0.35\), \(\Pr(Y_1=2)=0.5\) and \(\Pr(Y_1=3) = 0.15\).
+\(\Pr(Y_1=1)=0.35\), \(\Pr(Y_1=2)=0.5\) and \(\Pr(Y_1=3) = 0.15.\)
 Similarly, we find that \(\Pr(Y_2=1)=0.6\) and \(\Pr(Y_2=2)=0.4\) for
 the other random variable.
 
 The conditional distribution
 \[\Pr(Y_2 = i \mid Y_1=2) = \frac{\Pr(Y_1=2, Y_2=i)}{\Pr(Y_1=2)},\] so
 \(\Pr(Y_2 = 1 \mid Y_1=2) = 0.3/0.5 = 0.6\) and
-\(\Pr(Y_2=2 \mid Y_1=2) = 0.4\). We can condition on more complicated
+\(\Pr(Y_2=2 \mid Y_1=2) = 0.4.\) We can condition on more complicated
 events, for example \begin{align*}
 \Pr(Y_2 = i \mid Y_1 \ge 2) = \frac{\Pr(Y_1=2, Y_2=i) + \Pr(Y_1=3, Y_2=i)}{\Pr(Y_1=2) + \Pr(Y_1=3)}.
 \end{align*}
@@ -853,31 +881,6 @@ f(x) &= \int_{0}^{\infty} \frac{\lambda y^{1/2}}{(2\pi)^{1/2}}\exp\left\{ - y(x^
 \(\Gamma(1/2) = \sqrt{\pi}\). We conclude that marginally
 \(X \sim \mathsf{Student}(0, \lambda, 2)\), a Student distribution with
 scale \(\lambda\) and two degrees of freedom.
-
-\end{example}
-
-\begin{example}[Poisson counts conditional on their
-sum]\protect\hypertarget{exm-conditional-poisson-sum}{}\label{exm-conditional-poisson-sum}
-
-Suppose that \(Y_j\sim \mathsf{Poisson}(\lambda_j)\) are independent
-\((j=1, \ldots, J),\) so that the sum
-\(S = Y_1 + \cdots Y_J \sim \mathsf{Poisson}(\lambda_1 + \ldots \lambda_J)\).
-One may prove this fact using moment generating functions, since the
-Poisson is infinitely divisible.
-
-Let \(f(y; \lambda_j)\) denote the Poisson mass function with rate
-\(\lambda_j\). Since the random variables \(Y_1, \ldots, Y_J\) are
-independent, the joint mass function factorizes as \begin{align*}
-&f(y_1, \ldots, y_J=y_j \mid S=n) 
-= \frac{\prod_{j=1}^J f(y_j; \lambda_j)}{f(n; \lambda_1 + \cdots + \lambda_J)}
-\\&\quad=\prod_{j=1}^J\frac{\exp(-\lambda_j)\lambda_j^{y_j}}{y_j!}\frac{n!}{\exp(-\lambda_1 + \cdots \lambda_J) \lambda^{n}}
-\\&\quad= \frac{n!}{ (\lambda_1 + \cdots + \lambda_J)^{n}}\prod_{j=1}^J\frac{\lambda_j^{y_j}}{y_j!} 
-\\&\quad=\frac{n!}{y_1! \cdots y_J!}\prod_{j=1}^J \left(\frac{\lambda_j}{\lambda_1 + \cdots + \lambda_J}\right)^{y_j}
-\end{align*} for \(y_j \geq 0\) for all \(j=1, \ldots, J\) such that
-\(y_1 + \cdots + y_j = n\), and the joint mass is zero otherwise. If we
-define \(p_j = \lambda_j/(\lambda_1 + \cdots + \lambda_J)\), we
-recognize a multinomial distribution with vector of probability of
-success \(\boldsymbol{p}\) with \(p_1 + \cdots p_J=1\) and \(n\) trials.
 
 \end{example}
 
@@ -973,8 +976,8 @@ The \textbf{tower} property gives a law of iterated variance
 \mathsf{Va}_{\boldsymbol{Y}}(\boldsymbol{Y}) = \mathsf{E}_{\boldsymbol{Z}}\left\{\mathsf{Va}_{\boldsymbol{Y} \mid \boldsymbol{Z}}(\boldsymbol{Y})\right\} + \mathsf{Va}_{\boldsymbol{Z}}\left\{\mathsf{E}_{\boldsymbol{Y} \mid \boldsymbol{Z}}(\boldsymbol{Y})\right\}.
 \end{align*}
 
-We can deduce that, in a hierarchical model, the variance of the
-unconditional distribution is larger
+In a hierarchical model, the variance of the unconditional distribution
+is larger than that of the conditional distribution.
 
 \end{proposition}
 
@@ -1004,15 +1007,21 @@ counts is larger than that implied by a Poisson distribution.
 One common framework for handling overdispersion is to have
 \(Y \mid \Lambda = \lambda \sim \mathsf{Poisson}(\lambda)\), where the
 mean of the Poisson distribution is itself a positive random variable
-with mean \(\mu\), if \(\Lambda\) follows a conjugate gamma distribution
-with shape \(k\mu\) and rate \(k>0\),
-\(\Lambda \sim \mathsf{Gamma}(k\mu, k)\), the posterior
-\(\Lambda \mid Y=y \sim \mathsf{Gamma}(k\mu + y, k+1)\).
+with mean \(\mu\), if \(\Lambda\) follows a gamma distribution with
+shape \(k\mu\) and rate \(k>0\),
+\(\Lambda \sim \mathsf{gamma}(k\mu, k)\). Since the joint density of
+\(Y\) and \(\Lambda\) can be written \begin{align*}
+p(y, \lambda) &= p(y \mid \lambda)p(\lambda) \\
+&= \frac{\lambda^y\exp(-\lambda)}{\Gamma(y+1)}  \frac{k^{k\mu}\lambda^{k\mu-1}\exp(-k\lambda)}{\Gamma(k\mu)}
+\end{align*} so the conditional distribution of \(\Lambda \mid Y=y\) can
+be found by considering only terms that are function of \(\lambda\),
+whence \begin{align*}
+f(\lambda \mid Y=y) \stackrel{\lambda}{\propto}\lambda^{y+k\mu-1}\exp(-(k+1)\lambda)
+\end{align*} and the conditional distribution is
+\(\Lambda \mid Y=y \sim \mathsf{gamma}(k\mu + y, k+1)\).
 
-Since the joint density of \(Y\) and \(\Lambda\) can be written \[
-p(y, \lambda) = p(y \mid \lambda)p(\lambda) = p(\lambda \mid y) p(y)
-\] we can isolate the marginal density \begin{align*}
-p(y) &= \frac{p(y \mid \lambda)p(\lambda)}{p(\lambda \mid y)} \\&= \frac{\frac{\lambda^y\exp(-\lambda)}{\Gamma(y+1)}  \frac{k^{k\mu}\lambda^{k\mu-1}\exp(-k\lambda)}{\Gamma(k\mu)}}{ \frac{(k+1)^{k\mu+y}\lambda^{k\mu+y-1}\exp\{-(k+1)\lambda\}}{\Gamma(k\mu+y)}}\\
+We can isolate the marginal density \begin{align*}
+p(y) &= \frac{p(y, \lambda)}{p(\lambda \mid y)} \\&= \frac{\frac{\lambda^y\exp(-\lambda)}{\Gamma(y+1)}  \frac{k^{k\mu}\lambda^{k\mu-1}\exp(-k\lambda)}{\Gamma(k\mu)}}{ \frac{(k+1)^{k\mu+y}\lambda^{k\mu+y-1}\exp\{-(k+1)\lambda\}}{\Gamma(k\mu+y)}}\\
 &= \frac{\Gamma(k\mu+y)}{\Gamma(k\mu)\Gamma(y+1)}k^{k\mu} (k+1)^{-k\mu-y}\\&= \frac{\Gamma(k\mu+y)}{\Gamma(k\mu)\Gamma(y+1)}\left(1-\frac{1}{k+1}\right)^{k\mu} \left(\frac{1}{k+1}\right)^y
 \end{align*} and this is the density of a negative binomial distribution
 with probability of success \(1/(k+1)\). We can thus view the negative
@@ -1385,7 +1394,7 @@ Specifically, suppose we are interested in the average
 
 \begin{example}[]\protect\hypertarget{exm-expectation-demo}{}\label{exm-expectation-demo}
 
-Consider \(X \sim \mathsf{Gamma}(\alpha, \beta)\), a gamma distribution
+Consider \(X \sim \mathsf{gamma}(\alpha, \beta)\), a gamma distribution
 with shape \(\alpha\) and rate \(\beta\). We can compute the probability
 that \(X < 1\) easily by Monte Carlo since
 \(\Pr(X <1) = \mathsf{E}\{\mathrm{I}(X<1)\}\) and this means we only
@@ -1560,7 +1569,7 @@ variable in terms of the distribution function \(F\) and the quantile
 function \(F^{-1}\) of the original untruncated variable.
 
 For the Gaussian, this gives \begin{align*}
-X \sim \Phi^{-1}\left[\Phi(\alpha) + \{\Phi(\beta)-\Phi(\alpha)\}U\right]
+X \sim \Phi^{-1}\left[\Phi(a) + \{\Phi(b)-\Phi(a)\}U\right]
 \end{align*} for \(U \sim \mathsf{U}(0,1)\). Although the quantile and
 distribution functions of the Gaussian, \texttt{pnorm} and
 \texttt{qnorm} in \textbf{R}, are very accurate, this method will fail
@@ -3532,19 +3541,20 @@ the chain is irreducible and acyclic, ensuring that the chain has a
 unique stationary distribution. The ergodic theorem is a result about
 convergence of averages.
 
-To make sense of these concepts, we consider a discrete Markov chain
-over the integers \(1, 2, 3\). A discrete-time stochastic process is a
-random sequences whose elements are part of some set, the state space,
-here the integers. We can encode the probability of moving from one
-state to the next via a transition matrix, whose rows contain the
+A discrete-time stochastic process is a random sequences whose elements
+are part of some set (finite or countable), termed state space
+\(\mathcal{S}\). We can encode the probability of moving from one state
+to the next via a transition matrix, whose rows contain the
 probabilities of moving from one state to the next and thus sum to one.
 We can run a Markov chain by sampling an initial state \(X_0\) at random
-from \(\{1, \ldots, 5\}\) and then consider the transitions from the
-conditional distribution, sampling \(p(X_t \mid X_{t-1})\). Because of
-the Markov property, the history of the chain does not matter: we only
-need to read the value \(i=X_{t-1}\) of the state and pick the \(i\)th
-row of \(P_3\) to know the probability of the different moves from the
-current state.
+from \(\mathcal{S}\) and then consider the transitions from the
+conditional distribution, sampling \(p(X_t \mid X_{t-1})\).
+
+Consider a Markov chain on integers \(\{1, 2, 3\}\). Because of the
+Markov property, the history of the chain does not matter: we only need
+to read the value \(i=X_{t-1}\) of the state and pick the \(i\)th row of
+the transition matrix \(\mathbf{P}\) to know the probability of the
+different moves from the current state.
 
 Irreducible means that the chain can move from anywhere to anywhere, so
 it doesn't get stuck in part of the space forever. A transition matrix
@@ -3639,7 +3649,7 @@ probability over the support of \(p(\cdot)\), as transition kernel to
 generate proposals.
 
 The Metropolis--Hastings build a Markov chain starting from an initial
-value \(\boldsymbol{\theta}_0\):
+value \(\boldsymbol{\theta}_0:\)
 
 \begin{enumerate}
 \def\labelenumi{\arabic{enumi}.}
@@ -3668,14 +3678,14 @@ condition} when the density of
 \(\boldsymbol{\theta}_{t+1} \mid \boldsymbol{\theta}_{t}\), say
 \(f(\boldsymbol{\theta}_{t+1} \mid \boldsymbol{\theta}_{t})\). Detailed
 balance means \begin{align*}
-f(\boldsymbol{\theta}_{t+1} \mid \boldsymbol{\theta}_{t})p(\boldsymbol{\theta}_{t} \mid \boldsymbol{y}) = f(\boldsymbol{\theta}_{t} \mid \boldsymbol{\theta}_{t+1})p(\boldsymbol{\theta}_{t+1} \mid \boldsymbol{y})
+f(\boldsymbol{\theta}_{t+1} \mid \boldsymbol{\theta}_{t})p(\boldsymbol{\theta}_{t} \mid \boldsymbol{y}) = f(\boldsymbol{\theta}_{t} \mid \boldsymbol{\theta}_{t+1})p(\boldsymbol{\theta}_{t+1} \mid \boldsymbol{y}).
 \end{align*} This guarantees that, if \(\boldsymbol{\theta}_{t}\) is
 drawn from the posterior, then the left hand side is the joint density
 of \((\boldsymbol{\theta}_{t}, \boldsymbol{\theta}_{t+1})\) and the
 marginal distribution obtained by integrating over
 \(\boldsymbol{\theta}_{t}\), \begin{align*}
-&\int f(\boldsymbol{\theta}_{t+1} \mid \boldsymbol{\theta}_{t})p(\boldsymbol{\theta}_{t} \mid \boldsymbol{y})\mathrm{d} \boldsymbol{\theta}_{t}
-\\&\quad = \int f(\boldsymbol{\theta}_{t} \mid \boldsymbol{\theta}_{t+1})p(\boldsymbol{\theta}_{t+1} \mid \boldsymbol{y})\mathrm{d} \boldsymbol{\theta}_{t} 
+\int f(\boldsymbol{\theta}_{t+1} \mid \boldsymbol{\theta}_{t})p(\boldsymbol{\theta}_{t} \mid \boldsymbol{y})\mathrm{d} \boldsymbol{\theta}_{t}
+& = \int f(\boldsymbol{\theta}_{t} \mid \boldsymbol{\theta}_{t+1})p(\boldsymbol{\theta}_{t+1} \mid \boldsymbol{y})\mathrm{d} \boldsymbol{\theta}_{t} 
 \\&\quad= p(\boldsymbol{\theta}_{t+1} \mid \boldsymbol{y})
 \end{align*} and any draw from the posterior will generate a new
 realization from the posterior. We also ensure that, provided the
@@ -3909,11 +3919,12 @@ One way to calibrate is to track the acceptance rate of the proposals:
 for the three chains in Figure~\ref{fig-goldilock-trace}, these are
 0.932, 0.33, 0.12. In one-dimensional toy problems with Gaussian
 distributions, an acceptance rate of 0.44 is optimal, and this ratio
-decreases to 0.234 when \(D \geq 2\) Sherlock
-(\citeproc{ref-Sherlock:2013}{2013}). This need not generalize to other
-settings and depends on the context. Optimal rate for alternative
-algorithms, such as Metropolis-adjusted Langevin algorithm, are
-typically higher.
+decreases to 0.234 when \(D \geq 2\)
+(\citeproc{ref-Roberts.Rosenthal:2001}{Roberts and Rosenthal 2001};
+\citeproc{ref-Sherlock:2013}{Sherlock 2013}). This need not generalize
+to other settings and depends on the context. Optimal rate for
+alternative algorithms, such as Metropolis-adjusted Langevin algorithm,
+are typically higher.
 
 We can tune the variance of the global proposal
 (\citeproc{ref-Andrieu.Thoms:2008}{Andrieu and Thoms 2008}) to improve
@@ -4028,7 +4039,7 @@ proposals]\protect\hypertarget{prp-truncated-proposals}{}\label{prp-truncated-pr
 As an alternative, if we are dealing with parameters that are restricted
 in \([a,b]\), we can simulate using a random walk but with truncated
 Gaussian steps, taking
-\(\theta^{\star}_{t} \sim \mathsf{TruncNorm}(\vartheta_{t-1}, \tau^2, a, b).\)
+\(\theta^{\star}_{t} \sim \mathsf{trunc. Gauss}(\vartheta_{t-1}, \tau^2, a, b).\)
 The benefits of using the truncated proposal becomes more apparent when
 we move to more advanced proposals whose mean and variance depends on
 the gradient and or the hessian of the underlying unnormalized log
@@ -4065,10 +4076,10 @@ with mean
 \(\mu_{t-1} = \theta_{t-1} - f'(\theta_{t-1})/f''(\theta_{t-1})\) and
 precision \(\tau^{-2} = -f''(\theta_{t-1})\). We can use truncated
 Gaussian distribution on \((a, b)\) with mean \(\mu\) and standard
-deviation \(\tau\), denoted \(\mathsf{TruncNorm}(\mu, \tau, a, b)\) with
-corresponding density function \(q(\cdot; \mu, \tau, a, b)\). The
+deviation \(\tau\), denoted \(\mathsf{trunc. Gauss}(\mu, \tau, a, b)\)
+with corresponding density function \(q(\cdot; \mu, \tau, a, b)\). The
 Metropolis acceptance ratio for a proposal
-\(\theta^{\star}_{t} \sim \mathsf{TruncNorm}(\mu_{t-1}, \tau_{t-1}, a, b)\)
+\(\theta^{\star}_{t} \sim \mathsf{trunc. Gauss}(\mu_{t-1}, \tau_{t-1}, a, b)\)
 is \begin{align*}
  \alpha = \frac{p(\theta^{\star}_{t})}{p(\theta_{t-1})} \frac{ q(\theta_{t-1} \mid \mu_{t}^{\star}, \tau_{t}^{\star}, a, b)}{q(\theta^{\star}_{t} \mid \mu_{t-1}, \tau_{t-1}, a, b)}
 \end{align*} and we set \(\theta^{(t+1)} = \theta^{\star}_{t}\) with
@@ -4127,8 +4138,8 @@ number of impressions. To allow for underdispersion or overdispersion,
 we thus consider a Gaussian likelihood
 \(Y_i \sim \mathsf{Gauss}(\mu, \sigma^2/n_i)\). We perform Bayesian
 inference for \(\mu, \sigma\) after assigning a truncated Gaussian prior
-for \(\mu \sim \mathsf{TruncNorm}(0.01, 0.1^2)\) over \([0,1]\) and an
-penalized complexity prior for \(\sigma \sim \mathsf{Exp}(0.7)\).
+for \(\mu \sim \mathsf{trunc. Gauss}(0.01, 0.1^2)\) over \([0,1]\) and
+an penalized complexity prior for \(\sigma \sim \mathsf{Exp}(0.7)\).
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -4499,8 +4510,8 @@ matrix \(\mathbf{X}\) and response vector \(\boldsymbol{z}\). The
 augmented variables \(Z_i\) are conditionally independent and truncated
 Gaussian with \begin{align*}
 Z_i \mid y_i, \boldsymbol{\beta} \sim \begin{cases}
-\mathsf{TruncNorm}(\mathbf{x}_i\boldsymbol{\beta}, -\infty, 0) & y_i =0 \\
-\mathsf{TruncNorm}(\mathbf{x}_i\boldsymbol{\beta}, 0, \infty) & y_i =1.
+\mathsf{trunc. Gauss}(\mathbf{x}_i\boldsymbol{\beta}, -\infty, 0) & y_i =0 \\
+\mathsf{trunc. Gauss}(\mathbf{x}_i\boldsymbol{\beta}, 0, \infty) & y_i =1.
 \end{cases}
 \end{align*} and we can use the algorithms of
 Example~\ref{exm-accept-reject-truncated} to simulate these.
