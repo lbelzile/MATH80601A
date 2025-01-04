@@ -34,10 +34,15 @@ It is Markov if it satisfies the Markov property: given the current state of the
 :::
 
 
-Autoregressive processes are not the only ones we can consider, although their simplicity lends itself to analytic calculations. More generally, for a correlated sequence, the variance of the stationary distribution is
+Autoregressive processes are not the only ones we can consider, although their simplicity lends itself to analytic calculations. 
+
+<!--
+More generally, for a correlated sequence, the variance of the stationary distribution is
 \begin{align*}
 \mathsf{Va}(Y_t) + 2 \sum_{k=1}^\infty \mathsf{Co}(Y_t, Y_{t-k})
 \end{align*}
+
+-->
 
 ::: {#prp-variance-clt}
 ## Effective sample size

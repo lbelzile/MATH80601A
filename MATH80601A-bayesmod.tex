@@ -320,14 +320,14 @@
 \usepackage{amsthm}
 \theoremstyle{definition}
 \newtheorem{exercise}{Exercise}[chapter]
-\theoremstyle{definition}
-\newtheorem{example}{Example}[chapter]
-\theoremstyle{definition}
-\newtheorem{definition}{Definition}[chapter]
 \theoremstyle{plain}
 \newtheorem{proposition}{Proposition}[chapter]
 \theoremstyle{plain}
 \newtheorem{theorem}{Theorem}[chapter]
+\theoremstyle{definition}
+\newtheorem{example}{Example}[chapter]
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}[chapter]
 \theoremstyle{remark}
 \AtBeginDocument{\renewcommand*{\proofname}{Proof}}
 \newtheorem*{remark}{Remark}
@@ -1768,8 +1768,8 @@ prior]\protect\hypertarget{exm-betabinomconjugate}{}\label{exm-betabinomconjugat
 
 Consider a binomial likelihood with probability of success
 \(\theta \in [0,1]\) and \(n\) trials,
-\(Y \sim \mathsf{Binom}(n, \theta)\). If we take a beta prior,
-\(\theta \sim \mathsf{Beta}(\alpha, \beta)\) and observe \(y\)
+\(Y \sim \mathsf{binom}(n, \theta)\). If we take a beta prior,
+\(\theta \sim \mathsf{beta}(\alpha, \beta)\) and observe \(y\)
 successes, the posterior is \begin{align*}
 p(\theta \mid y = y) &\propto \binom{n}{y} \theta^y (1-\theta)^{n-y} \frac{\Gamma(\alpha + \beta)}{\Gamma(\alpha) \Gamma(\beta)}\theta^{\alpha-1} (1-\theta)^{\beta-1}
 \\&\stackrel{\theta}{\propto} \theta^{y+\alpha-1}(1-\theta)^{n-y+\beta-1}
@@ -1777,10 +1777,10 @@ p(\theta \mid y = y) &\propto \binom{n}{y} \theta^y (1-\theta)^{n-y} \frac{\Gamm
 \[\int_{0}^{1} \theta^{y+\alpha-1}(1-\theta)^{n-y+\beta-1}\mathrm{d} \theta = \frac{\Gamma(y+\alpha)\Gamma(n-y+\beta)}{\Gamma(n+\alpha+\beta)},\]
 a Beta function. Since we need only to keep track of the terms that are
 function of the parameter \(\theta\), we could recognize directly that
-the posterior distribution is \(\mathsf{Beta}(y+\alpha, n-y+\beta)\) and
+the posterior distribution is \(\mathsf{beta}(y+\alpha, n-y+\beta)\) and
 deduce the normalizing constant from there.
 
-If \(Y \sim \mathsf{Binom}(n, \theta)\), the expected number of success
+If \(Y \sim \mathsf{binom}(n, \theta)\), the expected number of success
 is \(n\theta\) and the expected number of failures \(n(1-\theta)\) and
 so the likelihood contribution, relative to the prior, will dominate as
 the sample size \(n\) grows.
@@ -1818,8 +1818,8 @@ avoided, unless there are compelling reasons for restricting the domain.
 }
 
 \caption{\label{fig-betabinom}Scaled binomial likelihood for six
-successes out of 14 trials, with \(\mathsf{Beta}(3/2, 3/2)\) prior
-(left), \(\mathsf{Beta}(1/4, 1/4)\) (middle) and truncated uniform on
+successes out of 14 trials, with \(\mathsf{beta}(3/2, 3/2)\) prior
+(left), \(\mathsf{beta}(1/4, 1/4)\) (middle) and truncated uniform on
 \([0,1/2]\) (right), with the corresponding posterior distributions.}
 
 \end{figure}%
@@ -2218,7 +2218,7 @@ contribution for the probability \(\zeta_u\) of exceeding the threshold
 those for \(\zeta_u\), the posterior also factorizes as a product, so
 \(\zeta_u\) and \((\tau, \xi)\) are a posteriori independent.
 
-Suppose for now that we set a \(\mathsf{Beta}(0.5, 0.5)\) prior for
+Suppose for now that we set a \(\mathsf{beta}(0.5, 0.5)\) prior for
 \(\zeta_u\) and a non-informative prior for the generalized Pareto
 parameters.
 
@@ -3388,11 +3388,7 @@ on the past.
 \end{definition}
 
 Autoregressive processes are not the only ones we can consider, although
-their simplicity lends itself to analytic calculations. More generally,
-for a correlated sequence, the variance of the stationary distribution
-is \begin{align*}
-\mathsf{Va}(Y_t) + 2 \sum_{k=1}^\infty \mathsf{Co}(Y_t, Y_{t-k})
-\end{align*}
+their simplicity lends itself to analytic calculations.
 
 \begin{proposition}[Effective sample
 size]\protect\hypertarget{prp-variance-clt}{}\label{prp-variance-clt}

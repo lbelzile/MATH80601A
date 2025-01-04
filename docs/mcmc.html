@@ -280,9 +280,14 @@ window.Quarto = {
 <p><span class="theorem-title"><strong>Definition 4.1 (Stationarity and Markov property)</strong></span> A stochastic (i.e., random) process is (weakly) stationary if the distribution of <span class="math inline">\(\{X_1, \ldots, X_t\}\)</span> is the same as that of <span class="math inline">\(\{X_{n+1}, \ldots X_{t+n}\}\)</span> for any value of <span class="math inline">\(n\)</span> and given <span class="math inline">\(t\)</span>.</p>
 <p>It is Markov if it satisfies the Markov property: given the current state of the chain, the future only depends on the current state and not on the past.</p>
 </div>
-<p>Autoregressive processes are not the only ones we can consider, although their simplicity lends itself to analytic calculations. More generally, for a correlated sequence, the variance of the stationary distribution is <span class="math display">\[\begin{align*}
+<p>Autoregressive processes are not the only ones we can consider, although their simplicity lends itself to analytic calculations.</p>
+<!--
+More generally, for a correlated sequence, the variance of the stationary distribution is
+\begin{align*}
 \mathsf{Va}(Y_t) + 2 \sum_{k=1}^\infty \mathsf{Co}(Y_t, Y_{t-k})
-\end{align*}\]</span></p>
+\end{align*}
+
+-->
 <div id="prp-variance-clt" class="theorem proposition">
 <p><span class="theorem-title"><strong>Proposition 4.1 (Effective sample size)</strong></span> Intuitively, a sample of correlated observations carries less information than an independent sample of draws. If we want to compute sample averages <span class="math inline">\(\overline{Y}_T=(Y_1+ \cdots + Y_T)/T\)</span>, the variance will be <span class="math display">\[\begin{align*}
 \mathsf{Va}\left(\overline{Y}_T\right) = \frac{1}{T}\sum_{t=1}^T \mathsf{Va}(Y_t) + \frac{2}{T} \sum_{t=1}^{T-1}\sum_{s = t+1}^T \mathsf{Co}(Y_t, Y_s).
