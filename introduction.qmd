@@ -14,13 +14,13 @@ This section review basic concepts in probability theory that will be used throu
 
 ## Random vectors
 
-We begin with a characterization of random vectors and their marginal, conditional and joint distributions. A good reference for this material is Chapter 3 of @McNeil.Frey.Embrechts:2005.
+We begin with a characterization of random vectors and their marginal, conditional and joint distributions. A good reference for this material is Chapter 3 of @McNeil.Frey.Embrechts:2005, and Appendix A of @Held.Bove:2020.
 
 :::{#def-cdf}
 
 ## Density and distribution function
 
-Let $\boldsymbol{X}$ denote a $d$-dimensional vector with real entries in $\mathbb{R}^d$. The distribution function of $\boldsymbol{X}$ is
+Let $\boldsymbol{X}$ denote a $d$-dimensional vector with real entries in $\mathbb{R}^d.$ The distribution function of $\boldsymbol{X}$ is
 \begin{align*}
  F_{\boldsymbol{X}}(\boldsymbol{x}) = \Pr(\boldsymbol{X} \leq \boldsymbol{x}) = \Pr(X_1 \leq x_1, \ldots, X_d \leq x_d).
 \end{align*}
@@ -34,9 +34,10 @@ where $f_{\boldsymbol{X}}(\boldsymbol{x})$ is the joint **density function**.
 The density function can be obtained as the derivative of the distribution function with respect to all of it's arguments.
 
 
-We use the same notation for the mass function in the discrete case where $f_{\boldsymbol{X}}(\boldsymbol{x}) = \Pr(X_1 = x_1, \ldots, X_d = x_d)$, where the integral is understood to mean a summation over all values lower or equal to $\boldsymbol{x}$ in the support. In the discrete case, $0 \leq f_{\boldsymbol{X}}(\boldsymbol{x}) \leq 1$ is a probability and the total probability over all points in the support sum to one, meaning $\sum_{\boldsymbol{x} \in \mathsf{supp}(\boldsymbol{X})} f_{\boldsymbol{X}}(\boldsymbol{x}) = 1.$
+We use the same notation for the mass function in the discrete case where $f_{\boldsymbol{X}}(\boldsymbol{x}) = \Pr(X_1 = x_1, \ldots, X_d = x_d),$ where the integral is understood to mean a summation over all values lower or equal to $\boldsymbol{x}$ in the support. In the discrete case, $0 \leq f_{\boldsymbol{X}}(\boldsymbol{x}) \leq 1$ is a probability and the total probability over all points in the support sum to one, meaning $\sum_{\boldsymbol{x} \in \mathsf{supp}(\boldsymbol{X})} f_{\boldsymbol{X}}(\boldsymbol{x}) = 1.$
 
 :::
+
 
 
 
@@ -46,13 +47,13 @@ We use the same notation for the mass function in the discrete case where $f_{\b
 
 ## Gamma, chi-square and exponential distributions
 
-A random variable follows a gamma distribution with shape $\alpha>0$ and rate $\beta>0$, denoted $Y \sim \mathsf{gamma}(\alpha, \beta)$, if it's density is 
+A random variable follows a gamma distribution with shape $\alpha>0$ and rate $\beta>0,$ denoted $Y \sim \mathsf{gamma}(\alpha, \beta),$ if it's density is
 \begin{align*}
 f(x) = \frac{\beta^\alpha}{\Gamma(\alpha)}x^{\alpha-1}\exp(-\beta x), \qquad x \in (0, \infty),
 \end{align*}
 where $\Gamma(\alpha)\coloneqq\int_0^\infty t^{\alpha-1}\exp(-t)\mathrm{d} t$ is the gamma function.
 
-If $\alpha=1$, the density simplifies to $\beta \exp(-\beta x)$ and we recover the **exponential distribution**, denote $\mathsf{expo}(\beta)$. The case $\mathsf{gamma}(\nu/2, 1/2)$ corresponds to the chi-square distribution $\chi^2_\nu$.
+If $\alpha=1,$ the density simplifies to $\beta \exp(-\beta x)$ and we recover the **exponential distribution**, denote $\mathsf{expo}(\beta).$ The case $\mathsf{gamma}(\nu/2, 1/2)$ corresponds to the chi-square distribution $\chi^2_\nu.$
 
 :::
 
@@ -65,7 +66,7 @@ The beta distribution $\mathsf{beta}(\alpha_1, \alpha_2)$ is a distribution supp
 \begin{align*}
 f(x) = \frac{\Gamma(\alpha_1)\Gamma(\alpha_2)}{\Gamma(\alpha_1+\alpha_2)}x^{\alpha_1-1}(1-x)^{1-\alpha_2}, \qquad x \in [0,1].
 \end{align*}
-The case $\mathsf{beta}(1,1)$, also denoted $\mathsf{unif}(0,1)$, corresponds to a standard uniform distribution.
+The case $\mathsf{beta}(1,1),$ also denoted $\mathsf{unif}(0,1),$ corresponds to a standard uniform distribution.
 :::
 
 
@@ -116,7 +117,7 @@ ggplot() +
 ## Dirichlet distribution
 
 Let $\boldsymbol{\alpha} \in (0, \infty)^d$ denote shape parameters and cosider a random vector of size $d$ with positive components on the simplex $$\mathbb{S}_{d-1}: \{ 0 \leq x_j \leq 1; j=1, \ldots, d: x_1 + \cdots + x_d=1\}.$$
-The density of a **Dirichlet** random vector, denoted $\boldsymbol{Y} \sim \mathsf{Dirichlet}(\boldsymbol{\alpha})$, is
+The density of a **Dirichlet** random vector, denoted $\boldsymbol{Y} \sim \mathsf{Dirichlet}(\boldsymbol{\alpha}),$ is
 \begin{align*}
 f(\boldsymbol{x}) = \frac{\prod_{j=1}^{d-1}\Gamma(\alpha_j)}{\Gamma(\alpha_1 + \cdots + \alpha_d)}\prod_{j=1}^{d} x_j^{\alpha_j-1}, \qquad \boldsymbol{x} \in \mathbb{S}_{d-1}
 \end{align*}
@@ -130,12 +131,12 @@ Due to the linear dependence, the $d$th component $x_d = 1- x_1 - \cdots - x_{d-
 
 ## Binomial distribution
 
-The density of the binomial distribution, denoted $Y \sim \mathsf{binom}(n, p)$, is
+The density of the binomial distribution, denoted $Y \sim \mathsf{binom}(n, p),$ is
 \begin{align*}
 f(x) = \mathsf{Pr}(Y=x) = \binom{m}{x}p^x (1-p)^{m-x}, \quad x=0, 1, \ldots, n.
 \end{align*}
 
-If $n=1$, we recover the Bernoulli distribution with density $f(x) = p^{y}(1-p)^{1-y}$. The binomial distribution is closed under convolution, meaning that the number the number of successes $Y$ out of $n$ Bernoulli trials is binomial
+If $n=1,$ we recover the Bernoulli distribution with density $f(x) = p^{y}(1-p)^{1-y}.$ The binomial distribution is closed under convolution, meaning that the number the number of successes $Y$ out of $n$ Bernoulli trials is binomial
 
 :::
 
@@ -143,7 +144,7 @@ If $n=1$, we recover the Bernoulli distribution with density $f(x) = p^{y}(1-p)^
 
 ## Multinomial distribution
 
-If there are more than two outcomes, say $d$, we can generalize this mass function. Suppose that $\boldsymbol{Y}=(Y_1, \ldots, Y_d)$ denotes the number of realizations of each of the $d$ outcomes based on $n$ trials, so that $0 \leq Y_j \leq n (j=1, \ldots, d)$ and $Y_1 + \cdots + Y_d=n$. The joint density of the multinomial vector $\boldsymbol{Y} \sim \mathsf{multinom}(\boldsymbol{p})$ with probability vector $\boldsymbol{p} \in \mathbb{S}_{d-1}$ is 
+If there are more than two outcomes, say $d,$ we can generalize this mass function. Suppose that $\boldsymbol{Y}=(Y_1, \ldots, Y_d)$ denotes the number of realizations of each of the $d$ outcomes based on $n$ trials, so that $0 \leq Y_j \leq n (j=1, \ldots, d)$ and $Y_1 + \cdots + Y_d=n.$ The joint density of the multinomial vector $\boldsymbol{Y} \sim \mathsf{multinom}(\boldsymbol{p})$ with probability vector $\boldsymbol{p} \in \mathbb{S}_{d-1}$ is
 \begin{align*}
 f(\boldsymbol{x}) = \frac{n!}{\prod_{j=1}^d x_j!} \prod_{j=1}^d p_j^{x_j}, \qquad \boldsymbol{y}/n \in \mathbb{S}_{d-1},
 \end{align*}
@@ -161,7 +162,7 @@ If the probability of success $p$ of a Bernoulli event is small in the sense tha
 \begin{align*}
 f(x)=\mathsf{Pr}(Y=x) = \frac{\exp(-\lambda)\lambda^y}{\Gamma(y+1)}, \quad x=0, 1, 2, \ldots
 \end{align*}
-where $\Gamma(\cdot)$ denotes the gamma function. The parameter $\lambda$ of the Poisson distribution is both the expectation and the variance of the distribution, meaning $\mathsf{E}(Y)=\mathsf{Va}(Y)=\lambda.$ We denote the distribution as $Y \sim \mathsf{Poisson}(\lambda)$.
+where $\Gamma(\cdot)$ denotes the gamma function. The parameter $\lambda$ of the Poisson distribution is both the expectation and the variance of the distribution, meaning $\mathsf{E}(Y)=\mathsf{Va}(Y)=\lambda.$ We denote the distribution as $Y \sim \mathsf{Poisson}(\lambda).$
 
 :::
 
@@ -177,7 +178,7 @@ Consider a $d$ dimensional vector $\boldsymbol{Y} \sim \mathsf{Gauss}_d(\boldsym
 f(\boldsymbol{x}) = (2\pi)^{-d/2} |\boldsymbol{Q}|^{1/2} \exp \left\{ - \frac{1}{2} (\boldsymbol{x}-\boldsymbol{\mu})^\top \boldsymbol{Q}(\boldsymbol{x}-\boldsymbol{\mu})\right\}, \qquad \boldsymbol{x} \in \mathbb{R}^d
 \end{align*}
 
-The mean vector $\boldsymbol{\mu}$ is the vector of expectation of individual observations, whereas $\boldsymbol{Q}^{-1}\equiv \boldsymbol{\Sigma}$ is the $d \times d$ covariance matrix of $\boldsymbol{Y}$ and $\boldsymbol{Q}$, the canonical parameter, is called the precision matrix. 
+The mean vector $\boldsymbol{\mu}$ is the vector of expectation of individual observations, whereas $\boldsymbol{Q}^{-1}\equiv \boldsymbol{\Sigma}$ is the $d \times d$ covariance matrix of $\boldsymbol{Y}$ and $\boldsymbol{Q},$ the canonical parameter, is called the precision matrix.
 
 
 In the univariate case, the density of $\mathsf{Gauss}(\mu, \sigma^2)$ reduces to
@@ -189,20 +190,6 @@ Although the terminology "normal" is frequent, we will stick to Gaussian in thes
 :::
 
 
-:::{#prp-gaussian-dist-property}
-
-## Simulation of Gaussian vectors
-
-The Gaussian distribution is an elliptical distribution and a location-scale family: if $\boldsymbol{L} = \mathrm{chol}(\boldsymbol{Q})$, meaning $\boldsymbol{Q}=\boldsymbol{LL}^\top$ for some lower triangular matrix $\boldsymbol{L}$, then $$\boldsymbol{L}^\top(\boldsymbol{Y}-\boldsymbol{\mu}) \sim \mathsf{Gauss}_d(\boldsymbol{0}_d, \mathbf{I}_d).$$
-Conversely, we can use the Cholesky root to sample multivariate Gaussian vectors by first drawing $d$ independent standard Gaussians $\boldsymbol{Z}=(Z_1, \ldots, Z_d)^\top$, then computing $$\boldsymbol{Y} \gets \boldsymbol{L}^{-1}\boldsymbol{Z}+ \boldsymbol{\mu}.$$
-
-
-
-<!--
-Quadratic forms of Gaussians $(\boldsymbol{Y}-\boldsymbol{\mu})^\top\boldsymbol{\Sigma}^{-1}(\boldsymbol{Y}-\boldsymbol{\mu})\sim \chi^2(n).$
--->
-
-:::
 
 :::{#def-student-dist}
 
@@ -214,12 +201,12 @@ The density of the standard Student-$t$ univariate distribution with $\nu$ degre
 f(y; \nu) = \frac{\Gamma \left( \frac{\nu+1}{2}\right)}{\Gamma\left(\frac{\nu}{2}\right)
 \sqrt{\nu\pi}}\left(1+\frac{y^{2}}{\nu}\right)^{-\frac{\nu+1}{2}}.
 \end{align*}
-The density of the random vector $\boldsymbol{Y} \sim \mathsf{Student}_d(\boldsymbol{\mu}, \boldsymbol{Q}^{-1}, \nu)$, with location vector $\boldsymbol{\mu}$, scale matrix $\boldsymbol{Q}^{-1}$ and $\nu$ degrees of freedom is
+The density of the random vector $\boldsymbol{Y} \sim \mathsf{Student}_d(\boldsymbol{\mu}, \boldsymbol{Q}^{-1}, \nu),$ with location vector $\boldsymbol{\mu},$ scale matrix $\boldsymbol{Q}^{-1}$ and $\nu$ degrees of freedom is
 \begin{align*}
 f(\boldsymbol{x}) = \frac{\Gamma \left( \frac{\nu+d}{2}\right)|\boldsymbol{Q}|^{1/2}}{\Gamma\left(\frac{\nu}{2}\right)
 (\nu\pi)^{d/2}}\left(1+\frac{(\boldsymbol{x}-\boldsymbol{\mu})^\top\boldsymbol{Q}(\boldsymbol{x}-\boldsymbol{\mu})}{\nu} \right)^{-\frac{\nu+d}{2}}, \qquad \boldsymbol{x} \in \mathbb{R}^d
 \end{align*}
-The Student distribution is a location-scale family and an elliptical distribution. The distribution has polynomial tails, is symmetric around $\boldsymbol{\mu}$ and is unimodal. As $\nu \to \infty$, the Student distribution converges to a normal distribution. It has heavier tails than the normal distribution and only the first $\nu-1$ moments of the distribution exist. The case $\nu=1$ is termed Cauchy distribution.
+The Student distribution is a location-scale family and an elliptical distribution. The distribution has polynomial tails, is symmetric around $\boldsymbol{\mu}$ and is unimodal. As $\nu \to \infty,$ the Student distribution converges to a normal distribution. It has heavier tails than the normal distribution and only the first $\nu-1$ moments of the distribution exist. The case $\nu=1$ is termed Cauchy distribution.
 
 ```{r}
 #| label: fig-student-density
@@ -319,10 +306,10 @@ The quantile function, the inverse of the distribution function, is $Q(p) = \lam
 
 A random variable $Y$ is said to belong to a location scale family with location parameter $b$ and scale $a>0$ if it is equal in distribution to a location and scale transformation of a standard variable $X$ with location zero and unit scale, denoted $Y \stackrel{\mathrm{d}}{=} aX + b$ and meaning, 
 $$\Pr(Y \leq y) = \Pr(aX + b \leq y).$$
-If the density exists, then $f_Y(y) = a^{-1}f_X\{(y-b)/a\}$.
+If the density exists, then $f_Y(y) = a^{-1}f_X\{(y-b)/a\}.$
 
 
-We can extend this definition to the multivariate setting for location vector $\boldsymbol{b} \in \mathbb{R}^d$ and positive definite scale matrix $\mathbf{A}$, such that 
+We can extend this definition to the multivariate setting for location vector $\boldsymbol{b} \in \mathbb{R}^d$ and positive definite scale matrix $\mathbf{A},$ such that
 $$\Pr(\boldsymbol{Y} \leq \boldsymbol{y}) = \Pr(\mathbf{A}\boldsymbol{X} + \boldsymbol{b} \leq \boldsymbol{y}).$$
 
 :::
@@ -333,20 +320,135 @@ $$\Pr(\boldsymbol{Y} \leq \boldsymbol{y}) = \Pr(\mathbf{A}\boldsymbol{X} + \bold
 ## Exponential family
 
 
-A univariate distribution is an exponential family if it's density or mass function can be written for all $y \in \mathbb{R}$ as
+A univariate distribution is an exponential family if it's density or mass function can be written for all $\boldsymbol{\theta} \in \boldsymbol{\Theta}$ and $y \in \mathbb{R}$ as
 \begin{align*}
 f(y; \boldsymbol{\theta}) = \exp\left\{ \sum_{k=1}^K Q_k(\boldsymbol{\theta}) t_k(y) + D(\boldsymbol{\theta}) + h(y)\right\}, 
 \end{align*}
-where functions $Q_1(\cdot), \ldots, Q_K(\cdot)$ and $D(\cdot)$ depend only on $\boldsymbol{\theta}$ and not on the data, and conversely $t_1(\cdot), \ldots, t_K(\cdot)$ and $h(\cdot)$ do not depend on the vector of parameters $\boldsymbol{\theta}$. 
+where functions $Q_1(\cdot), \ldots, Q_K(\cdot)$ and $D(\cdot)$ depend only on $\boldsymbol{\theta}$ and not on the data, and conversely $t_1(\cdot), \ldots, t_K(\cdot)$ and $h(\cdot)$ do not depend on the vector of parameters $\boldsymbol{\theta}.$
 
-The support of $f$ must not depend on $\boldsymbol{\theta}$. The transformed parameters $Q_k(\boldsymbol{\theta})$ $(k=1, \ldots, K)$ are termed canonical parameters.
+The support of $f$ must not depend on $\boldsymbol{\theta}.$ The transformed parameters $Q_k(\boldsymbol{\theta})$ $(k=1, \ldots, K)$ are termed canonical parameters.
 
+We term **conjugate family** families of distribution on $\boldsymbol{\Theta}$ with parameters $\boldsymbol{\chi}, \gamma$ if their density is proportional to
+\begin{align*}
+\exp\left\{ \sum_{k=1}^K Q_k(\boldsymbol{\theta}) \chi_k + \gamma D(\boldsymbol{\theta})\right\}
+\end{align*}
+
+<!-- p.131 of Barndorff-Nielsen  -->
 :::
 
 Exponential families play a crucial role due to the fact that the vector of sufficient statistics $\boldsymbol{t}$ for a random sample allows for data compression. They feature prominently in generalized linear models.
-We will encounter exponential families when discussing conjugate priors. 
+<!-- We will encounter exponential families when discussing conjugate priors. -->
+
+:::{#exm-exponential-family-gaussian}
+
+## Gaussian as exponential family
+
+We can rewrite the density of $\mathsf{Gauss}(\mu, \sigma^2)$ as
+\begin{align*}
+f(y; \mu, \sigma^2) = (2\pi)^{-1/2}\exp\left\{ \frac{-y^2 + 2y\mu - \mu^2}{2\sigma^2}-\log \sigma\right\},
+\end{align*}
+so taking $Q_1(\mu, \sigma^2)=\mu/\sigma^2$ and $Q_2(\mu, \sigma^2)=1/\sigma^2$ and $t_1(y) = y$ and $t_2(y) = -y^2/2.$ The [Gaussian-inverse-gamma](https://en.wikipedia.org/wiki/Normal-inverse-gamma_distribution) distribution is a conjugate family.
+
+:::
+
+:::{#exm-exponential-family-binom}
+
+## Binomial as exponential family
+
+Consider $Y \sim \mathsf{binom}(n,p)$ and write the mass function
+\begin{align*}
+f(y; p)=\exp \left\{ \log \Gamma(n+1) - \log \left(\frac{\Gamma(y+1)}{\Gamma(n-y+1)}\right) + y \{\log p - log(1-p)\} + n \log(1-p)\right\}.
+\end{align*}
+and so the canonical parameter is $Q_1(p) = \mathrm{logit}(p) = \log\{p/(1-p)\}$ with $t_1(y) = y.$ The beta distribution is conjugate to the binomial.
+:::
 
 
+
+:::{#exm-exponential-family-poisson}
+
+## Poisson as exponential family
+
+Consider $Y \sim \mathsf{Poisson}(\lambda)$ with mass function
+\begin{align*}
+f(y; p)=\exp \left\{ - \lambda + y \log \lambda - \log \Gamma(x+1)\right\}.
+\end{align*}
+and so the canonical parameter is $Q_1(p) = \log \lambda$ with the gamma distribution as conjugate family.
+:::
+
+
+
+:::{#prp-change-variable}
+
+## Change of variable formula
+
+Consider an injective (one-to-one) differentiable function $\boldsymbol{g}: \mathbb{R}^d \to \mathbb{R}^d,$ with inverse $g^{-1}.$ Then, if $\boldsymbol{Y}=\boldsymbol{g}(\boldsymbol{X}),$
+\begin{align*}
+\Pr(\boldsymbol{Y} \leq \boldsymbol{y}) = \Pr\{\boldsymbol{g}(\boldsymbol{X}) \leq \boldsymbol{y}\} = \Pr\{\boldsymbol{X} \leq \boldsymbol{x} = \boldsymbol{g}^{-1}(\boldsymbol{y})\}.
+\end{align*}
+Using the chain rule, we get that the density of $\boldsymbol{Y}$ may be written as
+\begin{align*}
+f_{\boldsymbol{Y}}(\boldsymbol{y}) = f_{\boldsymbol{X}}\left\{\boldsymbol{g}^{-1}(\boldsymbol{y})\right\} \left| \mathbf{J}_{\boldsymbol{g}^{-1}}(\boldsymbol{y})\right| = f_{\boldsymbol{X}}(\boldsymbol{x}) \left| \mathbf{J}_{\boldsymbol{g}}(\boldsymbol{x})\right|^{-1}
+\end{align*}
+where $\mathbf{J}_{\boldsymbol{g}}(\boldsymbol{x})$ is the Jacobian matrix with $i,j$th element $\partial [\boldsymbol{g}(\boldsymbol{x})]_i / \partial x_j.$
+
+:::
+
+:::{#exm-locationscale-Gauss}
+
+## Location-scale transformation of Gaussian vectors
+
+Consider $d$ independent standard Gaussian variates $X_j \sim \mathsf{Gauss}(0, \sigma^2)$ for $j=1, \ldots, d,$ with joint density function
+\begin{align*}
+f_{\boldsymbol{X}}(\boldsymbol{x})= (2\pi)^{-d/2} \exp \left( - \frac{\boldsymbol{x}^\top\boldsymbol{x}}{2}\right).
+\end{align*}
+Consider the transformation $\boldsymbol{Y} = \mathbf{A}\boldsymbol{X}+\boldsymbol{b},$ with $\mathbf{A}$ an invertible matrix. The inverse transformation is $\boldsymbol{g}^{-1}(\boldsymbol{y}) = \mathbf{A}^{-1}(\boldsymbol{y}-\boldsymbol{b}).$ The Jacobian $\mathbf{J}_{\boldsymbol{g}}(\boldsymbol{x})$ is simply $\mathbf{A},$ so the joint density of $\boldsymbol{Y}$ is
+\begin{align*}
+f_{\boldsymbol{Y}}(\boldsymbol{y}) &= (2\pi)^{-d/2} |\mathbf{A}|^{-1}\exp \left\{ - \frac{(\boldsymbol{y}-\boldsymbol{b})^\top\mathbf{A}^{-\top}\mathbf{A}^{-1}(\boldsymbol{y}-\boldsymbol{b})}{2}\right\}.
+\end{align*}
+Since $|\mathbf{A}^{-1}| = |\mathbf{A}|^{-1}$ and $\mathbf{A}^{-\top}\mathbf{A}^{-1} = (\mathbf{AA}^\top)^{-1},$ we recover that $\boldsymbol{Y} \sim \mathsf{Gauss}_d(\boldsymbol{b}, \mathbf{AA}^\top).$
+
+:::
+
+
+:::{#rmk-gaussian-dist-property}
+
+## Simulation of Gaussian vectors
+
+@exm-locationscale-Gauss shows that the Gaussian distribution is a location-scale family: if $\boldsymbol{L} = \mathrm{chol}(\boldsymbol{Q}),$ meaning $\boldsymbol{Q}=\boldsymbol{LL}^\top$ for some lower triangular matrix $\boldsymbol{L},$ then $$\boldsymbol{L}^\top(\boldsymbol{Y}-\boldsymbol{\mu}) \sim \mathsf{Gauss}_d(\boldsymbol{0}_d, \mathbf{I}_d).$$
+Conversely, we can use the Cholesky root to sample multivariate Gaussian vectors by first drawing $d$ independent standard Gaussians $\boldsymbol{Z}=(Z_1, \ldots, Z_d)^\top,$ then computing $$\boldsymbol{Y} \gets \boldsymbol{L}^{-1}\boldsymbol{Z}+ \boldsymbol{\mu}.$$
+
+
+:::
+
+:::{#exm-gamma-Drichlet}
+
+## Dirichlet vectors from Gamma random variables
+
+Consider $\boldsymbol{X}$ a $d$ vector of independent gamma random variables $\mathsf{gamma}(\alpha_i, 1).$ Then, if $Z = X_1 + \cdots + X_d,$ we have $(X_1, \ldots, X_{d-1}) / Z  \sim \mathsf{Dirichlet}(\boldsymbol{\alpha})$ and $Z \sim \mathsf{gamma}(1, \alpha_1 + \cdots + \alpha_d).$
+
+:::
+
+
+:::{.proof}
+
+The joint density for $\boldsymbol{X}$ is
+\begin{align*}
+f_{\boldsymbol{X}}(\boldsymbol{x}) = \prod_{j=1}^d  \frac{x_j^{\alpha_j-1}\exp(-x_j)}{\Gamma(\alpha_j)}.
+\end{align*}
+Let $\boldsymbol{g}(\cdot)$ be a $d$ place function with $i$th element $g_i(\boldsymbol{x}) = x_j/(x_1 + \cdots x_d)$ for $j=1, \ldots, d-1$ and $g_d=x_1 + \cdots x_d$ and write the transformation as $g(\boldsymbol{X}) = (\boldsymbol{Y}^\top, Z)^\top$ with $\boldsymbol{y} = (y_1, \ldots, y_{d-1})^\top$ and the redundant coordinate $y_d = 1- y_1 - \cdots y_{d-1}$ to simplify the notation.
+The inverse transformation yields $x_j = zy_j$ for $j=1, \ldots, d-1$ and $x_d = z(1-y_1-\cdots - y_{d-1}).$ The Jabobian matrix is
+\begin{align*}
+\mathbf{J}_{\boldsymbol{g}^{-1}}(\boldsymbol{y}, z) = \begin{pmatrix} z \mathbf{I}_{d-1} & \boldsymbol{y} \\ \boldsymbol{0}^\top_{d-1} & y_d
+\end{pmatrix}.
+\end{align*}
+The absolute value of the determinant is then $z^{d-1}y_d.$ Using the change of variable formula,
+\begin{align*}
+f_{\boldsymbol{Y}}(\boldsymbol{y}) &= \prod_{j=1}^{d}  \frac{(zy_j)^{\alpha_j-1}\exp(-zy_j)}{\Gamma(\alpha_j)} \times z^{d-1}y_d
+\\&= z^{\alpha_1 + \cdots + \alpha_d - 1}\exp(-z) \prod_{j=1}^d \frac{y_j^{\alpha_j-1}}{\Gamma(\alpha_j)}.
+\end{align*}
+Since the density factorizes, we find the result upon multiplying and dividing by the normalizing constant $\Gamma(\alpha_1 + \cdots + \alpha_d),$ which yields both the Dirichlet for $\boldsymbol{Y}$ and the gamma  for $Z.$
+
+:::
 
 ### Marginal and conditional distributions
 
@@ -355,11 +457,11 @@ We will encounter exponential families when discussing conjugate priors.
 
 ## Marginal distribution
 
-The **marginal distribution** of a subvector $\boldsymbol{X}_{1:k}=(X_1, \ldots, X_k)^\top$, without loss of generality consisting of the $k$ first components of $\boldsymbol{X}$ $(1 \leq k < d)$ is
+The **marginal distribution** of a subvector $\boldsymbol{X}_{1:k}=(X_1, \ldots, X_k)^\top,$ without loss of generality consisting of the $k$ first components of $\boldsymbol{X}$ $(1 \leq k < d)$ is
 \begin{align*}
  F_{\boldsymbol{X}_{1:k}}(\boldsymbol{x}_{1:k}) = \Pr(\boldsymbol{X}_{1:k} \leq \boldsymbol{x}_{1:k}) = F_{\boldsymbol{X}}(x_1, \ldots, x_k, \infty, \ldots, \infty).
 \end{align*}
-and thus the marginal distribution of component $j$, $F_j(x_j)$, is obtained by evaluating all components but the $j$th at $\infty$.
+and thus the marginal distribution of component $j,$ $F_j(x_j),$ is obtained by evaluating all components but the $j$th at $\infty.$
 
 We likewise obtain the marginal density
 \begin{align*}
@@ -381,25 +483,30 @@ or through integration from the joint density as
 ## Conditional distribution
 
 
-Let $(\boldsymbol{X}^\top, \boldsymbol{Y}^\top)^\top$ be a $d$-dimensional random vector with joint density or mass function $f_{\boldsymbol{X}, \boldsymbol{Y}}(\boldsymbol{x}, \boldsymbol{y})$ and marginal distribution $f_{\boldsymbol{X}}(\boldsymbol{x})$. The conditional distribution function of $\boldsymbol{Y}$ given $\boldsymbol{X}=\boldsymbol{x}$, is 
+Let $(\boldsymbol{X}^\top, \boldsymbol{Y}^\top)^\top$ be a $d$-dimensional random vector with joint density or mass function $f_{\boldsymbol{X}, \boldsymbol{Y}}(\boldsymbol{x}, \boldsymbol{y})$ and marginal distribution $f_{\boldsymbol{X}}(\boldsymbol{x}).$ The conditional distribution function of $\boldsymbol{Y}$ given $\boldsymbol{X}=\boldsymbol{x},$ is
 \begin{align*}
 f_{\boldsymbol{Y} \mid \boldsymbol{X}}(\boldsymbol{y}; \boldsymbol{x}) = \frac{f_{\boldsymbol{X}, \boldsymbol{Y}}(\boldsymbol{x}, \boldsymbol{y})}{f_{\boldsymbol{X}}(\boldsymbol{x})}
 \end{align*}
-for any value of $\boldsymbol{x}$ in the support of $\boldsymbol{X}$, i.e., the set of values with non-zero density or mass, meaning $f_{\boldsymbol{X}}(\boldsymbol{x})>0$; it is undefined otherwise.
+for any value of $\boldsymbol{x}$ in the support of $\boldsymbol{X},$ i.e., the set of values with non-zero density or mass, meaning $f_{\boldsymbol{X}}(\boldsymbol{x})>0$; it is undefined otherwise.
 
 
 :::
 
 :::{#thm-Bayes}
 
-## Bayes theorem
+## Bayes' theorem
 
-Denote by $f_X$ and $f_Y$ denotes the marginal density of $X$ and $Y$, respectively, $f_{X \mid Y}$ the conditional of $X$ given $Y$ and $f_{X,Y}$ the joint density. Bayes' theorem states that
+Denote by $f_X$ and $f_Y$ denotes the marginal density of $X$ and $Y,$ respectively, $f_{X \mid Y}$ the conditional of $X$ given $Y$ and $f_{X,Y}$ the joint density. Bayes' theorem states that for $y$ in the support of $Y,$
 \begin{align*}
-f_{X,Y}(x,y) = \frac{f_{Y}(y \mid X = x)f_X(x)}{f_Y(y)}
+f_{X\mid Y}(x; y) = \frac{f_{Y\mid X}(y; x)f_X(x)}{f_Y(y)}
 \end{align*}
+which follows since $f_{X|Y}(x; y)f_Y(y) = f_{X,Y}(x,y)$ and likewise $f_{Y \mid X}(y; x)f_X(x) = f_{X,Y}(x,y).$
 
-In the case of discrete random variable $X$ with support $\mathcal{X},$ the denominator can be evaluated using the law of total probability  as $$\Pr(Y=y) = \sum_{x \in \mathcal{X}}\Pr(Y =y \mid X=x)\Pr(X=x).$$
+In the case of discrete random variable $X$ with support $\mathcal{X},$ the denominator can be evaluated using the law of total probability, and
+
+\begin{align*}
+\Pr(X = x \mid Y=y) &= \frac{\Pr(Y=y \mid X=x)\Pr(X=x)}{\Pr(Y=y)} \\&= \frac{\Pr(Y=y \mid X=x)\Pr(X=x)}{\sum_{x \in \mathcal{X}}\Pr(Y =y \mid X=x)\Pr(X=x)}.
+\end{align*}
 
 :::
 
@@ -438,13 +545,13 @@ Bayes' rule is central to updating beliefs: given initial beliefs (priors) and i
 
 ## Conditional and marginal for contingency table
 
-Consider a bivariate distribution for $(Y_1, Y_2)$ supported on $\{1, 2, 3\} \times \{1, 2\}$, whose joint probability mass function is given in @tbl-bivardiscrete
+Consider a bivariate distribution for $(Y_1, Y_2)$ supported on $\{1, 2, 3\} \times \{1, 2\},$ whose joint probability mass function is given in @tbl-bivardiscrete
 
 ```{r}
 #| eval: true
 #| echo: false
 #| label: tbl-bivardiscrete
-#| tbl-cap: "Bivariate mass function with probability of each outcome for $(Y_1, Y_2)$."
+#| tbl-cap: "Bivariate mass function with probability of each outcome for $(Y_1, Y_2).$"
 #| tbl-align: 'center'
 tab <- rbind(c(0.2, 0.3, 0.1, 0.6), 
              c(0.15, 0.2, 0.05, 0.4),
@@ -454,7 +561,7 @@ rownames(tab) <- c("$Y_2=1$","$Y_2=2$","total")
 knitr::kable(tab, escape = FALSE)
 ```
 
-The marginal distribution of $Y_1$ is obtain by looking at the total probability for each column, as $$\Pr(Y_1=i) = \Pr(Y_1=i, Y_2=1)+ \Pr(Y_1=i, Y_2=2).$$ This gives $\Pr(Y_1=1)=0.35$, $\Pr(Y_1=2)=0.5$ and $\Pr(Y_1=3) = 0.15.$ Similarly, we find that $\Pr(Y_2=1)=0.6$ and $\Pr(Y_2=2)=0.4$ for the other random variable.
+The marginal distribution of $Y_1$ is obtain by looking at the total probability for each column, as $$\Pr(Y_1=i) = \Pr(Y_1=i, Y_2=1)+ \Pr(Y_1=i, Y_2=2).$$ This gives $\Pr(Y_1=1)=0.35,$ $\Pr(Y_1=2)=0.5$ and $\Pr(Y_1=3) = 0.15.$ Similarly, we find that $\Pr(Y_2=1)=0.6$ and $\Pr(Y_2=2)=0.4$ for the other random variable.
 
 The conditional distribution $$\Pr(Y_2 = i \mid Y_1=2) = \frac{\Pr(Y_1=2, Y_2=i)}{\Pr(Y_1=2)},$$ so $\Pr(Y_2 = 1 \mid Y_1=2) = 0.3/0.5 = 0.6$ and $\Pr(Y_2=2 \mid Y_1=2) = 0.4.$ We can condition on more complicated events, for example
 \begin{align*}
@@ -469,42 +576,42 @@ The conditional distribution $$\Pr(Y_2 = i \mid Y_1=2) = \frac{\Pr(Y_1=2, Y_2=i)
 
 ## Margins and conditional distributions of multinomial vectors
 
-Consider $\boldsymbol{Y} = (Y_1, Y_2, n-Y_1-Y_2)$ a trinomial vector giving the number of observations in group $j \in \{1,2,3\}$ with $n$ trials and probabilities of each component respectively $(p_1, p_2, 1-p_1-p_2)$.
-The marginal distribution of $Y_2$ is obtained by summing over all possible values of $Y_1$, which ranges from $0$ to $n$, so
+Consider $\boldsymbol{Y} = (Y_1, Y_2, n-Y_1-Y_2)$ a trinomial vector giving the number of observations in group $j \in \{1,2,3\}$ with $n$ trials and probabilities of each component respectively $(p_1, p_2, 1-p_1-p_2).$
+The marginal distribution of $Y_2$ is obtained by summing over all possible values of $Y_1,$ which ranges from $0$ to $n,$ so
 \begin{align*}
 f(y_2) &= \frac{n!p_2^{y_2}}{y_2!}\sum_{y_1=1}^n \frac{p_1^{y_1}(1-p_1 -p_2)^{n-y_1-y_2}}{y_1!(n-y_1-y_2)!}
 \end{align*}
 
 
-A useful trick is to complete the expression on the right so that it sum (in the discrete case) or integrate (in the continuous case) to $1.$ If we multiply and divide by $(1-p_2)^{n-y_2} /(n-y_2)!$, we get $p_1^*=p_1/(1-p_2)$ and
+A useful trick is to complete the expression on the right so that it sum (in the discrete case) or integrate (in the continuous case) to $1.$ If we multiply and divide by $(1-p_2)^{n-y_2} /(n-y_2)!,$ we get $p_1^*=p_1/(1-p_2)$ and
 
 \begin{align*}
 f(y_2) &= \frac{n!p_2^{y_2}}{(1-p_2)^{n-y_2} y_2!(n-y_2)!}\sum_{y_1=1}^n \binom{n-y_2}{y_1} p_1^{\star y_1}(1-p^{\star}_1)^{n-y_2}
 \\&= \frac{n!p_2^{y_2}}{(1-p_2)^{n-y_2} y_2!(n-y_2)!}
 \end{align*}
-is binomial with $n$ trials and probability of success $p_2$. We can generalize this argument to multinomials of arbitrary dimensions.
+is binomial with $n$ trials and probability of success $p_2.$ We can generalize this argument to multinomials of arbitrary dimensions.
 
 The conditional density of $Y_2 \mid Y_1=y_1$ is, up to proportionality,
 \begin{align*}
 f_{Y_2 \mid Y_1}(y_2; y_1) &\propto \frac{p_2^{y_2}(1-p_1 -p_2)^{n-y_1-y_2}}{y_2!(n-y_1-y_2)!}
 \end{align*}
-If we write $p_2^\star=p_2/(1-p_1)$, we find that $Y_2 \mid Y_1 \sim \mathsf{binom}(n-y_1, p_2^\star)$.
+If we write $p_2^\star=p_2/(1-p_1),$ we find that $Y_2 \mid Y_1 \sim \mathsf{binom}(n-y_1, p_2^\star).$
 Indeed, we can see that
 \begin{align*}
 f_{\boldsymbol{Y}}(\boldsymbol{y}) &= f_{Y_2 \mid Y_1}(y_2; y_1) f_{Y_1}(y_1) 
 \\&= \binom{n-y_1}{y_2} \left( \frac{p_2}{1-p_1}\right)^{y_2}\left(\frac{1-p_1-p_2}{1-p_1}\right)^{n-y_1-y_2}\!\!\cdot\binom{n}{y_1} p_1^{y_1}(1-p_1)^{n-y_1}.
 \end{align*}
 
-<!--and $1-p_2^\star = (1-p_1 -p_2)/(1-p_1)$,-->
+<!--and $1-p_2^\star = (1-p_1 -p_2)/(1-p_1),$-->
 <!--
-Consider $\boldsymbol{Y}=(Y_1, \ldots, Y_J)$ a multinomial vector giving the number of observations in group $j$ (out of $J$) out of $n$ trials. We denote the probability of falling in the latter by $p_j$, with $p_1 + \cdots + p_J=1$. The marginal distribution of subcomponents is obtained by marginalizing out variable. To illustrate this, we remove the first component by summing over all possible values of $Y_1$, which ranges from $0$ to $n$.
+Consider $\boldsymbol{Y}=(Y_1, \ldots, Y_J)$ a multinomial vector giving the number of observations in group $j$ (out of $J$) out of $n$ trials. We denote the probability of falling in the latter by $p_j,$ with $p_1 + \cdots + p_J=1.$ The marginal distribution of subcomponents is obtained by marginalizing out variable. To illustrate this, we remove the first component by summing over all possible values of $Y_1,$ which ranges from $0$ to $n.$
 
 
 \begin{align*}
 f(y_2, \ldots, y_{J-1}) &= \frac{n!p_2^{y_2} \cdots p_{J-1}^{y_{J-1}}}{y_2!\cdots y_{J-1}!}\sum_{y_1=1}^n \frac{p_1^{y_1}(1-p_1 - \cdots - p_{J-1})^{n-y_1-\cdots - y_{J-1}}}{y_1!(n-y_1-\cdots -y_{J-1})!}
 \end{align*}
 
-A useful trick is to complete the expression on the right so that it sum (in the discrete case) or integrate (in the continuous case) to $1.$ If we multiply and divide by $(1-p_2-\cdots- p_{J-1})^{n-y_2-\cdots - y_{J-1}} /(n-y_2-\cdots -y_{J-1})!$, we get $p_1^*=p_1/(1-p_1-\cdots - p_{J-1})$ and
+A useful trick is to complete the expression on the right so that it sum (in the discrete case) or integrate (in the continuous case) to $1.$ If we multiply and divide by $(1-p_2-\cdots- p_{J-1})^{n-y_2-\cdots - y_{J-1}} /(n-y_2-\cdots -y_{J-1})!,$ we get $p_1^*=p_1/(1-p_1-\cdots - p_{J-1})$ and
 
 \begin{align*}
 f(y_2, \ldots, y_{J-1}) &= \frac{n!p_2^{y_2} \cdots p_{J-1}^{y_{J-1}}}{(1-p_2-\cdots- p_{J-1})^{n-y_2-\cdots - y_{J-1}} y_2!\cdots y_{J-1}!(n-y_2-\cdots -y_{J-1})!}\sum_{y_1=1}^n \binom{n-y_2-\cdots - y_{J-1}}{y_1} p_1^{\star y_1}(1-p^{\star}_1)^{n-y_2\cdots - y_{J-1}}
@@ -517,21 +624,21 @@ is again multinomial with $n$ trials, but probability of success $p_j/(1-p_2-\cd
 
 :::{#exm-conditional-marginal}
 
-Consider the bivariate density function of the pair $(X, Y)$, where for $\lambda>0$,
+Consider the bivariate density function of the pair $(X, Y),$ where for $\lambda>0,$
 \begin{align*}
 f(x,y) = \frac{\lambda y^{1/2}}{(2\pi)^{1/2}}\exp\left\{ - y(x^2 + \lambda)\right\}, \qquad x \in \mathbb{R}, y>0.
 \end{align*}
-We see that the conditional distribution of $X \mid Y=y \sim \mathsf{Gauss}(0, y^{-1})$. The marginals are
+We see that the conditional distribution of $X \mid Y=y \sim \mathsf{Gauss}(0, y^{-1}).$ The marginals are
 \begin{align*}
 f(y) &= \int_{-\infty}^\infty \frac{\lambda y^{1/2}}{(2\pi)^{1/2}}\exp\left\{ - y(x^2 + \lambda)\right\} \mathrm{d} x
 \\&= \lambda \exp(-\lambda y)
 \end{align*}
-so marginally $Y$ follows an exponential distribution with rate $\lambda$. The marginal of $X$ can be obtained by noting that the joint distribution, as a function of $y$, is proportional to the kernel of a gamma distribution with shape $3/2$ and rate $x^2+\lambda$, with $Y \mid X=x \sim \mathsf{gamma}(3/2, x^2+\lambda)$. If we pull out the normalizing constant, we find
+so marginally $Y$ follows an exponential distribution with rate $\lambda.$ The marginal of $X$ can be obtained by noting that the joint distribution, as a function of $y,$ is proportional to the kernel of a gamma distribution with shape $3/2$ and rate $x^2+\lambda,$ with $Y \mid X=x \sim \mathsf{gamma}(3/2, x^2+\lambda).$ If we pull out the normalizing constant, we find
 \begin{align*}
 f(x) &= \int_{0}^{\infty} \frac{\lambda y^{1/2}}{(2\pi)^{1/2}}\exp\left\{ - y(x^2 + \lambda)\right\} \mathrm{d} y\\&=
 \frac{\lambda \Gamma(3/2)}{(2\pi)^{1/2}(x^2+\lambda)^{3/2}} \int_0^\infty f_{Y \mid X}(y \mid x) \mathrm{d} y \\ &= \frac{\lambda}{2^{3/2}(x^2+\lambda)^{3/2}}
 \end{align*}
-since $\Gamma(a+1) = a\Gamma(a)$ for $a>0$ and $\Gamma(1/2) = \sqrt{\pi}$. We conclude that marginally $X \sim \mathsf{Student}(0, \lambda, 2)$, a Student distribution with scale $\lambda$ and two degrees of freedom.
+since $\Gamma(a+1) = a\Gamma(a)$ for $a>0$ and $\Gamma(1/2) = \sqrt{\pi}.$ We conclude that marginally $X \sim \mathsf{Student}(0, \lambda, 2),$ a Student distribution with scale $\lambda$ and two degrees of freedom.
 
 :::
 
@@ -541,9 +648,9 @@ since $\Gamma(a+1) = a\Gamma(a)$ for $a>0$ and $\Gamma(1/2) = \sqrt{\pi}$. We co
 
 ## Poisson counts conditional on their sum
 
-Suppose that $Y_j\sim \mathsf{Poisson}(\lambda_j)$ are independent $(j=1, \ldots, J),$ so that the sum $S = Y_1 + \cdots Y_J \sim \mathsf{Poisson}(\lambda_1 + \ldots \lambda_J)$. One may prove this fact using moment generating functions, since the Poisson is infinitely divisible.
+Suppose that $Y_j\sim \mathsf{Poisson}(\lambda_j)$ are independent $(j=1, \ldots, J),$ so that the sum $S = Y_1 + \cdots Y_J \sim \mathsf{Poisson}(\lambda_1 + \ldots \lambda_J).$ One may prove this fact using moment generating functions, since the Poisson is infinitely divisible.
 
-Let $f(y; \lambda_j)$ denote the Poisson mass function with rate $\lambda_j$. Since the random variables $Y_1, \ldots, Y_J$ are independent, the joint mass function factorizes as
+Let $f(y; \lambda_j)$ denote the Poisson mass function with rate $\lambda_j.$ Since the random variables $Y_1, \ldots, Y_J$ are independent, the joint mass function factorizes as
 \begin{align*}
 &f(y_1, \ldots, y_J=y_j \mid S=n) 
 = \frac{\prod_{j=1}^J f(y_j; \lambda_j)}{f(n; \lambda_1 + \cdots + \lambda_J)}
@@ -551,7 +658,7 @@ Let $f(y; \lambda_j)$ denote the Poisson mass function with rate $\lambda_j$. Si
 \\&\quad= \frac{n!}{ (\lambda_1 + \cdots + \lambda_J)^{n}}\prod_{j=1}^J\frac{\lambda_j^{y_j}}{y_j!} 
 \\&\quad=\frac{n!}{y_1! \cdots y_J!}\prod_{j=1}^J \left(\frac{\lambda_j}{\lambda_1 + \cdots + \lambda_J}\right)^{y_j}
 \end{align*}
-for $y_j \geq 0$ for all $j=1, \ldots, J$ such that $y_1 + \cdots + y_j = n$, and the joint mass is zero otherwise. If we define $p_j = \lambda_j/(\lambda_1 + \cdots + \lambda_J)$, we recognize a multinomial distribution with vector of probability of success $\boldsymbol{p}$ with $p_1 + \cdots p_J=1$ and $n$ trials.
+for $y_j \geq 0$ for all $j=1, \ldots, J$ such that $y_1 + \cdots + y_j = n,$ and the joint mass is zero otherwise. If we define $p_j = \lambda_j/(\lambda_1 + \cdots + \lambda_J),$ we recognize a multinomial distribution with vector of probability of success $\boldsymbol{p}$ with $p_1 + \cdots p_J=1$ and $n$ trials.
 
 :::
 
@@ -561,7 +668,7 @@ for $y_j \geq 0$ for all $j=1, \ldots, J$ such that $y_1 + \cdots + y_j = n$, an
 
 ##  Bivariate geometric distribution of Marshall and Olkin
 
-Consider a couple $(U_1, U_2)$ of Bernoulli random variables whose mass function is $\Pr(U_1=i, U_2=j=p_{ij}$ for $(i,j) \in \{0,1\}^2$. The marginal distributions are, by the law of total probability
+Consider a couple $(U_1, U_2)$ of Bernoulli random variables whose mass function is $\Pr(U_1=i, U_2=j=p_{ij}$ for $(i,j) \in \{0,1\}^2.$ The marginal distributions are, by the law of total probability
 \begin{align*}
 \Pr(U_1=i) &= \Pr(U_1=i, U_2=0) + \Pr(U_1=i, U_2=1) = p_{i0} + p_{i1} = p_{i\bullet}\\
 \Pr(U_2=j) &= \Pr(U_1=0, U_2=j) + \Pr(U_1=1, U_2=j) = p_{0j} + p_{1j} = p_{\bullet j}
@@ -575,14 +682,14 @@ p_{00}^kp_{11} & k=l; \\
 p_{00}^lp_{10}p_{\bullet 0}^{k-l-1}p_{\bullet 1} & 0 \leq l < k.
 \end{cases}
 \end{align*}
-We can compute the joint survival function $\Pr(Y_1 \ge k, Y_2 \ge l)$ by using properties of the partial sum of geometric series, using the fact $\sum_{i=0}^n p^i = p^n/(1-p)$. Thus, for the case $0\leq k < l$, we have
+We can compute the joint survival function $\Pr(Y_1 \ge k, Y_2 \ge l)$ by using properties of the partial sum of geometric series, using the fact $\sum_{i=0}^n p^i = p^n/(1-p).$ Thus, for the case $0\leq k < l,$ we have
 \begin{align*}
 \Pr(Y_1 \ge k, Y_2 \ge l) &= \sum_{i=k}^\infty \sum_{j=l}^\infty \Pr(Y_1 = i, Y_2 = j)\\
 &= \sum_{i=k}^\infty p_{00}^ip_{01}p_{0 \bullet}^{-i-1}p_{1 \bullet} \sum_{j=l}^\infty p_{0 \bullet}^{j}
 \\&=\sum_{i=k}^\infty p_{00}^ip_{01}p_{0 \bullet}^{-i-1}p_{1 \bullet} \frac{p_{0 \bullet}^{l}}{1-p_{0\bullet}} \\&= p_{0 \bullet}^{l-1}p_{01} \sum_{i=k}^\infty \left(\frac{p_{00}}{p_{0 \bullet}}\right)^{i}
 \\& = p_{00}^k p_{0 \bullet}^{l-k}
 \end{align*}
-since $p_{0\bullet} + p_{1\bullet} = 1$. We can proceed similarly with other subcases to find
+since $p_{0\bullet} + p_{1\bullet} = 1.$ We can proceed similarly with other subcases to find
 \begin{align*}
 \Pr(Y_1 \ge k, Y_2 \ge l) = \begin{cases}
 p_{00}^k p_{0 \bullet}^{l-k} & 0\leq k < l\\
@@ -590,8 +697,8 @@ p_{00}^k & 0 \leq k=l \\
 p_{00}^l p_{\bullet 0}^{k-l} & 0\leq l < k\\
 \end{cases}
 \end{align*}
-and we can obtain the marginal survival function by considering $\Pr(Y_1 \ge 0, Y_2 \ge l)$, etc., which yields
-$\Pr(Y_2 \ge l) = p_{0 \bullet}^{l}$, whence 
+and we can obtain the marginal survival function by considering $\Pr(Y_1 \ge 0, Y_2 \ge l),$ etc., which yields
+$\Pr(Y_2 \ge l) = p_{0 \bullet}^{l},$ whence
 \begin{align*}
 \Pr(Y_2 = l) &= \Pr(Y_2 \ge l) -\Pr(Y_2 \ge l+1)
 \\&= p_{0 \bullet}^{l} (1-p_{0 \bullet})
@@ -609,12 +716,12 @@ We say that $\boldsymbol{Y}$ and $\boldsymbol{X}$ are independent if their joint
 \begin{align*}
 F_{\boldsymbol{X}, \boldsymbol{Y}}(\boldsymbol{x}, \boldsymbol{y}) = F_{\boldsymbol{X}}(\boldsymbol{x})F_{\boldsymbol{Y}}(\boldsymbol{y})
 \end{align*}
-for any value of $\boldsymbol{x}$, $\boldsymbol{y}$. It follows from the definition of joint density that, should the latter exists, it also factorizes as 
+for any value of $\boldsymbol{x},$ $\boldsymbol{y}.$ It follows from the definition of joint density that, should the latter exists, it also factorizes as
 \begin{align*}
 f_{\boldsymbol{X}, \boldsymbol{Y}}(\boldsymbol{x}, \boldsymbol{y}) = f_{\boldsymbol{X}}(\boldsymbol{x})f_{\boldsymbol{Y}}(\boldsymbol{y}).
 \end{align*}
 
-If two subvectors $\boldsymbol{X}$ and $\boldsymbol{Y}$ are independent, then the conditional density $f_{\boldsymbol{Y} \mid \boldsymbol{X}}(\boldsymbol{y}; \boldsymbol{x})$ equals the marginal $f_{\boldsymbol{Y}}(\boldsymbol{y})$.
+If two subvectors $\boldsymbol{X}$ and $\boldsymbol{Y}$ are independent, then the conditional density $f_{\boldsymbol{Y} \mid \boldsymbol{X}}(\boldsymbol{y}; \boldsymbol{x})$ equals the marginal $f_{\boldsymbol{Y}}(\boldsymbol{y}).$
 
 :::
 
@@ -633,13 +740,58 @@ Joint distribution, conditional
 
 A unique property of the multivariate normal distribution is the link between independence and the covariance matrix: components $Y_i$ and $Y_j$ are independent if and only if the $(i,j)$ off-diagonal entry of the covariance matrix $\boldsymbol{Q}^{-1}$ is zero. 
 
-If $q_{ij}=0$, then $Y_i$ and $Y_j$ are conditionally independent given the other components.
+If $q_{ij}=0,$ then $Y_i$ and $Y_j$ are conditionally independent given the other components.
 
 
 :::
 
+## Expectations
+
+The expected value of some function of a random vector $g(\boldsymbol{Y}),$ where $\boldsymbol{Y}$ has density $f_{\boldsymbol{Y}},$ is
+\begin{align*}
+\mathsf{E}\{g(\boldsymbol{Y})\} = \int g(\boldsymbol{y}) f_{\boldsymbol{Y}}(\boldsymbol{y}) \mathrm{d} \boldsymbol{y}
+\end{align*}
+and can be understood as a weighted integral of $g$ with weight $f_{\boldsymbol{Y}}$; the latter does not exist unless the integral is finite.
+
+Taking $h(\boldsymbol{y}) = \boldsymbol{y}$ yields the **expected value** of the random variable $\mathsf{E}(\boldsymbol{Y}).$ We define the covariance matrix of $\boldsymbol{Y}$ as
+\begin{align*}
+\mathsf{Va}(\boldsymbol{Y}) = \mathsf{E}\left[\left\{\boldsymbol{Y} - \mathsf{E}(\boldsymbol{Y})\right\}\left\{\boldsymbol{Y} - \mathsf{E}(\boldsymbol{Y})\right\}^\top\right],
+\end{align*}
+which reduces in the unidimensional setting to $\mathsf{Va}(Y) = \mathsf{E}\{Y - \mathsf{E}(Y)\}^2 = \mathsf{E}(Y^2) - \mathsf{E}(Y)^2.$
+
+If $\boldsymbol{Y}$ is $d$-dimensional and $\mathbf{A}$ is $p \times d$ and $\boldsymbol{b}$ is a $p$ vector, then
+
+\begin{align*}
+\mathsf{E}(\boldsymbol{AY} + \boldsymbol{b}) &= \boldsymbol{A}\mathsf{E}(\boldsymbol{Y}) + \boldsymbol{b},\\
+\mathsf{Va}(\boldsymbol{AY} + \boldsymbol{b}) &= \boldsymbol{A}\mathsf{Va}(\boldsymbol{Y})\boldsymbol{A}^\top.
+\end{align*}
 
 
+The expected value (theoretical mean) of the vector $\boldsymbol{Y}$ is thus calculated componentwise using each marginal density, i.e.,
+\begin{align*}
+\mathsf{E}(\boldsymbol{Y}) &= \boldsymbol{\mu}=
+\begin{pmatrix}
+\mathsf{E}(Y_1) &
+\cdots  &
+\mathsf{E}(Y_n)
+\end{pmatrix}^\top
+\end{align*}
+whereas the second moment of $\boldsymbol{Y}$ is encoded in the $n \times n$ **covariance** matrix
+\begin{align*}
+\mathsf{Va}(\boldsymbol{Y}) &= \boldsymbol{\Sigma} = \begin{pmatrix} \mathsf{Va}(Y_1) & \mathsf{Co}(Y_1, Y_2)  & \cdots & \mathsf{Co}(Y_1, Y_n) \\
+\mathsf{Co}(Y_2, Y_1) & \mathsf{Va}(Y_2) & \ddots & \vdots \\
+\vdots & \ddots & \ddots & \vdots \\
+\mathsf{Co}(Y_n, Y_1) & \mathsf{Co}(Y_n, Y_2) &\cdots & \mathsf{Va}(Y_n)
+\end{pmatrix}
+\end{align*}
+The $i$th diagonal element of $\boldsymbol{\Sigma},$ $\sigma_{ii}=\sigma_i^2,$ is the variance of $Y_i,$ whereas the off-diagonal entries $\sigma_{ij}=\sigma_{ji}$ $(i \neq j)$ are the covariance of pairwise entries, with
+\begin{align*}
+\mathsf{Co}(Y_i, Y_j) = \int_{\mathbb{R}^2} (y_i-\mu_i)(y_j-\mu_j) f_{Y_i, Y_j}(y_i, y_j) \mathrm{d} y_i \mathrm{d} y_j.
+\end{align*}
+The covariance matrix $\boldsymbol{\Sigma}$ is thus symmetric. It is customary to normalize the pairwise dependence so they do not depend on the component variance. The linear **correlation** between $Y_i$ and $Y_j$ is
+\begin{align*}
+\rho_{ij}=\mathsf{Cor}(Y_i,Y_j)=\frac{\mathsf{Co}(Y_i, Y_j)}{\sqrt{\mathsf{Va}(Y_i)}\sqrt{\mathsf{Va}(Y_j)}}=\frac{\sigma_{ij}}{\sigma_i\sigma_j}.
+\end{align*}
 
 :::{#prp-iteratedexpectation}
 
@@ -655,13 +807,13 @@ The **tower** property gives a law of iterated variance
 \mathsf{Va}_{\boldsymbol{Y}}(\boldsymbol{Y}) = \mathsf{E}_{\boldsymbol{Z}}\left\{\mathsf{Va}_{\boldsymbol{Y} \mid \boldsymbol{Z}}(\boldsymbol{Y})\right\} + \mathsf{Va}_{\boldsymbol{Z}}\left\{\mathsf{E}_{\boldsymbol{Y} \mid \boldsymbol{Z}}(\boldsymbol{Y})\right\}.
 \end{align*}
 
-In a hierarchical model, the variance of the unconditional distribution is larger than that of the conditional distribution. 
+In a hierarchical model, the variance of the unconditional distribution is thus necessarily larger than that of the conditional distribution.
 
 :::
 
 :::{#exm-iteratedmean-gauss}
 
-Let $Y \mid X\sim \mathsf{Gauss}(X, \sigma^2)$ and $X \sim \mathsf{Gauss}(0, \tau^2)$. The unconditional mean and variance of $Y$ are
+Let $Y \mid X\sim \mathsf{Gauss}(X, \sigma^2)$ and $X \sim \mathsf{Gauss}(0, \tau^2).$ The unconditional mean and variance of $Y$ are
 \begin{align*}
 \mathsf{E}(Y) = \mathsf{E}_{X}\{\mathsf{E}_{Y\mid X}(Y)\}= \mathsf{E}_{X}(X) = 0
 \end{align*}
@@ -678,21 +830,21 @@ and
 
 ## Negative binomial as a Poisson mixture
 
-<!-- Some canonical distributions have only one parameter which dictates moments: for a Poisson random variable $Y \sim \mathsf{Poisson}(\lambda)$, both $\mathsf{E}(Y) = \mathsf{Va}(Y) = \lambda$, whereas if we have binomial data with $n$ independent trials, each with probability of success $p$, then $Y \sim \mathsf{Bin}(n, p)$, then the theoretical mean of successes is $\mathsf{E}(Y)=np$ and the variance $\mathsf{Va}(Y) = np(1-p)$. -->
+<!-- Some canonical distributions have only one parameter which dictates moments: for a Poisson random variable $Y \sim \mathsf{Poisson}(\lambda),$ both $\mathsf{E}(Y) = \mathsf{Va}(Y) = \lambda,$ whereas if we have binomial data with $n$ independent trials, each with probability of success $p,$ then $Y \sim \mathsf{Bin}(n, p),$ then the theoretical mean of successes is $\mathsf{E}(Y)=np$ and the variance $\mathsf{Va}(Y) = np(1-p).$ -->
 <!-- In generalized linear models, we model the mean as a function of covariate, but data may exhibit overdispersion relative to the theoretical mean. -->
 One restriction of the Poisson model is that the restriction on its moments is often unrealistic. The most frequent problem encountered is that of **overdispersion**, meaning that the variability in the counts is larger than that implied by a Poisson distribution. 
 
-One common framework for handling overdispersion is to have $Y \mid \Lambda = \lambda \sim \mathsf{Poisson}(\lambda)$, where the mean of the Poisson distribution is itself a positive random variable with mean $\mu$, if $\Lambda$ follows a gamma distribution with shape $k\mu$ and rate $k>0$, $\Lambda \sim \mathsf{gamma}(k\mu, k)$. 
+One common framework for handling overdispersion is to have $Y \mid \Lambda = \lambda \sim \mathsf{Poisson}(\lambda),$ where the mean of the Poisson distribution is itself a positive random variable with mean $\mu,$ if $\Lambda$ follows a gamma distribution with shape $k\mu$ and rate $k>0,$ $\Lambda \sim \mathsf{gamma}(k\mu, k).$
 Since the joint density of $Y$ and $\Lambda$ can be written
 \begin{align*}
 p(y, \lambda) &= p(y \mid \lambda)p(\lambda) \\
 &= \frac{\lambda^y\exp(-\lambda)}{\Gamma(y+1)}  \frac{k^{k\mu}\lambda^{k\mu-1}\exp(-k\lambda)}{\Gamma(k\mu)}
 \end{align*}
-so the conditional distribution of $\Lambda \mid Y=y$ can be found by considering only terms that are function of $\lambda$, whence
+so the conditional distribution of $\Lambda \mid Y=y$ can be found by considering only terms that are function of $\lambda,$ whence
 \begin{align*}
 f(\lambda \mid Y=y) \stackrel{\lambda}{\propto}\lambda^{y+k\mu-1}\exp(-(k+1)\lambda)
 \end{align*}
-and the conditional distribution is $\Lambda \mid Y=y \sim \mathsf{gamma}(k\mu + y, k+1)$.
+and the conditional distribution is $\Lambda \mid Y=y \sim \mathsf{gamma}(k\mu + y, k+1).$
 
 
 We can isolate the marginal density
@@ -700,18 +852,18 @@ We can isolate the marginal density
 p(y) &= \frac{p(y, \lambda)}{p(\lambda \mid y)} \\&= \frac{\frac{\lambda^y\exp(-\lambda)}{\Gamma(y+1)}  \frac{k^{k\mu}\lambda^{k\mu-1}\exp(-k\lambda)}{\Gamma(k\mu)}}{ \frac{(k+1)^{k\mu+y}\lambda^{k\mu+y-1}\exp\{-(k+1)\lambda\}}{\Gamma(k\mu+y)}}\\
 &= \frac{\Gamma(k\mu+y)}{\Gamma(k\mu)\Gamma(y+1)}k^{k\mu} (k+1)^{-k\mu-y}\\&= \frac{\Gamma(k\mu+y)}{\Gamma(k\mu)\Gamma(y+1)}\left(1-\frac{1}{k+1}\right)^{k\mu} \left(\frac{1}{k+1}\right)^y
 \end{align*}
-and this is the density of a negative binomial distribution with probability of success $1/(k+1)$. We can thus view the negative binomial as a Poisson mean mixture.
+and this is the density of a negative binomial distribution with probability of success $1/(k+1).$ We can thus view the negative binomial as a Poisson mean mixture.
 
 By the laws of iterated expectation and iterative variance, 
 \begin{align*}
 \mathsf{E}(Y) &= \mathsf{E}_{\Lambda}\{\mathsf{E}(Y \mid \Lambda\} \\& = \mathsf{E}(\Lambda) = \mu\\
 \mathsf{Va}(Y) &= \mathsf{E}_{\Lambda}\{\mathsf{Va}(Y \mid \Lambda)\} + \mathsf{Va}_{\Lambda}\{\mathsf{E}(Y \mid \Lambda)\} \\&= \mathsf{E}(\Lambda) + \mathsf{Va}(\Lambda) \\&= \mu + \mu/k.
 \end{align*}
-The marginal distribution of $Y$, unconditionally, has a variance which exceeds its mean, as
+The marginal distribution of $Y,$ unconditionally, has a variance which exceeds its mean, as
 \begin{align*}
 \mathsf{E}(Y) = \mu, \qquad \mathsf{Va}(Y) = \mu (1+1/k).
 \end{align*}
-In a negative binomial regression model, the term $k$ is a dispersion parameter, which is fixed for all observations, whereas $\mu = \exp(\boldsymbol{\beta}\mathbf{X})$ is a function of covariates $\mathbf{X}$. As $k \to \infty$, the distribution of $\Lambda$ degenerates to a constant at $\mu$ and we recover the Poisson model.
+In a negative binomial regression model, the term $k$ is a dispersion parameter, which is fixed for all observations, whereas $\mu = \exp(\boldsymbol{\beta}\mathbf{X})$ is a function of covariates $\mathbf{X}.$ As $k \to \infty,$ the distribution of $\Lambda$ degenerates to a constant at $\mu$ and we recover the Poisson model.
 
 
 :::
@@ -720,7 +872,7 @@ In a negative binomial regression model, the term $k$ is a dispersion parameter,
 
 ## Partitioning of covariance matrices
 
-Let $\boldsymbol{\Sigma}$ be a $d \times d$ positive definite covariance matrix. We define the precision matrix $\boldsymbol{Q} = \boldsymbol{\Sigma}^{-1}$. Suppose the 
+Let $\boldsymbol{\Sigma}$ be a $d \times d$ positive definite covariance matrix. We define the precision matrix $\boldsymbol{Q} = \boldsymbol{\Sigma}^{-1}.$ Suppose the
 matrices are partitioned into blocks, 
 \begin{align*}
 \boldsymbol{\Sigma}= 
@@ -734,16 +886,39 @@ matrices are partitioned into blocks,
 \\ \boldsymbol{Q}_{21} & \boldsymbol{Q}_{22}
 \end{pmatrix}
 \end{align*}
-with $\dim(\boldsymbol{\Sigma}_{11})=k\times k$ and $\dim(\boldsymbol{\Sigma}_{22})=(d-k) \times (d-k)$.  One can show the following relationships:
+with $\dim(\boldsymbol{\Sigma}_{11})=k\times k$ and $\dim(\boldsymbol{\Sigma}_{22})=(d-k) \times (d-k).$  The following relationships hold:
 
 - $\boldsymbol{\Sigma}_{12}\boldsymbol{\Sigma}_{22}^{-1}=-\boldsymbol{Q}_{11}^{-1}\boldsymbol{Q}_{12}$ 
 - $\boldsymbol{\Sigma}_{11}-\boldsymbol{\Sigma}_{12}\boldsymbol{\Sigma}_{22}^{-1}\boldsymbol{\Sigma}_{21}=\boldsymbol{Q}_{11}^{-1}$
 - $\det(\boldsymbol{\Sigma})=\det(\boldsymbol{\Sigma}_{22})\det(\boldsymbol{\Sigma}_{1|2})$ 
-where $\boldsymbol{\Sigma}_{1|2}=\boldsymbol{\Sigma}_{11}-\boldsymbol{\Sigma}_{12}\boldsymbol{\Sigma}_{22}^{-1}\boldsymbol{\Sigma}_{21}$. 
+where $\boldsymbol{\Sigma}_{1|2}=\boldsymbol{\Sigma}_{11}-\boldsymbol{\Sigma}_{12}\boldsymbol{\Sigma}_{22}^{-1}\boldsymbol{\Sigma}_{21}.$
 
 :::
 
 
+:::{.proof}
+
+By writing explicitly the relationship $\mathbf{Q}
+\boldsymbol{\Sigma}=\mathbf{I}_n,$ we get
+\begin{eqnarray*}
+\mathbf{Q}_{11}\boldsymbol{\Sigma}_{11}+\mathbf{Q}_{12}\boldsymbol{\Sigma}_{21}&=&\mathbf{I}_{k}\\
+\mathbf{Q}_{21}\boldsymbol{\Sigma}_{12}+\mathbf{Q}_{22}\boldsymbol{\Sigma}_{22}&=&\mathbf{I}_{p-k}\\
+\mathbf{Q}_{21}\boldsymbol{\Sigma}_{11}+\mathbf{Q}_{22}\boldsymbol{\Sigma}_{21}&=&\mathbf{O}_{p-k, k}\\
+\mathbf{Q}_{11}\boldsymbol{\Sigma}_{12}+\mathbf{Q}_{12}\boldsymbol{\Sigma}_{22}&=&\mathbf{O}_{k, p-k}.
+\end{eqnarray*}
+Recall that we can only invert matrices whose double indices are identical and that both $\mathbf{Q}$ and $\boldsymbol{\Sigma}$ are symmetric, so $\boldsymbol{\Sigma}_{12} = \boldsymbol{\Sigma}_{21}^\top.$ One easily obtains $\boldsymbol{\Sigma}_{12} \boldsymbol{\Sigma}_{22}^{-1}=-\mathbf{Q}_{11}^{-1}\mathbf{Q}_{12}$ making use of the last equation. Then,
+$\boldsymbol{\Sigma}_{11}-\boldsymbol{\Sigma}_{12}\boldsymbol{\Sigma}_{22}^{-1}\boldsymbol{\Sigma}_{21}=\mathbf{Q}_{11}^{-1}$ by substituting $\mathbf{Q}_{12}$
+from the last equation into the first.
+
+For the last result, take $\boldsymbol{B}\coloneqq \left(\begin{smallmatrix}
+\mathbf{I} & -\boldsymbol{\Sigma}_{12}\boldsymbol{\Sigma}^{-1}_{22}
+\\ \mathbf{O} & \mathbf{I} \end{smallmatrix}\right),$ noting that $\det (\boldsymbol{B})=\det\big( \boldsymbol{B}^\top\big)=1
+.$  Computing the quadratic form $\boldsymbol{B}\boldsymbol{\Sigma}\boldsymbol{B}^\top,$ we get
+$\det(\boldsymbol{\Sigma})=\det(\boldsymbol{\Sigma}_{22})\det(\boldsymbol{\Sigma}_{1|2})$ where
+$\boldsymbol{\Sigma}_{1|2}=\boldsymbol{\Sigma}_{11}-\boldsymbol{\Sigma}_{12}\boldsymbol{\Sigma}_{22}^{-1}\boldsymbol{\Sigma}_{21}.$
+
+
+:::
 
 
 :::{#prp-conditional-gaussian}
@@ -761,7 +936,7 @@ Then, we have the conditional distribution
 \boldsymbol{Y}_1 \mid \boldsymbol{Y}_2 =\boldsymbol{y}_2 &\sim \mathsf{Gauss}_k(\boldsymbol{\mu}_1+\boldsymbol{\Sigma}_{12} \boldsymbol{\Sigma}_{22}^{-1}(\boldsymbol{y}_2-\boldsymbol{\mu}_2), \boldsymbol{\Sigma}_{1|2})
 \\& \sim  \mathsf{Gauss}_k(\boldsymbol{\mu}_1-\boldsymbol{Q}_{11}^{-1}\boldsymbol{Q}_{12}(\boldsymbol{y}_2-\boldsymbol{\mu}_2), \boldsymbol{Q}^{-1}_{11})
 \end{align*}
-and $\boldsymbol{\Sigma}_{1|2}=\boldsymbol{\Sigma}_{11}-\boldsymbol{\Sigma}_{12}\boldsymbol{\Sigma}_{22}^{-1}\boldsymbol{\Sigma}_{21}$ is the Schur complement of $\boldsymbol{\Sigma}_{22}$.
+and $\boldsymbol{\Sigma}_{1|2}=\boldsymbol{\Sigma}_{11}-\boldsymbol{\Sigma}_{12}\boldsymbol{\Sigma}_{22}^{-1}\boldsymbol{\Sigma}_{21}$ is the Schur complement of $\boldsymbol{\Sigma}_{22}.$
 
 
 :::
@@ -769,9 +944,9 @@ and $\boldsymbol{\Sigma}_{1|2}=\boldsymbol{\Sigma}_{11}-\boldsymbol{\Sigma}_{12}
 :::{.proof}
 It is easier to obtain this result by expressing the density of the Gaussian distribution in terms of the precision matrix 
 $\boldsymbol{Q}= \left(\begin{smallmatrix}\boldsymbol{Q}_{11} & \boldsymbol{Q}_{12}\\ 
-\boldsymbol{Q}_{21} & \boldsymbol{Q}_{22}\end{smallmatrix}\right)$ rather than in terms of the covariance matrix $\boldsymbol{\Sigma}$.
+\boldsymbol{Q}_{21} & \boldsymbol{Q}_{22}\end{smallmatrix}\right)$ rather than in terms of the covariance matrix $\boldsymbol{\Sigma}.$
 
-Consider the partition $\boldsymbol{Y}=(\boldsymbol{Y}_1, \boldsymbol{Y}_2)$. The log conditional density $\log f(\boldsymbol{y}_1 \mid \boldsymbol{y}_2)$ as a function of $\boldsymbol{y}_1$ is, up to
+Consider the partition $\boldsymbol{Y}=(\boldsymbol{Y}_1, \boldsymbol{Y}_2).$ The log conditional density $\log f(\boldsymbol{y}_1 \mid \boldsymbol{y}_2)$ as a function of $\boldsymbol{y}_1$ is, up to
 proportionality,
 \begin{align*}
  &-\frac{1}{2}\left(\boldsymbol{y}_1-\boldsymbol{\mu}_1\right)^\top
@@ -780,8 +955,8 @@ proportionality,
 &-\frac{1}{2}\boldsymbol{y}_1^\top\boldsymbol{Q}_{11}\boldsymbol{y}_1-\boldsymbol{y}_1^\top
 \left\{\boldsymbol{Q}_{11}\boldsymbol{\mu}_1-\boldsymbol{Q}_{12}\left(\boldsymbol{y}_2-\boldsymbol{\mu}_2\right)\right\}
 \end{align*}
-upon completing the square in $\boldsymbol{y}_1$. This integrand is proportional to the density of a Gaussian distribution (and hence must be Gaussian) with precision matrix 
-$\boldsymbol{Q}_{11}$, 
+upon completing the square in $\boldsymbol{y}_1.$ This integrand is proportional to the density of a Gaussian distribution (and hence must be Gaussian) with precision matrix
+$\boldsymbol{Q}_{11},$
 while the mean vector and covariance matrix are 
 \begin{align*}
 \boldsymbol{\mu}_{1|2} &= 
@@ -789,7 +964,7 @@ while the mean vector and covariance matrix are
 \\&=\boldsymbol{\mu}_1+ \boldsymbol{\Sigma}_{12}\boldsymbol{\Sigma}_{22}^{-1}\left(\boldsymbol{y}_2-\boldsymbol{\mu}_2\right)
 \\\boldsymbol{\Sigma}_{1|2} &= \boldsymbol{\Sigma}_{11}-\boldsymbol{\Sigma}_{12}\boldsymbol{\Sigma}_{22}^{-1}\boldsymbol{\Sigma}_{21}.
 \end{align*}
-Note that $\boldsymbol{\Sigma}_{1|2}=\boldsymbol{Q}_{11}^{-1}$ corresponds to the Schur complement of $\boldsymbol{\Sigma}_{22}$.
+Note that $\boldsymbol{\Sigma}_{1|2}=\boldsymbol{Q}_{11}^{-1}$ corresponds to the Schur complement of $\boldsymbol{\Sigma}_{22}.$
 
 Remark that the above is sufficient (why?) The quadratic form appearing in the exponential term of the density of a Gaussian vector with mean $\boldsymbol{\nu}$ and precision $\boldsymbol{\varPsi}$ is
 \begin{align*}
@@ -800,7 +975,7 @@ uniquely determines the parameters of the Gaussian distribution. The quadratic t
 
 <!--
 Indeed, suppose without loss of generality that 
-$\boldsymbol{\mu}=\boldsymbol{0}_n$. One can write the joint density as the product of the marginal and conditional densities
+$\boldsymbol{\mu}=\boldsymbol{0}_n.$ One can write the joint density as the product of the marginal and conditional densities
 \begin{align*}
 f_{\boldsymbol{Y}}(\boldsymbol{y}_1, \boldsymbol{y}_2) = f_{\boldsymbol{Y}_1 \mid \boldsymbol{Y}_2}(\boldsymbol{y}_1 \mid \boldsymbol{y}_2)f_{\boldsymbol{Y}_2}(\boldsymbol{y}_2).
 \end{align*}
@@ -813,7 +988,7 @@ and we can interpret the first term on the right hand side as a function of $\bo
 -->
 
 <!--
-By using the transformation matrix $\mathbf{A}=(\mathbf{I}_k, \mathbf{O}_{k, n-k})^\top$, we conclude that $\boldsymbol{Y}_2 \sim \mathsf{Gauss}_{n-k}(\boldsymbol{\mu}_2, \boldsymbol{\Sigma}_{22})$. The marginal distribution can also be obtained by integrating out $\boldsymbol{y}_1$ in $f_{\boldsymbol{Y}}(\boldsymbol{y}_1, \boldsymbol{y}_2)$. Thus, the conditional density is the ratio
+By using the transformation matrix $\mathbf{A}=(\mathbf{I}_k, \mathbf{O}_{k, n-k})^\top,$ we conclude that $\boldsymbol{Y}_2 \sim \mathsf{Gauss}_{n-k}(\boldsymbol{\mu}_2, \boldsymbol{\Sigma}_{22}).$ The marginal distribution can also be obtained by integrating out $\boldsymbol{y}_1$ in $f_{\boldsymbol{Y}}(\boldsymbol{y}_1, \boldsymbol{y}_2).$ Thus, the conditional density is the ratio
 \begin{align*}
  \frac{f_{\boldsymbol{Y}}(\boldsymbol{y}_1, \boldsymbol{y}_2)}{f_{\boldsymbol{Y}_2}(\boldsymbol{y}_2)}&= \frac{(2\pi)^{-n/2} |\boldsymbol{Q}|^{1/2}\exp\left\{-\frac{1}{2} 
 \left(\boldsymbol{y}_1^\top\boldsymbol{Q}_{11}\boldsymbol{y}_1+\boldsymbol{y}_1^\top\boldsymbol{Q}_{12}\boldsymbol{y}_2+\boldsymbol{y}_2^\top\boldsymbol{Q}_{21}\boldsymbol{y}_1+\boldsymbol{y}_2^\top\boldsymbol{ \Psi}_{22}\boldsymbol{y}_2\right)\right\}}{(2\pi)^{-(n-k)/2}|\boldsymbol{\Sigma}_{22}|^{-1/2}\exp\left(-\frac{1}{2} \boldsymbol{y}_2 \boldsymbol{\Sigma}^{-1}_{22}\boldsymbol{y}_2\right)}
@@ -878,7 +1053,7 @@ The information of an independent and identically distributed sample of size $n$
 
 # Likelihood for right-censoring
 
-Consider a survival analysis problem for independent time-to-event data subject to (noninformative) random right-censoring. We assume failure times $Y_i (i=1, \ldots, n)$ are drawn from a common distribution $F(\cdot; \boldsymbol{\theta})$ supported on $(0, \infty)$ and complemented with an independent censoring indicator $C_i \in \{0,1\}$, with $0$ indicating right-censoring and $C_i=1$ observed failure time. If individual observation $i$ has not experienced the event at the end of the collection period, then the likelihood contribution $\Pr(Y > y) = 1-F(y; \boldsymbol{\theta})$, where $y_i$ is the maximum time observed for $Y_i$.
+Consider a survival analysis problem for independent time-to-event data subject to (noninformative) random right-censoring. We assume failure times $Y_i (i=1, \ldots, n)$ are drawn from a common distribution $F(\cdot; \boldsymbol{\theta})$ supported on $(0, \infty)$ and complemented with an independent censoring indicator $C_i \in \{0,1\},$ with $0$ indicating right-censoring and $C_i=1$ observed failure time. If individual observation $i$ has not experienced the event at the end of the collection period, then the likelihood contribution $\Pr(Y > y) = 1-F(y; \boldsymbol{\theta}),$ where $y_i$ is the maximum time observed for $Y_i.$
 
 
 We write the log likelihood in terms of the right-censoring binary indicator as
@@ -900,7 +1075,7 @@ and the right-censored observations for the exponential model do not contribute 
 
 ## Information for the Gaussian distribution
 
-Consider $Y \sim \mathsf{Gauss}(\mu, \tau^{-1})$, parametrized in terms of precision $\tau$. The likelihood contribution for an $n$ sample is, up to proportionality,
+Consider $Y \sim \mathsf{Gauss}(\mu, \tau^{-1}),$ parametrized in terms of precision $\tau.$ The likelihood contribution for an $n$ sample is, up to proportionality,
 \begin{align*}
 \ell(\mu, \tau) \propto \frac{n}{2}\log(\tau) - \frac{\tau}{2}\sum_{i=1}^n(Y_i^2-2\mu Y_i+\mu^2)
 \end{align*}
@@ -916,7 +1091,7 @@ i(\mu, \tau) &= n\begin{pmatrix}
 0 & \frac{1}{2\tau^2}
 \end{pmatrix}
 \end{align*}
-Since $\mathsf{E}(Y_i) = \mu$, the expected value of the off-diagonal entries of the Fisher information matrix are zero.
+Since $\mathsf{E}(Y_i) = \mu,$ the expected value of the off-diagonal entries of the Fisher information matrix are zero.
 :::
 
 
@@ -953,12 +1128,12 @@ j_{\lambda, \lambda} &= \lambda^{-2}\left\{-n\alpha + \alpha(\alpha+1)\sum_{i=1}
 j_{\lambda, \alpha} &= \lambda^{-1}\sum_{i=1}^n [1-(y_i/\lambda)^\alpha\{1+\alpha\ln(y_i/\lambda)\}] \\
 j_{\alpha,\alpha} &= n\alpha^{-2} + \sum_{i=1}^n (y_i/\lambda)^\alpha \{\ln(y_i/\lambda)\}^2
 \end{align*}
-To compute the expected information matrix, we need to compute expectation of $\mathsf{E}\{(Y/\lambda)^\alpha\}$, $\mathsf{E}[(Y/\lambda)^\alpha\ln\{(Y/\lambda)^\alpha\}]$ and $\mathsf{E}[(Y/\lambda)^\alpha\ln^2\{(Y/\lambda)^\alpha\}]$. By definition,
+To compute the expected information matrix, we need to compute expectation of $\mathsf{E}\{(Y/\lambda)^\alpha\},$ $\mathsf{E}[(Y/\lambda)^\alpha\ln\{(Y/\lambda)^\alpha\}]$ and $\mathsf{E}[(Y/\lambda)^\alpha\ln^2\{(Y/\lambda)^\alpha\}].$ By definition,
 \begin{align*}
 \mathsf{E}\left\{(Y/\lambda)^\alpha\right\} & = \int_0^\infty (x/\lambda)^\alpha \frac{\alpha}{\lambda^\alpha} x^{\alpha-1}\exp\left\{-(x/\lambda)^\alpha\right\} \mathrm{d} x \\
  &= \int_0^\infty s\exp(-s) \mathrm{d} s =1
 \end{align*}
-making a change of variable $S = (Y/\lambda)^\alpha\sim \mathsf{Exp}(1)$. The two other integrals are tabulated in @Gradshteyn.Ryzhik:2014, and are equal to $1-\gamma$ and $\gamma^2-2\gamma + \pi^2/6,$ respectively, where $\gamma \approx `r round(-digamma(1),3)`$ is the Euler--Mascherroni constant.
+making a change of variable $S = (Y/\lambda)^\alpha\sim \mathsf{Exp}(1).$ The two other integrals are tabulated in @Gradshteyn.Ryzhik:2014, and are equal to $1-\gamma$ and $\gamma^2-2\gamma + \pi^2/6,$ respectively, where $\gamma \approx `r round(-digamma(1),3)`$ is the Euler--Mascherroni constant.
 <!-- \begin{align*} -->
 <!-- \mathsf{E}\left\{S\} &= \int_0^\infty s\exp(-s) \mathrm{d} s \\ -->
 <!-- \mathsf{E}\left\{S\} &= \int_0^\infty s^{2/\alpha}\exp(-s) \mathrm{d} s \\ -->
@@ -1027,7 +1202,7 @@ in terms of conditional. Such a decomposition is particularly useful in the cont
 ## First-order autoregressive process
 
 Consider a Gaussian $\mathsf{AR}(1)$ model of the form
-$$Y_t = \mu + \phi(Y_{t-1} - \mu) + \varepsilon_t,$$ where $\phi$ is the lag-one correlation, $\mu$ the global mean and $\varepsilon_t$ is an iid innovation with mean zero and variance $\sigma^2$. If $|\phi| < 1$, the process is stationary, and the variance does not increase with $t$.
+$$Y_t = \mu + \phi(Y_{t-1} - \mu) + \varepsilon_t,$$ where $\phi$ is the lag-one correlation, $\mu$ the global mean and $\varepsilon_t$ is an iid innovation with mean zero and variance $\sigma^2.$ If $|\phi| < 1,$ the process is stationary, and the variance does not increase with $t.$
 
 The Markov property states that the current realization depends on the past, $Y_t \mid Y_1, \ldots, Y_{t-1},$ only through the most recent value $Y_{t-1}.$
 The log likelihood thus becomes
@@ -1040,7 +1215,7 @@ The log likelihood thus becomes
 If innovations are Gaussian, we have
 $$Y_t \mid Y_{t-1}=y_{t-1} \sim \mathsf{Gauss}\{\mu(1-\phi)+ \phi y_{t-1}, \sigma^2\}, \qquad t>1.$$
 
-The $\mathsf{AR}(1)$ stationarity process $Y_t$, marginally, has mean $\mu$ and unconditional variance $\sigma^2/(1-\phi^2)$. The $\mathsf{AR}(1)$ process is first-order Markov since the conditional distribution $p(Y_t \mid Y_{t-1}, \ldots, Y_{t-p})$ equals $p(Y_t \mid Y_{t-1})$. This means the likelihood is
+The $\mathsf{AR}(1)$ stationarity process $Y_t,$ marginally, has mean $\mu$ and unconditional variance $\sigma^2/(1-\phi^2).$ The $\mathsf{AR}(1)$ process is first-order Markov since the conditional distribution $p(Y_t \mid Y_{t-1}, \ldots, Y_{t-p})$ equals $p(Y_t \mid Y_{t-1}).$ This means the likelihood is
 \begin{align*}
 \ell(\mu, \phi,\sigma^2)& = -\frac{n}{2}\log(2\pi) - n\log \sigma + \frac{1}{2}\log(1-\phi^2) \\&\quad -\frac{(1-\phi^2)(y_1- \mu)^2}{2\sigma^2} - \sum_{i=2}^n \frac{(y_t - \mu(1-\phi)- \phi y_{t-1})^2}{2\sigma^2}
 \end{align*}
@@ -1050,20 +1225,184 @@ The $\mathsf{AR}(1)$ stationarity process $Y_t$, marginally, has mean $\mu$ and 
 
 ## Monte Carlo methods
 
-Consider a target distribution with finite expected value. The law of large numbers guarantees that, if we can draw observations from our target distribution, then the sample average will converge to the expected value of that distribution, as the sample size becomes larger and larger, provided the expectation is finite.
+If a random variable $X$ has distribution function $F$, then we can define it's **generalized inverse**
+\begin{align*}
+F^{-1}(u) = \inf\{x: f(x) \geq u\}
+\end{align*}
+and if $G$ is continuous, then $F(X) \sim \mathsf{unif}(0,1)$. We can thus simulate data using the quantile function $F^{-1}(U),$, with $U \sim \mathsf{unif}(0,1)$. T
 
-We can thus compute the probability of any event or the expected value of any (integrable) function by computing sample averages; the cost to pay for this generality is randomness.
 
-Specifically, suppose we are interested in the average $\mathsf{E}\{g(X)\}$ of $X \sim F$ for some function $g$.
+
+:::{#prp-rejection-sampling}
+
+## Rejection sampling
+
+Rejection sampling (also termed accept-reject algorithm) samples from a random vector with density $p(\cdot)$ by drawing candidates from a proposal with density $q(\cdot)$ with nested support, $\mathrm{supp}(p) \subseteq \mathrm{supp}(q).$ The density $q(\cdot)$ must be  such that $p(\boldsymbol{\theta}) \leq C q(\boldsymbol{\theta})$ for $C \geq 1$ for all values of $\boldsymbol{\theta}$ in the support of $p(\cdot).$ A proof can be found in @Devroye:1986 [Theorem 3.1]
+
+1. Generate $\boldsymbol{\theta}^{\star}$ from the proposal with density $q$ and $U \sim \mathsf{U}(0,1)$
+2. Compute the ratio $R \gets p(\boldsymbol{\theta}^{\star})/ q(\boldsymbol{\theta}^{\star}).$
+3. If $R \geq CU,$ return $\boldsymbol{\theta},$ else go back to step 1.
+
+:::
+
+```{r}
+#| eval: true
+#| echo: false
+#| label: fig-acceptreject
+#| fig-cap: "Target density (full) and scaled proposal density (dashed): the vertical segment at $\theta=1$ shows the percentage of acceptance for a uniform slice under the scaled proposal, giving an acceptance ratio of 0.58."
+ptarget <- function(x){
+  0.3*TruncatedNormal::dtmvnorm(x = cbind(x), mu = 2, sigma = matrix(0.25),lb = 0) +
+    0.4*TruncatedNormal::dtmvnorm(x = cbind(x), mu = 0, sigma = matrix(0.5),lb = 0, ub = 3) + 0.3*TruncatedNormal::dtmvnorm(x = cbind(x), mu = 0, sigma = matrix(4),lb = 0, ub = 5)
+}
+
+Cst <- dgamma(x = 4, shape = 4, rate = 1/0.75)/ptarget(2)
+qprop <- function(x){1.02*dgamma(x = x+2, shape = 4, rate = 1/0.75)/Cst}
+# curve(ptarget, from = -0.2, to = 4, n = 1001, ylim = c(0, 2))
+# curve(qprop, from = 0, to = 4, add = TRUE, lty = 2)
+ggplot() +
+  stat_function(fun = ptarget, n = 1001, xlim = c(0, 5)) +
+  stat_function(fun = qprop, n = 1001, xlim = c(0, 5), linetype = "dashed") +
+  geom_segment(data = data.frame(
+    x0 = 1, x1 = 1, y0 = 0, y1 = qprop(1)),
+               mapping = aes(
+                 x = x0, y = y0, xend = x1, yend = y1),
+    linewidth = 2) +
+  geom_segment(data = data.frame(
+    x0 = 1, x1 = 1, y0 = 0, y1 = ptarget(1)),
+               mapping = aes(
+                 x = x0, y = y0, xend = x1, yend = y1),
+    linewidth = 2, col = "grey") +
+  labs(x = expression(theta),
+       y = "",
+       subtitle = "scaled proposal and target densities") +
+    scale_y_continuous(limits = c(0, 0.62), expand = c(0,0)) +
+    scale_x_continuous(expand = c(0,0)) +
+  theme_classic()
+
+
+```
+
+
+Rejection sampling requires the proposal $q$ to have a support at least as large as that of $p$ and resemble closely the density. It should be chosen so that the upper bound $C$ is as sharp as possible and close to 1. The dominating density $q$ must have heavier tails than the density of interest. The expected number of simulations needed to accept one proposal is $C.$ Finally, for the method to be useful, we need to be able to simulate easily and cheaply from the proposal. The optimal value of $C$ is $C = \sup_{\boldsymbol{\theta}} p(\boldsymbol{\theta}) / q(\boldsymbol{\theta}).$ This quantity may be obtained by numerical optimization, by finding the mode of the ratio of the log densities if the maximum is not known analytically.
+
+
+
+
+:::{#exm-accept-reject-truncated}
+
+## Truncated Gaussian distribution
+
+Consider the problem of sampling from a Gaussian distribution $Y \sim \mathsf{Gauss}(\mu, \sigma^2)$ truncated in the interval $[a, b],$ which has density
+\begin{align*}
+f(x; \mu, \sigma, a, b) = \frac{1}{\sigma}\frac{\phi\left(\frac{x-\mu}{\sigma}\right)}{\Phi\{(b-\mu)/\sigma\}-\Phi\{(a-\mu)/\sigma\}}.
+\end{align*}
+where $\phi(\cdot), \Phi(\cdot)$ are respectively the density and distribution function of the standard Gaussian distribution.
+
+Since the Gaussian is a location-scale family, we can reduce the problem to sampling $X$ from a standard Gaussian truncated on $\alpha = (a-\mu)/\sigma$ and $\beta = (b-\mu)/\sigma$ and back transform the result  as $Y = \mu + \sigma X.$
+
+
+A crude accept-reject sampling algorithm would consider sampling from the same untruncated distribution with density $g(X) = \sigma^{-1}\phi\{(x-\mu)/\sigma\},$ and the acceptance ratio is $C^{-1}=\{\Phi(\beta) - \Phi(\alpha)\}.$ We thus simply simulate points from the Gaussian and accept any that falls within the bounds.
+
+```{r}
+#| eval: true
+#| echo: true
+# Standard Gaussian truncated on [0,1]
+candidate <- rnorm(1e5)
+trunc_samp <- candidate[candidate >= 0 & candidate <= 1]
+# Acceptance rate
+length(trunc_samp)/1e5
+# Theoretical acceptance rate
+pnorm(1)-pnorm(0)
+```
+
+We can of course do better: if we consider a random variable with distribution function $F,$ but truncated over the interval $[a,b],$ then the resulting distribution function is
+$$\frac{F(x) - F(a)}{F(b)-F(a)}, \qquad a \leq x \leq b,$$
+and we can invert this expression to get the quantile function of the truncated variable in terms of the distribution function $F$ and the quantile function $F^{-1}$ of the original untruncated variable.
+
+For the Gaussian, this gives
+\begin{align*}
+X \sim \Phi^{-1}\left[\Phi(a) + \{\Phi(b)-\Phi(a)\}U\right]
+\end{align*}
+for $U \sim \mathsf{U}(0,1).$ Although the quantile and distribution functions of the Gaussian, `pnorm` and `qnorm` in **R**, are very accurate, this method will fail for rare event simulation because it will return $\Phi(x) = 0$ for $x \leq -39$ and $\Phi(x)=1$ for $x \geq 8.3,$ implying that $a \leq 8.3$ for this approach to work [@LEcuyer.Botev:2017].
+
+
+Consider the problem of simulating events in the right tail for a standard Gaussian where $a > 0$; Marsaglia's method [@Devroye:1986, p.381], can be used for that purpose. Write the density of the Gaussian as $f(x) = \exp(-x^2/2)/c_1,$ where $c_1 = \int_{a}^{\infty}\exp(-z^2/2)\mathrm{d} z,$ and note that
+$$c_1f(x) \leq \frac{x}{a}\exp\left(-\frac{x^2}{2}\right)= a^{-1}\exp\left(-\frac{a^2}{2}\right)g(x), \qquad x \geq a;$$
+where $g(x)$ is the density of a Rayleigh variable shifted by $a,$ which has distribution function $G(x) = 1-\exp\{(a^2-x^2)/2\}$ for $x \geq a.$ We can simulate such a random variate $X$ through the inversion method. The constant $C= \exp(-a^2/2)(c_1a)^{-1}$ approaches 1 quickly as $a \to \infty.$
+
+The accept-reject thus proceeds with
+
+1. Generate a shifted Rayleigh  above $a,$ $X \gets  \{a^2 - 2\log(U)\}^{1/2}$ for $U \sim \mathsf{U}(0,1)$
+2. Accept $X$ if $XV \leq a,$ where $V \sim \mathsf{U}(0,1).$
+
+Should we wish to obtain samples on $[a,b],$ we could instead propose from a Rayleigh truncated above at $b$ [@LEcuyer.Botev:2017].
+
+```{r}
+#| eval: true
+#| echo: true
+#| label: marsaglia-algo
+a <- 8.3
+niter <- 1000L
+X <- sqrt(a^2 + 2*rexp(niter))
+samp <- X[runif(niter)*X <= a]
+```
+
+:::
+
+For a given candidate density $g$ which has a heavier tail than the target, we can resort to numerical methods to compute the mode of the ratio $f/g$ and obtain the bound $C$; see @Albert:2009, Section 5.8 for an insightful example. A different use for the simulations is to approximate integrals numerically. Consider a target distribution with finite expected value. The law of large numbers guarantees that, if we can draw observations from our target distribution, then the sample average will converge to the expected value of that distribution, as the sample size becomes larger and larger, provided the expectation is finite. We can thus compute the probability of any event or the expected value of any (integrable) function by computing sample averages; the cost to pay for this generality is randomness.
+
+
+:::{#prp-monte-carlo-integration}
+
+## Monte Carlo integration
+
+Specifically, suppose we are interested in the average $\mathsf{E}\{g(X)\}$ of $X$ with density or mass function $f$ supported on $\mathcal{X}$ for some function $g.$ Monte Carlo integration proceeds by drawing $B$ independent samples $x_1, \ldots, x_B$ from density $p$ and evaluating the empirical average of $g,$ with
+\begin{align*}
+\mathsf{E}\{g(X)\} = \int_{\mathcal{X}} g(x) p(x) \mathrm{d} x \approx \widehat{\mathsf{E}}\{g(X)\}=\frac{1}{B}\sum_{b=1}^B g(x_b).
+\end{align*}
+By the law of large number, this estimator is convergent when $B \to \infty$ provided that the expectation is finite. If the variance of $g(X)$ is finite, we can approximate the latter by the sample variance of the simple random sample and obtain the Monte Carlo standard error of the estimator
+\begin{align*}
+\mathsf{se}^2[\widehat{\mathsf{E}}\{g(X)\}] = \frac{1}{B(B-1)} \sum_{b=1}^B \left[ g(x_b) -  \widehat{\mathsf{E}}\{g(X)\} \right]^2.
+\end{align*}
+
+:::
+
+
+We can also use a similar idea to evaluate the integral of $g(X)$ if $X$ has density $p$, by drawing instead samples from $q$. This is formalized in the next proposition.
+
+:::{#prp-importance-sampling}
+
+## Importance sampling
+
+
+Consider a random variable $X$ with density $p(x)$ supported on $\mathcal{X}$. We can calculate the integral $\mathsf{E}_p\{g(X)\} = \int_{\mathcal{X}} g(x) p(x) \mathrm{d}x$ by considering instead draws from a density $q(\cdot)$ with nested support, $\mathcal{X} \subseteq \mathrm{supp}(q).$ Then,
+\begin{align*}
+\mathsf{E}\{g(X)\} = \int_{\mathcal{X}} g(x) \frac{p(x)}{q(x)} q(x) \mathrm{d} x
+\end{align*}
+and we can proceed similarly by drawing samples from $q$. This is most useful when the variance is finite, which happens if the integral
+\begin{align*}
+\int_{\mathcal{X}} g^2(x) \frac{p^2(x)}{q(x)} \mathrm{d} x < \infty.
+\end{align*}
+An alternative Monte Carlo estimator, which is biased but has lower variance, is obtained by drawing independent $x_1, \ldots, x_B$ from $q$ and taking instead the weighted average of
+\begin{align*}
+\widetilde{E}\{g(X)\} =\frac{B^{-1} \sum_{b=1}^B w_b g(x_b) }{B^{-1}\sum_{b=1}^B w_b}.
+\end{align*}
+with weights $w_b = p(x_b)/q(x_b)$. The latter equal 1 on average, so one could omit the denominator without harm. The standard error for the independent draws equals
+\begin{align*}
+\mathsf{se}^2[\widetilde{\mathsf{E}}\{g(X)\}] = \frac{ \sum_{b=1}^B w_b^2 \left[ g(x_b) -  \widetilde{\mathsf{E}}\{g(X)\} \right]^2}{\left(\sum_{b=1}^B w_b\right)^2}.
+\end{align*}
+
+:::
 
 ::: {#exm-expectation-demo}
-Consider $X \sim \mathsf{gamma}(\alpha, \beta)$, a gamma distribution with shape $\alpha$ and rate $\beta$. We can compute the probability that $X < 1$ easily by Monte Carlo since $\Pr(X <1) = \mathsf{E}\{\mathrm{I}(X<1)\}$ and this means we only need to compute the proportion of draws less than one. We can likewise compute the mean $g(x) = x$ or variance.
 
-Suppose we have drawn a Monte Carlo sample of size $B$. If the function $g(\cdot)$ is square integrable,[^mcmc-1] with variance $\sigma^2_g$, then a central limit theorem applies. In large samples and for independent observations, our Monte Carlo average $\widehat{\mu}_g = B^{-1}\sum_{b=1}^B g(X_i)$ has variance $\sigma^2_g/B$. We can approximate the unknown variance $\sigma^2_g$ by it's empirical counterpart.[^mcmc-2]. Note that, while the variance decreases linearly with $B$, the choice of $g$ impacts the speed of convergence: we can compute $$\sigma^2_g =\Pr(X \leq 1)\{1-\Pr(X \leq 1)\}=0.0434$$ (left) and $\sigma^2_g=\alpha/\beta^2=1/8$ (middle plot).
+Consider $X \sim \mathsf{gamma}(\alpha, \beta),$ a gamma distribution with shape $\alpha$ and rate $\beta.$ We can compute the probability that $X < 1$ easily by Monte Carlo since $\Pr(X <1) = \mathsf{E}\{\mathrm{I}(X<1)\}$ and this means we only need to compute the proportion of draws less than one. We can likewise compute the mean $g(x) = x$ or variance.
 
-@fig-monte-carlo-path shows the empirical trace plot of the Monte Carlo average (note the $\sqrt{B}$ $x$-axis scale!) as a function of the Monte Carlo sample size $B$ along with 95% Wald-based confidence intervals (gray shaded region), $\widehat{\mu}_g \pm 1.96 \times \sigma_g/\sqrt{B}$. We can see that the 'likely region' for the average shrinks with $B$.
+Suppose we have drawn a Monte Carlo sample of size $B.$ If the function $g(\cdot)$ is square integrable,[^mcmc-1] with variance $\sigma^2_g,$ then a central limit theorem applies. In large samples and for independent observations, our Monte Carlo average $\widehat{\mu}_g = B^{-1}\sum_{b=1}^B g(X_i)$ has variance $\sigma^2_g/B.$ We can approximate the unknown variance $\sigma^2_g$ by it's empirical counterpart.[^mcmc-2]. Note that, while the variance decreases linearly with $B,$ the choice of $g$ impacts the speed of convergence: for our examples, we can compute $$\sigma^2_g =\Pr(X \leq 1)\{1-\Pr(X \leq 1)\}=0.0434$$ (left) and $\sigma^2_g=\alpha/\beta^2=1/8$ (middle plot).
 
-What happens if our function is not integrable? The right-hand plot of @fig-monte-carlo-path shows empirical averages of $g(x) = x^{-1}$, which is not integrable if $\alpha < 1$. We can compute the empirical average, but the result won't converge to any meaningful quantity regardless of the sample size. The large jumps are testimonial of this.
+@fig-monte-carlo-path shows the empirical trace plot of the Monte Carlo average (note the $\sqrt{B}$ $x$-axis scale!) as a function of the Monte Carlo sample size $B$ along with 95% Wald-based confidence intervals (gray shaded region), $\widehat{\mu}_g \pm 1.96 \times \sigma_g/\sqrt{B}.$ We can see that the 'likely region' for the average shrinks with $B.$
+
+What happens if our function is not integrable? The right-hand plot of @fig-monte-carlo-path shows empirical averages of $g(x) = x^{-1},$ which is not integrable if $\alpha < 1.$ We can compute the empirical average, but the result won't converge to any meaningful quantity regardless of the sample size. The large jumps are testimonial of this.
 ```{r}
 #| label: fig-monte-carlo-path
 #| eval: true
@@ -1130,135 +1469,36 @@ g1 + g2 + g3 & theme_classic()
 ```
 :::
 
-[^mcmc-1]: Meaning $\mathsf{E}\{g^2(X)\}<\infty$, so the variance of $g(X)$ exists.
+[^mcmc-1]: Meaning $\mathsf{E}\{g^2(X)\}<\infty,$ so the variance of $g(X)$ exists.
 
 [^mcmc-2]: By contrasts, if data are identically distributed but not independent, more care is needed.
 
-We have already used Monte Carlo methods to compute posterior quantities of interest in conjugate models. Outside of models with conjugate priors, the lack of closed-form expression for the posterior precludes inference. Indeed, calculating the posterior probability of an event, or posterior moments, requires integration of the normalized posterior density and thus knowledge of the marginal likelihood. It is seldom possible to sample independent and identically distributed (iid) samples from the target, especially if the model is high dimensional: rejection sampling and the ratio of uniform method are examples of Monte Carlo methods which can be used to generate iid draws.
+:::{#exm-tail-probability}
 
+## Tail probability of a Gaussian distribution
 
-<!--
-Presentation of rejection sampling
-Example: truncated Gaussian
-Exponential tilting
-Generalized ratio-of-uniform method
--->
+Consider estimation of the probability that a standard Gaussian random variable exceeds $a=4$, which is $p=1-\Phi(a)$. We can use standard numerical approximations to the distribution function implemented in any software package, which shows this probability is roughly one in $`r round(1/pnorm(4, lower.tail = FALSE),0)`$. 
 
-
-:::{#prp-rejection-sampling}
-
-## Rejection sampling
-
-Rejection sampling (also termed accept-reject algorithm) samples from a random vector with density $p(\cdot)$ by drawing candidates from a proposal with density $q(\cdot)$ with nested support, $\mathrm{supp}(p) \subseteq \mathrm{supp}(q)$. The density $q(\cdot)$ must be  such that $p(\boldsymbol{\theta}) \leq C q(\boldsymbol{\theta})$ for $C \geq 1$ for all values of $\boldsymbol{\theta}$ in the support of $p(\cdot)$. A proof can be found in @Devroye:1986 [Theorem 3.1]
-
-1. Generate $\boldsymbol{\theta}^{\star}$ from the proposal with density $q$ and $U \sim \mathsf{U}(0,1)$ 
-2. Compute the ratio $R \gets p(\boldsymbol{\theta}^{\star})/ q(\boldsymbol{\theta}^{\star})$.
-3. If $R \geq CU$, return $\boldsymbol{\theta}$, else go back to step 1.
-
-:::
-
-```{r}
-#| eval: true
-#| echo: false
-#| label: fig-acceptreject
-#| fig-cap: "Target density (full) and scaled proposal density (dashed): the vertical segment at $x=1$ shows the percentage of acceptance for a uniform slice under the scaled proposal, giving an acceptance ratio of 0.58."
-ptarget <- function(x){
-  0.3*TruncatedNormal::dtmvnorm(x = cbind(x), mu = 2, sigma = matrix(0.25),lb = 0) + 
-    0.4*TruncatedNormal::dtmvnorm(x = cbind(x), mu = 0, sigma = matrix(0.5),lb = 0, ub = 3) + 0.3*TruncatedNormal::dtmvnorm(x = cbind(x), mu = 0, sigma = matrix(4),lb = 0, ub = 5)
-}
-
-Cst <- dgamma(x = 4, shape = 4, rate = 1/0.75)/ptarget(2)
-qprop <- function(x){1.02*dgamma(x = x+2, shape = 4, rate = 1/0.75)/Cst}
-# curve(ptarget, from = -0.2, to = 4, n = 1001, ylim = c(0, 2))
-# curve(qprop, from = 0, to = 4, add = TRUE, lty = 2)
-ggplot() +
-  stat_function(fun = ptarget, n = 1001, xlim = c(0, 5)) +
-  stat_function(fun = qprop, n = 1001, xlim = c(0, 5), linetype = "dashed") +
-  geom_segment(data = data.frame(
-    x0 = 1, x1 = 1, y0 = 0, y1 = qprop(1)),
-               mapping = aes(
-                 x = x0, y = y0, xend = x1, yend = y1), 
-    linewidth = 2) +
-  geom_segment(data = data.frame(
-    x0 = 1, x1 = 1, y0 = 0, y1 = ptarget(1)),
-               mapping = aes(
-                 x = x0, y = y0, xend = x1, yend = y1),
-    linewidth = 2, col = "grey") +
-  labs(x = "x", 
-       y = "", 
-       subtitle = "scaled proposal and target densities") +
-    scale_y_continuous(limits = c(0, 0.62), expand = c(0,0)) + 
-    scale_x_continuous(expand = c(0,0)) + 
-  theme_classic() 
-
-
-```
-
-
-Rejection sampling requires the proposal $q$ to have a support at least as large as that of $p$ and resemble closely the density. It should be chosen so that the upper bound $C$ is as sharp as possible and close to 1. The dominating density $q$ must have heavier tails than the density of interest. The expected number of simulations needed to accept one proposal is $C.$ Finally, for the method to be useful, we need to be able to simulate easily and cheaply from the proposal. The optimal value of $C$ is $C = \sup_{\boldsymbol{\theta}} p(\boldsymbol{\theta}) / q(\boldsymbol{\theta})$. This quantity may be obtained by numerical optimization, by finding the mode of the ratio of the log densities if the maximum is not known analytically.
-
-
-
-
-:::{#exm-accept-reject-truncated}
-
-## Truncated Gaussian distribution
-
-Consider the problem of sampling from a Gaussian distribution $Y \sim \mathsf{Gauss}(\mu, \sigma^2)$ truncated in the interval $[a, b],$ which has density
-\begin{align*}
-f(x; \mu, \sigma, a, b) = \frac{1}{\sigma}\frac{\phi\left(\frac{x-\mu}{\sigma}\right)}{\Phi\{(b-\mu)/\sigma\}-\Phi\{(a-\mu)/\sigma\}}.
-\end{align*}
-where $\phi(\cdot), \Phi(\cdot)$ are respectively the density and distribution function of the standard Gaussian distribution.
-
-Since the Gaussian is a location-scale family, we can reduce the problem to sampling $X$ from a standard Gaussian truncated on $\alpha = (a-\mu)/\sigma$ and $\beta = (b-\mu)/\sigma$ and back transform the result  as $Y = \mu + \sigma X$.
-
-
-A crude accept-reject sampling algorithm would consider sampling from the same untruncated distribution with density $g(X) = \sigma^{-1}\phi\{(x-\mu)/\sigma\}$, and the acceptance ratio is $C^{-1}=\{\Phi(\beta) - \Phi(\alpha)\}$. We thus simply simulate points from the Gaussian and accept any that falls within the bounds.
+If we consider a truncated Gaussian above $a$, then the integral of $\mathsf{I}(x>a)$ is one (since the truncated Gaussian is a valid density). Thus, we can estimate rather the normalizing constant by simulating standard Gaussian and comparing this with the importance sampling estimator, using the knowledge of the value of the integral to derive rather the normalizing constant. Monte Carlo integration from with $B=10^6$ is demonstrated using the following code
 
 ```{r}
 #| eval: true
 #| echo: true
-# Standard Gaussian truncated on [0,1]
-candidate <- rnorm(1e5)
-trunc_samp <- candidate[candidate >= 0 & candidate <= 1]
-# Acceptance rate
-length(trunc_samp)/1e5
-# Theoretical acceptance rate
-pnorm(1)-pnorm(0)
+a <- 4
+B <- 1e6L # 1 million draws
+exact <- pnorm(a, lower.tail = FALSE)
+# Vanilla Monte Carlo
+X <- rnorm(B)
+mc <- mean(X >= a)
+
+# Importance sampling with Rayleigh
+Y <- sqrt(a^2 + 2*rexp(B))
+drayleigh <- function(x, a){ x*exp((a^2-x^2)/2)}
+is <- mean(dnorm(Y)/drayleigh(Y, a = a))
+# Relative error
+c(mc = (mc - exact)/exact, is = (is - exact)/exact)
 ```
 
-We can of course do better: if we consider a random variable with distribution function $F,$ but truncated over the interval $[a,b],$ then the resulting distribution function is
-$$\frac{F(x) - F(a)}{F(b)-F(a)}, \qquad a \leq x \leq b,$$
-and we can invert this expression to get the quantile function of the truncated variable in terms of the distribution function $F$ and the quantile function $F^{-1}$ of the original untruncated variable.
-
-For the Gaussian, this gives
-\begin{align*}
-X \sim \Phi^{-1}\left[\Phi(a) + \{\Phi(b)-\Phi(a)\}U\right]
-\end{align*}
-for $U \sim \mathsf{U}(0,1)$. Although the quantile and distribution functions of the Gaussian, `pnorm` and `qnorm` in **R**, are very accurate, this method will fail for rare event simulation because it will return $\Phi(x) = 0$ for $x \leq -39$ and $\Phi(x)=1$ for $x \geq 8.3$, implying that $a \leq 8.3$ for this approach to work [@LEcuyer.Botev:2017].
-
-
-Consider the problem of simulating events in the right tail for a standard Gaussian where $a > 0$; Marsaglia's method [@Devroye:1986, p.381], can be used for that purpose. Write the density of the Gaussian as $f(x) = \exp(-x^2/2)/c_1$, where $c_1 = \int_{a}^{\infty}\exp(-z^2/2)\mathrm{d} z$, and note that
-$$c_1f(x) \leq \frac{x}{a}\exp\left(-\frac{x^2}{2}\right)= a^{-1}\exp\left(-\frac{a^2}{2}\right)g(x), \qquad x \geq a;$$
-where $g(x)$ is the density of a Rayleigh variable shifted by $a$, which has distribution function $G(x) = 1-\exp\{(a^2-x^2)/2\}$ for $x \geq a$. We can simulate such a random variate $X$ through the inversion method. The constant $C= \exp(-a^2/2)(c_1a)^{-1}$ approaches 1 quickly as $a \to \infty$.
-
-The accept-reject thus proceeds with 
-
-1. Generate a shifted Rayleigh  above $a$, $X \gets  \{a^2 - 2\log(U)\}^{1/2}$ for $U \sim \mathsf{U}(0,1)$
-2. Accept $X$ if $XV \leq a$, where $V \sim \mathsf{U}(0,1)$.
-
-Should we wish to obtain samples on $[a,b]$, we could instead propose from a Rayleigh truncated above at $b$ [@LEcuyer.Botev:2017].
-
-```{r}
-#| eval: true
-#| echo: true
-#| label: marsaglia-algo
-a <- 8.3
-niter <- 1000L
-X <- sqrt(a^2 + 2*rexp(niter))
-samp <- X[runif(niter)*X <= a]
-```
 
 :::
 
-For a given candidate density $g$ which has a heavier tail than the target, we can resort to numerical methods to compute the mode of the ratio $f/g$ and obtain the bound $C$; see @Albert:2009, Section 5.8 for an insightful example.
