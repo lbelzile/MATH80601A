@@ -294,7 +294,7 @@ f(x; \lambda, \alpha) &= \frac{\alpha}{\lambda^\alpha} x^{\alpha-1}\exp\left\{-(
 \end{align*}
 
 <!--
-The quantile function, the inverse of the distribution function, is $Q(p) = \lambda\{-\ln(1-p)\}^{1/\alpha}.$ The Weibull distribution includes the exponential as special case when $\alpha=1.$ The expected value of $Y \sim \mathsf{Weibull}(\lambda, \alpha)$ is $\mathsf{E}(Y) = \lambda \Gamma(1+1/\alpha).$
+The quantile function, the inverse of the distribution function, is $Q(p) = \lambda\{-\log(1-p)\}^{1/\alpha}.$ The Weibull distribution includes the exponential as special case when $\alpha=1.$ The expected value of $Y \sim \mathsf{Weibull}(\lambda, \alpha)$ is $\mathsf{E}(Y) = \lambda \Gamma(1+1/\alpha).$
 -->
 
 :::
@@ -381,7 +381,7 @@ and so the canonical parameter is $Q_1(p) = \log \lambda$ with the gamma distrib
 
 ## Change of variable formula
 
-Consider an injective (one-to-one) differentiable function $\boldsymbol{g}: \mathbb{R}^d \to \mathbb{R}^d,$ with inverse $g^{-1}.$ Then, if $\boldsymbol{Y}=\boldsymbol{g}(\boldsymbol{X}),$
+Consider an injective (one-to-one) differentiable function $\boldsymbol{g}: \mathbb{R}^d \to \mathbb{R}^d,$ with inverse $\boldsymbol{g}^{-1}.$ Then, if $\boldsymbol{Y}=\boldsymbol{g}(\boldsymbol{X}),$
 \begin{align*}
 \Pr(\boldsymbol{Y} \leq \boldsymbol{y}) = \Pr\{\boldsymbol{g}(\boldsymbol{X}) \leq \boldsymbol{y}\} = \Pr\{\boldsymbol{X} \leq \boldsymbol{x} = \boldsymbol{g}^{-1}(\boldsymbol{y})\}.
 \end{align*}
@@ -397,7 +397,7 @@ where $\mathbf{J}_{\boldsymbol{g}}(\boldsymbol{x})$ is the Jacobian matrix with 
 
 ## Location-scale transformation of Gaussian vectors
 
-Consider $d$ independent standard Gaussian variates $X_j \sim \mathsf{Gauss}(0, \sigma^2)$ for $j=1, \ldots, d,$ with joint density function
+Consider $d$ independent standard Gaussian variates $X_j \sim \mathsf{Gauss}(0, 1)$ for $j=1, \ldots, d,$ with joint density function
 \begin{align*}
 f_{\boldsymbol{X}}(\boldsymbol{x})= (2\pi)^{-d/2} \exp \left( - \frac{\boldsymbol{x}^\top\boldsymbol{x}}{2}\right).
 \end{align*}
@@ -753,7 +753,7 @@ The expected value of some function of a random vector $g(\boldsymbol{Y}),$ wher
 \end{align*}
 and can be understood as a weighted integral of $g$ with weight $f_{\boldsymbol{Y}}$; the latter does not exist unless the integral is finite.
 
-Taking $h(\boldsymbol{y}) = \boldsymbol{y}$ yields the **expected value** of the random variable $\mathsf{E}(\boldsymbol{Y}).$ We define the covariance matrix of $\boldsymbol{Y}$ as
+Taking $g(\boldsymbol{y}) = \boldsymbol{y}$ yields the **expected value** of the random variable $\mathsf{E}(\boldsymbol{Y}).$ We define the covariance matrix of $\boldsymbol{Y}$ as
 \begin{align*}
 \mathsf{Va}(\boldsymbol{Y}) = \mathsf{E}\left[\left\{\boldsymbol{Y} - \mathsf{E}(\boldsymbol{Y})\right\}\left\{\boldsymbol{Y} - \mathsf{E}(\boldsymbol{Y})\right\}^\top\right],
 \end{align*}
@@ -1020,7 +1020,7 @@ L(\boldsymbol{\theta}; \boldsymbol{y})=\prod_{i=1}^n f_i(y_i; \boldsymbol{\theta
 \end{align*}
 The corresponding log likelihood function for independent and identically distributions observations is
 \begin{align*}
-\ell(\boldsymbol{\theta}; \boldsymbol{y}) = \sum_{i=1}^n \ln f(y_i; \boldsymbol{\theta})
+\ell(\boldsymbol{\theta}; \boldsymbol{y}) = \sum_{i=1}^n \log f(y_i; \boldsymbol{\theta})
 \end{align*}
 
 :::
@@ -1103,7 +1103,7 @@ Since $\mathsf{E}(Y_i) = \mu,$ the expected value of the off-diagonal entries of
 
 The log likelihood for a simple random sample whose realizations are $y_1, \ldots, y_n$ of size $n$ from a $\mathsf{Weibull}(\lambda, \alpha)$ model is
 \begin{align*}
-\ell(\lambda, \alpha) = n \ln(\alpha) - n\alpha\ln(\lambda) + (\alpha-1) \sum_{i=1}^n \ln y_i  - \lambda^{-\alpha}\sum_{i=1}^n y_i^\alpha.
+\ell(\lambda, \alpha) = n \log(\alpha) - n\alpha\log(\lambda) + (\alpha-1) \sum_{i=1}^n \log y_i  - \lambda^{-\alpha}\sum_{i=1}^n y_i^\alpha.
 \end{align*}
 
 The score, which is the gradient of the log likelihood, is easily obtained by differentiation^[Using for example a symbolic calculator.]
@@ -1113,7 +1113,7 @@ U(\lambda, \alpha) &= \begin{pmatrix}\frac{\partial \ell(\lambda, \alpha)}{\part
 \begin{pmatrix}
  -\frac{n\alpha}{\lambda} +\alpha\lambda^{-\alpha-1}\sum_{i=1}^n y_i^\alpha
  \\
- \frac{n}{\alpha} + \sum_{i=1}^n \ln (y_i/\lambda)  - \sum_{i=1}^n \left(\frac{y_i}{\lambda}\right)^{\alpha} \times\ln\left(\frac{y_i}{\lambda}\right).
+ \frac{n}{\alpha} + \sum_{i=1}^n \log (y_i/\lambda)  - \sum_{i=1}^n \left(\frac{y_i}{\lambda}\right)^{\alpha} \times\log\left(\frac{y_i}{\lambda}\right).
  \end{pmatrix}
 \end{align*}
 and the observed information is the $2 \times 2$ matrix-valued function
@@ -1125,10 +1125,10 @@ j(\lambda, \alpha) &= - \begin{pmatrix}
 whose entries are
 \begin{align*}
 j_{\lambda, \lambda} &= \lambda^{-2}\left\{-n\alpha + \alpha(\alpha+1)\sum_{i=1}^n (y_i/\lambda)^\alpha\right\} \\
-j_{\lambda, \alpha} &= \lambda^{-1}\sum_{i=1}^n [1-(y_i/\lambda)^\alpha\{1+\alpha\ln(y_i/\lambda)\}] \\
-j_{\alpha,\alpha} &= n\alpha^{-2} + \sum_{i=1}^n (y_i/\lambda)^\alpha \{\ln(y_i/\lambda)\}^2
+j_{\lambda, \alpha} &= \lambda^{-1}\sum_{i=1}^n [1-(y_i/\lambda)^\alpha\{1+\alpha\log(y_i/\lambda)\}] \\
+j_{\alpha,\alpha} &= n\alpha^{-2} + \sum_{i=1}^n (y_i/\lambda)^\alpha \{\log(y_i/\lambda)\}^2
 \end{align*}
-To compute the expected information matrix, we need to compute expectation of $\mathsf{E}\{(Y/\lambda)^\alpha\},$ $\mathsf{E}[(Y/\lambda)^\alpha\ln\{(Y/\lambda)^\alpha\}]$ and $\mathsf{E}[(Y/\lambda)^\alpha\ln^2\{(Y/\lambda)^\alpha\}].$ By definition,
+To compute the expected information matrix, we need to compute expectation of $\mathsf{E}\{(Y/\lambda)^\alpha\},$ $\mathsf{E}[(Y/\lambda)^\alpha\log\{(Y/\lambda)^\alpha\}]$ and $\mathsf{E}[(Y/\lambda)^\alpha\log^2\{(Y/\lambda)^\alpha\}].$ By definition,
 \begin{align*}
 \mathsf{E}\left\{(Y/\lambda)^\alpha\right\} & = \int_0^\infty (x/\lambda)^\alpha \frac{\alpha}{\lambda^\alpha} x^{\alpha-1}\exp\left\{-(x/\lambda)^\alpha\right\} \mathrm{d} x \\
  &= \int_0^\infty s\exp(-s) \mathrm{d} s =1
@@ -1137,7 +1137,7 @@ making a change of variable $S = (Y/\lambda)^\alpha\sim \mathsf{Exp}(1).$ The tw
 <!-- \begin{align*} -->
 <!-- \mathsf{E}\left\{S\} &= \int_0^\infty s\exp(-s) \mathrm{d} s \\ -->
 <!-- \mathsf{E}\left\{S\} &= \int_0^\infty s^{2/\alpha}\exp(-s) \mathrm{d} s \\ -->
-<!-- \mathsf{E}\left\{S\} &= \int_0^\infty s\ln\exp(-s) \mathrm{d} s \\ -->
+<!-- \mathsf{E}\left\{S\} &= \int_0^\infty s\log\exp(-s) \mathrm{d} s \\ -->
 <!-- \end{align*} -->
 The expected information matrix of the Weibull distribution has entries
 \begin{align*}
@@ -1207,7 +1207,7 @@ $$Y_t = \mu + \phi(Y_{t-1} - \mu) + \varepsilon_t,$$ where $\phi$ is the lag-one
 The Markov property states that the current realization depends on the past, $Y_t \mid Y_1, \ldots, Y_{t-1},$ only through the most recent value $Y_{t-1}.$
 The log likelihood thus becomes
 \begin{align*}
-\ell(\boldsymbol{\theta}) = \ln f(y_1) + \sum_{i=2}^n f(y_i \mid y_{i-1}).
+\ell(\boldsymbol{\theta}) = \log f(y_1) + \sum_{i=2}^n \log f(y_i \mid y_{i-1}).
 \end{align*}
 
 
