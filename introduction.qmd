@@ -39,35 +39,6 @@ We use the same notation for the mass function in the discrete case where $f_{\b
 :::
 
 
-:::{#def-location-scale}
-
-## Location and scale distribution
-
-A random variable $Y$ is said to belong to a location scale family with location parameter $b$ and scale $a>0$ if it is equal in distribution to a location and scale transformation of a standard variable $X$ with location zero and unit scale, denoted $Y \stackrel{\mathrm{d}}{=} aX + b$ and meaning, 
-$$\Pr(Y \leq y) = \Pr(aX + b \leq y).$$
-If the density exists, then $f_Y(y) = a^{-1}f_X\{(y-b)/a\}$.
-
-
-We can extend this definition to the multivariate setting for location vector $\boldsymbol{b} \in \mathbb{R}^d$ and positive definite scale matrix $\mathbf{A}$, such that 
-$$\Pr(\boldsymbol{Y} \leq \boldsymbol{y}) = \Pr(\boldsymbol{b} + \mathbf{A}\boldsymbol{X} \leq \boldsymbol{y}).$$
-
-:::
-
-
-:::{#def-exponential-family}
-
-## Exponential family
-
-
-A univariate distribution is an exponential family if it's density or mass function can be written for all $y \in \mathbb{R}$ as
-\begin{align*}
-f(y; \boldsymbol{\theta}) = \exp\left\{ \sum_{k=1}^K Q_k(\boldsymbol{\theta}) t_k(y) + D(\boldsymbol{\theta}) + h(y)\right\}, 
-\end{align*}
-where functions $Q_1(\cdot), \ldots, Q_K(\cdot)$ and $D(\cdot)$ depend only on $\boldsymbol{\theta}$ and not on the data, and conversely $t_1(\cdot), \ldots, t_K(\cdot)$ and $h(\cdot)$ do not depend on the vector of parameters $\boldsymbol{\theta}$. 
-
-The support of $f$ must not depend on $\boldsymbol{\theta}$. The transformed parameters $Q_k(\boldsymbol{\theta})$ $(k=1, \ldots, K)$ are termed canonical parameters.
-
-:::
 
 ### Common distributions
 
@@ -101,7 +72,7 @@ The case $\mathsf{beta}(1,1)$, also denoted $\mathsf{unif}(0,1)$, corresponds to
 The beta distribution is commonly used to model proportions, and can be generalized to the multivariate setting as follows.
 
 ```{r}
-#| eval: true
+#| eval: false
 #| echo: false
 #| label: fig-beta-dens
 #| fig-cap: "Density of beta random variables with different shape parameters"
@@ -197,8 +168,6 @@ where $\Gamma(\cdot)$ denotes the gamma function. The parameter $\lambda$ of the
 
 
 
-The most frequently encountered location-scale distribution is termed normal, but we use the terminology Gaussian in these notes.
-
 :::{#def-gaussian}
 
 ## Gaussian distribution
@@ -215,6 +184,7 @@ In the univariate case, the density of $\mathsf{Gauss}(\mu, \sigma^2)$ reduces t
 \begin{align*}
 f(x) = (2\pi\sigma^2)^{-1/2} \exp \left\{ - \frac{(x-\mu)^2}{2\sigma^2}\right\}, \qquad x \in \mathbb{R}.
 \end{align*}
+Although the terminology "normal" is frequent, we will stick to Gaussian in these course notes.
 
 :::
 
@@ -342,6 +312,42 @@ The quantile function, the inverse of the distribution function, is $Q(p) = \lam
 
 :::
 
+
+:::{#def-location-scale}
+
+## Location and scale distribution
+
+A random variable $Y$ is said to belong to a location scale family with location parameter $b$ and scale $a>0$ if it is equal in distribution to a location and scale transformation of a standard variable $X$ with location zero and unit scale, denoted $Y \stackrel{\mathrm{d}}{=} aX + b$ and meaning, 
+$$\Pr(Y \leq y) = \Pr(aX + b \leq y).$$
+If the density exists, then $f_Y(y) = a^{-1}f_X\{(y-b)/a\}$.
+
+
+We can extend this definition to the multivariate setting for location vector $\boldsymbol{b} \in \mathbb{R}^d$ and positive definite scale matrix $\mathbf{A}$, such that 
+$$\Pr(\boldsymbol{Y} \leq \boldsymbol{y}) = \Pr(\mathbf{A}\boldsymbol{X} + \boldsymbol{b} \leq \boldsymbol{y}).$$
+
+:::
+
+
+:::{#def-exponential-family}
+
+## Exponential family
+
+
+A univariate distribution is an exponential family if it's density or mass function can be written for all $y \in \mathbb{R}$ as
+\begin{align*}
+f(y; \boldsymbol{\theta}) = \exp\left\{ \sum_{k=1}^K Q_k(\boldsymbol{\theta}) t_k(y) + D(\boldsymbol{\theta}) + h(y)\right\}, 
+\end{align*}
+where functions $Q_1(\cdot), \ldots, Q_K(\cdot)$ and $D(\cdot)$ depend only on $\boldsymbol{\theta}$ and not on the data, and conversely $t_1(\cdot), \ldots, t_K(\cdot)$ and $h(\cdot)$ do not depend on the vector of parameters $\boldsymbol{\theta}$. 
+
+The support of $f$ must not depend on $\boldsymbol{\theta}$. The transformed parameters $Q_k(\boldsymbol{\theta})$ $(k=1, \ldots, K)$ are termed canonical parameters.
+
+:::
+
+Exponential families play a crucial role due to the fact that the vector of sufficient statistics $\boldsymbol{t}$ for a random sample allows for data compression. They feature prominently in generalized linear models.
+We will encounter exponential families when discussing conjugate priors. 
+
+
+
 ### Marginal and conditional distributions
 
 
@@ -388,9 +394,9 @@ for any value of $\boldsymbol{x}$ in the support of $\boldsymbol{X}$, i.e., the 
 
 ## Bayes theorem
 
-Denote by $p(X) \equiv\Pr(X)$ denotes the marginal density of $X$, $p(X \mid Y)$ the conditional of $X$ given $Y$ and $p(X, Y)$ the joint density. Bayes' theorem states that
+Denote by $f_X$ and $f_Y$ denotes the marginal density of $X$ and $Y$, respectively, $f_{X \mid Y}$ the conditional of $X$ given $Y$ and $f_{X,Y}$ the joint density. Bayes' theorem states that
 \begin{align*}
-p(X = x \mid Y=y) = \frac{p(Y = y \mid X = x)p(X=x)}{p(Y=y)}
+f_{X,Y}(x,y) = \frac{f_{Y}(y \mid X = x)f_X(x)}{f_Y(y)}
 \end{align*}
 
 In the case of discrete random variable $X$ with support $\mathcal{X},$ the denominator can be evaluated using the law of total probability  as $$\Pr(Y=y) = \sum_{x \in \mathcal{X}}\Pr(Y =y \mid X=x)\Pr(X=x).$$
@@ -426,7 +432,7 @@ so there is a small, but non-negligible probability of 8.66% that the rapid test
 
 :::
 
-Bayes' rule is central to updating beliefs: given initial beliefs (priors) and information in the form of data, we update our beliefs. We can apply 
+Bayes' rule is central to updating beliefs: given initial beliefs (priors) and information in the form of data, we update our beliefs iteratively in light of new information.
 
 :::{#exm-discrete-conditional-marginal}
 
@@ -899,7 +905,7 @@ Consider $Y \sim \mathsf{Gauss}(\mu, \tau^{-1})$, parametrized in terms of preci
 \ell(\mu, \tau) \propto \frac{n}{2}\log(\tau) - \frac{\tau}{2}\sum_{i=1}^n(Y_i^2-2\mu Y_i+\mu^2)
 \end{align*}
 
-The observed and Fisher information matrices are  is
+The observed and Fisher information matrices are
 \begin{align*}
 j(\mu, \tau) &= \begin{pmatrix}
 n\tau & -\sum_{i=1}^n (Y_i-\mu)\\
@@ -952,7 +958,7 @@ To compute the expected information matrix, we need to compute expectation of $\
 \mathsf{E}\left\{(Y/\lambda)^\alpha\right\} & = \int_0^\infty (x/\lambda)^\alpha \frac{\alpha}{\lambda^\alpha} x^{\alpha-1}\exp\left\{-(x/\lambda)^\alpha\right\} \mathrm{d} x \\
  &= \int_0^\infty s\exp(-s) \mathrm{d} s =1
 \end{align*}
-making a change of variable $S = (Y/\lambda)^\alpha\sim \mathsf{Exp}(1)$. The two other integrals are tabulated in @Gradshteyn.Ryzhik:2014, and are equal to $1-\gamma$ and $\gamma^2-2\gamma + \pi^2/6$, respectively, where $\gamma \approx `r round(-digamma(1),3)`$ is the Euler--Mascherroni constant.
+making a change of variable $S = (Y/\lambda)^\alpha\sim \mathsf{Exp}(1)$. The two other integrals are tabulated in @Gradshteyn.Ryzhik:2014, and are equal to $1-\gamma$ and $\gamma^2-2\gamma + \pi^2/6,$ respectively, where $\gamma \approx `r round(-digamma(1),3)`$ is the Euler--Mascherroni constant.
 <!-- \begin{align*} -->
 <!-- \mathsf{E}\left\{S\} &= \int_0^\infty s\exp(-s) \mathrm{d} s \\ -->
 <!-- \mathsf{E}\left\{S\} &= \int_0^\infty s^{2/\alpha}\exp(-s) \mathrm{d} s \\ -->

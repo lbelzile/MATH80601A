@@ -319,15 +319,15 @@
 \newcommand*\listoflistings{\listof{codelisting}{List of Listings}}
 \usepackage{amsthm}
 \theoremstyle{definition}
-\newtheorem{exercise}{Exercise}[chapter]
+\newtheorem{definition}{Definition}[chapter]
 \theoremstyle{plain}
 \newtheorem{proposition}{Proposition}[chapter]
-\theoremstyle{plain}
-\newtheorem{theorem}{Theorem}[chapter]
 \theoremstyle{definition}
 \newtheorem{example}{Example}[chapter]
 \theoremstyle{definition}
-\newtheorem{definition}{Definition}[chapter]
+\newtheorem{exercise}{Exercise}[chapter]
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}[chapter]
 \theoremstyle{remark}
 \AtBeginDocument{\renewcommand*{\proofname}{Proof}}
 \newtheorem*{remark}{Remark}
@@ -383,7 +383,7 @@ details.
 These notes are licensed under a
 \href{http://creativecommons.org/licenses/by-nc-sa/4.0/}{Creative
 Commons Attribution-NonCommercial-ShareAlike 4.0 International License}
-and were last compiled on Friday, January 03 2025.
+and were last compiled on Sunday, January 05 2025.
 
 The objective of the course is to provide a hands on introduction to
 Bayesian data analysis. The course will cover the formulation,
@@ -435,42 +435,6 @@ to one, meaning
 
 \end{definition}
 
-\begin{definition}[Location and scale
-distribution]\protect\hypertarget{def-location-scale}{}\label{def-location-scale}
-
-A random variable \(Y\) is said to belong to a location scale family
-with location parameter \(b\) and scale \(a>0\) if it is equal in
-distribution to a location and scale transformation of a standard
-variable \(X\) with location zero and unit scale, denoted
-\(Y \stackrel{\mathrm{d}}{=} aX + b\) and meaning,
-\[\Pr(Y \leq y) = \Pr(aX + b \leq y).\] If the density exists, then
-\(f_Y(y) = a^{-1}f_X\{(y-b)/a\}\).
-
-We can extend this definition to the multivariate setting for location
-vector \(\boldsymbol{b} \in \mathbb{R}^d\) and positive definite scale
-matrix \(\mathbf{A}\), such that
-\[\Pr(\boldsymbol{Y} \leq \boldsymbol{y}) = \Pr(\boldsymbol{b} + \mathbf{A}\boldsymbol{X} \leq \boldsymbol{y}).\]
-
-\end{definition}
-
-\begin{definition}[Exponential
-family]\protect\hypertarget{def-exponential-family}{}\label{def-exponential-family}
-
-A univariate distribution is an exponential family if it's density or
-mass function can be written for all \(y \in \mathbb{R}\) as
-\begin{align*}
-f(y; \boldsymbol{\theta}) = \exp\left\{ \sum_{k=1}^K Q_k(\boldsymbol{\theta}) t_k(y) + D(\boldsymbol{\theta}) + h(y)\right\}, 
-\end{align*} where functions \(Q_1(\cdot), \ldots, Q_K(\cdot)\) and
-\(D(\cdot)\) depend only on \(\boldsymbol{\theta}\) and not on the data,
-and conversely \(t_1(\cdot), \ldots, t_K(\cdot)\) and \(h(\cdot)\) do
-not depend on the vector of parameters \(\boldsymbol{\theta}\).
-
-The support of \(f\) must not depend on \(\boldsymbol{\theta}\). The
-transformed parameters \(Q_k(\boldsymbol{\theta})\) \((k=1, \ldots, K)\)
-are termed canonical parameters.
-
-\end{definition}
-
 \subsection{Common distributions}\label{common-distributions}
 
 \begin{definition}[Gamma, chi-square and exponential
@@ -506,19 +470,6 @@ f(x) = \frac{\Gamma(\alpha_1)\Gamma(\alpha_2)}{\Gamma(\alpha_1+\alpha_2)}x^{\alp
 
 The beta distribution is commonly used to model proportions, and can be
 generalized to the multivariate setting as follows.
-
-\begin{figure}[ht!]
-
-\centering{
-
-\pandocbounded{\includegraphics[keepaspectratio]{introduction_files/figure-pdf/fig-beta-dens-1.pdf}}
-
-}
-
-\caption{\label{fig-beta-dens}Density of beta random variables with
-different shape parameters}
-
-\end{figure}%
 
 \begin{definition}[Dirichlet
 distribution]\protect\hypertarget{def-dirichlet-dist}{}\label{def-dirichlet-dist}
@@ -585,9 +536,6 @@ expectation and the variance of the distribution, meaning
 
 \end{definition}
 
-The most frequently encountered location-scale distribution is termed
-normal, but we use the terminology Gaussian in these notes.
-
 \begin{definition}[Gaussian
 distribution]\protect\hypertarget{def-gaussian}{}\label{def-gaussian}
 
@@ -606,7 +554,8 @@ canonical parameter, is called the precision matrix.
 In the univariate case, the density of \(\mathsf{Gauss}(\mu, \sigma^2)\)
 reduces to \begin{align*}
 f(x) = (2\pi\sigma^2)^{-1/2} \exp \left\{ - \frac{(x-\mu)^2}{2\sigma^2}\right\}, \qquad x \in \mathbb{R}.
-\end{align*}
+\end{align*} Although the terminology ``normal'' is frequent, we will
+stick to Gaussian in these course notes.
 
 \end{definition}
 
@@ -664,6 +613,48 @@ f(x; \lambda, \alpha) &= \frac{\alpha}{\lambda^\alpha} x^{\alpha-1}\exp\left\{-(
 
 \end{definition}
 
+\begin{definition}[Location and scale
+distribution]\protect\hypertarget{def-location-scale}{}\label{def-location-scale}
+
+A random variable \(Y\) is said to belong to a location scale family
+with location parameter \(b\) and scale \(a>0\) if it is equal in
+distribution to a location and scale transformation of a standard
+variable \(X\) with location zero and unit scale, denoted
+\(Y \stackrel{\mathrm{d}}{=} aX + b\) and meaning,
+\[\Pr(Y \leq y) = \Pr(aX + b \leq y).\] If the density exists, then
+\(f_Y(y) = a^{-1}f_X\{(y-b)/a\}\).
+
+We can extend this definition to the multivariate setting for location
+vector \(\boldsymbol{b} \in \mathbb{R}^d\) and positive definite scale
+matrix \(\mathbf{A}\), such that
+\[\Pr(\boldsymbol{Y} \leq \boldsymbol{y}) = \Pr(\mathbf{A}\boldsymbol{X} + \boldsymbol{b} \leq \boldsymbol{y}).\]
+
+\end{definition}
+
+\begin{definition}[Exponential
+family]\protect\hypertarget{def-exponential-family}{}\label{def-exponential-family}
+
+A univariate distribution is an exponential family if it's density or
+mass function can be written for all \(y \in \mathbb{R}\) as
+\begin{align*}
+f(y; \boldsymbol{\theta}) = \exp\left\{ \sum_{k=1}^K Q_k(\boldsymbol{\theta}) t_k(y) + D(\boldsymbol{\theta}) + h(y)\right\}, 
+\end{align*} where functions \(Q_1(\cdot), \ldots, Q_K(\cdot)\) and
+\(D(\cdot)\) depend only on \(\boldsymbol{\theta}\) and not on the data,
+and conversely \(t_1(\cdot), \ldots, t_K(\cdot)\) and \(h(\cdot)\) do
+not depend on the vector of parameters \(\boldsymbol{\theta}\).
+
+The support of \(f\) must not depend on \(\boldsymbol{\theta}\). The
+transformed parameters \(Q_k(\boldsymbol{\theta})\) \((k=1, \ldots, K)\)
+are termed canonical parameters.
+
+\end{definition}
+
+Exponential families play a crucial role due to the fact that the vector
+of sufficient statistics \(\boldsymbol{t}\) for a random sample allows
+for data compression. They feature prominently in generalized linear
+models. We will encounter exponential families when discussing conjugate
+priors.
+
 \subsection{Marginal and conditional
 distributions}\label{marginal-and-conditional-distributions}
 
@@ -708,10 +699,11 @@ otherwise.
 \begin{theorem}[Bayes
 theorem]\protect\hypertarget{thm-Bayes}{}\label{thm-Bayes}
 
-Denote by \(p(X) \equiv\Pr(X)\) denotes the marginal density of \(X\),
-\(p(X \mid Y)\) the conditional of \(X\) given \(Y\) and \(p(X, Y)\) the
-joint density. Bayes' theorem states that \begin{align*}
-p(X = x \mid Y=y) = \frac{p(Y = y \mid X = x)p(X=x)}{p(Y=y)}
+Denote by \(f_X\) and \(f_Y\) denotes the marginal density of \(X\) and
+\(Y\), respectively, \(f_{X \mid Y}\) the conditional of \(X\) given
+\(Y\) and \(f_{X,Y}\) the joint density. Bayes' theorem states that
+\begin{align*}
+f_{X,Y}(x,y) = \frac{f_{Y}(y \mid X = x)f_X(x)}{f_Y(y)}
 \end{align*}
 
 In the case of discrete random variable \(X\) with support
@@ -776,8 +768,8 @@ skepticism.
 \end{example}
 
 Bayes' rule is central to updating beliefs: given initial beliefs
-(priors) and information in the form of data, we update our beliefs. We
-can apply
+(priors) and information in the form of data, we update our beliefs
+iteratively in light of new information.
 
 \begin{example}[Conditional and marginal for contingency
 table]\protect\hypertarget{exm-discrete-conditional-marginal}{}\label{exm-discrete-conditional-marginal}
@@ -1233,7 +1225,7 @@ sample is, up to proportionality, \begin{align*}
 \ell(\mu, \tau) \propto \frac{n}{2}\log(\tau) - \frac{\tau}{2}\sum_{i=1}^n(Y_i^2-2\mu Y_i+\mu^2)
 \end{align*}
 
-The observed and Fisher information matrices are is \begin{align*}
+The observed and Fisher information matrices are \begin{align*}
 j(\mu, \tau) &= \begin{pmatrix}
 n\tau & -\sum_{i=1}^n (Y_i-\mu)\\
 -\sum_{i=1}^n (Y_i-\mu) & \frac{n}{2\tau^2}
@@ -1286,7 +1278,7 @@ definition, \begin{align*}
 \(S = (Y/\lambda)^\alpha\sim \mathsf{Exp}(1)\). The two other integrals
 are tabulated in Gradshteyn and Ryzhik
 (\citeproc{ref-Gradshteyn.Ryzhik:2014}{2014}), and are equal to
-\(1-\gamma\) and \(\gamma^2-2\gamma + \pi^2/6\), respectively, where
+\(1-\gamma\) and \(\gamma^2-2\gamma + \pi^2/6,\) respectively, where
 \(\gamma \approx 0.577\) is the Euler--Mascherroni constant. The
 expected information matrix of the Weibull distribution has entries
 \begin{align*}
