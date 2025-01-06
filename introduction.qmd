@@ -410,7 +410,7 @@ Since $|\mathbf{A}^{-1}| = |\mathbf{A}|^{-1}$ and $\mathbf{A}^{-\top}\mathbf{A}^
 :::
 
 
-:::{#rmk-gaussian-dist-property}
+:::{#prp-gaussian-dist-property}
 
 ## Simulation of Gaussian vectors
 
@@ -1385,7 +1385,7 @@ and we can proceed similarly by drawing samples from $q$. This is most useful wh
 \end{align*}
 An alternative Monte Carlo estimator, which is biased but has lower variance, is obtained by drawing independent $x_1, \ldots, x_B$ from $q$ and taking instead the weighted average of
 \begin{align*}
-\widetilde{E}\{g(X)\} =\frac{B^{-1} \sum_{b=1}^B w_b g(x_b) }{B^{-1}\sum_{b=1}^B w_b}.
+\widetilde{\mathsf{E}}\{g(X)\} =\frac{B^{-1} \sum_{b=1}^B w_b g(x_b) }{B^{-1}\sum_{b=1}^B w_b}.
 \end{align*}
 with weights $w_b = p(x_b)/q(x_b)$. The latter equal 1 on average, so one could omit the denominator without harm. The standard error for the independent draws equals
 \begin{align*}

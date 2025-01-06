@@ -243,12 +243,11 @@ window.Quarto = {
   <li><a href="#random-vectors" id="toc-random-vectors" class="nav-link active" data-scroll-target="#random-vectors"><span class="header-section-number">1.1</span> Random vectors</a>
   <ul class="collapse">
   <li><a href="#common-distributions" id="toc-common-distributions" class="nav-link" data-scroll-target="#common-distributions"><span class="header-section-number">1.1.1</span> Common distributions</a></li>
+  <li><a href="#marginal-and-conditional-distributions" id="toc-marginal-and-conditional-distributions" class="nav-link" data-scroll-target="#marginal-and-conditional-distributions"><span class="header-section-number">1.1.2</span> Marginal and conditional distributions</a></li>
   </ul></li>
-  <li><a href="#simulation-of-gaussian-vectors" id="toc-simulation-of-gaussian-vectors" class="nav-link" data-scroll-target="#simulation-of-gaussian-vectors"><span class="header-section-number">1.2</span> Simulation of Gaussian vectors</a></li>
-  <li><a href="#marginal-and-conditional-distributions" id="toc-marginal-and-conditional-distributions" class="nav-link" data-scroll-target="#marginal-and-conditional-distributions"><span class="header-section-number">1.2.1</span> Marginal and conditional distributions</a></li>
-  <li><a href="#expectations" id="toc-expectations" class="nav-link" data-scroll-target="#expectations"><span class="header-section-number">1.3</span> Expectations</a></li>
-  <li><a href="#likelihood" id="toc-likelihood" class="nav-link" data-scroll-target="#likelihood"><span class="header-section-number">1.4</span> Likelihood</a></li>
-  <li><a href="#monte-carlo-methods" id="toc-monte-carlo-methods" class="nav-link" data-scroll-target="#monte-carlo-methods"><span class="header-section-number">1.5</span> Monte Carlo methods</a></li>
+  <li><a href="#expectations" id="toc-expectations" class="nav-link" data-scroll-target="#expectations"><span class="header-section-number">1.2</span> Expectations</a></li>
+  <li><a href="#likelihood" id="toc-likelihood" class="nav-link" data-scroll-target="#likelihood"><span class="header-section-number">1.3</span> Likelihood</a></li>
+  <li><a href="#monte-carlo-methods" id="toc-monte-carlo-methods" class="nav-link" data-scroll-target="#monte-carlo-methods"><span class="header-section-number">1.4</span> Monte Carlo methods</a></li>
   </ul>
 <div class="toc-actions"><ul><li><a href="https://github.com/lbelzile/MATH80601A/edit/main/introduction.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li></ul></div></nav>
     </div>
@@ -382,13 +381,8 @@ f_{\boldsymbol{X}}(\boldsymbol{x})= (2\pi)^{-d/2} \exp \left( - \frac{\boldsymbo
 f_{\boldsymbol{Y}}(\boldsymbol{y}) &amp;= (2\pi)^{-d/2} |\mathbf{A}|^{-1}\exp \left\{ - \frac{(\boldsymbol{y}-\boldsymbol{b})^\top\mathbf{A}^{-\top}\mathbf{A}^{-1}(\boldsymbol{y}-\boldsymbol{b})}{2}\right\}.
 \end{align*}\]</span> Since <span class="math inline">\(|\mathbf{A}^{-1}| = |\mathbf{A}|^{-1}\)</span> and <span class="math inline">\(\mathbf{A}^{-\top}\mathbf{A}^{-1} = (\mathbf{AA}^\top)^{-1},\)</span> we recover that <span class="math inline">\(\boldsymbol{Y} \sim \mathsf{Gauss}_d(\boldsymbol{b}, \mathbf{AA}^\top).\)</span></p>
 </div>
-</section>
-</section>
-<div id="rmk-gaussian-dist-property">
-<section id="simulation-of-gaussian-vectors" class="level2" data-number="1.2">
-<h2 data-number="1.2" class="anchored" data-anchor-id="simulation-of-gaussian-vectors"><span class="header-section-number">1.2</span> Simulation of Gaussian vectors</h2>
-<p><a href="#exm-locationscale-Gauss" class="quarto-xref">Example&nbsp;<span>1.4</span></a> shows that the Gaussian distribution is a location-scale family: if <span class="math inline">\(\boldsymbol{L} = \mathrm{chol}(\boldsymbol{Q}),\)</span> meaning <span class="math inline">\(\boldsymbol{Q}=\boldsymbol{LL}^\top\)</span> for some lower triangular matrix <span class="math inline">\(\boldsymbol{L},\)</span> then <span class="math display">\[\boldsymbol{L}^\top(\boldsymbol{Y}-\boldsymbol{\mu}) \sim \mathsf{Gauss}_d(\boldsymbol{0}_d, \mathbf{I}_d).\]</span> Conversely, we can use the Cholesky root to sample multivariate Gaussian vectors by first drawing <span class="math inline">\(d\)</span> independent standard Gaussians <span class="math inline">\(\boldsymbol{Z}=(Z_1, \ldots, Z_d)^\top,\)</span> then computing <span class="math display">\[\boldsymbol{Y} \gets \boldsymbol{L}^{-1}\boldsymbol{Z}+ \boldsymbol{\mu}.\]</span></p>
-</section>
+<div id="prp-gaussian-dist-property" class="theorem proposition">
+<p><span class="theorem-title"><strong>Proposition 1.2 (Simulation of Gaussian vectors)</strong></span> <a href="#exm-locationscale-Gauss" class="quarto-xref">Example&nbsp;<span>1.4</span></a> shows that the Gaussian distribution is a location-scale family: if <span class="math inline">\(\boldsymbol{L} = \mathrm{chol}(\boldsymbol{Q}),\)</span> meaning <span class="math inline">\(\boldsymbol{Q}=\boldsymbol{LL}^\top\)</span> for some lower triangular matrix <span class="math inline">\(\boldsymbol{L},\)</span> then <span class="math display">\[\boldsymbol{L}^\top(\boldsymbol{Y}-\boldsymbol{\mu}) \sim \mathsf{Gauss}_d(\boldsymbol{0}_d, \mathbf{I}_d).\]</span> Conversely, we can use the Cholesky root to sample multivariate Gaussian vectors by first drawing <span class="math inline">\(d\)</span> independent standard Gaussians <span class="math inline">\(\boldsymbol{Z}=(Z_1, \ldots, Z_d)^\top,\)</span> then computing <span class="math display">\[\boldsymbol{Y} \gets \boldsymbol{L}^{-1}\boldsymbol{Z}+ \boldsymbol{\mu}.\]</span></p>
 </div>
 <div id="exm-gamma-Drichlet" class="theorem example">
 <p><span class="theorem-title"><strong>Example 1.5 (Dirichlet vectors from Gamma random variables)</strong></span> Consider <span class="math inline">\(\boldsymbol{X}\)</span> a <span class="math inline">\(d\)</span> vector of independent gamma random variables <span class="math inline">\(\mathsf{gamma}(\alpha_i, 1).\)</span> Then, if <span class="math inline">\(Z = X_1 + \cdots + X_d,\)</span> we have <span class="math inline">\((X_1, \ldots, X_{d-1}) / Z  \sim \mathsf{Dirichlet}(\boldsymbol{\alpha})\)</span> and <span class="math inline">\(Z \sim \mathsf{gamma}(1, \alpha_1 + \cdots + \alpha_d).\)</span></p>
@@ -404,8 +398,9 @@ f_{\boldsymbol{Y}}(\boldsymbol{y}) &amp;= \prod_{j=1}^{d}  \frac{(zy_j)^{\alpha_
 \\&amp;= z^{\alpha_1 + \cdots + \alpha_d - 1}\exp(-z) \prod_{j=1}^d \frac{y_j^{\alpha_j-1}}{\Gamma(\alpha_j)}.
 \end{align*}\]</span> Since the density factorizes, we find the result upon multiplying and dividing by the normalizing constant <span class="math inline">\(\Gamma(\alpha_1 + \cdots + \alpha_d),\)</span> which yields both the Dirichlet for <span class="math inline">\(\boldsymbol{Y}\)</span> and the gamma for <span class="math inline">\(Z.\)</span></p>
 </div>
-<section id="marginal-and-conditional-distributions" class="level3" data-number="1.2.1">
-<h3 data-number="1.2.1" class="anchored" data-anchor-id="marginal-and-conditional-distributions"><span class="header-section-number">1.2.1</span> Marginal and conditional distributions</h3>
+</section>
+<section id="marginal-and-conditional-distributions" class="level3" data-number="1.1.2">
+<h3 data-number="1.1.2" class="anchored" data-anchor-id="marginal-and-conditional-distributions"><span class="header-section-number">1.1.2</span> Marginal and conditional distributions</h3>
 <div id="def-marginal" class="theorem definition">
 <p><span class="theorem-title"><strong>Definition 1.13 (Marginal distribution)</strong></span> The <strong>marginal distribution</strong> of a subvector <span class="math inline">\(\boldsymbol{X}_{1:k}=(X_1, \ldots, X_k)^\top,\)</span> without loss of generality consisting of the <span class="math inline">\(k\)</span> first components of <span class="math inline">\(\boldsymbol{X}\)</span> <span class="math inline">\((1 \leq k &lt; d)\)</span> is <span class="math display">\[\begin{align*}
 F_{\boldsymbol{X}_{1:k}}(\boldsymbol{x}_{1:k}) = \Pr(\boldsymbol{X}_{1:k} \leq \boldsymbol{x}_{1:k}) = F_{\boldsymbol{X}}(x_1, \ldots, x_k, \infty, \ldots, \infty).
@@ -631,7 +626,7 @@ f_{\boldsymbol{X}, \boldsymbol{Y}}(\boldsymbol{x}, \boldsymbol{y}) = f_{\boldsym
 <p>If two subvectors <span class="math inline">\(\boldsymbol{X}\)</span> and <span class="math inline">\(\boldsymbol{Y}\)</span> are independent, then the conditional density <span class="math inline">\(f_{\boldsymbol{Y} \mid \boldsymbol{X}}(\boldsymbol{y}; \boldsymbol{x})\)</span> equals the marginal <span class="math inline">\(f_{\boldsymbol{Y}}(\boldsymbol{y}).\)</span></p>
 </div>
 <div id="prp-independence" class="theorem proposition">
-<p><span class="theorem-title"><strong>Proposition 1.2 (Gaussian vectors, independence and conditional independence properties)</strong></span> &nbsp;</p>
+<p><span class="theorem-title"><strong>Proposition 1.3 (Gaussian vectors, independence and conditional independence properties)</strong></span> &nbsp;</p>
 <!--
 Simulation via Cholesky root
 Kriging
@@ -641,8 +636,9 @@ Joint distribution, conditional
 <p>If <span class="math inline">\(q_{ij}=0,\)</span> then <span class="math inline">\(Y_i\)</span> and <span class="math inline">\(Y_j\)</span> are conditionally independent given the other components.</p>
 </div>
 </section>
-<section id="expectations" class="level2" data-number="1.3">
-<h2 data-number="1.3" class="anchored" data-anchor-id="expectations"><span class="header-section-number">1.3</span> Expectations</h2>
+</section>
+<section id="expectations" class="level2" data-number="1.2">
+<h2 data-number="1.2" class="anchored" data-anchor-id="expectations"><span class="header-section-number">1.2</span> Expectations</h2>
 <p>The expected value of some function of a random vector <span class="math inline">\(g(\boldsymbol{Y}),\)</span> where <span class="math inline">\(\boldsymbol{Y}\)</span> has density <span class="math inline">\(f_{\boldsymbol{Y}},\)</span> is <span class="math display">\[\begin{align*}
 \mathsf{E}\{g(\boldsymbol{Y})\} = \int g(\boldsymbol{y}) f_{\boldsymbol{Y}}(\boldsymbol{y}) \mathrm{d} \boldsymbol{y}
 \end{align*}\]</span> and can be understood as a weighted integral of <span class="math inline">\(g\)</span> with weight <span class="math inline">\(f_{\boldsymbol{Y}}\)</span>; the latter does not exist unless the integral is finite.</p>
@@ -673,7 +669,7 @@ Joint distribution, conditional
 \rho_{ij}=\mathsf{Cor}(Y_i,Y_j)=\frac{\mathsf{Co}(Y_i, Y_j)}{\sqrt{\mathsf{Va}(Y_i)}\sqrt{\mathsf{Va}(Y_j)}}=\frac{\sigma_{ij}}{\sigma_i\sigma_j}.
 \end{align*}\]</span></p>
 <div id="prp-iteratedexpectation" class="theorem proposition">
-<p><span class="theorem-title"><strong>Proposition 1.3 (Law of iterated expectation and variance)</strong></span> Let <span class="math inline">\(\boldsymbol{Z}\)</span> and <span class="math inline">\(\boldsymbol{Y}\)</span> be random vectors. The expected value of <span class="math inline">\(\boldsymbol{Y}\)</span> is <span class="math display">\[\begin{align*}
+<p><span class="theorem-title"><strong>Proposition 1.4 (Law of iterated expectation and variance)</strong></span> Let <span class="math inline">\(\boldsymbol{Z}\)</span> and <span class="math inline">\(\boldsymbol{Y}\)</span> be random vectors. The expected value of <span class="math inline">\(\boldsymbol{Y}\)</span> is <span class="math display">\[\begin{align*}
 \mathsf{E}_{\boldsymbol{Y}}(\boldsymbol{Y}) = \mathsf{E}_{\boldsymbol{Z}}\left\{\mathsf{E}_{\boldsymbol{Y} \mid \boldsymbol{Z}}(\boldsymbol{Y})\right\}.
 \end{align*}\]</span></p>
 <p>The <strong>tower</strong> property gives a law of iterated variance <span class="math display">\[\begin{align*}
@@ -712,7 +708,7 @@ p(y) &amp;= \frac{p(y, \lambda)}{p(\lambda \mid y)} \\&amp;= \frac{\frac{\lambda
 \end{align*}\]</span> In a negative binomial regression model, the term <span class="math inline">\(k\)</span> is a dispersion parameter, which is fixed for all observations, whereas <span class="math inline">\(\mu = \exp(\boldsymbol{\beta}\mathbf{X})\)</span> is a function of covariates <span class="math inline">\(\mathbf{X}.\)</span> As <span class="math inline">\(k \to \infty,\)</span> the distribution of <span class="math inline">\(\Lambda\)</span> degenerates to a constant at <span class="math inline">\(\mu\)</span> and we recover the Poisson model.</p>
 </div>
 <div id="prp-partition-matrix" class="theorem proposition">
-<p><span class="theorem-title"><strong>Proposition 1.4 (Partitioning of covariance matrices)</strong></span> Let <span class="math inline">\(\boldsymbol{\Sigma}\)</span> be a <span class="math inline">\(d \times d\)</span> positive definite covariance matrix. We define the precision matrix <span class="math inline">\(\boldsymbol{Q} = \boldsymbol{\Sigma}^{-1}.\)</span> Suppose the matrices are partitioned into blocks, <span class="math display">\[\begin{align*}
+<p><span class="theorem-title"><strong>Proposition 1.5 (Partitioning of covariance matrices)</strong></span> Let <span class="math inline">\(\boldsymbol{\Sigma}\)</span> be a <span class="math inline">\(d \times d\)</span> positive definite covariance matrix. We define the precision matrix <span class="math inline">\(\boldsymbol{Q} = \boldsymbol{\Sigma}^{-1}.\)</span> Suppose the matrices are partitioned into blocks, <span class="math display">\[\begin{align*}
 \boldsymbol{\Sigma}=
 \begin{pmatrix}
 \boldsymbol{\Sigma}_{11} &amp; \boldsymbol{\Sigma}_{12} \\
@@ -744,7 +740,7 @@ p(y) &amp;= \frac{p(y, \lambda)}{p(\lambda \mid y)} \\&amp;= \frac{\frac{\lambda
 .\)</span> Computing the quadratic form <span class="math inline">\(\boldsymbol{B}\boldsymbol{\Sigma}\boldsymbol{B}^\top,\)</span> we get <span class="math inline">\(\det(\boldsymbol{\Sigma})=\det(\boldsymbol{\Sigma}_{22})\det(\boldsymbol{\Sigma}_{1|2})\)</span> where <span class="math inline">\(\boldsymbol{\Sigma}_{1|2}=\boldsymbol{\Sigma}_{11}-\boldsymbol{\Sigma}_{12}\boldsymbol{\Sigma}_{22}^{-1}\boldsymbol{\Sigma}_{21}.\)</span></p>
 </div>
 <div id="prp-conditional-gaussian" class="theorem proposition">
-<p><span class="theorem-title"><strong>Proposition 1.5 (Conditional distribution of Gaussian vectors)</strong></span> Let <span class="math inline">\(\boldsymbol{Y} \sim \mathsf{Gauss}_d(\boldsymbol{\mu}, \boldsymbol{\Sigma})\)</span> and consider the partition <span class="math display">\[\begin{align*}
+<p><span class="theorem-title"><strong>Proposition 1.6 (Conditional distribution of Gaussian vectors)</strong></span> Let <span class="math inline">\(\boldsymbol{Y} \sim \mathsf{Gauss}_d(\boldsymbol{\mu}, \boldsymbol{\Sigma})\)</span> and consider the partition <span class="math display">\[\begin{align*}
 \boldsymbol{Y} = \begin{pmatrix} \boldsymbol{Y}_1 \\ \boldsymbol{Y}_2\end{pmatrix}, \quad
 \boldsymbol{\mu} = \begin{pmatrix} \boldsymbol{\mu}_1 \\ \boldsymbol{\mu}_2\end{pmatrix}, \quad
 \boldsymbol{\Sigma} = \begin{pmatrix} \boldsymbol{\Sigma}_{11} &amp; \boldsymbol{\Sigma}_{12}\\ \boldsymbol{\Sigma}_{21} &amp; \boldsymbol{\Sigma}_{22}\end{pmatrix},
@@ -796,8 +792,8 @@ making use of the identity $|\boldsymbol{Q}| = |\boldsymbol{Q}_{11}||\boldsymbol
 -->
 </div>
 </section>
-<section id="likelihood" class="level2" data-number="1.4">
-<h2 data-number="1.4" class="anchored" data-anchor-id="likelihood"><span class="header-section-number">1.4</span> Likelihood</h2>
+<section id="likelihood" class="level2" data-number="1.3">
+<h2 data-number="1.3" class="anchored" data-anchor-id="likelihood"><span class="header-section-number">1.3</span> Likelihood</h2>
 <div id="def-likelihood" class="theorem definition">
 <p><span class="theorem-title"><strong>Definition 1.16 (Likelihood)</strong></span> The <strong>likelihood</strong> <span class="math inline">\(L(\boldsymbol{\theta})\)</span> is a function of the parameter vector <span class="math inline">\(\boldsymbol{\theta}\)</span> that gives the probability (or density) of observing a sample under a postulated distribution, treating the observations as fixed, <span class="math display">\[\begin{align*}
 L(\boldsymbol{\theta}; \boldsymbol{y}) = f(\boldsymbol{y}; \boldsymbol{\theta}),
@@ -921,13 +917,13 @@ f(\boldsymbol{y}) = f(y_1) \times f(y_2 \mid y_1) \times \ldots f(y_n \mid y_1, 
 \end{align*}\]</span></p>
 </div>
 </section>
-<section id="monte-carlo-methods" class="level2" data-number="1.5">
-<h2 data-number="1.5" class="anchored" data-anchor-id="monte-carlo-methods"><span class="header-section-number">1.5</span> Monte Carlo methods</h2>
+<section id="monte-carlo-methods" class="level2" data-number="1.4">
+<h2 data-number="1.4" class="anchored" data-anchor-id="monte-carlo-methods"><span class="header-section-number">1.4</span> Monte Carlo methods</h2>
 <p>If a random variable <span class="math inline">\(X\)</span> has distribution function <span class="math inline">\(F\)</span>, then we can define it’s <strong>generalized inverse</strong> <span class="math display">\[\begin{align*}
 F^{-1}(u) = \inf\{x: f(x) \geq u\}
 \end{align*}\]</span> and if <span class="math inline">\(G\)</span> is continuous, then <span class="math inline">\(F(X) \sim \mathsf{unif}(0,1)\)</span>. We can thus simulate data using the quantile function <span class="math inline">\(F^{-1}(U),\)</span>, with <span class="math inline">\(U \sim \mathsf{unif}(0,1)\)</span>. T</p>
 <div id="prp-rejection-sampling" class="theorem proposition">
-<p><span class="theorem-title"><strong>Proposition 1.6 (Rejection sampling)</strong></span> Rejection sampling (also termed accept-reject algorithm) samples from a random vector with density <span class="math inline">\(p(\cdot)\)</span> by drawing candidates from a proposal with density <span class="math inline">\(q(\cdot)\)</span> with nested support, <span class="math inline">\(\mathrm{supp}(p) \subseteq \mathrm{supp}(q).\)</span> The density <span class="math inline">\(q(\cdot)\)</span> must be such that <span class="math inline">\(p(\boldsymbol{\theta}) \leq C q(\boldsymbol{\theta})\)</span> for <span class="math inline">\(C \geq 1\)</span> for all values of <span class="math inline">\(\boldsymbol{\theta}\)</span> in the support of <span class="math inline">\(p(\cdot).\)</span> A proof can be found in <span class="citation" data-cites="Devroye:1986">Devroye (<a href="references.html#ref-Devroye:1986" role="doc-biblioref">1986</a>, Theorem 3.1)</span></p>
+<p><span class="theorem-title"><strong>Proposition 1.7 (Rejection sampling)</strong></span> Rejection sampling (also termed accept-reject algorithm) samples from a random vector with density <span class="math inline">\(p(\cdot)\)</span> by drawing candidates from a proposal with density <span class="math inline">\(q(\cdot)\)</span> with nested support, <span class="math inline">\(\mathrm{supp}(p) \subseteq \mathrm{supp}(q).\)</span> The density <span class="math inline">\(q(\cdot)\)</span> must be such that <span class="math inline">\(p(\boldsymbol{\theta}) \leq C q(\boldsymbol{\theta})\)</span> for <span class="math inline">\(C \geq 1\)</span> for all values of <span class="math inline">\(\boldsymbol{\theta}\)</span> in the support of <span class="math inline">\(p(\cdot).\)</span> A proof can be found in <span class="citation" data-cites="Devroye:1986">Devroye (<a href="references.html#ref-Devroye:1986" role="doc-biblioref">1986</a>, Theorem 3.1)</span></p>
 <ol type="1">
 <li>Generate <span class="math inline">\(\boldsymbol{\theta}^{\star}\)</span> from the proposal with density <span class="math inline">\(q\)</span> and <span class="math inline">\(U \sim \mathsf{U}(0,1)\)</span></li>
 <li>Compute the ratio <span class="math inline">\(R \gets p(\boldsymbol{\theta}^{\star})/ q(\boldsymbol{\theta}^{\star}).\)</span></li>
@@ -990,7 +986,7 @@ X \sim \Phi^{-1}\left[\Phi(a) + \{\Phi(b)-\Phi(a)\}U\right]
 </div>
 <p>For a given candidate density <span class="math inline">\(g\)</span> which has a heavier tail than the target, we can resort to numerical methods to compute the mode of the ratio <span class="math inline">\(f/g\)</span> and obtain the bound <span class="math inline">\(C\)</span>; see <span class="citation" data-cites="Albert:2009">Albert (<a href="references.html#ref-Albert:2009" role="doc-biblioref">2009</a>)</span>, Section 5.8 for an insightful example. A different use for the simulations is to approximate integrals numerically. Consider a target distribution with finite expected value. The law of large numbers guarantees that, if we can draw observations from our target distribution, then the sample average will converge to the expected value of that distribution, as the sample size becomes larger and larger, provided the expectation is finite. We can thus compute the probability of any event or the expected value of any (integrable) function by computing sample averages; the cost to pay for this generality is randomness.</p>
 <div id="prp-monte-carlo-integration" class="theorem proposition">
-<p><span class="theorem-title"><strong>Proposition 1.7 (Monte Carlo integration)</strong></span> Specifically, suppose we are interested in the average <span class="math inline">\(\mathsf{E}\{g(X)\}\)</span> of <span class="math inline">\(X\)</span> with density or mass function <span class="math inline">\(f\)</span> supported on <span class="math inline">\(\mathcal{X}\)</span> for some function <span class="math inline">\(g.\)</span> Monte Carlo integration proceeds by drawing <span class="math inline">\(B\)</span> independent samples <span class="math inline">\(x_1, \ldots, x_B\)</span> from density <span class="math inline">\(p\)</span> and evaluating the empirical average of <span class="math inline">\(g,\)</span> with <span class="math display">\[\begin{align*}
+<p><span class="theorem-title"><strong>Proposition 1.8 (Monte Carlo integration)</strong></span> Specifically, suppose we are interested in the average <span class="math inline">\(\mathsf{E}\{g(X)\}\)</span> of <span class="math inline">\(X\)</span> with density or mass function <span class="math inline">\(f\)</span> supported on <span class="math inline">\(\mathcal{X}\)</span> for some function <span class="math inline">\(g.\)</span> Monte Carlo integration proceeds by drawing <span class="math inline">\(B\)</span> independent samples <span class="math inline">\(x_1, \ldots, x_B\)</span> from density <span class="math inline">\(p\)</span> and evaluating the empirical average of <span class="math inline">\(g,\)</span> with <span class="math display">\[\begin{align*}
 \mathsf{E}\{g(X)\} = \int_{\mathcal{X}} g(x) p(x) \mathrm{d} x \approx \widehat{\mathsf{E}}\{g(X)\}=\frac{1}{B}\sum_{b=1}^B g(x_b).
 \end{align*}\]</span> By the law of large number, this estimator is convergent when <span class="math inline">\(B \to \infty\)</span> provided that the expectation is finite. If the variance of <span class="math inline">\(g(X)\)</span> is finite, we can approximate the latter by the sample variance of the simple random sample and obtain the Monte Carlo standard error of the estimator <span class="math display">\[\begin{align*}
 \mathsf{se}^2[\widehat{\mathsf{E}}\{g(X)\}] = \frac{1}{B(B-1)} \sum_{b=1}^B \left[ g(x_b) -  \widehat{\mathsf{E}}\{g(X)\} \right]^2.
@@ -998,7 +994,7 @@ X \sim \Phi^{-1}\left[\Phi(a) + \{\Phi(b)-\Phi(a)\}U\right]
 </div>
 <p>We can also use a similar idea to evaluate the integral of <span class="math inline">\(g(X)\)</span> if <span class="math inline">\(X\)</span> has density <span class="math inline">\(p\)</span>, by drawing instead samples from <span class="math inline">\(q\)</span>. This is formalized in the next proposition.</p>
 <div id="prp-importance-sampling" class="theorem proposition">
-<p><span class="theorem-title"><strong>Proposition 1.8 (Importance sampling)</strong></span> Consider a random variable <span class="math inline">\(X\)</span> with density <span class="math inline">\(p(x)\)</span> supported on <span class="math inline">\(\mathcal{X}\)</span>. We can calculate the integral <span class="math inline">\(\mathsf{E}_p\{g(X)\} = \int_{\mathcal{X}} g(x) p(x) \mathrm{d}x\)</span> by considering instead draws from a density <span class="math inline">\(q(\cdot)\)</span> with nested support, <span class="math inline">\(\mathcal{X} \subseteq \mathrm{supp}(q).\)</span> Then, <span class="math display">\[\begin{align*}
+<p><span class="theorem-title"><strong>Proposition 1.9 (Importance sampling)</strong></span> Consider a random variable <span class="math inline">\(X\)</span> with density <span class="math inline">\(p(x)\)</span> supported on <span class="math inline">\(\mathcal{X}\)</span>. We can calculate the integral <span class="math inline">\(\mathsf{E}_p\{g(X)\} = \int_{\mathcal{X}} g(x) p(x) \mathrm{d}x\)</span> by considering instead draws from a density <span class="math inline">\(q(\cdot)\)</span> with nested support, <span class="math inline">\(\mathcal{X} \subseteq \mathrm{supp}(q).\)</span> Then, <span class="math display">\[\begin{align*}
 \mathsf{E}\{g(X)\} = \int_{\mathcal{X}} g(x) \frac{p(x)}{q(x)} q(x) \mathrm{d} x
 \end{align*}\]</span> and we can proceed similarly by drawing samples from <span class="math inline">\(q\)</span>. This is most useful when the variance is finite, which happens if the integral <span class="math display">\[\begin{align*}
 \int_{\mathcal{X}} g^2(x) \frac{p^2(x)}{q(x)} \mathrm{d} x &lt; \infty.

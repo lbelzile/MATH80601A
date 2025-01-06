@@ -304,14 +304,14 @@
 \floatname{codelisting}{Listing}
 \newcommand*\listoflistings{\listof{codelisting}{List of Listings}}
 \usepackage{amsthm}
-\theoremstyle{plain}
-\newtheorem{theorem}{Theorem}[chapter]
 \theoremstyle{definition}
 \newtheorem{exercise}{Exercise}[chapter]
 \theoremstyle{definition}
-\newtheorem{example}{Example}[chapter]
-\theoremstyle{definition}
 \newtheorem{definition}{Definition}[chapter]
+\theoremstyle{definition}
+\newtheorem{example}{Example}[chapter]
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}[chapter]
 \theoremstyle{plain}
 \newtheorem{proposition}{Proposition}[chapter]
 \theoremstyle{remark}
@@ -708,9 +708,8 @@ recover that
 
 \end{example}
 
-\phantomsection\label{rmk-gaussian-dist-property}
-\section{Simulation of Gaussian
-vectors}\label{simulation-of-gaussian-vectors}
+\begin{proposition}[Simulation of Gaussian
+vectors]\protect\hypertarget{prp-gaussian-dist-property}{}\label{prp-gaussian-dist-property}
 
 Example~\ref{exm-locationscale-Gauss} shows that the Gaussian
 distribution is a location-scale family: if
@@ -722,6 +721,8 @@ Conversely, we can use the Cholesky root to sample multivariate Gaussian
 vectors by first drawing \(d\) independent standard Gaussians
 \(\boldsymbol{Z}=(Z_1, \ldots, Z_d)^\top,\) then computing
 \[\boldsymbol{Y} \gets \boldsymbol{L}^{-1}\boldsymbol{Z}+ \boldsymbol{\mu}.\]
+
+\end{proposition}
 
 \begin{example}[Dirichlet vectors from Gamma random
 variables]\protect\hypertarget{exm-gamma-Drichlet}{}\label{exm-gamma-Drichlet}
