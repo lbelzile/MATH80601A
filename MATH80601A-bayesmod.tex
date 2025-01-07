@@ -266,20 +266,6 @@
 \DeclareMathAlphabet{\mathcrl}{U}{rsfs}{m}{n}
 \usepackage{utopia}
 \DeclareMathAlphabet{\mathcal}{OMS}{cmsy}{m}{n}
-\usepackage{booktabs}
-\usepackage{longtable}
-\usepackage{array}
-\usepackage{multirow}
-\usepackage{wrapfig}
-\usepackage{float}
-\usepackage{colortbl}
-\usepackage{pdflscape}
-\usepackage{tabu}
-\usepackage{threeparttable}
-\usepackage{threeparttablex}
-\usepackage[normalem]{ulem}
-\usepackage{makecell}
-\usepackage{xcolor}
 \makeatletter
 \@ifpackageloaded{bookmark}{}{\usepackage{bookmark}}
 \makeatother
@@ -319,15 +305,15 @@
 \newcommand*\listoflistings{\listof{codelisting}{List of Listings}}
 \usepackage{amsthm}
 \theoremstyle{definition}
-\newtheorem{definition}{Definition}[chapter]
-\theoremstyle{definition}
 \newtheorem{exercise}{Exercise}[chapter]
 \theoremstyle{plain}
 \newtheorem{theorem}{Theorem}[chapter]
-\theoremstyle{definition}
-\newtheorem{example}{Example}[chapter]
 \theoremstyle{plain}
 \newtheorem{proposition}{Proposition}[chapter]
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}[chapter]
+\theoremstyle{definition}
+\newtheorem{example}{Example}[chapter]
 \theoremstyle{remark}
 \AtBeginDocument{\renewcommand*{\proofname}{Proof}}
 \newtheorem*{remark}{Remark}
@@ -383,7 +369,7 @@ details.
 These notes are licensed under a
 \href{http://creativecommons.org/licenses/by-nc-sa/4.0/}{Creative
 Commons Attribution-NonCommercial-ShareAlike 4.0 International License}
-and were last compiled on Tuesday, January 07 2025.
+and were last compiled on mardi, janvier 07 2025.
 
 The objective of the course is to provide a hands on introduction to
 Bayesian data analysis. The course will cover the formulation,
@@ -1679,7 +1665,7 @@ points from the Gaussian and accept any that falls within the bounds.
 \end{Shaded}
 
 \begin{verbatim}
-[1] 0.34314
+[1] 0.34158
 \end{verbatim}
 
 \begin{Shaded}
@@ -5154,7 +5140,7 @@ running mean and variance accurately} pointwise at storage cost
 information criterion as \(2n \times \mathsf{WAIC}\) to make on par with
 other information criteria, which are defined typically on the deviance
 scale and so that lower values correspond to higher predictive
-performance. For the smartwatch model, we get a value of 3.07 for the
+performance. For the smartwatch model, we get a value of 3.06 for the
 complex model and 4.51: this suggests an improvement in using
 individual-specific effects.
 

@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.7.3">
+<meta name="generator" content="quarto-1.7.1">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -91,10 +91,10 @@ div.csl-indent {
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="site_libs/quarto-html/anchor.min.js"></script>
 <link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-81b5c3e63835cfde897ecd3d35a35a41.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-2bb0ec5e928ee8c40b12725cb7836c35.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-ad5ef081d17d57ab2b6cc5e45efb5d90.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-a51e8ad160b68d9f8f1ac488cc0f242e.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
   "copy-button": false,
@@ -1000,7 +1000,7 @@ Figure&nbsp;4.13: Posterior predictive checks for the standard deviation (top) a
 \end{align*}\]</span> The higher the value of the predictive density <span class="math inline">\(\mathsf{LPPD}_i\)</span>, the better the fit for that observation.</p>
 <p>As in general information criteria, we sum over all observations, adding a penalization factor that approximates the effective number of parameters in the model, with <span class="math display">\[\begin{align*}
 n\mathsf{WAIC} = -\sum_{i=1}^n \mathsf{LPPD}_i + \sum_{i=1}^n \mathsf{Va}_{\boldsymbol{\theta} \mid \boldsymbol{y}}\{\log p(y_i \mid \boldsymbol{\theta})\}
-\end{align*}\]</span> where we use again the empirical variance to compute the rightmost term. When comparing competing models, we can rely on their values of <span class="math inline">\(\mathsf{WAIC}\)</span> to discriminate about the predictive performance. To compute <span class="math inline">\(\mathsf{WAIC}\)</span>, we need to store the values of the log density of each observation, or at least minimally <a href="https://www.johndcook.com/blog/standard_deviation/">compute the running mean and variance accurately</a> pointwise at storage cost <span class="math inline">\(\mathrm{O}(n)\)</span>. Note that Section 7.2 of <span class="citation" data-cites="Gelman:2013">Gelman et al. (<a href="references.html#ref-Gelman:2013" role="doc-biblioref">2013</a>)</span> define the widely applicable information criterion as <span class="math inline">\(2n \times \mathsf{WAIC}\)</span> to make on par with other information criteria, which are defined typically on the deviance scale and so that lower values correspond to higher predictive performance. For the smartwatch model, we get a value of 3.07 for the complex model and 4.51: this suggests an improvement in using individual-specific effects.</p>
+\end{align*}\]</span> where we use again the empirical variance to compute the rightmost term. When comparing competing models, we can rely on their values of <span class="math inline">\(\mathsf{WAIC}\)</span> to discriminate about the predictive performance. To compute <span class="math inline">\(\mathsf{WAIC}\)</span>, we need to store the values of the log density of each observation, or at least minimally <a href="https://www.johndcook.com/blog/standard_deviation/">compute the running mean and variance accurately</a> pointwise at storage cost <span class="math inline">\(\mathrm{O}(n)\)</span>. Note that Section 7.2 of <span class="citation" data-cites="Gelman:2013">Gelman et al. (<a href="references.html#ref-Gelman:2013" role="doc-biblioref">2013</a>)</span> define the widely applicable information criterion as <span class="math inline">\(2n \times \mathsf{WAIC}\)</span> to make on par with other information criteria, which are defined typically on the deviance scale and so that lower values correspond to higher predictive performance. For the smartwatch model, we get a value of 3.06 for the complex model and 4.51: this suggests an improvement in using individual-specific effects.</p>
 <p>We can also look at the predictive performance. For the <code>diabetes</code> data application with the Bayesian LASSO with fixed <span class="math inline">\(\lambda\)</span>, the predictive performance is a trade-off between the effective number of parameter (with larger penalties translating into smaller number of parameters) and the goodness-of-fit. <a href="#fig-waic-blasso" class="quarto-xref">Figure&nbsp;<span>4.14</span></a> shows that the decrease in predictive performance is severe when estimates are shrunk towards 0, but the model performs equally well for small penalties.</p>
 <div class="cell">
 <div class="cell-output-display">
