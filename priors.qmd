@@ -321,7 +321,7 @@ we can deduce by matching mean and variance that the conditional posterior $p(\m
 
 
 
-The exponential family is quite large; [Fink (1997) *A Compendium of Conjugate Priors*](https://citeseerx.ist.psu.edu/doc/10.1.1.157.5540) gives multiple examples of conjugate priors and work out parameter values.
+The exponential family is quite large; [Fink (1997) *A Compendium of Conjugate Priors*](https://www.johndcook.com/CompendiumOfConjugatePriors.pdf) gives multiple examples of conjugate priors and work out parameter values.
 
 
 In general, unless the sample size is small and we want to add expert opinion, we may wish to pick an *uninformative prior*, i.e., one that does not impact much the outcome. For conjugate models, one can often show that the relative weight of prior parameters (relative to the random sample likelihood contribution) becomes negligible by [investigating their relative weights](https://en.wikipedia.org/wiki/Conjugate_prior).

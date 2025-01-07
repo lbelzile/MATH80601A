@@ -116,7 +116,7 @@ ggplot() +
 
 ## Dirichlet distribution
 
-Let $\boldsymbol{\alpha} \in (0, \infty)^d$ denote shape parameters and cosider a random vector of size $d$ with positive components on the simplex $$\mathbb{S}_{d-1}: \{ 0 \leq x_j \leq 1; j=1, \ldots, d: x_1 + \cdots + x_d=1\}.$$
+Let $\boldsymbol{\alpha} \in (0, \infty)^d$ denote shape parameters and consider a random vector of size $d$ with positive components on the simplex $$\mathbb{S}_{d-1}: \{ 0 \leq x_j \leq 1; j=1, \ldots, d: x_1 + \cdots + x_d=1\}.$$
 The density of a **Dirichlet** random vector, denoted $\boldsymbol{Y} \sim \mathsf{Dirichlet}(\boldsymbol{\alpha}),$ is
 \begin{align*}
 f(\boldsymbol{x}) = \frac{\prod_{j=1}^{d-1}\Gamma(\alpha_j)}{\Gamma(\alpha_1 + \cdots + \alpha_d)}\prod_{j=1}^{d} x_j^{\alpha_j-1}, \qquad \boldsymbol{x} \in \mathbb{S}_{d-1}
@@ -357,7 +357,7 @@ so taking $Q_1(\mu, \sigma^2)=\mu/\sigma^2$ and $Q_2(\mu, \sigma^2)=1/\sigma^2$ 
 
 Consider $Y \sim \mathsf{binom}(n,p)$ and write the mass function
 \begin{align*}
-f(y; p)=\exp \left\{ \log \Gamma(n+1) - \log \left(\frac{\Gamma(y+1)}{\Gamma(n-y+1)}\right) + y \{\log p - log(1-p)\} + n \log(1-p)\right\}.
+f(y; p)=\exp \left\{ \log \Gamma(n+1) - \log \left(\frac{\Gamma(y+1)}{\Gamma(n-y+1)}\right) + y \mathrm{logit}(p) + n \log(1-p)\right\}.
 \end{align*}
 and so the canonical parameter is $Q_1(p) = \mathrm{logit}(p) = \log\{p/(1-p)\}$ with $t_1(y) = y.$ The beta distribution is conjugate to the binomial.
 :::
@@ -758,6 +758,12 @@ Taking $g(\boldsymbol{y}) = \boldsymbol{y}$ yields the **expected value** of the
 \mathsf{Va}(\boldsymbol{Y}) = \mathsf{E}\left[\left\{\boldsymbol{Y} - \mathsf{E}(\boldsymbol{Y})\right\}\left\{\boldsymbol{Y} - \mathsf{E}(\boldsymbol{Y})\right\}^\top\right],
 \end{align*}
 which reduces in the unidimensional setting to $\mathsf{Va}(Y) = \mathsf{E}\{Y - \mathsf{E}(Y)\}^2 = \mathsf{E}(Y^2) - \mathsf{E}(Y)^2.$
+
+More generally, the $k \times m$ covariance matrix between two random vectors $\boldsymbol{Y}$ of size $k$ and $\boldsymbol{X}$ of size $m$ is
+\begin{align*}
+\mathsf{Co}(\boldsymbol{Y}, \boldsymbol{X}) = \mathsf{E}\left[\left\{\boldsymbol{Y} - \mathsf{E}(\boldsymbol{Y})\right\}\left\{\boldsymbol{X} - \mathsf{E}(\boldsymbol{X})\right\}^\top\right],
+\end{align*}
+
 
 If $\boldsymbol{Y}$ is $d$-dimensional and $\mathbf{A}$ is $p \times d$ and $\boldsymbol{b}$ is a $p$ vector, then
 

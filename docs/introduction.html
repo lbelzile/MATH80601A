@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.7.1">
+<meta name="generator" content="quarto-1.7.3">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -91,10 +91,10 @@ div.csl-indent {
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="site_libs/quarto-html/anchor.min.js"></script>
 <link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-2bb0ec5e928ee8c40b12725cb7836c35.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-81b5c3e63835cfde897ecd3d35a35a41.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-a51e8ad160b68d9f8f1ac488cc0f242e.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-ad5ef081d17d57ab2b6cc5e45efb5d90.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
   "copy-button": false,
@@ -288,7 +288,7 @@ f(x) = \frac{\Gamma(\alpha_1)\Gamma(\alpha_2)}{\Gamma(\alpha_1+\alpha_2)}x^{\alp
 </div>
 <p>The beta distribution is commonly used to model proportions, and can be generalized to the multivariate setting as follows.</p>
 <div id="def-dirichlet-dist" class="theorem definition">
-<p><span class="theorem-title"><strong>Definition 1.4 (Dirichlet distribution)</strong></span> Let <span class="math inline">\(\boldsymbol{\alpha} \in (0, \infty)^d\)</span> denote shape parameters and cosider a random vector of size <span class="math inline">\(d\)</span> with positive components on the simplex <span class="math display">\[\mathbb{S}_{d-1}: \{ 0 \leq x_j \leq 1; j=1, \ldots, d: x_1 + \cdots + x_d=1\}.\]</span> The density of a <strong>Dirichlet</strong> random vector, denoted <span class="math inline">\(\boldsymbol{Y} \sim \mathsf{Dirichlet}(\boldsymbol{\alpha}),\)</span> is <span class="math display">\[\begin{align*}
+<p><span class="theorem-title"><strong>Definition 1.4 (Dirichlet distribution)</strong></span> Let <span class="math inline">\(\boldsymbol{\alpha} \in (0, \infty)^d\)</span> denote shape parameters and consider a random vector of size <span class="math inline">\(d\)</span> with positive components on the simplex <span class="math display">\[\mathbb{S}_{d-1}: \{ 0 \leq x_j \leq 1; j=1, \ldots, d: x_1 + \cdots + x_d=1\}.\]</span> The density of a <strong>Dirichlet</strong> random vector, denoted <span class="math inline">\(\boldsymbol{Y} \sim \mathsf{Dirichlet}(\boldsymbol{\alpha}),\)</span> is <span class="math display">\[\begin{align*}
 f(\boldsymbol{x}) = \frac{\prod_{j=1}^{d-1}\Gamma(\alpha_j)}{\Gamma(\alpha_1 + \cdots + \alpha_d)}\prod_{j=1}^{d} x_j^{\alpha_j-1}, \qquad \boldsymbol{x} \in \mathbb{S}_{d-1}
 \end{align*}\]</span></p>
 <p>Due to the linear dependence, the <span class="math inline">\(d\)</span>th component <span class="math inline">\(x_d = 1- x_1 - \cdots - x_{d-1}\)</span> is fully determined.</p>
@@ -334,7 +334,7 @@ F(x; \lambda, \alpha) &amp;= 1 - \exp\left\{-(x/\lambda)^\alpha\right\}, \qquad 
 f(x; \lambda, \alpha) &amp;= \frac{\alpha}{\lambda^\alpha} x^{\alpha-1}\exp\left\{-(x/\lambda)^\alpha\right\}, \qquad x \geq 0, \lambda&gt;0, \alpha&gt;0.
 \end{align*}\]</span></p>
 <!--
-The quantile function, the inverse of the distribution function, is $Q(p) = \lambda\{-\ln(1-p)\}^{1/\alpha}.$ The Weibull distribution includes the exponential as special case when $\alpha=1.$ The expected value of $Y \sim \mathsf{Weibull}(\lambda, \alpha)$ is $\mathsf{E}(Y) = \lambda \Gamma(1+1/\alpha).$
+The quantile function, the inverse of the distribution function, is $Q(p) = \lambda\{-\log(1-p)\}^{1/\alpha}.$ The Weibull distribution includes the exponential as special case when $\alpha=1.$ The expected value of $Y \sim \mathsf{Weibull}(\lambda, \alpha)$ is $\mathsf{E}(Y) = \lambda \Gamma(1+1/\alpha).$
 -->
 </div>
 <div id="def-location-scale" class="theorem definition">
@@ -359,7 +359,7 @@ f(y; \mu, \sigma^2) = (2\pi)^{-1/2}\exp\left\{ \frac{-y^2 + 2y\mu - \mu^2}{2\sig
 </div>
 <div id="exm-exponential-family-binom" class="theorem example">
 <p><span class="theorem-title"><strong>Example 1.2 (Binomial as exponential family)</strong></span> Consider <span class="math inline">\(Y \sim \mathsf{binom}(n,p)\)</span> and write the mass function <span class="math display">\[\begin{align*}
-f(y; p)=\exp \left\{ \log \Gamma(n+1) - \log \left(\frac{\Gamma(y+1)}{\Gamma(n-y+1)}\right) + y \{\log p - log(1-p)\} + n \log(1-p)\right\}.
+f(y; p)=\exp \left\{ \log \Gamma(n+1) - \log \left(\frac{\Gamma(y+1)}{\Gamma(n-y+1)}\right) + y \mathrm{logit}(p) + n \log(1-p)\right\}.
 \end{align*}\]</span> and so the canonical parameter is <span class="math inline">\(Q_1(p) = \mathrm{logit}(p) = \log\{p/(1-p)\}\)</span> with <span class="math inline">\(t_1(y) = y.\)</span> The beta distribution is conjugate to the binomial.</p>
 </div>
 <div id="exm-exponential-family-poisson" class="theorem example">
@@ -368,14 +368,14 @@ f(y; p)=\exp \left\{ - \lambda + y \log \lambda - \log \Gamma(x+1)\right\}.
 \end{align*}\]</span> and so the canonical parameter is <span class="math inline">\(Q_1(p) = \log \lambda\)</span> with the gamma distribution as conjugate family.</p>
 </div>
 <div id="prp-change-variable" class="theorem proposition">
-<p><span class="theorem-title"><strong>Proposition 1.1 (Change of variable formula)</strong></span> Consider an injective (one-to-one) differentiable function <span class="math inline">\(\boldsymbol{g}: \mathbb{R}^d \to \mathbb{R}^d,\)</span> with inverse <span class="math inline">\(g^{-1}.\)</span> Then, if <span class="math inline">\(\boldsymbol{Y}=\boldsymbol{g}(\boldsymbol{X}),\)</span> <span class="math display">\[\begin{align*}
+<p><span class="theorem-title"><strong>Proposition 1.1 (Change of variable formula)</strong></span> Consider an injective (one-to-one) differentiable function <span class="math inline">\(\boldsymbol{g}: \mathbb{R}^d \to \mathbb{R}^d,\)</span> with inverse <span class="math inline">\(\boldsymbol{g}^{-1}.\)</span> Then, if <span class="math inline">\(\boldsymbol{Y}=\boldsymbol{g}(\boldsymbol{X}),\)</span> <span class="math display">\[\begin{align*}
 \Pr(\boldsymbol{Y} \leq \boldsymbol{y}) = \Pr\{\boldsymbol{g}(\boldsymbol{X}) \leq \boldsymbol{y}\} = \Pr\{\boldsymbol{X} \leq \boldsymbol{x} = \boldsymbol{g}^{-1}(\boldsymbol{y})\}.
 \end{align*}\]</span> Using the chain rule, we get that the density of <span class="math inline">\(\boldsymbol{Y}\)</span> may be written as <span class="math display">\[\begin{align*}
 f_{\boldsymbol{Y}}(\boldsymbol{y}) = f_{\boldsymbol{X}}\left\{\boldsymbol{g}^{-1}(\boldsymbol{y})\right\} \left| \mathbf{J}_{\boldsymbol{g}^{-1}}(\boldsymbol{y})\right| = f_{\boldsymbol{X}}(\boldsymbol{x}) \left| \mathbf{J}_{\boldsymbol{g}}(\boldsymbol{x})\right|^{-1}
 \end{align*}\]</span> where <span class="math inline">\(\mathbf{J}_{\boldsymbol{g}}(\boldsymbol{x})\)</span> is the Jacobian matrix with <span class="math inline">\(i,j\)</span>th element <span class="math inline">\(\partial [\boldsymbol{g}(\boldsymbol{x})]_i / \partial x_j.\)</span></p>
 </div>
 <div id="exm-locationscale-Gauss" class="theorem example">
-<p><span class="theorem-title"><strong>Example 1.4 (Location-scale transformation of Gaussian vectors)</strong></span> Consider <span class="math inline">\(d\)</span> independent standard Gaussian variates <span class="math inline">\(X_j \sim \mathsf{Gauss}(0, \sigma^2)\)</span> for <span class="math inline">\(j=1, \ldots, d,\)</span> with joint density function <span class="math display">\[\begin{align*}
+<p><span class="theorem-title"><strong>Example 1.4 (Location-scale transformation of Gaussian vectors)</strong></span> Consider <span class="math inline">\(d\)</span> independent standard Gaussian variates <span class="math inline">\(X_j \sim \mathsf{Gauss}(0, 1)\)</span> for <span class="math inline">\(j=1, \ldots, d,\)</span> with joint density function <span class="math display">\[\begin{align*}
 f_{\boldsymbol{X}}(\boldsymbol{x})= (2\pi)^{-d/2} \exp \left( - \frac{\boldsymbol{x}^\top\boldsymbol{x}}{2}\right).
 \end{align*}\]</span> Consider the transformation <span class="math inline">\(\boldsymbol{Y} = \mathbf{A}\boldsymbol{X}+\boldsymbol{b},\)</span> with <span class="math inline">\(\mathbf{A}\)</span> an invertible matrix. The inverse transformation is <span class="math inline">\(\boldsymbol{g}^{-1}(\boldsymbol{y}) = \mathbf{A}^{-1}(\boldsymbol{y}-\boldsymbol{b}).\)</span> The Jacobian <span class="math inline">\(\mathbf{J}_{\boldsymbol{g}}(\boldsymbol{x})\)</span> is simply <span class="math inline">\(\mathbf{A},\)</span> so the joint density of <span class="math inline">\(\boldsymbol{Y}\)</span> is <span class="math display">\[\begin{align*}
 f_{\boldsymbol{Y}}(\boldsymbol{y}) &amp;= (2\pi)^{-d/2} |\mathbf{A}|^{-1}\exp \left\{ - \frac{(\boldsymbol{y}-\boldsymbol{b})^\top\mathbf{A}^{-\top}\mathbf{A}^{-1}(\boldsymbol{y}-\boldsymbol{b})}{2}\right\}.
@@ -642,9 +642,12 @@ Joint distribution, conditional
 <p>The expected value of some function of a random vector <span class="math inline">\(g(\boldsymbol{Y}),\)</span> where <span class="math inline">\(\boldsymbol{Y}\)</span> has density <span class="math inline">\(f_{\boldsymbol{Y}},\)</span> is <span class="math display">\[\begin{align*}
 \mathsf{E}\{g(\boldsymbol{Y})\} = \int g(\boldsymbol{y}) f_{\boldsymbol{Y}}(\boldsymbol{y}) \mathrm{d} \boldsymbol{y}
 \end{align*}\]</span> and can be understood as a weighted integral of <span class="math inline">\(g\)</span> with weight <span class="math inline">\(f_{\boldsymbol{Y}}\)</span>; the latter does not exist unless the integral is finite.</p>
-<p>Taking <span class="math inline">\(h(\boldsymbol{y}) = \boldsymbol{y}\)</span> yields the <strong>expected value</strong> of the random variable <span class="math inline">\(\mathsf{E}(\boldsymbol{Y}).\)</span> We define the covariance matrix of <span class="math inline">\(\boldsymbol{Y}\)</span> as <span class="math display">\[\begin{align*}
+<p>Taking <span class="math inline">\(g(\boldsymbol{y}) = \boldsymbol{y}\)</span> yields the <strong>expected value</strong> of the random variable <span class="math inline">\(\mathsf{E}(\boldsymbol{Y}).\)</span> We define the covariance matrix of <span class="math inline">\(\boldsymbol{Y}\)</span> as <span class="math display">\[\begin{align*}
 \mathsf{Va}(\boldsymbol{Y}) = \mathsf{E}\left[\left\{\boldsymbol{Y} - \mathsf{E}(\boldsymbol{Y})\right\}\left\{\boldsymbol{Y} - \mathsf{E}(\boldsymbol{Y})\right\}^\top\right],
 \end{align*}\]</span> which reduces in the unidimensional setting to <span class="math inline">\(\mathsf{Va}(Y) = \mathsf{E}\{Y - \mathsf{E}(Y)\}^2 = \mathsf{E}(Y^2) - \mathsf{E}(Y)^2.\)</span></p>
+<p>More generally, the <span class="math inline">\(k \times m\)</span> covariance matrix between two random vectors <span class="math inline">\(\boldsymbol{Y}\)</span> of size <span class="math inline">\(k\)</span> and <span class="math inline">\(\boldsymbol{X}\)</span> of size <span class="math inline">\(m\)</span> is <span class="math display">\[\begin{align*}
+\mathsf{Co}(\boldsymbol{Y}, \boldsymbol{X}) = \mathsf{E}\left[\left\{\boldsymbol{Y} - \mathsf{E}(\boldsymbol{Y})\right\}\left\{\boldsymbol{X} - \mathsf{E}(\boldsymbol{X})\right\}^\top\right],
+\end{align*}\]</span></p>
 <p>If <span class="math inline">\(\boldsymbol{Y}\)</span> is <span class="math inline">\(d\)</span>-dimensional and <span class="math inline">\(\mathbf{A}\)</span> is <span class="math inline">\(p \times d\)</span> and <span class="math inline">\(\boldsymbol{b}\)</span> is a <span class="math inline">\(p\)</span> vector, then</p>
 <p><span class="math display">\[\begin{align*}
 \mathsf{E}(\boldsymbol{AY} + \boldsymbol{b}) &amp;= \boldsymbol{A}\mathsf{E}(\boldsymbol{Y}) + \boldsymbol{b},\\
@@ -801,7 +804,7 @@ L(\boldsymbol{\theta}; \boldsymbol{y}) = f(\boldsymbol{y}; \boldsymbol{\theta}),
 <p>If the latter are independent, the joint density factorizes as the product of the density of individual observations, and the likelihood becomes <span class="math display">\[\begin{align*}
 L(\boldsymbol{\theta}; \boldsymbol{y})=\prod_{i=1}^n f_i(y_i; \boldsymbol{\theta}) = f_1(y_1; \boldsymbol{\theta}) \times \cdots \times f_n(y_n; \boldsymbol{\theta}).
 \end{align*}\]</span> The corresponding log likelihood function for independent and identically distributions observations is <span class="math display">\[\begin{align*}
-\ell(\boldsymbol{\theta}; \boldsymbol{y}) = \sum_{i=1}^n \ln f(y_i; \boldsymbol{\theta})
+\ell(\boldsymbol{\theta}; \boldsymbol{y}) = \sum_{i=1}^n \log f(y_i; \boldsymbol{\theta})
 \end{align*}\]</span></p>
 </div>
 <div id="def-information" class="theorem definition">
@@ -840,7 +843,7 @@ i(\mu, \tau) &amp;= n\begin{pmatrix}
 </div>
 <div id="exm-weibull-info" class="theorem example">
 <p><span class="theorem-title"><strong>Example 1.15 (Likelihood, score and information of the Weibull distribution)</strong></span> The log likelihood for a simple random sample whose realizations are <span class="math inline">\(y_1, \ldots, y_n\)</span> of size <span class="math inline">\(n\)</span> from a <span class="math inline">\(\mathsf{Weibull}(\lambda, \alpha)\)</span> model is <span class="math display">\[\begin{align*}
-\ell(\lambda, \alpha) = n \ln(\alpha) - n\alpha\ln(\lambda) + (\alpha-1) \sum_{i=1}^n \ln y_i  - \lambda^{-\alpha}\sum_{i=1}^n y_i^\alpha.
+\ell(\lambda, \alpha) = n \log(\alpha) - n\alpha\log(\lambda) + (\alpha-1) \sum_{i=1}^n \log y_i  - \lambda^{-\alpha}\sum_{i=1}^n y_i^\alpha.
 \end{align*}\]</span></p>
 <p>The score, which is the gradient of the log likelihood, is easily obtained by differentiation<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a> <span class="math display">\[\begin{align*}
 U(\lambda, \alpha) &amp;= \begin{pmatrix}\frac{\partial \ell(\lambda, \alpha)}{\partial \lambda} \\
@@ -848,7 +851,7 @@ U(\lambda, \alpha) &amp;= \begin{pmatrix}\frac{\partial \ell(\lambda, \alpha)}{\
 \begin{pmatrix}
 -\frac{n\alpha}{\lambda} +\alpha\lambda^{-\alpha-1}\sum_{i=1}^n y_i^\alpha
 \\
-\frac{n}{\alpha} + \sum_{i=1}^n \ln (y_i/\lambda)  - \sum_{i=1}^n \left(\frac{y_i}{\lambda}\right)^{\alpha} \times\ln\left(\frac{y_i}{\lambda}\right).
+\frac{n}{\alpha} + \sum_{i=1}^n \log (y_i/\lambda)  - \sum_{i=1}^n \left(\frac{y_i}{\lambda}\right)^{\alpha} \times\log\left(\frac{y_i}{\lambda}\right).
 \end{pmatrix}
 \end{align*}\]</span> and the observed information is the <span class="math inline">\(2 \times 2\)</span> matrix-valued function <span class="math display">\[\begin{align*}
 j(\lambda, \alpha) &amp;= - \begin{pmatrix}
@@ -856,12 +859,12 @@ j(\lambda, \alpha) &amp;= - \begin{pmatrix}
 \end{pmatrix}  = \begin{pmatrix} j_{\lambda, \lambda} &amp; j_{\lambda, \alpha} \\ j_{\lambda, \alpha} &amp; j_{\alpha, \alpha} \end{pmatrix}
 \end{align*}\]</span> whose entries are <span class="math display">\[\begin{align*}
 j_{\lambda, \lambda} &amp;= \lambda^{-2}\left\{-n\alpha + \alpha(\alpha+1)\sum_{i=1}^n (y_i/\lambda)^\alpha\right\} \\
-j_{\lambda, \alpha} &amp;= \lambda^{-1}\sum_{i=1}^n [1-(y_i/\lambda)^\alpha\{1+\alpha\ln(y_i/\lambda)\}] \\
-j_{\alpha,\alpha} &amp;= n\alpha^{-2} + \sum_{i=1}^n (y_i/\lambda)^\alpha \{\ln(y_i/\lambda)\}^2
-\end{align*}\]</span> To compute the expected information matrix, we need to compute expectation of <span class="math inline">\(\mathsf{E}\{(Y/\lambda)^\alpha\},\)</span> <span class="math inline">\(\mathsf{E}[(Y/\lambda)^\alpha\ln\{(Y/\lambda)^\alpha\}]\)</span> and <span class="math inline">\(\mathsf{E}[(Y/\lambda)^\alpha\ln^2\{(Y/\lambda)^\alpha\}].\)</span> By definition, <span class="math display">\[\begin{align*}
+j_{\lambda, \alpha} &amp;= \lambda^{-1}\sum_{i=1}^n [1-(y_i/\lambda)^\alpha\{1+\alpha\log(y_i/\lambda)\}] \\
+j_{\alpha,\alpha} &amp;= n\alpha^{-2} + \sum_{i=1}^n (y_i/\lambda)^\alpha \{\log(y_i/\lambda)\}^2
+\end{align*}\]</span> To compute the expected information matrix, we need to compute expectation of <span class="math inline">\(\mathsf{E}\{(Y/\lambda)^\alpha\},\)</span> <span class="math inline">\(\mathsf{E}[(Y/\lambda)^\alpha\log\{(Y/\lambda)^\alpha\}]\)</span> and <span class="math inline">\(\mathsf{E}[(Y/\lambda)^\alpha\log^2\{(Y/\lambda)^\alpha\}].\)</span> By definition, <span class="math display">\[\begin{align*}
 \mathsf{E}\left\{(Y/\lambda)^\alpha\right\} &amp; = \int_0^\infty (x/\lambda)^\alpha \frac{\alpha}{\lambda^\alpha} x^{\alpha-1}\exp\left\{-(x/\lambda)^\alpha\right\} \mathrm{d} x \\
 &amp;= \int_0^\infty s\exp(-s) \mathrm{d} s =1
-\end{align*}\]</span> making a change of variable <span class="math inline">\(S = (Y/\lambda)^\alpha\sim \mathsf{Exp}(1).\)</span> The two other integrals are tabulated in <span class="citation" data-cites="Gradshteyn.Ryzhik:2014">Gradshteyn and Ryzhik (<a href="references.html#ref-Gradshteyn.Ryzhik:2014" role="doc-biblioref">2014</a>)</span>, and are equal to <span class="math inline">\(1-\gamma\)</span> and <span class="math inline">\(\gamma^2-2\gamma + \pi^2/6,\)</span> respectively, where <span class="math inline">\(\gamma \approx 0.577\)</span> is the Euler–Mascherroni constant. <!-- \begin{align*} --> <!-- \mathsf{E}\left\{S\} &= \int_0^\infty s\exp(-s) \mathrm{d} s \\ --> <!-- \mathsf{E}\left\{S\} &= \int_0^\infty s^{2/\alpha}\exp(-s) \mathrm{d} s \\ --> <!-- \mathsf{E}\left\{S\} &= \int_0^\infty s\ln\exp(-s) \mathrm{d} s \\ --> <!-- \end{align*} --> The expected information matrix of the Weibull distribution has entries <span class="math display">\[\begin{align*}
+\end{align*}\]</span> making a change of variable <span class="math inline">\(S = (Y/\lambda)^\alpha\sim \mathsf{Exp}(1).\)</span> The two other integrals are tabulated in <span class="citation" data-cites="Gradshteyn.Ryzhik:2014">Gradshteyn and Ryzhik (<a href="references.html#ref-Gradshteyn.Ryzhik:2014" role="doc-biblioref">2014</a>)</span>, and are equal to <span class="math inline">\(1-\gamma\)</span> and <span class="math inline">\(\gamma^2-2\gamma + \pi^2/6,\)</span> respectively, where <span class="math inline">\(\gamma \approx 0.577\)</span> is the Euler–Mascherroni constant. <!-- \begin{align*} --> <!-- \mathsf{E}\left\{S\} &= \int_0^\infty s\exp(-s) \mathrm{d} s \\ --> <!-- \mathsf{E}\left\{S\} &= \int_0^\infty s^{2/\alpha}\exp(-s) \mathrm{d} s \\ --> <!-- \mathsf{E}\left\{S\} &= \int_0^\infty s\log\exp(-s) \mathrm{d} s \\ --> <!-- \end{align*} --> The expected information matrix of the Weibull distribution has entries <span class="math display">\[\begin{align*}
 i_{\lambda, \lambda} &amp; = n \lambda^{-2}\alpha\left\{ (\alpha+1)-1\right\} \\
 i_{\lambda, \alpha} &amp; = -n\lambda^{-1} (1-\gamma) \\
 i_{\alpha, \alpha} &amp; = n\alpha^{-2}(1 + \gamma^2-2\gamma+\pi^2/6)
@@ -909,7 +912,7 @@ f(\boldsymbol{y}) = f(y_1) \times f(y_2 \mid y_1) \times \ldots f(y_n \mid y_1, 
 <div id="exm-autoregressive-one" class="theorem example">
 <p><span class="theorem-title"><strong>Example 1.16 (First-order autoregressive process)</strong></span> Consider a Gaussian <span class="math inline">\(\mathsf{AR}(1)\)</span> model of the form <span class="math display">\[Y_t = \mu + \phi(Y_{t-1} - \mu) + \varepsilon_t,\]</span> where <span class="math inline">\(\phi\)</span> is the lag-one correlation, <span class="math inline">\(\mu\)</span> the global mean and <span class="math inline">\(\varepsilon_t\)</span> is an iid innovation with mean zero and variance <span class="math inline">\(\sigma^2.\)</span> If <span class="math inline">\(|\phi| &lt; 1,\)</span> the process is stationary, and the variance does not increase with <span class="math inline">\(t.\)</span></p>
 <p>The Markov property states that the current realization depends on the past, <span class="math inline">\(Y_t \mid Y_1, \ldots, Y_{t-1},\)</span> only through the most recent value <span class="math inline">\(Y_{t-1}.\)</span> The log likelihood thus becomes <span class="math display">\[\begin{align*}
-\ell(\boldsymbol{\theta}) = \ln f(y_1) + \sum_{i=2}^n f(y_i \mid y_{i-1}).
+\ell(\boldsymbol{\theta}) = \log f(y_1) + \sum_{i=2}^n \log f(y_i \mid y_{i-1}).
 \end{align*}\]</span></p>
 <p>If innovations are Gaussian, we have <span class="math display">\[Y_t \mid Y_{t-1}=y_{t-1} \sim \mathsf{Gauss}\{\mu(1-\phi)+ \phi y_{t-1}, \sigma^2\}, \qquad t&gt;1.\]</span></p>
 <p>The <span class="math inline">\(\mathsf{AR}(1)\)</span> stationarity process <span class="math inline">\(Y_t,\)</span> marginally, has mean <span class="math inline">\(\mu\)</span> and unconditional variance <span class="math inline">\(\sigma^2/(1-\phi^2).\)</span> The <span class="math inline">\(\mathsf{AR}(1)\)</span> process is first-order Markov since the conditional distribution <span class="math inline">\(p(Y_t \mid Y_{t-1}, \ldots, Y_{t-p})\)</span> equals <span class="math inline">\(p(Y_t \mid Y_{t-1}).\)</span> This means the likelihood is <span class="math display">\[\begin{align*}
@@ -958,7 +961,7 @@ f(x; \mu, \sigma, a, b) = \frac{1}{\sigma}\frac{\phi\left(\frac{x-\mu}{\sigma}\r
 <span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Acceptance rate</span></span>
 <span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="fu">length</span>(trunc_samp)<span class="sc">/</span><span class="fl">1e5</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 0.34076</code></pre>
+<pre><code>[1] 0.34131</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Theoretical acceptance rate</span></span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="fu">pnorm</span>(<span class="dv">1</span>)<span class="sc">-</span><span class="fu">pnorm</span>(<span class="dv">0</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -999,7 +1002,7 @@ X \sim \Phi^{-1}\left[\Phi(a) + \{\Phi(b)-\Phi(a)\}U\right]
 \end{align*}\]</span> and we can proceed similarly by drawing samples from <span class="math inline">\(q\)</span>. This is most useful when the variance is finite, which happens if the integral <span class="math display">\[\begin{align*}
 \int_{\mathcal{X}} g^2(x) \frac{p^2(x)}{q(x)} \mathrm{d} x &lt; \infty.
 \end{align*}\]</span> An alternative Monte Carlo estimator, which is biased but has lower variance, is obtained by drawing independent <span class="math inline">\(x_1, \ldots, x_B\)</span> from <span class="math inline">\(q\)</span> and taking instead the weighted average of <span class="math display">\[\begin{align*}
-\widetilde{E}\{g(X)\} =\frac{B^{-1} \sum_{b=1}^B w_b g(x_b) }{B^{-1}\sum_{b=1}^B w_b}.
+\widetilde{\mathsf{E}}\{g(X)\} =\frac{B^{-1} \sum_{b=1}^B w_b g(x_b) }{B^{-1}\sum_{b=1}^B w_b}.
 \end{align*}\]</span> with weights <span class="math inline">\(w_b = p(x_b)/q(x_b)\)</span>. The latter equal 1 on average, so one could omit the denominator without harm. The standard error for the independent draws equals <span class="math display">\[\begin{align*}
 \mathsf{se}^2[\widetilde{\mathsf{E}}\{g(X)\}] = \frac{ \sum_{b=1}^B w_b^2 \left[ g(x_b) -  \widetilde{\mathsf{E}}\{g(X)\} \right]^2}{\left(\sum_{b=1}^B w_b\right)^2}.
 \end{align*}\]</span></p>

@@ -266,6 +266,20 @@
 \DeclareMathAlphabet{\mathcrl}{U}{rsfs}{m}{n}
 \usepackage{utopia}
 \DeclareMathAlphabet{\mathcal}{OMS}{cmsy}{m}{n}
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{wrapfig}
+\usepackage{float}
+\usepackage{colortbl}
+\usepackage{pdflscape}
+\usepackage{tabu}
+\usepackage{threeparttable}
+\usepackage{threeparttablex}
+\usepackage[normalem]{ulem}
+\usepackage{makecell}
+\usepackage{xcolor}
 \makeatletter
 \@ifpackageloaded{bookmark}{}{\usepackage{bookmark}}
 \makeatother
@@ -305,13 +319,13 @@
 \newcommand*\listoflistings{\listof{codelisting}{List of Listings}}
 \usepackage{amsthm}
 \theoremstyle{definition}
-\newtheorem{exercise}{Exercise}[chapter]
-\theoremstyle{definition}
 \newtheorem{definition}{Definition}[chapter]
 \theoremstyle{definition}
-\newtheorem{example}{Example}[chapter]
+\newtheorem{exercise}{Exercise}[chapter]
 \theoremstyle{plain}
 \newtheorem{theorem}{Theorem}[chapter]
+\theoremstyle{definition}
+\newtheorem{example}{Example}[chapter]
 \theoremstyle{plain}
 \newtheorem{proposition}{Proposition}[chapter]
 \theoremstyle{remark}
@@ -369,7 +383,7 @@ details.
 These notes are licensed under a
 \href{http://creativecommons.org/licenses/by-nc-sa/4.0/}{Creative
 Commons Attribution-NonCommercial-ShareAlike 4.0 International License}
-and were last compiled on lundi, janvier 06 2025.
+and were last compiled on Tuesday, January 07 2025.
 
 The objective of the course is to provide a hands on introduction to
 Bayesian data analysis. The course will cover the formulation,
@@ -462,7 +476,7 @@ generalized to the multivariate setting as follows.
 distribution]\protect\hypertarget{def-dirichlet-dist}{}\label{def-dirichlet-dist}
 
 Let \(\boldsymbol{\alpha} \in (0, \infty)^d\) denote shape parameters
-and cosider a random vector of size \(d\) with positive components on
+and consider a random vector of size \(d\) with positive components on
 the simplex
 \[\mathbb{S}_{d-1}: \{ 0 \leq x_j \leq 1; j=1, \ldots, d: x_1 + \cdots + x_d=1\}.\]
 The density of a \textbf{Dirichlet} random vector, denoted
@@ -651,7 +665,7 @@ family]\protect\hypertarget{exm-exponential-family-binom}{}\label{exm-exponentia
 
 Consider \(Y \sim \mathsf{binom}(n,p)\) and write the mass function
 \begin{align*}
-f(y; p)=\exp \left\{ \log \Gamma(n+1) - \log \left(\frac{\Gamma(y+1)}{\Gamma(n-y+1)}\right) + y \{\log p - log(1-p)\} + n \log(1-p)\right\}.
+f(y; p)=\exp \left\{ \log \Gamma(n+1) - \log \left(\frac{\Gamma(y+1)}{\Gamma(n-y+1)}\right) + y \mathrm{logit}(p) + n \log(1-p)\right\}.
 \end{align*} and so the canonical parameter is
 \(Q_1(p) = \mathrm{logit}(p) = \log\{p/(1-p)\}\) with \(t_1(y) = y.\)
 The beta distribution is conjugate to the binomial.
@@ -674,8 +688,8 @@ formula]\protect\hypertarget{prp-change-variable}{}\label{prp-change-variable}
 
 Consider an injective (one-to-one) differentiable function
 \(\boldsymbol{g}: \mathbb{R}^d \to \mathbb{R}^d,\) with inverse
-\(g^{-1}.\) Then, if \(\boldsymbol{Y}=\boldsymbol{g}(\boldsymbol{X}),\)
-\begin{align*}
+\(\boldsymbol{g}^{-1}.\) Then, if
+\(\boldsymbol{Y}=\boldsymbol{g}(\boldsymbol{X}),\) \begin{align*}
 \Pr(\boldsymbol{Y} \leq \boldsymbol{y}) = \Pr\{\boldsymbol{g}(\boldsymbol{X}) \leq \boldsymbol{y}\} = \Pr\{\boldsymbol{X} \leq \boldsymbol{x} = \boldsymbol{g}^{-1}(\boldsymbol{y})\}.
 \end{align*} Using the chain rule, we get that the density of
 \(\boldsymbol{Y}\) may be written as \begin{align*}
@@ -690,8 +704,8 @@ the Jacobian matrix with \(i,j\)th element
 vectors]\protect\hypertarget{exm-locationscale-Gauss}{}\label{exm-locationscale-Gauss}
 
 Consider \(d\) independent standard Gaussian variates
-\(X_j \sim \mathsf{Gauss}(0, \sigma^2)\) for \(j=1, \ldots, d,\) with
-joint density function \begin{align*}
+\(X_j \sim \mathsf{Gauss}(0, 1)\) for \(j=1, \ldots, d,\) with joint
+density function \begin{align*}
 f_{\boldsymbol{X}}(\boldsymbol{x})= (2\pi)^{-d/2} \exp \left( - \frac{\boldsymbol{x}^\top\boldsymbol{x}}{2}\right).
 \end{align*} Consider the transformation
 \(\boldsymbol{Y} = \mathbf{A}\boldsymbol{X}+\boldsymbol{b},\) with
@@ -1073,13 +1087,19 @@ The expected value of some function of a random vector
 weight \(f_{\boldsymbol{Y}}\); the latter does not exist unless the
 integral is finite.
 
-Taking \(h(\boldsymbol{y}) = \boldsymbol{y}\) yields the
+Taking \(g(\boldsymbol{y}) = \boldsymbol{y}\) yields the
 \textbf{expected value} of the random variable
 \(\mathsf{E}(\boldsymbol{Y}).\) We define the covariance matrix of
 \(\boldsymbol{Y}\) as \begin{align*}
 \mathsf{Va}(\boldsymbol{Y}) = \mathsf{E}\left[\left\{\boldsymbol{Y} - \mathsf{E}(\boldsymbol{Y})\right\}\left\{\boldsymbol{Y} - \mathsf{E}(\boldsymbol{Y})\right\}^\top\right],
 \end{align*} which reduces in the unidimensional setting to
 \(\mathsf{Va}(Y) = \mathsf{E}\{Y - \mathsf{E}(Y)\}^2 = \mathsf{E}(Y^2) - \mathsf{E}(Y)^2.\)
+
+More generally, the \(k \times m\) covariance matrix between two random
+vectors \(\boldsymbol{Y}\) of size \(k\) and \(\boldsymbol{X}\) of size
+\(m\) is \begin{align*}
+\mathsf{Co}(\boldsymbol{Y}, \boldsymbol{X}) = \mathsf{E}\left[\left\{\boldsymbol{Y} - \mathsf{E}(\boldsymbol{Y})\right\}\left\{\boldsymbol{X} - \mathsf{E}(\boldsymbol{X})\right\}^\top\right],
+\end{align*}
 
 If \(\boldsymbol{Y}\) is \(d\)-dimensional and \(\mathbf{A}\) is
 \(p \times d\) and \(\boldsymbol{b}\) is a \(p\) vector, then
@@ -1345,7 +1365,7 @@ becomes \begin{align*}
 L(\boldsymbol{\theta}; \boldsymbol{y})=\prod_{i=1}^n f_i(y_i; \boldsymbol{\theta}) = f_1(y_1; \boldsymbol{\theta}) \times \cdots \times f_n(y_n; \boldsymbol{\theta}).
 \end{align*} The corresponding log likelihood function for independent
 and identically distributions observations is \begin{align*}
-\ell(\boldsymbol{\theta}; \boldsymbol{y}) = \sum_{i=1}^n \ln f(y_i; \boldsymbol{\theta})
+\ell(\boldsymbol{\theta}; \boldsymbol{y}) = \sum_{i=1}^n \log f(y_i; \boldsymbol{\theta})
 \end{align*}
 
 \end{definition}
@@ -1437,7 +1457,7 @@ distribution]\protect\hypertarget{exm-weibull-info}{}\label{exm-weibull-info}
 The log likelihood for a simple random sample whose realizations are
 \(y_1, \ldots, y_n\) of size \(n\) from a
 \(\mathsf{Weibull}(\lambda, \alpha)\) model is \begin{align*}
-\ell(\lambda, \alpha) = n \ln(\alpha) - n\alpha\ln(\lambda) + (\alpha-1) \sum_{i=1}^n \ln y_i  - \lambda^{-\alpha}\sum_{i=1}^n y_i^\alpha.
+\ell(\lambda, \alpha) = n \log(\alpha) - n\alpha\log(\lambda) + (\alpha-1) \sum_{i=1}^n \log y_i  - \lambda^{-\alpha}\sum_{i=1}^n y_i^\alpha.
 \end{align*}
 
 The score, which is the gradient of the log likelihood, is easily
@@ -1448,7 +1468,7 @@ U(\lambda, \alpha) &= \begin{pmatrix}\frac{\partial \ell(\lambda, \alpha)}{\part
 \begin{pmatrix}
  -\frac{n\alpha}{\lambda} +\alpha\lambda^{-\alpha-1}\sum_{i=1}^n y_i^\alpha
  \\
- \frac{n}{\alpha} + \sum_{i=1}^n \ln (y_i/\lambda)  - \sum_{i=1}^n \left(\frac{y_i}{\lambda}\right)^{\alpha} \times\ln\left(\frac{y_i}{\lambda}\right).
+ \frac{n}{\alpha} + \sum_{i=1}^n \log (y_i/\lambda)  - \sum_{i=1}^n \left(\frac{y_i}{\lambda}\right)^{\alpha} \times\log\left(\frac{y_i}{\lambda}\right).
  \end{pmatrix}
 \end{align*} and the observed information is the \(2 \times 2\)
 matrix-valued function \begin{align*}
@@ -1457,12 +1477,12 @@ j(\lambda, \alpha) &= - \begin{pmatrix}
 \end{pmatrix}  = \begin{pmatrix} j_{\lambda, \lambda} & j_{\lambda, \alpha} \\ j_{\lambda, \alpha} & j_{\alpha, \alpha} \end{pmatrix}
 \end{align*} whose entries are \begin{align*}
 j_{\lambda, \lambda} &= \lambda^{-2}\left\{-n\alpha + \alpha(\alpha+1)\sum_{i=1}^n (y_i/\lambda)^\alpha\right\} \\
-j_{\lambda, \alpha} &= \lambda^{-1}\sum_{i=1}^n [1-(y_i/\lambda)^\alpha\{1+\alpha\ln(y_i/\lambda)\}] \\
-j_{\alpha,\alpha} &= n\alpha^{-2} + \sum_{i=1}^n (y_i/\lambda)^\alpha \{\ln(y_i/\lambda)\}^2
+j_{\lambda, \alpha} &= \lambda^{-1}\sum_{i=1}^n [1-(y_i/\lambda)^\alpha\{1+\alpha\log(y_i/\lambda)\}] \\
+j_{\alpha,\alpha} &= n\alpha^{-2} + \sum_{i=1}^n (y_i/\lambda)^\alpha \{\log(y_i/\lambda)\}^2
 \end{align*} To compute the expected information matrix, we need to
 compute expectation of \(\mathsf{E}\{(Y/\lambda)^\alpha\},\)
-\(\mathsf{E}[(Y/\lambda)^\alpha\ln\{(Y/\lambda)^\alpha\}]\) and
-\(\mathsf{E}[(Y/\lambda)^\alpha\ln^2\{(Y/\lambda)^\alpha\}].\) By
+\(\mathsf{E}[(Y/\lambda)^\alpha\log\{(Y/\lambda)^\alpha\}]\) and
+\(\mathsf{E}[(Y/\lambda)^\alpha\log^2\{(Y/\lambda)^\alpha\}].\) By
 definition, \begin{align*}
 \mathsf{E}\left\{(Y/\lambda)^\alpha\right\} & = \int_0^\infty (x/\lambda)^\alpha \frac{\alpha}{\lambda^\alpha} x^{\alpha-1}\exp\left\{-(x/\lambda)^\alpha\right\} \mathrm{d} x \\
  &= \int_0^\infty s\exp(-s) \mathrm{d} s =1
@@ -1545,7 +1565,7 @@ increase with \(t.\)
 The Markov property states that the current realization depends on the
 past, \(Y_t \mid Y_1, \ldots, Y_{t-1},\) only through the most recent
 value \(Y_{t-1}.\) The log likelihood thus becomes \begin{align*}
-\ell(\boldsymbol{\theta}) = \ln f(y_1) + \sum_{i=2}^n f(y_i \mid y_{i-1}).
+\ell(\boldsymbol{\theta}) = \log f(y_1) + \sum_{i=2}^n \log f(y_i \mid y_{i-1}).
 \end{align*}
 
 If innovations are Gaussian, we have
@@ -1659,7 +1679,7 @@ points from the Gaussian and accept any that falls within the bounds.
 \end{Shaded}
 
 \begin{verbatim}
-[1] 0.34158
+[1] 0.34314
 \end{verbatim}
 
 \begin{Shaded}
@@ -1787,7 +1807,7 @@ integral \begin{align*}
 has lower variance, is obtained by drawing independent
 \(x_1, \ldots, x_B\) from \(q\) and taking instead the weighted average
 of \begin{align*}
-\widetilde{E}\{g(X)\} =\frac{B^{-1} \sum_{b=1}^B w_b g(x_b) }{B^{-1}\sum_{b=1}^B w_b}.
+\widetilde{\mathsf{E}}\{g(X)\} =\frac{B^{-1} \sum_{b=1}^B w_b g(x_b) }{B^{-1}\sum_{b=1}^B w_b}.
 \end{align*} with weights \(w_b = p(x_b)/q(x_b)\). The latter equal 1 on
 average, so one could omit the denominator without harm. The standard
 error for the independent draws equals \begin{align*}
@@ -3129,9 +3149,9 @@ sample mean, with weights proportional to the relative precision.
 \end{example}
 
 The exponential family is quite large;
-\href{https://citeseerx.ist.psu.edu/doc/10.1.1.157.5540}{Fink (1997)
-\emph{A Compendium of Conjugate Priors}} gives multiple examples of
-conjugate priors and work out parameter values.
+\href{https://www.johndcook.com/CompendiumOfConjugatePriors.pdf}{Fink
+(1997) \emph{A Compendium of Conjugate Priors}} gives multiple examples
+of conjugate priors and work out parameter values.
 
 In general, unless the sample size is small and we want to add expert
 opinion, we may wish to pick an \emph{uninformative prior}, i.e., one
@@ -5134,7 +5154,7 @@ running mean and variance accurately} pointwise at storage cost
 information criterion as \(2n \times \mathsf{WAIC}\) to make on par with
 other information criteria, which are defined typically on the deviance
 scale and so that lower values correspond to higher predictive
-performance. For the smartwatch model, we get a value of 3.06 for the
+performance. For the smartwatch model, we get a value of 3.07 for the
 complex model and 4.51: this suggests an improvement in using
 individual-specific effects.
 
