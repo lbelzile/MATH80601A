@@ -262,6 +262,75 @@ g2 + g1
 
 :::
 
+:::{#def-bayes-factor}
+
+## Bayes factor and model comparison
+
+The marginal likelihood enters in the comparison of different models. Suppose that we have models $\mathcal{M}_m$ $(m=1, \ldots, M)$ to be compared, with parameter vectors $\boldsymbol{\theta}^{(m)}$ and data vector $\boldsymbol{y}$. Consider $p_m =\Pr(\mathcal{M}_m)$ the prior probability of the different models under consideration, with $p_1 + \cdots + p_M = 1$. The posterior odds for Models $\mathcal{M}_i$ vs $\mathcal{M}_j$ are
+\begin{align*}
+\underbracket[0.25pt]{\frac{\Pr(\mathcal{M}_i \mid \boldsymbol{y})}{\Pr(\mathcal{M}_j \mid \boldsymbol{y})}}_{\text{posterior odds}} = \underbracket[0.25pt]{\frac{p(\boldsymbol{y} \mid \mathcal{M}_i)}{p(\boldsymbol{y} \mid \mathcal{M}_j)}}_{\text{Bayes factor}} \underbracket[0.25pt]{\frac{\Pr(\mathcal{M}_i)}{\Pr(\mathcal{M}_j)}}_{\text{prior odds}}
+\end{align*}
+where the first term on the right hand side is the Bayes factor for model $i$ vs $j$, denoted $\mathsf{BF}_{ij}$. The Bayes factor is the ratio of marginal likelihoods, as
+\begin{align*}
+p(\boldsymbol{y} \mid \mathcal{M}_i) = \int p(y \mid \boldsymbol{\theta}^{(i)}, \mathcal{M}_i) p( \boldsymbol{\theta}^{(i)} \mid \mathcal{M}_i) \mathrm{d}  \boldsymbol{\theta}^{(i)}.
+\end{align*}
+Values of $\mathsf{BF}_{ij}>1$ correspond to model $\mathcal{M}_i$ being more likely than $\mathcal{M}_j$.
+
+While Bayes factors are used for model comparison, the answers depend very strongly on the prior $p( \boldsymbol{\theta}^{(i)} \mid \mathcal{M}_i)$ specified and the latter must be proper as a general rule for the ratio to be well-defined.
+
+:::
+
+:::{#exm-bayesfactor}
+
+## Bayes factor for the binomial model
+
+The marginal likelihood for the $Y \mid P=p \sim \mathsf{binom}(n,p)$ model with prior $P \sim \mathsf{beta}(\alpha, \beta)$ is
+\begin{align*}
+p_{Y}(y) = \binom{n}{y} \frac{\mathrm{beta}(\alpha + y, \beta + n - y)}{\mathrm{beta}(\alpha, \beta)}.
+\end{align*}
+where $\mathrm{beta}(\alpha, \beta) = \Gamma(\alpha)\Gamma(\beta)/\Gamma(\alpha+\beta)$ is the beta function, expressed in terms of gamma functions.
+
+Consider three models with $Y \mid P^{(i)}=p, \mathcal{M}_i \sim \mathsf{binom}(n, p)$ for $i=1, 2, 3$ and uniform, point mass and beta priors $P^{(1)}\sim \mathsf{unif}(0,1)$,  $P^{(2)} \sim \mathsf{beta}(3/2, 3/2)$ and $P^{(3)}\sim \mathsf{1}_{p=0.5}$. For $\mathcal{M}_3$, the marginal likelihood is simply equal to the binomial distribution with $p=0.5$.
+
+If $n=14$, but we let instead the number of success varies, the models that put more mass closer to the ratio $y/n$ will be favored. The uniform prior in model $\mathcal{M}_1$ will have a higher Bayes factor than model $\mathcal{M}_2$ or $\mathcal{M}_3$ for values closer to $p=0$ or $p=1$, but there is mild evidence as shown in @fig-bayesfactor.
+
+```{r}
+#| eval: true
+#| echo: true
+# Log of marginal posterior for binom with beta prior (default is uniform)
+log_marg_post_beta <- function(n, y, alpha = 1, beta = 1){
+  lchoose(n, y) + lbeta(alpha + y, beta + n - y) - lbeta(alpha, beta)
+}
+# Log of Bayes factor
+logBF2vs3 <- function(y, n){ # model 2 (beta(1.5,1.5) vs 3 (point mass at 0.5)
+  log_marg_post_beta(n = n, y = y, alpha = 1.5, beta = 1.5) - dbinom(x = y, size = n, prob = 0.5, log = TRUE)
+}
+```
+
+```{r}
+#| eval: true
+#| echo: false 
+#| label: fig-bayesfactor
+#| fig-cap: "Log of Bayes factors for comparison of binomial models with $n=14$ trials as a function of the number of successes $n$. Values larger than zero (on log scale) indicate preference for Model 2."
+n <- 14
+ys <- 1:13  
+BFs23 <- sapply(ys, function(y){logBF2vs3(y = y, n = n)})
+BFs12 <- log_marg_post_beta(n = n, y = ys, 1.5, 1.5) - log_marg_post_beta(n = n, y = ys)
+ggplot(data = data.frame(
+            x = rep(ys, 2), 
+            y = c(BFs23, BFs12), 
+            group = factor(rep(c("Model 2 vs 3","Model 2 vs 1"), each = length(ys)))),
+       mapping = aes(x = x, y = y)) +
+   geom_hline(yintercept = 0, linetype = "dashed") +
+   geom_line(alpha = 0.5) +
+   geom_point(mapping = aes(color = factor(y < 0)), show.legend = FALSE) +
+   facet_wrap(~group) +
+   labs(x = "number of successes out of 14 trials", y = "", subtitle = "log of Bayes factor")
+# plot(ys, BFs, bty = "l", type = "b", ylab = "Bayes factor")
+```  
+
+:::
+
 :::{#prp-sequentiality}
 
 ## Sequentiality and Bayesian updating

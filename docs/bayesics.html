@@ -334,11 +334,50 @@ Figure&nbsp;2.2: Binomial mass function (left) and scaled likelihood function (r
 </div>
 </div>
 </div>
+<div id="def-bayes-factor" class="theorem definition">
+<p><span class="theorem-title"><strong>Definition 2.1 (Bayes factor and model comparison)</strong></span> The marginal likelihood enters in the comparison of different models. Suppose that we have models <span class="math inline">\(\mathcal{M}_m\)</span> <span class="math inline">\((m=1, \ldots, M)\)</span> to be compared, with parameter vectors <span class="math inline">\(\boldsymbol{\theta}^{(m)}\)</span> and data vector <span class="math inline">\(\boldsymbol{y}\)</span>. Consider <span class="math inline">\(p_m =\Pr(\mathcal{M}_m)\)</span> the prior probability of the different models under consideration, with <span class="math inline">\(p_1 + \cdots + p_M = 1\)</span>. The posterior odds for Models <span class="math inline">\(\mathcal{M}_i\)</span> vs <span class="math inline">\(\mathcal{M}_j\)</span> are <span class="math display">\[\begin{align*}
+\underbracket[0.25pt]{\frac{\Pr(\mathcal{M}_i \mid \boldsymbol{y})}{\Pr(\mathcal{M}_j \mid \boldsymbol{y})}}_{\text{posterior odds}} = \underbracket[0.25pt]{\frac{p(\boldsymbol{y} \mid \mathcal{M}_i)}{p(\boldsymbol{y} \mid \mathcal{M}_j)}}_{\text{Bayes factor}} \underbracket[0.25pt]{\frac{\Pr(\mathcal{M}_i)}{\Pr(\mathcal{M}_j)}}_{\text{prior odds}}
+\end{align*}\]</span> where the first term on the right hand side is the Bayes factor for model <span class="math inline">\(i\)</span> vs <span class="math inline">\(j\)</span>, denoted <span class="math inline">\(\mathsf{BF}_{ij}\)</span>. The Bayes factor is the ratio of marginal likelihoods, as <span class="math display">\[\begin{align*}
+p(\boldsymbol{y} \mid \mathcal{M}_i) = \int p(y \mid \boldsymbol{\theta}^{(i)}, \mathcal{M}_i) p( \boldsymbol{\theta}^{(i)} \mid \mathcal{M}_i) \mathrm{d}  \boldsymbol{\theta}^{(i)}.
+\end{align*}\]</span> Values of <span class="math inline">\(\mathsf{BF}_{ij}&gt;1\)</span> correspond to model <span class="math inline">\(\mathcal{M}_i\)</span> being more likely than <span class="math inline">\(\mathcal{M}_j\)</span>.</p>
+<p>While Bayes factors are used for model comparison, the answers depend very strongly on the prior <span class="math inline">\(p( \boldsymbol{\theta}^{(i)} \mid \mathcal{M}_i)\)</span> specified and the latter must be proper as a general rule for the ratio to be well-defined.</p>
+</div>
+<div id="exm-bayesfactor" class="theorem example">
+<p><span class="theorem-title"><strong>Example 2.2 (Bayes factor for the binomial model)</strong></span> The marginal likelihood for the <span class="math inline">\(Y \mid P=p \sim \mathsf{binom}(n,p)\)</span> model with prior <span class="math inline">\(P \sim \mathsf{beta}(\alpha, \beta)\)</span> is <span class="math display">\[\begin{align*}
+p_{Y}(y) = \binom{n}{y} \frac{\mathrm{beta}(\alpha + y, \beta + n - y)}{\mathrm{beta}(\alpha, \beta)}.
+\end{align*}\]</span> where <span class="math inline">\(\mathrm{beta}(\alpha, \beta) = \Gamma(\alpha)\Gamma(\beta)/\Gamma(\alpha+\beta)\)</span> is the beta function, expressed in terms of gamma functions.</p>
+<p>Consider three models with <span class="math inline">\(Y \mid P^{(i)}=p, \mathcal{M}_i \sim \mathsf{binom}(n, p)\)</span> for <span class="math inline">\(i=1, 2, 3\)</span> and uniform, point mass and beta priors <span class="math inline">\(P^{(1)}\sim \mathsf{unif}(0,1)\)</span>, <span class="math inline">\(P^{(2)} \sim \mathsf{beta}(3/2, 3/2)\)</span> and <span class="math inline">\(P^{(3)}\sim \mathsf{1}_{p=0.5}\)</span>. For <span class="math inline">\(\mathcal{M}_3\)</span>, the marginal likelihood is simply equal to the binomial distribution with <span class="math inline">\(p=0.5\)</span>.</p>
+<p>If <span class="math inline">\(n=14\)</span>, but we let instead the number of success varies, the models that put more mass closer to the ratio <span class="math inline">\(y/n\)</span> will be favored. The uniform prior in model <span class="math inline">\(\mathcal{M}_1\)</span> will have a higher Bayes factor than model <span class="math inline">\(\mathcal{M}_2\)</span> or <span class="math inline">\(\mathcal{M}_3\)</span> for values closer to <span class="math inline">\(p=0\)</span> or <span class="math inline">\(p=1\)</span>, but there is mild evidence as shown in <a href="#fig-bayesfactor" class="quarto-xref">Figure&nbsp;<span>2.3</span></a>.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Log of marginal posterior for binom with beta prior (default is uniform)</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>log_marg_post_beta <span class="ot">&lt;-</span> <span class="cf">function</span>(n, y, <span class="at">alpha =</span> <span class="dv">1</span>, <span class="at">beta =</span> <span class="dv">1</span>){</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">lchoose</span>(n, y) <span class="sc">+</span> <span class="fu">lbeta</span>(alpha <span class="sc">+</span> y, beta <span class="sc">+</span> n <span class="sc">-</span> y) <span class="sc">-</span> <span class="fu">lbeta</span>(alpha, beta)</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Log of Bayes factor</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>logBF2vs3 <span class="ot">&lt;-</span> <span class="cf">function</span>(y, n){ <span class="co"># model 2 (beta(1.5,1.5) vs 3 (point mass at 0.5)</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">log_marg_post_beta</span>(<span class="at">n =</span> n, <span class="at">y =</span> y, <span class="at">alpha =</span> <span class="fl">1.5</span>, <span class="at">beta =</span> <span class="fl">1.5</span>) <span class="sc">-</span> <span class="fu">dbinom</span>(<span class="at">x =</span> y, <span class="at">size =</span> n, <span class="at">prob =</span> <span class="fl">0.5</span>, <span class="at">log =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-bayesfactor" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-bayesfactor-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="bayesics_files/figure-html/fig-bayesfactor-1.png" class="img-fluid figure-img" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-bayesfactor-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;2.3: Log of Bayes factors for comparison of binomial models with <span class="math inline">\(n=14\)</span> trials as a function of the number of successes <span class="math inline">\(n\)</span>. Values larger than zero (on log scale) indicate preference for Model 2.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</div>
 <div id="prp-sequentiality" class="theorem proposition">
 <p><span class="theorem-title"><strong>Proposition 2.1 (Sequentiality and Bayesian updating)</strong></span> The likelihood is invariant to the order of the observations if they are independent. Thus, if we consider two blocks of observations <span class="math inline">\(\boldsymbol{y}_1\)</span> and <span class="math inline">\(\boldsymbol{y}_2\)</span> <span class="math display">\[p(\boldsymbol{\theta} \mid \boldsymbol{y}_1, \boldsymbol{y}_2) = p(\boldsymbol{\theta} \mid \boldsymbol{y}_1) p(\boldsymbol{\theta} \mid \boldsymbol{y}_2),\]</span> so it makes no difference if we treat data all at once or in blocks. More generally, for data exhibiting spatial or serial dependence, it makes sense to consider rather the conditional (sequential) decomposition <span class="math display">\[f(\boldsymbol{y}; \boldsymbol{\theta}) = f(\boldsymbol{y}_1; \boldsymbol{\theta}) f(\boldsymbol{y}_2; \boldsymbol{\theta}, \boldsymbol{y}_1) \cdots f(\boldsymbol{y}_n; \boldsymbol{\theta}, \boldsymbol{y}_1, \ldots, \boldsymbol{y}_{n-1})\]</span> where <span class="math inline">\(f(\boldsymbol{y}_k; \boldsymbol{y}_1, \ldots, \boldsymbol{y}_{k-1})\)</span> denotes the conditional density function given observations <span class="math inline">\(\boldsymbol{y}_1, \ldots, \boldsymbol{y}_{k-1}\)</span>.</p>
 <p>By Bayes’ rule, we can consider <em>updating</em> the posterior by adding terms to the likelihood, noting that <span class="math display">\[\begin{align*}
 p(\boldsymbol{\theta} \mid \boldsymbol{y}_1, \boldsymbol{y}_2) \propto p(\boldsymbol{y}_2 \mid \boldsymbol{y}_1, \boldsymbol{\theta}) p(\boldsymbol{\theta} \mid \boldsymbol{y}_1)
-\end{align*}\]</span> which amounts to treating the posterior <span class="math inline">\(p(\boldsymbol{\theta} \mid \boldsymbol{y}_1)\)</span> as a prior. If data are exchangeable, the order in which observations are collected and the order of the belief updating is irrelevant to the full posterior. <a href="#fig-sequential" class="quarto-xref">Figure&nbsp;<span>2.3</span></a> shows how the posterior becomes gradually closer to the scaled likelihood as we increase the sample size, and the posterior mode moves towards the true value of the parameter (here 0.3).</p>
+\end{align*}\]</span> which amounts to treating the posterior <span class="math inline">\(p(\boldsymbol{\theta} \mid \boldsymbol{y}_1)\)</span> as a prior. If data are exchangeable, the order in which observations are collected and the order of the belief updating is irrelevant to the full posterior. <a href="#fig-sequential" class="quarto-xref">Figure&nbsp;<span>2.4</span></a> shows how the posterior becomes gradually closer to the scaled likelihood as we increase the sample size, and the posterior mode moves towards the true value of the parameter (here 0.3).</p>
 <div class="cell">
 <div class="cell-output-display">
 <div id="fig-sequential" class="quarto-float quarto-figure quarto-figure-center anchored">
@@ -347,7 +386,7 @@ p(\boldsymbol{\theta} \mid \boldsymbol{y}_1, \boldsymbol{y}_2) \propto p(\boldsy
 <img src="bayesics_files/figure-html/fig-sequential-1.png" class="img-fluid figure-img" width="1152">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-sequential-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;2.3: Beta posterior and binomial likelihood with a uniform prior for increasing number of observations (from left to right) out of a total of 100 trials.
+Figure&nbsp;2.4: Beta posterior and binomial likelihood with a uniform prior for increasing number of observations (from left to right) out of a total of 100 trials.
 </figcaption>
 </figure>
 </div>
@@ -355,28 +394,28 @@ Figure&nbsp;2.3: Beta posterior and binomial likelihood with a uniform prior for
 </div>
 </div>
 <div id="exm-numericalintegration" class="theorem example">
-<p><span class="theorem-title"><strong>Example 2.2</strong></span> While we can calculate analytically the value of the normalizing constant for the beta-binomial model, we could also for arbitrary priors use numerical integration or Monte Carlo methods in the event the parameter vector <span class="math inline">\(\boldsymbol{\theta}\)</span> is low-dimensional.</p>
+<p><span class="theorem-title"><strong>Example 2.3</strong></span> While we can calculate analytically the value of the normalizing constant for the beta-binomial model, we could also for arbitrary priors use numerical integration or Monte Carlo methods in the event the parameter vector <span class="math inline">\(\boldsymbol{\theta}\)</span> is low-dimensional.</p>
 <p>While estimation of the normalizing constant is possible in simple models, the following highlights some challenges that are worth keeping in mind. In a model for discrete data (that is, assigning probability mass to a countable set of outcomes), the terms in the likelihood are probabilities and thus the likelihood becomes smaller as we gather more observations (since we multiply terms between zero or one). The marginal likelihood term becomes smaller and smaller, so it’s reciprocal is big and this can lead to arithmetic underflow.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>y <span class="ot">&lt;-</span> <span class="dv">6</span>L <span class="co"># number of successes </span></span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="dv">14</span>L <span class="co"># number of trials</span></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>alpha <span class="ot">&lt;-</span> beta <span class="ot">&lt;-</span> <span class="fl">1.5</span> <span class="co"># prior parameters</span></span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>unnormalized_posterior <span class="ot">&lt;-</span> <span class="cf">function</span>(theta){</span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>  theta<span class="sc">^</span>(y<span class="sc">+</span>alpha<span class="dv">-1</span>) <span class="sc">*</span> (<span class="dv">1</span><span class="sc">-</span>theta)<span class="sc">^</span>(n<span class="sc">-</span>y <span class="sc">+</span> beta <span class="sc">-</span> <span class="dv">1</span>)</span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="fu">integrate</span>(<span class="at">f =</span> unnormalized_posterior,</span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>          <span class="at">lower =</span> <span class="dv">0</span>,</span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>          <span class="at">upper =</span> <span class="dv">1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>y <span class="ot">&lt;-</span> <span class="dv">6</span>L <span class="co"># number of successes </span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="dv">14</span>L <span class="co"># number of trials</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>alpha <span class="ot">&lt;-</span> beta <span class="ot">&lt;-</span> <span class="fl">1.5</span> <span class="co"># prior parameters</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>unnormalized_posterior <span class="ot">&lt;-</span> <span class="cf">function</span>(theta){</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>  theta<span class="sc">^</span>(y<span class="sc">+</span>alpha<span class="dv">-1</span>) <span class="sc">*</span> (<span class="dv">1</span><span class="sc">-</span>theta)<span class="sc">^</span>(n<span class="sc">-</span>y <span class="sc">+</span> beta <span class="sc">-</span> <span class="dv">1</span>)</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="fu">integrate</span>(<span class="at">f =</span> unnormalized_posterior,</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>          <span class="at">lower =</span> <span class="dv">0</span>,</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>          <span class="at">upper =</span> <span class="dv">1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>1.066906e-05 with absolute error &lt; 1e-12</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Compare with known constant</span></span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="fu">beta</span>(y <span class="sc">+</span> alpha, n <span class="sc">-</span> y <span class="sc">+</span> beta)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Compare with known constant</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="fu">beta</span>(y <span class="sc">+</span> alpha, n <span class="sc">-</span> y <span class="sc">+</span> beta)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 1.066906e-05</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Monte Carlo integration</span></span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="fu">mean</span>(<span class="fu">unnormalized_posterior</span>(<span class="fu">runif</span>(<span class="fl">1e5</span>)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Monte Carlo integration</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="fu">mean</span>(<span class="fu">unnormalized_posterior</span>(<span class="fu">runif</span>(<span class="fl">1e5</span>)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 1.064067e-05</code></pre>
 </div>
@@ -390,14 +429,14 @@ Figure&nbsp;2.3: Beta posterior and binomial likelihood with a uniform prior for
 p(y_{\text{new}} \mid \boldsymbol{y}) =
 \int_{\Theta} p(y_{\text{new}}  \mid \boldsymbol{\theta}) p(\boldsymbol{\theta} \mid  \boldsymbol{y}) \mathrm{d} \boldsymbol{\theta}
 \end{align*}\]</span></p>
-<p>Given draws from the posterior distribution, say <span class="math inline">\(\boldsymbol{\theta}_b\)</span> <span class="math inline">\((b=1, \ldots, B)\)</span>, we sample from each a new realization from the distribution appearing in the likelihood <span class="math inline">\(p(y_{\text{new}}  \mid \boldsymbol{\theta}_b)\)</span>. This is different from the frequentist setting, which fixes the value of the parameter to some estimate <span class="math inline">\(\widehat{\boldsymbol{\theta}}\)</span>; by contrast, the posterior predictive, here a beta-binomial distribution <span class="math inline">\(\mathsf{BetaBin}(n, \alpha + y, n - y + \beta)\)</span>, carries over the uncertainty so will typically be wider and overdispersed relative to the corresponding binomial model. This can be easily seen from the left-panel of <a href="#fig-betabinompostpred" class="quarto-xref">Figure&nbsp;<span>2.4</span></a>, which contrasts the binomial mass function evaluated at the maximum likelihood estimator <span class="math inline">\(\widehat{\theta}=6/14\)</span> with the posterior predictive.</p>
+<p>Given draws from the posterior distribution, say <span class="math inline">\(\boldsymbol{\theta}_b\)</span> <span class="math inline">\((b=1, \ldots, B)\)</span>, we sample from each a new realization from the distribution appearing in the likelihood <span class="math inline">\(p(y_{\text{new}}  \mid \boldsymbol{\theta}_b)\)</span>. This is different from the frequentist setting, which fixes the value of the parameter to some estimate <span class="math inline">\(\widehat{\boldsymbol{\theta}}\)</span>; by contrast, the posterior predictive, here a beta-binomial distribution <span class="math inline">\(\mathsf{BetaBin}(n, \alpha + y, n - y + \beta)\)</span>, carries over the uncertainty so will typically be wider and overdispersed relative to the corresponding binomial model. This can be easily seen from the left-panel of <a href="#fig-betabinompostpred" class="quarto-xref">Figure&nbsp;<span>2.5</span></a>, which contrasts the binomial mass function evaluated at the maximum likelihood estimator <span class="math inline">\(\widehat{\theta}=6/14\)</span> with the posterior predictive.</p>
 <div class="exm-betabinompred">
 <div class="cell">
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>npost <span class="ot">&lt;-</span> <span class="fl">1e4</span>L</span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Sample draws from the posterior distribution</span></span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>post_samp <span class="ot">&lt;-</span> <span class="fu">rbeta</span>(<span class="at">n =</span> npost, y <span class="sc">+</span> alpha, n <span class="sc">-</span> y <span class="sc">+</span> beta)</span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="co"># For each draw, sample new observation</span></span>
-<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>post_pred <span class="ot">&lt;-</span> <span class="fu">rbinom</span>(<span class="at">n =</span> npost, <span class="at">size =</span> n, <span class="at">prob =</span> post_samp)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>npost <span class="ot">&lt;-</span> <span class="fl">1e4</span>L</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Sample draws from the posterior distribution</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>post_samp <span class="ot">&lt;-</span> <span class="fu">rbeta</span>(<span class="at">n =</span> npost, y <span class="sc">+</span> alpha, n <span class="sc">-</span> y <span class="sc">+</span> beta)</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="co"># For each draw, sample new observation</span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>post_pred <span class="ot">&lt;-</span> <span class="fu">rbinom</span>(<span class="at">n =</span> npost, <span class="at">size =</span> n, <span class="at">prob =</span> post_samp)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
 <div class="cell-output-display">
@@ -407,7 +446,7 @@ p(y_{\text{new}} \mid \boldsymbol{y}) =
 <img src="bayesics_files/figure-html/fig-betabinompostpred-1.png" class="img-fluid figure-img" width="672">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-betabinompostpred-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;2.4: Beta-binomial posterior predictive distribution with corresponding binomial mass function evaluated at the maximum likelihood estimator.
+Figure&nbsp;2.5: Beta-binomial posterior predictive distribution with corresponding binomial mass function evaluated at the maximum likelihood estimator.
 </figcaption>
 </figure>
 </div>
@@ -415,7 +454,7 @@ Figure&nbsp;2.4: Beta-binomial posterior predictive distribution with correspond
 </div>
 </div>
 <div id="exm-normal-post-pred" class="theorem example">
-<p><span class="theorem-title"><strong>Example 2.3 (Posterior predictive distribution of univariate Gaussian with known mean)</strong></span> Consider an <span class="math inline">\(n\)</span> sample of independent and identically distributed Gaussian, <span class="math inline">\(Y_i \sim \mathsf{Gauss}(0, \tau^{-1})\)</span> (<span class="math inline">\(i=1, \ldots, n\)</span>), where we assign a gamma prior on the precision <span class="math inline">\(\tau \sim \mathsf{gamma}(\alpha, \beta)\)</span>. The posterior is <span class="math display">\[\begin{align*}
+<p><span class="theorem-title"><strong>Example 2.4 (Posterior predictive distribution of univariate Gaussian with known mean)</strong></span> Consider an <span class="math inline">\(n\)</span> sample of independent and identically distributed Gaussian, <span class="math inline">\(Y_i \sim \mathsf{Gauss}(0, \tau^{-1})\)</span> (<span class="math inline">\(i=1, \ldots, n\)</span>), where we assign a gamma prior on the precision <span class="math inline">\(\tau \sim \mathsf{gamma}(\alpha, \beta)\)</span>. The posterior is <span class="math display">\[\begin{align*}
 p(\tau \mid \boldsymbol{y}) \stackrel{\tau}{\propto} \prod_{i=1}^n \tau^{n/2}\exp\left(-\tau \frac{\sum_{i=1}^n{y_i^2}}{2}\right) \times \tau^{\alpha-1} \exp(-\beta \tau)
 \end{align*}\]</span> and rearranging the terms to collect powers of <span class="math inline">\(\tau\)</span>, etc. we find that the posterior for <span class="math inline">\(\tau\)</span> must also be gamma, with shape parameter <span class="math inline">\(\alpha^* = \alpha + n/2\)</span> and rate <span class="math inline">\(\beta^* = \beta + \sum_{i=1}^n y_i^2/2\)</span>.</p>
 <p>The posterior predictive is <span class="math display">\[\begin{align*}
@@ -440,12 +479,12 @@ p(y_{\text{new}} \mid \boldsymbol{y}) &amp;= \int_0^\infty \frac{\tau^{1/2}}{(2\
 <p>Most of the field of Bayesian statistics revolves around the creation of algorithms that either circumvent the calculation of the normalizing constant (notably using Monte Carlo and Markov chain Monte Carlo methods) or else provide accurate numerical approximation of the posterior pointwise, including for marginalizing out all but one parameters (integrated nested Laplace approximations, variational inference, etc.) The target of inference is the whole posterior distribution, a potentially high-dimensional object which may be difficult to summarize or visualize. We can thus report only characteristics of the the latter.</p>
 <p>The choice of point summary to keep has it’s root in decision theory.</p>
 <div id="def-lossfunction" class="theorem definition">
-<p><span class="theorem-title"><strong>Definition 2.1 (Loss function)</strong></span> A loss function <span class="math inline">\(c(\boldsymbol{\theta}, \boldsymbol{\upsilon})\)</span> is a mapping from <span class="math inline">\(\boldsymbol{\Theta} \to \mathbb{R}^k\)</span> that assigns a weight to each value of <span class="math inline">\(\boldsymbol{\theta}\)</span>, corresponding to the regret or loss arising from choosing this value. The corresponding point estimator <span class="math inline">\(\widehat{\boldsymbol{\upsilon}}\)</span> is the minimizer of the expected loss,</p>
+<p><span class="theorem-title"><strong>Definition 2.2 (Loss function)</strong></span> A loss function <span class="math inline">\(c(\boldsymbol{\theta}, \boldsymbol{\upsilon})\)</span> is a mapping from <span class="math inline">\(\boldsymbol{\Theta} \to \mathbb{R}^k\)</span> that assigns a weight to each value of <span class="math inline">\(\boldsymbol{\theta}\)</span>, corresponding to the regret or loss arising from choosing this value. The corresponding point estimator <span class="math inline">\(\widehat{\boldsymbol{\upsilon}}\)</span> is the minimizer of the expected loss,</p>
 <p><span class="math display">\[\begin{align*}
 \widehat{\boldsymbol{\upsilon}} &amp;= \mathop{\mathrm{argmin}}_{\boldsymbol{\upsilon}}\mathsf{E}_{\boldsymbol{\Theta} \mid \boldsymbol{Y}}\{c(\boldsymbol{\theta}, \boldsymbol{v})\} \\&amp;=\mathop{\mathrm{argmin}}_{\boldsymbol{\upsilon}} \int_{\boldsymbol{\Theta}} c(\boldsymbol{\theta}, \boldsymbol{\upsilon})p(\boldsymbol{\theta} \mid \boldsymbol{y}) \mathrm{d} \boldsymbol{\theta}
 \end{align*}\]</span></p>
 </div>
-<p>For example, in a univariate setting, the quadratic loss <span class="math inline">\(c(\theta, \upsilon) = (\theta-\upsilon)^2\)</span> returns the posterior mean, the absolute loss <span class="math inline">\(c(\theta, \upsilon)=|\theta - \upsilon|\)</span> returns the posterior median and the 0-1 loss <span class="math inline">\(c(\theta, \upsilon) = \mathrm{I}(\upsilon \neq \theta)\)</span> returns the posterior mode. All of these point estimators are central tendency measures, but some may be more adequate depending on the setting as they can correspond to potentially different values, as shown in the left-panel of <a href="#fig-central-moments" class="quarto-xref">Figure&nbsp;<span>2.5</span></a>. The choice is application specific: for multimodal distributions, the mode is likely a better choice.</p>
+<p>For example, in a univariate setting, the quadratic loss <span class="math inline">\(c(\theta, \upsilon) = (\theta-\upsilon)^2\)</span> returns the posterior mean, the absolute loss <span class="math inline">\(c(\theta, \upsilon)=|\theta - \upsilon|\)</span> returns the posterior median and the 0-1 loss <span class="math inline">\(c(\theta, \upsilon) = \mathrm{I}(\upsilon \neq \theta)\)</span> returns the posterior mode. All of these point estimators are central tendency measures, but some may be more adequate depending on the setting as they can correspond to potentially different values, as shown in the left-panel of <a href="#fig-central-moments" class="quarto-xref">Figure&nbsp;<span>2.6</span></a>. The choice is application specific: for multimodal distributions, the mode is likely a better choice.</p>
 <p>If we know how to evaluate the distribution numerically, we can optimize to find the mode or else return the value for the pointwise evaluation on a grid at which the density achieves it’s maximum. The mean and median would have to be evaluated by numerical integration if there is no closed-form expression for the latter.</p>
 <p>If we have rather a sample from the posterior with associated posterior density values, then we can obtain the mode as the parameter combination with the highest posterior, the median from the value at rank <span class="math inline">\(\lfloor n/2\rfloor\)</span> and the mean through the sample mean of posterior draws.</p>
 <div class="cell">
@@ -456,7 +495,7 @@ p(y_{\text{new}} \mid \boldsymbol{y}) &amp;= \int_0^\infty \frac{\tau^{1/2}}{(2\
 <img src="bayesics_files/figure-html/fig-central-moments-1.png" class="img-fluid figure-img" width="672">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-central-moments-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;2.5: Point estimators from a right-skewed distribution (left) and from a multimodal distribution (right).
+Figure&nbsp;2.6: Point estimators from a right-skewed distribution (left) and from a multimodal distribution (right).
 </figcaption>
 </figure>
 </div>
@@ -464,7 +503,7 @@ Figure&nbsp;2.5: Point estimators from a right-skewed distribution (left) and fr
 </div>
 <p>The loss function is often a functional (meaning a one-dimensional summary) from the posterior. The following example shows how it reduces a three-dimensional problem into a single risk measure.</p>
 <div id="exm-loss-extremes" class="theorem example">
-<p><span class="theorem-title"><strong>Example 2.4 (Danish insurance losses)</strong></span> In extreme value, we are often interested in assessing the risk of events that are rare enough that they lie beyond the range of observed data. To provide a scientific extrapolation, it often is justified to fit a generalized Pareto distribution to exceedances of <span class="math inline">\(Z=Y-u\)</span>, for some user-specified threshold <span class="math inline">\(u\)</span> which is often taken as a large quantile of the distribution of <span class="math inline">\(Y\)</span>. The generalized Pareto distribution function is <span class="math display">\[\begin{align*}
+<p><span class="theorem-title"><strong>Example 2.5 (Danish insurance losses)</strong></span> In extreme value, we are often interested in assessing the risk of events that are rare enough that they lie beyond the range of observed data. To provide a scientific extrapolation, it often is justified to fit a generalized Pareto distribution to exceedances of <span class="math inline">\(Z=Y-u\)</span>, for some user-specified threshold <span class="math inline">\(u\)</span> which is often taken as a large quantile of the distribution of <span class="math inline">\(Y\)</span>. The generalized Pareto distribution function is <span class="math display">\[\begin{align*}
 F(z; \tau, \xi) = 1- \begin{cases}
 \left(1+\xi/\tau z\right)^{-1/\xi}_{+}, &amp; \xi \neq 0\\
 \exp(-z/\tau), &amp; \xi = 0. \end{cases}
@@ -479,7 +518,7 @@ F(z; \tau, \xi) = 1- \begin{cases}
 <img src="bayesics_files/figure-html/fig-danish-1.png" class="img-fluid figure-img" width="672">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-danish-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;2.6: Time series of Danish fire claims exceeding a million krone (left) and posterior samples from the scale <span class="math inline">\(\tau\)</span> and shape <span class="math inline">\(\xi\)</span> of the generalized Pareto model fitted to exceedances above 10 million krone (right).
+Figure&nbsp;2.7: Time series of Danish fire claims exceeding a million krone (left) and posterior samples from the scale <span class="math inline">\(\tau\)</span> and shape <span class="math inline">\(\xi\)</span> of the generalized Pareto model fitted to exceedances above 10 million krone (right).
 </figcaption>
 </figure>
 </div>
@@ -494,39 +533,39 @@ Figure&nbsp;2.6: Time series of Danish fire claims exceeding a million krone (le
 \end{align*}\]</span> If we can generate <span class="math inline">\(u_0, \ldots, u_d\)</span> uniformly over <span class="math inline">\(\mathcal{C}_R\)</span>, then the draws <span class="math inline">\((u_1/u_0^r, \ldots, u_d/u_0^r)\)</span> are from the normalized density <span class="math inline">\(f\)</span>. Rejection sampling is used to obtain uniform draws over <span class="math inline">\(\mathcal{C}_r\)</span> under some conditions on the density and marginal moments. See <a href="https://paulnorthrop.github.io/rust/articles/rust-a-vignette.html">the <code>rust</code> package vignette</a> for technical details and examples. Like with other accept-reject algorithms, the acceptance rate of the proposal goes down with the dimension of the problem.</p>
 </div>
 <div id="exm-rust" class="theorem example">
-<p><span class="theorem-title"><strong>Example 2.5</strong></span> We use the ratio-of-uniform algorithm for the data from <a href="#exm-loss-extremes" class="quarto-xref">Example&nbsp;<span>2.4</span></a> to generate draws from the posterior. We illustrate below the <code>rust</code> package with a user-specified prior and posterior. We fit a generalized Pareto distribution <span class="math inline">\(Y \sim \mathsf{GP}(\sigma, \xi)\)</span> to exceedances above 10 millions krones to the <code>danish</code> fire insurance data, using a truncated maximal data information prior <span class="math inline">\(p(\sigma, \xi) \propto \sigma^{-1}\exp(-\xi+1)\mathrm{I}(\xi &gt; -1)\)</span>.</p>
+<p><span class="theorem-title"><strong>Example 2.6</strong></span> We use the ratio-of-uniform algorithm for the data from <a href="#exm-loss-extremes" class="quarto-xref">Example&nbsp;<span>2.5</span></a> to generate draws from the posterior. We illustrate below the <code>rust</code> package with a user-specified prior and posterior. We fit a generalized Pareto distribution <span class="math inline">\(Y \sim \mathsf{GP}(\sigma, \xi)\)</span> to exceedances above 10 millions krones to the <code>danish</code> fire insurance data, using a truncated maximal data information prior <span class="math inline">\(p(\sigma, \xi) \propto \sigma^{-1}\exp(-\xi+1)\mathrm{I}(\xi &gt; -1)\)</span>.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(danish, <span class="at">package =</span> <span class="st">"evir"</span>)</span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Extract threshold exceedances</span></span>
-<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>exc <span class="ot">&lt;-</span> danish[danish <span class="sc">&gt;</span> <span class="dv">10</span>] <span class="sc">-</span> <span class="dv">10</span></span>
-<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Create a function for the log prior</span></span>
-<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>logmdiprior <span class="ot">&lt;-</span> <span class="cf">function</span>(par, ...){</span>
-<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span>(<span class="fu">isTRUE</span>(<span class="fu">any</span>(par[<span class="dv">1</span>] <span class="sc">&lt;=</span> <span class="dv">0</span>, par[<span class="dv">2</span>] <span class="sc">&lt;</span> <span class="sc">-</span><span class="dv">1</span>))){</span>
-<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>    <span class="fu">return</span>(<span class="sc">-</span><span class="cn">Inf</span>)</span>
-<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>  }</span>
-<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>  <span class="sc">-</span><span class="fu">log</span>(par[<span class="dv">1</span>]) <span class="sc">-</span> par[<span class="dv">2</span>]</span>
-<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Same for log likelihood, assuming independent data</span></span>
-<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a>loglik_gp <span class="ot">&lt;-</span> <span class="cf">function</span>(par, <span class="at">data =</span> exc, ...){</span>
-<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span>(<span class="fu">isTRUE</span>(<span class="fu">any</span>(par[<span class="dv">1</span>] <span class="sc">&lt;=</span> <span class="dv">0</span>, par[<span class="dv">2</span>] <span class="sc">&lt;</span> <span class="sc">-</span><span class="dv">1</span>))){</span>
-<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a>    <span class="fu">return</span>(<span class="sc">-</span><span class="cn">Inf</span>)</span>
-<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a>  }</span>
-<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">sum</span>(mev<span class="sc">::</span><span class="fu">dgp</span>(<span class="at">x =</span> data, <span class="at">scale =</span> par[<span class="dv">1</span>], <span class="at">shape =</span> par[<span class="dv">2</span>], <span class="at">log =</span> <span class="cn">TRUE</span>))</span>
-<span id="cb8-17"><a href="#cb8-17" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb8-18"><a href="#cb8-18" aria-hidden="true" tabindex="-1"></a>logpost <span class="ot">&lt;-</span> <span class="cf">function</span>(par, ...){</span>
-<span id="cb8-19"><a href="#cb8-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">logmdiprior</span>(par) <span class="sc">+</span> <span class="fu">loglik_gp</span>(par)</span>
-<span id="cb8-20"><a href="#cb8-20" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb8-21"><a href="#cb8-21" aria-hidden="true" tabindex="-1"></a><span class="co"># Sampler using ratio-of-uniform method</span></span>
-<span id="cb8-22"><a href="#cb8-22" aria-hidden="true" tabindex="-1"></a>ru_output <span class="ot">&lt;-</span> rust<span class="sc">::</span><span class="fu">ru</span>(</span>
-<span id="cb8-23"><a href="#cb8-23" aria-hidden="true" tabindex="-1"></a>  <span class="at">logf =</span> logpost,  <span class="co"># log posterior function</span></span>
-<span id="cb8-24"><a href="#cb8-24" aria-hidden="true" tabindex="-1"></a>  <span class="at">n =</span> <span class="dv">10000</span>, <span class="co"># number of posterior draws</span></span>
-<span id="cb8-25"><a href="#cb8-25" aria-hidden="true" tabindex="-1"></a>  <span class="at">d =</span> <span class="dv">2</span>, <span class="co"># dimension of the parameter vector</span></span>
-<span id="cb8-26"><a href="#cb8-26" aria-hidden="true" tabindex="-1"></a>  <span class="at">init =</span> mev<span class="sc">::</span><span class="fu">fit.gpd</span>(danish, <span class="at">thresh =</span> <span class="dv">10</span>)<span class="sc">$</span>par,</span>
-<span id="cb8-27"><a href="#cb8-27" aria-hidden="true" tabindex="-1"></a>  <span class="at">lower =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="sc">-</span><span class="dv">1</span>))</span>
-<span id="cb8-28"><a href="#cb8-28" aria-hidden="true" tabindex="-1"></a><span class="do">## Acceptance rate </span></span>
-<span id="cb8-29"><a href="#cb8-29" aria-hidden="true" tabindex="-1"></a><span class="co"># ru_output$pa</span></span>
-<span id="cb8-30"><a href="#cb8-30" aria-hidden="true" tabindex="-1"></a><span class="do">## Posterior samples</span></span>
-<span id="cb8-31"><a href="#cb8-31" aria-hidden="true" tabindex="-1"></a>postsamp <span class="ot">&lt;-</span> ru_output<span class="sc">$</span>sim_vals</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(danish, <span class="at">package =</span> <span class="st">"evir"</span>)</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Extract threshold exceedances</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>exc <span class="ot">&lt;-</span> danish[danish <span class="sc">&gt;</span> <span class="dv">10</span>] <span class="sc">-</span> <span class="dv">10</span></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Create a function for the log prior</span></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>logmdiprior <span class="ot">&lt;-</span> <span class="cf">function</span>(par, ...){</span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span>(<span class="fu">isTRUE</span>(<span class="fu">any</span>(par[<span class="dv">1</span>] <span class="sc">&lt;=</span> <span class="dv">0</span>, par[<span class="dv">2</span>] <span class="sc">&lt;</span> <span class="sc">-</span><span class="dv">1</span>))){</span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>    <span class="fu">return</span>(<span class="sc">-</span><span class="cn">Inf</span>)</span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>  <span class="sc">-</span><span class="fu">log</span>(par[<span class="dv">1</span>]) <span class="sc">-</span> par[<span class="dv">2</span>]</span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Same for log likelihood, assuming independent data</span></span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a>loglik_gp <span class="ot">&lt;-</span> <span class="cf">function</span>(par, <span class="at">data =</span> exc, ...){</span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span>(<span class="fu">isTRUE</span>(<span class="fu">any</span>(par[<span class="dv">1</span>] <span class="sc">&lt;=</span> <span class="dv">0</span>, par[<span class="dv">2</span>] <span class="sc">&lt;</span> <span class="sc">-</span><span class="dv">1</span>))){</span>
+<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a>    <span class="fu">return</span>(<span class="sc">-</span><span class="cn">Inf</span>)</span>
+<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">sum</span>(mev<span class="sc">::</span><span class="fu">dgp</span>(<span class="at">x =</span> data, <span class="at">scale =</span> par[<span class="dv">1</span>], <span class="at">shape =</span> par[<span class="dv">2</span>], <span class="at">log =</span> <span class="cn">TRUE</span>))</span>
+<span id="cb9-17"><a href="#cb9-17" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb9-18"><a href="#cb9-18" aria-hidden="true" tabindex="-1"></a>logpost <span class="ot">&lt;-</span> <span class="cf">function</span>(par, ...){</span>
+<span id="cb9-19"><a href="#cb9-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">logmdiprior</span>(par) <span class="sc">+</span> <span class="fu">loglik_gp</span>(par)</span>
+<span id="cb9-20"><a href="#cb9-20" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb9-21"><a href="#cb9-21" aria-hidden="true" tabindex="-1"></a><span class="co"># Sampler using ratio-of-uniform method</span></span>
+<span id="cb9-22"><a href="#cb9-22" aria-hidden="true" tabindex="-1"></a>ru_output <span class="ot">&lt;-</span> rust<span class="sc">::</span><span class="fu">ru</span>(</span>
+<span id="cb9-23"><a href="#cb9-23" aria-hidden="true" tabindex="-1"></a>  <span class="at">logf =</span> logpost,  <span class="co"># log posterior function</span></span>
+<span id="cb9-24"><a href="#cb9-24" aria-hidden="true" tabindex="-1"></a>  <span class="at">n =</span> <span class="dv">10000</span>, <span class="co"># number of posterior draws</span></span>
+<span id="cb9-25"><a href="#cb9-25" aria-hidden="true" tabindex="-1"></a>  <span class="at">d =</span> <span class="dv">2</span>, <span class="co"># dimension of the parameter vector</span></span>
+<span id="cb9-26"><a href="#cb9-26" aria-hidden="true" tabindex="-1"></a>  <span class="at">init =</span> mev<span class="sc">::</span><span class="fu">fit.gpd</span>(danish, <span class="at">thresh =</span> <span class="dv">10</span>)<span class="sc">$</span>par,</span>
+<span id="cb9-27"><a href="#cb9-27" aria-hidden="true" tabindex="-1"></a>  <span class="at">lower =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="sc">-</span><span class="dv">1</span>))</span>
+<span id="cb9-28"><a href="#cb9-28" aria-hidden="true" tabindex="-1"></a><span class="do">## Acceptance rate </span></span>
+<span id="cb9-29"><a href="#cb9-29" aria-hidden="true" tabindex="-1"></a><span class="co"># ru_output$pa</span></span>
+<span id="cb9-30"><a href="#cb9-30" aria-hidden="true" tabindex="-1"></a><span class="do">## Posterior samples</span></span>
+<span id="cb9-31"><a href="#cb9-31" aria-hidden="true" tabindex="-1"></a>postsamp <span class="ot">&lt;-</span> ru_output<span class="sc">$</span>sim_vals</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Even without modification, the acceptance rate is 52%, which is quite efficient in the context. The generalized Pareto approximation suggests a very heavy tail: values of <span class="math inline">\(\xi \geq 1\)</span> correspond to distributions with infinite first moment, and those with <span class="math inline">\(\xi \geq 1/2\)</span> to infinite variance.</p>
 <div class="cell">
@@ -537,7 +576,7 @@ Figure&nbsp;2.6: Time series of Danish fire claims exceeding a million krone (le
 <img src="bayesics_files/figure-html/fig-danish-rou-1.png" class="img-fluid figure-img" width="672">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-danish-rou-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;2.7: Scatterplot of posterior samples from the generalized Pareto model applied to Danish fire insurance losses above 10 millions krones, with maximal data information prior (left) and posterior predictive density on log scale (right).
+Figure&nbsp;2.8: Scatterplot of posterior samples from the generalized Pareto model applied to Danish fire insurance losses above 10 millions krones, with maximal data information prior (left) and posterior predictive density on log scale (right).
 </figcaption>
 </figure>
 </div>
@@ -549,7 +588,7 @@ Figure&nbsp;2.7: Scatterplot of posterior samples from the generalized Pareto mo
 \end{align*}\]</span> and solving for <span class="math inline">\(q_{\alpha}\)</span> gives <span class="math display">\[\begin{align*}
 q_{\alpha} = u+ \frac{\tau}{\xi} \left\{\left(\frac{\zeta_u}{1-\alpha}\right)^\xi-1\right\}.
 \end{align*}\]</span></p>
-<p>To obtain the posterior distribution of the <span class="math inline">\(\alpha\)</span> quantile, <span class="math inline">\(q_{\alpha}\)</span>, it suffices to plug in each posterior sample and evaluate the function: the uncertainty is carried over from the simulated values of the parameters to those of the quantile <span class="math inline">\(q_{\alpha}\)</span>. The left panel of <a href="#fig-lossfn" class="quarto-xref">Figure&nbsp;<span>2.8</span></a> shows the posterior density estimate of the <span class="math inline">\(\mathsf{VaR}(0.99)\)</span> along with the maximum a posteriori (mode) of the latter.</p>
+<p>To obtain the posterior distribution of the <span class="math inline">\(\alpha\)</span> quantile, <span class="math inline">\(q_{\alpha}\)</span>, it suffices to plug in each posterior sample and evaluate the function: the uncertainty is carried over from the simulated values of the parameters to those of the quantile <span class="math inline">\(q_{\alpha}\)</span>. The left panel of <a href="#fig-lossfn" class="quarto-xref">Figure&nbsp;<span>2.9</span></a> shows the posterior density estimate of the <span class="math inline">\(\mathsf{VaR}(0.99)\)</span> along with the maximum a posteriori (mode) of the latter.</p>
 <p>Suppose that we prefer to under-estimate the value-at-risk rather than overestimate: this could be captured by the custom loss function <span class="math display">\[\begin{align*}
 c(q, q_0) =
 \begin{cases}
@@ -558,34 +597,34 @@ c(q, q_0) =
 \end{cases}
 \end{align*}\]</span> For a given value of the value-at-risk <span class="math inline">\(q_0\)</span> evaluated on a grid, we thus compute <span class="math display">\[\begin{align*}
 r(q_0) = \int_{\boldsymbol{\Theta}}c(q(\boldsymbol{\theta}), q_0) p (\boldsymbol{\theta} \mid \boldsymbol{y}) \mathrm{d} \boldsymbol{\theta}
-\end{align*}\]</span> and we seek to minimize the risk, <span class="math inline">\(\widehat{q} =\mathrm{argmin}_{q_0 \in \mathbb{R}_{+}} r(q_0)\)</span>. The value returned that minimizes the loss, shown in <a href="#fig-lossfn" class="quarto-xref">Figure&nbsp;<span>2.8</span></a>, is to the left of the posterior mean for <span class="math inline">\(q_\alpha\)</span>.</p>
+\end{align*}\]</span> and we seek to minimize the risk, <span class="math inline">\(\widehat{q} =\mathrm{argmin}_{q_0 \in \mathbb{R}_{+}} r(q_0)\)</span>. The value returned that minimizes the loss, shown in <a href="#fig-lossfn" class="quarto-xref">Figure&nbsp;<span>2.9</span></a>, is to the left of the posterior mean for <span class="math inline">\(q_\alpha\)</span>.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Compute value at risk from generalized Pareto distribution quantile fn</span></span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>VaR_post <span class="ot">&lt;-</span> <span class="fu">with</span>(post_samp,   <span class="co"># data frame of posterior draws</span></span>
-<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>            revdbayes<span class="sc">::</span><span class="fu">qgp</span>(   <span class="co"># with columns 'probexc', 'scale', 'shape'</span></span>
-<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">p =</span> <span class="fl">0.01</span><span class="sc">/</span>probexc, </span>
-<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">loc =</span> <span class="dv">10</span>, </span>
-<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">scale =</span> scale, </span>
-<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">shape =</span> shape, </span>
-<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">lower.tail =</span> <span class="cn">FALSE</span>))</span>
-<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Loss function</span></span>
-<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>loss <span class="ot">&lt;-</span> <span class="cf">function</span>(qhat, q){</span>
-<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mean</span>(<span class="fu">ifelse</span>(q <span class="sc">&gt;</span> qhat,</span>
-<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a>           <span class="fl">0.5</span><span class="sc">*</span>(<span class="fl">0.99</span><span class="sc">*</span>q<span class="sc">-</span>qhat),</span>
-<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a>           <span class="fl">0.75</span><span class="sc">*</span>(qhat<span class="fl">-1.01</span><span class="sc">*</span>q)))</span>
-<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a><span class="co"># Create a grid of values over which to estimate the loss for VaR</span></span>
-<span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a>nvals <span class="ot">&lt;-</span> <span class="dv">101</span>L</span>
-<span id="cb9-17"><a href="#cb9-17" aria-hidden="true" tabindex="-1"></a>VaR_grid <span class="ot">&lt;-</span> <span class="fu">seq</span>(</span>
-<span id="cb9-18"><a href="#cb9-18" aria-hidden="true" tabindex="-1"></a>  <span class="at">from =</span> <span class="fu">quantile</span>(VaR_post, <span class="fl">0.01</span>),</span>
-<span id="cb9-19"><a href="#cb9-19" aria-hidden="true" tabindex="-1"></a>  <span class="at">to =</span> <span class="fu">quantile</span>(VaR_post, <span class="fl">0.99</span>), </span>
-<span id="cb9-20"><a href="#cb9-20" aria-hidden="true" tabindex="-1"></a>  <span class="at">length.out =</span> nvals)</span>
-<span id="cb9-21"><a href="#cb9-21" aria-hidden="true" tabindex="-1"></a><span class="co"># Create a container to store results</span></span>
-<span id="cb9-22"><a href="#cb9-22" aria-hidden="true" tabindex="-1"></a>risk <span class="ot">&lt;-</span> <span class="fu">numeric</span>(<span class="at">length =</span> nvals)</span>
-<span id="cb9-23"><a href="#cb9-23" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span>(i <span class="cf">in</span> <span class="fu">seq_len</span>(nvals)){</span>
-<span id="cb9-24"><a href="#cb9-24" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Compute integral (Monte Carlo average over draws)</span></span>
-<span id="cb9-25"><a href="#cb9-25" aria-hidden="true" tabindex="-1"></a> risk[i] <span class="ot">&lt;-</span> <span class="fu">loss</span>(<span class="at">q =</span> VaR_post, <span class="at">qhat =</span> VaR_grid[i])</span>
-<span id="cb9-26"><a href="#cb9-26" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Compute value at risk from generalized Pareto distribution quantile fn</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>VaR_post <span class="ot">&lt;-</span> <span class="fu">with</span>(post_samp,   <span class="co"># data frame of posterior draws</span></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>            revdbayes<span class="sc">::</span><span class="fu">qgp</span>(   <span class="co"># with columns 'probexc', 'scale', 'shape'</span></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">p =</span> <span class="fl">0.01</span><span class="sc">/</span>probexc, </span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">loc =</span> <span class="dv">10</span>, </span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">scale =</span> scale, </span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">shape =</span> shape, </span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">lower.tail =</span> <span class="cn">FALSE</span>))</span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Loss function</span></span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>loss <span class="ot">&lt;-</span> <span class="cf">function</span>(qhat, q){</span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mean</span>(<span class="fu">ifelse</span>(q <span class="sc">&gt;</span> qhat,</span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a>           <span class="fl">0.5</span><span class="sc">*</span>(<span class="fl">0.99</span><span class="sc">*</span>q<span class="sc">-</span>qhat),</span>
+<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a>           <span class="fl">0.75</span><span class="sc">*</span>(qhat<span class="fl">-1.01</span><span class="sc">*</span>q)))</span>
+<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb10-15"><a href="#cb10-15" aria-hidden="true" tabindex="-1"></a><span class="co"># Create a grid of values over which to estimate the loss for VaR</span></span>
+<span id="cb10-16"><a href="#cb10-16" aria-hidden="true" tabindex="-1"></a>nvals <span class="ot">&lt;-</span> <span class="dv">101</span>L</span>
+<span id="cb10-17"><a href="#cb10-17" aria-hidden="true" tabindex="-1"></a>VaR_grid <span class="ot">&lt;-</span> <span class="fu">seq</span>(</span>
+<span id="cb10-18"><a href="#cb10-18" aria-hidden="true" tabindex="-1"></a>  <span class="at">from =</span> <span class="fu">quantile</span>(VaR_post, <span class="fl">0.01</span>),</span>
+<span id="cb10-19"><a href="#cb10-19" aria-hidden="true" tabindex="-1"></a>  <span class="at">to =</span> <span class="fu">quantile</span>(VaR_post, <span class="fl">0.99</span>), </span>
+<span id="cb10-20"><a href="#cb10-20" aria-hidden="true" tabindex="-1"></a>  <span class="at">length.out =</span> nvals)</span>
+<span id="cb10-21"><a href="#cb10-21" aria-hidden="true" tabindex="-1"></a><span class="co"># Create a container to store results</span></span>
+<span id="cb10-22"><a href="#cb10-22" aria-hidden="true" tabindex="-1"></a>risk <span class="ot">&lt;-</span> <span class="fu">numeric</span>(<span class="at">length =</span> nvals)</span>
+<span id="cb10-23"><a href="#cb10-23" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span>(i <span class="cf">in</span> <span class="fu">seq_len</span>(nvals)){</span>
+<span id="cb10-24"><a href="#cb10-24" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Compute integral (Monte Carlo average over draws)</span></span>
+<span id="cb10-25"><a href="#cb10-25" aria-hidden="true" tabindex="-1"></a> risk[i] <span class="ot">&lt;-</span> <span class="fu">loss</span>(<span class="at">q =</span> VaR_post, <span class="at">qhat =</span> VaR_grid[i])</span>
+<span id="cb10-26"><a href="#cb10-26" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell" data-layout-align="center">
 <div class="cell-output-display">
@@ -595,7 +634,7 @@ r(q_0) = \int_{\boldsymbol{\Theta}}c(q(\boldsymbol{\theta}), q_0) p (\boldsymbol
 <img src="bayesics_files/figure-html/fig-lossfn-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="672">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-lossfn-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;2.8: Posterior density (left) and losses functions for the 0.99 value-at-risk for the Danish fire insurance data. The vertical lines denote point estimates of the quantiles that minimize the loss functions.
+Figure&nbsp;2.9: Posterior density (left) and losses functions for the 0.99 value-at-risk for the Danish fire insurance data. The vertical lines denote point estimates of the quantiles that minimize the loss functions.
 </figcaption>
 </figure>
 </div>
@@ -604,11 +643,11 @@ Figure&nbsp;2.8: Posterior density (left) and losses functions for the 0.99 valu
 </div>
 <p>To communicate uncertainty, we may resort to credible regions and intervals.</p>
 <div id="def-credible-region" class="theorem definition">
-<p><span class="theorem-title"><strong>Definition 2.2</strong></span> A <span class="math inline">\((1-\alpha)\)</span> <strong>credible region</strong> (or credible interval in the univariate setting) is a set <span class="math inline">\(\mathcal{S}_\alpha\)</span> such that, with probability level <span class="math inline">\(\alpha\)</span>, <span class="math display">\[\begin{align*}
+<p><span class="theorem-title"><strong>Definition 2.3</strong></span> A <span class="math inline">\((1-\alpha)\)</span> <strong>credible region</strong> (or credible interval in the univariate setting) is a set <span class="math inline">\(\mathcal{S}_\alpha\)</span> such that, with probability level <span class="math inline">\(\alpha\)</span>, <span class="math display">\[\begin{align*}
 \Pr(\boldsymbol{\theta} \in \mathcal{S}_\alpha \mid \boldsymbol{Y}=\boldsymbol{y}) = 1-\alpha
 \end{align*}\]</span></p>
 </div>
-<p>These intervals are not unique, as are confidence sets. In the univariate setting, the central or equitailed interval are the most popular, and easily obtained by considering the <span class="math inline">\(\alpha/2, 1-\alpha/2\)</span> quantiles. These are easily obtained from samples by simply taking empirical quantiles. An alternative, highest posterior density credible sets, which may be a set of disjoint intervals obtained by considering the parts of the posterior with the highest density, may be more informative. The top panel <a href="#fig-credible-intervals" class="quarto-xref">Figure&nbsp;<span>2.9</span></a> shows the distinction for a bimodal mixture distribution, and a even more striking difference for 50% credible intervals for a symmetric beta distribution whose mass lie near the endpoints of the distribution, leading to no overlap between the two intervals.</p>
+<p>These intervals are not unique, as are confidence sets. In the univariate setting, the central or equitailed interval are the most popular, and easily obtained by considering the <span class="math inline">\(\alpha/2, 1-\alpha/2\)</span> quantiles. These are easily obtained from samples by simply taking empirical quantiles. An alternative, highest posterior density credible sets, which may be a set of disjoint intervals obtained by considering the parts of the posterior with the highest density, may be more informative. The top panel <a href="#fig-credible-intervals" class="quarto-xref">Figure&nbsp;<span>2.10</span></a> shows the distinction for a bimodal mixture distribution, and a even more striking difference for 50% credible intervals for a symmetric beta distribution whose mass lie near the endpoints of the distribution, leading to no overlap between the two intervals.</p>
 <div class="cell">
 <div class="cell-output-display">
 <div id="fig-credible-intervals" class="quarto-float quarto-figure quarto-figure-center anchored">
@@ -617,7 +656,7 @@ Figure&nbsp;2.8: Posterior density (left) and losses functions for the 0.99 valu
 <img src="bayesics_files/figure-html/fig-credible-intervals-1.png" class="img-fluid figure-img" width="672">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-credible-intervals-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;2.9: Density plots with 89% (top) and 50% (bottom) equitailed or central credible (left) and highest posterior density (right) regions for two data sets, highlighted in grey. The horizontal lign gives the posterior density value determining the cutoff for the HDP region.
+Figure&nbsp;2.10: Density plots with 89% (top) and 50% (bottom) equitailed or central credible (left) and highest posterior density (right) regions for two data sets, highlighted in grey. The horizontal lign gives the posterior density value determining the cutoff for the HDP region.
 </figcaption>
 </figure>
 </div>

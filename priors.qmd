@@ -425,6 +425,25 @@ The Poisson distribution with $\ell(\lambda) \propto -\lambda + y\log \lambda$, 
 
 :::
 
+:::{#prp-Zellner-g-prior}
+
+## Zellner's $g$ prior
+
+Consider an ordinary linear regression model for $\boldsymbol{Y} \sim \mathsf{Gauss}_n(\beta_0\mathbf{1}_n + \mathbf{X}\boldsymbol{\beta}, \sigma^2 \mathbf{I}_n)$, with intercept $\beta_0$ and mean coefficient vector $\boldsymbol{\beta} = (\beta_1, \ldots, \beta_p)^\top$ associated to the model matrix $\mathbf{X}$. @Zellner:1986's $g$ prior consists in letting $\boldsymbol{\beta} \sim \mathsf{Gauss}_p\{\boldsymbol{0}_p, g \sigma^2(\mathbf{X}^\top\mathbf{X})^{-1}\}$, where $g>0$ is a constant.
+
+The ordinary least square estimator of the mean coefficients satisfies under regularity conditions on the model matrix $\widehat{\boldsymbol{\beta}} \sim \mathsf{Gauss}_p\{\boldsymbol{\beta}, \sigma^2(\mathbf{X}^\top\mathbf{X})^{-1}\}$ for Gaussian data, whence we get the closed-form conditional distributions
+\begin{align*}
+\beta_0 \mid \sigma^2, \boldsymbol{Y} &\sim \mathsf{Gauss}(\overline{y}, \sigma^2/n)\\
+\boldsymbol{\beta} \mid \beta_0, \sigma^2, \boldsymbol{Y} & \sim \mathsf{Gauss}_p\left\{\frac{g}{g+1} \widehat{\boldsymbol{\beta}}, \frac{g}{g+1}\sigma^2 (\mathbf{X}^\top\mathbf{X})^{-1}\right\} 
+\end{align*}
+where $\overline{y} = \boldsymbol{y}^\top\mathbf{1}_n/n$ is the sample mean of the observed response vector. We can interpret $g>0$ as a prior weight, with the posterior conditional mean giving weight of $n/g$ to "phantom (prior) observations" with mean zero, relative to the $n$ observations in the observed sample: the ratio $g/(g+1)$ is called **shrinkage factor**.
+
+
+By virtue of @prp-conditional-gaussian, the prior is also closed under conditioning, which is useful for model comparison using Bayes factors. Consider a partition $\boldsymbol{\beta} = (\boldsymbol{\beta}_1^\top, \boldsymbol{\beta}_2^\top)^\top$ of the mean coefficients and similarly the block of columns from the model matrix, say $\mathbf{X} = [\mathbf{X}_1\; \mathbf{X}_2]$ for blocks of size $k$ and $p-k$. If we remove $p-k$ regressors from the model setting $\boldsymbol{\beta}_2=0$, then the conditional is $$\boldsymbol{\beta}_{1} \mid \boldsymbol{\beta}_2=\boldsymbol{0}_{p-k} \sim \mathsf{Gauss}_k\{\boldsymbol{0}_k, g\sigma^2 (\mathbf{X}_1^\top\mathbf{X}_1)^{-1}\},$$ which is the $g$ prior for the submodel in which we omit the columns corresponding to $\mathbf{X}_2$.
+
+
+:::
+
 
 ## Informative priors
 

@@ -266,6 +266,20 @@
 \DeclareMathAlphabet{\mathcrl}{U}{rsfs}{m}{n}
 \usepackage{utopia}
 \DeclareMathAlphabet{\mathcal}{OMS}{cmsy}{m}{n}
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{wrapfig}
+\usepackage{float}
+\usepackage{colortbl}
+\usepackage{pdflscape}
+\usepackage{tabu}
+\usepackage{threeparttable}
+\usepackage{threeparttablex}
+\usepackage[normalem]{ulem}
+\usepackage{makecell}
+\usepackage{xcolor}
 \makeatletter
 \@ifpackageloaded{bookmark}{}{\usepackage{bookmark}}
 \makeatother
@@ -305,13 +319,13 @@
 \newcommand*\listoflistings{\listof{codelisting}{List of Listings}}
 \usepackage{amsthm}
 \theoremstyle{definition}
+\newtheorem{definition}{Definition}[chapter]
+\theoremstyle{definition}
 \newtheorem{exercise}{Exercise}[chapter]
 \theoremstyle{plain}
 \newtheorem{theorem}{Theorem}[chapter]
 \theoremstyle{plain}
 \newtheorem{proposition}{Proposition}[chapter]
-\theoremstyle{definition}
-\newtheorem{definition}{Definition}[chapter]
 \theoremstyle{definition}
 \newtheorem{example}{Example}[chapter]
 \theoremstyle{remark}
@@ -369,7 +383,7 @@ details.
 These notes are licensed under a
 \href{http://creativecommons.org/licenses/by-nc-sa/4.0/}{Creative
 Commons Attribution-NonCommercial-ShareAlike 4.0 International License}
-and were last compiled on mardi, janvier 07 2025.
+and were last compiled on mercredi, janvier 08 2025.
 
 The objective of the course is to provide a hands on introduction to
 Bayesian data analysis. The course will cover the formulation,
@@ -2144,6 +2158,88 @@ scaled likelihood function (right).}
 
 \end{remark}
 
+\begin{definition}[Bayes factor and model
+comparison]\protect\hypertarget{def-bayes-factor}{}\label{def-bayes-factor}
+
+The marginal likelihood enters in the comparison of different models.
+Suppose that we have models \(\mathcal{M}_m\) \((m=1, \ldots, M)\) to be
+compared, with parameter vectors \(\boldsymbol{\theta}^{(m)}\) and data
+vector \(\boldsymbol{y}\). Consider \(p_m =\Pr(\mathcal{M}_m)\) the
+prior probability of the different models under consideration, with
+\(p_1 + \cdots + p_M = 1\). The posterior odds for Models
+\(\mathcal{M}_i\) vs \(\mathcal{M}_j\) are \begin{align*}
+\underbracket[0.25pt]{\frac{\Pr(\mathcal{M}_i \mid \boldsymbol{y})}{\Pr(\mathcal{M}_j \mid \boldsymbol{y})}}_{\text{posterior odds}} = \underbracket[0.25pt]{\frac{p(\boldsymbol{y} \mid \mathcal{M}_i)}{p(\boldsymbol{y} \mid \mathcal{M}_j)}}_{\text{Bayes factor}} \underbracket[0.25pt]{\frac{\Pr(\mathcal{M}_i)}{\Pr(\mathcal{M}_j)}}_{\text{prior odds}}
+\end{align*} where the first term on the right hand side is the Bayes
+factor for model \(i\) vs \(j\), denoted \(\mathsf{BF}_{ij}\). The Bayes
+factor is the ratio of marginal likelihoods, as \begin{align*}
+p(\boldsymbol{y} \mid \mathcal{M}_i) = \int p(y \mid \boldsymbol{\theta}^{(i)}, \mathcal{M}_i) p( \boldsymbol{\theta}^{(i)} \mid \mathcal{M}_i) \mathrm{d}  \boldsymbol{\theta}^{(i)}.
+\end{align*} Values of \(\mathsf{BF}_{ij}>1\) correspond to model
+\(\mathcal{M}_i\) being more likely than \(\mathcal{M}_j\).
+
+While Bayes factors are used for model comparison, the answers depend
+very strongly on the prior
+\(p( \boldsymbol{\theta}^{(i)} \mid \mathcal{M}_i)\) specified and the
+latter must be proper as a general rule for the ratio to be
+well-defined.
+
+\end{definition}
+
+\begin{example}[Bayes factor for the binomial
+model]\protect\hypertarget{exm-bayesfactor}{}\label{exm-bayesfactor}
+
+The marginal likelihood for the \(Y \mid P=p \sim \mathsf{binom}(n,p)\)
+model with prior \(P \sim \mathsf{beta}(\alpha, \beta)\) is
+\begin{align*}
+p_{Y}(y) = \binom{n}{y} \frac{\mathrm{beta}(\alpha + y, \beta + n - y)}{\mathrm{beta}(\alpha, \beta)}.
+\end{align*} where
+\(\mathrm{beta}(\alpha, \beta) = \Gamma(\alpha)\Gamma(\beta)/\Gamma(\alpha+\beta)\)
+is the beta function, expressed in terms of gamma functions.
+
+Consider three models with
+\(Y \mid P^{(i)}=p, \mathcal{M}_i \sim \mathsf{binom}(n, p)\) for
+\(i=1, 2, 3\) and uniform, point mass and beta priors
+\(P^{(1)}\sim \mathsf{unif}(0,1)\),
+\(P^{(2)} \sim \mathsf{beta}(3/2, 3/2)\) and
+\(P^{(3)}\sim \mathsf{1}_{p=0.5}\). For \(\mathcal{M}_3\), the marginal
+likelihood is simply equal to the binomial distribution with \(p=0.5\).
+
+If \(n=14\), but we let instead the number of success varies, the models
+that put more mass closer to the ratio \(y/n\) will be favored. The
+uniform prior in model \(\mathcal{M}_1\) will have a higher Bayes factor
+than model \(\mathcal{M}_2\) or \(\mathcal{M}_3\) for values closer to
+\(p=0\) or \(p=1\), but there is mild evidence as shown in
+Figure~\ref{fig-bayesfactor}.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Log of marginal posterior for binom with beta prior (default is uniform)}
+\NormalTok{log\_marg\_post\_beta }\OtherTok{\textless{}{-}} \ControlFlowTok{function}\NormalTok{(n, y, }\AttributeTok{alpha =} \DecValTok{1}\NormalTok{, }\AttributeTok{beta =} \DecValTok{1}\NormalTok{)\{}
+  \FunctionTok{lchoose}\NormalTok{(n, y) }\SpecialCharTok{+} \FunctionTok{lbeta}\NormalTok{(alpha }\SpecialCharTok{+}\NormalTok{ y, beta }\SpecialCharTok{+}\NormalTok{ n }\SpecialCharTok{{-}}\NormalTok{ y) }\SpecialCharTok{{-}} \FunctionTok{lbeta}\NormalTok{(alpha, beta)}
+\NormalTok{\}}
+\CommentTok{\# Log of Bayes factor}
+\NormalTok{logBF2vs3 }\OtherTok{\textless{}{-}} \ControlFlowTok{function}\NormalTok{(y, n)\{ }\CommentTok{\# model 2 (beta(1.5,1.5) vs 3 (point mass at 0.5)}
+  \FunctionTok{log\_marg\_post\_beta}\NormalTok{(}\AttributeTok{n =}\NormalTok{ n, }\AttributeTok{y =}\NormalTok{ y, }\AttributeTok{alpha =} \FloatTok{1.5}\NormalTok{, }\AttributeTok{beta =} \FloatTok{1.5}\NormalTok{) }\SpecialCharTok{{-}} \FunctionTok{dbinom}\NormalTok{(}\AttributeTok{x =}\NormalTok{ y, }\AttributeTok{size =}\NormalTok{ n, }\AttributeTok{prob =} \FloatTok{0.5}\NormalTok{, }\AttributeTok{log =} \ConstantTok{TRUE}\NormalTok{)}
+\NormalTok{\}}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{figure}[ht!]
+
+\centering{
+
+\pandocbounded{\includegraphics[keepaspectratio]{bayesics_files/figure-pdf/fig-bayesfactor-1.pdf}}
+
+}
+
+\caption{\label{fig-bayesfactor}Log of Bayes factors for comparison of
+binomial models with \(n=14\) trials as a function of the number of
+successes \(n\). Values larger than zero (on log scale) indicate
+preference for Model 2.}
+
+\end{figure}%
+
+\end{example}
+
 \begin{proposition}[Sequentiality and Bayesian
 updating]\protect\hypertarget{prp-sequentiality}{}\label{prp-sequentiality}
 
@@ -3288,6 +3384,46 @@ information is \(\imath(\lambda) = \lambda^{-1}\) and Jeffrey's prior is
 \(\lambda^{-1/2}\).
 
 \end{example}
+
+\begin{proposition}[Zellner's \(g\)
+prior]\protect\hypertarget{prp-Zellner-g-prior}{}\label{prp-Zellner-g-prior}
+
+Consider an ordinary linear regression model for
+\(\boldsymbol{Y} \sim \mathsf{Gauss}_n(\beta_0\mathbf{1}_n + \mathbf{X}\boldsymbol{\beta}, \sigma^2 \mathbf{I}_n)\),
+with intercept \(\beta_0\) and mean coefficient vector
+\(\boldsymbol{\beta} = (\beta_1, \ldots, \beta_p)^\top\) associated to
+the model matrix \(\mathbf{X}\). Zellner
+(\citeproc{ref-Zellner:1986}{1986})'s \(g\) prior consists in letting
+\(\boldsymbol{\beta} \sim \mathsf{Gauss}_p\{\boldsymbol{0}_p, g \sigma^2(\mathbf{X}^\top\mathbf{X})^{-1}\}\),
+where \(g>0\) is a constant.
+
+The ordinary least square estimator of the mean coefficients satisfies
+under regularity conditions on the model matrix
+\(\widehat{\boldsymbol{\beta}} \sim \mathsf{Gauss}_p\{\boldsymbol{\beta}, \sigma^2(\mathbf{X}^\top\mathbf{X})^{-1}\}\)
+for Gaussian data, whence we get the closed-form conditional
+distributions \begin{align*}
+\beta_0 \mid \sigma^2, \boldsymbol{Y} &\sim \mathsf{Gauss}(\overline{y}, \sigma^2/n)\\
+\boldsymbol{\beta} \mid \beta_0, \sigma^2, \boldsymbol{Y} & \sim \mathsf{Gauss}_p\left\{\frac{g}{g+1} \widehat{\boldsymbol{\beta}}, \frac{g}{g+1}\sigma^2 (\mathbf{X}^\top\mathbf{X})^{-1}\right\} 
+\end{align*} where \(\overline{y} = \boldsymbol{y}^\top\mathbf{1}_n/n\)
+is the sample mean of the observed response vector. We can interpret
+\(g>0\) as a prior weight, with the posterior conditional mean giving
+weight of \(n/g\) to ``phantom (prior) observations'' with mean zero,
+relative to the \(n\) observations in the observed sample: the ratio
+\(g/(g+1)\) is called \textbf{shrinkage factor}.
+
+By virtue of Proposition~\ref{prp-conditional-gaussian}, the prior is
+also closed under conditioning, which is useful for model comparison
+using Bayes factors. Consider a partition
+\(\boldsymbol{\beta} = (\boldsymbol{\beta}_1^\top, \boldsymbol{\beta}_2^\top)^\top\)
+of the mean coefficients and similarly the block of columns from the
+model matrix, say \(\mathbf{X} = [\mathbf{X}_1\; \mathbf{X}_2]\) for
+blocks of size \(k\) and \(p-k\). If we remove \(p-k\) regressors from
+the model setting \(\boldsymbol{\beta}_2=0\), then the conditional is
+\[\boldsymbol{\beta}_{1} \mid \boldsymbol{\beta}_2=\boldsymbol{0}_{p-k} \sim \mathsf{Gauss}_k\{\boldsymbol{0}_k, g\sigma^2 (\mathbf{X}_1^\top\mathbf{X}_1)^{-1}\},\]
+which is the \(g\) prior for the submodel in which we omit the columns
+corresponding to \(\mathbf{X}_2\).
+
+\end{proposition}
 
 \section{Informative priors}\label{informative-priors}
 
@@ -5428,6 +5564,12 @@ Watanabe, Sumio. 2010. {``Asymptotic Equivalence of {B}ayes Cross
 Validation and Widely Applicable Information Criterion in Singular
 Learning Theory.''} \emph{Journal of Machine Learning Research} 11
 (116): 3571--94. \url{http://jmlr.org/papers/v11/watanabe10a.html}.
+
+\bibitem[\citeproctext]{ref-Zellner:1986}
+Zellner, Arnold. 1986. {``On Assessing Prior Distributions and
+{B}ayesian Regression Analysis with \(g\)-Prior Distributions.''} In
+\emph{{B}ayesian Inference and Decision Techniques: Essays in Honor of
+{B}runo de {F}inetti}, 233--43. North-Holland/Elsevier.
 
 \end{CSLReferences}
 
