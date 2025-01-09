@@ -1,0 +1,61 @@
+# Deterministic approximations
+
+So far, we have focused on stochastic approximations of integral. In very large models, Markov chain Monte Carlo suffer from the curse of dimensionality and it is sometimes useful to resort to cheaper approximations. We begin this review by looking at Laplace approximations for integrals.
+
+
+This material borrows from Section 8.2 and appendix C.2.2 of @Held.Bove:2020. The Laplace approximation uses a Gaussian approximation to evaluate integrals of the form
+\begin{align*}
+I_n= \int_a^b g(x) \mathrm{d} x = \exp\{nh(x)\}\mathrm{d} x.                                                             \end{align*}
+Assuming that $g(x)$ is concave and thus $h(x),  with a maximum at $x_0 \in [a,b]$ and twice differentiable, we can Taylor expand $h(x)$ to get,
+\begin{align*}
+h(x) = h(x_0) + h'(x_0)(x-x_0) + h''(x_0)(x-x_0)^2/2 + R
+\end{align*}
+where the remainder $R=\mathrm{O}\{x-x_0)^3\}$. If we optimize, we find $x_0$ solves $h'(x_0)=0$ and letting $\tau=-nh''(x_0)$, we can write ignoring the remainder term the approximation
+\begin{align*}
+ I_n \approx \exp\{nh(x_0)\} \int_{a}^b \exp \left\{-\frac{1}{2}(x-x_0)^2\right\}
+  \\&= \exp\{nh(x_0)\} \left(\frac{2\pi}{\tau}\right)^{1/2} \left[\Phi\left\{ \tau(b-x_0)\right\} - \Phi\left\{\tau(a-x_0)\right\}\right]
+\end{align*}
+upon recovering the unnormalized kernel of a Gaussian random variable centered at $x_0$ with precision $\tau$. The approximation error is $\mathrm{O}(n^{-1})$.
+
+The multivariate analog is similar, where now for an integral of the form $\exp\{nh(\boldsymbol{x})\}$ over $\mathbb{R}^d$, we obtain the approximation
+\begin{align*}
+ I_n \approx \left(\frac{2\pi}{n}\right)^{p/2} | -\mathbf{H}(\boldsymbol{x}_0)|^{-1/2}\exp\{-nh(\boldsymbol{x}_0)\}.
+\end{align*}
+where $| -\mathbf{H}|$ is the determinant of the Hessian matrix of $h(\boldsymbol{x})$ evaluated at the mode of the integrand.
+
+Compare to sampling-based methods, the Laplace approximation requires optimization to find the maximum of the function.
+
+
+:::{#prp-Laplace-marginal}
+
+## BIC and Laplace approximation to the marginal likelihood
+
+Consider a simple random sample $\boldsymbol{Y}$ of size $n$ from a distribution with parameter vector $\boldsymbol{\theta} \in \mathbb{R}^p$. We can consider a Laplace approximation of the marginal likelihood, where following Section 7.2.2 of @Held.Bove:2020
+\begin{align*}
+p(\boldsymbol{y}) &= \int p(\boldsymbol{y} \mid \boldsymbol{\theta}) p(\boldsymbol{\theta} \mathrm{d} \boldsymbol{\theta}
+\\&= \int \exp\{-n k(\boldsymbol{\theta})\}\mathrm{d} \boldsymbol{\theta}
+\end{align*}
+where $k(\boldsymbol{\theta}) = - \{\log p(\boldsymbol{y} \mid \boldsymbol{\theta}) + \log p(\boldsymbol{\theta}\}/n$. We can maximize $k(\boldsymbol{\theta})$ and use the maximum a posteriori and the Hessian matrix evaluated at the latter, say $\mathbf{H}$. This yields the approximation
+\begin{align*}
+2\log p(\boldsymbol{y}) &= p\log(2\pi) -p\log n + \log |\mathbf{H}^{-1}| \\ & \quad + 2\log p(\boldsymbol{y} \mid \boldsymbol{\theta}) + 2\log p(\boldsymbol{\theta}.
+\end{align*}
+As the sample size $n \to \infty$, the term $|\mathbf{H}^{-1}|$ converges to the determinant of the unit Fisher information matrix, so is bounded. The only terms that grow with $n$ assuming the prior is $\mathrm{O}(1)$ are the log likelihood and $p \log n$, whence
+\begin{align*}
+-2\log p(\boldsymbol{y}) \approx \mathsf{BIC} = -2\log p(\boldsymbol{y} \mid \boldsymbol{\theta}) + p\log n
+\end{align*}
+If the likelihood contribution dominates the posterior, the $\mathsf{BIC}$ approximation will improve with increasing sample size, so $\exp(-\mathsf{BIC}/2)$ is an approximation fo the marginal likelihood sometimes used for model comparison in Bayes factor, although this derivation shows that the latter neglects the impact of the prior.
+
+:::
+
+
+:::{#prp-expectation-Laplace}
+
+## Posterior expectation using Laplace method
+
+If we are interested in computing the posterior expectation of a positive real-valued functional $g(\boldsymbol{\theta}): \mathbb{R}^d \to \mathbb{R}_{+}$, we may write
+\begin{align*}
+ \mathsf{E}_{\boldsymbol{\Theta} \mid \boldsymbol{Y}}(g(\boldsymbol{\theta}) \mid \boldsymbol{y}) &=  \frac{\int g(\boldsymbol{\theta}) p(\boldsymbol{y} \mid \boldsymbol{\theta} \mathrm{d} \boldsymbol{\theta}}{\int g(\boldsymbol{\theta}) p(\boldsymbol{y} \mid \boldsymbol{\theta} \mathrm{d} \boldsymbol{\theta}}
+\end{align*}
+We can apply
+
+:::

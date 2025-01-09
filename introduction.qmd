@@ -1231,19 +1231,63 @@ The $\mathsf{AR}(1)$ stationarity process $Y_t,$ marginally, has mean $\mu$ and 
 
 ## Monte Carlo methods
 
-If a random variable $X$ has distribution function $F$, then we can define it's **generalized inverse**
+Monte Carlo methods relies on the ability to simulate random variable. If the quantile function admits a closed-form, we can use this to simulation. Recall that if a random variable $X$ has distribution function $F$, then we can define it's **generalized inverse**
 \begin{align*}
 F^{-1}(u) = \inf\{x: f(x) \geq u\}
 \end{align*}
-and if $G$ is continuous, then $F(X) \sim \mathsf{unif}(0,1)$. We can thus simulate data using the quantile function $F^{-1}(U),$, with $U \sim \mathsf{unif}(0,1)$. T
+and if $G$ is continuous, then $F(X) \sim \mathsf{unif}(0,1)$. We can thus simulate data using the quantile function $F^{-1}(U),$, with $U \sim \mathsf{unif}(0,1)$. 
 
+
+:::{#thm-fundamental-simulation}
+
+## Fundamental theorem of simulation
+
+Consider a $d$-variate random vector $\boldsymbol{X}$, independently $U \sim \mathsf{unif}(0,1)$ and $c>0$ any positive constant. 
+If $(\boldsymbol{X}, U)$ is uniformly distributed on the set
+\begin{align*}
+\mathcal{A}_{f}=\{(\boldsymbol{x}, u): 0 \leq u \leq  c f(\boldsymbol{x})\},
+\end{align*}
+then $\boldsymbol{X}$ has density $f(\boldsymbol{x})$. Conversely, if $\boldsymbol{X}$ has density $f(\boldsymbol{x})$ and $U\sim\mathsf{unif}(0,1)$ independently, then $[\boldsymbol{X}, cUf(\boldsymbol{X})]$ is uniformly distributed on $\mathcal{A}_f$
+
+We cam thus view $f$ as the marginal density of $\boldsymbol{X}$ since $f(\boldsymbol{x}) = \int_0^{f(\boldsymbol{x})} \mathrm{d} u.$ If we can simulate uniformly from $\mathcal{A}_{f}$, then, we can discard the auxiliary variable $u$. See @Devroye:1986, Theorem 3.1 for a proof.
+
+```{r}
+#| eval: true
+#| echo: false
+#| label: fig-fundamental-theorem
+#| fig-cap: "Illustration of the fundamental theorem of simulation. All points in blue below the density curve belong to $\\mathcal{A}_f$."
+a = 4
+b = 1.25
+# curve(dbeta(x, shape1 = a, shape2 = b))
+mode <- (a-1)/(a+b-2)
+n <- 300
+height <- dbeta(mode, a, b) + 0.1
+x <- runif(n)
+u <- runif(n) * height
+inside <- u < dbeta(x, a, b)
+# abline(v = mode, lty = "dashed")
+ggplot() +
+  stat_function(fun = dbeta, args = c(shape1 = a, shape2 = b), xlim = c(0,1), n = 1001) +
+  geom_point(data.frame(u = u, x = x, col = factor(inside)),
+               mapping = aes(x = x, y = u, color = col), show.legend = FALSE) +
+  MetBrewer::scale_color_met_d("Hiroshige") +
+  scale_x_continuous(limits = c(0,1), expand = expansion(add = c(0.02,0.02)), breaks = seq(0, 1, by = 0.25), labels = c("0","0.25","0.5","0.75","1")) +
+  scale_y_continuous(limits = c(0, NA), expand = expansion(add = c(0,0.02))) +
+  theme_classic()
+```
+
+:::
+
+The fundamental theorem of simulation underlies rejection sampling, the generalized ratio of uniform and slice sampling. The density function needs only to be known up to normalizing constant thanks to the arbitrariness of $c$, which will also allow us to work with unnormalized density functions.
 
 
 :::{#prp-rejection-sampling}
 
 ## Rejection sampling
 
-Rejection sampling (also termed accept-reject algorithm) samples from a random vector with density $p(\cdot)$ by drawing candidates from a proposal with density $q(\cdot)$ with nested support, $\mathrm{supp}(p) \subseteq \mathrm{supp}(q).$ The density $q(\cdot)$ must be  such that $p(\boldsymbol{\theta}) \leq C q(\boldsymbol{\theta})$ for $C \geq 1$ for all values of $\boldsymbol{\theta}$ in the support of $p(\cdot).$ A proof can be found in @Devroye:1986 [Theorem 3.1]
+
+
+Rejection sampling (also termed accept-reject algorithm) samples from a random vector with density $p(\cdot)$ by drawing candidates from a proposal with density $q(\cdot)$ with nested support, $\mathrm{supp}(p) \subseteq \mathrm{supp}(q).$ The density $q(\cdot)$ must be  such that $p(\boldsymbol{\theta}) \leq C q(\boldsymbol{\theta})$ for $C \geq 1$ for all values of $\boldsymbol{\theta}$ in the support of $p(\cdot).$ 
 
 1. Generate $\boldsymbol{\theta}^{\star}$ from the proposal with density $q$ and $U \sim \mathsf{U}(0,1)$
 2. Compute the ratio $R \gets p(\boldsymbol{\theta}^{\star})/ q(\boldsymbol{\theta}^{\star}).$

@@ -145,7 +145,7 @@ ggplot() +
 
 
 
-When can we use output from a Markov chain in place of independent Monte Carlo draws? The assumptions laid out in the ergodic theorem are that the chain is irreducible and acyclic, ensuring that the chain has a unique stationary distribution. The ergodic theorem is a result about convergence of averages.
+When can we use output from a Markov chain in place of independent Monte Carlo draws? The assumptions laid out in the ergodic theorem, which provides guarantees for the convergence of sample average, are that the chain is irreducible. If the chain is also acyclic, the chain has a unique stationary distribution.
 
 A discrete-time stochastic process is a random sequences whose elements are part of some set (finite or countable), termed state space $\mathcal{S}$. We can encode the probability of moving from one state to the next via a transition matrix, whose rows contain the probabilities of moving from one state to the next and thus sum to one. We can run a Markov chain by sampling an initial state $X_0$ at random from $\mathcal{S}$ and then consider the transitions from the conditional distribution, sampling $p(X_t \mid X_{t-1})$. 
 
@@ -194,6 +194,8 @@ for(i in seq_along(chain)){
   chain[i] <- state
 }
 ```
+
+While the existence of a stationary distribution require aperiodicity, the latter is an hindrance from a computational perspective as ergodicity is valid without it.
 
 @fig-discrete-markov-chain shows the path of the walk and the empirical proportion of the time spent in each state, as time progress. Since the Markov chain has a unique stationary distribution, we expect these to converge to it.
 
@@ -1576,7 +1578,23 @@ As in general information criteria, we sum over all observations, adding a penal
 \begin{align*}
 n\mathsf{WAIC} = -\sum_{i=1}^n \mathsf{LPPD}_i + \sum_{i=1}^n \mathsf{Va}_{\boldsymbol{\theta} \mid \boldsymbol{y}}\{\log p(y_i \mid \boldsymbol{\theta})\}
 \end{align*} 
-where we use again the empirical variance to compute the rightmost term. When comparing competing models, we can rely on their values of $\mathsf{WAIC}$ to discriminate about the predictive performance. To compute $\mathsf{WAIC}$, we need to store the values of the log density of each observation, or at least minimally [compute the running mean and variance accurately](https://www.johndcook.com/blog/standard_deviation/) pointwise at storage cost $\mathrm{O}(n)$. Note that Section 7.2 of @Gelman:2013 define the widely applicable information criterion as $2n \times \mathsf{WAIC}$  to make on par with other information criteria, which are defined typically on the deviance scale and so that lower values correspond to higher predictive performance. For the smartwatch model, we get a value of `r round(waic1,2)` for the complex model and `r round(waic2,2)`: this suggests an improvement in using individual-specific effects.
+where we use again the empirical variance to compute the rightmost term. When comparing competing models, we can rely on their values of $\mathsf{WAIC}$ to discriminate about the predictive performance. To compute $\mathsf{WAIC}$, we need to store the values of the log density of each observation, or at least minimally [compute the running mean and variance accurately](https://www.johndcook.com/blog/standard_deviation/) pointwise at storage cost $\mathrm{O}(n)$. Note that Section 7.2 of @Gelman:2013 define the widely applicable information criterion as $2n \times \mathsf{WAIC}$  to make on par with other information criteria, which are defined typically on the deviance scale and so that lower values correspond to higher predictive performance. 
+
+An older criterion  which has somewhat fallen out of fashion is the **deviance** information criterion of @Spiegelhalther:2002. It is defined as 
+\begin{align*}
+\mathsf{DIC} = -2 \ell(\widetilde{\boldsymbol{\theta}}) + 2 p_D
+\end{align*}
+where $p_D$ is the posterior expectation of the deviance relative to the point estimator of the parameter $\widetilde{\boldsymbol{\theta}}$ (e.g., the maximum a posteriori or the posterior mean)
+\begin{align*}
+p_D = \mathsf{E}\{D(\boldsymbol{\theta}, \widetilde{\boldsymbol{\theta}}) \mid \boldsymbol{y}\}= \int 2 \{ \ell(\widetilde{\boldsymbol{\theta}}) - \ell(\boldsymbol{\theta})\} f(\boldsymbol{\theta} \mid \boldsymbol{y} \mathrm{d} \boldsymbol{\theta}
+\end{align*}
+The DIC can be easily evaluated by keeping track of the log likelihood evaluated at each posterior draw from a Markov chain Monte Carlo algorithm. The penalty term $p_D$ is however not invariant to reparametrizations. Assuming we can derive a multivariate Gaussian approximation to the MLE under suitable regularity conditions, the $\mathsf{DIC}$ is equivalent in large samples to $\mathsf{AIC}$. The $\mathsf{DIC}$ is considered by many authors as not being a Bayesian procedure; see @Spiegelhalther:2014 and the discussion therein. 
+
+:::{#exm-smartwatch-infocriteria}
+
+## Information criteria for smartwatch and Bayesian LASSO
+
+For the smartwatch model, we get a value of `r round(waic1,2)` for the complex model and `r round(waic2,2)`: this suggests an improvement in using individual-specific effects.
 
 ```{r}
 #| eval: false
@@ -1610,7 +1628,7 @@ ggplot(data = data.frame(penalty =log(lambdaseq),
 
 ```
 
-
+:::
 
 Ideally, one would measure the predictive performance using the leave-one-out predictive distribution for observation $i$ given all the rest, $p(y_i \mid \boldsymbol{y}_{-i})$, to avoid double dipping --- the latter is computationally intractable because it would require running $n$ Markov chains with $n-1$ observations each, but we can get a good approximation using importance sampling.  The `loo` package uses this with generalized Pareto smoothing to avoid overly large weights.
 
