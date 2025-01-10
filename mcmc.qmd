@@ -1,4 +1,4 @@
-# Markov chain Monte Carlo methods
+# Monte Carlo methods
 
 ```{r}
 #| label: setup
@@ -235,7 +235,7 @@ g1 + g2
 
 
 
-## Markov chain Monte Carlo algorithms
+# Markov chain Monte Carlo algorithms
 
 The Markov chain Monte Carlo revolution in the 1990s made Bayesian inference mainstream by allowing inference for models when only approximations were permitted, and coincided with a time at which computers became more widely available. The idea is to draw correlated samples from a posterior via Markov chains, constructed to have the posterior as invariant stationary distribution.
 
