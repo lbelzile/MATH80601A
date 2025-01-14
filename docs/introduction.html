@@ -221,7 +221,7 @@ window.Quarto = {
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./mcmc.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Markov chain Monte Carlo methods</span></span></a>
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Monte Carlo methods</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
@@ -283,7 +283,7 @@ f(x) = \frac{\beta^\alpha}{\Gamma(\alpha)}x^{\alpha-1}\exp(-\beta x), \qquad x \
 </div>
 <div id="def-beta" class="theorem definition">
 <p><span class="theorem-title"><strong>Definition 1.3 (Beta and uniform distribution)</strong></span> The beta distribution <span class="math inline">\(\mathsf{beta}(\alpha_1, \alpha_2)\)</span> is a distribution supported on the unit interval <span class="math inline">\([0,1]\)</span> with shape parameters <span class="math inline">\(\alpha_1&gt;0\)</span> and <span class="math inline">\(\alpha_2&gt;0.\)</span> It’s density is <span class="math display">\[\begin{align*}
-f(x) = \frac{\Gamma(\alpha_1)\Gamma(\alpha_2)}{\Gamma(\alpha_1+\alpha_2)}x^{\alpha_1-1}(1-x)^{1-\alpha_2}, \qquad x \in [0,1].
+f(x) = \frac{\Gamma(\alpha_1+\alpha_2)}{\Gamma(\alpha_1)\Gamma(\alpha_2)}x^{\alpha_1-1}(1-x)^{1-\alpha_2}, \qquad x \in [0,1].
 \end{align*}\]</span> The case <span class="math inline">\(\mathsf{beta}(1,1),\)</span> also denoted <span class="math inline">\(\mathsf{unif}(0,1),\)</span> corresponds to a standard uniform distribution.</p>
 </div>
 <p>The beta distribution is commonly used to model proportions, and can be generalized to the multivariate setting as follows.</p>
@@ -922,11 +922,32 @@ f(\boldsymbol{y}) = f(y_1) \times f(y_2 \mid y_1) \times \ldots f(y_n \mid y_1, 
 </section>
 <section id="monte-carlo-methods" class="level2" data-number="1.4">
 <h2 data-number="1.4" class="anchored" data-anchor-id="monte-carlo-methods"><span class="header-section-number">1.4</span> Monte Carlo methods</h2>
-<p>If a random variable <span class="math inline">\(X\)</span> has distribution function <span class="math inline">\(F\)</span>, then we can define it’s <strong>generalized inverse</strong> <span class="math display">\[\begin{align*}
+<p>Monte Carlo methods relies on the ability to simulate random variable. If the quantile function admits a closed-form, we can use this to simulation. Recall that if a random variable <span class="math inline">\(X\)</span> has distribution function <span class="math inline">\(F\)</span>, then we can define it’s <strong>generalized inverse</strong> <span class="math display">\[\begin{align*}
 F^{-1}(u) = \inf\{x: f(x) \geq u\}
-\end{align*}\]</span> and if <span class="math inline">\(G\)</span> is continuous, then <span class="math inline">\(F(X) \sim \mathsf{unif}(0,1)\)</span>. We can thus simulate data using the quantile function <span class="math inline">\(F^{-1}(U),\)</span>, with <span class="math inline">\(U \sim \mathsf{unif}(0,1)\)</span>. T</p>
+\end{align*}\]</span> and if <span class="math inline">\(G\)</span> is continuous, then <span class="math inline">\(F(X) \sim \mathsf{unif}(0,1)\)</span>. We can thus simulate data using the quantile function <span class="math inline">\(F^{-1}(U),\)</span>, with <span class="math inline">\(U \sim \mathsf{unif}(0,1)\)</span>.</p>
+<div id="thm-fundamental-simulation" class="theorem">
+<p><span class="theorem-title"><strong>Theorem 1.2 (Fundamental theorem of simulation)</strong></span> Consider a <span class="math inline">\(d\)</span>-variate random vector <span class="math inline">\(\boldsymbol{X}\)</span>, independently <span class="math inline">\(U \sim \mathsf{unif}(0,1)\)</span> and <span class="math inline">\(c&gt;0\)</span> any positive constant. If <span class="math inline">\((\boldsymbol{X}, U)\)</span> is uniformly distributed on the set <span class="math display">\[\begin{align*}
+\mathcal{A}_{f}=\{(\boldsymbol{x}, u): 0 \leq u \leq  c f(\boldsymbol{x})\},
+\end{align*}\]</span> then <span class="math inline">\(\boldsymbol{X}\)</span> has density <span class="math inline">\(f(\boldsymbol{x})\)</span>. Conversely, if <span class="math inline">\(\boldsymbol{X}\)</span> has density <span class="math inline">\(f(\boldsymbol{x})\)</span> and <span class="math inline">\(U\sim\mathsf{unif}(0,1)\)</span> independently, then <span class="math inline">\([\boldsymbol{X}, cUf(\boldsymbol{X})]\)</span> is uniformly distributed on <span class="math inline">\(\mathcal{A}_f\)</span></p>
+<p>We cam thus view <span class="math inline">\(f\)</span> as the marginal density of <span class="math inline">\(\boldsymbol{X}\)</span> since <span class="math inline">\(f(\boldsymbol{x}) = \int_0^{f(\boldsymbol{x})} \mathrm{d} u.\)</span> If we can simulate uniformly from <span class="math inline">\(\mathcal{A}_{f}\)</span>, then, we can discard the auxiliary variable <span class="math inline">\(u\)</span>. See <span class="citation" data-cites="Devroye:1986">Devroye (<a href="references.html#ref-Devroye:1986" role="doc-biblioref">1986</a>)</span>, Theorem 3.1 for a proof.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-fundamental-theorem" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-fundamental-theorem-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="introduction_files/figure-html/fig-fundamental-theorem-1.png" class="img-fluid figure-img" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-fundamental-theorem-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;1.1: Illustration of the fundamental theorem of simulation. All points in blue below the density curve belong to <span class="math inline">\(\mathcal{A}_f\)</span>.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<p>The fundamental theorem of simulation underlies rejection sampling, the generalized ratio of uniform and slice sampling. The density function needs only to be known up to normalizing constant thanks to the arbitrariness of <span class="math inline">\(c\)</span>, which will also allow us to work with unnormalized density functions.</p>
 <div id="prp-rejection-sampling" class="theorem proposition">
-<p><span class="theorem-title"><strong>Proposition 1.7 (Rejection sampling)</strong></span> Rejection sampling (also termed accept-reject algorithm) samples from a random vector with density <span class="math inline">\(p(\cdot)\)</span> by drawing candidates from a proposal with density <span class="math inline">\(q(\cdot)\)</span> with nested support, <span class="math inline">\(\mathrm{supp}(p) \subseteq \mathrm{supp}(q).\)</span> The density <span class="math inline">\(q(\cdot)\)</span> must be such that <span class="math inline">\(p(\boldsymbol{\theta}) \leq C q(\boldsymbol{\theta})\)</span> for <span class="math inline">\(C \geq 1\)</span> for all values of <span class="math inline">\(\boldsymbol{\theta}\)</span> in the support of <span class="math inline">\(p(\cdot).\)</span> A proof can be found in <span class="citation" data-cites="Devroye:1986">Devroye (<a href="references.html#ref-Devroye:1986" role="doc-biblioref">1986</a>, Theorem 3.1)</span></p>
+<p><span class="theorem-title"><strong>Proposition 1.7 (Rejection sampling)</strong></span> Rejection sampling (also termed accept-reject algorithm) samples from a random vector with density <span class="math inline">\(p(\cdot)\)</span> by drawing candidates from a proposal with density <span class="math inline">\(q(\cdot)\)</span> with nested support, <span class="math inline">\(\mathrm{supp}(p) \subseteq \mathrm{supp}(q).\)</span> The density <span class="math inline">\(q(\cdot)\)</span> must be such that <span class="math inline">\(p(\boldsymbol{\theta}) \leq C q(\boldsymbol{\theta})\)</span> for <span class="math inline">\(C \geq 1\)</span> for all values of <span class="math inline">\(\boldsymbol{\theta}\)</span> in the support of <span class="math inline">\(p(\cdot).\)</span></p>
 <ol type="1">
 <li>Generate <span class="math inline">\(\boldsymbol{\theta}^{\star}\)</span> from the proposal with density <span class="math inline">\(q\)</span> and <span class="math inline">\(U \sim \mathsf{U}(0,1)\)</span></li>
 <li>Compute the ratio <span class="math inline">\(R \gets p(\boldsymbol{\theta}^{\star})/ q(\boldsymbol{\theta}^{\star}).\)</span></li>
@@ -941,7 +962,7 @@ F^{-1}(u) = \inf\{x: f(x) \geq u\}
 <img src="introduction_files/figure-html/fig-acceptreject-1.png" class="img-fluid figure-img" width="672">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-acceptreject-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;1.1: Target density (full) and scaled proposal density (dashed): the vertical segment at $ heta=1$ shows the percentage of acceptance for a uniform slice under the scaled proposal, giving an acceptance ratio of 0.58.
+Figure&nbsp;1.2: Target density (full) and scaled proposal density (dashed): the vertical segment at $ heta=1$ shows the percentage of acceptance for a uniform slice under the scaled proposal, giving an acceptance ratio of 0.58.
 </figcaption>
 </figure>
 </div>
@@ -961,7 +982,7 @@ f(x; \mu, \sigma, a, b) = \frac{1}{\sigma}\frac{\phi\left(\frac{x-\mu}{\sigma}\r
 <span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Acceptance rate</span></span>
 <span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="fu">length</span>(trunc_samp)<span class="sc">/</span><span class="fl">1e5</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 0.34076</code></pre>
+<pre><code>[1] 0.34242</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Theoretical acceptance rate</span></span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="fu">pnorm</span>(<span class="dv">1</span>)<span class="sc">-</span><span class="fu">pnorm</span>(<span class="dv">0</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -1010,8 +1031,8 @@ X \sim \Phi^{-1}\left[\Phi(a) + \{\Phi(b)-\Phi(a)\}U\right]
 <div id="exm-expectation-demo" class="theorem example">
 <p><span class="theorem-title"><strong>Example 1.18</strong></span> Consider <span class="math inline">\(X \sim \mathsf{gamma}(\alpha, \beta),\)</span> a gamma distribution with shape <span class="math inline">\(\alpha\)</span> and rate <span class="math inline">\(\beta.\)</span> We can compute the probability that <span class="math inline">\(X &lt; 1\)</span> easily by Monte Carlo since <span class="math inline">\(\Pr(X &lt;1) = \mathsf{E}\{\mathrm{I}(X&lt;1)\}\)</span> and this means we only need to compute the proportion of draws less than one. We can likewise compute the mean <span class="math inline">\(g(x) = x\)</span> or variance.</p>
 <p>Suppose we have drawn a Monte Carlo sample of size <span class="math inline">\(B.\)</span> If the function <span class="math inline">\(g(\cdot)\)</span> is square integrable,<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a> with variance <span class="math inline">\(\sigma^2_g,\)</span> then a central limit theorem applies. In large samples and for independent observations, our Monte Carlo average <span class="math inline">\(\widehat{\mu}_g = B^{-1}\sum_{b=1}^B g(X_i)\)</span> has variance <span class="math inline">\(\sigma^2_g/B.\)</span> We can approximate the unknown variance <span class="math inline">\(\sigma^2_g\)</span> by it’s empirical counterpart.<a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a>. Note that, while the variance decreases linearly with <span class="math inline">\(B,\)</span> the choice of <span class="math inline">\(g\)</span> impacts the speed of convergence: for our examples, we can compute <span class="math display">\[\sigma^2_g =\Pr(X \leq 1)\{1-\Pr(X \leq 1)\}=0.0434\]</span> (left) and <span class="math inline">\(\sigma^2_g=\alpha/\beta^2=1/8\)</span> (middle plot).</p>
-<p><a href="#fig-monte-carlo-path" class="quarto-xref">Figure&nbsp;<span>1.2</span></a> shows the empirical trace plot of the Monte Carlo average (note the <span class="math inline">\(\sqrt{B}\)</span> <span class="math inline">\(x\)</span>-axis scale!) as a function of the Monte Carlo sample size <span class="math inline">\(B\)</span> along with 95% Wald-based confidence intervals (gray shaded region), <span class="math inline">\(\widehat{\mu}_g \pm 1.96 \times \sigma_g/\sqrt{B}.\)</span> We can see that the ‘likely region’ for the average shrinks with <span class="math inline">\(B.\)</span></p>
-<p>What happens if our function is not integrable? The right-hand plot of <a href="#fig-monte-carlo-path" class="quarto-xref">Figure&nbsp;<span>1.2</span></a> shows empirical averages of <span class="math inline">\(g(x) = x^{-1},\)</span> which is not integrable if <span class="math inline">\(\alpha &lt; 1.\)</span> We can compute the empirical average, but the result won’t converge to any meaningful quantity regardless of the sample size. The large jumps are testimonial of this.</p>
+<p><a href="#fig-monte-carlo-path" class="quarto-xref">Figure&nbsp;<span>1.3</span></a> shows the empirical trace plot of the Monte Carlo average (note the <span class="math inline">\(\sqrt{B}\)</span> <span class="math inline">\(x\)</span>-axis scale!) as a function of the Monte Carlo sample size <span class="math inline">\(B\)</span> along with 95% Wald-based confidence intervals (gray shaded region), <span class="math inline">\(\widehat{\mu}_g \pm 1.96 \times \sigma_g/\sqrt{B}.\)</span> We can see that the ‘likely region’ for the average shrinks with <span class="math inline">\(B.\)</span></p>
+<p>What happens if our function is not integrable? The right-hand plot of <a href="#fig-monte-carlo-path" class="quarto-xref">Figure&nbsp;<span>1.3</span></a> shows empirical averages of <span class="math inline">\(g(x) = x^{-1},\)</span> which is not integrable if <span class="math inline">\(\alpha &lt; 1.\)</span> We can compute the empirical average, but the result won’t converge to any meaningful quantity regardless of the sample size. The large jumps are testimonial of this.</p>
 <div class="cell">
 <div class="cell-output-display">
 <div id="fig-monte-carlo-path" class="quarto-float quarto-figure quarto-figure-center anchored">
@@ -1020,7 +1041,7 @@ X \sim \Phi^{-1}\left[\Phi(a) + \{\Phi(b)-\Phi(a)\}U\right]
 <img src="introduction_files/figure-html/fig-monte-carlo-path-1.png" class="img-fluid figure-img" width="672">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-monte-carlo-path-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;1.2: Running mean trace plots for <span class="math inline">\(g(x)=\mathrm{I}(x&lt;1)\)</span> (left), <span class="math inline">\(g(x)=x\)</span> (middle) and <span class="math inline">\(g(x)=1/x\)</span> (right) for a Gamma distribution with shape 0.5 and rate 2, as a function of the Monte Carlo sample size.
+Figure&nbsp;1.3: Running mean trace plots for <span class="math inline">\(g(x)=\mathrm{I}(x&lt;1)\)</span> (left), <span class="math inline">\(g(x)=x\)</span> (middle) and <span class="math inline">\(g(x)=1/x\)</span> (right) for a Gamma distribution with shape 0.5 and rate 2, as a function of the Monte Carlo sample size.
 </figcaption>
 </figure>
 </div>

@@ -1580,7 +1580,7 @@ n\mathsf{WAIC} = -\sum_{i=1}^n \mathsf{LPPD}_i + \sum_{i=1}^n \mathsf{Va}_{\bold
 \end{align*} 
 where we use again the empirical variance to compute the rightmost term. When comparing competing models, we can rely on their values of $\mathsf{WAIC}$ to discriminate about the predictive performance. To compute $\mathsf{WAIC}$, we need to store the values of the log density of each observation, or at least minimally [compute the running mean and variance accurately](https://www.johndcook.com/blog/standard_deviation/) pointwise at storage cost $\mathrm{O}(n)$. Note that Section 7.2 of @Gelman:2013 define the widely applicable information criterion as $2n \times \mathsf{WAIC}$  to make on par with other information criteria, which are defined typically on the deviance scale and so that lower values correspond to higher predictive performance. 
 
-An older criterion  which has somewhat fallen out of fashion is the **deviance** information criterion of @Spiegelhalther:2002. It is defined as 
+An older criterion  which has somewhat fallen out of fashion is the **deviance** information criterion of @Spiegelhalter:2002. It is defined as 
 \begin{align*}
 \mathsf{DIC} = -2 \ell(\widetilde{\boldsymbol{\theta}}) + 2 p_D
 \end{align*}

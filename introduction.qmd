@@ -64,7 +64,7 @@ If $\alpha=1,$ the density simplifies to $\beta \exp(-\beta x)$ and we recover t
 
 The beta distribution $\mathsf{beta}(\alpha_1, \alpha_2)$ is a distribution supported on the unit interval $[0,1]$ with shape parameters $\alpha_1>0$ and $\alpha_2>0.$ It's density is
 \begin{align*}
-f(x) = \frac{\Gamma(\alpha_1)\Gamma(\alpha_2)}{\Gamma(\alpha_1+\alpha_2)}x^{\alpha_1-1}(1-x)^{1-\alpha_2}, \qquad x \in [0,1].
+f(x) = \frac{\Gamma(\alpha_1+\alpha_2)}{\Gamma(\alpha_1)\Gamma(\alpha_2)}x^{\alpha_1-1}(1-x)^{1-\alpha_2}, \qquad x \in [0,1].
 \end{align*}
 The case $\mathsf{beta}(1,1),$ also denoted $\mathsf{unif}(0,1),$ corresponds to a standard uniform distribution.
 :::

@@ -221,7 +221,7 @@ window.Quarto = {
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./mcmc.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Markov chain Monte Carlo methods</span></span></a>
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Monte Carlo methods</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
@@ -287,7 +287,7 @@ window.Quarto = {
 <p><span class="theorem-title"><strong>Example 2.1 (Binomial model with beta prior)</strong></span> Consider a binomial likelihood with probability of success <span class="math inline">\(\theta \in [0,1]\)</span> and <span class="math inline">\(n\)</span> trials, <span class="math inline">\(Y \sim \mathsf{binom}(n, \theta)\)</span>. If we take a beta prior, <span class="math inline">\(\theta \sim \mathsf{beta}(\alpha, \beta)\)</span> and observe <span class="math inline">\(y\)</span> successes, the posterior is <span class="math display">\[\begin{align*}
 p(\theta \mid y = y) &amp;\propto \binom{n}{y} \theta^y (1-\theta)^{n-y} \frac{\Gamma(\alpha + \beta)}{\Gamma(\alpha) \Gamma(\beta)}\theta^{\alpha-1} (1-\theta)^{\beta-1}
 \\&amp;\stackrel{\theta}{\propto} \theta^{y+\alpha-1}(1-\theta)^{n-y+\beta-1}
-\end{align*}\]</span> and is <span class="math display">\[\int_{0}^{1} \theta^{y+\alpha-1}(1-\theta)^{n-y+\beta-1}\mathrm{d} \theta = \frac{\Gamma(y+\alpha)\Gamma(n-y+\beta)}{\Gamma(n+\alpha+\beta)},\]</span> a Beta function. Since we need only to keep track of the terms that are function of the parameter <span class="math inline">\(\theta\)</span>, we could recognize directly that the posterior distribution is <span class="math inline">\(\mathsf{beta}(y+\alpha, n-y+\beta)\)</span> and deduce the normalizing constant from there.</p>
+\end{align*}\]</span> and is <span class="math display">\[\int_{0}^{1} \theta^{y+\alpha-1}(1-\theta)^{n-y+\beta-1}\mathrm{d} \theta = \frac{\Gamma(y+\alpha)\Gamma(n-y+\beta)}{\Gamma(n+\alpha+\beta)},\]</span> a beta function. Since we need only to keep track of the terms that are function of the parameter <span class="math inline">\(\theta\)</span>, we could recognize directly that the posterior distribution is <span class="math inline">\(\mathsf{beta}(y+\alpha, n-y+\beta)\)</span> and deduce the normalizing constant from there.</p>
 <p>If <span class="math inline">\(Y \sim \mathsf{binom}(n, \theta)\)</span>, the expected number of success is <span class="math inline">\(n\theta\)</span> and the expected number of failures <span class="math inline">\(n(1-\theta)\)</span> and so the likelihood contribution, relative to the prior, will dominate as the sample size <span class="math inline">\(n\)</span> grows.</p>
 <p>Another way to see this is to track moments (expectation, variance, etc.) The Beta distribution, whose density is <span class="math inline">\(f(x; \alpha, \beta) \propto x^{\alpha-1} (1-x)^{\beta-1}\)</span>, has expectation <span class="math inline">\(\alpha/(\alpha+\beta)\)</span> and variance <span class="math inline">\(\alpha\beta/\{(\alpha+\beta)^2(\alpha+\beta+1)\}\)</span>. The posterior mean is <span class="math display">\[\begin{align*}
 \mathsf{E}(\theta \mid y) = w\frac{y}{n} + (1-w) \frac{\alpha}{\alpha+\beta},
@@ -452,6 +452,11 @@ Figure&nbsp;2.5: Beta-binomial posterior predictive distribution with correspond
 </div>
 </div>
 </div>
+<p>Given the <span class="math inline">\(\mathsf{Be}(a, b)\)</span> posterior with <span class="math inline">\(a=y + \alpha\)</span> and <span class="math inline">\(b=n-y + \beta\)</span>, the predictive distribution of <span class="math inline">\(Y_{\text{new}}\)</span> for fixed <span class="math inline">\(n_{\text{new}}\)</span> number of trials is beta-binomial with mass function <span class="math display">\[\begin{align*}
+p(y_{\text{new}}\mid y) &amp;= \int_0^1 \binom{n_{\text{new}}}{y_{\text{new}}} \frac{\theta^{a + y_{\text{new}}-1}(1-\theta)^{b + n_{\text{new}} - y_{\text{new}}-1}}{
+\mathrm{Be}(a, b)}\mathrm{d} \theta
+\\&amp;= \binom{n_{\text{new}}}{y_{\text{new}}} \frac{\mathrm{Be}(a + y_{\text{new}}, b + n_{\text{new}} - y_{\text{new}})}{\mathrm{Be}(a, b)}
+\end{align*}\]</span></p>
 </div>
 <div id="exm-normal-post-pred" class="theorem example">
 <p><span class="theorem-title"><strong>Example 2.4 (Posterior predictive distribution of univariate Gaussian with known mean)</strong></span> Consider an <span class="math inline">\(n\)</span> sample of independent and identically distributed Gaussian, <span class="math inline">\(Y_i \sim \mathsf{Gauss}(0, \tau^{-1})\)</span> (<span class="math inline">\(i=1, \ldots, n\)</span>), where we assign a gamma prior on the precision <span class="math inline">\(\tau \sim \mathsf{gamma}(\alpha, \beta)\)</span>. The posterior is <span class="math display">\[\begin{align*}

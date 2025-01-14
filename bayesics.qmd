@@ -63,7 +63,7 @@ Consider a binomial likelihood with probability of success $\theta \in [0,1]$ an
 p(\theta \mid y = y) &\propto \binom{n}{y} \theta^y (1-\theta)^{n-y} \frac{\Gamma(\alpha + \beta)}{\Gamma(\alpha) \Gamma(\beta)}\theta^{\alpha-1} (1-\theta)^{\beta-1}
 \\&\stackrel{\theta}{\propto} \theta^{y+\alpha-1}(1-\theta)^{n-y+\beta-1}
 \end{align*}
-and is $$\int_{0}^{1} \theta^{y+\alpha-1}(1-\theta)^{n-y+\beta-1}\mathrm{d} \theta = \frac{\Gamma(y+\alpha)\Gamma(n-y+\beta)}{\Gamma(n+\alpha+\beta)},$$ a Beta function. Since we need only to keep track of the terms that are function of the parameter $\theta$, we could recognize directly that the posterior distribution is $\mathsf{beta}(y+\alpha, n-y+\beta)$ and deduce the normalizing constant from there.
+and is $$\int_{0}^{1} \theta^{y+\alpha-1}(1-\theta)^{n-y+\beta-1}\mathrm{d} \theta = \frac{\Gamma(y+\alpha)\Gamma(n-y+\beta)}{\Gamma(n+\alpha+\beta)},$$ a beta function. Since we need only to keep track of the terms that are function of the parameter $\theta$, we could recognize directly that the posterior distribution is $\mathsf{beta}(y+\alpha, n-y+\beta)$ and deduce the normalizing constant from there.
 
 If $Y \sim \mathsf{binom}(n, \theta)$, the expected number of success is $n\theta$ and the expected number of failures $n(1-\theta)$ and so the likelihood contribution, relative to the prior, will dominate as the sample size $n$ grows. 
 
@@ -313,7 +313,7 @@ logBF2vs3 <- function(y, n){ # model 2 (beta(1.5,1.5) vs 3 (point mass at 0.5)
 #| label: fig-bayesfactor
 #| fig-cap: "Log of Bayes factors for comparison of binomial models with $n=14$ trials as a function of the number of successes $n$. Values larger than zero (on log scale) indicate preference for Model 2."
 n <- 14
-ys <- 1:13  
+ys <- 0:14
 BFs23 <- sapply(ys, function(y){logBF2vs3(y = y, n = n)})
 BFs12 <- log_marg_post_beta(n = n, y = ys, 1.5, 1.5) - log_marg_post_beta(n = n, y = ys)
 ggplot(data = data.frame(
@@ -598,6 +598,13 @@ g1
 #   theme_classic()
 # g1 + g2
 ```
+
+Given the $\mathsf{Be}(a, b)$  posterior with  $a=y + \alpha$ and $b=n-y + \beta$, the predictive distribution of $Y_{\text{new}}$ for fixed $n_{\text{new}}$ number of trials is beta-binomial with mass function
+\begin{align*}
+p(y_{\text{new}}\mid y) &= \int_0^1 \binom{n_{\text{new}}}{y_{\text{new}}} \frac{\theta^{a + y_{\text{new}}-1}(1-\theta)^{b + n_{\text{new}} - y_{\text{new}}-1}}{
+\mathrm{Be}(a, b)}\mathrm{d} \theta
+\\&= \binom{n_{\text{new}}}{y_{\text{new}}} \frac{\mathrm{Be}(a + y_{\text{new}}, b + n_{\text{new}} - y_{\text{new}})}{\mathrm{Be}(a, b)}
+\end{align*}
 
 :::
 

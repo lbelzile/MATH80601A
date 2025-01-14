@@ -266,20 +266,6 @@
 \DeclareMathAlphabet{\mathcrl}{U}{rsfs}{m}{n}
 \usepackage{utopia}
 \DeclareMathAlphabet{\mathcal}{OMS}{cmsy}{m}{n}
-\usepackage{booktabs}
-\usepackage{longtable}
-\usepackage{array}
-\usepackage{multirow}
-\usepackage{wrapfig}
-\usepackage{float}
-\usepackage{colortbl}
-\usepackage{pdflscape}
-\usepackage{tabu}
-\usepackage{threeparttable}
-\usepackage{threeparttablex}
-\usepackage[normalem]{ulem}
-\usepackage{makecell}
-\usepackage{xcolor}
 \makeatletter
 \@ifpackageloaded{bookmark}{}{\usepackage{bookmark}}
 \makeatother
@@ -319,15 +305,15 @@
 \newcommand*\listoflistings{\listof{codelisting}{List of Listings}}
 \usepackage{amsthm}
 \theoremstyle{definition}
-\newtheorem{definition}{Definition}[chapter]
+\newtheorem{example}{Example}[chapter]
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}[chapter]
 \theoremstyle{definition}
 \newtheorem{exercise}{Exercise}[chapter]
 \theoremstyle{plain}
-\newtheorem{theorem}{Theorem}[chapter]
-\theoremstyle{plain}
 \newtheorem{proposition}{Proposition}[chapter]
 \theoremstyle{definition}
-\newtheorem{example}{Example}[chapter]
+\newtheorem{definition}{Definition}[chapter]
 \theoremstyle{remark}
 \AtBeginDocument{\renewcommand*{\proofname}{Proof}}
 \newtheorem*{remark}{Remark}
@@ -383,7 +369,7 @@ details.
 These notes are licensed under a
 \href{http://creativecommons.org/licenses/by-nc-sa/4.0/}{Creative
 Commons Attribution-NonCommercial-ShareAlike 4.0 International License}
-and were last compiled on mercredi, janvier 08 2025.
+and were last compiled on lundi, janvier 13 2025.
 
 The objective of the course is to provide a hands on introduction to
 Bayesian data analysis. The course will cover the formulation,
@@ -463,7 +449,7 @@ The beta distribution \(\mathsf{beta}(\alpha_1, \alpha_2)\) is a
 distribution supported on the unit interval \([0,1]\) with shape
 parameters \(\alpha_1>0\) and \(\alpha_2>0.\) It's density is
 \begin{align*}
-f(x) = \frac{\Gamma(\alpha_1)\Gamma(\alpha_2)}{\Gamma(\alpha_1+\alpha_2)}x^{\alpha_1-1}(1-x)^{1-\alpha_2}, \qquad x \in [0,1].
+f(x) = \frac{\Gamma(\alpha_1+\alpha_2)}{\Gamma(\alpha_1)\Gamma(\alpha_2)}x^{\alpha_1-1}(1-x)^{1-\alpha_2}, \qquad x \in [0,1].
 \end{align*} The case \(\mathsf{beta}(1,1),\) also denoted
 \(\mathsf{unif}(0,1),\) corresponds to a standard uniform distribution.
 
@@ -1583,12 +1569,57 @@ distribution \(p(Y_t \mid Y_{t-1}, \ldots, Y_{t-p})\) equals
 
 \section{Monte Carlo methods}\label{monte-carlo-methods}
 
-If a random variable \(X\) has distribution function \(F\), then we can
-define it's \textbf{generalized inverse} \begin{align*}
+Monte Carlo methods relies on the ability to simulate random variable.
+If the quantile function admits a closed-form, we can use this to
+simulation. Recall that if a random variable \(X\) has distribution
+function \(F\), then we can define it's \textbf{generalized inverse}
+\begin{align*}
 F^{-1}(u) = \inf\{x: f(x) \geq u\}
 \end{align*} and if \(G\) is continuous, then
 \(F(X) \sim \mathsf{unif}(0,1)\). We can thus simulate data using the
-quantile function \(F^{-1}(U),\), with \(U \sim \mathsf{unif}(0,1)\). T
+quantile function \(F^{-1}(U),\), with \(U \sim \mathsf{unif}(0,1)\).
+
+\begin{theorem}[Fundamental theorem of
+simulation]\protect\hypertarget{thm-fundamental-simulation}{}\label{thm-fundamental-simulation}
+
+Consider a \(d\)-variate random vector \(\boldsymbol{X}\), independently
+\(U \sim \mathsf{unif}(0,1)\) and \(c>0\) any positive constant. If
+\((\boldsymbol{X}, U)\) is uniformly distributed on the set
+\begin{align*}
+\mathcal{A}_{f}=\{(\boldsymbol{x}, u): 0 \leq u \leq  c f(\boldsymbol{x})\},
+\end{align*} then \(\boldsymbol{X}\) has density \(f(\boldsymbol{x})\).
+Conversely, if \(\boldsymbol{X}\) has density \(f(\boldsymbol{x})\) and
+\(U\sim\mathsf{unif}(0,1)\) independently, then
+\([\boldsymbol{X}, cUf(\boldsymbol{X})]\) is uniformly distributed on
+\(\mathcal{A}_f\)
+
+We cam thus view \(f\) as the marginal density of \(\boldsymbol{X}\)
+since \(f(\boldsymbol{x}) = \int_0^{f(\boldsymbol{x})} \mathrm{d} u.\)
+If we can simulate uniformly from \(\mathcal{A}_{f}\), then, we can
+discard the auxiliary variable \(u\). See Devroye
+(\citeproc{ref-Devroye:1986}{1986}), Theorem 3.1 for a proof.
+
+\begin{figure}[ht!]
+
+\centering{
+
+\pandocbounded{\includegraphics[keepaspectratio]{introduction_files/figure-pdf/fig-fundamental-theorem-1.pdf}}
+
+}
+
+\caption{\label{fig-fundamental-theorem}Illustration of the fundamental
+theorem of simulation. All points in blue below the density curve belong
+to \(\mathcal{A}_f\).}
+
+\end{figure}%
+
+\end{theorem}
+
+The fundamental theorem of simulation underlies rejection sampling, the
+generalized ratio of uniform and slice sampling. The density function
+needs only to be known up to normalizing constant thanks to the
+arbitrariness of \(c\), which will also allow us to work with
+unnormalized density functions.
 
 \begin{proposition}[Rejection
 sampling]\protect\hypertarget{prp-rejection-sampling}{}\label{prp-rejection-sampling}
@@ -1600,8 +1631,7 @@ proposal with density \(q(\cdot)\) with nested support,
 \(q(\cdot)\) must be such that
 \(p(\boldsymbol{\theta}) \leq C q(\boldsymbol{\theta})\) for
 \(C \geq 1\) for all values of \(\boldsymbol{\theta}\) in the support of
-\(p(\cdot).\) A proof can be found in Devroye
-(\citeproc{ref-Devroye:1986}{1986}, Theorem 3.1)
+\(p(\cdot).\)
 
 \begin{enumerate}
 \def\labelenumi{\arabic{enumi}.}
@@ -1679,7 +1709,7 @@ points from the Gaussian and accept any that falls within the bounds.
 \end{Shaded}
 
 \begin{verbatim}
-[1] 0.34158
+[1] 0.34242
 \end{verbatim}
 
 \begin{Shaded}
@@ -2063,7 +2093,7 @@ p(\theta \mid y = y) &\propto \binom{n}{y} \theta^y (1-\theta)^{n-y} \frac{\Gamm
 \\&\stackrel{\theta}{\propto} \theta^{y+\alpha-1}(1-\theta)^{n-y+\beta-1}
 \end{align*} and is
 \[\int_{0}^{1} \theta^{y+\alpha-1}(1-\theta)^{n-y+\beta-1}\mathrm{d} \theta = \frac{\Gamma(y+\alpha)\Gamma(n-y+\beta)}{\Gamma(n+\alpha+\beta)},\]
-a Beta function. Since we need only to keep track of the terms that are
+a beta function. Since we need only to keep track of the terms that are
 function of the parameter \(\theta\), we could recognize directly that
 the posterior distribution is \(\mathsf{beta}(y+\alpha, n-y+\beta)\) and
 deduce the normalizing constant from there.
@@ -2398,6 +2428,15 @@ distribution with corresponding binomial mass function evaluated at the
 maximum likelihood estimator.}
 
 \end{figure}%
+
+Given the \(\mathsf{Be}(a, b)\) posterior with \(a=y + \alpha\) and
+\(b=n-y + \beta\), the predictive distribution of \(Y_{\text{new}}\) for
+fixed \(n_{\text{new}}\) number of trials is beta-binomial with mass
+function \begin{align*}
+p(y_{\text{new}}\mid y) &= \int_0^1 \binom{n_{\text{new}}}{y_{\text{new}}} \frac{\theta^{a + y_{\text{new}}-1}(1-\theta)^{b + n_{\text{new}} - y_{\text{new}}-1}}{
+\mathrm{Be}(a, b)}\mathrm{d} \theta
+\\&= \binom{n_{\text{new}}}{y_{\text{new}}} \frac{\mathrm{Be}(a + y_{\text{new}}, b + n_{\text{new}} - y_{\text{new}})}{\mathrm{Be}(a, b)}
+\end{align*}
 
 \begin{example}[Posterior predictive distribution of univariate Gaussian
 with known
@@ -3756,8 +3795,7 @@ median and the bars the 50\% and 95\% percentile credible intervals.}
 
 \bookmarksetup{startatroot}
 
-\chapter{Markov chain Monte Carlo
-methods}\label{markov-chain-monte-carlo-methods}
+\chapter{Monte Carlo methods}\label{monte-carlo-methods-1}
 
 There are two major approaches to handling the problem of the unknown
 normalizing constant: deterministic and stochastic approximations. The
@@ -3951,10 +3989,10 @@ the posterior mean using the batch method.}
 \end{figure}%
 
 When can we use output from a Markov chain in place of independent Monte
-Carlo draws? The assumptions laid out in the ergodic theorem are that
-the chain is irreducible and acyclic, ensuring that the chain has a
-unique stationary distribution. The ergodic theorem is a result about
-convergence of averages.
+Carlo draws? The assumptions laid out in the ergodic theorem, which
+provides guarantees for the convergence of sample average, are that the
+chain is irreducible. If the chain is also acyclic, the chain has a
+unique stationary distribution.
 
 A discrete-time stochastic process is a random sequences whose elements
 are part of some set (finite or countable), termed state space
@@ -4014,6 +4052,10 @@ P_3 = \begin{pmatrix}
 \(\mathbf{P}\): we get \(\boldsymbol{p}_1=(0, 5/11, 6/11)\) for \(P_1\),
 \((1/3, 1/3, 1/3)\) for \(P_2\) and \((1,2,2,2,1)/8\) for \(P_3\).
 
+While the existence of a stationary distribution require aperiodicity,
+the latter is an hindrance from a computational perspective as
+ergodicity is valid without it.
+
 Figure~\ref{fig-discrete-markov-chain} shows the path of the walk and
 the empirical proportion of the time spent in each state, as time
 progress. Since the Markov chain has a unique stationary distribution,
@@ -4034,7 +4076,9 @@ of each state visited per 100 iterations (right).}
 
 \end{figure}%
 
-\section{Markov chain Monte Carlo
+\bookmarksetup{startatroot}
+
+\chapter{Markov chain Monte Carlo
 algorithms}\label{markov-chain-monte-carlo-algorithms}
 
 The Markov chain Monte Carlo revolution in the 1990s made Bayesian
@@ -5276,9 +5320,34 @@ running mean and variance accurately} pointwise at storage cost
 information criterion as \(2n \times \mathsf{WAIC}\) to make on par with
 other information criteria, which are defined typically on the deviance
 scale and so that lower values correspond to higher predictive
-performance. For the smartwatch model, we get a value of 3.06 for the
-complex model and 4.51: this suggests an improvement in using
-individual-specific effects.
+performance.
+
+An older criterion which has somewhat fallen out of fashion is the
+\textbf{deviance} information criterion of Spiegelhalter et al.
+(\citeproc{ref-Spiegelhalter:2002}{2002}). It is defined as
+\begin{align*}
+\mathsf{DIC} = -2 \ell(\widetilde{\boldsymbol{\theta}}) + 2 p_D
+\end{align*} where \(p_D\) is the posterior expectation of the deviance
+relative to the point estimator of the parameter
+\(\widetilde{\boldsymbol{\theta}}\) (e.g., the maximum a posteriori or
+the posterior mean) \begin{align*}
+p_D = \mathsf{E}\{D(\boldsymbol{\theta}, \widetilde{\boldsymbol{\theta}}) \mid \boldsymbol{y}\}= \int 2 \{ \ell(\widetilde{\boldsymbol{\theta}}) - \ell(\boldsymbol{\theta})\} f(\boldsymbol{\theta} \mid \boldsymbol{y} \mathrm{d} \boldsymbol{\theta}
+\end{align*} The DIC can be easily evaluated by keeping track of the log
+likelihood evaluated at each posterior draw from a Markov chain Monte
+Carlo algorithm. The penalty term \(p_D\) is however not invariant to
+reparametrizations. Assuming we can derive a multivariate Gaussian
+approximation to the MLE under suitable regularity conditions, the
+\(\mathsf{DIC}\) is equivalent in large samples to \(\mathsf{AIC}\). The
+\(\mathsf{DIC}\) is considered by many authors as not being a Bayesian
+procedure; see Spiegelhalter et al.
+(\citeproc{ref-Spiegelhalther:2014}{2014}) and the discussion therein.
+
+\begin{example}[Information criteria for smartwatch and Bayesian
+LASSO]\protect\hypertarget{exm-smartwatch-infocriteria}{}\label{exm-smartwatch-infocriteria}
+
+For the smartwatch model, we get a value of 3.06 for the complex model
+and 4.51: this suggests an improvement in using individual-specific
+effects.
 
 We can also look at the predictive performance. For the
 \texttt{diabetes} data application with the Bayesian LASSO with fixed
@@ -5302,6 +5371,8 @@ for the Bayesian LASSO problem fitted to the diabetes data, as a
 function of the penalty \(\lambda\).}
 
 \end{figure}%
+
+\end{example}
 
 Ideally, one would measure the predictive performance using the
 leave-one-out predictive distribution for observation \(i\) given all
@@ -5546,6 +5617,19 @@ Sørbye, Sigrunn Holbek, and Håvard Rue. 2017. {``Penalised Complexity
 Priors for Stationary Autoregressive Processes.''} \emph{Journal of Time
 Series Analysis} 38 (6): 923--35.
 \url{https://doi.org/10.1111/jtsa.12242}.
+
+\bibitem[\citeproctext]{ref-Spiegelhalther:2014}
+Spiegelhalter, David J., Nicola G. Best, Bradley P. Carlin, and Angelika
+Linde. 2014. {``The Deviance Information Criterion: 12 Years On.''}
+\emph{Journal of the Royal Statistical Society Series B: Statistical
+Methodology} 76 (3): 485--93. \url{https://doi.org/10.1111/rssb.12062}.
+
+\bibitem[\citeproctext]{ref-Spiegelhalter:2002}
+Spiegelhalter, David J., Nicola G. Best, Bradley P. Carlin, and Angelika
+Van Der Linde. 2002. {``Bayesian Measures of Model Complexity and
+Fit.''} \emph{Journal of the Royal Statistical Society: Series B
+(Statistical Methodology)} 64 (4): 583--639.
+\url{https://doi.org/10.1111/1467-9868.00353}.
 
 \bibitem[\citeproctext]{ref-Tanner.Wong:1987}
 Tanner, Martin A., and Wing Hung Wong. 1987. {``The Calculation of
