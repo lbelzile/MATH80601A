@@ -330,11 +330,23 @@ where functions $Q_1(\cdot), \ldots, Q_K(\cdot)$ and $D(\cdot)$ depend only on $
 
 The support of $f$ must not depend on $\boldsymbol{\theta}.$ The transformed parameters $Q_k(\boldsymbol{\theta})$ $(k=1, \ldots, K)$ are termed canonical parameters.
 
+:::
+
+ If we have an independent and identically distributed sample of observations $y_1, \ldots, y_n$, the log likelihood is thus of the form
+\begin{align*}
+\ell(\boldsymbol{\theta}) = \sum_{k=1}^K \phi_k(\boldsymbol{\theta}) \sum_{i=1}^n t_k(y_i) + n D(\boldsymbol{\theta}),
+\end{align*}
+where  the collection $\sum_{i=1}^n t_k(y_i)$ ($k=1, \ldots, K$) are sufficient statistics and $\phi_k(\boldsymbol{\theta})$ are the canonical parameters. 
+
 We term **conjugate family** families of distribution on $\boldsymbol{\Theta}$ with parameters $\boldsymbol{\chi}, \gamma$ if their density is proportional to
 \begin{align*}
 \exp\left\{ \sum_{k=1}^K Q_k(\boldsymbol{\theta}) \chi_k + \gamma D(\boldsymbol{\theta})\right\}
 \end{align*}
-
+A log prior density with parameters $\eta, \nu_1, \ldots, \nu_K$ that is proportional to 
+\begin{align*}
+\log p(\boldsymbol{\theta}) \propto \eta D(\boldsymbol{\theta}) + \sum_{k=1}^K Q_k(\boldsymbol{\theta}) \nu_k
+\end{align*}
+is conjugate.
 <!-- p.131 of Barndorff-Nielsen  -->
 :::
 
@@ -357,11 +369,11 @@ so taking $Q_1(\mu, \sigma^2)=\mu/\sigma^2$ and $Q_2(\mu, \sigma^2)=1/\sigma^2$ 
 
 ## Binomial as exponential family
 
-Consider $Y \sim \mathsf{binom}(n,p)$ and write the mass function
+The binomial log density with $y$ successes out of $n$ trials  is proportional to 
 \begin{align*}
-f(y; p)=\exp \left\{ \log \Gamma(n+1) - \log \left(\frac{\Gamma(y+1)}{\Gamma(n-y+1)}\right) + y \mathrm{logit}(p) + n \log(1-p)\right\}.
+y \log(p) + (n-y) \log(1-p) = y\log\left( \frac{p}{1-p}\right) + n \log(1-p)
 \end{align*}
-and so the canonical parameter is $Q_1(p) = \mathrm{logit}(p) = \log\{p/(1-p)\}$ with $t_1(y) = y.$ The beta distribution is conjugate to the binomial.
+with canonical parameter $Q_1(p) = \mathrm{logit}(p) = \log\{p/(1-p)\}$ with $t_1(y) = y.$ The canonical link function for Bernoulli gives rise to logistic regression model. The binomial distribution is thus an exponential family. The beta distribution is conjugate to the binomial.
 :::
 
 
@@ -370,11 +382,12 @@ and so the canonical parameter is $Q_1(p) = \mathrm{logit}(p) = \log\{p/(1-p)\}$
 
 ## Poisson as exponential family
 
-Consider $Y \sim \mathsf{Poisson}(\lambda)$ with mass function
+Consider $Y \sim \mathsf{Poisson}(\mu)$ with mass function
 \begin{align*}
-f(y; p)=\exp \left\{ - \lambda + y \log \lambda - \log \Gamma(x+1)\right\}.
+f(y; p)=\exp \left\{ - \mu + y \log \mu - \log \Gamma(x+1)\right\}.
 \end{align*}
-and so the canonical parameter is $Q_1(p) = \log \lambda$ with the gamma distribution as conjugate family.
+and so the canonical parameter is $Q_1(p) = \log \mu$ with the gamma distribution as conjugate family.
+
 :::
 
 

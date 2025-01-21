@@ -14,7 +14,7 @@ We consider regression models with model or design matrix $\mathbf{X}$ and an as
 so that observations are independent and homoscedastic. Inference is performed conditional on the observed covariate vectors $\mathbf{X}_i$. The intercept $\beta_0$, which is added to capture the mean response and make it mean-zero, receives special treatment.
 
 
-The conjugate prior for the Gaussian regression model is a Gaussian-inverse gamma (also listed as Gaussian-inverse $\chi^2$) and is defined hierarchically as
+The conjugate prior for the Gaussian regression model for the mean and variance parameters is a Gaussian-inverse gamma (also listed as Gaussian-inverse $\chi^2$) and is defined hierarchically as
 \begin{align*}
 \boldsymbol{\beta} \mid \sigma^2 &\sim \mathsf{Gauss}(\boldsymbol{\mu}_0, \sigma^2 \boldsymbol{\Omega}_0^{-1}) \\
 \sigma^2 &\sim \mathsf{inv. gamma}(\nu_0/2, \nu\sigma^2_0/2).
@@ -34,3 +34,19 @@ Using @prp-quadratic-forms,
 :::
 
 The improper prior $p(\boldsymbol{\beta}, \sigma^2) \propto \sigma^{-2}$ can be viewed as a special case when
+
+
+
+:::{#prp-spike-slab}
+
+## Spike-and-slab prior
+
+:::
+
+
+:::{#prp-horseshoe}
+
+## Horseshoe prior
+
+
+:::
