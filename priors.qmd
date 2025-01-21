@@ -155,7 +155,7 @@ Consider an A/B test from November 23st, 2014, that compared four different head
 
 At first glance, the first and third headlines seem likely to lead to a curiosity gap. The wording of the second is more explicit (and searchable), whereas the first is worded as a question.
 
-We model the conversion rate $\lambda_i$ for each headline separately using a Poisson distribution and compare the posterior distributions for all four choices. Using a conjugate prior and selecting the parameters by moment matching yields approximately $\alpha = 1.65$ and $\beta = 0.01$ for the hyperparameters, setting $\alpha\beta = 0.0158$ and $\alpha\beta^2=0.0123^2$ and solving for the two unknown parameters.
+We model the conversion rate $\lambda_i$ for each headline separately using a Poisson distribution and compare the posterior distributions for all four choices. Using a conjugate prior and selecting the parameters by moment matching yields approximately $\alpha = 1.65$ and $\beta = 104.44$ for the hyperparameters, setting $\alpha/\beta = 0.0158$ and $\alpha/\beta^2=0.0123^2$ and solving for the two unknown parameters.
 
 ```{r}
 #| label: tbl-upworthy
@@ -179,23 +179,24 @@ cols <- MetBrewer::met.brewer("Hiroshige", 4)
 names(cols) <- paste0("H", 1:4)
 library(ggplot2)
 ggplot() + 
-   geom_function(fun = dgamma, 
-                 args = list(shape = 0.01 + 49, rate = 3060 + 1.65),
+ ggplot() +
+   geom_function(fun = dgamma,
+                 args = list(shape = 1.65 + 49, rate = 3060 + 104.44),
                  xlim = c(0, 0.03),
                  mapping = aes(col = "H1"),
-                 n = 1e3) + 
-   stat_function(fun = dgamma, 
-                 args = list(shape = 0.01 + 20, rate = 2982 + 1.65),
+                 n = 1e3) +
+   stat_function(fun = dgamma,
+                 args = list(shape = 1.65 + 20, rate = 2982 + 104.44),
                  xlim = c(0, 0.03),
                  mapping = aes(col = "H2"),
-                 n = 1e3) + 
-   stat_function(fun = dgamma, 
-                 args = list(shape = 0.01 + 31, rate = 3112 + 1.65),
+                 n = 1e3) +
+   stat_function(fun = dgamma,
+                 args = list(shape = 1.65 + 31, rate = 3112 + 104.44),
                  xlim = c(0, 0.03),
                  mapping = aes(col = "H3"),
-                 n = 1e3) + 
-   stat_function(fun = dgamma, 
-                 args = list(shape = 0.01 + 9, rate = 3083 + 1.65),
+                 n = 1e3) +
+   stat_function(fun = dgamma,
+                 args = list(shape = 1.65 + 9, rate = 3083 + 104.44),
                  xlim = c(0, 0.03),
                  mapping = aes(col = "H4"),
                  n = 1e3) +
@@ -214,8 +215,8 @@ ggplot() +
 ```{r}
 set.seed(202309)
 # Simulate from posterior
-postH1 <- rgamma(1e5, shape = 0.01 + 49, rate = 3060 + 1.64)
-postH3 <- rgamma(1e5, shape = 0.01 + 31, rate = 3112 + 1.64)
+postH1 <- rgamma(1e5, shape = 1.65 + 49, rate = 3060 + 104.44)
+postH3 <- rgamma(1e5, shape = 1.65 + 31, rate = 3112 + 104.44)
 prob_sup <- mean(postH3 > postH1)
 ```
 
@@ -247,7 +248,7 @@ The coefficients represent the difference in log rate (multiplicative effect) re
 
 
 
-Consider instead a Bayesian analysis with conjugate prior: we model separately the rates of each group (question or not). Suppose we think apriori that the click-rate is on average 1%, with a standard deviation of 2%, with no difference between questions or not. For a $\mathsf{Gamma}(\alpha, \beta)$ prior, this would translate, using moment matching, into a rate of $\beta = 0.04 = \mathsf{Var}_0(\lambda_j)/\mathsf{E}_0(\lambda_j)$ and a shape of $\alpha = 2.5$ ($j=1, 2$). If $\lambda_{j}$ is the average rate for each factor level (yes and no), then $\mathsf{E}(Y_{ij}/n_{ij}) = \lambda_j$ so the log likelihood is proportional, as a function of $\lambda_1$ and $\lambda_2$, to
+Consider instead a Bayesian analysis with conjugate prior: we model separately the rates of each group (question or not). Suppose we think apriori that the click-rate is on average 1%, with a standard deviation of 2%, with no difference between questions or not. For a $\mathsf{Gamma}(\alpha, \beta)$ prior, this would translate, using moment matching, into a rate of $\beta = 25 = \mathsf{E}_0(\lambda_j)/ \mathsf{Var}_0(\lambda_j)$ and a shape of $\alpha = 0.25$ ($j=1, 2$). If $\lambda_{j}$ is the average rate for each factor level (yes and no), then $\mathsf{E}(Y_{ij}/n_{ij}) = \lambda_j$ so the log likelihood is proportional, as a function of $\lambda_1$ and $\lambda_2$, to
 \begin{align*}
 \ell(\boldsymbol{\lambda}; \boldsymbol{y}, \boldsymbol{n}) \stackrel{\boldsymbol{\lambda}}{\propto} \sum_{i=1}^n \sum_{j=1}^2 y_{ij}\log \lambda_j - \lambda_jn_{ij}
 \end{align*}
@@ -260,8 +261,8 @@ and we can recognize that the posterior for $\lambda_i$ is gamma with shape $\al
 #| warning: false
 #| label: fig-hist-difference_rates
 #| fig-cap: "Histograms of posterior summaries for differences (left) and rates (right) based on 1000 simulations from the independent gamma posteriors."
-alpha <- 2.5
-beta <- 0.04
+alpha <- 0.25
+beta <- 25
 summary_stats <- upworthy_question |>
   dplyr::group_by(question) |>
   dplyr::summarize(
@@ -334,13 +335,14 @@ In general, unless the sample size is small and we want to add expert opinion, w
 :::{#def-properprior}
 
 ## Proper prior
+
 We call a prior function *proper* if it's integral is finite over the parameter space; such prior function automatically leads to a valid posterior.
 
 
 :::
 
 
-The best example of prior priors arise from probability density function. We can still employ this rule for improper priors: for example, taking $\alpha, \beta \to 0$ in the beta prior leads to a prior proportional to $x^{-1}(1-x)^{-1}$, the integral of which diverges on the unit interval $[0,1]$. However, as long as the number of success and the number of failures is larger than 1, meaning $k \geq 1, n-k \geq 1$, the posterior distribution would be proper, i.e., integrable. To find the posterior, normalizing constants are also superfluous.
+The best example of proper priors arise from probability density function. We can still employ this rule for improper priors: for example, taking $\alpha, \beta \to 0$ in the beta prior leads to a prior proportional to $x^{-1}(1-x)^{-1}$, the integral of which diverges on the unit interval $[0,1]$. However, as long as the number of success and the number of failures is larger than 1, meaning $k \geq 1, n-k \geq 1$, the posterior distribution would be proper, i.e., integrable. To find the posterior, normalizing constants are also superfluous.
 
 
 Many uninformative priors are flat, or proportional to a uniform on some subset of the real line and therefore improper. It may be superficially tempting to set a uniform prior on a large range to ensure posterior property, but the major problem is that a flat prior may be informative in a different parametrization, as the following example suggests.

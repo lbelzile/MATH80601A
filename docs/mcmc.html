@@ -847,7 +847,7 @@ Z_i \mid y_i, \boldsymbol{\beta} \sim \begin{cases}
 \mathsf{trunc. Gauss}(\mathbf{x}_i\boldsymbol{\beta}, -\infty, 0) &amp; y_i =0 \\
 \mathsf{trunc. Gauss}(\mathbf{x}_i\boldsymbol{\beta}, 0, \infty) &amp; y_i =1.
 \end{cases}
-\end{align*}\]</span> and we can use the algorithms of <a href="introduction.html#exm-accept-reject-truncated" class="quarto-xref">Example&nbsp;<span>1.17</span></a> to simulate these.</p>
+\end{align*}\]</span> and we can use the algorithms of <a href="introduction.html#exm-accept-reject-truncated" class="quarto-xref">Example&nbsp;<span>1.18</span></a> to simulate these.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>probit_regression <span class="ot">&lt;-</span> <span class="cf">function</span>(y, x, <span class="at">B =</span> <span class="fl">1e4</span>L, <span class="at">burnin =</span> <span class="dv">100</span>){</span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  y <span class="ot">&lt;-</span> <span class="fu">as.numeric</span>(y)</span>

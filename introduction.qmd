@@ -55,6 +55,8 @@ where $\Gamma(\alpha)\coloneqq\int_0^\infty t^{\alpha-1}\exp(-t)\mathrm{d} t$ is
 
 If $\alpha=1,$ the density simplifies to $\beta \exp(-\beta x)$ and we recover the **exponential distribution**, denote $\mathsf{expo}(\beta).$ The case $\mathsf{gamma}(\nu/2, 1/2)$ corresponds to the chi-square distribution $\chi^2_\nu.$
 
+The mean and variance of a gamma are $\mathsf{E}(Y)=alpha/\beta$ and $\mathsf{Va}(Y)=alpha/\beta^2$.
+
 :::
 
 :::{#def-beta}
@@ -410,6 +412,19 @@ Since $|\mathbf{A}^{-1}| = |\mathbf{A}|^{-1}$ and $\mathbf{A}^{-\top}\mathbf{A}^
 :::
 
 
+
+:::{#exm-inverse-gamma}
+
+## Inverse gamma distribution
+
+Consider $Y \sim \mathsf{gamma}(\alpha, \beta)$ and the reciprocal $g(x) = 1/x$. The Jacobian of the transformation is $|g'(y)| = 1/y^2.$ The density of the inverse gamma $\mathsf{inv. gamma}(\alpha, \beta)$ with shape $\alpha>0$ and scale $\beta>0$ is thus
+\begin{align*}
+ f_Y(y) = \frac{\beta^\alpha}{\Gamma(\alpha)} y^{-\alpha-1} \exp(-\beta/y), \qquad y > 0.
+\end{align*}
+The expected value and variance are $\mathsf{E}(Y)=\beta/(\alpha-1)$ for $\alpha > 1$ and $\mathsf{Va}(Y) = \beta^2/\{(\alpha-1)^2(\alpha-2)\}$ for $\alpha>2.$
+
+:::
+
 :::{#prp-gaussian-dist-property}
 
 ## Simulation of Gaussian vectors
@@ -623,6 +638,8 @@ is again multinomial with $n$ trials, but probability of success $p_j/(1-p_2-\cd
 :::
 
 :::{#exm-conditional-marginal}
+
+## Gaussian-gamma model
 
 Consider the bivariate density function of the pair $(X, Y),$ where for $\lambda>0,$
 \begin{align*}
@@ -874,6 +891,8 @@ In a negative binomial regression model, the term $k$ is a dispersion parameter,
 
 :::
 
+
+
 :::{#prp-partition-matrix}
 
 ## Partitioning of covariance matrices
@@ -946,6 +965,20 @@ and $\boldsymbol{\Sigma}_{1|2}=\boldsymbol{\Sigma}_{11}-\boldsymbol{\Sigma}_{12}
 
 
 :::
+
+:::{#prp-quadratic-forms}
+
+## Decomposition of quadratic forms
+
+For quadratic forms (in $\boldsymbol{x}$) with
+\begin{align*}
+(\boldsymbol{x} - \boldsymbol{a})^\top \mathbf{A}(\boldsymbol{x} - \boldsymbol{a}) + (\boldsymbol{x} - \boldsymbol{b})^\top \mathbf{B}(\boldsymbol{x} - \boldsymbol{b}) \stackrel{\boldsymbol{x}}{\propto} (\boldsymbol{x} - \boldsymbol{c})^\top \mathbf{C}(\boldsymbol{x} - \boldsymbol{c})
+\end{align*}
+where $\mathbf{C} = \mathbf{A} + \mathbf{B}$ and $\boldsymbol{c}= \mathbf{C}^{-a}(\mathbf{A}\boldsymbol{a} + \mathbf{B}\boldsymbol{b})$.
+
+
+:::
+
 
 :::{.proof}
 It is easier to obtain this result by expressing the density of the Gaussian distribution in terms of the precision matrix 

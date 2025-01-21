@@ -266,6 +266,20 @@
 \DeclareMathAlphabet{\mathcrl}{U}{rsfs}{m}{n}
 \usepackage{utopia}
 \DeclareMathAlphabet{\mathcal}{OMS}{cmsy}{m}{n}
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{wrapfig}
+\usepackage{float}
+\usepackage{colortbl}
+\usepackage{pdflscape}
+\usepackage{tabu}
+\usepackage{threeparttable}
+\usepackage{threeparttablex}
+\usepackage[normalem]{ulem}
+\usepackage{makecell}
+\usepackage{xcolor}
 \makeatletter
 \@ifpackageloaded{bookmark}{}{\usepackage{bookmark}}
 \makeatother
@@ -304,14 +318,14 @@
 \floatname{codelisting}{Listing}
 \newcommand*\listoflistings{\listof{codelisting}{List of Listings}}
 \usepackage{amsthm}
-\theoremstyle{definition}
-\newtheorem{example}{Example}[chapter]
 \theoremstyle{plain}
 \newtheorem{theorem}{Theorem}[chapter]
 \theoremstyle{definition}
 \newtheorem{exercise}{Exercise}[chapter]
 \theoremstyle{plain}
 \newtheorem{proposition}{Proposition}[chapter]
+\theoremstyle{definition}
+\newtheorem{example}{Example}[chapter]
 \theoremstyle{definition}
 \newtheorem{definition}{Definition}[chapter]
 \theoremstyle{remark}
@@ -369,7 +383,7 @@ details.
 These notes are licensed under a
 \href{http://creativecommons.org/licenses/by-nc-sa/4.0/}{Creative
 Commons Attribution-NonCommercial-ShareAlike 4.0 International License}
-and were last compiled on lundi, janvier 13 2025.
+and were last compiled on lundi, janvier 20 2025.
 
 The objective of the course is to provide a hands on introduction to
 Bayesian data analysis. The course will cover the formulation,
@@ -439,6 +453,9 @@ If \(\alpha=1,\) the density simplifies to \(\beta \exp(-\beta x)\) and
 we recover the \textbf{exponential distribution}, denote
 \(\mathsf{expo}(\beta).\) The case \(\mathsf{gamma}(\nu/2, 1/2)\)
 corresponds to the chi-square distribution \(\chi^2_\nu.\)
+
+The mean and variance of a gamma are \(\mathsf{E}(Y)=alpha/\beta\) and
+\(\mathsf{Va}(Y)=alpha/\beta^2\).
 
 \end{definition}
 
@@ -708,6 +725,22 @@ recover that
 
 \end{example}
 
+\begin{example}[Inverse gamma
+distribution]\protect\hypertarget{exm-inverse-gamma}{}\label{exm-inverse-gamma}
+
+Consider \(Y \sim \mathsf{gamma}(\alpha, \beta)\) and the reciprocal
+\(g(x) = 1/x\). The Jacobian of the transformation is
+\(|g'(y)| = 1/y^2.\) The density of the inverse gamma
+\(\mathsf{inv. gamma}(\alpha, \beta)\) with shape \(\alpha>0\) and scale
+\(\beta>0\) is thus \begin{align*}
+ f_Y(y) = \frac{\beta^\alpha}{\Gamma(\alpha)} y^{-\alpha-1} \exp(-\beta/y), \qquad y > 0.
+\end{align*} The expected value and variance are
+\(\mathsf{E}(Y)=\beta/(\alpha-1)\) for \(\alpha > 1\) and
+\(\mathsf{Va}(Y) = \beta^2/\{(\alpha-1)^2(\alpha-2)\}\) for
+\(\alpha>2.\)
+
+\end{example}
+
 \begin{proposition}[Simulation of Gaussian
 vectors]\protect\hypertarget{prp-gaussian-dist-property}{}\label{prp-gaussian-dist-property}
 
@@ -958,7 +991,8 @@ f_{\boldsymbol{Y}}(\boldsymbol{y}) &= f_{Y_2 \mid Y_1}(y_2; y_1) f_{Y_1}(y_1)
 
 \end{example}
 
-\begin{example}[]\protect\hypertarget{exm-conditional-marginal}{}\label{exm-conditional-marginal}
+\begin{example}[Gaussian-gamma
+model]\protect\hypertarget{exm-conditional-marginal}{}\label{exm-conditional-marginal}
 
 Consider the bivariate density function of the pair \((X, Y),\) where
 for \(\lambda>0,\) \begin{align*}
@@ -1285,6 +1319,16 @@ and consider the partition \begin{align*}
 \end{align*} and
 \(\boldsymbol{\Sigma}_{1|2}=\boldsymbol{\Sigma}_{11}-\boldsymbol{\Sigma}_{12}\boldsymbol{\Sigma}_{22}^{-1}\boldsymbol{\Sigma}_{21}\)
 is the Schur complement of \(\boldsymbol{\Sigma}_{22}.\)
+
+\end{proposition}
+
+\begin{proposition}[Decomposition of quadratic
+forms]\protect\hypertarget{prp-quadratic-forms}{}\label{prp-quadratic-forms}
+
+For quadratic forms (in \(\boldsymbol{x}\)) with \begin{align*}
+(\boldsymbol{x} - \boldsymbol{a})^\top \mathbf{A}(\boldsymbol{x} - \boldsymbol{a}) + (\boldsymbol{x} - \boldsymbol{b})^\top \mathbf{B}(\boldsymbol{x} - \boldsymbol{b}) \stackrel{\boldsymbol{x}}{\propto} (\boldsymbol{x} - \boldsymbol{c})^\top \mathbf{C}(\boldsymbol{x} - \boldsymbol{c})
+\end{align*} where \(\mathbf{C} = \mathbf{A} + \mathbf{B}\) and
+\(\boldsymbol{c}= \mathbf{C}^{-a}(\mathbf{A}\boldsymbol{a} + \mathbf{B}\boldsymbol{b})\).
 
 \end{proposition}
 
@@ -2830,11 +2874,50 @@ quantiles. These are easily obtained from samples by simply taking
 empirical quantiles. An alternative, highest posterior density credible
 sets, which may be a set of disjoint intervals obtained by considering
 the parts of the posterior with the highest density, may be more
-informative. The top panel Figure~\ref{fig-credible-intervals} shows the
-distinction for a bimodal mixture distribution, and a even more striking
-difference for 50\% credible intervals for a symmetric beta distribution
-whose mass lie near the endpoints of the distribution, leading to no
-overlap between the two intervals.
+informative. The top panel Figure~\ref{fig-credible-intervals} shows two
+extreme cases in which these intervals differ: the distinction for a
+bimodal mixture distribution, and a even more striking difference for
+50\% credible intervals for a symmetric beta distribution whose mass lie
+near the endpoints of the distribution, leading to no overlap between
+the two intervals.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{set.seed}\NormalTok{(}\DecValTok{2023}\NormalTok{)}
+\NormalTok{postsamp }\OtherTok{\textless{}{-}} \FunctionTok{rbeta}\NormalTok{(}\AttributeTok{n =} \DecValTok{1000}\NormalTok{, }\AttributeTok{shape1 =} \FloatTok{0.5}\NormalTok{, }\AttributeTok{shape2 =} \FloatTok{0.2}\NormalTok{)}
+\NormalTok{alpha }\OtherTok{\textless{}{-}} \FloatTok{0.11}
+\CommentTok{\# Compute equitailed interval bounds}
+\FunctionTok{quantile}\NormalTok{(postsamp, }\AttributeTok{probs =} \FunctionTok{c}\NormalTok{(alpha}\SpecialCharTok{/}\DecValTok{2}\NormalTok{, }\DecValTok{1}\SpecialCharTok{{-}}\NormalTok{alpha}\SpecialCharTok{/}\DecValTok{2}\NormalTok{))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+     5.5%     94.5% 
+0.0246807 0.9999980 
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{qbeta}\NormalTok{(}\AttributeTok{p =} \FunctionTok{c}\NormalTok{(alpha}\SpecialCharTok{/}\DecValTok{2}\NormalTok{, }\DecValTok{1}\SpecialCharTok{{-}}\NormalTok{alpha}\SpecialCharTok{/}\DecValTok{2}\NormalTok{), }\AttributeTok{shape1 =} \FloatTok{0.5}\NormalTok{, }\AttributeTok{shape2 =} \FloatTok{0.2}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+[1] 0.02925205 0.99999844
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Highest posterior density intervals}
+\NormalTok{hdiD }\OtherTok{\textless{}{-}}\NormalTok{ HDInterval}\SpecialCharTok{::}\FunctionTok{hdi}\NormalTok{(}\FunctionTok{density}\NormalTok{(postsamp), }\AttributeTok{credMass =} \DecValTok{1}\SpecialCharTok{{-}}\NormalTok{alpha, }\AttributeTok{allowSplit =} \ConstantTok{TRUE}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+The equitailed intervals for a known posterior can be obtained directly
+from the quantile function or via Monte Carlo simply by querying sample
+quantiles. The HPD region is more complicated to obtain and requires
+dedicated software, which in the above case may fail to account for the
+support of the posterior!
 
 \begin{figure}[ht!]
 
@@ -3091,9 +3174,9 @@ We model the conversion rate \(\lambda_i\) for each headline separately
 using a Poisson distribution and compare the posterior distributions for
 all four choices. Using a conjugate prior and selecting the parameters
 by moment matching yields approximately \(\alpha = 1.65\) and
-\(\beta = 0.01\) for the hyperparameters, setting
-\(\alpha\beta = 0.0158\) and \(\alpha\beta^2=0.0123^2\) and solving for
-the two unknown parameters.
+\(\beta = 104.44\) for the hyperparameters, setting
+\(\alpha/\beta = 0.0158\) and \(\alpha/\beta^2=0.0123^2\) and solving
+for the two unknown parameters.
 
 \begin{longtable}[]{@{}lrr@{}}
 
@@ -3136,7 +3219,7 @@ rates for headers H1 (preferred) relative to H4 (least favorable). The
 probability that the conversion rate for Headline 3 is higher than
 Headline 1 can be approximated by simulating samples from both
 posteriors and computing the proportion of times one is larger: we get
-1.7\% for \texttt{H3} relative to \texttt{H1}, indicating a clear
+2\% for \texttt{H3} relative to \texttt{H1}, indicating a clear
 preference for the first headline \texttt{H1}.
 
 \end{example}
@@ -3196,8 +3279,8 @@ apriori that the click-rate is on average 1\%, with a standard deviation
 of 2\%, with no difference between questions or not. For a
 \(\mathsf{Gamma}(\alpha, \beta)\) prior, this would translate, using
 moment matching, into a rate of
-\(\beta = 0.04 = \mathsf{Var}_0(\lambda_j)/\mathsf{E}_0(\lambda_j)\) and
-a shape of \(\alpha = 2.5\) (\(j=1, 2\)). If \(\lambda_{j}\) is the
+\(\beta = 25 = \mathsf{E}_0(\lambda_j)/ \mathsf{Var}_0(\lambda_j)\) and
+a shape of \(\alpha = 0.25\) (\(j=1, 2\)). If \(\lambda_{j}\) is the
 average rate for each factor level (yes and no), then
 \(\mathsf{E}(Y_{ij}/n_{ij}) = \lambda_j\) so the log likelihood is
 proportional, as a function of \(\lambda_1\) and \(\lambda_2\), to
@@ -3293,7 +3376,7 @@ posterior.
 
 \end{definition}
 
-The best example of prior priors arise from probability density
+The best example of proper priors arise from probability density
 function. We can still employ this rule for improper priors: for
 example, taking \(\alpha, \beta \to 0\) in the beta prior leads to a
 prior proportional to \(x^{-1}(1-x)^{-1}\), the integral of which
