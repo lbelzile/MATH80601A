@@ -120,7 +120,7 @@ y \log(p) + (n-y) \log(1-p) = y\log\left( \frac{p}{1-p}\right) + n \log(1-p)
 \end{align*}
 with canonical parameter $\mathrm{logit}(p)$.^[The canonical link function for Bernoulli gives rise to logistic regression model.] The binomial distribution is thus an exponential family.
 
-Since the density of the binomial is of the form $p^y(1-p)^{n-y}$, the beta distribution $\mathsf{Beta}(\alpha, \beta)$ with density $$f(x) \propto x^{\alpha-1} (1-x)^{\beta-1}$$ is the conjugate prior.
+Since the density of the binomial is of the form $p^y(1-p)^{n-y}$, the beta distribution $\mathsf{beta}(\alpha, \beta)$ with density $$f(x) \propto x^{\alpha-1} (1-x)^{\beta-1}$$ is the conjugate prior.
 
 The beta distribution is also the conjugate prior for the negative binomial, geometric and Bernoulli distributions, since their likelihoods are all proportional to that of the beta. The fact that different sampling schemes that result in proportional likelihood functions give the same inference is called likelihood principle.
 
@@ -132,7 +132,7 @@ The beta distribution is also the conjugate prior for the negative binomial, geo
 
 The Poisson distribution with mean $\mu$ has log density proportional to $f(y; \mu) \propto y\log(\mu) -\mu$, so is an exponential family with natural parameter $\log(\mu)$. 
 The gamma density, 
-$$ f(x) \propto \beta^{\alpha}/\Gamma(\alpha)x^{\alpha-1} \exp(-\beta x)$$ with shape $\alpha$ and rate $\beta$ is the conjugate prior for the Poisson. For an $n$-sample of independent observations $\mathsf{Poisson}(\mu)$ observations with $\mu \sim \mathsf{Gamma}(\alpha, \beta)$, the posterior is $\mathsf{Gamma}(\sum_{i=1}^n y_i + \alpha, \beta + n)$.
+$$ f(x) \propto \beta^{\alpha}/\Gamma(\alpha)x^{\alpha-1} \exp(-\beta x)$$ with shape $\alpha$ and rate $\beta$ is the conjugate prior for the Poisson. For an $n$-sample of independent observations $\mathsf{Poisson}(\mu)$ observations with $\mu \sim \mathsf{gamma}(\alpha, \beta)$, the posterior is $\mathsf{gamma}(\sum_{i=1}^n y_i + \alpha, \beta + n)$.
 
 
 :::
@@ -178,7 +178,6 @@ knitr::kable(abtest, booktabs = TRUE)
 cols <- MetBrewer::met.brewer("Hiroshige", 4)
 names(cols) <- paste0("H", 1:4)
 library(ggplot2)
-ggplot() + 
  ggplot() +
    geom_function(fun = dgamma,
                  args = list(shape = 1.65 + 49, rate = 3060 + 104.44),
@@ -245,7 +244,6 @@ coef(poismod)
 ```
 
 The coefficients represent the difference in log rate (multiplicative effect) relative to the baseline rate, with an increase of `r round((exp(coef(poismod))[2]-1)*100, 1) - 1` percent when the headline does not contain a question. A likelihood ratio test can be performed by comparing the deviance of the null model (intercept-only), indicating strong evidence that including question leads to significatively different rates. This is rather unsurprising given the enormous sample sizes.
-
 
 
 Consider instead a Bayesian analysis with conjugate prior: we model separately the rates of each group (question or not). Suppose we think apriori that the click-rate is on average 1%, with a standard deviation of 2%, with no difference between questions or not. For a $\mathsf{Gamma}(\alpha, \beta)$ prior, this would translate, using moment matching, into a rate of $\beta = 25 = \mathsf{E}_0(\lambda_j)/ \mathsf{Var}_0(\lambda_j)$ and a shape of $\alpha = 0.25$ ($j=1, 2$). If $\lambda_{j}$ is the average rate for each factor level (yes and no), then $\mathsf{E}(Y_{ij}/n_{ij}) = \lambda_j$ so the log likelihood is proportional, as a function of $\lambda_1$ and $\lambda_2$, to
@@ -406,7 +404,7 @@ In multiparameter models, the system isn't invariant to reparametrization if we 
 ## Jeffrey's prior for the binomial distribution
 
 Consider the binomial distribution $\mathsf{Bin}(1, \theta)$ with density $f(y; \theta) \propto  \theta^y(1-\theta)^{1-y}\mathsf{I}_{\theta \in [0,1]}$. The negative of the second derivative of the log likelihood with respect to $p$ is $$\jmath(\theta) = - \partial^2 \ell(\theta; y) / \partial \theta^2 = y/\theta^2 + (1-y)/(1-\theta)^2$$ and since $\mathsf{E}(Y)=\theta$, the Fisher information is $$\imath(\vartheta) = \mathsf{E}\{\jmath(\theta)\}=1/\theta + 1/(1-\theta) = 1/\{\theta(1-\theta)\}$$
-Jeffrey's prior is thus $p(\theta) \propto \theta^{-1/2}(1-\theta)^{-1/2}$, a conjugate Beta prior $\mathsf{Beta}(0.5,0.5)$.
+Jeffrey's prior is thus $p(\theta) \propto \theta^{-1/2}(1-\theta)^{-1/2}$, a conjugate Beta prior $\mathsf{beta}(0.5,0.5)$.
 
 :::
 
@@ -426,6 +424,11 @@ Check that for the Gaussian distribution $\mathsf{Gauss}(\mu, \sigma^2)$, the Je
 The Poisson distribution with $\ell(\lambda) \propto -\lambda + y\log \lambda$, with second derivative $-\partial^2 \ell(\lambda)/\partial \lambda^2 = y/\lambda^2$. Since the mean of the Poisson distribution is $\lambda$, the Fisher information is $\imath(\lambda) = \lambda^{-1}$ and Jeffrey's prior is $\lambda^{-1/2}$.
 
 :::
+
+## Priors for regression models
+
+Regression models often feature Gaussian priors on the mean coefficients $\boldsymbol{\beta}$, typically chosen to be vague with large variance. Below are some alternatives, many of which aim to enforce shrinkage towards zero, or sparsity.
+
 
 :::{#prp-Zellner-g-prior}
 
@@ -447,9 +450,28 @@ By virtue of @prp-conditional-gaussian, the prior is also closed under condition
 :::
 
 
+
+:::{#prp-spike-slab}
+
+## Spike-and-slab prior
+
+:::
+
+
+:::{#prp-horseshoe}
+
+## Horseshoe prior
+
+
+:::
+
+
+
 ## Informative priors
 
-One strength of the Bayesian approach is the capability of incorporating expert and domain-based knowledge through priors. Often, these will take the form of moment constraints, so one common way to derive a prior is to perform moment matching to related ellicited quantities with moments of the prior distribution. It may be easier to set priors on a different scale than those of the observations, as @exm-colestawn demonstrates.
+
+
+One strength of the Bayesian approach is the capability of incorporating expert and domain-based knowledge through priors. Often, these will take the form of moment constraints, so one common way to derive a prior is to perform moment matching to related elicited quantities with moments of the prior distribution. It may be easier to set priors on a different scale than those of the observations, as @exm-colestawn demonstrates.
 
 :::{#exm-colestawn}
 
@@ -468,9 +490,9 @@ Q(p) \mu + \sigma \frac{(-\log p)^{-\xi}-1}{\xi}
 
 In environmental data, we often model annual maximum. Engineering designs are often specified in terms of the $k$-year return levels, defined as the quantile of the annual maximum exceeded with probability $1/k$ in any given year. Using a $\mathsf{GEV}$ for annual maximum, @Coles.Tawn:1996 proposed modelling annual daily rainfall and specifying a prior on the quantile scale $q_1 < q_2 < q_3$ for tail probabilities $p_1> p_2 > p_3$. To deal with the ordering constraints, gamma priors are imposed on the differences
 
-- $q_1 - o \sim \mathsf{Gamma}(\alpha_1, \beta_1)$,
-- $q_2 - q_1 \sim \mathsf{Gamma}(\alpha_2, \beta_2)$ and
-- $q_3-q_2 \sim \mathsf{Gamma}(\alpha_3, \beta_3)$,
+- $q_1 - o \sim \mathsf{gamma}(\alpha_1, \beta_1)$,
+- $q_2 - q_1 \sim \mathsf{gamma}(\alpha_2, \beta_2)$ and
+- $q_3-q_2 \sim \mathsf{gamma}(\alpha_3, \beta_3)$,
 
 where $o$ is the lower bound of the support. The prior is thus of the form
 \begin{align*}

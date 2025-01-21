@@ -319,15 +319,15 @@
 \newcommand*\listoflistings{\listof{codelisting}{List of Listings}}
 \usepackage{amsthm}
 \theoremstyle{plain}
-\newtheorem{theorem}{Theorem}[chapter]
-\theoremstyle{definition}
-\newtheorem{exercise}{Exercise}[chapter]
-\theoremstyle{plain}
 \newtheorem{proposition}{Proposition}[chapter]
 \theoremstyle{definition}
-\newtheorem{example}{Example}[chapter]
+\newtheorem{exercise}{Exercise}[chapter]
 \theoremstyle{definition}
 \newtheorem{definition}{Definition}[chapter]
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}[chapter]
+\theoremstyle{definition}
+\newtheorem{example}{Example}[chapter]
 \theoremstyle{remark}
 \AtBeginDocument{\renewcommand*{\proofname}{Proof}}
 \newtheorem*{remark}{Remark}
@@ -383,7 +383,7 @@ details.
 These notes are licensed under a
 \href{http://creativecommons.org/licenses/by-nc-sa/4.0/}{Creative
 Commons Attribution-NonCommercial-ShareAlike 4.0 International License}
-and were last compiled on lundi, janvier 20 2025.
+and were last compiled on Monday, January 20 2025.
 
 The objective of the course is to provide a hands on introduction to
 Bayesian data analysis. The course will cover the formulation,
@@ -2358,7 +2358,8 @@ right) out of a total of 100 trials.}
 
 \end{proposition}
 
-\begin{example}[]\protect\hypertarget{exm-numericalintegration}{}\label{exm-numericalintegration}
+\begin{example}[Numerical
+integration]\protect\hypertarget{exm-numericalintegration}{}\label{exm-numericalintegration}
 
 While we can calculate analytically the value of the normalizing
 constant for the beta-binomial model, we could also for arbitrary priors
@@ -2425,6 +2426,84 @@ following the publication of Geman and Geman
 (\citeproc{ref-Gelfand.Smith:1990}{1990}). Markov chain Monte Carlo
 methods circumvent the calculation of the denominator by drawing
 approximate samples from the posterior.
+
+\begin{example}[Importance of selling
+format]\protect\hypertarget{exm-Duke-Amir}{}\label{exm-Duke-Amir}
+
+Duke and Amir (\citeproc{ref-Duke.Amir:2023}{2023}) consider the
+difference between integrated and sequential format for sales. The
+\texttt{sellingformat} dataset contains \(n=397\) observations split
+into two groups: quantity-integrated decision (decide the amount to buy)
+and quantity-sequential (first select buy, then select the amount).
+Participants of the study were randomly allocated to either of these two
+format and their decision, either buy, \texttt{1}, or do not buy
+\texttt{0}, is recorded.
+
+We consider the number of purchased out of the total, treating records
+as independent Bernoulli observations with a flat (uniform prior).
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{data}\NormalTok{(sellingformat, }\AttributeTok{package =} \StringTok{"hecbayes"}\NormalTok{)}
+\NormalTok{contingency }\OtherTok{\textless{}{-}} \FunctionTok{with}\NormalTok{(sellingformat, }\FunctionTok{table}\NormalTok{(format, purchased))}
+\CommentTok{\# Posterior draws of the parameters}
+\NormalTok{post\_p\_int }\OtherTok{\textless{}{-}} \FunctionTok{rbeta}\NormalTok{(}\AttributeTok{n =} \FloatTok{1e4}\NormalTok{, }\AttributeTok{shape1 =} \DecValTok{47}\NormalTok{, }\AttributeTok{shape2 =} \DecValTok{153}\NormalTok{)}
+\NormalTok{post\_p\_seq }\OtherTok{\textless{}{-}} \FunctionTok{rbeta}\NormalTok{(}\AttributeTok{n =} \FloatTok{1e4}\NormalTok{, }\AttributeTok{shape1 =} \DecValTok{24}\NormalTok{, }\AttributeTok{shape2 =} \DecValTok{177}\NormalTok{)}
+\CommentTok{\# Reparametrization}
+\NormalTok{post\_odds\_int }\OtherTok{\textless{}{-}}\NormalTok{ (post\_p\_int }\SpecialCharTok{/}\NormalTok{ (}\DecValTok{1} \SpecialCharTok{{-}}\NormalTok{ post\_p\_int))}
+\NormalTok{post\_odds\_seq }\OtherTok{\textless{}{-}}\NormalTok{ (post\_p\_seq }\SpecialCharTok{/}\NormalTok{ (}\DecValTok{1} \SpecialCharTok{{-}}\NormalTok{ post\_p\_seq))}
+\NormalTok{post\_oddsratio }\OtherTok{\textless{}{-}}\NormalTok{ post\_odds\_int }\SpecialCharTok{/}\NormalTok{ post\_odds\_seq}
+\end{Highlighting}
+\end{Shaded}
+
+With a beta-binomial model, the posterior for the probability of buying
+is \(\mathsf{beta}(47, 153)\) for quantity-integrated and
+\(\mathsf{beta}(24, 177)\) for quantity-sequential. We can compute the
+posterior of the odds ratio,
+\[O = \frac{\Pr(Y=1 \mid \texttt{integrated})}{\Pr(Y=0 \mid \texttt{integrated})}\frac{\Pr(Y=0 \mid \texttt{sequential})}{\Pr(Y=1 \mid \texttt{sequential})},\]
+by simulating independent draws from the posteriors of each condition
+and computing the.
+
+\begin{longtable}[]{@{}lrr@{}}
+
+\caption{\label{tbl-contingency-sellingformat}Aggregated data from Duke
+and Amir (2023), experiment 1. Number of participants who did not
+(\texttt{0}) or did buy (\texttt{1}) products as a function of
+experimental condition.}
+
+\tabularnewline
+
+\toprule\noalign{}
+& 0 & 1 \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+quantity-integrated & 152 & 46 \\
+quantity-sequential & 176 & 23 \\
+
+\end{longtable}
+
+Figure~\ref{fig-post-Duke_Amir} shows the posterior of the probability
+of buying for each group, and the odds. It is clear that the integrated
+format leads to much more sales in the experiment, with a posterior
+ratio exceeding 1 with probability \(99.89%.
+\)
+
+\begin{figure}[ht!]
+
+\centering{
+
+\pandocbounded{\includegraphics[keepaspectratio]{bayesics_files/figure-pdf/fig-post-Duke_Amir-1.pdf}}
+
+}
+
+\caption{\label{fig-post-Duke_Amir}Posterior curves per group (left) and
+odds ratio (right)}
+
+\end{figure}%
+
+\end{example}
 
 \section{Posterior predictive
 distribution}\label{posterior-predictive-distribution}
@@ -3096,7 +3175,7 @@ y \log(p) + (n-y) \log(1-p) = y\log\left( \frac{p}{1-p}\right) + n \log(1-p)
 family.
 
 Since the density of the binomial is of the form \(p^y(1-p)^{n-y}\), the
-beta distribution \(\mathsf{Beta}(\alpha, \beta)\) with density
+beta distribution \(\mathsf{beta}(\alpha, \beta)\) with density
 \[f(x) \propto x^{\alpha-1} (1-x)^{\beta-1}\] is the conjugate prior.
 
 The beta distribution is also the conjugate prior for the negative
@@ -3117,8 +3196,8 @@ with natural parameter \(\log(\mu)\). The gamma density,
 with shape \(\alpha\) and rate \(\beta\) is the conjugate prior for the
 Poisson. For an \(n\)-sample of independent observations
 \(\mathsf{Poisson}(\mu)\) observations with
-\(\mu \sim \mathsf{Gamma}(\alpha, \beta)\), the posterior is
-\(\mathsf{Gamma}(\sum_{i=1}^n y_i + \alpha, \beta + n)\).
+\(\mu \sim \mathsf{gamma}(\alpha, \beta)\), the posterior is
+\(\mathsf{gamma}(\sum_{i=1}^n y_i + \alpha, \beta + n)\).
 
 \end{example}
 
@@ -3479,7 +3558,7 @@ and since \(\mathsf{E}(Y)=\theta\), the Fisher information is
 \[\imath(\vartheta) = \mathsf{E}\{\jmath(\theta)\}=1/\theta + 1/(1-\theta) = 1/\{\theta(1-\theta)\}\]
 Jeffrey's prior is thus
 \(p(\theta) \propto \theta^{-1/2}(1-\theta)^{-1/2}\), a conjugate Beta
-prior \(\mathsf{Beta}(0.5,0.5)\).
+prior \(\mathsf{beta}(0.5,0.5)\).
 
 \end{example}
 
@@ -3506,6 +3585,14 @@ information is \(\imath(\lambda) = \lambda^{-1}\) and Jeffrey's prior is
 \(\lambda^{-1/2}\).
 
 \end{example}
+
+\section{Priors for regression
+models}\label{priors-for-regression-models}
+
+Regression models often feature Gaussian priors on the mean coefficients
+\(\boldsymbol{\beta}\), typically chosen to be vague with large
+variance. Below are some alternatives, many of which aim to enforce
+shrinkage towards zero, or sparsity.
 
 \begin{proposition}[Zellner's \(g\)
 prior]\protect\hypertarget{prp-Zellner-g-prior}{}\label{prp-Zellner-g-prior}
@@ -3547,12 +3634,26 @@ corresponding to \(\mathbf{X}_2\).
 
 \end{proposition}
 
+\begin{proposition}[Spike-and-slab
+prior]\protect\hypertarget{prp-spike-slab}{}\label{prp-spike-slab}
+
+~
+
+\end{proposition}
+
+\begin{proposition}[Horseshoe
+prior]\protect\hypertarget{prp-horseshoe}{}\label{prp-horseshoe}
+
+~
+
+\end{proposition}
+
 \section{Informative priors}\label{informative-priors}
 
 One strength of the Bayesian approach is the capability of incorporating
 expert and domain-based knowledge through priors. Often, these will take
 the form of moment constraints, so one common way to derive a prior is
-to perform moment matching to related ellicited quantities with moments
+to perform moment matching to related elicited quantities with moments
 of the prior distribution. It may be easier to set priors on a different
 scale than those of the observations, as Example~\ref{exm-colestawn}
 demonstrates.
@@ -3586,11 +3687,11 @@ differences
 \begin{itemize}
 \tightlist
 \item
-  \(q_1 - o \sim \mathsf{Gamma}(\alpha_1, \beta_1)\),
+  \(q_1 - o \sim \mathsf{gamma}(\alpha_1, \beta_1)\),
 \item
-  \(q_2 - q_1 \sim \mathsf{Gamma}(\alpha_2, \beta_2)\) and
+  \(q_2 - q_1 \sim \mathsf{gamma}(\alpha_2, \beta_2)\) and
 \item
-  \(q_3-q_2 \sim \mathsf{Gamma}(\alpha_3, \beta_3)\),
+  \(q_3-q_2 \sim \mathsf{gamma}(\alpha_3, \beta_3)\),
 \end{itemize}
 
 where \(o\) is the lower bound of the support. The prior is thus of the
@@ -4519,10 +4620,10 @@ independence Metropolis--Hastings algorithm then resembles
 accept-reject. If the ratio
 \(p(\boldsymbol{\theta})/q(\boldsymbol{\theta})\) is bounded above by
 \(C \geq 1\), then we can make comparisons with rejection sampling.
-Lemma 7.9 of Robert and Casella
-(\citeproc{ref-Robert.Casella:2004}{2004}) shows that the probability of
-acceptance of a move for the Markov chain is at least \(1/C\), which is
-larger than the accept-reject.
+Lemma 7.9 of
+(\citeproc{ref-Robert.Casella:2004}{\textbf{Robert.Casella:2004?}})
+shows that the probability of acceptance of a move for the Markov chain
+is at least \(1/C\), which is larger than the accept-reject.
 \end{remark}
 
 In models with multiple parameter, we can use Metropolis--Hastings
@@ -5022,8 +5123,8 @@ from the conditionals
 variables chosen to simplify the likelihood. If simulation from the
 conditionals is straightforward, we can also use data augmentation to
 speed up calculations or improve mixing. For more details and examples,
-see Dyk and Meng (\citeproc{ref-vanDyk.Meng:2001}{2001}) and Hobert
-(\citeproc{ref-Hobert:2011}{2011}).
+see Dyk and Meng (\citeproc{ref-vanDyk.Meng:2001}{2001}) and
+(\citeproc{ref-Hobert:2011}{\textbf{Hobert:2011?}}).
 
 \begin{example}[]\protect\hypertarget{exm-probit-regression}{}\label{exm-probit-regression}
 
@@ -5406,9 +5507,9 @@ scale and so that lower values correspond to higher predictive
 performance.
 
 An older criterion which has somewhat fallen out of fashion is the
-\textbf{deviance} information criterion of Spiegelhalter et al.
-(\citeproc{ref-Spiegelhalter:2002}{2002}). It is defined as
-\begin{align*}
+\textbf{deviance} information criterion of
+(\citeproc{ref-Spiegelhalter:2002}{\textbf{Spiegelhalter:2002?}}). It is
+defined as \begin{align*}
 \mathsf{DIC} = -2 \ell(\widetilde{\boldsymbol{\theta}}) + 2 p_D
 \end{align*} where \(p_D\) is the posterior expectation of the deviance
 relative to the point estimator of the parameter
@@ -5422,13 +5523,14 @@ reparametrizations. Assuming we can derive a multivariate Gaussian
 approximation to the MLE under suitable regularity conditions, the
 \(\mathsf{DIC}\) is equivalent in large samples to \(\mathsf{AIC}\). The
 \(\mathsf{DIC}\) is considered by many authors as not being a Bayesian
-procedure; see Spiegelhalter et al.
-(\citeproc{ref-Spiegelhalther:2014}{2014}) and the discussion therein.
+procedure; see
+(\citeproc{ref-Spiegelhalther:2014}{\textbf{Spiegelhalther:2014?}}) and
+the discussion therein.
 
 \begin{example}[Information criteria for smartwatch and Bayesian
 LASSO]\protect\hypertarget{exm-smartwatch-infocriteria}{}\label{exm-smartwatch-infocriteria}
 
-For the smartwatch model, we get a value of 3.06 for the complex model
+For the smartwatch model, we get a value of 3.07 for the complex model
 and 4.51: this suggests an improvement in using individual-specific
 effects.
 
@@ -5533,6 +5635,12 @@ Society. Series C (Applied Statistics)} 45 (4): 463--78.
 Devroye, L. 1986. \emph{Non-Uniform Random Variate Generation}. New
 York: Springer. \url{http://www.nrbook.com/devroye/}.
 
+\bibitem[\citeproctext]{ref-Duke.Amir:2023}
+Duke, Kristen E., and On Amir. 2023. {``The Importance of Selling
+Formats: When Integrating Purchase and Quantity Decisions Increases
+Sales.''} \emph{Marketing Science} 42 (1): 87--109.
+\url{https://doi.org/10.1287/mksc.2022.1364}.
+
 \bibitem[\citeproctext]{ref-vanDyk.Meng:2001}
 Dyk, David A van, and Xiao-Li Meng. 2001. {``The Art of Data
 Augmentation.''} \emph{Journal of Computational and Graphical
@@ -5559,7 +5667,7 @@ American Statistical Association} 85 (410): 398--409.
 Gelman, Andrew. 2006. {``Prior Distributions for Variance Parameters in
 Hierarchical Models (Comment on Article by {B}rowne and {D}raper).''}
 \emph{Bayesian Analysis} 1 (3): 515--34.
-\url{https://doi.org/10.1214/06-BA117A}.
+\url{https://doi.org/10.1214/06-ba117a}.
 
 \bibitem[\citeproctext]{ref-Gelman:2013}
 Gelman, Andrew, John B. Carlin, Hal S. Stern, David B. Dunson, Aki
@@ -5575,8 +5683,8 @@ https://doi.org/\url{https://doi.org/10.48550/arXiv.2011.01808}.
 \bibitem[\citeproctext]{ref-Geman.Geman:1984}
 Geman, Stuart, and Donald Geman. 1984. {``Stochastic Relaxation, {G}ibbs
 Distributions, and the {B}ayesian Restoration of Images.''} \emph{IEEE
-Transactions on Pattern Analysis and Machine Intelligence} PAMI-6 (6):
-721--41. \url{https://doi.org/10.1109/TPAMI.1984.4767596}.
+Transactions on Pattern Analysis and Machine Intelligence} Pami-6 (6):
+721--41. \url{https://doi.org/10.1109/tpami.1984.4767596}.
 
 \bibitem[\citeproctext]{ref-Geweke:2004}
 Geweke, John. 2004. {``Getting It Right: Joint Distribution Tests of
@@ -5598,7 +5706,7 @@ Gosset, William Sealy. 1908. {``The Probable Error of a Mean.''}
 \bibitem[\citeproctext]{ref-Gradshteyn.Ryzhik:2014}
 Gradshteyn, I. S., and I. M. Ryzhik. 2014. \emph{Table of Integrals,
 Series, and Products}. 8th ed. Academic Press.
-\url{https://doi.org/10.1016/C2010-0-64839-5}.
+\url{https://doi.org/10.1016/c2010-0-64839-5}.
 
 \bibitem[\citeproctext]{ref-Green:2001}
 Green, Peter J. 2001. {``A Primer on {M}arkov Chain {M}onte {C}arlo.''}
@@ -5614,12 +5722,6 @@ Held, Leonhard, and Daniel Sabanés Bové. 2020. \emph{Likelihood and
 {B}ayesian Inference: With Applications in Biology and Medicine}. 2nd
 ed. Heidelberg: Springer Berlin.
 \url{https://doi.org/10.1007/978-3-662-60792-3}.
-
-\bibitem[\citeproctext]{ref-Hobert:2011}
-Hobert, James P. 2011. {``The Data Augmentation Algorithm: Theory and
-Methodology.''} In \emph{Handbook of {M}arkov Chain {M}onte {C}arlo},
-edited by S. Brooks, A. Gelman, G. Jones, and X. L. Meng, 253--94. Boca
-Raton: CRC Press. \url{https://doi.org/10.1201/b10905}.
 
 \bibitem[\citeproctext]{ref-Jegerlehner:2021}
 Jegerlehner, Sabrina, Franziska Suter-Riniker, Philipp Jent, Pascal
@@ -5672,11 +5774,6 @@ Park, Trevor, and George Casella. 2008. {``The {B}ayesian {L}asso.''}
 \emph{Journal of the American Statistical Association} 103 (482):
 681--86. \url{https://doi.org/10.1198/016214508000000337}.
 
-\bibitem[\citeproctext]{ref-Robert.Casella:2004}
-Robert, Christian P., and George Casella. 2004. \emph{{M}onte {C}arlo
-Statistical Methods}. 2nd ed. New York, NY: Springer.
-\url{https://doi.org/10.1007/978-1-4757-4145-2}.
-
 \bibitem[\citeproctext]{ref-Roberts.Rosenthal:2001}
 Roberts, Gareth O., and Jeffrey S. Rosenthal. 2001. {``Optimal Scaling
 for Various {M}etropolis--{H}astings Algorithms.''} \emph{Statistical
@@ -5693,26 +5790,13 @@ Simpson, Daniel, Håvard Rue, Andrea Riebler, Thiago G. Martins, and
 Sigrunn H. Sørbye. 2017. {``Penalising Model Component Complexity: A
 Principled, Practical Approach to Constructing Priors.''}
 \emph{Statistical Science} 32 (1): 1--28.
-\url{https://doi.org/10.1214/16-STS576}.
+\url{https://doi.org/10.1214/16-sts576}.
 
 \bibitem[\citeproctext]{ref-Sorbye.Holbek.Rue:2017}
 Sørbye, Sigrunn Holbek, and Håvard Rue. 2017. {``Penalised Complexity
 Priors for Stationary Autoregressive Processes.''} \emph{Journal of Time
 Series Analysis} 38 (6): 923--35.
 \url{https://doi.org/10.1111/jtsa.12242}.
-
-\bibitem[\citeproctext]{ref-Spiegelhalther:2014}
-Spiegelhalter, David J., Nicola G. Best, Bradley P. Carlin, and Angelika
-Linde. 2014. {``The Deviance Information Criterion: 12 Years On.''}
-\emph{Journal of the Royal Statistical Society Series B: Statistical
-Methodology} 76 (3): 485--93. \url{https://doi.org/10.1111/rssb.12062}.
-
-\bibitem[\citeproctext]{ref-Spiegelhalter:2002}
-Spiegelhalter, David J., Nicola G. Best, Bradley P. Carlin, and Angelika
-Van Der Linde. 2002. {``Bayesian Measures of Model Complexity and
-Fit.''} \emph{Journal of the Royal Statistical Society: Series B
-(Statistical Methodology)} 64 (4): 583--639.
-\url{https://doi.org/10.1111/1467-9868.00353}.
 
 \bibitem[\citeproctext]{ref-Tanner.Wong:1987}
 Tanner, Martin A., and Wing Hung Wong. 1987. {``The Calculation of
@@ -5724,7 +5808,7 @@ American Statistical Association} 82 (398): 528--40.
 Wakefield, J. C., A. E. Gelfand, and A. F. M. Smith. 1991. {``Efficient
 Generation of Random Variates via the Ratio-of-Uniforms Method.''}
 \emph{Statistics and Computing} 1 (2): 129--33.
-\url{https://doi.org/10.1007/BF01889987}.
+\url{https://doi.org/10.1007/bf01889987}.
 
 \bibitem[\citeproctext]{ref-Watanabe:2010}
 Watanabe, Sumio. 2010. {``Asymptotic Equivalence of {B}ayes Cross

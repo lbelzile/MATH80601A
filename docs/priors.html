@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.7.1">
+<meta name="generator" content="quarto-1.7.3">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -91,10 +91,10 @@ div.csl-indent {
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="site_libs/quarto-html/anchor.min.js"></script>
 <link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-2bb0ec5e928ee8c40b12725cb7836c35.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-81b5c3e63835cfde897ecd3d35a35a41.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-a51e8ad160b68d9f8f1ac488cc0f242e.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-ad5ef081d17d57ab2b6cc5e45efb5d90.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
   "copy-button": false,
@@ -243,11 +243,12 @@ window.Quarto = {
   <li><a href="#prior-simulation" id="toc-prior-simulation" class="nav-link active" data-scroll-target="#prior-simulation"><span class="header-section-number">3.1</span> Prior simulation</a></li>
   <li><a href="#conjugate-priors" id="toc-conjugate-priors" class="nav-link" data-scroll-target="#conjugate-priors"><span class="header-section-number">3.2</span> Conjugate priors</a></li>
   <li><a href="#uninformative-priors" id="toc-uninformative-priors" class="nav-link" data-scroll-target="#uninformative-priors"><span class="header-section-number">3.3</span> Uninformative priors</a></li>
-  <li><a href="#informative-priors" id="toc-informative-priors" class="nav-link" data-scroll-target="#informative-priors"><span class="header-section-number">3.4</span> Informative priors</a>
+  <li><a href="#priors-for-regression-models" id="toc-priors-for-regression-models" class="nav-link" data-scroll-target="#priors-for-regression-models"><span class="header-section-number">3.4</span> Priors for regression models</a></li>
+  <li><a href="#informative-priors" id="toc-informative-priors" class="nav-link" data-scroll-target="#informative-priors"><span class="header-section-number">3.5</span> Informative priors</a>
   <ul class="collapse">
-  <li><a href="#penalized-complexity-priors" id="toc-penalized-complexity-priors" class="nav-link" data-scroll-target="#penalized-complexity-priors"><span class="header-section-number">3.4.1</span> Penalized complexity priors</a></li>
+  <li><a href="#penalized-complexity-priors" id="toc-penalized-complexity-priors" class="nav-link" data-scroll-target="#penalized-complexity-priors"><span class="header-section-number">3.5.1</span> Penalized complexity priors</a></li>
   </ul></li>
-  <li><a href="#sensitivity-analysis" id="toc-sensitivity-analysis" class="nav-link" data-scroll-target="#sensitivity-analysis"><span class="header-section-number">3.5</span> Sensitivity analysis</a></li>
+  <li><a href="#sensitivity-analysis" id="toc-sensitivity-analysis" class="nav-link" data-scroll-target="#sensitivity-analysis"><span class="header-section-number">3.6</span> Sensitivity analysis</a></li>
   </ul>
 <div class="toc-actions"><ul><li><a href="https://github.com/lbelzile/MATH80601A/edit/main/priors.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li></ul></div></nav>
     </div>
@@ -299,11 +300,11 @@ Figure&nbsp;3.1: Prior draws of the linear regressions with observed data superi
 <p><span class="theorem-title"><strong>Example 3.2 (Conjugate prior for the binomial model)</strong></span> The binomial log density with <span class="math inline">\(y\)</span> successes out of <span class="math inline">\(n\)</span> trials is proportional to <span class="math display">\[\begin{align*}
 y \log(p) + (n-y) \log(1-p) = y\log\left( \frac{p}{1-p}\right) + n \log(1-p)
 \end{align*}\]</span> with canonical parameter <span class="math inline">\(\mathrm{logit}(p)\)</span>.<a href="#fn4" class="footnote-ref" id="fnref4" role="doc-noteref"><sup>4</sup></a> The binomial distribution is thus an exponential family.</p>
-<p>Since the density of the binomial is of the form <span class="math inline">\(p^y(1-p)^{n-y}\)</span>, the beta distribution <span class="math inline">\(\mathsf{Beta}(\alpha, \beta)\)</span> with density <span class="math display">\[f(x) \propto x^{\alpha-1} (1-x)^{\beta-1}\]</span> is the conjugate prior.</p>
+<p>Since the density of the binomial is of the form <span class="math inline">\(p^y(1-p)^{n-y}\)</span>, the beta distribution <span class="math inline">\(\mathsf{beta}(\alpha, \beta)\)</span> with density <span class="math display">\[f(x) \propto x^{\alpha-1} (1-x)^{\beta-1}\]</span> is the conjugate prior.</p>
 <p>The beta distribution is also the conjugate prior for the negative binomial, geometric and Bernoulli distributions, since their likelihoods are all proportional to that of the beta. The fact that different sampling schemes that result in proportional likelihood functions give the same inference is called likelihood principle.</p>
 </div>
 <div id="exm-conjugatepriors-poisson" class="theorem example">
-<p><span class="theorem-title"><strong>Example 3.3 (Conjugate prior for the Poisson model)</strong></span> The Poisson distribution with mean <span class="math inline">\(\mu\)</span> has log density proportional to <span class="math inline">\(f(y; \mu) \propto y\log(\mu) -\mu\)</span>, so is an exponential family with natural parameter <span class="math inline">\(\log(\mu)\)</span>. The gamma density, <span class="math display">\[ f(x) \propto \beta^{\alpha}/\Gamma(\alpha)x^{\alpha-1} \exp(-\beta x)\]</span> with shape <span class="math inline">\(\alpha\)</span> and rate <span class="math inline">\(\beta\)</span> is the conjugate prior for the Poisson. For an <span class="math inline">\(n\)</span>-sample of independent observations <span class="math inline">\(\mathsf{Poisson}(\mu)\)</span> observations with <span class="math inline">\(\mu \sim \mathsf{Gamma}(\alpha, \beta)\)</span>, the posterior is <span class="math inline">\(\mathsf{Gamma}(\sum_{i=1}^n y_i + \alpha, \beta + n)\)</span>.</p>
+<p><span class="theorem-title"><strong>Example 3.3 (Conjugate prior for the Poisson model)</strong></span> The Poisson distribution with mean <span class="math inline">\(\mu\)</span> has log density proportional to <span class="math inline">\(f(y; \mu) \propto y\log(\mu) -\mu\)</span>, so is an exponential family with natural parameter <span class="math inline">\(\log(\mu)\)</span>. The gamma density, <span class="math display">\[ f(x) \propto \beta^{\alpha}/\Gamma(\alpha)x^{\alpha-1} \exp(-\beta x)\]</span> with shape <span class="math inline">\(\alpha\)</span> and rate <span class="math inline">\(\beta\)</span> is the conjugate prior for the Poisson. For an <span class="math inline">\(n\)</span>-sample of independent observations <span class="math inline">\(\mathsf{Poisson}(\mu)\)</span> observations with <span class="math inline">\(\mu \sim \mathsf{gamma}(\alpha, \beta)\)</span>, the posterior is <span class="math inline">\(\mathsf{gamma}(\sum_{i=1}^n y_i + \alpha, \beta + n)\)</span>.</p>
 </div>
 <p>Knowing the analytic expression for the posterior can be useful for calculations of the marginal likelihood, as <a href="introduction.html#exm-poisson-negbin" class="quarto-xref">Example&nbsp;<span>1.13</span></a> demonstrated.</p>
 <div id="exm-abtest" class="theorem example">
@@ -457,7 +458,7 @@ i(\vartheta) &amp;= - \mathsf{E} \left(\frac{\partial^2 \ell(\vartheta)}{\partia
 <p>In multiparameter models, the system isn’t invariant to reparametrization if we consider the determinant of the Fisher information.</p>
 </div>
 <div id="exm-jeffreysbinom" class="theorem example">
-<p><span class="theorem-title"><strong>Example 3.8 (Jeffrey’s prior for the binomial distribution)</strong></span> Consider the binomial distribution <span class="math inline">\(\mathsf{Bin}(1, \theta)\)</span> with density <span class="math inline">\(f(y; \theta) \propto  \theta^y(1-\theta)^{1-y}\mathsf{I}_{\theta \in [0,1]}\)</span>. The negative of the second derivative of the log likelihood with respect to <span class="math inline">\(p\)</span> is <span class="math display">\[\jmath(\theta) = - \partial^2 \ell(\theta; y) / \partial \theta^2 = y/\theta^2 + (1-y)/(1-\theta)^2\]</span> and since <span class="math inline">\(\mathsf{E}(Y)=\theta\)</span>, the Fisher information is <span class="math display">\[\imath(\vartheta) = \mathsf{E}\{\jmath(\theta)\}=1/\theta + 1/(1-\theta) = 1/\{\theta(1-\theta)\}\]</span> Jeffrey’s prior is thus <span class="math inline">\(p(\theta) \propto \theta^{-1/2}(1-\theta)^{-1/2}\)</span>, a conjugate Beta prior <span class="math inline">\(\mathsf{Beta}(0.5,0.5)\)</span>.</p>
+<p><span class="theorem-title"><strong>Example 3.8 (Jeffrey’s prior for the binomial distribution)</strong></span> Consider the binomial distribution <span class="math inline">\(\mathsf{Bin}(1, \theta)\)</span> with density <span class="math inline">\(f(y; \theta) \propto  \theta^y(1-\theta)^{1-y}\mathsf{I}_{\theta \in [0,1]}\)</span>. The negative of the second derivative of the log likelihood with respect to <span class="math inline">\(p\)</span> is <span class="math display">\[\jmath(\theta) = - \partial^2 \ell(\theta; y) / \partial \theta^2 = y/\theta^2 + (1-y)/(1-\theta)^2\]</span> and since <span class="math inline">\(\mathsf{E}(Y)=\theta\)</span>, the Fisher information is <span class="math display">\[\imath(\vartheta) = \mathsf{E}\{\jmath(\theta)\}=1/\theta + 1/(1-\theta) = 1/\{\theta(1-\theta)\}\]</span> Jeffrey’s prior is thus <span class="math inline">\(p(\theta) \propto \theta^{-1/2}(1-\theta)^{-1/2}\)</span>, a conjugate Beta prior <span class="math inline">\(\mathsf{beta}(0.5,0.5)\)</span>.</p>
 </div>
 <div id="exr-jeffreysnormal" class="theorem exercise">
 <p><span class="theorem-title"><strong>Exercise 3.1 (Jeffrey’s prior for the normal distribution)</strong></span> Check that for the Gaussian distribution <span class="math inline">\(\mathsf{Gauss}(\mu, \sigma^2)\)</span>, the Jeffrey’s prior obtained by treating each parameter as fixed in turn, are <span class="math inline">\(p(\mu) \propto 1\)</span> and <span class="math inline">\(p(\sigma) \propto 1/\sigma\)</span>, which also correspond to the default uninformative priors for location-scale families.</p>
@@ -465,6 +466,10 @@ i(\vartheta) &amp;= - \mathsf{E} \left(\frac{\partial^2 \ell(\vartheta)}{\partia
 <div id="exm-jeffreyspoisson" class="theorem example">
 <p><span class="theorem-title"><strong>Example 3.9 (Jeffrey’s prior for the Poisson distribution)</strong></span> The Poisson distribution with <span class="math inline">\(\ell(\lambda) \propto -\lambda + y\log \lambda\)</span>, with second derivative <span class="math inline">\(-\partial^2 \ell(\lambda)/\partial \lambda^2 = y/\lambda^2\)</span>. Since the mean of the Poisson distribution is <span class="math inline">\(\lambda\)</span>, the Fisher information is <span class="math inline">\(\imath(\lambda) = \lambda^{-1}\)</span> and Jeffrey’s prior is <span class="math inline">\(\lambda^{-1/2}\)</span>.</p>
 </div>
+</section>
+<section id="priors-for-regression-models" class="level2" data-number="3.4">
+<h2 data-number="3.4" class="anchored" data-anchor-id="priors-for-regression-models"><span class="header-section-number">3.4</span> Priors for regression models</h2>
+<p>Regression models often feature Gaussian priors on the mean coefficients <span class="math inline">\(\boldsymbol{\beta}\)</span>, typically chosen to be vague with large variance. Below are some alternatives, many of which aim to enforce shrinkage towards zero, or sparsity.</p>
 <div id="prp-Zellner-g-prior" class="theorem proposition">
 <p><span class="theorem-title"><strong>Proposition 3.1 (Zellner’s <span class="math inline">\(g\)</span> prior)</strong></span> Consider an ordinary linear regression model for <span class="math inline">\(\boldsymbol{Y} \sim \mathsf{Gauss}_n(\beta_0\mathbf{1}_n + \mathbf{X}\boldsymbol{\beta}, \sigma^2 \mathbf{I}_n)\)</span>, with intercept <span class="math inline">\(\beta_0\)</span> and mean coefficient vector <span class="math inline">\(\boldsymbol{\beta} = (\beta_1, \ldots, \beta_p)^\top\)</span> associated to the model matrix <span class="math inline">\(\mathbf{X}\)</span>. <span class="citation" data-cites="Zellner:1986">Zellner (<a href="references.html#ref-Zellner:1986" role="doc-biblioref">1986</a>)</span>’s <span class="math inline">\(g\)</span> prior consists in letting <span class="math inline">\(\boldsymbol{\beta} \sim \mathsf{Gauss}_p\{\boldsymbol{0}_p, g \sigma^2(\mathbf{X}^\top\mathbf{X})^{-1}\}\)</span>, where <span class="math inline">\(g&gt;0\)</span> is a constant.</p>
 <p>The ordinary least square estimator of the mean coefficients satisfies under regularity conditions on the model matrix <span class="math inline">\(\widehat{\boldsymbol{\beta}} \sim \mathsf{Gauss}_p\{\boldsymbol{\beta}, \sigma^2(\mathbf{X}^\top\mathbf{X})^{-1}\}\)</span> for Gaussian data, whence we get the closed-form conditional distributions <span class="math display">\[\begin{align*}
@@ -473,10 +478,16 @@ i(\vartheta) &amp;= - \mathsf{E} \left(\frac{\partial^2 \ell(\vartheta)}{\partia
 \end{align*}\]</span> where <span class="math inline">\(\overline{y} = \boldsymbol{y}^\top\mathbf{1}_n/n\)</span> is the sample mean of the observed response vector. We can interpret <span class="math inline">\(g&gt;0\)</span> as a prior weight, with the posterior conditional mean giving weight of <span class="math inline">\(n/g\)</span> to “phantom (prior) observations” with mean zero, relative to the <span class="math inline">\(n\)</span> observations in the observed sample: the ratio <span class="math inline">\(g/(g+1)\)</span> is called <strong>shrinkage factor</strong>.</p>
 <p>By virtue of <a href="introduction.html#prp-conditional-gaussian" class="quarto-xref">Proposition&nbsp;<span>1.6</span></a>, the prior is also closed under conditioning, which is useful for model comparison using Bayes factors. Consider a partition <span class="math inline">\(\boldsymbol{\beta} = (\boldsymbol{\beta}_1^\top, \boldsymbol{\beta}_2^\top)^\top\)</span> of the mean coefficients and similarly the block of columns from the model matrix, say <span class="math inline">\(\mathbf{X} = [\mathbf{X}_1\; \mathbf{X}_2]\)</span> for blocks of size <span class="math inline">\(k\)</span> and <span class="math inline">\(p-k\)</span>. If we remove <span class="math inline">\(p-k\)</span> regressors from the model setting <span class="math inline">\(\boldsymbol{\beta}_2=0\)</span>, then the conditional is <span class="math display">\[\boldsymbol{\beta}_{1} \mid \boldsymbol{\beta}_2=\boldsymbol{0}_{p-k} \sim \mathsf{Gauss}_k\{\boldsymbol{0}_k, g\sigma^2 (\mathbf{X}_1^\top\mathbf{X}_1)^{-1}\},\]</span> which is the <span class="math inline">\(g\)</span> prior for the submodel in which we omit the columns corresponding to <span class="math inline">\(\mathbf{X}_2\)</span>.</p>
 </div>
+<div id="prp-spike-slab" class="theorem proposition">
+<p><span class="theorem-title"><strong>Proposition 3.2 (Spike-and-slab prior)</strong></span> &nbsp;</p>
+</div>
+<div id="prp-horseshoe" class="theorem proposition">
+<p><span class="theorem-title"><strong>Proposition 3.3 (Horseshoe prior)</strong></span> &nbsp;</p>
+</div>
 </section>
-<section id="informative-priors" class="level2" data-number="3.4">
-<h2 data-number="3.4" class="anchored" data-anchor-id="informative-priors"><span class="header-section-number">3.4</span> Informative priors</h2>
-<p>One strength of the Bayesian approach is the capability of incorporating expert and domain-based knowledge through priors. Often, these will take the form of moment constraints, so one common way to derive a prior is to perform moment matching to related ellicited quantities with moments of the prior distribution. It may be easier to set priors on a different scale than those of the observations, as <a href="#exm-colestawn" class="quarto-xref">Example&nbsp;<span>3.10</span></a> demonstrates.</p>
+<section id="informative-priors" class="level2" data-number="3.5">
+<h2 data-number="3.5" class="anchored" data-anchor-id="informative-priors"><span class="header-section-number">3.5</span> Informative priors</h2>
+<p>One strength of the Bayesian approach is the capability of incorporating expert and domain-based knowledge through priors. Often, these will take the form of moment constraints, so one common way to derive a prior is to perform moment matching to related elicited quantities with moments of the prior distribution. It may be easier to set priors on a different scale than those of the observations, as <a href="#exm-colestawn" class="quarto-xref">Example&nbsp;<span>3.10</span></a> demonstrates.</p>
 <div id="exm-colestawn" class="theorem example">
 <p><span class="theorem-title"><strong>Example 3.10 (Gamma quantile difference priors for extreme value distributions)</strong></span> The generalized extreme value distribution arises as the limiting distribution for the maximum of <span class="math inline">\(m\)</span> independent observations from some common distribution <span class="math inline">\(F\)</span>. The <span class="math inline">\(\mathsf{GEV}(\mu, \sigma, \xi)\)</span> distribution is a location-scale with distribution function <span class="math display">\[\begin{align*}
 F(x) = \exp\left[ - \left\{1+\xi(x-\mu)/\sigma\right\}^{-1/\xi}_{+}\right]
@@ -486,9 +497,9 @@ Q(p) \mu + \sigma \frac{(-\log p)^{-\xi}-1}{\xi}
 \end{align*}\]</span></p>
 <p>In environmental data, we often model annual maximum. Engineering designs are often specified in terms of the <span class="math inline">\(k\)</span>-year return levels, defined as the quantile of the annual maximum exceeded with probability <span class="math inline">\(1/k\)</span> in any given year. Using a <span class="math inline">\(\mathsf{GEV}\)</span> for annual maximum, <span class="citation" data-cites="Coles.Tawn:1996">Coles and Tawn (<a href="references.html#ref-Coles.Tawn:1996" role="doc-biblioref">1996</a>)</span> proposed modelling annual daily rainfall and specifying a prior on the quantile scale <span class="math inline">\(q_1 &lt; q_2 &lt; q_3\)</span> for tail probabilities <span class="math inline">\(p_1&gt; p_2 &gt; p_3\)</span>. To deal with the ordering constraints, gamma priors are imposed on the differences</p>
 <ul>
-<li><span class="math inline">\(q_1 - o \sim \mathsf{Gamma}(\alpha_1, \beta_1)\)</span>,</li>
-<li><span class="math inline">\(q_2 - q_1 \sim \mathsf{Gamma}(\alpha_2, \beta_2)\)</span> and</li>
-<li><span class="math inline">\(q_3-q_2 \sim \mathsf{Gamma}(\alpha_3, \beta_3)\)</span>,</li>
+<li><span class="math inline">\(q_1 - o \sim \mathsf{gamma}(\alpha_1, \beta_1)\)</span>,</li>
+<li><span class="math inline">\(q_2 - q_1 \sim \mathsf{gamma}(\alpha_2, \beta_2)\)</span> and</li>
+<li><span class="math inline">\(q_3-q_2 \sim \mathsf{gamma}(\alpha_3, \beta_3)\)</span>,</li>
 </ul>
 <p>where <span class="math inline">\(o\)</span> is the lower bound of the support. The prior is thus of the form <span class="math display">\[\begin{align*}
 p(\boldsymbol{q}) \propto q_1^{\alpha_1-1}\exp(-\beta_1 q_1) \prod_{i=2}^3 (q_i-q_{i-1})^{\alpha_i-1} \exp\{\beta_i(q_i-q_{i-1})\}.
@@ -516,8 +527,8 @@ Figure&nbsp;3.4: Kernel density estimates of draws from the posterior distributi
 <!-- :::{#exm-priors-interest-rates} -->
 <!-- Medias often report banking experts forecasts for [interest rates](https://www.cbsnews.com/news/mortgage-interest-rate-forecast-what-experts-predict-for-this-year-and-2024/) or the central bank rates: these could be combined and translated into prior distributions. Note however that, if none of the expert deems a scenario possible and all assign it zero prior probability, it is impossible for the posterior to put any mass there. -->
 <!-- ::: -->
-<section id="penalized-complexity-priors" class="level3" data-number="3.4.1">
-<h3 data-number="3.4.1" class="anchored" data-anchor-id="penalized-complexity-priors"><span class="header-section-number">3.4.1</span> Penalized complexity priors</h3>
+<section id="penalized-complexity-priors" class="level3" data-number="3.5.1">
+<h3 data-number="3.5.1" class="anchored" data-anchor-id="penalized-complexity-priors"><span class="header-section-number">3.5.1</span> Penalized complexity priors</h3>
 <p>Oftentimes, there will be a natural family of prior density to impose on some model component, <span class="math inline">\(p(\boldsymbol{\theta} \mid \zeta)\)</span>, with hyperparameter <span class="math inline">\(\zeta\)</span>. The flexibility of the underlying construction leads itself to overfitting. Penalized complexity priors <span class="citation" data-cites="Simpson:2017">(<a href="references.html#ref-Simpson:2017" role="doc-biblioref">Simpson et al. 2017</a>)</span> aim to palliate this by penalizing models far away from a simple baseline model, which correspond to a fixed value <span class="math inline">\(\zeta_0\)</span>. The prior will favour the simpler parsimonious model the more prior mass one places on <span class="math inline">\(\zeta_0\)</span>, which is in line with Occam’s razor principle.</p>
 <p>To construct a penalized-complexity prior, we compute the Kullback–Leibler divergence between the model <span class="math inline">\(p_\zeta \equiv p(\boldsymbol{\theta} \mid \zeta)\)</span> relative to the baseline with <span class="math inline">\(\zeta_0\)</span>, <span class="math inline">\(p_0 \equiv p(\boldsymbol{\theta} \mid
 \zeta_0)\)</span>; the Kullback–Leibler divergence is</p>
@@ -568,8 +579,8 @@ Figure&nbsp;3.5: Posterior density plots with 50% credible intervals and median 
 </div>
 </section>
 </section>
-<section id="sensitivity-analysis" class="level2" data-number="3.5">
-<h2 data-number="3.5" class="anchored" data-anchor-id="sensitivity-analysis"><span class="header-section-number">3.5</span> Sensitivity analysis</h2>
+<section id="sensitivity-analysis" class="level2" data-number="3.6">
+<h2 data-number="3.6" class="anchored" data-anchor-id="sensitivity-analysis"><span class="header-section-number">3.6</span> Sensitivity analysis</h2>
 <p>Do priors matter? The answer to that question depends strongly on the model, and how much information the data provides about hyperparameters. While this question is easily answered in conjugate models (the relative weight of hyperparameters relative to data can be derived from the posterior parameters), it is not so simple in hierarchical models, where the interplay between prior distributions is often more intricate. To see the impact, one often has to rely on doing several analyses with different values fr the prior and see the sensitivity of the conclusions to these changes, for example by considering a vague prior or modifying the parameters values (say halving or doubling). If the changes are immaterial, then this provides reassurance that our analyses are robust.</p>
 <div id="exm-sensitivity-poisson-mixed" class="theorem example">
 <p><span class="theorem-title"><strong>Example 3.16</strong></span> To check the sensitivity of the conclusion, we revisit the modelling of the <code>smartwatch</code> experiment data using a Poisson regression and compare four priors: a uniform prior truncated to <span class="math inline">\([0, 10]\)</span>, an inverse gamma <span class="math inline">\(\mathsf{InvGamma}(0.01, 0.01)\)</span> prior, a penalized complexity prior such that the 0.95 percentile of the scale is 5, corresponding to <span class="math inline">\(\mathsf{Exp}(0.6)\)</span>. Since each distraction type appears 31 times, there is plenty of information to reliably estimate the dispersion <span class="math inline">\(\kappa\)</span> of the random effects <span class="math inline">\(\alpha\)</span>: the different density plots in <a href="#fig-sensitivity" class="quarto-xref">Figure&nbsp;<span>3.6</span></a> are virtually indistinguishable from one another. This is perhaps unsurprising given the large number of replicates, and the significant variability between groups.</p>
@@ -637,7 +648,7 @@ Brodeur, Mathieu, Perrine Ruer, Pierre-Majorique Léger, and Sylvain Sénécal. 
 Coles, Stuart G., and Jonathan A. Tawn. 1996. <span>“A <span>B</span>ayesian Analysis of Extreme Rainfall Data.”</span> <em>Journal of the Royal Statistical Society. Series C (Applied Statistics)</em> 45 (4): 463–78. <a href="https://doi.org/10.2307/2986068">https://doi.org/10.2307/2986068</a>.
 </div>
 <div id="ref-Gelman:2006" class="csl-entry" role="listitem">
-Gelman, Andrew. 2006. <span>“Prior Distributions for Variance Parameters in Hierarchical Models (Comment on Article by <span>B</span>rowne and <span>D</span>raper).”</span> <em>Bayesian Analysis</em> 1 (3): 515–34. <a href="https://doi.org/10.1214/06-BA117A">https://doi.org/10.1214/06-BA117A</a>.
+Gelman, Andrew. 2006. <span>“Prior Distributions for Variance Parameters in Hierarchical Models (Comment on Article by <span>B</span>rowne and <span>D</span>raper).”</span> <em>Bayesian Analysis</em> 1 (3): 515–34. <a href="https://doi.org/10.1214/06-ba117a">https://doi.org/10.1214/06-ba117a</a>.
 </div>
 <div id="ref-Gelman:2013" class="csl-entry" role="listitem">
 Gelman, Andrew, John B. Carlin, Hal S. Stern, David B. Dunson, Aki Vehtari, and Donald B. Rubin. 2013. <em>Bayesian Data Analysis</em>. 3rd ed. New York: Chapman; Hall/CRC. <a href="https://doi.org/10.1201/b16018">https://doi.org/10.1201/b16018</a>.
@@ -646,7 +657,7 @@ Gelman, Andrew, John B. Carlin, Hal S. Stern, David B. Dunson, Aki Vehtari, and 
 Matias, J. Nathan, Kevin Munger, Marianne Aubin Le Quere, and Charles Ebersole. 2021. <span>“The <span>U</span>pworthy <span>R</span>esearch <span>A</span>rchive, a Time Series of 32,487 Experiments in <span>U.S.</span> Media.”</span> <em>Scientific Data</em> 8 (195). <a href="https://doi.org/10.1038/s41597-021-00934-7">https://doi.org/10.1038/s41597-021-00934-7</a>.
 </div>
 <div id="ref-Simpson:2017" class="csl-entry" role="listitem">
-Simpson, Daniel, Håvard Rue, Andrea Riebler, Thiago G. Martins, and Sigrunn H. Sørbye. 2017. <span>“Penalising Model Component Complexity: A Principled, Practical Approach to Constructing Priors.”</span> <em>Statistical Science</em> 32 (1): 1–28. <a href="https://doi.org/10.1214/16-STS576">https://doi.org/10.1214/16-STS576</a>.
+Simpson, Daniel, Håvard Rue, Andrea Riebler, Thiago G. Martins, and Sigrunn H. Sørbye. 2017. <span>“Penalising Model Component Complexity: A Principled, Practical Approach to Constructing Priors.”</span> <em>Statistical Science</em> 32 (1): 1–28. <a href="https://doi.org/10.1214/16-sts576">https://doi.org/10.1214/16-sts576</a>.
 </div>
 <div id="ref-Sorbye.Holbek.Rue:2017" class="csl-entry" role="listitem">
 Sørbye, Sigrunn Holbek, and Håvard Rue. 2017. <span>“Penalised Complexity Priors for Stationary Autoregressive Processes.”</span> <em>Journal of Time Series Analysis</em> 38 (6): 923–35. <a href="https://doi.org/10.1111/jtsa.12242">https://doi.org/10.1111/jtsa.12242</a>.

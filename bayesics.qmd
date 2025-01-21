@@ -473,6 +473,8 @@ g1 + g2 + g3 + plot_layout(guides = 'collect') & theme(legend.position = "bottom
 
 :::{#exm-numericalintegration}
 
+## Numerical integration
+
 While we can calculate analytically the value of the normalizing constant for the beta-binomial model, we could also for arbitrary priors use numerical integration or Monte Carlo methods in the event the parameter vector $\boldsymbol{\theta}$ is low-dimensional. 
 
 While estimation of the normalizing constant is possible in simple models, the following highlights some challenges that are worth keeping in mind.
@@ -515,6 +517,85 @@ mean(dbinom(x = y,
 
 When $\boldsymbol{\theta}$ is high-dimensional, the marginal likelihood is intractable. This is one of the main challenges of Bayesian statistics and the popularity and applicability has grown drastically with the development and popularity of numerical algorithms, following the publication of @Geman.Geman:1984 and @Gelfand.Smith:1990. Markov chain Monte Carlo methods circumvent the calculation of the denominator by drawing approximate samples from the posterior. 
 
+
+
+:::{#exm-Duke-Amir}
+
+## Importance of selling format
+
+@Duke.Amir:2023 consider the difference between integrated and sequential format for sales. The `sellingformat` dataset contains $n=397$ observations split into two groups: quantity-integrated decision (decide the amount to buy) and quantity-sequential (first select buy, then select the amount). Participants of the study were randomly allocated to either of these two format and their decision, either buy, `1`, or do not buy `0`, is recorded. 
+
+We consider the number of purchased out of the total, treating records as independent Bernoulli observations with a flat (uniform prior).
+
+
+```{r}
+#| eval: true
+#| echo: true
+data(sellingformat, package = "hecbayes")
+contingency <- with(sellingformat, table(format, purchased))
+# Posterior draws of the parameters
+post_p_int <- rbeta(n = 1e4, shape1 = 47, shape2 = 153)
+post_p_seq <- rbeta(n = 1e4, shape1 = 24, shape2 = 177)
+# Reparametrization
+post_odds_int <- (post_p_int / (1 - post_p_int))
+post_odds_seq <- (post_p_seq / (1 - post_p_seq))
+post_oddsratio <- post_odds_int / post_odds_seq
+```
+
+With a beta-binomial model, the posterior for the probability of buying is $\mathsf{beta}(47, 153)$ for quantity-integrated and $\mathsf{beta}(24, 177)$ for quantity-sequential. We can compute the posterior of the odds ratio,
+$$O = \frac{\Pr(Y=1 \mid \texttt{integrated})}{\Pr(Y=0 \mid \texttt{integrated})}\frac{\Pr(Y=0 \mid \texttt{sequential})}{\Pr(Y=1 \mid \texttt{sequential})},$$
+by simulating independent draws from the posteriors of each condition and computing the.
+
+```{r}
+#| label: tbl-contingency-sellingformat
+#| eval: true
+#| echo: false
+#| tbl-cap: "Aggregated data from Duke and Amir (2023), experiment 1. Number of participants who did not (`0`) or did buy (`1`) products as a function of experimental condition."
+knitr::kable(contingency, booktabs = TRUE)
+```
+
+@fig-post-Duke_Amir shows the posterior of the probability of buying for each group, and the odds. It is clear that the integrated format leads to much more sales in the experiment, with a posterior ratio exceeding 1 with probability $`r mean(post_oddsratio > 1)*100`%.$
+
+```{r}
+#| label: fig-post-Duke_Amir
+#| eval: true
+#| echo: false
+#| fig-cap: "Posterior curves per group (left) and odds ratio (right)"
+#| fig-align: 'center'
+cols <- MetBrewer::met.brewer("Hiroshige", 2)
+g1 <- ggplot() +
+  stat_function(fun = dbeta, 
+  xlim = c(0,0.5), 
+  n = 1001, 
+  args = list(shape1 = 47, shape2 = 153),
+  mapping = aes(col = "integrated")) + 
+   stat_function(fun = dbeta, 
+  xlim = c(0,0.5), 
+  n = 1001, 
+  args = list(shape1 = 24, shape2 = 177),
+  mapping = aes(col = "sequential")) +
+  scale_color_manual(name='Sales format',
+                     breaks=c('sequential','integrated'),
+                     values=c('sequential'= cols[1], 'integrated'= cols[2])) +
+  scale_x_continuous(breaks = seq(0, 0.5, by = 0.25),
+  labels = c("0", "0.25", "0.5")) +
+  labs(y = "", 
+       subtitle = "Posterior density", 
+       x = "probability of buying") +
+scale_y_continuous(limits = c(0, NA), expand = expansion()) +
+theme(legend.position = "inside", legend.position.inside = c(0.9,0.9))
+g2 <- ggplot(data = data.frame(ratio = post_oddsratio),
+             mapping = aes(x = ratio)) +
+      geom_density() +
+labs(x = "odds ratio of integrated vs sequential decisions",
+     subtitle = "posterior density",
+     y = "") +
+scale_y_continuous(limits = c(0, NA), expand = expansion())
+g1 + g2
+```
+
+
+:::
 ## Posterior predictive distribution
 
 Prediction in the Bayesian paradigm is obtained by considering the *posterior predictive distribution*,
@@ -1027,6 +1108,7 @@ A $(1-\alpha)$ **credible region** (or credible interval in the univariate setti
 
 :::
 
+
 These intervals are not unique, as are confidence sets. In the univariate setting, the central or equitailed interval are the most popular, and easily obtained by considering the $\alpha/2, 1-\alpha/2$ quantiles. These are easily obtained from samples by simply taking empirical quantiles. An alternative, highest posterior density credible sets, which may be a set of disjoint intervals obtained by considering the parts of the posterior with the highest density, may be more informative. The top panel @fig-credible-intervals shows two extreme cases in which these intervals differ: the distinction for a bimodal mixture distribution, and a even more striking difference for 50% credible intervals for a symmetric beta distribution whose mass lie near the endpoints of the distribution, leading to no overlap between the two intervals.
 
 
@@ -1043,6 +1125,7 @@ qbeta(p = c(alpha/2, 1-alpha/2), shape1 = 0.5, shape2 = 0.2)
 hdiD <- HDInterval::hdi(density(postsamp), credMass = 1-alpha, allowSplit = TRUE)
 ```
 The equitailed intervals for a known posterior can be obtained directly from the quantile function or via Monte Carlo simply by querying sample quantiles. The HPD region is more complicated to obtain and requires dedicated software, which in the above case may fail to account for the support of the posterior!
+
 
 
 
@@ -1145,4 +1228,3 @@ g4 <- ggplot() +
   theme_classic()
 (g1 + g2) / (g4 + g3)
 ```
-
