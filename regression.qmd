@@ -3,43 +3,118 @@
 This chapter is dedicated to the case of generalized linear regression models. Starting with Gaussian data, we investigate the link between frequentists approaches to regularization and shrinkage priors. We also look at hierarchical models with mixed effects.
 
 
+We consider regression models with model or design matrix $\mathbf{X}$ and an associated vector of regression coefficients $\boldsymbol{\beta} = (\beta_1, \ldots, \beta_p)^\top$ which describe the mean and act as weights for each covariate vector. In the ordinary linear regression model
+\begin{align*}
+\boldsymbol{Y} \mid \mathbf{X}, \boldsymbol{\beta}, \omega \sim \mathsf{Gauss}_n(\beta_0\mathbf{1}_n + \mathbf{X}\boldsymbol{\beta}, \omega^{-1}\mathbf{I}_n),
+\end{align*}
+so that observations are independent and homoscedastic. Inference is performed conditional on the observed covariate vectors $\mathbf{X}_i$; we omit this dependence hereafter, but note that this can be generalized. The intercept $\beta_0$, which is added to capture the mean response and make it mean-zero, receives special treatment. We largely follow the exposition of @Villani:2023.
+
+
 :::{#prp-gaussian-ols}
+
 
 ## Gaussian ordinary linear regression with conjugate priors
 
-We consider regression models with model or design matrix $\mathbf{X}$ and an associated vector of regression coefficients $\boldsymbol{\beta} = (\beta_1, \ldots, \beta_p)^\top$ which describe the mean and act as weights for each covariate vector. In the ordinary linear regression model
-\begin{align*}
-\boldsymbol{Y} \mid \mathbf{X}, \boldsymbol{\beta}, \sigma^2 \sim \mathsf{Gauss}_n(\beta_0\mathbf{1}_n + \mathbf{X}\boldsymbol{\beta}, \sigma^2\mathbf{I}_n),
-\end{align*}
-so that observations are independent and homoscedastic. Inference is performed conditional on the observed covariate vectors $\mathbf{X}_i$. The intercept $\beta_0$, which is added to capture the mean response and make it mean-zero, receives special treatment.
 
 
-The conjugate prior for the Gaussian regression model for the mean and variance parameters is a Gaussian-inverse gamma (also listed as Gaussian-inverse $\chi^2$) and is defined hierarchically as
+The conjugate prior for the Gaussian regression model for the mean and precision parameters is a Gaussian-gamma and is defined hierarchically as
 \begin{align*}
-\boldsymbol{\beta} \mid \sigma^2 &\sim \mathsf{Gauss}(\boldsymbol{\mu}_0, \sigma^2 \boldsymbol{\Omega}_0^{-1}) \\
-\sigma^2 &\sim \mathsf{inv. gamma}(\nu_0/2, \nu\sigma^2_0/2).
+\boldsymbol{\beta} \mid \omega &\sim \mathsf{Gauss}\left\{\boldsymbol{\mu}_0, (
+\omega\boldsymbol{\Omega}_0)^{-1}\right\} \\
+\omega &\sim \mathsf{gamma}(\nu_0/2,\tau_0/2).
 \end{align*}
+Using properties of the Gaussian distribution, the sampling distribution of the ordinary least squares estimator is $\widehat{\boldsymbol{\beta}} \sim \mathsf{Gauss}_p\{\boldsymbol{\beta}, (\omega\mathbf{X}^\top\mathbf{X})^{-1}\}$.
 
 
 Then the conditional and marginal posterior distributions
 \begin{align*}
-\boldsymbol{\beta} \mid \sigma^2, \boldsymbol{y}, \mathbf{X} &\sim \mathsf{Gauss}_p(\boldsymbol{\mu}, \sigma^2\boldsymbol{\Omega}^{-1})  \\
-\sigma^2 \mid  \boldsymbol{y}, \mathbf{X} \sim \\
-\boldsymbol{\beta} \mid  \boldsymbol{y}, \mathbf{X} \sim \mathsf{Student}(\boldsymbol{\mu},  \sigma^2\boldsymbol{\Omega}^{-1}, \nu_0 + n)
+\boldsymbol{\beta} \mid \sigma^2, \boldsymbol{y} &\sim \mathsf{Gauss}_p\left\{\boldsymbol{\mu}_n, (\omega\boldsymbol{\Omega}_n)^{-1}\right\}  \\
+\omega \mid  \boldsymbol{y} &\sim \mathsf{gamma}\left\{(\nu_0 + n)/2,  \tau^2_n/2\right\}, \\
+\boldsymbol{\beta} \mid  \boldsymbol{y} &\sim \mathsf{Student}(\boldsymbol{\mu}_n,  \tau_n/(\nu_0+n) \times \mathbf{\Omega}_n^{-1}, \nu_0 + n)
+\end{align*}
+where
+\begin{align*}
+\boldsymbol{\Omega}_n &= \mathbf{X}^\top\mathbf{X} + \boldsymbol{\Omega}_0\\
+\boldsymbol{\mu}_n &= \boldsymbol{\Omega}_n^{-1}(\mathbf{X}^\top\mathbf{X}\widehat{\boldsymbol{\beta}} + \boldsymbol{\Omega}_0\boldsymbol{\mu}_0) = \boldsymbol{\Omega}_n^{-1}(\mathbf{X}^\top\boldsymbol{y} + \boldsymbol{\Omega}_0\boldsymbol{\mu}_0)\\
+\tau_n &= \tau_0 + (\boldsymbol{y} - \mathbf{X}\widehat{\boldsymbol{\beta}})^\top(\boldsymbol{y} - \mathbf{X}\widehat{\boldsymbol{\beta}}) + (\boldsymbol{\mu}_n - \widehat{\boldsymbol{\beta}})^\top \mathbf{X}^\top\mathbf{X}(\boldsymbol{\mu}_n - \widehat{\boldsymbol{\beta}}) + (\boldsymbol{\mu}_n-\boldsymbol{\mu}_0)^\top\boldsymbol{\Omega}_0(\boldsymbol{\mu}_n-\boldsymbol{\mu}_0)
 \end{align*}
 
-Using @prp-quadratic-forms,
+:::
+
+
+:::{#prp-quadratic-forms}
+
+## Decomposition of quadratic forms
+
+For quadratic forms (in $\boldsymbol{x}$) with
+\begin{align*}
+& (\boldsymbol{x} - \boldsymbol{a})^\top \mathbf{A}(\boldsymbol{x} - \boldsymbol{a}) + (\boldsymbol{x} - \boldsymbol{b})^\top \mathbf{B}(\boldsymbol{x} - \boldsymbol{b}) \\\quad &=
+ (\boldsymbol{x} - \boldsymbol{c})^\top \mathbf{C}(\boldsymbol{x} - \boldsymbol{c}) + (\boldsymbol{c}-\boldsymbol{a})^\top\mathbf{A}(\boldsymbol{c}-\boldsymbol{a}) + (\boldsymbol{c}-\boldsymbol{b})^\top\mathbf{B}(\boldsymbol{c}-\boldsymbol{b})\\
+&\stackrel{\boldsymbol{x}}{\propto} (\boldsymbol{x} - \boldsymbol{c})^\top \mathbf{C}(\boldsymbol{x} - \boldsymbol{c})
+\end{align*}
+where $\mathbf{C} = \mathbf{A} + \mathbf{B}$ and $\boldsymbol{c}= \mathbf{C}^{-1}(\mathbf{A}\boldsymbol{a} + \mathbf{B}\boldsymbol{b})$.
 
 
 :::
 
-The improper prior $p(\boldsymbol{\beta}, \sigma^2) \propto \sigma^{-2}$ can be viewed as a special case when
+
+:::{.proof}
+
+The improper prior $p(\boldsymbol{\beta}, \sigma^2) \propto \sigma^{-2}$ can be viewed as a special case of the above when
+
+Write the posterior as
+\begin{align*}
+ p(\boldsymbol{\beta}, \omega \mid \boldsymbol{y}) &\propto p(\boldsymbol{y} \mid \boldsymbol{\beta}, \omega) p(\omega)
+ \\& \propto  \omega^{n/2} \exp\left\{-\frac{\omega}{2}(\boldsymbol{y}-\mathbf{X}\boldsymbol{\beta})^\top(\boldsymbol{y}-\mathbf{X}\boldsymbol{\beta})\right\}\\& \times |\omega\boldsymbol{\Omega}_0|^{1/2}\exp \left\{ -\frac{\omega}{2} (\boldsymbol{\beta}-\boldsymbol{\mu}_0)^\top\boldsymbol{\Omega}_0(\boldsymbol{\beta}-\boldsymbol{\mu}_0)\right\} \\& \times \omega^{\nu_0/2-1}\exp\left(-\tau_0\omega/2\right).
+\end{align*}
+We rewrite the first quadratic form in $\boldsymbol{y}-\mathbf{X}\boldsymbol{\beta}$ using the orthogonal decomposition
+\begin{align*}
+ (\boldsymbol{y}-\mathbf{X}\widehat{\boldsymbol{\beta}}) + (\mathbf{X}\widehat{\boldsymbol{\beta}} - \mathbf{X}\boldsymbol{\beta})
+\end{align*}
+since $(\boldsymbol{y}-\mathbf{X}\widehat{\boldsymbol{\beta}})^\top (\mathbf{X}\widehat{\boldsymbol{\beta}} - \mathbf{X}\boldsymbol{\beta}) = 0.$
+We can pull together terms and separate the conditional posterior $p(\boldsymbol{\beta} \mid \boldsymbol{y}, \omega)$ and $p(\omega \mid \boldsymbol{y})$ as
+\begin{align*}
+ p(\boldsymbol{\beta}, \omega \mid \boldsymbol{y}) &\propto \omega^{(n+p+\nu_0)/2 -1} \exp\left[-\frac{\omega}{2}\left\{\tau_0 + (\boldsymbol{y}-\mathbf{X}\widehat{\boldsymbol{\beta}})^\top(\boldsymbol{y}-\mathbf{X}\widehat{\boldsymbol{\beta}})\right\}\right]
+ \\& \times \exp \left[-\frac{\omega}{2}\left\{(\widehat{\boldsymbol{\beta}} - \boldsymbol{\beta})^\top\mathbf{X}^\top\mathbf{X}(\widehat{\boldsymbol{\beta}} - \boldsymbol{\beta})+ (\boldsymbol{\beta}-\boldsymbol{\mu}_0)^\top\boldsymbol{\Omega}_0(\boldsymbol{\beta}-\boldsymbol{\mu}_0)\right\}\right]
+\end{align*}
+and using @prp-quadratic-forms for the terms in the exponent with $\boldsymbol{a} = \widehat{\boldsymbol{\beta}}$, $\mathbf{A}=\mathbf{X}^\top\mathbf{X}$, $\boldsymbol{b} = \boldsymbol{\mu}_0$ and $\mathbf{B}=\boldsymbol{\Omega}_0$, we find
+\begin{align*}
+  p(\boldsymbol{\beta}, \omega \mid \boldsymbol{y}) & \propto
+   \omega^{(n+\nu_0)/2 -1} \exp\left(-\frac{\omega\tau_n}{2}\right)
+   \\& \times \omega^{p/2}\exp\left\{-\frac{1}{2}(\boldsymbol{\beta} - \boldsymbol{\mu}_n)^\top(\omega\mathbf{\Omega}_n)(\boldsymbol{\beta} - \boldsymbol{\mu}_n)\right\}
+\end{align*}
+whence the decomposition of the posterior as a Gaussian conditional on the precision, and a gamma for the latter. The marginal of $\boldsymbol{\beta}$ is obtained by regrouping all terms that depend on $\omega$ and integrating over the latter, recognizing the integral as an unnormalized gamma density, where $\int_0^\infty x^{a-1}\exp(-bx)\mathrm{d} x \stackrel{b}{\propto} b^{-a}$ and thus
+\begin{align*}
+ p(\boldsymbol{\beta}, \mid \boldsymbol{y}) & \stackrel{\boldsymbol{\beta}}{\propto} \int_0^\infty \omega^{(\nu_0 + n + p)/2 -1}\exp\left\{- \omega \frac{\tau_n +(\boldsymbol{\beta} - \boldsymbol{\mu}_n)^\top\mathbf{\Omega}_n(\boldsymbol{\beta} - \boldsymbol{\mu}_n)}{2}\right\} \mathrm{d} \omega
+ \\&\stackrel{\boldsymbol{\beta}}{\propto} \left\{\frac{\tau_n +(\boldsymbol{\beta} - \boldsymbol{\mu}_n)^\top\mathbf{\Omega}_n(\boldsymbol{\beta} - \boldsymbol{\mu}_n)}{2}\right\}^{-(\nu_0 + n + p)/2}
+ \\& \stackrel{\boldsymbol{\beta}}{\propto} \left\{1 + \frac{(\boldsymbol{\beta} - \boldsymbol{\mu}_n)^\top\frac{\nu_0 + n}{\tau_n}\mathbf{\Omega}_n(\boldsymbol{\beta} - \boldsymbol{\mu}_n)}{\nu_0 + n}\right\}^{-(\nu_0 + n + p)/2}
+\end{align*}
+so must be a Student-$t$ distribution with location $\boldsymbol{\mu}_n$, scale matrix $\tau_n/(\nu_0+n) \times \mathbf{\Omega}_n^{-1}$ and $\nu_0+n$ degrees of freedom.
+
+:::
 
 
+The choice of prior precision $\boldsymbol{\Omega}_0$ is left to the user, but typically the components of the vector $\boldsymbol{\beta}$ are left apriori independent, with $\boldsymbol{\Omega}_0 \propto \lambda\mathbf{I}_n$
+
+
+## Shrinkage priors
+
+In contexts where the number of regressors $p$ is considerable relative to the sample size $n$, it may be useful to constrain the parameter vector if we assume that the spignal is sparse, with a large proportion of coefficients that should be zero. Shrinkage priors can regularize and typically consist of distributions that have a mode at zero, and another that allows for larger signals.
 
 :::{#prp-spike-slab}
 
 ## Spike-and-slab prior
+
+
+The spike-and-slab prior is a two-component mixture that assigns a positive probability to zero via a point mass (the spike) and the balance to the slab, a diffuse distribution.
+
+
+Originally proposed by @Mitchell.Beauchamp:1988 with a uniform on a large interval, the term was also used in @George.Mitchell:1993, which replace both components by Gaussians, one of which is diffuse and the other with near infinite precision at the origin. Letting $\gamma_j \in [0,1]$ denote the probability of the slab or inclusion of the variable, the independent priors for the regression coefficients are
+\begin{align*}
+ \beta_j \mid \gamma_j, c_j^2,\phi^2_j \sim (1-\gamma_j) \mathsf{Gauss}(0, \phi^2_j) + \gamma_j \mathsf{Gauss}(0, \sigma_j^2\phi^2)
+\end{align*}
+where $\sigma^2_j$ is very nearly zero. We set a Jeffrey's prior for $\gamma_j \sim \mathsf{beta}(0.5, 0.5)$ and typically $\phi_j^2=0.001$ or a small number. The construction allows for variable augmentation with mixture indicators and Gibbs sampling, although convergence isn't trivial. Taking a conjugate $ marginal distribution of the slab, conditional on b
+
 
 :::
 
@@ -48,5 +123,7 @@ The improper prior $p(\boldsymbol{\beta}, \sigma^2) \propto \sigma^{-2}$ can be 
 
 ## Horseshoe prior
 
+
+The horseshoe prior of @Carvalho.Polson.Scott:2009
 
 :::

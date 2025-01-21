@@ -485,7 +485,7 @@ one chain or multiple chain
 ## Independence Metropolis--Hastings
 
 If the proposal density $q(\cdot)$ does not depend on the current state $\boldsymbol{\theta}_{t-1}$, the algorithm is termed *independence*. To maximize acceptance, we could design a candidate distribution whose mode is at the maximum a posteriori value. To efficiently explore the state space, we need to place enough density in all regions, for example by taking a heavy-tailed distributions, so that we explore the full support. Such proposals can be however inefficient and fail when the distribution of interest is multimodal.
-The independence Metropolis--Hastings algorithm then resembles accept-reject. If the ratio $p(\boldsymbol{\theta})/q(\boldsymbol{\theta})$ is bounded above by $C \geq 1$, then we can make comparisons with rejection sampling. Lemma 7.9 of @Robert.Casella:2004 shows that the probability of acceptance of a move for the Markov chain is at least $1/C$, which is larger than the accept-reject.
+The independence Metropolis--Hastings algorithm then resembles accept-reject. If the ratio $p(\boldsymbol{\theta})/q(\boldsymbol{\theta})$ is bounded above by $C \geq 1$, then we can make comparisons with rejection sampling. Lemma 7.9 of @Casella.Robert:2004 shows that the probability of acceptance of a move for the Markov chain is at least $1/C$, which is larger than the accept-reject.
 
 :::
 
@@ -1263,7 +1263,7 @@ Given suitable priors for the probabilities $\boldsymbol{\omega}$ and $\boldsymb
 
 :::
 
-## Bayesian workflow and diagnostics for Markov chains
+# Bayesian workflow
 
 For a given problem, there are many different Markov chain Monte Carlo algorithms that one can implement: they will typically be distinguished based on the running time and the efficiency (with algorithms providing chains that have low autocorrelation being better). Many visual diagnostics and standard tests can be used to diagnose lack of convergence, or inefficiency. The purpose of this section is to review these in turn. 
 

@@ -979,18 +979,6 @@ and $\boldsymbol{\Sigma}_{1|2}=\boldsymbol{\Sigma}_{11}-\boldsymbol{\Sigma}_{12}
 
 :::
 
-:::{#prp-quadratic-forms}
-
-## Decomposition of quadratic forms
-
-For quadratic forms (in $\boldsymbol{x}$) with
-\begin{align*}
-(\boldsymbol{x} - \boldsymbol{a})^\top \mathbf{A}(\boldsymbol{x} - \boldsymbol{a}) + (\boldsymbol{x} - \boldsymbol{b})^\top \mathbf{B}(\boldsymbol{x} - \boldsymbol{b}) \stackrel{\boldsymbol{x}}{\propto} (\boldsymbol{x} - \boldsymbol{c})^\top \mathbf{C}(\boldsymbol{x} - \boldsymbol{c})
-\end{align*}
-where $\mathbf{C} = \mathbf{A} + \mathbf{B}$ and $\boldsymbol{c}= \mathbf{C}^{-a}(\mathbf{A}\boldsymbol{a} + \mathbf{B}\boldsymbol{b})$.
-
-
-:::
 
 
 :::{.proof}
