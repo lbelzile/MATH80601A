@@ -347,8 +347,9 @@ A log prior density with parameters $\eta, \nu_1, \ldots, \nu_K$ that is proport
 \log p(\boldsymbol{\theta}) \propto \eta D(\boldsymbol{\theta}) + \sum_{k=1}^K Q_k(\boldsymbol{\theta}) \nu_k
 \end{align*}
 is conjugate.
+
 <!-- p.131 of Barndorff-Nielsen  -->
-:::
+
 
 Exponential families play a crucial role due to the fact that the vector of sufficient statistics $\boldsymbol{t}$ for a random sample allows for data compression. They feature prominently in generalized linear models.
 <!-- We will encounter exponential families when discussing conjugate priors. -->
@@ -787,7 +788,7 @@ Taking $g(\boldsymbol{y}) = \boldsymbol{y}$ yields the **expected value** of the
 \begin{align*}
 \mathsf{Va}(\boldsymbol{Y}) = \mathsf{E}\left[\left\{\boldsymbol{Y} - \mathsf{E}(\boldsymbol{Y})\right\}\left\{\boldsymbol{Y} - \mathsf{E}(\boldsymbol{Y})\right\}^\top\right],
 \end{align*}
-which reduces in the unidimensional setting to $\mathsf{Va}(Y) = \mathsf{E}\{Y - \mathsf{E}(Y)\}^2 = \mathsf{E}(Y^2) - \mathsf{E}(Y)^2.$
+which reduces in the unidimensional setting to $$\mathsf{Va}(Y) = \mathsf{E}\{Y - \mathsf{E}(Y)\}^2 = \mathsf{E}(Y^2) - \mathsf{E}(Y)^2.$$
 
 More generally, the $k \times m$ covariance matrix between two random vectors $\boldsymbol{Y}$ of size $k$ and $\boldsymbol{X}$ of size $m$ is
 \begin{align*}

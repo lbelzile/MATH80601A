@@ -1588,7 +1588,7 @@ where $p_D$ is the posterior expectation of the deviance relative to the point e
 \begin{align*}
 p_D = \mathsf{E}\{D(\boldsymbol{\theta}, \widetilde{\boldsymbol{\theta}}) \mid \boldsymbol{y}\}= \int 2 \{ \ell(\widetilde{\boldsymbol{\theta}}) - \ell(\boldsymbol{\theta})\} f(\boldsymbol{\theta} \mid \boldsymbol{y} \mathrm{d} \boldsymbol{\theta}
 \end{align*}
-The DIC can be easily evaluated by keeping track of the log likelihood evaluated at each posterior draw from a Markov chain Monte Carlo algorithm. The penalty term $p_D$ is however not invariant to reparametrizations. Assuming we can derive a multivariate Gaussian approximation to the MLE under suitable regularity conditions, the $\mathsf{DIC}$ is equivalent in large samples to $\mathsf{AIC}$. The $\mathsf{DIC}$ is considered by many authors as not being a Bayesian procedure; see @Spiegelhalther:2014 and the discussion therein. 
+The DIC can be easily evaluated by keeping track of the log likelihood evaluated at each posterior draw from a Markov chain Monte Carlo algorithm. The penalty term $p_D$ is however not invariant to reparametrizations. Assuming we can derive a multivariate Gaussian approximation to the MLE under suitable regularity conditions, the $\mathsf{DIC}$ is equivalent in large samples to $\mathsf{AIC}$. The $\mathsf{DIC}$ is considered by many authors as not being a Bayesian procedure; see @Spiegelhalter:2014 and the discussion therein.
 
 :::{#exm-smartwatch-infocriteria}
 

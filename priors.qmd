@@ -305,9 +305,9 @@ To get an approximation to the posterior mean of the ratio $\lambda_1/\lambda_2,
 
 ## Conjugate prior for Gaussian mean with known variance
 
-Consider an $n$ simple random sample of independent and identically distributed Gaussian variables with mean $\mu$ and standard deviation $\sigma,$ denoted $Y_i \sim \mathsf{Gauss}(\mu, \sigma^2).$ We pick a Gaussian prior for the location parameter, $\mu \sim \mathsf{Gauss}(\nu, \tau^2)$ where we assume $\mu, \tau$ are fixed hyperparameter values. For now, we consider only inference for $p(\mu \mid \sigma)$: discarding any term that is not a function of $\mu,$ the conditional posterior is
+Consider an $n$ simple random sample of independent and identically distributed Gaussian variables with mean $\mu$ and standard deviation $\sigma,$ denoted $Y_i \sim \mathsf{Gauss}(\mu, \sigma^2).$ We pick a Gaussian prior for the location parameter, $\mu \sim \mathsf{Gauss}(\nu, \tau^2)$ where we assume $\nu, \tau$ are fixed hyperparameter values. For now, we consider only inference for the conditional marginal posterior $p(\mu \mid \boldsymbol{y}, \sigma)$: discarding any term that is not a function of $\mu,$ the conditional posterior is
 \begin{align*}
-p(\mu \mid \sigma) &\propto \exp\left\{ -\frac{1}{2\sigma^2}\sum_{i=1}^n (y_{i}-\mu)^2\right\} \exp\left\{-\frac{1}{2\tau^2}(\mu - \nu)^2\right\}
+p(\mu \mid \sigma, \boldsymbol{y}) &\propto \exp\left\{ -\frac{1}{2\sigma^2}\sum_{i=1}^n (y_{i}-\mu)^2\right\} \exp\left\{-\frac{1}{2\tau^2}(\mu - \nu)^2\right\}
 \\&\propto \exp\left\{\left(\frac{\sum_{i=1}^n y_{i}}{\sigma^2} + \frac{\nu}{\tau^2}\right)\mu - \left( \frac{n}{2\sigma^2} +\frac{1}{2\tau^2}\right)\mu^2\right\}.
 \end{align*}
 The log of the posterior density conditional on $\sigma$ is quadratic in $\mu,$ it must be a Gaussian distribution truncated over the positive half line. This can be seen by completing the square in $\mu,$ or by comparing this expression to the density of $\mathsf{Gauss}(\mu, \sigma^2),$
@@ -608,7 +608,9 @@ $$ p(\boldsymbol{\theta}) \propto \sum_{m=1}^M w_m p_m(\boldsymbol{\theta})$$
 
 
 
-### Penalized complexity priors
+:::{#prp-penalized-complexity}
+
+## Penalized complexity priors
 
 Oftentimes, there will be a natural family of prior density to impose on some model component,  $p(\boldsymbol{\theta} \mid \zeta),$ with hyperparameter $\zeta.$ The flexibility of the underlying construction leads itself to overfitting. Penalized complexity priors [@Simpson:2017] aim to palliate this by penalizing models far away from a simple baseline model, which correspond to a fixed value $\zeta_0.$ The prior will favour the simpler parsimonious model the more prior mass one places on $\zeta_0,$ which is in line with Occam's razor principle.
 
@@ -621,7 +623,7 @@ The divergence is zero at the model with $\zeta_0.$ The PC prior then constructs
 
 The construction of Wasserstein complexity priors [@Bolin:2023] is more involved, but those priors are also parametrization-invariant and well-defined even when the Kullback--Leibler divergence limit does not exist.
 
-
+:::
 
 :::{#exm-pcprior-randomeffect}
 

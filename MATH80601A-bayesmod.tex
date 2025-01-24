@@ -266,20 +266,6 @@
 \DeclareMathAlphabet{\mathcrl}{U}{rsfs}{m}{n}
 \usepackage{utopia}
 \DeclareMathAlphabet{\mathcal}{OMS}{cmsy}{m}{n}
-\usepackage{booktabs}
-\usepackage{longtable}
-\usepackage{array}
-\usepackage{multirow}
-\usepackage{wrapfig}
-\usepackage{float}
-\usepackage{colortbl}
-\usepackage{pdflscape}
-\usepackage{tabu}
-\usepackage{threeparttable}
-\usepackage{threeparttablex}
-\usepackage[normalem]{ulem}
-\usepackage{makecell}
-\usepackage{xcolor}
 \makeatletter
 \@ifpackageloaded{bookmark}{}{\usepackage{bookmark}}
 \makeatother
@@ -319,13 +305,13 @@
 \newcommand*\listoflistings{\listof{codelisting}{List of Listings}}
 \usepackage{amsthm}
 \theoremstyle{plain}
+\newtheorem{theorem}{Theorem}[chapter]
+\theoremstyle{plain}
 \newtheorem{proposition}{Proposition}[chapter]
 \theoremstyle{definition}
 \newtheorem{exercise}{Exercise}[chapter]
 \theoremstyle{definition}
 \newtheorem{definition}{Definition}[chapter]
-\theoremstyle{plain}
-\newtheorem{theorem}{Theorem}[chapter]
 \theoremstyle{definition}
 \newtheorem{example}{Example}[chapter]
 \theoremstyle{remark}
@@ -383,7 +369,7 @@ details.
 These notes are licensed under a
 \href{http://creativecommons.org/licenses/by-nc-sa/4.0/}{Creative
 Commons Attribution-NonCommercial-ShareAlike 4.0 International License}
-and were last compiled on Monday, January 20 2025.
+and were last compiled on vendredi, janvier 24 2025.
 
 The objective of the course is to provide a hands on introduction to
 Bayesian data analysis. The course will cover the formulation,
@@ -636,13 +622,24 @@ The support of \(f\) must not depend on \(\boldsymbol{\theta}.\) The
 transformed parameters \(Q_k(\boldsymbol{\theta})\) \((k=1, \ldots, K)\)
 are termed canonical parameters.
 
+\end{definition}
+
+If we have an independent and identically distributed sample of
+observations \(y_1, \ldots, y_n\), the log likelihood is thus of the
+form \begin{align*}
+\ell(\boldsymbol{\theta}) = \sum_{k=1}^K \phi_k(\boldsymbol{\theta}) \sum_{i=1}^n t_k(y_i) + n D(\boldsymbol{\theta}),
+\end{align*} where the collection \(\sum_{i=1}^n t_k(y_i)\)
+(\(k=1, \ldots, K\)) are sufficient statistics and
+\(\phi_k(\boldsymbol{\theta})\) are the canonical parameters.
+
 We term \textbf{conjugate family} families of distribution on
 \(\boldsymbol{\Theta}\) with parameters \(\boldsymbol{\chi}, \gamma\) if
 their density is proportional to \begin{align*}
 \exp\left\{ \sum_{k=1}^K Q_k(\boldsymbol{\theta}) \chi_k + \gamma D(\boldsymbol{\theta})\right\}
-\end{align*}
-
-\end{definition}
+\end{align*} A log prior density with parameters
+\(\eta, \nu_1, \ldots, \nu_K\) that is proportional to \begin{align*}
+\log p(\boldsymbol{\theta}) \propto \eta D(\boldsymbol{\theta}) + \sum_{k=1}^K Q_k(\boldsymbol{\theta}) \nu_k
+\end{align*} is conjugate.
 
 Exponential families play a crucial role due to the fact that the vector
 of sufficient statistics \(\boldsymbol{t}\) for a random sample allows
@@ -666,22 +663,24 @@ distribution is a conjugate family.
 \begin{example}[Binomial as exponential
 family]\protect\hypertarget{exm-exponential-family-binom}{}\label{exm-exponential-family-binom}
 
-Consider \(Y \sim \mathsf{binom}(n,p)\) and write the mass function
-\begin{align*}
-f(y; p)=\exp \left\{ \log \Gamma(n+1) - \log \left(\frac{\Gamma(y+1)}{\Gamma(n-y+1)}\right) + y \mathrm{logit}(p) + n \log(1-p)\right\}.
-\end{align*} and so the canonical parameter is
+The binomial log density with \(y\) successes out of \(n\) trials is
+proportional to \begin{align*}
+y \log(p) + (n-y) \log(1-p) = y\log\left( \frac{p}{1-p}\right) + n \log(1-p)
+\end{align*} with canonical parameter
 \(Q_1(p) = \mathrm{logit}(p) = \log\{p/(1-p)\}\) with \(t_1(y) = y.\)
-The beta distribution is conjugate to the binomial.
+The canonical link function for Bernoulli gives rise to logistic
+regression model. The binomial distribution is thus an exponential
+family. The beta distribution is conjugate to the binomial.
 
 \end{example}
 
 \begin{example}[Poisson as exponential
 family]\protect\hypertarget{exm-exponential-family-poisson}{}\label{exm-exponential-family-poisson}
 
-Consider \(Y \sim \mathsf{Poisson}(\lambda)\) with mass function
+Consider \(Y \sim \mathsf{Poisson}(\mu)\) with mass function
 \begin{align*}
-f(y; p)=\exp \left\{ - \lambda + y \log \lambda - \log \Gamma(x+1)\right\}.
-\end{align*} and so the canonical parameter is \(Q_1(p) = \log \lambda\)
+f(y; p)=\exp \left\{ - \mu + y \log \mu - \log \Gamma(x+1)\right\}.
+\end{align*} and so the canonical parameter is \(Q_1(p) = \log \mu\)
 with the gamma distribution as conjugate family.
 
 \end{example}
@@ -1113,7 +1112,7 @@ Taking \(g(\boldsymbol{y}) = \boldsymbol{y}\) yields the
 \(\boldsymbol{Y}\) as \begin{align*}
 \mathsf{Va}(\boldsymbol{Y}) = \mathsf{E}\left[\left\{\boldsymbol{Y} - \mathsf{E}(\boldsymbol{Y})\right\}\left\{\boldsymbol{Y} - \mathsf{E}(\boldsymbol{Y})\right\}^\top\right],
 \end{align*} which reduces in the unidimensional setting to
-\(\mathsf{Va}(Y) = \mathsf{E}\{Y - \mathsf{E}(Y)\}^2 = \mathsf{E}(Y^2) - \mathsf{E}(Y)^2.\)
+\[\mathsf{Va}(Y) = \mathsf{E}\{Y - \mathsf{E}(Y)\}^2 = \mathsf{E}(Y^2) - \mathsf{E}(Y)^2.\]
 
 More generally, the \(k \times m\) covariance matrix between two random
 vectors \(\boldsymbol{Y}\) of size \(k\) and \(\boldsymbol{X}\) of size
@@ -1319,16 +1318,6 @@ and consider the partition \begin{align*}
 \end{align*} and
 \(\boldsymbol{\Sigma}_{1|2}=\boldsymbol{\Sigma}_{11}-\boldsymbol{\Sigma}_{12}\boldsymbol{\Sigma}_{22}^{-1}\boldsymbol{\Sigma}_{21}\)
 is the Schur complement of \(\boldsymbol{\Sigma}_{22}.\)
-
-\end{proposition}
-
-\begin{proposition}[Decomposition of quadratic
-forms]\protect\hypertarget{prp-quadratic-forms}{}\label{prp-quadratic-forms}
-
-For quadratic forms (in \(\boldsymbol{x}\)) with \begin{align*}
-(\boldsymbol{x} - \boldsymbol{a})^\top \mathbf{A}(\boldsymbol{x} - \boldsymbol{a}) + (\boldsymbol{x} - \boldsymbol{b})^\top \mathbf{B}(\boldsymbol{x} - \boldsymbol{b}) \stackrel{\boldsymbol{x}}{\propto} (\boldsymbol{x} - \boldsymbol{c})^\top \mathbf{C}(\boldsymbol{x} - \boldsymbol{c})
-\end{align*} where \(\mathbf{C} = \mathbf{A} + \mathbf{B}\) and
-\(\boldsymbol{c}= \mathbf{C}^{-a}(\mathbf{A}\boldsymbol{a} + \mathbf{B}\boldsymbol{b})\).
 
 \end{proposition}
 
@@ -2439,31 +2428,6 @@ Participants of the study were randomly allocated to either of these two
 format and their decision, either buy, \texttt{1}, or do not buy
 \texttt{0}, is recorded.
 
-We consider the number of purchased out of the total, treating records
-as independent Bernoulli observations with a flat (uniform prior).
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\FunctionTok{data}\NormalTok{(sellingformat, }\AttributeTok{package =} \StringTok{"hecbayes"}\NormalTok{)}
-\NormalTok{contingency }\OtherTok{\textless{}{-}} \FunctionTok{with}\NormalTok{(sellingformat, }\FunctionTok{table}\NormalTok{(format, purchased))}
-\CommentTok{\# Posterior draws of the parameters}
-\NormalTok{post\_p\_int }\OtherTok{\textless{}{-}} \FunctionTok{rbeta}\NormalTok{(}\AttributeTok{n =} \FloatTok{1e4}\NormalTok{, }\AttributeTok{shape1 =} \DecValTok{47}\NormalTok{, }\AttributeTok{shape2 =} \DecValTok{153}\NormalTok{)}
-\NormalTok{post\_p\_seq }\OtherTok{\textless{}{-}} \FunctionTok{rbeta}\NormalTok{(}\AttributeTok{n =} \FloatTok{1e4}\NormalTok{, }\AttributeTok{shape1 =} \DecValTok{24}\NormalTok{, }\AttributeTok{shape2 =} \DecValTok{177}\NormalTok{)}
-\CommentTok{\# Reparametrization}
-\NormalTok{post\_odds\_int }\OtherTok{\textless{}{-}}\NormalTok{ (post\_p\_int }\SpecialCharTok{/}\NormalTok{ (}\DecValTok{1} \SpecialCharTok{{-}}\NormalTok{ post\_p\_int))}
-\NormalTok{post\_odds\_seq }\OtherTok{\textless{}{-}}\NormalTok{ (post\_p\_seq }\SpecialCharTok{/}\NormalTok{ (}\DecValTok{1} \SpecialCharTok{{-}}\NormalTok{ post\_p\_seq))}
-\NormalTok{post\_oddsratio }\OtherTok{\textless{}{-}}\NormalTok{ post\_odds\_int }\SpecialCharTok{/}\NormalTok{ post\_odds\_seq}
-\end{Highlighting}
-\end{Shaded}
-
-With a beta-binomial model, the posterior for the probability of buying
-is \(\mathsf{beta}(47, 153)\) for quantity-integrated and
-\(\mathsf{beta}(24, 177)\) for quantity-sequential. We can compute the
-posterior of the odds ratio,
-\[O = \frac{\Pr(Y=1 \mid \texttt{integrated})}{\Pr(Y=0 \mid \texttt{integrated})}\frac{\Pr(Y=0 \mid \texttt{sequential})}{\Pr(Y=1 \mid \texttt{sequential})},\]
-by simulating independent draws from the posteriors of each condition
-and computing the.
-
 \begin{longtable}[]{@{}lrr@{}}
 
 \caption{\label{tbl-contingency-sellingformat}Aggregated data from Duke
@@ -2484,11 +2448,35 @@ quantity-sequential & 176 & 23 \\
 
 \end{longtable}
 
+We consider the number of purchased out of the total, treating records
+as independent Bernoulli observations with a flat (uniform prior).
+
+With a beta-binomial model, the posterior for the probability of buying
+is \(\mathsf{beta}(47, 153)\) for quantity-integrated and
+\(\mathsf{beta}(24, 177)\) for quantity-sequential. We can compute the
+posterior of the odds ratio,
+\[O = \frac{\Pr(Y=1 \mid \texttt{integrated})}{\Pr(Y=0 \mid \texttt{integrated})}\frac{\Pr(Y=0 \mid \texttt{sequential})}{\Pr(Y=1 \mid \texttt{sequential})},\]
+by simulating independent draws from the posteriors of each condition
+and computing the odds ratio.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{data}\NormalTok{(sellingformat, }\AttributeTok{package =} \StringTok{"hecbayes"}\NormalTok{)}
+\NormalTok{contingency }\OtherTok{\textless{}{-}} \FunctionTok{with}\NormalTok{(sellingformat, }\FunctionTok{table}\NormalTok{(format, purchased))}
+\CommentTok{\# Posterior draws of the parameters}
+\NormalTok{post\_p\_int }\OtherTok{\textless{}{-}} \FunctionTok{rbeta}\NormalTok{(}\AttributeTok{n =} \FloatTok{1e4}\NormalTok{, }\AttributeTok{shape1 =} \DecValTok{47}\NormalTok{, }\AttributeTok{shape2 =} \DecValTok{153}\NormalTok{)}
+\NormalTok{post\_p\_seq }\OtherTok{\textless{}{-}} \FunctionTok{rbeta}\NormalTok{(}\AttributeTok{n =} \FloatTok{1e4}\NormalTok{, }\AttributeTok{shape1 =} \DecValTok{24}\NormalTok{, }\AttributeTok{shape2 =} \DecValTok{177}\NormalTok{)}
+\CommentTok{\# Reparametrization}
+\NormalTok{post\_odds\_int }\OtherTok{\textless{}{-}}\NormalTok{ (post\_p\_int }\SpecialCharTok{/}\NormalTok{ (}\DecValTok{1} \SpecialCharTok{{-}}\NormalTok{ post\_p\_int))}
+\NormalTok{post\_odds\_seq }\OtherTok{\textless{}{-}}\NormalTok{ (post\_p\_seq }\SpecialCharTok{/}\NormalTok{ (}\DecValTok{1} \SpecialCharTok{{-}}\NormalTok{ post\_p\_seq))}
+\NormalTok{post\_oddsratio }\OtherTok{\textless{}{-}}\NormalTok{ post\_odds\_int }\SpecialCharTok{/}\NormalTok{ post\_odds\_seq}
+\end{Highlighting}
+\end{Shaded}
+
 Figure~\ref{fig-post-Duke_Amir} shows the posterior of the probability
 of buying for each group, and the odds. It is clear that the integrated
 format leads to much more sales in the experiment, with a posterior
-ratio exceeding 1 with probability \(99.89%.
-\)
+ratio exceeding 1 with probability \(99.89\%\).
 
 \begin{figure}[ht!]
 
@@ -3033,6 +3021,9 @@ robustness of the prior specification through a sensitivity analysis by
 comparing the outcomes of the posterior for different priors or
 different values of the hyperparameters.
 
+Oftentimes, we will specify independent priors in multiparameter models,
+but the posterior of these will not be independent.
+
 We can use moment matching to get sensible values, or tune via
 trial-and-error using the prior predictive draws to assess the
 implausibility of the prior outcomes. One challenge is that even if we
@@ -3053,12 +3044,13 @@ is to sample values from them and generate new observations, resulting
 in prior predictive draws.
 
 The prior predictive is
-\(\int_{\boldsymbol{\Theta}} p(y \mid \boldsymbol{\theta}) p(\boldsymbol{\theta}) \mathrm{d} \boldsymbol{\theta}\):
-we can simulate outcomes from it by first drawing parameter values from
-the prior, then sampling new observations from the distribution in the
-likelihood and keeping only the latter. If there are sensible bounds for
-the range of the response, we could discard values that do not abide
-with these.
+\(\int_{\boldsymbol{\Theta}} f(y_{\text{new}}; \boldsymbol{\theta}) p(\boldsymbol{\theta}) \mathrm{d} \boldsymbol{\theta}\):
+we can simulate outcomes from it by first drawing parameter values
+\(\boldsymbol{\theta}_0\) from the prior, then sampling new observations
+from the distribution \(f(y_{\text{new}}; \boldsymbol{\theta}_0)\) with
+those parameters values and keeping only \(y_{\text{new}}.\) If there
+are sensible bounds for the range of the response, we could restrict the
+prior range and shape until values abide to these.
 
 Working with standardized inputs
 \(x_i \mapsto (x_i - \overline{x})/\mathrm{sd}(\boldsymbol{x})\) is
@@ -3083,12 +3075,12 @@ unless one standardizes response variable and explanatories: it is
 easier to standardize the temperature so that we consider deviations
 from, say 20\(^{\circ}\)C, which is not far from the observed mean in
 the sample. After some tuning, the independent priors
-\(\beta_0 \sim \mathsf{Gauss}(\overline{y}, 0.5^2)\),
+\(\beta_0 \sim \mathsf{Gauss}(\overline{y}, 0.5^2),\)
 \(\beta_1 \sim \mathsf{Gauss}(0, 0.05^2)\) and
 \(\sigma \sim \mathsf{Exp}(3)\) seem to yield plausible outcomes and
 relationships.\footnote{One can object to the prior parameters depending
   on the data, but an alternative would be to model centered data
-  \(y-\overline{y}\), in which case the prior for the intercept
+  \(y-\overline{y},\) in which case the prior for the intercept
   parameter \(\beta_0\) would be zero.}
 
 \begin{figure}[ht!]
@@ -3132,50 +3124,58 @@ computational convenience and because interpretation is convenient, as
 the parameters of the posterior will often be some weighted average of
 prior and likelihood component.
 
-\begin{definition}[]\protect\hypertarget{def-conjugate-prior}{}\label{def-conjugate-prior}
+\begin{definition}[Conjugate
+priors]\protect\hypertarget{def-conjugate-prior}{}\label{def-conjugate-prior}
 
 A prior density \(p(\boldsymbol{\theta})\) is conjugate for likelihood
 \(L(\boldsymbol{\theta}; \boldsymbol{y})\) if the product
-\(L(\boldsymbol{\theta}; \boldsymbol{y})p(\boldsymbol{\theta})\), after
+\(L(\boldsymbol{\theta}; \boldsymbol{y})p(\boldsymbol{\theta}),\) after
 renormalization, is of the same parametric family as the prior.
 
-Exponential families (including the binomial, Poisson, exponential,
-Gaussian distributions) admit conjugate priors\footnote{A distribution
-  belongs to an exponential family with parameter vector
-  \(\boldsymbol{\theta} \in \mathbb{R}^D\) if it can be written as
-  \begin{align*}
-  f(y; \boldsymbol{\theta}) = \exp\left\{ \sum_{k=1}^K Q_k(\boldsymbol{\theta}) t_k(y) + D(\boldsymbol{\theta})\right\}
-  \end{align*} and in particular, the support does not depend on unknown
-  parameters. If we have an independent and identically distributed
-  sample of observations \(y_1, \ldots, y_n\), the log likelihood is
-  thus of the form \begin{align*}
-  \ell(\boldsymbol{\theta}) = \sum_{k=1}^K \phi_k(\boldsymbol{\theta}) \sum_{i=1}^n t_k(y_i) + n D(\boldsymbol{\theta}),
-  \end{align*} where the collection \(\sum_{i=1}^n t_k(y_i)\)
-  (\(k=1, \ldots, K\)) are sufficient statistics and
-  \(\phi_k(\boldsymbol{\theta})\) are the canonical parameters. The
-  number of sufficient statistics are the same regardless of the sample
-  size. Exponential families play a prominent role in generalized linear
-  models, in which the natural parameters are modeled as linear function
-  of explanatory variables. A log prior density with parameters
-  \(\eta, \nu_1, \ldots, \nu_K\) that is proportional to \begin{align*}
-  \log p(\boldsymbol{\theta}) \propto \eta D(\boldsymbol{\theta}) + \sum_{k=1}^K Q_k(\boldsymbol{\theta}) \nu_k
-  \end{align*} is conjugate.}
+Exponential families (see Definition~\ref{def-exponential-family},
+including the binomial, Poisson, exponential, Gaussian distributions)
+admit conjugate priors.
+
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3455}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3273}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3273}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+distribution
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+unknown parameter
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+conjugate prior
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+\(Y \sim \mathsf{expo}(\lambda)\) & \(\lambda\) &
+\(\lambda \sim \mathsf{gamma}(\alpha, \beta)\) \\
+\(Y \sim \mathsf{Poisson}(\mu)\) & \(\mu\) &
+\(\mu \sim \mathsf{gamma}(\alpha, \beta)\) \\
+\(Y \sim \mathsf{binom}(n, \theta)\) & \(\theta\) &
+\(\theta \sim \mathsf{Be}(\alpha, \beta)\) \\
+\(Y \sim \mathsf{Gauss}(\mu, \sigma^2)\) & \(\mu\) &
+\(\mu \sim \mathsf{Gauss}(\nu, \omega^2)\) \\
+\(Y \sim \mathsf{Gauss}(\mu, \sigma^2)\) & \(\sigma\) &
+\(\sigma^{2} \sim \mathsf{inv. gamma}(\alpha, \beta)\) \\
+\(Y \sim \mathsf{Gauss}(\mu, \sigma^2)\) & \(\mu, \sigma\) &
+\(\mu \mid \sigma^2 \sim \mathsf{Gauss}(\nu, \omega \sigma^2),\)
+\(\sigma^{2} \sim \mathsf{inv. gamma}(\alpha, \beta)\) \\
+\end{longtable}
 
 \end{definition}
 
 \begin{example}[Conjugate prior for the binomial
 model]\protect\hypertarget{exm-conjugatepriors-binom}{}\label{exm-conjugatepriors-binom}
 
-The binomial log density with \(y\) successes out of \(n\) trials is
-proportional to \begin{align*}
-y \log(p) + (n-y) \log(1-p) = y\log\left( \frac{p}{1-p}\right) + n \log(1-p)
-\end{align*} with canonical parameter \(\mathrm{logit}(p)\).\footnote{The
-  canonical link function for Bernoulli gives rise to logistic
-  regression model.} The binomial distribution is thus an exponential
-family.
-
-Since the density of the binomial is of the form \(p^y(1-p)^{n-y}\), the
-beta distribution \(\mathsf{beta}(\alpha, \beta)\) with density
+Since the density of the binomial is of the form \(p^y(1-p)^{n-y}\) and
+it belongs to an exponential family
+(Example~\ref{exm-exponential-family-binom}), the beta distribution
+\(\mathsf{beta}(\alpha, \beta)\) with density
 \[f(x) \propto x^{\alpha-1} (1-x)^{\beta-1}\] is the conjugate prior.
 
 The beta distribution is also the conjugate prior for the negative
@@ -3189,15 +3189,14 @@ the same inference is called likelihood principle.
 \begin{example}[Conjugate prior for the Poisson
 model]\protect\hypertarget{exm-conjugatepriors-poisson}{}\label{exm-conjugatepriors-poisson}
 
-The Poisson distribution with mean \(\mu\) has log density proportional
-to \(f(y; \mu) \propto y\log(\mu) -\mu\), so is an exponential family
-with natural parameter \(\log(\mu)\). The gamma density,
+We saw in Example~\ref{exm-exponential-family-poisson} that the Poisson
+distribution is an exponential family. The gamma density,
 \[ f(x) \propto \beta^{\alpha}/\Gamma(\alpha)x^{\alpha-1} \exp(-\beta x)\]
 with shape \(\alpha\) and rate \(\beta\) is the conjugate prior for the
 Poisson. For an \(n\)-sample of independent observations
 \(\mathsf{Poisson}(\mu)\) observations with
-\(\mu \sim \mathsf{gamma}(\alpha, \beta)\), the posterior is
-\(\mathsf{gamma}(\sum_{i=1}^n y_i + \alpha, \beta + n)\).
+\(\mu \sim \mathsf{gamma}(\alpha, \beta),\) the posterior is
+\(\mathsf{gamma}(\sum_{i=1}^n y_i + \alpha, \beta + n).\)
 
 \end{example}
 
@@ -3324,7 +3323,7 @@ We model first the rates using a Poisson regression; the corresponding
 frequentist analysis would include an offset to account for differences
 in views. If \(\lambda_{j}\) \((j=1, 2)\) are the average rate for each
 factor level (yes and no), then
-\(\mathsf{E}(Y_{ij}/n_{ij}) = \lambda_j\). In the frequentist setting,
+\(\mathsf{E}(Y_{ij}/n_{ij}) = \lambda_j.\) In the frequentist setting,
 we can fit a simple Poisson generalized linear regression model with an
 offset term and a binary variable.
 
@@ -3362,7 +3361,7 @@ moment matching, into a rate of
 a shape of \(\alpha = 0.25\) (\(j=1, 2\)). If \(\lambda_{j}\) is the
 average rate for each factor level (yes and no), then
 \(\mathsf{E}(Y_{ij}/n_{ij}) = \lambda_j\) so the log likelihood is
-proportional, as a function of \(\lambda_1\) and \(\lambda_2\), to
+proportional, as a function of \(\lambda_1\) and \(\lambda_2,\) to
 \begin{align*}
 \ell(\boldsymbol{\lambda}; \boldsymbol{y}, \boldsymbol{n}) \stackrel{\boldsymbol{\lambda}}{\propto} \sum_{i=1}^n \sum_{j=1}^2 y_{ij}\log \lambda_j - \lambda_jn_{ij}
 \end{align*} and we can recognize that the posterior for \(\lambda_i\)
@@ -3371,7 +3370,7 @@ is gamma with shape \(\alpha + \sum_{i=1}^n y_{ij}\) and rate
 select hyperparameters and calculate the total number of clicks and
 impressions per group. We can then consider the posterior difference
 \(\lambda_1 - \lambda_2\) or, to mimic the Poisson multiplicative model,
-of the ratio \(\lambda_1/\lambda_2\). The former suggests very small
+of the ratio \(\lambda_1/\lambda_2.\) The former suggests very small
 differences, but one must keep in mind that rates are also small. The
 ratio, shown in the right-hand panel of
 Figure~\ref{fig-hist-difference_rates}, gives a more easily
@@ -3406,27 +3405,28 @@ variance]\protect\hypertarget{exm-conjugatepriors-normal}{}\label{exm-conjugatep
 
 Consider an \(n\) simple random sample of independent and identically
 distributed Gaussian variables with mean \(\mu\) and standard deviation
-\(\sigma\), denoted \(Y_i \sim \mathsf{Gauss}(\mu, \sigma^2)\). We pick
+\(\sigma,\) denoted \(Y_i \sim \mathsf{Gauss}(\mu, \sigma^2).\) We pick
 a Gaussian prior for the location parameter,
-\(\mu \sim \mathsf{Gauss}(\nu, \tau^2)\) where we assume \(\mu, \tau\)
+\(\mu \sim \mathsf{Gauss}(\nu, \tau^2)\) where we assume \(\nu, \tau\)
 are fixed hyperparameter values. For now, we consider only inference for
-\(p(\mu \mid \sigma)\): discarding any term that is not a function of
-\(\mu\), the conditional posterior is \begin{align*}
-p(\mu \mid \sigma) &\propto \exp\left\{ -\frac{1}{2\sigma^2}\sum_{i=1}^n (y_{i}-\mu)^2\right\} \exp\left\{-\frac{1}{2\tau^2}(\mu - \nu)^2\right\}
+the conditional marginal posterior
+\(p(\mu \mid \boldsymbol{y}, \sigma)\): discarding any term that is not
+a function of \(\mu,\) the conditional posterior is \begin{align*}
+p(\mu \mid \sigma, \boldsymbol{y}) &\propto \exp\left\{ -\frac{1}{2\sigma^2}\sum_{i=1}^n (y_{i}-\mu)^2\right\} \exp\left\{-\frac{1}{2\tau^2}(\mu - \nu)^2\right\}
 \\&\propto \exp\left\{\left(\frac{\sum_{i=1}^n y_{i}}{\sigma^2} + \frac{\nu}{\tau^2}\right)\mu - \left( \frac{n}{2\sigma^2} +\frac{1}{2\tau^2}\right)\mu^2\right\}.
 \end{align*} The log of the posterior density conditional on \(\sigma\)
-is quadratic in \(\mu\), it must be a Gaussian distribution truncated
+is quadratic in \(\mu,\) it must be a Gaussian distribution truncated
 over the positive half line. This can be seen by completing the square
-in \(\mu\), or by comparing this expression to the density of
-\(\mathsf{Gauss}(\mu, \sigma^2)\), \begin{align*}
+in \(\mu,\) or by comparing this expression to the density of
+\(\mathsf{Gauss}(\mu, \sigma^2),\) \begin{align*}
 f(x; \mu, \sigma) \stackrel{\mu}{\propto} \exp\left(-\frac{1}{2 \sigma^2}\mu^2 + \frac{x}{\sigma^2}\mu\right)
 \end{align*} we can deduce by matching mean and variance that the
 conditional posterior \(p(\mu \mid \sigma)\) is Gaussian with reciprocal
 variance (precision) \(n/\sigma^2 + 1/\tau^2\) and mean
-\((n\overline{y}\tau^2 + \nu \sigma^2)/(n\tau^2 + \sigma^2)\). The
+\((n\overline{y}\tau^2 + \nu \sigma^2)/(n\tau^2 + \sigma^2).\) The
 precision is an average of that of the prior and data, but assigns more
 weight to the latter, which increases linearly with the sample size
-\(n\). Likewise, the posterior mean is a weighted average of prior and
+\(n.\) Likewise, the posterior mean is a weighted average of prior and
 sample mean, with weights proportional to the relative precision.
 
 \end{example}
@@ -3458,10 +3458,10 @@ posterior.
 The best example of proper priors arise from probability density
 function. We can still employ this rule for improper priors: for
 example, taking \(\alpha, \beta \to 0\) in the beta prior leads to a
-prior proportional to \(x^{-1}(1-x)^{-1}\), the integral of which
-diverges on the unit interval \([0,1]\). However, as long as the number
+prior proportional to \(x^{-1}(1-x)^{-1},\) the integral of which
+diverges on the unit interval \([0,1].\) However, as long as the number
 of success and the number of failures is larger than 1, meaning
-\(k \geq 1, n-k \geq 1\), the posterior distribution would be proper,
+\(k \geq 1, n-k \geq 1,\) the posterior distribution would be proper,
 i.e., integrable. To find the posterior, normalizing constants are also
 superfluous.
 
@@ -3472,12 +3472,24 @@ property, but the major problem is that a flat prior may be informative
 in a different parametrization, as the following example suggests.
 
 Gelman et al. (\citeproc{ref-Gelman:2013}{2013}) uses the following
-taxonomy for various levels of prior information: uninformative priors
-are generally flat or uniform priors with \(p(\beta) \propto 1\), vague
-priors are typically nearly flat even if proper, e.g.,
-\(\beta \sim \mathsf{Gauss}(0, 100)\), weakly informative priors provide
-little constraints \(\beta \sim \mathsf{Gauss}(0, 10)\), and informative
-prior are typically application-specific, but constrain the ranges.
+taxonomy for various levels of prior information:
+
+\begin{itemize}
+\tightlist
+\item
+  uninformative priors are generally flat or uniform priors with
+  \(p(\beta) \propto 1,\)
+\item
+  vague priors are typically nearly flat even if proper, e.g.,
+  \(\beta \sim \mathsf{Gauss}(0, 100),\)
+\item
+  weakly informative priors provide little constraints
+  \(\beta \sim \mathsf{Gauss}(0, 10),\) and
+\item
+  informative prior are typically application-specific, but constrain
+  the ranges.
+\end{itemize}
+
 Uninformative and vague priors are generally not recommended unless they
 are known to give valid posterior inference and the amount of
 information from the likelihood is high.
@@ -3486,19 +3498,19 @@ information from the likelihood is high.
 scales]\protect\hypertarget{exm-scaleflatprior}{}\label{exm-scaleflatprior}
 
 Consider the parameter \(\log(\tau) \in \mathbb{R}\) and the prior
-\(p( \log \tau) \propto 1\). If we reparametrize the model in terms of
-\(\tau\), the new prior (including the Jacobian of the transformation)
+\(p( \log \tau) \propto 1.\) If we reparametrize the model in terms of
+\(\tau,\) the new prior (including the Jacobian of the transformation)
 is \(\tau^{-1}\)
 
 \end{example}
 
 Some priors are standard and widely used. In location scale families
-with location \(\nu\) and scale \(\tau\), the density is such that
+with location \(\nu\) and scale \(\tau,\) the density is such that
 \begin{align*}
 f(x; \nu, \tau) =  \frac{1}{\tau} f\left(\frac{x - \nu}{\tau}\right), \qquad \nu \in \mathbb{R}, \tau >0.
 \end{align*} We thus wish to have a prior so that
-\(p(\tau) = c^{-1}p(\tau/c)\) for any scaling \(c>0\), whence it follows
-that \(p(\tau) \propto \tau^{-1}\), which is uniform on the log scale.
+\(p(\tau) = c^{-1}p(\tau/c)\) for any scaling \(c>0,\) whence it follows
+that \(p(\tau) \propto \tau^{-1},\) which is uniform on the log scale.
 
 The priors \(p(\nu) \propto 1\) and \(p(\tau) \propto \tau^{-1}\) are
 both improper but lead to location and scale invariance, hence that the
@@ -3526,7 +3538,7 @@ different parametrizations are equivalent.\footnote{The Fisher
   without loss of generality.}
 
 To see this, consider a bijective transformation
-\(\theta \mapsto \vartheta\). Under the reparametrized model and
+\(\theta \mapsto \vartheta.\) Under the reparametrized model and
 suitable regularity conditions\footnote{Using Bartlett's identity;
   Fisher consistency can be established using the dominated convergence
   theorem.}, the chain rule implies that \begin{align*}
@@ -3550,15 +3562,15 @@ distribution]\protect\hypertarget{exm-jeffreysbinom}{}\label{exm-jeffreysbinom}
 
 Consider the binomial distribution \(\mathsf{Bin}(1, \theta)\) with
 density
-\(f(y; \theta) \propto  \theta^y(1-\theta)^{1-y}\mathsf{I}_{\theta \in [0,1]}\).
+\(f(y; \theta) \propto  \theta^y(1-\theta)^{1-y}\mathbf{1}_{\theta \in [0,1]}.\)
 The negative of the second derivative of the log likelihood with respect
 to \(p\) is
 \[\jmath(\theta) = - \partial^2 \ell(\theta; y) / \partial \theta^2 = y/\theta^2 + (1-y)/(1-\theta)^2\]
-and since \(\mathsf{E}(Y)=\theta\), the Fisher information is
+and since \(\mathsf{E}(Y)=\theta,\) the Fisher information is
 \[\imath(\vartheta) = \mathsf{E}\{\jmath(\theta)\}=1/\theta + 1/(1-\theta) = 1/\{\theta(1-\theta)\}\]
 Jeffrey's prior is thus
-\(p(\theta) \propto \theta^{-1/2}(1-\theta)^{-1/2}\), a conjugate Beta
-prior \(\mathsf{beta}(0.5,0.5)\).
+\(p(\theta) \propto \theta^{-1/2}(1-\theta)^{-1/2},\) a conjugate Beta
+prior \(\mathsf{beta}(0.5,0.5).\)
 
 \end{example}
 
@@ -3566,9 +3578,9 @@ prior \(\mathsf{beta}(0.5,0.5)\).
 distribution]\protect\hypertarget{exr-jeffreysnormal}{}\label{exr-jeffreysnormal}
 
 Check that for the Gaussian distribution
-\(\mathsf{Gauss}(\mu, \sigma^2)\), the Jeffrey's prior obtained by
+\(\mathsf{Gauss}(\mu, \sigma^2),\) the Jeffrey's prior obtained by
 treating each parameter as fixed in turn, are \(p(\mu) \propto 1\) and
-\(p(\sigma) \propto 1/\sigma\), which also correspond to the default
+\(p(\sigma) \propto 1/\sigma,\) which also correspond to the default
 uninformative priors for location-scale families.
 
 \end{exercise}
@@ -3577,12 +3589,12 @@ uninformative priors for location-scale families.
 distribution]\protect\hypertarget{exm-jeffreyspoisson}{}\label{exm-jeffreyspoisson}
 
 The Poisson distribution with
-\(\ell(\lambda) \propto -\lambda + y\log \lambda\), with second
+\(\ell(\lambda) \propto -\lambda + y\log \lambda,\) with second
 derivative
-\(-\partial^2 \ell(\lambda)/\partial \lambda^2 = y/\lambda^2\). Since
-the mean of the Poisson distribution is \(\lambda\), the Fisher
+\(-\partial^2 \ell(\lambda)/\partial \lambda^2 = y/\lambda^2.\) Since
+the mean of the Poisson distribution is \(\lambda,\) the Fisher
 information is \(\imath(\lambda) = \lambda^{-1}\) and Jeffrey's prior is
-\(\lambda^{-1/2}\).
+\(\lambda^{-1/2}.\)
 
 \end{example}
 
@@ -3590,7 +3602,7 @@ information is \(\imath(\lambda) = \lambda^{-1}\) and Jeffrey's prior is
 models}\label{priors-for-regression-models}
 
 Regression models often feature Gaussian priors on the mean coefficients
-\(\boldsymbol{\beta}\), typically chosen to be vague with large
+\(\boldsymbol{\beta},\) typically chosen to be vague with large
 variance. Below are some alternatives, many of which aim to enforce
 shrinkage towards zero, or sparsity.
 
@@ -3598,12 +3610,12 @@ shrinkage towards zero, or sparsity.
 prior]\protect\hypertarget{prp-Zellner-g-prior}{}\label{prp-Zellner-g-prior}
 
 Consider an ordinary linear regression model for
-\(\boldsymbol{Y} \sim \mathsf{Gauss}_n(\beta_0\mathbf{1}_n + \mathbf{X}\boldsymbol{\beta}, \sigma^2 \mathbf{I}_n)\),
+\(\boldsymbol{Y} \sim \mathsf{Gauss}_n(\beta_0\mathbf{1}_n + \mathbf{X}\boldsymbol{\beta}, \sigma^2 \mathbf{I}_n),\)
 with intercept \(\beta_0\) and mean coefficient vector
 \(\boldsymbol{\beta} = (\beta_1, \ldots, \beta_p)^\top\) associated to
-the model matrix \(\mathbf{X}\). Zellner
+the model matrix \(\mathbf{X}.\) Zellner
 (\citeproc{ref-Zellner:1986}{1986})'s \(g\) prior consists in letting
-\(\boldsymbol{\beta} \sim \mathsf{Gauss}_p\{\boldsymbol{0}_p, g \sigma^2(\mathbf{X}^\top\mathbf{X})^{-1}\}\),
+\(\boldsymbol{\beta} \sim \mathsf{Gauss}_p\{\boldsymbol{0}_p, g \sigma^2(\mathbf{X}^\top\mathbf{X})^{-1}\},\)
 where \(g>0\) is a constant.
 
 The ordinary least square estimator of the mean coefficients satisfies
@@ -3626,25 +3638,11 @@ using Bayes factors. Consider a partition
 \(\boldsymbol{\beta} = (\boldsymbol{\beta}_1^\top, \boldsymbol{\beta}_2^\top)^\top\)
 of the mean coefficients and similarly the block of columns from the
 model matrix, say \(\mathbf{X} = [\mathbf{X}_1\; \mathbf{X}_2]\) for
-blocks of size \(k\) and \(p-k\). If we remove \(p-k\) regressors from
-the model setting \(\boldsymbol{\beta}_2=0\), then the conditional is
+blocks of size \(k\) and \(p-k.\) If we remove \(p-k\) regressors from
+the model setting \(\boldsymbol{\beta}_2=0,\) then the conditional is
 \[\boldsymbol{\beta}_{1} \mid \boldsymbol{\beta}_2=\boldsymbol{0}_{p-k} \sim \mathsf{Gauss}_k\{\boldsymbol{0}_k, g\sigma^2 (\mathbf{X}_1^\top\mathbf{X}_1)^{-1}\},\]
 which is the \(g\) prior for the submodel in which we omit the columns
-corresponding to \(\mathbf{X}_2\).
-
-\end{proposition}
-
-\begin{proposition}[Spike-and-slab
-prior]\protect\hypertarget{prp-spike-slab}{}\label{prp-spike-slab}
-
-~
-
-\end{proposition}
-
-\begin{proposition}[Horseshoe
-prior]\protect\hypertarget{prp-horseshoe}{}\label{prp-horseshoe}
-
-~
+corresponding to \(\mathbf{X}_2.\)
 
 \end{proposition}
 
@@ -3663,11 +3661,11 @@ distributions]\protect\hypertarget{exm-colestawn}{}\label{exm-colestawn}
 
 The generalized extreme value distribution arises as the limiting
 distribution for the maximum of \(m\) independent observations from some
-common distribution \(F\). The \(\mathsf{GEV}(\mu, \sigma, \xi)\)
+common distribution \(F.\) The \(\mathsf{GEV}(\mu, \sigma, \xi)\)
 distribution is a location-scale with distribution function
 \begin{align*}
 F(x) = \exp\left[ - \left\{1+\xi(x-\mu)/\sigma\right\}^{-1/\xi}_{+}\right]
-\end{align*} where \(x_{+} = \max\{0, x\}\).
+\end{align*} where \(x_{+} = \max\{0, x\}.\)
 
 Inverting the distribution function yields the quantile function
 \begin{align*}
@@ -3680,24 +3678,24 @@ defined as the quantile of the annual maximum exceeded with probability
 \(1/k\) in any given year. Using a \(\mathsf{GEV}\) for annual maximum,
 Coles and Tawn (\citeproc{ref-Coles.Tawn:1996}{1996}) proposed modelling
 annual daily rainfall and specifying a prior on the quantile scale
-\(q_1 < q_2 < q_3\) for tail probabilities \(p_1> p_2 > p_3\). To deal
+\(q_1 < q_2 < q_3\) for tail probabilities \(p_1> p_2 > p_3.\) To deal
 with the ordering constraints, gamma priors are imposed on the
 differences
 
 \begin{itemize}
 \tightlist
 \item
-  \(q_1 - o \sim \mathsf{gamma}(\alpha_1, \beta_1)\),
+  \(q_1 - o \sim \mathsf{gamma}(\alpha_1, \beta_1),\)
 \item
   \(q_2 - q_1 \sim \mathsf{gamma}(\alpha_2, \beta_2)\) and
 \item
-  \(q_3-q_2 \sim \mathsf{gamma}(\alpha_3, \beta_3)\),
+  \(q_3-q_2 \sim \mathsf{gamma}(\alpha_3, \beta_3),\)
 \end{itemize}
 
 where \(o\) is the lower bound of the support. The prior is thus of the
 form \begin{align*}
 p(\boldsymbol{q}) \propto q_1^{\alpha_1-1}\exp(-\beta_1 q_1) \prod_{i=2}^3 (q_i-q_{i-1})^{\alpha_i-1} \exp\{\beta_i(q_i-q_{i-1})\}.
-\end{align*} where \(0 \leq q_1 \leq q_2 \leq q_3\). The fact that these
+\end{align*} where \(0 \leq q_1 \leq q_2 \leq q_3.\) The fact that these
 quantities refer to moments or risk estimates which practitioners often
 must compute as part of regulatory requirements makes it easier to
 specify sensible values for hyperparameters.
@@ -3717,7 +3715,7 @@ For the priors, suppose an expert elicits quantiles of the 10, 50 and
 median and likewise 40mm, 70mm and 120mm for the 90\% percentile of the
 return levels. We can compute the differences and calculate the
 parameters of the gamma distribution through moment-matching: this gives
-roughly a shape of \(\alpha_1=18.27\) and \(\beta_1=0.6\), etc.
+roughly a shape of \(\alpha_1=18.27\) and \(\beta_1=0.6,\) etc.
 Figure~\ref{fig-gev-colestawn-quant-prior} shows the transfer from the
 prior predictive to the posterior distribution. The prior is much more
 dispersed and concentrated on the tail, which translates in a less
@@ -3746,56 +3744,65 @@ improper priors on location and scale.}
 
 What would you do if we you had prior information from different
 sources? One way to combine these is through a mixture: given \(M\)
-different prior distributions \(p_m(\boldsymbol{\theta})\), we can
+different prior distributions \(p_m(\boldsymbol{\theta}),\) we can
 assign each a positive weight \(w_m\) to form a mixture of experts prior
 through the linear combination
 \[ p(\boldsymbol{\theta}) \propto \sum_{m=1}^M w_m p_m(\boldsymbol{\theta})\]
 
-\subsection{Penalized complexity
-priors}\label{penalized-complexity-priors}
+\begin{proposition}[Penalized complexity
+priors]\protect\hypertarget{prp-penalized-complexity}{}\label{prp-penalized-complexity}
 
 Oftentimes, there will be a natural family of prior density to impose on
-some model component, \(p(\boldsymbol{\theta} \mid \zeta)\), with
-hyperparameter \(\zeta\). The flexibility of the underlying construction
+some model component, \(p(\boldsymbol{\theta} \mid \zeta),\) with
+hyperparameter \(\zeta.\) The flexibility of the underlying construction
 leads itself to overfitting. Penalized complexity priors
 (\citeproc{ref-Simpson:2017}{Simpson et al. 2017}) aim to palliate this
 by penalizing models far away from a simple baseline model, which
-correspond to a fixed value \(\zeta_0\). The prior will favour the
+correspond to a fixed value \(\zeta_0.\) The prior will favour the
 simpler parsimonious model the more prior mass one places on
-\(\zeta_0\), which is in line with Occam's razor principle.
+\(\zeta_0,\) which is in line with Occam's razor principle.
 
 To construct a penalized-complexity prior, we compute the
-Kullback--Leibler divergence between the model
+Kullback--Leibler divergence (\citeproc{ref-Simpson:2017}{Simpson et al.
+2017}) or the Wasserstein distance (\citeproc{ref-Bolin:2023}{Bolin,
+Simas, and Xiong 2023}) between the model
 \(p_\zeta \equiv p(\boldsymbol{\theta} \mid \zeta)\) relative to the
-baseline with \(\zeta_0\), \(p_0 \equiv p(\boldsymbol{\theta} \mid
-\zeta_0)\); the Kullback--Leibler divergence is
-
-\[
+baseline with \(\zeta_0,\) \(p_0 \equiv p(\boldsymbol{\theta} \mid
+\zeta_0);\) the distance between the prior densities is then set to
+\(d(\zeta) = \{2\mathsf{KL}(p_\zeta \mid\mid p_0)\}^{1/2},\) where the
+Kullback--Leibler divergence is \begin{align*}
 \mathsf{KL}(p_\zeta \Vert\, p_0)=\int p_\zeta \log\left(\frac{p_\zeta}{p_0}\right) \mathrm{d} \boldsymbol{\theta}.
-\] The distance between the prior densities is then set to
-\(d(\zeta) = \{2\mathsf{KL}(p_\zeta \mid\mid p_0)\}^{1/2}\). which is
-zero at the model with \(\zeta_0\). The PC prior then constructs an
-exponential prior on the distance scale, which after back-transformation
-gives
-\(p(\zeta \mid \lambda) = \lambda\exp(-\lambda d(\zeta)) \left| {\partial d(\zeta)}/{\partial \zeta}\right|\).
-To choose \(\lambda\), the authors recommend elicitation of a pair
-\((U, \alpha)\) such that \(\Pr(\lambda > U)=\alpha\).
+\end{align*} The divergence is zero at the model with \(\zeta_0.\) The
+PC prior then constructs an exponential prior on the distance scale,
+which after back-transformation gives
+\(p(\zeta \mid \lambda) = \lambda\exp(-\lambda d(\zeta)) \left| {\partial d(\zeta)}/{\partial \zeta}\right|.\)
+To choose \(\lambda,\) the authors recommend elicitation of a pair
+\((Q_\zeta, \alpha)\), where \(Q_\zeta\) is the quantile at level
+\(1-\alpha\), such that \(\Pr(\lambda > Q_\zeta)=\alpha.\)
+
+The construction of Wasserstein complexity priors
+(\citeproc{ref-Bolin:2023}{Bolin, Simas, and Xiong 2023}) is more
+involved, but those priors are also parametrization-invariant and
+well-defined even when the Kullback--Leibler divergence limit does not
+exist.
+
+\end{proposition}
 
 \begin{example}[Penalized complexity prior for random effects
 models]\protect\hypertarget{exm-pcprior-randomeffect}{}\label{exm-pcprior-randomeffect}
 
-Simpson et al. (\citeproc{ref-Simpson:2017}{2017}) give the example of a
-Gaussian prior for random effects \(\boldsymbol{\alpha}\), of the form
-\(\boldsymbol{\alpha} \mid \zeta \sim \mathsf{Gauss}_J(\boldsymbol{0}_J, \zeta^2 \mathbf{I}_J)\)
-where \(\zeta_0=0\) corresponds to the absence of random
-subject-variability. The penalized complexity prior for the scale
-\(\zeta\) is then an exponential with rate \(\lambda\),\footnote{Possibly
-  truncated above if the support of \(\zeta\) has a finite upper bound.}
-with density \(p(\zeta \mid \lambda) = \lambda \exp(-\lambda \zeta)\).
-Using the recommendation for setting \(\lambda\), we get that
-\(\lambda = -\ln(\alpha/U)\) and this can be directly interpreted in
-terms of standard deviation of \(\zeta\); simulation from the prior
-predictive may also be used for calibration.
+Bolin, Simas, and Xiong (\citeproc{ref-Bolin:2023}{2023}) consider a
+Gaussian prior for independent and identically random effects
+\(\boldsymbol{\alpha},\) of the form
+\(\alpha_j \mid \zeta \sim \mathsf{Gauss}(0, \zeta^2)\) where
+\(\zeta_0=0\) corresponds to the absence of random subject-variability.
+The penalized complexity prior for the scale \(\zeta\) is then an
+exponential with rate \(\lambda,\) with density
+\[p(\zeta \mid \lambda) = \lambda \exp(-\lambda \zeta).\]
+
+We can elicit a high quantile \(Q_\zeta\) at tail probability \(\alpha\)
+for the standard deviation parameter \(\zeta\) and set
+\(\lambda = -\ln(\alpha/Q_\zeta)\).
 
 \end{example}
 
@@ -3805,13 +3812,13 @@ order
 
 Sørbye and Rue (\citeproc{ref-Sorbye.Holbek.Rue:2017}{2017}) derive
 penalized complexity prior for the Gaussian stationary AR(1) model with
-autoregressive parameter \(\phi \in (-1,1)\), where
-\(Y_t \mid Y_{t-1}, \phi, \sigma^2 \sim \mathsf{Gauss}(\phi Y_{t-1}, \sigma^2)\).
+autoregressive parameter \(\phi \in (-1,1),\) where
+\(Y_t \mid Y_{t-1}, \phi, \sigma^2 \sim \mathsf{Gauss}(\phi Y_{t-1}, \sigma^2).\)
 There are two based models that could be of interest: one with
-\(\phi=0\), corresponding to a memoryless model with no autocorrelation,
+\(\phi=0,\) corresponding to a memoryless model with no autocorrelation,
 and a static mean \(\phi=1\) for no change in time; note that the latter
-is not stationary. For the former, the penalized complexity prior is
-\begin{align*}
+is not stationary. For the former \((\phi=0)\), the penalized complexity
+prior is \begin{align*}
 p(\phi \mid \lambda) = \frac{\lambda}{2} \exp\left[-\lambda \left\{-\ln(1-\phi^2)\right\}^{1/2}\right] \frac{|\phi|}{(1-\phi^2)\left\{-\ln(1-\phi^2)\right\}^{1/2}}.
 \end{align*} One can set \(\lambda\) by considering plausible values by
 relating the parameter to the variance of the one-step ahead forecast
@@ -3828,13 +3835,13 @@ both are random quantities that get assigned priors, but we will treat
 these priors differently.
 
 The reason why we would like to use a penalized complexity prior for a
-random effect, say \(\alpha_j \sim \mathsf{Gauss}(0, \zeta^2)\), is
+random effect, say \(\alpha_j \sim \mathsf{Gauss}(0, \zeta^2),\) is
 because we don't know a prior if there is variability between groups.
-The inverse gamma prior for \(\zeta\),
+The inverse gamma prior for \(\zeta,\)
 \(\zeta \sim \mathsf{InvGamma}(\epsilon, \epsilon)\) does not have a
-mode at zero unless it is improper with \(\epsilon \to 0\). Generally,
+mode at zero unless it is improper with \(\epsilon \to 0.\) Generally,
 we want our prior for the variance to have significant probability
-density at the null \(\zeta=0\). The penalized complexity prior is not
+density at the null \(\zeta=0.\) The penalized complexity prior is not
 the only sensible choice. Posterior inference is unfortunately sensitive
 to the value of \(\epsilon\) in hierarchical models when the random
 effect variance is close to zero, and more so when there are few levels
@@ -3845,10 +3852,10 @@ of the likelihood contribution is then large.
 components]\protect\hypertarget{exm-random-effect-variance}{}\label{exm-random-effect-variance}
 
 Gelman (\citeproc{ref-Gelman:2006}{2006}) recommends a Student-\(t\)
-distribution truncated below at \(0\), with low degrees of freedom. The
+distribution truncated below at \(0,\) with low degrees of freedom. The
 rationale for this choice comes from the simple two level model with
 \(n_j\) independent in each group \(j=1, \ldots, J\): for observation
-\(i\) in group \(j\), \begin{align*}
+\(i\) in group \(j,\) \begin{align*}
 Y_{ij} &\sim \mathsf{Gauss}(\mu + \alpha_j, \sigma^2),\\
 \alpha_j &\sim \mathsf{Gauss}(0, \tau^2_\alpha),
 \end{align*} The conditionally conjugate prior
@@ -3866,11 +3873,11 @@ conditionally conjugate priors for \(\xi\) and \(\tau_\eta\) are
 respectively Gaussian and inverse gamma. This translates into a prior
 distribution for \(\tau_\alpha\) which is that of the absolute value of
 a noncentral Student-\(t\) with location, scale and degrees of freedom
-\(\nu\). If we set the location to zero, the prior puts high mass at the
+\(\nu.\) If we set the location to zero, the prior puts high mass at the
 origin, but is heavy tailed with polynomial decay. We recommend to set
 degrees of freedom so that the variance is heavy-tailed, e.g.,
-\(\nu=3\). While this prior is not conjugate, it compares favorably to
-the \(\mathsf{inv. gamma}(\epsilon, \epsilon)\).
+\(\nu=3.\) While this prior is not conjugate, it compares favorably to
+the \(\mathsf{inv. gamma}(\epsilon, \epsilon).\)
 
 \end{example}
 
@@ -3895,18 +3902,18 @@ Y_{ij} &\sim \mathsf{Poisson}\{\mu = \exp(\beta_{j} + \alpha_i)\},\\
 \alpha_i &\sim \mathsf{Gauss}(0, \kappa^2), \\
 \kappa &\sim \mathsf{Student}_{+}(3).
 \end{align*} so observations are conditionally independent given
-hyperparameters \(\boldsymbol{\alpha}\) and \(\boldsymbol{\beta}\).
+hyperparameters \(\boldsymbol{\alpha}\) and \(\boldsymbol{\beta}.\)
 
 In frequentist statistics, there is a distinction made in mixed-effect
 models between parameters that are treated as constants, termed fixed
-effects and corresponding in this example to \(\boldsymbol{\beta}\), and
-random effects, equivalent to \(\boldsymbol{\alpha}\). There is no such
+effects and corresponding in this example to \(\boldsymbol{\beta},\) and
+random effects, equivalent to \(\boldsymbol{\alpha}.\) There is no such
 distinction in the Bayesian paradigm, except perhaps for the choice of
 prior.
 
 We can look at some of posterior distribution of the 31 random effects
 (here the first five individuals) and the fixed effect parameters
-\(\boldsymbol{\beta}\), plus the variance of the random effect
+\(\boldsymbol{\beta},\) plus the variance of the random effect
 \(\kappa\): there is strong evidence that the latter is non-zero,
 suggesting strong heterogeneity between individuals. The distraction
 which results in the largest number of violation is texting, while the
@@ -3949,10 +3956,10 @@ immaterial, then this provides reassurance that our analyses are robust.
 
 To check the sensitivity of the conclusion, we revisit the modelling of
 the \texttt{smartwatch} experiment data using a Poisson regression and
-compare four priors: a uniform prior truncated to \([0, 10]\), an
+compare four priors: a uniform prior truncated to \([0, 10],\) an
 inverse gamma \(\mathsf{InvGamma}(0.01, 0.01)\) prior, a penalized
 complexity prior such that the 0.95 percentile of the scale is 5,
-corresponding to \(\mathsf{Exp}(0.6)\). Since each distraction type
+corresponding to \(\mathsf{Exp}(0.6).\) Since each distraction type
 appears 31 times, there is plenty of information to reliably estimate
 the dispersion \(\kappa\) of the random effects \(\alpha\): the
 different density plots in Figure~\ref{fig-sensitivity} are virtually
@@ -4620,10 +4627,10 @@ independence Metropolis--Hastings algorithm then resembles
 accept-reject. If the ratio
 \(p(\boldsymbol{\theta})/q(\boldsymbol{\theta})\) is bounded above by
 \(C \geq 1\), then we can make comparisons with rejection sampling.
-Lemma 7.9 of
-(\citeproc{ref-Robert.Casella:2004}{\textbf{Robert.Casella:2004?}})
-shows that the probability of acceptance of a move for the Markov chain
-is at least \(1/C\), which is larger than the accept-reject.
+Lemma 7.9 of Robert and Casella
+(\citeproc{ref-Casella.Robert:2004}{2004}) shows that the probability of
+acceptance of a move for the Markov chain is at least \(1/C\), which is
+larger than the accept-reject.
 \end{remark}
 
 In models with multiple parameter, we can use Metropolis--Hastings
@@ -5123,8 +5130,8 @@ from the conditionals
 variables chosen to simplify the likelihood. If simulation from the
 conditionals is straightforward, we can also use data augmentation to
 speed up calculations or improve mixing. For more details and examples,
-see Dyk and Meng (\citeproc{ref-vanDyk.Meng:2001}{2001}) and
-(\citeproc{ref-Hobert:2011}{\textbf{Hobert:2011?}}).
+see Dyk and Meng (\citeproc{ref-vanDyk.Meng:2001}{2001}) and Hobert
+(\citeproc{ref-Hobert:2011}{2011}).
 
 \begin{example}[]\protect\hypertarget{exm-probit-regression}{}\label{exm-probit-regression}
 
@@ -5293,8 +5300,9 @@ we can use Gibbs sampling updating \(\boldsymbol{Z}\),
 
 \end{example}
 
-\section{Bayesian workflow and diagnostics for Markov
-chains}\label{bayesian-workflow-and-diagnostics-for-markov-chains}
+\bookmarksetup{startatroot}
+
+\chapter{Bayesian workflow}\label{bayesian-workflow}
 
 For a given problem, there are many different Markov chain Monte Carlo
 algorithms that one can implement: they will typically be distinguished
@@ -5507,9 +5515,9 @@ scale and so that lower values correspond to higher predictive
 performance.
 
 An older criterion which has somewhat fallen out of fashion is the
-\textbf{deviance} information criterion of
-(\citeproc{ref-Spiegelhalter:2002}{\textbf{Spiegelhalter:2002?}}). It is
-defined as \begin{align*}
+\textbf{deviance} information criterion of Spiegelhalter et al.
+(\citeproc{ref-Spiegelhalter:2002}{2002}). It is defined as
+\begin{align*}
 \mathsf{DIC} = -2 \ell(\widetilde{\boldsymbol{\theta}}) + 2 p_D
 \end{align*} where \(p_D\) is the posterior expectation of the deviance
 relative to the point estimator of the parameter
@@ -5523,14 +5531,13 @@ reparametrizations. Assuming we can derive a multivariate Gaussian
 approximation to the MLE under suitable regularity conditions, the
 \(\mathsf{DIC}\) is equivalent in large samples to \(\mathsf{AIC}\). The
 \(\mathsf{DIC}\) is considered by many authors as not being a Bayesian
-procedure; see
-(\citeproc{ref-Spiegelhalther:2014}{\textbf{Spiegelhalther:2014?}}) and
-the discussion therein.
+procedure; see Spiegelhalter et al.
+(\citeproc{ref-Spiegelhalter:2014}{2014}) and the discussion therein.
 
 \begin{example}[Information criteria for smartwatch and Bayesian
 LASSO]\protect\hypertarget{exm-smartwatch-infocriteria}{}\label{exm-smartwatch-infocriteria}
 
-For the smartwatch model, we get a value of 3.07 for the complex model
+For the smartwatch model, we get a value of 3.06 for the complex model
 and 4.51: this suggests an improvement in using individual-specific
 effects.
 
@@ -5609,6 +5616,12 @@ Applications in {R}}. Boca Raton, FL: CRC Press.
 Andrieu, Christophe, and Johannes Thoms. 2008. {``A Tutorial on Adaptive
 {MCMC}.''} \emph{Statistics and Computing} 18 (4): 343--73.
 \url{https://doi.org/10.1007/s11222-008-9110-y}.
+
+\bibitem[\citeproctext]{ref-Bolin:2023}
+Bolin, David, Alexandre B. Simas, and Zhen Xiong. 2023. {``{W}asserstein
+Complexity Penalization Priors: A New Class of Penalizing Complexity
+Priors.''} \emph{arXiv e-Prints}, arXiv:2312.04481.
+\url{https://doi.org/10.48550/arXiv.2312.04481}.
 
 \bibitem[\citeproctext]{ref-LEcuyer.Botev:2017}
 Botev, Zdravko, and Pierre L'Écuyer. 2017. {``Simulation from the Normal
@@ -5696,7 +5709,7 @@ Association} 99 (467): 799--804.
 Geyer, Charles J. 2011. {``Introduction to {M}arkov Chain {M}onte
 {C}arlo.''} In \emph{Handbook of {M}arkov Chain {M}onte {C}arlo}, edited
 by S. Brooks, A. Gelman, G. Jones, and X. L. Meng, 3--48. Boca Raton:
-CRC Press. \url{https://doi.org/10.1201/b10905-3}.
+CRC Press. \url{https://doi.org/10.1201/b10905-2}.
 
 \bibitem[\citeproctext]{ref-Student:1908}
 Gosset, William Sealy. 1908. {``The Probable Error of a Mean.''}
@@ -5722,6 +5735,12 @@ Held, Leonhard, and Daniel Sabanés Bové. 2020. \emph{Likelihood and
 {B}ayesian Inference: With Applications in Biology and Medicine}. 2nd
 ed. Heidelberg: Springer Berlin.
 \url{https://doi.org/10.1007/978-3-662-60792-3}.
+
+\bibitem[\citeproctext]{ref-Hobert:2011}
+Hobert, James. 2011. {``The Data Augmentation Algorithm: Theory and
+Methodology.''} In \emph{Handbook of {M}arkov Chain {M}onte {C}arlo},
+edited by S. Brooks, A. Gelman, G. Jones, and X. L. Meng, 253--93. Boca
+Raton: CRC Press. \url{https://doi.org/10.1201/b10905-11}.
 
 \bibitem[\citeproctext]{ref-Jegerlehner:2021}
 Jegerlehner, Sabrina, Franziska Suter-Riniker, Philipp Jent, Pascal
@@ -5774,6 +5793,11 @@ Park, Trevor, and George Casella. 2008. {``The {B}ayesian {L}asso.''}
 \emph{Journal of the American Statistical Association} 103 (482):
 681--86. \url{https://doi.org/10.1198/016214508000000337}.
 
+\bibitem[\citeproctext]{ref-Casella.Robert:2004}
+Robert, Christian P., and George Casella. 2004. \emph{{M}onte {C}arlo
+Statistical Methods}. 2nd ed. New York, NY: Springer.
+\url{https://doi.org/10.1007/978-1-4757-4145-2}.
+
 \bibitem[\citeproctext]{ref-Roberts.Rosenthal:2001}
 Roberts, Gareth O., and Jeffrey S. Rosenthal. 2001. {``Optimal Scaling
 for Various {M}etropolis--{H}astings Algorithms.''} \emph{Statistical
@@ -5797,6 +5821,19 @@ Sørbye, Sigrunn Holbek, and Håvard Rue. 2017. {``Penalised Complexity
 Priors for Stationary Autoregressive Processes.''} \emph{Journal of Time
 Series Analysis} 38 (6): 923--35.
 \url{https://doi.org/10.1111/jtsa.12242}.
+
+\bibitem[\citeproctext]{ref-Spiegelhalter:2014}
+Spiegelhalter, David J., Nicola G. Best, Bradley P. Carlin, and Angelika
+Linde. 2014. {``The Deviance Information Criterion: 12 Years On.''}
+\emph{Journal of the Royal Statistical Society Series B: Statistical
+Methodology} 76 (3): 485--93. \url{https://doi.org/10.1111/rssb.12062}.
+
+\bibitem[\citeproctext]{ref-Spiegelhalter:2002}
+Spiegelhalter, David J., Nicola G. Best, Bradley P. Carlin, and Angelika
+Van Der Linde. 2002. {``Bayesian Measures of Model Complexity and
+Fit.''} \emph{Journal of the Royal Statistical Society: Series B
+(Statistical Methodology)} 64 (4): 583--639.
+\url{https://doi.org/10.1111/1467-9868.00353}.
 
 \bibitem[\citeproctext]{ref-Tanner.Wong:1987}
 Tanner, Martin A., and Wing Hung Wong. 1987. {``The Calculation of

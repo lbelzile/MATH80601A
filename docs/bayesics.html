@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.7.3">
+<meta name="generator" content="quarto-1.7.1">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -91,10 +91,10 @@ div.csl-indent {
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="site_libs/quarto-html/anchor.min.js"></script>
 <link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-81b5c3e63835cfde897ecd3d35a35a41.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-2bb0ec5e928ee8c40b12725cb7836c35.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-ad5ef081d17d57ab2b6cc5e45efb5d90.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-a51e8ad160b68d9f8f1ac488cc0f242e.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
   "copy-button": false,
@@ -424,19 +424,6 @@ Figure&nbsp;2.4: Beta posterior and binomial likelihood with a uniform prior for
 <p>When <span class="math inline">\(\boldsymbol{\theta}\)</span> is high-dimensional, the marginal likelihood is intractable. This is one of the main challenges of Bayesian statistics and the popularity and applicability has grown drastically with the development and popularity of numerical algorithms, following the publication of <span class="citation" data-cites="Geman.Geman:1984">Geman and Geman (<a href="references.html#ref-Geman.Geman:1984" role="doc-biblioref">1984</a>)</span> and <span class="citation" data-cites="Gelfand.Smith:1990">Gelfand and Smith (<a href="references.html#ref-Gelfand.Smith:1990" role="doc-biblioref">1990</a>)</span>. Markov chain Monte Carlo methods circumvent the calculation of the denominator by drawing approximate samples from the posterior.</p>
 <div id="exm-Duke-Amir" class="theorem example">
 <p><span class="theorem-title"><strong>Example 2.4 (Importance of selling format)</strong></span> <span class="citation" data-cites="Duke.Amir:2023">Duke and Amir (<a href="references.html#ref-Duke.Amir:2023" role="doc-biblioref">2023</a>)</span> consider the difference between integrated and sequential format for sales. The <code>sellingformat</code> dataset contains <span class="math inline">\(n=397\)</span> observations split into two groups: quantity-integrated decision (decide the amount to buy) and quantity-sequential (first select buy, then select the amount). Participants of the study were randomly allocated to either of these two format and their decision, either buy, <code>1</code>, or do not buy <code>0</code>, is recorded.</p>
-<p>We consider the number of purchased out of the total, treating records as independent Bernoulli observations with a flat (uniform prior).</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(sellingformat, <span class="at">package =</span> <span class="st">"hecbayes"</span>)</span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>contingency <span class="ot">&lt;-</span> <span class="fu">with</span>(sellingformat, <span class="fu">table</span>(format, purchased))</span>
-<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Posterior draws of the parameters</span></span>
-<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>post_p_int <span class="ot">&lt;-</span> <span class="fu">rbeta</span>(<span class="at">n =</span> <span class="fl">1e4</span>, <span class="at">shape1 =</span> <span class="dv">47</span>, <span class="at">shape2 =</span> <span class="dv">153</span>)</span>
-<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>post_p_seq <span class="ot">&lt;-</span> <span class="fu">rbeta</span>(<span class="at">n =</span> <span class="fl">1e4</span>, <span class="at">shape1 =</span> <span class="dv">24</span>, <span class="at">shape2 =</span> <span class="dv">177</span>)</span>
-<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Reparametrization</span></span>
-<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>post_odds_int <span class="ot">&lt;-</span> (post_p_int <span class="sc">/</span> (<span class="dv">1</span> <span class="sc">-</span> post_p_int))</span>
-<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>post_odds_seq <span class="ot">&lt;-</span> (post_p_seq <span class="sc">/</span> (<span class="dv">1</span> <span class="sc">-</span> post_p_seq))</span>
-<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>post_oddsratio <span class="ot">&lt;-</span> post_odds_int <span class="sc">/</span> post_odds_seq</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<p>With a beta-binomial model, the posterior for the probability of buying is <span class="math inline">\(\mathsf{beta}(47, 153)\)</span> for quantity-integrated and <span class="math inline">\(\mathsf{beta}(24, 177)\)</span> for quantity-sequential. We can compute the posterior of the odds ratio, <span class="math display">\[O = \frac{\Pr(Y=1 \mid \texttt{integrated})}{\Pr(Y=0 \mid \texttt{integrated})}\frac{\Pr(Y=0 \mid \texttt{sequential})}{\Pr(Y=1 \mid \texttt{sequential})},\]</span> by simulating independent draws from the posteriors of each condition and computing the.</p>
 <div class="cell">
 <div id="tbl-contingency-sellingformat" class="cell quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-tbl figure">
@@ -471,7 +458,20 @@ Table&nbsp;2.1: Aggregated data from Duke and Amir (2023), experiment 1. Number 
 </figure>
 </div>
 </div>
-<p><a href="#fig-post-Duke_Amir" class="quarto-xref">Figure&nbsp;<span>2.5</span></a> shows the posterior of the probability of buying for each group, and the odds. It is clear that the integrated format leads to much more sales in the experiment, with a posterior ratio exceeding 1 with probability <span class="math inline">\(99.89%.\)</span></p>
+<p>We consider the number of purchased out of the total, treating records as independent Bernoulli observations with a flat (uniform prior).</p>
+<p>With a beta-binomial model, the posterior for the probability of buying is <span class="math inline">\(\mathsf{beta}(47, 153)\)</span> for quantity-integrated and <span class="math inline">\(\mathsf{beta}(24, 177)\)</span> for quantity-sequential. We can compute the posterior of the odds ratio, <span class="math display">\[O = \frac{\Pr(Y=1 \mid \texttt{integrated})}{\Pr(Y=0 \mid \texttt{integrated})}\frac{\Pr(Y=0 \mid \texttt{sequential})}{\Pr(Y=1 \mid \texttt{sequential})},\]</span> by simulating independent draws from the posteriors of each condition and computing the odds ratio.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(sellingformat, <span class="at">package =</span> <span class="st">"hecbayes"</span>)</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>contingency <span class="ot">&lt;-</span> <span class="fu">with</span>(sellingformat, <span class="fu">table</span>(format, purchased))</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Posterior draws of the parameters</span></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>post_p_int <span class="ot">&lt;-</span> <span class="fu">rbeta</span>(<span class="at">n =</span> <span class="fl">1e4</span>, <span class="at">shape1 =</span> <span class="dv">47</span>, <span class="at">shape2 =</span> <span class="dv">153</span>)</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>post_p_seq <span class="ot">&lt;-</span> <span class="fu">rbeta</span>(<span class="at">n =</span> <span class="fl">1e4</span>, <span class="at">shape1 =</span> <span class="dv">24</span>, <span class="at">shape2 =</span> <span class="dv">177</span>)</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Reparametrization</span></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>post_odds_int <span class="ot">&lt;-</span> (post_p_int <span class="sc">/</span> (<span class="dv">1</span> <span class="sc">-</span> post_p_int))</span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>post_odds_seq <span class="ot">&lt;-</span> (post_p_seq <span class="sc">/</span> (<span class="dv">1</span> <span class="sc">-</span> post_p_seq))</span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>post_oddsratio <span class="ot">&lt;-</span> post_odds_int <span class="sc">/</span> post_odds_seq</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p><a href="#fig-post-Duke_Amir" class="quarto-xref">Figure&nbsp;<span>2.5</span></a> shows the posterior of the probability of buying for each group, and the odds. It is clear that the integrated format leads to much more sales in the experiment, with a posterior ratio exceeding 1 with probability <span class="math inline">\(99.89\%\)</span>.</p>
 <div class="cell" data-layout-align="center">
 <div class="cell-output-display">
 <div id="fig-post-Duke_Amir" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">

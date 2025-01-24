@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.7.3">
+<meta name="generator" content="quarto-1.7.1">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -91,10 +91,10 @@ div.csl-indent {
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="site_libs/quarto-html/anchor.min.js"></script>
 <link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-81b5c3e63835cfde897ecd3d35a35a41.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-2bb0ec5e928ee8c40b12725cb7836c35.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-ad5ef081d17d57ab2b6cc5e45efb5d90.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-a51e8ad160b68d9f8f1ac488cc0f242e.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
   "copy-button": false,
@@ -347,11 +347,16 @@ The quantile function, the inverse of the distribution function, is $Q(p) = \lam
 f(y; \boldsymbol{\theta}) = \exp\left\{ \sum_{k=1}^K Q_k(\boldsymbol{\theta}) t_k(y) + D(\boldsymbol{\theta}) + h(y)\right\},
 \end{align*}\]</span> where functions <span class="math inline">\(Q_1(\cdot), \ldots, Q_K(\cdot)\)</span> and <span class="math inline">\(D(\cdot)\)</span> depend only on <span class="math inline">\(\boldsymbol{\theta}\)</span> and not on the data, and conversely <span class="math inline">\(t_1(\cdot), \ldots, t_K(\cdot)\)</span> and <span class="math inline">\(h(\cdot)\)</span> do not depend on the vector of parameters <span class="math inline">\(\boldsymbol{\theta}.\)</span></p>
 <p>The support of <span class="math inline">\(f\)</span> must not depend on <span class="math inline">\(\boldsymbol{\theta}.\)</span> The transformed parameters <span class="math inline">\(Q_k(\boldsymbol{\theta})\)</span> <span class="math inline">\((k=1, \ldots, K)\)</span> are termed canonical parameters.</p>
+</div>
+<p>If we have an independent and identically distributed sample of observations <span class="math inline">\(y_1, \ldots, y_n\)</span>, the log likelihood is thus of the form <span class="math display">\[\begin{align*}
+\ell(\boldsymbol{\theta}) = \sum_{k=1}^K \phi_k(\boldsymbol{\theta}) \sum_{i=1}^n t_k(y_i) + n D(\boldsymbol{\theta}),
+\end{align*}\]</span> where the collection <span class="math inline">\(\sum_{i=1}^n t_k(y_i)\)</span> (<span class="math inline">\(k=1, \ldots, K\)</span>) are sufficient statistics and <span class="math inline">\(\phi_k(\boldsymbol{\theta})\)</span> are the canonical parameters.</p>
 <p>We term <strong>conjugate family</strong> families of distribution on <span class="math inline">\(\boldsymbol{\Theta}\)</span> with parameters <span class="math inline">\(\boldsymbol{\chi}, \gamma\)</span> if their density is proportional to <span class="math display">\[\begin{align*}
 \exp\left\{ \sum_{k=1}^K Q_k(\boldsymbol{\theta}) \chi_k + \gamma D(\boldsymbol{\theta})\right\}
-\end{align*}\]</span></p>
+\end{align*}\]</span> A log prior density with parameters <span class="math inline">\(\eta, \nu_1, \ldots, \nu_K\)</span> that is proportional to <span class="math display">\[\begin{align*}
+\log p(\boldsymbol{\theta}) \propto \eta D(\boldsymbol{\theta}) + \sum_{k=1}^K Q_k(\boldsymbol{\theta}) \nu_k
+\end{align*}\]</span> is conjugate.</p>
 <!-- p.131 of Barndorff-Nielsen  -->
-</div>
 <p>Exponential families play a crucial role due to the fact that the vector of sufficient statistics <span class="math inline">\(\boldsymbol{t}\)</span> for a random sample allows for data compression. They feature prominently in generalized linear models. <!-- We will encounter exponential families when discussing conjugate priors. --></p>
 <div id="exm-exponential-family-gaussian" class="theorem example">
 <p><span class="theorem-title"><strong>Example 1.1 (Gaussian as exponential family)</strong></span> We can rewrite the density of <span class="math inline">\(\mathsf{Gauss}(\mu, \sigma^2)\)</span> as <span class="math display">\[\begin{align*}
@@ -359,14 +364,14 @@ f(y; \mu, \sigma^2) = (2\pi)^{-1/2}\exp\left\{ \frac{-y^2 + 2y\mu - \mu^2}{2\sig
 \end{align*}\]</span> so taking <span class="math inline">\(Q_1(\mu, \sigma^2)=\mu/\sigma^2\)</span> and <span class="math inline">\(Q_2(\mu, \sigma^2)=1/\sigma^2\)</span> and <span class="math inline">\(t_1(y) = y\)</span> and <span class="math inline">\(t_2(y) = -y^2/2.\)</span> The <a href="https://en.wikipedia.org/wiki/Normal-inverse-gamma_distribution">Gaussian-inverse-gamma</a> distribution is a conjugate family.</p>
 </div>
 <div id="exm-exponential-family-binom" class="theorem example">
-<p><span class="theorem-title"><strong>Example 1.2 (Binomial as exponential family)</strong></span> Consider <span class="math inline">\(Y \sim \mathsf{binom}(n,p)\)</span> and write the mass function <span class="math display">\[\begin{align*}
-f(y; p)=\exp \left\{ \log \Gamma(n+1) - \log \left(\frac{\Gamma(y+1)}{\Gamma(n-y+1)}\right) + y \mathrm{logit}(p) + n \log(1-p)\right\}.
-\end{align*}\]</span> and so the canonical parameter is <span class="math inline">\(Q_1(p) = \mathrm{logit}(p) = \log\{p/(1-p)\}\)</span> with <span class="math inline">\(t_1(y) = y.\)</span> The beta distribution is conjugate to the binomial.</p>
+<p><span class="theorem-title"><strong>Example 1.2 (Binomial as exponential family)</strong></span> The binomial log density with <span class="math inline">\(y\)</span> successes out of <span class="math inline">\(n\)</span> trials is proportional to <span class="math display">\[\begin{align*}
+y \log(p) + (n-y) \log(1-p) = y\log\left( \frac{p}{1-p}\right) + n \log(1-p)
+\end{align*}\]</span> with canonical parameter <span class="math inline">\(Q_1(p) = \mathrm{logit}(p) = \log\{p/(1-p)\}\)</span> with <span class="math inline">\(t_1(y) = y.\)</span> The canonical link function for Bernoulli gives rise to logistic regression model. The binomial distribution is thus an exponential family. The beta distribution is conjugate to the binomial.</p>
 </div>
 <div id="exm-exponential-family-poisson" class="theorem example">
-<p><span class="theorem-title"><strong>Example 1.3 (Poisson as exponential family)</strong></span> Consider <span class="math inline">\(Y \sim \mathsf{Poisson}(\lambda)\)</span> with mass function <span class="math display">\[\begin{align*}
-f(y; p)=\exp \left\{ - \lambda + y \log \lambda - \log \Gamma(x+1)\right\}.
-\end{align*}\]</span> and so the canonical parameter is <span class="math inline">\(Q_1(p) = \log \lambda\)</span> with the gamma distribution as conjugate family.</p>
+<p><span class="theorem-title"><strong>Example 1.3 (Poisson as exponential family)</strong></span> Consider <span class="math inline">\(Y \sim \mathsf{Poisson}(\mu)\)</span> with mass function <span class="math display">\[\begin{align*}
+f(y; p)=\exp \left\{ - \mu + y \log \mu - \log \Gamma(x+1)\right\}.
+\end{align*}\]</span> and so the canonical parameter is <span class="math inline">\(Q_1(p) = \log \mu\)</span> with the gamma distribution as conjugate family.</p>
 </div>
 <div id="prp-change-variable" class="theorem proposition">
 <p><span class="theorem-title"><strong>Proposition 1.1 (Change of variable formula)</strong></span> Consider an injective (one-to-one) differentiable function <span class="math inline">\(\boldsymbol{g}: \mathbb{R}^d \to \mathbb{R}^d,\)</span> with inverse <span class="math inline">\(\boldsymbol{g}^{-1}.\)</span> Then, if <span class="math inline">\(\boldsymbol{Y}=\boldsymbol{g}(\boldsymbol{X}),\)</span> <span class="math display">\[\begin{align*}
@@ -650,7 +655,7 @@ Joint distribution, conditional
 \end{align*}\]</span> and can be understood as a weighted integral of <span class="math inline">\(g\)</span> with weight <span class="math inline">\(f_{\boldsymbol{Y}}\)</span>; the latter does not exist unless the integral is finite.</p>
 <p>Taking <span class="math inline">\(g(\boldsymbol{y}) = \boldsymbol{y}\)</span> yields the <strong>expected value</strong> of the random variable <span class="math inline">\(\mathsf{E}(\boldsymbol{Y}).\)</span> We define the covariance matrix of <span class="math inline">\(\boldsymbol{Y}\)</span> as <span class="math display">\[\begin{align*}
 \mathsf{Va}(\boldsymbol{Y}) = \mathsf{E}\left[\left\{\boldsymbol{Y} - \mathsf{E}(\boldsymbol{Y})\right\}\left\{\boldsymbol{Y} - \mathsf{E}(\boldsymbol{Y})\right\}^\top\right],
-\end{align*}\]</span> which reduces in the unidimensional setting to <span class="math inline">\(\mathsf{Va}(Y) = \mathsf{E}\{Y - \mathsf{E}(Y)\}^2 = \mathsf{E}(Y^2) - \mathsf{E}(Y)^2.\)</span></p>
+\end{align*}\]</span> which reduces in the unidimensional setting to <span class="math display">\[\mathsf{Va}(Y) = \mathsf{E}\{Y - \mathsf{E}(Y)\}^2 = \mathsf{E}(Y^2) - \mathsf{E}(Y)^2.\]</span></p>
 <p>More generally, the <span class="math inline">\(k \times m\)</span> covariance matrix between two random vectors <span class="math inline">\(\boldsymbol{Y}\)</span> of size <span class="math inline">\(k\)</span> and <span class="math inline">\(\boldsymbol{X}\)</span> of size <span class="math inline">\(m\)</span> is <span class="math display">\[\begin{align*}
 \mathsf{Co}(\boldsymbol{Y}, \boldsymbol{X}) = \mathsf{E}\left[\left\{\boldsymbol{Y} - \mathsf{E}(\boldsymbol{Y})\right\}\left\{\boldsymbol{X} - \mathsf{E}(\boldsymbol{X})\right\}^\top\right],
 \end{align*}\]</span></p>
@@ -757,11 +762,6 @@ p(y) &amp;= \frac{p(y, \lambda)}{p(\lambda \mid y)} \\&amp;= \frac{\frac{\lambda
 \boldsymbol{Y}_1 \mid \boldsymbol{Y}_2 =\boldsymbol{y}_2 &amp;\sim \mathsf{Gauss}_k(\boldsymbol{\mu}_1+\boldsymbol{\Sigma}_{12} \boldsymbol{\Sigma}_{22}^{-1}(\boldsymbol{y}_2-\boldsymbol{\mu}_2), \boldsymbol{\Sigma}_{1|2})
 \\&amp; \sim  \mathsf{Gauss}_k(\boldsymbol{\mu}_1-\boldsymbol{Q}_{11}^{-1}\boldsymbol{Q}_{12}(\boldsymbol{y}_2-\boldsymbol{\mu}_2), \boldsymbol{Q}^{-1}_{11})
 \end{align*}\]</span> and <span class="math inline">\(\boldsymbol{\Sigma}_{1|2}=\boldsymbol{\Sigma}_{11}-\boldsymbol{\Sigma}_{12}\boldsymbol{\Sigma}_{22}^{-1}\boldsymbol{\Sigma}_{21}\)</span> is the Schur complement of <span class="math inline">\(\boldsymbol{\Sigma}_{22}.\)</span></p>
-</div>
-<div id="prp-quadratic-forms" class="theorem proposition">
-<p><span class="theorem-title"><strong>Proposition 1.7 (Decomposition of quadratic forms)</strong></span> For quadratic forms (in <span class="math inline">\(\boldsymbol{x}\)</span>) with <span class="math display">\[\begin{align*}
-(\boldsymbol{x} - \boldsymbol{a})^\top \mathbf{A}(\boldsymbol{x} - \boldsymbol{a}) + (\boldsymbol{x} - \boldsymbol{b})^\top \mathbf{B}(\boldsymbol{x} - \boldsymbol{b}) \stackrel{\boldsymbol{x}}{\propto} (\boldsymbol{x} - \boldsymbol{c})^\top \mathbf{C}(\boldsymbol{x} - \boldsymbol{c})
-\end{align*}\]</span> where <span class="math inline">\(\mathbf{C} = \mathbf{A} + \mathbf{B}\)</span> and <span class="math inline">\(\boldsymbol{c}= \mathbf{C}^{-a}(\mathbf{A}\boldsymbol{a} + \mathbf{B}\boldsymbol{b})\)</span>.</p>
 </div>
 <div class="proof">
 <p><span class="proof-title"><em>Proof</em>. </span>It is easier to obtain this result by expressing the density of the Gaussian distribution in terms of the precision matrix <span class="math inline">\(\boldsymbol{Q}= \left(\begin{smallmatrix}\boldsymbol{Q}_{11} &amp; \boldsymbol{Q}_{12}\\
@@ -958,7 +958,7 @@ Figure&nbsp;1.1: Illustration of the fundamental theorem of simulation. All poin
 </div>
 <p>The fundamental theorem of simulation underlies rejection sampling, the generalized ratio of uniform and slice sampling. The density function needs only to be known up to normalizing constant thanks to the arbitrariness of <span class="math inline">\(c\)</span>, which will also allow us to work with unnormalized density functions.</p>
 <div id="prp-rejection-sampling" class="theorem proposition">
-<p><span class="theorem-title"><strong>Proposition 1.8 (Rejection sampling)</strong></span> Rejection sampling (also termed accept-reject algorithm) samples from a random vector with density <span class="math inline">\(p(\cdot)\)</span> by drawing candidates from a proposal with density <span class="math inline">\(q(\cdot)\)</span> with nested support, <span class="math inline">\(\mathrm{supp}(p) \subseteq \mathrm{supp}(q).\)</span> The density <span class="math inline">\(q(\cdot)\)</span> must be such that <span class="math inline">\(p(\boldsymbol{\theta}) \leq C q(\boldsymbol{\theta})\)</span> for <span class="math inline">\(C \geq 1\)</span> for all values of <span class="math inline">\(\boldsymbol{\theta}\)</span> in the support of <span class="math inline">\(p(\cdot).\)</span></p>
+<p><span class="theorem-title"><strong>Proposition 1.7 (Rejection sampling)</strong></span> Rejection sampling (also termed accept-reject algorithm) samples from a random vector with density <span class="math inline">\(p(\cdot)\)</span> by drawing candidates from a proposal with density <span class="math inline">\(q(\cdot)\)</span> with nested support, <span class="math inline">\(\mathrm{supp}(p) \subseteq \mathrm{supp}(q).\)</span> The density <span class="math inline">\(q(\cdot)\)</span> must be such that <span class="math inline">\(p(\boldsymbol{\theta}) \leq C q(\boldsymbol{\theta})\)</span> for <span class="math inline">\(C \geq 1\)</span> for all values of <span class="math inline">\(\boldsymbol{\theta}\)</span> in the support of <span class="math inline">\(p(\cdot).\)</span></p>
 <ol type="1">
 <li>Generate <span class="math inline">\(\boldsymbol{\theta}^{\star}\)</span> from the proposal with density <span class="math inline">\(q\)</span> and <span class="math inline">\(U \sim \mathsf{U}(0,1)\)</span></li>
 <li>Compute the ratio <span class="math inline">\(R \gets p(\boldsymbol{\theta}^{\star})/ q(\boldsymbol{\theta}^{\star}).\)</span></li>
@@ -1021,7 +1021,7 @@ X \sim \Phi^{-1}\left[\Phi(a) + \{\Phi(b)-\Phi(a)\}U\right]
 </div>
 <p>For a given candidate density <span class="math inline">\(g\)</span> which has a heavier tail than the target, we can resort to numerical methods to compute the mode of the ratio <span class="math inline">\(f/g\)</span> and obtain the bound <span class="math inline">\(C\)</span>; see <span class="citation" data-cites="Albert:2009">Albert (<a href="references.html#ref-Albert:2009" role="doc-biblioref">2009</a>)</span>, Section 5.8 for an insightful example. A different use for the simulations is to approximate integrals numerically. Consider a target distribution with finite expected value. The law of large numbers guarantees that, if we can draw observations from our target distribution, then the sample average will converge to the expected value of that distribution, as the sample size becomes larger and larger, provided the expectation is finite. We can thus compute the probability of any event or the expected value of any (integrable) function by computing sample averages; the cost to pay for this generality is randomness.</p>
 <div id="prp-monte-carlo-integration" class="theorem proposition">
-<p><span class="theorem-title"><strong>Proposition 1.9 (Monte Carlo integration)</strong></span> Specifically, suppose we are interested in the average <span class="math inline">\(\mathsf{E}\{g(X)\}\)</span> of <span class="math inline">\(X\)</span> with density or mass function <span class="math inline">\(f\)</span> supported on <span class="math inline">\(\mathcal{X}\)</span> for some function <span class="math inline">\(g.\)</span> Monte Carlo integration proceeds by drawing <span class="math inline">\(B\)</span> independent samples <span class="math inline">\(x_1, \ldots, x_B\)</span> from density <span class="math inline">\(p\)</span> and evaluating the empirical average of <span class="math inline">\(g,\)</span> with <span class="math display">\[\begin{align*}
+<p><span class="theorem-title"><strong>Proposition 1.8 (Monte Carlo integration)</strong></span> Specifically, suppose we are interested in the average <span class="math inline">\(\mathsf{E}\{g(X)\}\)</span> of <span class="math inline">\(X\)</span> with density or mass function <span class="math inline">\(f\)</span> supported on <span class="math inline">\(\mathcal{X}\)</span> for some function <span class="math inline">\(g.\)</span> Monte Carlo integration proceeds by drawing <span class="math inline">\(B\)</span> independent samples <span class="math inline">\(x_1, \ldots, x_B\)</span> from density <span class="math inline">\(p\)</span> and evaluating the empirical average of <span class="math inline">\(g,\)</span> with <span class="math display">\[\begin{align*}
 \mathsf{E}\{g(X)\} = \int_{\mathcal{X}} g(x) p(x) \mathrm{d} x \approx \widehat{\mathsf{E}}\{g(X)\}=\frac{1}{B}\sum_{b=1}^B g(x_b).
 \end{align*}\]</span> By the law of large number, this estimator is convergent when <span class="math inline">\(B \to \infty\)</span> provided that the expectation is finite. If the variance of <span class="math inline">\(g(X)\)</span> is finite, we can approximate the latter by the sample variance of the simple random sample and obtain the Monte Carlo standard error of the estimator <span class="math display">\[\begin{align*}
 \mathsf{se}^2[\widehat{\mathsf{E}}\{g(X)\}] = \frac{1}{B(B-1)} \sum_{b=1}^B \left[ g(x_b) -  \widehat{\mathsf{E}}\{g(X)\} \right]^2.
@@ -1029,7 +1029,7 @@ X \sim \Phi^{-1}\left[\Phi(a) + \{\Phi(b)-\Phi(a)\}U\right]
 </div>
 <p>We can also use a similar idea to evaluate the integral of <span class="math inline">\(g(X)\)</span> if <span class="math inline">\(X\)</span> has density <span class="math inline">\(p\)</span>, by drawing instead samples from <span class="math inline">\(q\)</span>. This is formalized in the next proposition.</p>
 <div id="prp-importance-sampling" class="theorem proposition">
-<p><span class="theorem-title"><strong>Proposition 1.10 (Importance sampling)</strong></span> Consider a random variable <span class="math inline">\(X\)</span> with density <span class="math inline">\(p(x)\)</span> supported on <span class="math inline">\(\mathcal{X}\)</span>. We can calculate the integral <span class="math inline">\(\mathsf{E}_p\{g(X)\} = \int_{\mathcal{X}} g(x) p(x) \mathrm{d}x\)</span> by considering instead draws from a density <span class="math inline">\(q(\cdot)\)</span> with nested support, <span class="math inline">\(\mathcal{X} \subseteq \mathrm{supp}(q).\)</span> Then, <span class="math display">\[\begin{align*}
+<p><span class="theorem-title"><strong>Proposition 1.9 (Importance sampling)</strong></span> Consider a random variable <span class="math inline">\(X\)</span> with density <span class="math inline">\(p(x)\)</span> supported on <span class="math inline">\(\mathcal{X}\)</span>. We can calculate the integral <span class="math inline">\(\mathsf{E}_p\{g(X)\} = \int_{\mathcal{X}} g(x) p(x) \mathrm{d}x\)</span> by considering instead draws from a density <span class="math inline">\(q(\cdot)\)</span> with nested support, <span class="math inline">\(\mathcal{X} \subseteq \mathrm{supp}(q).\)</span> Then, <span class="math display">\[\begin{align*}
 \mathsf{E}\{g(X)\} = \int_{\mathcal{X}} g(x) \frac{p(x)}{q(x)} q(x) \mathrm{d} x
 \end{align*}\]</span> and we can proceed similarly by drawing samples from <span class="math inline">\(q\)</span>. This is most useful when the variance is finite, which happens if the integral <span class="math display">\[\begin{align*}
 \int_{\mathcal{X}} g^2(x) \frac{p^2(x)}{q(x)} \mathrm{d} x &lt; \infty.

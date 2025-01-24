@@ -1,6 +1,6 @@
 # Regression models
 
-This chapter is dedicated to the case of generalized linear regression models. Starting with Gaussian data, we investigate the link between frequentists approaches to regularization and shrinkage priors. We also look at hierarchical models with mixed effects.
+This chapter is dedicated to the case of generalized linear regression models. Starting with Gaussian data, we investigate the link between frequentist approaches to regularization and shrinkage priors. We also look at hierarchical models with mixed effects.
 
 
 We consider regression models with model or design matrix $\mathbf{X}$ and an associated vector of regression coefficients $\boldsymbol{\beta} = (\beta_1, \ldots, \beta_p)^\top$ which describe the mean and act as weights for each covariate vector. In the ordinary linear regression model
@@ -94,7 +94,7 @@ so must be a Student-$t$ distribution with location $\boldsymbol{\mu}_n$, scale 
 :::
 
 
-The choice of prior precision $\boldsymbol{\Omega}_0$ is left to the user, but typically the components of the vector $\boldsymbol{\beta}$ are left apriori independent, with $\boldsymbol{\Omega}_0 \propto \lambda\mathbf{I}_n$
+The choice of prior precision $\boldsymbol{\Omega}_0$ is left to the user, but typically the components of the vector $\boldsymbol{\beta}$ are left apriori independent, with $\boldsymbol{\Omega}_0 \propto \lambda\mathbf{I}_n$.
 
 
 ## Shrinkage priors
@@ -106,14 +106,14 @@ In contexts where the number of regressors $p$ is considerable relative to the s
 ## Spike-and-slab prior
 
 
-The spike-and-slab prior is a two-component mixture that assigns a positive probability to zero via a point mass (the spike) and the balance to the slab, a diffuse distribution.
+The spike-and-slab prior is a two-component mixture that assigns a positive probability to zero via a point mass or a vary narrow distribution centered at the origin (the spike) and the balance to the slab, a diffuse distribution.
 
 
-Originally proposed by @Mitchell.Beauchamp:1988 with a uniform on a large interval, the term was also used in @George.Mitchell:1993, which replace both components by Gaussians, one of which is diffuse and the other with near infinite precision at the origin. Letting $\gamma_j \in [0,1]$ denote the probability of the slab or inclusion of the variable, the independent priors for the regression coefficients are
+Originally proposed by @Mitchell.Beauchamp:1988 with a uniform on a large interval, the term was also used in @George.Mitchell:1993, which replace both components,  to enable conjugacy, by Gaussians. The first one of these is diffuse and the other has near infinite precision at the origin. Letting $\gamma_j \in [0,1]$ denote the probability of the slab or inclusion of the variable, the independent priors for the regression coefficients are
 \begin{align*}
  \beta_j \mid \gamma_j, c_j^2,\phi^2_j \sim (1-\gamma_j) \mathsf{Gauss}(0, \phi^2_j) + \gamma_j \mathsf{Gauss}(0, \sigma_j^2\phi^2)
 \end{align*}
-where $\sigma^2_j$ is very nearly zero. We set a Jeffrey's prior for $\gamma_j \sim \mathsf{beta}(0.5, 0.5)$ and typically $\phi_j^2=0.001$ or a small number. The construction allows for variable augmentation with mixture indicators and Gibbs sampling, although convergence isn't trivial. Taking a conjugate $ marginal distribution of the slab, conditional on b
+where $\sigma^2_j$ is very nearly zero. We set a Jeffrey's prior for $\gamma_j \sim \mathsf{beta}(0.5, 0.5)$ and typically $\phi_j^2=0.001$ or a small number if using a Gaussian. The construction allows for variable augmentation with mixture indicators and Gibbs sampling, although convergence isn't trivial. 
 
 
 :::
