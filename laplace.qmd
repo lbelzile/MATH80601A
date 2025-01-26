@@ -5,14 +5,14 @@ So far, we have focused on stochastic approximations of integral. In very large 
 
 This material borrows from Section 8.2 and appendix C.2.2 of @Held.Bove:2020. The Laplace approximation uses a Gaussian approximation to evaluate integrals of the form
 \begin{align*}
-I_n= \int_a^b g(x) \mathrm{d} x = \exp\{nh(x)\}\mathrm{d} x.                                                             \end{align*}
+I_n= \int_a^b g(x) \mathrm{d} x = \exp\{nh(x)\}\mathrm{d} x.           \end{align*}
 Assuming that $g(x)$ is concave and thus $h(x),  with a maximum at $x_0 \in [a,b]$ and twice differentiable, we can Taylor expand $h(x)$ to get,
 \begin{align*}
 h(x) = h(x_0) + h'(x_0)(x-x_0) + h''(x_0)(x-x_0)^2/2 + R
 \end{align*}
 where the remainder $R=\mathrm{O}\{x-x_0)^3\}$. If we optimize, we find $x_0$ solves $h'(x_0)=0$ and letting $\tau=-nh''(x_0)$, we can write ignoring the remainder term the approximation
 \begin{align*}
- I_n \approx \exp\{nh(x_0)\} \int_{a}^b \exp \left\{-\frac{1}{2}(x-x_0)^2\right\}
+ I_n &\approx \exp\{nh(x_0)\} \int_{a}^b \exp \left\{-\frac{1}{2}(x-x_0)^2\right\}
   \\&= \exp\{nh(x_0)\} \left(\frac{2\pi}{\tau}\right)^{1/2} \left[\Phi\left\{ \tau(b-x_0)\right\} - \Phi\left\{\tau(a-x_0)\right\}\right]
 \end{align*}
 upon recovering the unnormalized kernel of a Gaussian random variable centered at $x_0$ with precision $\tau$. The approximation error is $\mathrm{O}(n^{-1})$.
@@ -54,8 +54,8 @@ If the likelihood contribution dominates the posterior, the $\mathsf{BIC}$ appro
 
 If we are interested in computing the posterior expectation of a positive real-valued functional $g(\boldsymbol{\theta}): \mathbb{R}^d \to \mathbb{R}_{+}$, we may write
 \begin{align*}
- \mathsf{E}_{\boldsymbol{\Theta} \mid \boldsymbol{Y}}(g(\boldsymbol{\theta}) \mid \boldsymbol{y}) &=  \frac{\int g(\boldsymbol{\theta}) p(\boldsymbol{y} \mid \boldsymbol{\theta} \mathrm{d} \boldsymbol{\theta}}{\int g(\boldsymbol{\theta}) p(\boldsymbol{y} \mid \boldsymbol{\theta} \mathrm{d} \boldsymbol{\theta}}
+ \mathsf{E}_{\boldsymbol{\Theta} \mid \boldsymbol{Y}}(g(\boldsymbol{\theta}) \mid \boldsymbol{y}) &=  \frac{\int g(\boldsymbol{\theta}) p(\boldsymbol{y} \mid \boldsymbol{\theta}) p( \boldsymbol{\theta}) \mathrm{d} \boldsymbol{\theta}}{\int p(\boldsymbol{y} \mid \boldsymbol{\theta})p( \boldsymbol{\theta}) \mathrm{d} \boldsymbol{\theta}}
 \end{align*}
-We can apply
+We can apply Laplace's method to both numerator and denominator.
 
 :::

@@ -1,0 +1,578 @@
+# Gibbs sampling
+
+
+```{r}
+#| label: setup
+#| file: "_common.R"
+#| include: true
+#| message: false
+#| warning: false
+#| echo: false
+```
+
+
+The Gibbs sampling algorithm builds a Markov chain by iterating through a sequence of conditional distributions.
+Consider a model with $\boldsymbol{\theta} \in \boldsymbol{\Theta} \subseteq \mathbb{R}^p$. We consider a single (or $m \leq p$ blocks of parameters), say $\boldsymbol{\theta}^{[j]}$, such that, conditional on the remaining components of the parameter vector $\boldsymbol{\theta}^{-[j]}$, the conditional posterior $p(\boldsymbol{\theta}^{[j]} \mid \boldsymbol{\theta}^{-[j]}, \boldsymbol{y})$ is from a known distribution from which we can simulate draws
+
+At iteration $t$, we can update each block in turn: note that the $k$th block uses the partially updated state
+\begin{align*}
+\boldsymbol{\theta}^{-[k]\star} = (\boldsymbol{\theta}_{t}^{[1]}, \ldots, \boldsymbol{\theta}_{t}^{[k-1]},\boldsymbol{\theta}_{t-1}^{[k+1]}, \boldsymbol{\theta}_{t-1}^{[m]})
+\end{align*}
+which corresponds to the current value of the parameter vector after the updates. To check the validity of the Gibbs sampler, see the methods proposed in @Geweke:2004.
+
+
+The Gibbs sampling can be viewed as a special case of Metropolis--Hastings where the proposal distribution $q$ is $p(\boldsymbol{\theta}^{[j]} \mid \boldsymbol{\theta}^{-[j]\star}, \boldsymbol{y})$. The particularity is that all proposals get accepted because the log posterior of the partial update, equals the proposal distribution, so
+\begin{align*}
+R = \frac{p(\boldsymbol{\theta}_t^{[j]\star} \mid \boldsymbol{\theta}^{-[j]\star}, \boldsymbol{y})}{p(\boldsymbol{\theta}_{t-1}^{[j]\star} \mid \boldsymbol{\theta}^{-[j]\star}, \boldsymbol{y})}\frac{p(\boldsymbol{\theta}_{t-1}^{[j]\star} \mid \boldsymbol{\theta}^{-[j]\star}, \boldsymbol{y})}{p(\boldsymbol{\theta}_t^{[j]\star} \mid \boldsymbol{\theta}^{-[j]\star}, \boldsymbol{y})}=1.
+\end{align*}
+Regardless of the order (systematic scan or random scan), the procedure remains valid. The Gibbs sampling is thus an automatic algorithm: we only need to derive the conditional posterior distributions of the parameters and run the sampler, and there are no tuning parameter involved. If the parameters are strongly correlated, the changes for each parameter will be incremental and this will lead to slow mixing and large autocorrelation, even if the values drawn are all different. @fig-Gibbs-steps shows 25 steps from a Gibbs algorithm for a bivariate target.
+
+```{r}
+#| eval: true
+#| echo: false
+#| cache: true
+#| message: false
+#| warning: false
+#| fig-cap: "Sampling trajectory for a bivariate target using Gibbs sampling."
+#| label: fig-Gibbs-steps
+xg <- seq(-3,6, length.out = 101)
+yg <- seq(0, 7, length.out = 101)
+grid <- as.matrix(expand.grid(xg, yg))
+zg <- TruncatedNormal::dtmvnorm(x = grid,
+                                mu = c(2,1),
+                                sigma = cbind(c(2,-1), c(-1,3)),
+                                lb = c(-Inf, 0.1),
+                                ub = rep(Inf, 2))
+
+set.seed(1234)
+chains <- matrix(nrow = 50, ncol = 2)
+curr <- c(-1,3)
+for(i in 1:nrow(chains)){
+  j <- i %% 2 + 1L
+  curr[j] <- mgp::rcondmvtnorm(model = "norm",
+                               n = 1, ind = j, x = curr[-j], lbound = c(-3, 0.1)[j],
+                  ubound = c(6,7)[j], mu = c(2,1),
+                                sigma = cbind(c(2,-1), c(-1,3)))
+  chains[i,] <- curr
+}
+
+ggplot() +
+  geom_contour_filled(data = data.frame(x = grid[,1], y = grid[,2], z = zg),
+       mapping = aes(x = x, y = y, z = z),
+       alpha = 0.1) +
+  geom_path(data = data.frame(x = chains[,1], y = chains[,2],
+                              shade = seq(0.1, 0.5, length.out = nrow(chains))),
+            mapping = aes(x = x, y = y, alpha = shade)) +
+  scale_y_continuous(limits = c(0,6), expand = c(0,0), breaks = NULL) +
+  scale_x_continuous(limits = c(-3, 5), expand = c(0,0), breaks = NULL) +
+  theme_void() +
+  labs(x = "", y = "") +
+  theme(legend.position = "none")
+
+
+```
+
+
+:::{exm-normal-Gibbs}
+
+As a toy illustration, we use Gibbs sampling to simulate data from a $d$-dimensional multivariate Gaussian target with mean $\boldsymbol{\mu}$ and equicorrelation covariance matrix $\mathbf{\Sigma} = (1-\rho)\mathbf{I}_d + \rho\boldsymbol{1}_{d}\boldsymbol{1}^\top_d$ with inverse $$\mathbf{Q} = \boldsymbol{\Sigma}^{-1}=(1-\rho)^{-1}\left\{\mathbf{I}_d - \rho \mathbf{1}_d\mathbf{1}_d/(1+(d-1)\rho)\right\},$$ for known correlation coefficient $\rho$. While we can easily sample independent observations, the exercise is insightful to see how well the methods works as the dimension increases, and when the correlation between pairs becomes stronger.
+
+Consider $\boldsymbol{Y} \sim \mathsf{Gauss}_d(\boldsymbol{\mu}, \boldsymbol{\Sigma})$ and a partition $(\boldsymbol{Y}_1^\top, \boldsymbol{Y}_2^\top)^\top$: the conditional distribution of the $k$ subvector $\boldsymbol{Y}_1$ given the $d-k$ other components $\boldsymbol{Y}_2$ is, in terms of either the covariance (first line) or the precision (second line), Gaussian where
+\begin{align*}
+\boldsymbol{Y}_1 \mid \boldsymbol{Y}_2=\boldsymbol{y}_2 &\sim \mathsf{Gauss}_{k}\left\{ \boldsymbol{\mu}_1 + \boldsymbol{\Sigma}_{12} \boldsymbol{\Sigma}_{22}^{-1}(\boldsymbol{y}_2 - \boldsymbol{\mu}_2), \boldsymbol{\Sigma}_{11} - \boldsymbol{\Sigma}_{12}\boldsymbol{\Sigma}_{22}^{-1}\boldsymbol{\Sigma}_{21}\right\}
+\\&\sim \mathsf{Gauss}_{k}\left\{ \boldsymbol{\mu}_1 -\mathbf{Q}_{11}^{-1}\mathbf{Q}_{12}(\boldsymbol{y}_2 - \boldsymbol{\mu}_2), \mathbf{Q}_{11}^{-1}\right\}.
+\end{align*}
+
+
+```{r}
+#| eval: false
+#| echo: true
+# Create a 20 dimensional equicorrelation
+d <- 20
+Q <- hecbayes::equicorrelation(d = d, rho = 0.9, precision = TRUE)
+B <- 1e4
+chains <- matrix(0, nrow = B, ncol = d)
+mu <- rep(2, d)
+# Start far from mode
+curr <- rep(-3, d)
+for(i in seq_len(B)){
+  # Random scan, updating one variable at a time
+  for(j in sample(1:d, size = d)){
+    # sample from conditional Gaussian given curr
+    curr[j] <- hecbayes::rcondmvnorm(
+      n = 1,
+      value = curr,
+      ind = j,
+      mean = mu,
+      precision = Q)
+  }
+  chains[i,] <- curr # save values after full round of update
+}
+```
+
+As the dimension of the parameter space increases, and as the correlation between components becomes larger, the efficiency of the Gibbs sampler degrades: @fig-gibbs-normal shows the first component for updating one-parameter at a time for a multivariate Gaussian target in dimensions $d=20$ and $d=3$, started at four deviation away from the mode. The chain makes smaller steps when there is strong correlation, resulting in an inefficient sampler.
+
+```{r}
+#| eval: true
+#| echo: false
+#| cache: true
+#| message: false
+#| warning: false
+#| label: fig-gibbs-normal
+#| fig-cap: "Trace plots (top) and correlograms (bottom) for the first component of a Gibbs sampler with $d=20$ equicorrelated Gaussian variates with correlation $\\rho=0.9$ (left) and $d=3$ with equicorrelation $\\rho=0.5$ (right)."
+d <- 20
+Q <- hecbayes::equicorrelation(d = d, rho = 0.9, precision = TRUE)
+B <- 1e3
+chains <- matrix(0, nrow = B, ncol = d)
+mu <- rep(2, d)
+# Start far from mode
+curr <- rep(-2, d)
+for(i in seq_len(B)){
+  # Random scan, updating one variable at a time
+  for(j in sample(1:d, size = d)){
+    # sample from conditional Gaussian given curr
+    curr[j] <- hecbayes::rcondmvnorm(
+      n = 1,
+      value = curr,
+      ind = j,
+      mean = mu,
+      precision = Q)
+  }
+  chains[i,] <- curr # save after full round of update
+}
+d <- 3
+Q <- hecbayes::equicorrelation(d = d, rho = 0.5, precision = TRUE)
+chains2 <- matrix(0, nrow = B, ncol = d)
+mu <- rep(2, d)
+# Start far from mode
+curr <- rep(-3, d)
+for(i in seq_len(B)){
+  # Random scan, updating one variable at a time
+  for(j in sample(1:d, size = d)){
+    # sample from conditional Gaussian given curr
+    curr[j] <- hecbayes::rcondmvnorm(
+      n = 1,
+      value = curr,
+      ind = j,
+      mean = mu,
+      precision = Q)
+  }
+  chains2[i,] <- curr # save after full round of update
+}
+ggacf <- function(series) {
+  significance_level <- qnorm((1 + 0.95)/2)/sqrt(sum(!is.na(series)))
+  a<-acf(series, plot = FALSE, lag.max = 30)
+  a.2<-with(a, data.frame(lag, acf))
+  g<- ggplot(a.2[-1,], aes(x=lag,y=acf)) +
+          geom_bar(stat = "identity", position = "identity",
+                   width = 0.5) +
+    labs(x = 'lag', y =  "", subtitle = 'autocorrelation') +
+          geom_hline(yintercept=c(significance_level,-significance_level), lty=3) +
+    scale_x_continuous(breaks = seq(5L, 30L, by = 5L),minor_breaks = 1:30,
+                       limits = c(1,30)) +
+    scale_y_continuous(limits = c(-0.2,1), expand = c(0,0))
+  return(g);
+}
+g1 <- ggplot(data = data.frame(x = seq_len(nrow(chains)),
+                               y = chains[,1]),
+             mapping = aes(x = x, y = y)) +
+  geom_line() +
+  labs(y = "", x = "iteration number") +
+  theme_classic()
+g2 <- ggacf(chains[,1]) + theme_classic()
+g3 <- ggplot(data = data.frame(x = seq_len(B),
+                               y = chains2[,1]),
+             mapping = aes(x = x, y = y)) +
+  geom_line() +
+  labs(y = "", x = "iteration number") +
+  theme_classic()
+g4 <- ggacf(chains2[,1]) + theme_classic()
+(g1 + g3) / (g2 + g4)
+```
+
+The main bottleneck in Gibbs sampling is determining all of the relevant conditional distributions, which often relies on setting conditionally conjugate priors.  In large models with multiple layers, full conditionals may only depend on a handful of parameters.
+
+:::
+
+:::{#exm-gaussian-gamma}
+
+Consider a Gaussian model $Y_i \sim \mathsf{Gauss}(\mu, \tau)$ ($i=1, \ldots, n$) are independent, and where we assign priors $\mu \sim \mathsf{Gauss}(\nu, \omega)$ and $\tau \sim \mathsf{InvGamma}(\alpha, \beta)$.
+
+The joint posterior is not available in closed form, but the independent priors for the mean and variance of the observations are conditionally conjugate, since the joint posterior
+\begin{align*}
+p(\mu, \tau \mid \boldsymbol{y}) \propto& \tau^{-n/2}\exp\left\{-\frac{1}{2\tau}\left(\sum_{i=1}^n y_i^2 - 2\mu \sum_{i=1}^n y_i+n\mu^2 \right)\right\}\\& \times \exp\left\{-\frac{(\mu-\nu)^2}{2\omega}\right\} \times \tau^{-\alpha-1}\exp(-\beta/\tau)
+\end{align*}
+gives us
+\begin{align*}
+p(\mu \mid \tau, \boldsymbol{y}) &\propto \exp\left\{-\frac{1}{2} \left( \frac{\mu^2-2\mu\overline{y}}{\tau/n} + \frac{\mu^2-2\nu \mu}{\omega}\right)\right\}\\
+p(\tau \mid \mu, \boldsymbol{y}) & \propto \tau^{-n/2-\alpha-1}\exp\left[-\left\{\frac{\sum_{i=1}^n (y_i-\mu)^2}{2} + \beta \right\}/\tau\right]
+\end{align*}
+so we can simulate in turn
+\begin{align*}
+\mu_t \mid \tau_{t-1}, \boldsymbol{y} &\sim \mathsf{Gauss}\left(\frac{n\overline{y}\omega+\tau \nu}{\tau + n\omega}, \frac{\omega \tau}{\tau + n\omega}\right)\\
+\tau_t \mid \mu_t, \boldsymbol{y} &\sim \mathsf{inv. gamma}\left\{\frac{n}{2}+\alpha, \frac{\sum_{i=1}^n (y_i-\mu)^2}{2} + \beta\right\}.
+\end{align*}
+
+:::
+
+
+:::{.remark}
+
+## Gibbs sampler and proper posterior
+
+Gibbs sampling cannot be used to determine if the posterior is improper. If the posterior is not well defined, the Markov chains may seem to stabilize even though there is no proper target.
+
+:::
+
+
+:::{#prp-conjugate-bayesian-linmod}
+
+## Bayesian linear model
+
+Consider a linear regression model with observation-specific mean $\mu_i = \mathbf{x}_i\boldsymbol{\beta}$ $(i=1,\ldots, n)$ with $\mathbf{x}_i$ the $i$th row of the $n \times p$ model matrix $\mathbf{X}$.
+
+Concatenating records, $\boldsymbol{Y} \sim \mathsf{No}_n(\mathbf{X}\boldsymbol{\beta}, \sigma^2 \mathbf{Q}_y^{-1})$, for a known precision matrix $\mathbf{Q}_y$, typically $\mathbf{I}_n$. To construct a conjugate joint prior for $p(\boldsymbol{\beta}, \sigma^2)$, we consider the sequential formulation
+\begin{align*}
+\boldsymbol{\beta} \mid \sigma^2 \sim \mathsf{Gauss}_p(\boldsymbol{\nu}_\beta, \sigma^2 \mathbf{Q}^{-1}_\beta), \qquad \sigma^2 \sim \mathsf{InvGamma}(\alpha,\beta)
+\end{align*}
+where $\mathsf{InvGamma}$ denotes the inverse gamma distribution^[This simply means that the precision $\sigma^{-2}$, the reciprocal of the variance, has a gamma distribution with shape $\alpha$ and rate $\beta$.]
+
+<!--
+Writing the log likelihood in exponential family form,
+\begin{align*}
+\ell(\mu, \sigma^2; \boldsymbol{y}) \propto -n \log(\sigma) - \frac{\boldsymbol{y}^\top\boldsymbol{y}}{2\sigma^2} + \frac{\mu}{\sigma^2}\boldsymbol{y}^\top \boldsymbol{1}_n - \frac{n}{2}\frac{\mu^2}{\sigma^2}
+\end{align*}
+
+-->
+
+The joint posterior is Gaussian-inverse gamma and can be factorized
+\begin{align*}
+p(\boldsymbol{\beta}, \sigma^2 \mid y) = p(\sigma^2 \mid y) p(\boldsymbol{\beta} \mid \sigma^2, y)
+\end{align*}
+where $p(\sigma^2 \mid y) \sim \mathsf{InvGamma}(\alpha^*, \beta^*)$ and $p(\boldsymbol{\beta} \mid \sigma^2, y) \sim \mathsf{No}_p(\mathbf{M}\boldsymbol{m}, \sigma^2\mathbf{M})$ with $\alpha^* = \alpha + n/2$, $\beta^*=\beta + 0.5 \boldsymbol{\nu}_\beta^\top \mathbf{Q}_\beta\boldsymbol{\nu}_\beta + \boldsymbol{y}^\top\boldsymbol{y} - \boldsymbol{m}^\top\mathbf{M}\boldsymbol{m}$, $\boldsymbol{m} = \mathbf{Q}_\beta \boldsymbol{\nu}_\beta + \mathbf{X}^\top \mathbf{Q}_y\boldsymbol{y}$ and $\mathbf{M} = (\mathbf{Q}_\beta + \mathbf{X}^\top\mathbf{Q}_y\mathbf{X})^{-1};$ the latter can be evaluated efficiently using Shermann--Morrisson--Woodbury identity. Given the conditionally conjugate priors, we can easily sample from the posterior using Gibbs sampling.
+
+:::
+
+### Data augmentation and auxiliary variables
+
+
+In many problems, the likelihood $p(\boldsymbol{y}; \boldsymbol{\theta})$ is intractable or costly to evaluate and auxiliary variables are introduced to simplify calculations, as in the expectation-maximization algorithm. The Bayesian analog is  data augmentation [@Tanner.Wong:1987], which we present succinctly: let $\boldsymbol{\theta} \in \Theta$ be a vector of parameters and consider auxiliary variables $\boldsymbol{u} \in \mathbb{R}^k$ such that $\int_{\mathbb{R}^k} p(\boldsymbol{u}, \boldsymbol{\theta}; \boldsymbol{y}) \mathrm{d} \boldsymbol{u} = p(\boldsymbol{\theta}; \boldsymbol{y})$, i.e., the marginal distribution is that of interest, but evaluation of $p(\boldsymbol{u}, \boldsymbol{\theta}; \boldsymbol{y})$ is cheaper. The data augmentation algorithm consists in running a Markov chain on the augmented state space $(\Theta, \mathbb{R}^k)$, simulating in turn from the conditionals $p(\boldsymbol{u}; \boldsymbol{\theta}, \boldsymbol{y})$ and $p(\boldsymbol{\theta}; \boldsymbol{u}, \boldsymbol{y})$ with new variables chosen to simplify the likelihood. If simulation from the conditionals is straightforward, we can also use data augmentation to speed up calculations or improve mixing. For more details and examples, see @vanDyk.Meng:2001 and @Hobert:2011.
+
+
+:::{#exm-probit-regression}
+
+Consider binary responses $\boldsymbol{Y}_i$, for which we postulate a probit regression model,
+\begin{align*}
+p_i = \Pr(Y_i=1) = \Phi(\beta_0 + \beta_1 \mathrm{X}_{i1} + \cdots + \beta_p\mathrm{X}_{ip}),
+\end{align*}
+where $\Phi$ is the distribution function of the standard Gaussian distribution.
+The likelihood of the probit model for a sample of $n$ independent observations is
+$$L(\boldsymbol{\beta}; \boldsymbol{y}) = \prod_{i=1}^n p_i^{y_i}(1-p_i)^{1-y_i},$$
+and this prevents easy simulation. We can consider a data augmentation scheme where $Y_i = \mathsf{I}(Z_i > 0)$, where $Z_i \sim \mathsf{Gauss}(\mathbf{x}_i\boldsymbol{\beta}, 1)$, with $\mathbf{x}_i$ denoting the $i$th row of the design matrix.
+
+The augmented data likelihood is
+\begin{align*}
+p(\boldsymbol{z}, \boldsymbol{y} \mid \boldsymbol{\beta}) \propto \exp\left\{-\frac{1}{2}(\boldsymbol{z} - \mathbf{X}\boldsymbol{\beta})^\top(\boldsymbol{z} - \mathbf{X}\boldsymbol{\beta})\right\} \times \prod_{i=1}^n \mathsf{I}(z_i > 0)^{y_i}\mathsf{I}(z_i \le 0)^{1-y_i}
+\end{align*}
+Given $Z_i$, the coefficients $\boldsymbol{\beta}$ are simply the results of ordinary linear regression with unit variance, so
+\begin{align*}
+\boldsymbol{\beta} \mid \boldsymbol{z}, \boldsymbol{y} &\sim \mathsf{Gauss}\left\{\widehat{\boldsymbol{\beta}}, (\mathbf{X}^\top\mathbf{X})^{-1}\right\}
+\end{align*}
+with $\widehat{\boldsymbol{\beta}}=(\mathbf{X}^\top\mathbf{X})^{-1}\mathbf{X}^\top\boldsymbol{z}$ is the ordinary least square estimator from the regression with model matrix $\mathbf{X}$ and response vector $\boldsymbol{z}$. The augmented variables $Z_i$ are conditionally independent and truncated Gaussian with
+\begin{align*}
+Z_i \mid y_i, \boldsymbol{\beta} \sim \begin{cases}
+\mathsf{trunc. Gauss}(\mathbf{x}_i\boldsymbol{\beta}, -\infty, 0) & y_i =0 \\
+\mathsf{trunc. Gauss}(\mathbf{x}_i\boldsymbol{\beta}, 0, \infty) & y_i =1.
+\end{cases}
+\end{align*}
+and we can use the algorithms of @exm-accept-reject-truncated to simulate these.
+
+
+```{r}
+#| eval: false
+#| echo: true
+probit_regression <- function(y, x, B = 1e4L, burnin = 100){
+  y <- as.numeric(y)
+  n <- length(y)
+  # Add intercept
+  x <- cbind(1, as.matrix(x))
+  xtxinv <- solve(crossprod(x))
+  # Use MLE as initial values
+  beta.curr <- coef(glm(y ~ x - 1, family=binomial(link = "probit")))
+  # Containers
+  Z <- rep(0, n)
+  chains <- matrix(0, nrow = B, ncol = length(beta.curr))
+  for(b in seq_len(B + burnin)){
+    ind <- max(1, b - burnin)
+    Z <- TruncatedNormal::rtnorm(
+      n = 1,
+      mu = as.numeric(x %*% beta.curr),
+      lb = ifelse(y == 0, -Inf, 0),
+      ub = ifelse(y == 1, Inf, 0),
+      sd = 1)
+    beta.curr <- chains[ind,] <- as.numeric(
+      mvtnorm::rmvnorm(
+        n = 1,
+        mean = coef(lm(Z ~ x - 1)),
+        sigma = xtxinv))
+  }
+return(chains)
+}
+```
+
+:::
+
+
+
+
+:::{#exm-student-mixture-gaussian}
+
+## Bayesian LASSO
+
+The Laplace distribution with mean $\mu$ and scale $\sigma$, which has density
+\begin{align*}
+f(x; \mu, \sigma) = \frac{1}{2\sigma}\exp\left(-\frac{|x-\mu|}{\sigma}\right),
+\end{align*}
+can be expressed as a scale mixture of Gaussians, where $Y \sim \mathsf{La}(\mu, \sigma)$ is equivalent to $Z \mid \tau \sim \mathsf{Gauss}(\mu, \tau)$ and $\tau \sim \mathsf{Exp}\{(2\sigma)^{-1}\}$.
+With the improper prior $p(\mu, \sigma) \propto \sigma^{-1}$ and with $n$ independent and identically distributed Laplace variates, the joint posterior can be written
+\begin{align*}
+p(\boldsymbol{\tau}, \mu, \sigma \mid \boldsymbol{y}) &\propto \left(\prod_{i=1}^n \tau_i\right)^{-1/2}\exp\left\{-\frac{1}{2}\sum_{i=1}^n \frac{(y_i-\mu)^2}{\tau_i}\right\} \\&\quad \times \frac{1}{\sigma^{n+1}}\exp\left(-\frac{1}{2\sigma}\sum_{i=1}^n \tau_i\right)
+\end{align*}
+and $\mu \mid \cdots$ and $\sigma \mid \cdots$ are, as usual, Gaussian and inverse gamma, respectively. The variances, $\tau_j$, are conditionally independent of one another with
+\begin{align*}
+p(\tau_j \mid \mu, \sigma, y_j) &\propto \tau_j^{-1/2}\exp\left\{-\frac{1}{2}\frac{(y_j-\mu)^2}{\tau_j} -\frac{1}{2} \frac{\tau_j}{\sigma}\right\}
+\end{align*}
+so with $\xi_j=1/\tau_j$, we have
+\begin{align*}
+p(\xi_j \mid \mu, \sigma, y_j) &\propto \xi_j^{-3/2}\exp\left\{-\frac{1}{2\sigma}\frac{\xi_j(y_j-\mu)^2}{\sigma} -\frac{1}{2} \frac{1}{\xi_j}\right\}\\
+\end{align*}
+and we recognize the latter as a Wald (or inverse Gaussian) distribution, whose density function is
+\begin{align*}
+f(y; \nu, \lambda) &= \left(\frac{\lambda}{2\pi y^{3}}\right)^{1/2} \exp\left\{ - \frac{\lambda (y-\nu)^2}{2\nu^2y}\right\}, \quad y > 0
+\\ &\stackrel{y}{\propto} y^{-3/2}\exp\left\{-\frac{\lambda}{2} \left(\frac{y}{\nu} + \frac{1}{y}\right)\right\}
+\end{align*}
+for location $\nu >0$ and shape $\lambda>0$, where $\xi_i \sim \mathsf{Wald}(\nu_i, \lambda)$ with $\nu_i=\{\sigma/(y_i-\mu)^2\}^{1/2}$ and $\lambda=\sigma^{-1}$.
+
+@Park.Casella:2008 use this hierarchical construction to defined the Bayesian LASSO. With a model matrix $\mathbf{X}$ whose columns are standardized to have mean zero and unit standard deviation, we may write
+\begin{align*}
+\boldsymbol{Y} \mid \mu, \boldsymbol{\beta}, \sigma^2 &\sim  \mathsf{Gauss}_n(\mu \boldsymbol{1}_n + \mathbf{X}\boldsymbol{\beta}, \sigma \mathbf{I}_n)\\
+\beta_j \mid \sigma, \tau &\sim \mathsf{Gauss}(0, \sigma\tau)\\
+\tau &\sim \mathsf{Exp}(\lambda/2)
+\end{align*}
+If we set an improper prior $p(\mu, \sigma) \propto \sigma^{-1}$, the resulting conditional distributions are all available and thus the model is amenable to Gibbs sampling.
+
+The Bayesian LASSO places a Laplace penalty on the regression coefficients, with lower values of $\lambda$ yielding more shrinkage. @fig-lasso-traceplot shows a replication of Figure 1 of @Park.Casella:2008, fitted to the `diabetes` data. Note that, contrary to the frequentist setting, none of the posterior draws of $\boldsymbol{\beta}$ are exactly zero.
+
+```{r}
+#| eval: true
+#| echo: false
+#| cache: true
+bayeslasso <- function(lambda = NULL,
+                       B = 1e4L,
+                       x,
+                       y){
+  stopifnot(is.matrix(x), is.vector(y))
+  # Scale inputs in case
+  x <- scale(x, center = TRUE, scale = FALSE)
+  y <- y - mean(y)
+  # Check method
+  if(is.null(lambda)){
+    method <- "empbayes"
+  } else{
+    method <- "fixed"
+  }
+  burnin <- 250L
+  # Precompute quantities and dimensions
+  xtx <- crossprod(x)
+  p <- ncol(x)
+  n <- nrow(x)
+  # Obtain initial estimates
+  linmod <- lm(y ~ x - 1)
+  betaols <- coef(linmod)
+  beta.curr <- betaols
+  sigmasq.curr <- mean(residuals(linmod)^2)
+  tausqinv.curr <- rep(1, p)
+  # Value reported in the text for the optimal parameter: lambda = 0.237
+  beta.ind <- 1:p
+  sigmasq.ind <- p + 1L
+  tausq.ind <- seq(from = p + 2L, length.out = p, by = 1L)
+  chains <- matrix(0, nrow = B, ncol = p + 1 + p +
+                     ifelse(method == "fixed", 0,1))
+  if(method == "fixed"){
+    colnames(chains) <- c(paste0("beta", 1:p), "sigmasq",
+                          paste0("tausq", 1:p))
+    lambdasq.curr <- lambda[1]^2
+  } else{
+    colnames(chains) <- c(paste0("beta", 1:p), "sigmasq",
+                          paste0("tausq", 1:p), "lambda")
+    lambdasq.curr <- p*sqrt(sigmasq.curr)/sum(abs(betaols))
+    lambdasq.ind <- ncol(chains)
+  }
+# MCMC loop
+for(b in seq_len(B+burnin)){
+  ind <- pmax(1, b-burnin)
+  Ainv <- solve(xtx + diag(tausqinv.curr))
+  beta.curr <- chains[ind,beta.ind] <- as.numeric(
+    mvtnorm::rmvnorm(
+      n = 1,
+      mean = as.numeric(Ainv %*% t(x) %*% y),
+      sigma = sigmasq.curr*Ainv))
+  sigmasq.curr <- chains[ind, sigmasq.ind] <- 1/rgamma(
+    n = 1,
+    shape = (n-1+p)/2,
+    rate = sum((y-x %*% beta.curr)^2)/2 +
+      sum(beta.curr^2*tausqinv.curr)/2)
+  # Compute marginal posterior mean for lambda, using section 3.1
+  sumexpect <- 0
+  for(j in 1:p){
+    tausqinv.curr[j] <- actuar::rinvgauss(
+      n = 1,
+      mean = sqrt(lambdasq.curr*sigmasq.curr)/abs(beta.curr[j]),
+      dispersion = 1/lambdasq.curr)
+    if(method != "fixed"){
+    sumexpect <- sumexpect + mean(1/actuar::rinvgauss(
+      n = 1000,
+      mean = sqrt(lambdasq.curr*sigmasq.curr)/abs(beta.curr[j]),
+      dispersion = 1/lambdasq.curr))
+    }
+  }
+  chains[ind, tausq.ind] <- 1/tausqinv.curr
+  if(method != "fixed"){
+    lambdasq.curr <- chains[ind, lambdasq.ind] <- 2*p/sumexpect
+  }
+}
+  if(method != "fixed"){
+  chains[, lambdasq.ind] <- sqrt(chains[, lambdasq.ind])
+}
+# Cast Markov chains to mcmc class object.
+chains.mcmc <- coda::as.mcmc(chains)
+# Effective sample size
+ess <- as.integer(round(coda::effectiveSize(chains.mcmc), 0))
+
+# Compute WAIC from log pointwise density
+lppd <- 0
+penalty <- 0
+for(i in seq_len(n)){
+  lppd_i <- dnorm(
+    x = y[i],
+    mean = as.numeric(chains[,beta.ind] %*% c(x[i,])),
+    sd = sqrt(chains[,sigmasq.ind]),
+    log = TRUE)
+  # print(paste0("Iteration", i, ": ", round(mean(lppd_i),2), " and ", round(var(lppd_i), 2)))
+  lppd <- lppd + mean(lppd_i)
+  penalty <- penalty + var(lppd_i)
+}
+waic <- (-lppd + penalty)/n
+l1norm <- mean(rowSums(abs(chains[,beta.ind])))
+
+# Parameter estimates and 95% equitailed credible intervals
+quant <- t(apply(chains, 2,
+                quantile, prob = c(0.025, 0.5, 0.975)))
+regpar <- as.data.frame(cbind(quant,
+                colMeans(chains),
+                coda::batchSE(chains.mcmc),
+                ess))
+regpar$pars <- rownames(quant)
+rownames(regpar) <- NULL
+colnames(regpar) <- c("lower", "median", "upper",
+                      "mean", "se", "ess", "par")
+regpar <- regpar[,c(7,4:5,1:3,6)]
+attr(regpar, "waic") <- waic
+attr(regpar, "l1norm") <- l1norm
+ return(regpar)
+}
+```
+
+
+```{r}
+#| eval: true
+#| echo: false
+#| cache: true
+#| label: fig-lasso-traceplot
+#| fig-cap: "Traceplot of $\\beta$ coefficients (penalized maximum likelihood estimates and median aposteriori as a function of the $l_1$ norm of the coefficients, with lower values of the latter corresponding to higher values of the penalty $\\lambda$."
+# Call the MCMC sampler
+set.seed(2023)
+data(diabetes, package = "lars")
+x <- as.matrix(diabetes$x)
+y <- diabetes$y - mean(diabetes$y)
+lambdaseq <- exp(seq(-2,3, length.out = 21))
+lasso_lambda <- glmnet::cv.glmnet(x = x, y = y, lambda = lambdaseq)
+#plot(lasso_lambda)
+lasso <- glmnet::glmnet(y = y, x = x, lambda = lambdaseq)
+
+lasso_empbayes <- bayeslasso(lambda = NULL, x = x, y = y, B = 1e4)
+bayesian_lasso <- list()
+for(i in seq_along(lambdaseq)){
+  bayesian_lasso[[i]] <- bayeslasso(lambda = lambdaseq[i], x = x, y = y, B = 1e4)
+}
+
+coefs_beta <- t(sapply(bayesian_lasso, function(x){x[1:10,'median']}))
+colnames(coefs_beta) <- rownames(lasso$beta)
+l1norm <- sapply(bayesian_lasso, function(x){attr(x, "l1norm")})
+# Extract the value of WAIC
+waic <- sapply(bayesian_lasso, function(x){attr(x, "waic")})
+# plot(log(lambdaseq), 2*length(diabetes$y)*waic)
+
+lasso_coefs <- tidyr::pivot_longer(data = data.frame(
+    t(as.matrix(lasso$beta)),
+    lambda = lasso$lambda,
+    l1norm = colSums(as.matrix(abs(lasso$beta))),
+    type = "frequentist"),
+                    cols = 1:10,
+                    names_to = "covariate",
+                    values_to = "coef")
+blasso_coefs <- tidyr::pivot_longer(
+  data = data.frame(
+    coefs_beta,
+          lambda = lambdaseq,
+          l1norm = l1norm,
+          type = "Bayesian"),
+  cols = 1:10,
+  names_to = "covariate",
+  values_to = "coef")
+est <- rbind(lasso_coefs, blasso_coefs) |>
+  dplyr::mutate(covariate = factor(covariate),
+                type = factor(type))
+ggplot(data = est,
+       mapping = aes(x = l1norm,
+                     y = coef,
+                     col = covariate,
+                     linetype = type)) +
+  geom_line(show.legend = c("colour" = FALSE, "linetype" = TRUE)) +
+  labs(x = "l1 norm",
+       y = "",
+       subtitle = "estimated regression coefficient",
+       caption = "posterior median based on 10K iterations") +
+  theme_classic() +
+  theme(legend.position = "bottom")
+# plot(lasso)
+# matplot(c(0,l1norm), rbind(rep(0,10), coefs_beta), type = "l", add = TRUE, lty = 2)
+# matplot(log(lasso$lambda), t(as.matrix(lasso$beta)), type = "l",lty = 1)
+# matplot(log(lambdaseq), coefs_beta, type = "l", add = TRUE, lty = 2)
+```
+
+```{r}
+#| eval: true
+#| echo: false
+save(bayesian_lasso, file = "models/bayesian_lasso.RData")
+```
+
+Many elliptical distributions can be cast as scale mixture models of spherical or Gaussian variables; see, e.g.,  Section 10.2 of @Albert:2009 for a similar derivation with a Student-$t$ distribution.
+
+
+:::
+
+:::{#exm-mixture}
+
+## Mixture models
+
+In clustering problems, we can specify that observations arise from a mixture model with a fixed or unknown number of coefficients: the interest lies then in estimating
+
+A $K$-mixture model is a weighted combination of models frequently used in clustering or to model subpopulations with respective densities $f_k$, with density
+$$f(x; \boldsymbol{\theta}, \boldsymbol{\omega}) = \sum_{k=1}^K \omega_kf_k(x; \boldsymbol{\theta}_k), \qquad \omega_1 + \cdots \omega_K=1.$$
+Since the density involves a sum, numerical optimization is challenging. Let $C_i$ denote the cluster index for observation $i$: if we knew the value of $C_i =j$, the density would involve only $f_j$. We can thus use latent variables representing the group allocation to simplify the problem and run an EM algorithm or use the data augmentation. In an iterative framework, we can consider the complete data as the tuples $(X_i, Z_i)$, where $Z_i = \mathsf{I}(C_i=k)$.
+
+With the augmented data, the conditional distribution of $Z_i \mid X_i, \boldsymbol{\omega}, \boldsymbol{\theta} \sim \mathsf{multinom}(1, \boldsymbol{\gamma}_{ik})$ where $$\gamma_{ik} = \frac{\omega_k f_k(X_i\boldsymbol{\theta}_k)}{\sum_{j=1}^K f_j(X_i\boldsymbol{\theta}_k)}.$$
+Given suitable priors for the probabilities $\boldsymbol{\omega}$ and $\boldsymbol{\theta} \equiv \{\boldsymbol{\theta}_1, \ldots, \boldsymbol{\theta}_k\}$, we can use Gibbs sampling updating $\boldsymbol{Z}$, $\boldsymbol{\omega}$ and $\boldsymbol{\theta}$ in turn.
+
+:::

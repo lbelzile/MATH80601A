@@ -1,0 +1,450 @@
+
+# Bayesian workflow
+
+
+```{r}
+#| label: setup
+#| file: "_common.R"
+#| include: true
+#| message: false
+#| warning: false
+#| echo: false
+```
+
+
+For a given problem, there are many different Markov chain Monte Carlo algorithms that one can implement: they will typically be distinguished based on the running time and the efficiency (with algorithms providing chains that have low autocorrelation being better). Many visual diagnostics and standard tests can be used to diagnose lack of convergence, or inefficiency. The purpose of this section is to review these in turn.
+
+The Bayesian workflow is a coherent framework for model construction, estimation and validation. It typically involves multiple iterations tuning, adapting and modifying both the models and the algorithms in the hope of achieving a model that is useful [@Gelman:2020]; see also [Michael Betancourt](https://betanalpha.github.io/assets/case_studies/principled_bayesian_workflow.html) for excellent visualizations.
+
+
+
+To illustrate these, we revisit the model from @exm-randomeffects with a penalized complexity prior for the individual effect $\alpha_i$ and vague normal priors. We also fit a simple Poisson model with only the fixed effect, taking $Y_{ij} \sim \mathsf{Poisson}\{\exp(\beta_j)\}$ with $\beta_j \sim \mathsf{Gauss}(0,100)$ has much too little variability relative to the observations.
+
+### Trace plots
+
+It is useful to inspect visually the Markov chain, as it may indicate several problems. If the chain drifts around without stabilizing around the posterior mode, then we can suspect that it hasn't reached it's stationary distribution (likely due to poor starting values). In such cases, we need to disregard the dubious draws from the chain by discarding the so-called warm up or **burn in** period. While there are some guarantees of convergence in the long term, silly starting values may translate into tens of thousands of iterations lost wandering around in regions with low posterior mass. Preliminary optimization and plausible starting values help alleviate these problems. @fig-badstart shows the effect of bad starting values on a toy problem where convergence to the mode is relatively fast. If the proposal is in a flat region of the space, it can wander around for a very long time before converging to the stationary distribution.
+
+If we run several chains, as in @fig-badstart, with different starting values, we can monitor convergence by checking whether these chains converge to the same target. A **trace rank** plots, shown on right panel of @fig-badstart, compares the rank of the values of the different chain at a given iteration: with good mixing, the ranks should switch frequently and be distributed uniformly across integers.
+
+
+```{r}
+#| eval: true
+#| echo: false
+#| label: fig-badstart
+#| fig-cap: "Traceplots of three Markov chains for the same target with different initial values for the first 500 iterations (left) and trace rank plot after discarding these (right)."
+set.seed(80601)
+niter <- 2500
+fakesamp <- rnorm(n = 20, mean = 1, sd = 2)
+fn <- function(par){ sum(dnorm(fakesamp, mean = par, sd = 2, log = TRUE))}
+chain1 <- matrix(nrow = niter, ncol = 1)
+colnames(chain1) <- "beta"
+chain2 <- chain3 <-  chain1
+cur <- c(-50, 10, 0)
+for(i in seq_len(niter)){
+  chain1[i,1] <- mgp::mh.fun(cur = cur[1], lb = -Inf, ub = Inf, prior.fun = identity, lik.fun = fn, pcov = matrix(0.3), cond = FALSE, transform = FALSE)$cur
+  chain2[i,1] <- mgp::mh.fun(cur = cur[2], lb = -Inf, ub = Inf, prior.fun = identity, lik.fun = fn, pcov = matrix(0.3), cond = FALSE, transform = FALSE)$cur
+  chain3[i,1] <- mgp::mh.fun(cur = cur[3], lb = -Inf, ub = Inf, prior.fun = identity, lik.fun = fn, pcov = matrix(0.3), cond = FALSE, transform = FALSE)$cur
+  cur <- c(chain1[i,1], chain2[i,1], chain3[i,1])
+}
+# coda::traceplot(coda::as.mcmc(chains_goldi))
+bayesplot::color_scheme_set("darkgray")
+mcmc_list <- coda::mcmc.list(
+  coda::mcmc(chain1),
+  coda::mcmc(chain2),
+  coda::mcmc(chain3))
+mcmc_list2 <- coda::mcmc.list(
+  coda::mcmc(chain1[-(1:500),,drop = FALSE]),
+  coda::mcmc(chain2[-(1:500),,drop = FALSE]),
+  coda::mcmc(chain3[-(1:500),,drop = FALSE]))
+g1 <- bayesplot::mcmc_trace(
+  x = mcmc_list,
+  n_warmup = 0,window = c(1,500)) +
+  labs(y = "") +
+  theme(legend.position = "none")
+g2 <- bayesplot::mcmc_rank_overlay(
+  x = mcmc_list2) +
+  labs(y = "") +
+  theme(legend.position = "none")
+g1 + g2
+```
+
+
+
+```{r}
+#| eval: true
+#| echo: false
+#| warning: false
+#| message: false
+#| cache: true
+#| include: false
+#| label: fit-modelsimple
+library(cmdstanr)
+data(smartwatch, package = "hecbayes")
+pois_simple <- cmdstanr::cmdstan_model(stan_file = "models/poisson_simple.stan")
+postsamps <- pois_simple $sample(data = with(
+  smartwatch,
+  list(N = length(nviolation),
+       K = length(levels(task)),
+       y = as.integer(nviolation),
+       fixed = as.integer(task))),
+  iter_warmup = 1000,
+  iter_sampling = 10000,
+  chains = 1,
+  refresh = 0L,
+  output_dir = "models",
+  output_basename = "Poisson_simple",
+  show_messages = FALSE)
+data(smartwatch, package = "hecbayes")
+output1 <- cmdstanr::read_cmdstan_csv("models/Poisson_mixed3-1.csv")[["post_warmup_draws"]]
+output2 <- cmdstanr::read_cmdstan_csv("models/Poisson_simple-1.csv")[["post_warmup_draws"]]
+coef_beta <- paste0("beta[",as.integer(smartwatch$task),"]")
+id_beta <- match(coef_beta, dimnames(output1)[[3]])
+coef_alpha <- paste0("alpha[",as.integer(smartwatch$id),"]")
+id_alpha <- match(coef_alpha, dimnames(output1)[[3]])
+B <- dim(output1)[1]
+n <- nrow(smartwatch)
+loglik_pt1 <- matrix(nrow = B, ncol = n)
+postpred1 <- matrix(nrow = B, ncol = n)
+for(b in seq_len(B)){
+loglik_pt1[b,] <- dpois(
+  x = smartwatch$nviolation,
+  lambda = exp(output1[b,1,id_alpha] + output1[b,1,id_beta]),
+  log = TRUE)
+postpred1[b,] <- rpois(
+  n = n,
+  lambda = exp(output1[b,1,id_alpha] + output1[b,1,id_beta]))
+}
+B2 <- dim(output2)[1]
+id_beta <- match(coef_beta, dimnames(output2)[[3]])
+loglik_pt2 <- matrix(nrow = B2, ncol = n)
+postpred2 <- matrix(nrow = B2, ncol = n)
+for(b in seq_len(B2)){
+loglik_pt2[b,] <- dpois(
+  x = smartwatch$nviolation,
+  lambda = exp(output2[b,1,id_beta]),
+  log = TRUE)
+postpred2[b,] <- rpois(
+  n = n,
+  lambda = exp(output2[b,1,id_beta]))
+}
+
+```
+
+### Diagnostics of convergence
+
+Generally, one would run a MCMC algorithm. The first iterations, used during the burn in period to tune proposal variances and allow the chains to converge to the stationary distribution, are discarded.
+If visual inspection of the chains reveal that some of the chains for one or more parameters are not stationary until some iteration, we will discard all of these in addition.
+
+The target of inference is functional (i.e., one-dimensional summaries of the chain): we need to have convergence of the latter, but also sufficient effective sample size for our averages to be accurate (at least to two significant digits).
+
+```{r}
+#| eval: true
+#| echo: false
+#| message: false
+#| warning: false
+class(output1) <- class(output2) <- "array"
+ess1 <- floor(coda::effectiveSize(coda::as.mcmc(output1[,1,-1])))
+ess2 <- floor(coda::effectiveSize(coda::as.mcmc(output2[,1,-1])))
+```
+
+For the Poisson example, the effective sample size for the $\boldsymbol{\beta}$ for the multilevel model is a bit higher than 1000 with $B=5000$ iterations, whereas we have for the simple naive model is $`r round(min(ess2),digits = 0)`$ for $B=10000$ draws, suggesting superefficient sampling. The dependency between $\boldsymbol{\alpha}$ and $\boldsymbol{\beta}$ is responsible for the drop in accuracy.
+
+The `coda` (convergence diagnosis and output analysis) **R** package contains many tests. For example, the Geweke $Z$-score compares the averages for the beginning and the end of the chain: rejection of the null implies lack of convergence, or poor mixing.
+
+<!-- The Gelman--Rubin $\widehat{R}$ diagnostic, which is advocated in STAN, is a multi-chain diagnostic that compares the within-chain variability to the between-chain variability. The value should be  -->
+
+Running multiple Markov chains can be useful for diagnostics. The Gelman--Rubin diagnostic $\widehat{R},$ also called potential scale reduction statistic, is obtained by considering the difference between within-chains and between-chains variance. Suppose we run $M$ chains for $B$ iterations, post burn in. Denoting by $\theta_{bm}$ the $b$th draw of the $m$th chain, we compute the global average $\overline{\theta} = B^{-1}M^{-1}\sum_{b=1}^B \sum_{m=1}^m \theta_{bm}$ and similarly the chain sample average and variances, respectively $\overline{\theta}_m$ and $\widehat{\sigma}^2_m$ ($m=1, \ldots, M$). The between-chain variance and within-chain variance estimator are
+\begin{align*}
+\mathsf{Va}_{\text{between}} &= \frac{B}{M-1}\sum_{m=1}^M (\overline{\theta}_m - \overline{\theta})^2\\
+\mathsf{Va}_{\text{within}} &= \frac{1}{M}\sum_{m=1}^m \widehat{\sigma}^2_m
+\end{align*}
+and we can compute
+\begin{align*}
+\widehat{R} = \left(\frac{\mathsf{Va}_{\text{within}}(B-1) + \mathsf{Va}_{\text{between}}}{B\mathsf{Va}_{\text{within}}}\right)^{1/2}
+\end{align*}
+The potential scale reduction statistic must be, by construction, larger than 1 in large sample. Any value larger than this is indicative of problems of convergence. While the Gelman--Rubin diagnostic is frequently reported, and any value larger than 1 deemed problematic, it is not enough to have approximately $\widehat{R}=1$ to guarantee convergence, but large values are usually indication of something being amiss. @fig-rhat shows two instances where the chains are visually very far from having the same average and this is reflected by the large values of $\widehat{R}.$
+
+```{r}
+#| eval: true
+#| echo: false
+#| label: fig-rhat
+#| fig-cap: "Two pairs of Markov chains: the top ones seem stationary, but with different modes. This makes the between chain variance substantial, with a value of $\\widehat{R} \\approx 3.4,$ whereas the chains on the right hover around the same values of zero, but do not appear stable with $\\widehat{R} \\approx 1.6.$"
+B <- 1000
+set.seed(1234)
+c1 <- arima.sim(model = list(ar = c(0.6,0.2)),
+                           rand.gen = rexp,
+                           n = B) + -2
+c2 <- arima.sim(model = list(ar = c(0.5,0.2)),
+                           n = B) - 1
+chains <- coda::mcmc.list(
+  list(theta = coda::mcmc(c1),
+       theta = coda::mcmc(c2)))
+rhat1 <- coda::gelman.diag(chains)
+# bayesplot::mcmc_trace(chains)
+
+g1 <- ggplot(data = data.frame(
+    time = rep(seq_len(B), length.out = 2*B),
+    chain = c(c1, c2),
+    group = factor(rep(c(1,2), each = B))),
+  mapping = aes(x = time, y = chain, col = group)) +
+  geom_line() +
+  scale_color_manual(values = MetBrewer::met.brewer("Renoir", 3)[c(2:3)]) +
+  labs(x = "iteration number", y = "") +
+  theme_classic() +
+  theme(legend.position = "none")
+
+set.seed(1234)
+c1b <- arima.sim(model = list(ar = c(0.6,0.2)),
+                rand.gen = rnorm,
+                n = B) + seq(-2, 2, length.out = B)
+c2b <- arima.sim(model = list(ar = c(0.5,0.2)),
+                n = B) +  seq(2, -2, length.out = B)
+chains <- coda::mcmc.list(
+  list(theta = coda::mcmc(c1b),
+       theta = coda::mcmc(c2b)))
+rhat2 <- coda::gelman.diag(chains)
+# bayesplot::mcmc_trace(chains)
+
+g2 <- ggplot(data = data.frame(
+  time = rep(seq_len(B), length.out = 2*B),
+  chain = c(c1b, c2b),
+  group = factor(rep(c(1,2), each = B))),
+  mapping = aes(x = time, y = chain, col = group)) +
+  geom_line() +
+  scale_color_manual(values = MetBrewer::met.brewer("Renoir", 3)[c(2:3)]) +
+  labs(x = "iteration number", y = "") +
+  theme_classic() +
+  theme(legend.position = "none")
+
+g1 + g2
+```
+
+More generally, it is preferable to run a single chain for a longer period than run multiple chains sequentially, as there is a cost to initializing multiple times with different starting values since we must discard initial draws. With parallel computations, multiple chains are more frequent nowadays.
+
+
+
+MCMC algorithms are often run thinning the chain (i.e., keeping only a fraction of the samples drawn, typically every $k$ iteration). This is wasteful as we can of course get more precise estimates by keeping all posterior draws, whether correlated or not.
+The only argument in favor of thinning is limited storage capacity: if we run very long chains in a model with hundreds of parameters, we may run out of memory.
+
+
+### Posterior predictive checks
+
+Posterior predictive checks can be used to compare models of varying complexity.One of the visual diagnostics, outlined in @Gabry:2019, consists in computing a summary statistic of interest from the posterior predictive (whether mean, median, quantile, skewness, etc.) which is relevant for the problem at hand and which we hope our model can adequately capture.
+
+Suppose we have $B$ draws from the posterior and simulate for each $n$ observations from the posterior predictive $p(\widetilde{\boldsymbol{y}} \mid \boldsymbol{y})$: we can benchmark summary statistics from our original data $\boldsymbol{y}$ with the posterior predictive copies $\widetilde{\boldsymbol{y}}_b.$ @fig-posterior-pred-check shows this for the two competing models and highlight the fact that the simpler model is not dispersed enough. Even the more complex model struggles to capture this additional heterogeneity with the additional variables. One could go back to the drawing board and consider a negative binomial model.
+
+
+```{r}
+#| eval: true
+#| echo: false
+#| warning: false
+#| message: false
+#| cache: true
+#| label: fig-posterior-pred-check
+#| fig-cap: "Posterior predictive checks for the standard deviation (top) and density of posterior draws (bottom) for hierarchical Poisson model with individual effects (left) and simpler model with only conditions (right)."
+
+g1 <- ggplot(data = data.frame(med= apply(postpred1, 2, sd)),
+             mapping =aes(x=med)) +
+  geom_histogram(mapping = aes(y = ..density..)) +
+  geom_vline(xintercept = median(smartwatch$nviolation)) +
+  scale_y_continuous(expand = expansion(mult = c(0,0.1))) +
+  labs(x = "std. dev of number of violations", y = "") +
+  theme_classic()
+g2 <-  ggplot(data = data.frame(med= apply(postpred2, 2, sd)),
+             mapping =aes(x=med)) +
+  geom_histogram(mapping = aes(y = ..density..)) +
+  geom_vline(xintercept = median(smartwatch$nviolation)) +
+  scale_y_continuous(expand = expansion(mult = c(0,0.1))) +
+  labs(x = "std. deviation of number of violations", y = "") +
+  theme_classic()
+library(bayesplot)
+pp_check.foo <- function(object, type = c("multiple", "overlaid"), ...) {
+  type <- match.arg(type)
+  y <- object[["y"]]
+  yrep <- object[["yrep"]]
+  stopifnot(nrow(yrep) >= 50)
+  samp <- sample(nrow(yrep), size = ifelse(type == "overlaid", 50, 5))
+  yrep <- yrep[samp, ]
+
+  if (type == "overlaid") {
+    ppc_dens_overlay(y, yrep, ...) + theme(legend.position = "none")
+  } else {
+    ppc_hist(y, yrep, ...)+ theme(legend.position = "none")
+  }
+}
+
+color_scheme_set("gray")
+postlist <- list(
+  y = smartwatch$nviolation,
+  yrep = postpred1)
+class(postlist) <- "foo"
+g3 <- pp_check(postlist,
+  type = "overlaid")
+postlist$yrep <- postpred2
+g4 <- pp_check(postlist,
+  type = "overlaid")
+# g3 <- ggplot(data = data.frame(med= apply(postpred1, 2, median)),
+#              mapping =aes(x=med)) +
+#   geom_histogram(mapping = aes(y = ..density..)) +
+#   geom_vline(xintercept = median(smartwatch$nviolation)) +
+#   scale_y_continuous(expand = expansion(mult = c(0,0.1))) +
+#   labs(x = "median number of violations", y = "") +
+#   theme_classic()
+# g4 <-  ggplot(data = data.frame(med= apply(postpred2, 2, median)),
+#              mapping =aes(x=med)) +
+#   geom_histogram(mapping = aes(y = ..density..)) +
+#   geom_vline(xintercept = median(smartwatch$nviolation)) +
+#   scale_y_continuous(expand = expansion(mult = c(0,0.1))) +
+#   labs(x = "median number of violations", y = "") +
+#   theme_classic()
+(g1 + g2) / (g3 + g4)
+# library(brms)
+# fitmodel <- brms::brm(nviolation ~ task + (1 | id),
+#           family = poisson,
+#           data = smartwatch,
+#           prior = c(set_prior("normal(0,10)", class = "b"),
+#                     set_prior("cauchy(0,3)", class = "sd")),
+#           warmup = 1000, iter = 2000, chains = 4, )
+waic1 <- round(-mean(apply(loglik_pt1, 2, mean)) +
+                 mean(apply(loglik_pt1, 2, var)),2)
+waic2 <- round(-mean(apply(loglik_pt2, 2, mean)) +
+                 mean(apply(loglik_pt2, 2, var)),2)
+
+```
+
+### Information criterion
+
+The widely applicable information criterion [@Watanabe:2010] is a measure of predictive performance that approximates the cross-validation loss.
+Consider first the log pointwise predictive density, defined as the expected value over the posterior distribution $p(\boldsymbol{\theta} \mid \boldsymbol{y}),$
+\begin{align*}
+\mathsf{LPPD}_i = \mathsf{E}_{\boldsymbol{\theta} \mid \boldsymbol{y}} \left\{ \log p(y_i \mid \boldsymbol{\theta})\right\}.
+\end{align*}
+The higher the value of the predictive density $\mathsf{LPPD}_i,$ the better the fit for that observation.
+
+As in general information criteria, we sum over all observations, adding a penalization factor that approximates the effective number of parameters in the model, with
+\begin{align*}
+n\mathsf{WAIC} = -\sum_{i=1}^n \mathsf{LPPD}_i + \sum_{i=1}^n \mathsf{Va}_{\boldsymbol{\theta} \mid \boldsymbol{y}}\{\log p(y_i \mid \boldsymbol{\theta})\}
+\end{align*}
+where we use again the empirical variance to compute the rightmost term. When comparing competing models, we can rely on their values of $\mathsf{WAIC}$ to discriminate about the predictive performance. To compute $\mathsf{WAIC},$ we need to store the values of the log density of each observation, or at least minimally [compute the running mean and variance accurately](https://www.johndcook.com/blog/standard_deviation/) pointwise at storage cost $\mathrm{O}(n).$ Note that Section 7.2 of @Gelman:2013 define the widely applicable information criterion as $2n \times \mathsf{WAIC}$  to make on par with other information criteria, which are defined typically on the deviance scale and so that lower values correspond to higher predictive performance.
+
+An older criterion  which has somewhat fallen out of fashion is the **deviance** information criterion of @Spiegelhalter:2002. It is defined as
+\begin{align*}
+\mathsf{DIC} = -2 \ell(\widetilde{\boldsymbol{\theta}}) + 2 p_D
+\end{align*}
+where $p_D$ is the posterior expectation of the deviance relative to the point estimator of the parameter $\widetilde{\boldsymbol{\theta}}$ (e.g., the maximum a posteriori or the posterior mean)
+\begin{align*}
+p_D = \mathsf{E}\{D(\boldsymbol{\theta}, \widetilde{\boldsymbol{\theta}}) \mid \boldsymbol{y}\}= \int 2 \{ \ell(\widetilde{\boldsymbol{\theta}}) - \ell(\boldsymbol{\theta})\} f(\boldsymbol{\theta} \mid \boldsymbol{y} \mathrm{d} \boldsymbol{\theta}
+\end{align*}
+The DIC can be easily evaluated by keeping track of the log likelihood evaluated at each posterior draw from a Markov chain Monte Carlo algorithm. The penalty term $p_D$ is however not invariant to reparametrizations. Assuming we can derive a multivariate Gaussian approximation to the MLE under suitable regularity conditions, the $\mathsf{DIC}$ is equivalent in large samples to $\mathsf{AIC}.$ The $\mathsf{DIC}$ is considered by many authors as not being a Bayesian procedure; see @Spiegelhalter:2014 and the discussion therein.
+
+:::{#exm-smartwatch-infocriteria}
+
+## Information criteria for smartwatch and Bayesian LASSO
+
+For the smartwatch model, we get a value of `r round(waic1,2)` for the complex model and `r round(waic2,2)`: this suggests an improvement in using individual-specific effects.
+
+```{r}
+#| eval: false
+#| echo: true
+#' WAIC
+#' @param loglik_pt B by n matrix of pointwise log likelihood
+WAIC <- function(loglik_pt){
+  -mean(apply(loglik_pt, 2, mean)) +  mean(apply(loglik_pt, 2, var))
+}
+```
+
+We can also look at the predictive performance. For the `diabetes` data application with the Bayesian LASSO with fixed $\lambda,$ the predictive performance is a trade-off between the effective number of parameter (with larger penalties translating into smaller number of parameters) and the goodness-of-fit. @fig-waic-blasso shows that the decrease in predictive performance is severe when estimates are shrunk towards 0, but the model performs equally well for small penalties.
+
+```{r}
+#| eval: true
+#| echo: false
+load("models/bayesian_lasso.RData")
+data(diabetes, package = "lars")
+lambdaseq <- exp(seq(-2,3, length.out = 21))
+```
+
+```{r}
+#| eval: true
+#| echo: false
+#| label: fig-waic-blasso
+#| fig-cap: "Widely applicable information criterion for the Bayesian LASSO problem fitted to the diabetes data, as a function of the penalty $\\lambda.$"
+waic <- sapply(bayesian_lasso, function(x){attr(x, "waic")})
+ggplot(data = data.frame(penalty =log(lambdaseq),
+                         sWAIC = 2*length(diabetes$y)*waic),
+       mapping = aes(x = penalty, y = sWAIC)) +
+  geom_line() +
+  geom_point() +
+  geom_vline(xintercept = lambdaseq[which.min(waic)]) +
+  labs(x = expression(log(lambda)),
+       y = "",
+       subtitle = "scaled WAIC") +
+  theme_classic()
+
+
+```
+
+:::
+
+Ideally, one would measure the predictive performance using the leave-one-out predictive distribution for observation $i$ given all the rest, $p(y_i \mid \boldsymbol{y}_{-i}),$ to avoid double dipping --- the latter is computationally intractable because it would require running $n$ Markov chains with $n-1$ observations each, but we can get a good approximation using importance sampling.  The `loo` package uses this with generalized Pareto smoothing to avoid overly large weights.
+
+Once we have the collection of estimated  $p(y_i \mid \boldsymbol{y}_{-i}),$ we can assess the probability level of each observation. This gives us a set of values which should be  approximately uniform if the model was perfectly calibrated. The probability of seeing an outcome as extreme as $y_i$ can be obtained by simulating draws from the posterior predictive given $\boldsymbol{y}_{-i}$ and computing the scaled rank of the original observation. Values close to zero or one may indicate outliers.
+
+
+```{r}
+#| echo: false
+#| eval: true
+#| label: fig-loocv-qqplots
+#| warning: false
+#| message: false
+#| fig-cap: "Quantile-quantile plots based on leave-one-out cross validation for model for the Poisson hierarchical model with the individual random effects (left) and without (right)."
+loo_test1 <- loo::loo(loglik_pt1, save_psis = TRUE)
+g1 <- bayesplot::ppc_loo_pit_qq(
+  y = smartwatch$nviolation,
+  yrep = postpred1,
+  lw = weights(loo_test1$psis_object)
+)
+loo_test2 <- loo::loo(loglik_pt2, save_psis = TRUE)
+g2 <- bayesplot::ppc_loo_pit_qq(
+  y = smartwatch$nviolation,
+  yrep = postpred2,
+  lw = weights(loo_test2$psis_object)
+)
+g1 + g2
+```
+
+<!--
+Consider hybrid mixture of independent MH and random walk, or mean-centered
+
+```{r}
+#| eval: false
+#| echo: false
+dpareto <- function(x, scale, shape, log = FALSE){
+  stopifnot(scale > 0, shape > 0)
+  bad <- !(is.finite(x) & x >= scale)
+  d <- numeric(length = length(x))
+  d[bad] <- -Inf
+  d[!bad] <- log(shape) + shape*log(scale) - (shape+1)*log(x[!bad]);
+  if(log){
+    return(d)
+  } else{
+    return(exp(d))
+    }
+}
+mle_pareto <- function(x){
+  c(scale = min(x), shape = length(x)/sum(log(x)- log(min(x))))
+}
+
+
+```
+
+
+<!--
+Examples
+
+- Meta analysis? Table 5.4 of Gelman, check for data from researchbox
+
+A meta-analysis is a combination of the results of different studies (of the same quantities), aggregated to increase the power. Given some standardized effect size and a measure of it's standard error, we can considered a weighted average. Since studies have different sample size, the more precise ones get assigned a higher weight.
+
+A simple model, following @Gelman:2006, is to assume the effect size is Gaussian and treat the mean and variance as constant if each study is based on sufficient sample so that mean and variance are reliably estimated. We can then model data as a mixed model with a study-specific random effect.
+-->
+

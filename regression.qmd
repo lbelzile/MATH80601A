@@ -36,7 +36,7 @@ where
 \begin{align*}
 \boldsymbol{\Omega}_n &= \mathbf{X}^\top\mathbf{X} + \boldsymbol{\Omega}_0\\
 \boldsymbol{\mu}_n &= \boldsymbol{\Omega}_n^{-1}(\mathbf{X}^\top\mathbf{X}\widehat{\boldsymbol{\beta}} + \boldsymbol{\Omega}_0\boldsymbol{\mu}_0) = \boldsymbol{\Omega}_n^{-1}(\mathbf{X}^\top\boldsymbol{y} + \boldsymbol{\Omega}_0\boldsymbol{\mu}_0)\\
-\tau_n &= \tau_0 + (\boldsymbol{y} - \mathbf{X}\widehat{\boldsymbol{\beta}})^\top(\boldsymbol{y} - \mathbf{X}\widehat{\boldsymbol{\beta}}) + (\boldsymbol{\mu}_n - \widehat{\boldsymbol{\beta}})^\top \mathbf{X}^\top\mathbf{X}(\boldsymbol{\mu}_n - \widehat{\boldsymbol{\beta}}) + (\boldsymbol{\mu}_n-\boldsymbol{\mu}_0)^\top\boldsymbol{\Omega}_0(\boldsymbol{\mu}_n-\boldsymbol{\mu}_0)
+\tau_n &= \tau_0 + (\boldsymbol{y} - \mathbf{X}\widehat{\boldsymbol{\beta}})^\top(\boldsymbol{y} - \mathbf{X}\widehat{\boldsymbol{\beta}}) + (\boldsymbol{\mu}_n - \widehat{\boldsymbol{\beta}})^\top \mathbf{X}^\top\mathbf{X}(\boldsymbol{\mu}_n - \widehat{\boldsymbol{\beta}}) \\& \quad + (\boldsymbol{\mu}_n-\boldsymbol{\mu}_0)^\top\boldsymbol{\Omega}_0(\boldsymbol{\mu}_n-\boldsymbol{\mu}_0)
 \end{align*}
 
 :::
@@ -109,7 +109,7 @@ In contexts where the number of regressors $p$ is considerable relative to the s
 The spike-and-slab prior is a two-component mixture that assigns a positive probability to zero via a point mass or a vary narrow distribution centered at the origin (the spike) and the balance to the slab, a diffuse distribution.
 
 
-Originally proposed by @Mitchell.Beauchamp:1988 with a uniform on a large interval, the term was also used in @George.Mitchell:1993, which replace both components,  to enable conjugacy, by Gaussians. The first one of these is diffuse and the other has near infinite precision at the origin. Letting $\gamma_j \in [0,1]$ denote the probability of the slab or inclusion of the variable, the independent priors for the regression coefficients are
+Originally proposed by @Mitchell.Beauchamp:1988 with a uniform on a large interval, the term was also used in @George.McCulloch:1993, which replace both components,  to enable conjugacy, by Gaussians. The first one of these is diffuse and the other has near infinite precision at the origin. Letting $\gamma_j \in [0,1]$ denote the probability of the slab or inclusion of the variable, the independent priors for the regression coefficients are
 \begin{align*}
  \beta_j \mid \gamma_j, c_j^2,\phi^2_j \sim (1-\gamma_j) \mathsf{Gauss}(0, \phi^2_j) + \gamma_j \mathsf{Gauss}(0, \sigma_j^2\phi^2)
 \end{align*}
@@ -124,6 +124,6 @@ where $\sigma^2_j$ is very nearly zero. We set a Jeffrey's prior for $\gamma_j \
 ## Horseshoe prior
 
 
-The horseshoe prior of @Carvalho.Polson.Scott:2009
+The horseshoe prior of @Carvalho.Polson.Scott:2010
 
 :::

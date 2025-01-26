@@ -304,14 +304,14 @@
 \floatname{codelisting}{Listing}
 \newcommand*\listoflistings{\listof{codelisting}{List of Listings}}
 \usepackage{amsthm}
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}[chapter]
 \theoremstyle{plain}
 \newtheorem{theorem}{Theorem}[chapter]
 \theoremstyle{plain}
 \newtheorem{proposition}{Proposition}[chapter]
 \theoremstyle{definition}
 \newtheorem{exercise}{Exercise}[chapter]
-\theoremstyle{definition}
-\newtheorem{definition}{Definition}[chapter]
 \theoremstyle{definition}
 \newtheorem{example}{Example}[chapter]
 \theoremstyle{remark}
@@ -369,7 +369,7 @@ details.
 These notes are licensed under a
 \href{http://creativecommons.org/licenses/by-nc-sa/4.0/}{Creative
 Commons Attribution-NonCommercial-ShareAlike 4.0 International License}
-and were last compiled on vendredi, janvier 24 2025.
+and were last compiled on Saturday, January 25 2025.
 
 The objective of the course is to provide a hands on introduction to
 Bayesian data analysis. The course will cover the formulation,
@@ -1597,381 +1597,6 @@ distribution \(p(Y_t \mid Y_{t-1}, \ldots, Y_{t-p})\) equals
 \(p(Y_t \mid Y_{t-1}).\) This means the likelihood is \begin{align*}
 \ell(\mu, \phi,\sigma^2)& = -\frac{n}{2}\log(2\pi) - n\log \sigma + \frac{1}{2}\log(1-\phi^2) \\&\quad -\frac{(1-\phi^2)(y_1- \mu)^2}{2\sigma^2} - \sum_{i=2}^n \frac{(y_t - \mu(1-\phi)- \phi y_{t-1})^2}{2\sigma^2}
 \end{align*}
-
-\end{example}
-
-\section{Monte Carlo methods}\label{monte-carlo-methods}
-
-Monte Carlo methods relies on the ability to simulate random variable.
-If the quantile function admits a closed-form, we can use this to
-simulation. Recall that if a random variable \(X\) has distribution
-function \(F\), then we can define it's \textbf{generalized inverse}
-\begin{align*}
-F^{-1}(u) = \inf\{x: f(x) \geq u\}
-\end{align*} and if \(G\) is continuous, then
-\(F(X) \sim \mathsf{unif}(0,1)\). We can thus simulate data using the
-quantile function \(F^{-1}(U),\), with \(U \sim \mathsf{unif}(0,1)\).
-
-\begin{theorem}[Fundamental theorem of
-simulation]\protect\hypertarget{thm-fundamental-simulation}{}\label{thm-fundamental-simulation}
-
-Consider a \(d\)-variate random vector \(\boldsymbol{X}\), independently
-\(U \sim \mathsf{unif}(0,1)\) and \(c>0\) any positive constant. If
-\((\boldsymbol{X}, U)\) is uniformly distributed on the set
-\begin{align*}
-\mathcal{A}_{f}=\{(\boldsymbol{x}, u): 0 \leq u \leq  c f(\boldsymbol{x})\},
-\end{align*} then \(\boldsymbol{X}\) has density \(f(\boldsymbol{x})\).
-Conversely, if \(\boldsymbol{X}\) has density \(f(\boldsymbol{x})\) and
-\(U\sim\mathsf{unif}(0,1)\) independently, then
-\([\boldsymbol{X}, cUf(\boldsymbol{X})]\) is uniformly distributed on
-\(\mathcal{A}_f\)
-
-We cam thus view \(f\) as the marginal density of \(\boldsymbol{X}\)
-since \(f(\boldsymbol{x}) = \int_0^{f(\boldsymbol{x})} \mathrm{d} u.\)
-If we can simulate uniformly from \(\mathcal{A}_{f}\), then, we can
-discard the auxiliary variable \(u\). See Devroye
-(\citeproc{ref-Devroye:1986}{1986}), Theorem 3.1 for a proof.
-
-\begin{figure}[ht!]
-
-\centering{
-
-\pandocbounded{\includegraphics[keepaspectratio]{introduction_files/figure-pdf/fig-fundamental-theorem-1.pdf}}
-
-}
-
-\caption{\label{fig-fundamental-theorem}Illustration of the fundamental
-theorem of simulation. All points in blue below the density curve belong
-to \(\mathcal{A}_f\).}
-
-\end{figure}%
-
-\end{theorem}
-
-The fundamental theorem of simulation underlies rejection sampling, the
-generalized ratio of uniform and slice sampling. The density function
-needs only to be known up to normalizing constant thanks to the
-arbitrariness of \(c\), which will also allow us to work with
-unnormalized density functions.
-
-\begin{proposition}[Rejection
-sampling]\protect\hypertarget{prp-rejection-sampling}{}\label{prp-rejection-sampling}
-
-Rejection sampling (also termed accept-reject algorithm) samples from a
-random vector with density \(p(\cdot)\) by drawing candidates from a
-proposal with density \(q(\cdot)\) with nested support,
-\(\mathrm{supp}(p) \subseteq \mathrm{supp}(q).\) The density
-\(q(\cdot)\) must be such that
-\(p(\boldsymbol{\theta}) \leq C q(\boldsymbol{\theta})\) for
-\(C \geq 1\) for all values of \(\boldsymbol{\theta}\) in the support of
-\(p(\cdot).\)
-
-\begin{enumerate}
-\def\labelenumi{\arabic{enumi}.}
-\tightlist
-\item
-  Generate \(\boldsymbol{\theta}^{\star}\) from the proposal with
-  density \(q\) and \(U \sim \mathsf{U}(0,1)\)
-\item
-  Compute the ratio
-  \(R \gets p(\boldsymbol{\theta}^{\star})/ q(\boldsymbol{\theta}^{\star}).\)
-\item
-  If \(R \geq CU,\) return \(\boldsymbol{\theta},\) else go back to step
-  1.
-\end{enumerate}
-
-\end{proposition}
-
-\begin{figure}[ht!]
-
-\centering{
-
-\pandocbounded{\includegraphics[keepaspectratio]{introduction_files/figure-pdf/fig-acceptreject-1.pdf}}
-
-}
-
-\caption{\label{fig-acceptreject}Target density (full) and scaled
-proposal density (dashed): the vertical segment at \$ heta=1\$ shows the
-percentage of acceptance for a uniform slice under the scaled proposal,
-giving an acceptance ratio of 0.58.}
-
-\end{figure}%
-
-Rejection sampling requires the proposal \(q\) to have a support at
-least as large as that of \(p\) and resemble closely the density. It
-should be chosen so that the upper bound \(C\) is as sharp as possible
-and close to 1. The dominating density \(q\) must have heavier tails
-than the density of interest. The expected number of simulations needed
-to accept one proposal is \(C.\) Finally, for the method to be useful,
-we need to be able to simulate easily and cheaply from the proposal. The
-optimal value of \(C\) is
-\(C = \sup_{\boldsymbol{\theta}} p(\boldsymbol{\theta}) / q(\boldsymbol{\theta}).\)
-This quantity may be obtained by numerical optimization, by finding the
-mode of the ratio of the log densities if the maximum is not known
-analytically.
-
-\begin{example}[Truncated Gaussian
-distribution]\protect\hypertarget{exm-accept-reject-truncated}{}\label{exm-accept-reject-truncated}
-
-Consider the problem of sampling from a Gaussian distribution
-\(Y \sim \mathsf{Gauss}(\mu, \sigma^2)\) truncated in the interval
-\([a, b],\) which has density \begin{align*}
-f(x; \mu, \sigma, a, b) = \frac{1}{\sigma}\frac{\phi\left(\frac{x-\mu}{\sigma}\right)}{\Phi\{(b-\mu)/\sigma\}-\Phi\{(a-\mu)/\sigma\}}.
-\end{align*} where \(\phi(\cdot), \Phi(\cdot)\) are respectively the
-density and distribution function of the standard Gaussian distribution.
-
-Since the Gaussian is a location-scale family, we can reduce the problem
-to sampling \(X\) from a standard Gaussian truncated on
-\(\alpha = (a-\mu)/\sigma\) and \(\beta = (b-\mu)/\sigma\) and back
-transform the result as \(Y = \mu + \sigma X.\)
-
-A crude accept-reject sampling algorithm would consider sampling from
-the same untruncated distribution with density
-\(g(X) = \sigma^{-1}\phi\{(x-\mu)/\sigma\},\) and the acceptance ratio
-is \(C^{-1}=\{\Phi(\beta) - \Phi(\alpha)\}.\) We thus simply simulate
-points from the Gaussian and accept any that falls within the bounds.
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\CommentTok{\# Standard Gaussian truncated on [0,1]}
-\NormalTok{candidate }\OtherTok{\textless{}{-}} \FunctionTok{rnorm}\NormalTok{(}\FloatTok{1e5}\NormalTok{)}
-\NormalTok{trunc\_samp }\OtherTok{\textless{}{-}}\NormalTok{ candidate[candidate }\SpecialCharTok{\textgreater{}=} \DecValTok{0} \SpecialCharTok{\&}\NormalTok{ candidate }\SpecialCharTok{\textless{}=} \DecValTok{1}\NormalTok{]}
-\CommentTok{\# Acceptance rate}
-\FunctionTok{length}\NormalTok{(trunc\_samp)}\SpecialCharTok{/}\FloatTok{1e5}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{verbatim}
-[1] 0.34242
-\end{verbatim}
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\CommentTok{\# Theoretical acceptance rate}
-\FunctionTok{pnorm}\NormalTok{(}\DecValTok{1}\NormalTok{)}\SpecialCharTok{{-}}\FunctionTok{pnorm}\NormalTok{(}\DecValTok{0}\NormalTok{)}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{verbatim}
-[1] 0.3413447
-\end{verbatim}
-
-We can of course do better: if we consider a random variable with
-distribution function \(F,\) but truncated over the interval \([a,b],\)
-then the resulting distribution function is
-\[\frac{F(x) - F(a)}{F(b)-F(a)}, \qquad a \leq x \leq b,\] and we can
-invert this expression to get the quantile function of the truncated
-variable in terms of the distribution function \(F\) and the quantile
-function \(F^{-1}\) of the original untruncated variable.
-
-For the Gaussian, this gives \begin{align*}
-X \sim \Phi^{-1}\left[\Phi(a) + \{\Phi(b)-\Phi(a)\}U\right]
-\end{align*} for \(U \sim \mathsf{U}(0,1).\) Although the quantile and
-distribution functions of the Gaussian, \texttt{pnorm} and
-\texttt{qnorm} in \textbf{R}, are very accurate, this method will fail
-for rare event simulation because it will return \(\Phi(x) = 0\) for
-\(x \leq -39\) and \(\Phi(x)=1\) for \(x \geq 8.3,\) implying that
-\(a \leq 8.3\) for this approach to work
-(\citeproc{ref-LEcuyer.Botev:2017}{Botev and L'Écuyer 2017}).
-
-Consider the problem of simulating events in the right tail for a
-standard Gaussian where \(a > 0\); Marsaglia's method
-(\citeproc{ref-Devroye:1986}{Devroye 1986, 381}), can be used for that
-purpose. Write the density of the Gaussian as
-\(f(x) = \exp(-x^2/2)/c_1,\) where
-\(c_1 = \int_{a}^{\infty}\exp(-z^2/2)\mathrm{d} z,\) and note that
-\[c_1f(x) \leq \frac{x}{a}\exp\left(-\frac{x^2}{2}\right)= a^{-1}\exp\left(-\frac{a^2}{2}\right)g(x), \qquad x \geq a;\]
-where \(g(x)\) is the density of a Rayleigh variable shifted by \(a,\)
-which has distribution function \(G(x) = 1-\exp\{(a^2-x^2)/2\}\) for
-\(x \geq a.\) We can simulate such a random variate \(X\) through the
-inversion method. The constant \(C= \exp(-a^2/2)(c_1a)^{-1}\) approaches
-1 quickly as \(a \to \infty.\)
-
-The accept-reject thus proceeds with
-
-\begin{enumerate}
-\def\labelenumi{\arabic{enumi}.}
-\tightlist
-\item
-  Generate a shifted Rayleigh above \(a,\)
-  \(X \gets  \{a^2 - 2\log(U)\}^{1/2}\) for \(U \sim \mathsf{U}(0,1)\)
-\item
-  Accept \(X\) if \(XV \leq a,\) where \(V \sim \mathsf{U}(0,1).\)
-\end{enumerate}
-
-Should we wish to obtain samples on \([a,b],\) we could instead propose
-from a Rayleigh truncated above at \(b\)
-(\citeproc{ref-LEcuyer.Botev:2017}{Botev and L'Écuyer 2017}).
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{a }\OtherTok{\textless{}{-}} \FloatTok{8.3}
-\NormalTok{niter }\OtherTok{\textless{}{-}} \DecValTok{1000}\NormalTok{L}
-\NormalTok{X }\OtherTok{\textless{}{-}} \FunctionTok{sqrt}\NormalTok{(a}\SpecialCharTok{\^{}}\DecValTok{2} \SpecialCharTok{+} \DecValTok{2}\SpecialCharTok{*}\FunctionTok{rexp}\NormalTok{(niter))}
-\NormalTok{samp }\OtherTok{\textless{}{-}}\NormalTok{ X[}\FunctionTok{runif}\NormalTok{(niter)}\SpecialCharTok{*}\NormalTok{X }\SpecialCharTok{\textless{}=}\NormalTok{ a]}
-\end{Highlighting}
-\end{Shaded}
-
-\end{example}
-
-For a given candidate density \(g\) which has a heavier tail than the
-target, we can resort to numerical methods to compute the mode of the
-ratio \(f/g\) and obtain the bound \(C\); see Albert
-(\citeproc{ref-Albert:2009}{2009}), Section 5.8 for an insightful
-example. A different use for the simulations is to approximate integrals
-numerically. Consider a target distribution with finite expected value.
-The law of large numbers guarantees that, if we can draw observations
-from our target distribution, then the sample average will converge to
-the expected value of that distribution, as the sample size becomes
-larger and larger, provided the expectation is finite. We can thus
-compute the probability of any event or the expected value of any
-(integrable) function by computing sample averages; the cost to pay for
-this generality is randomness.
-
-\begin{proposition}[Monte Carlo
-integration]\protect\hypertarget{prp-monte-carlo-integration}{}\label{prp-monte-carlo-integration}
-
-Specifically, suppose we are interested in the average
-\(\mathsf{E}\{g(X)\}\) of \(X\) with density or mass function \(f\)
-supported on \(\mathcal{X}\) for some function \(g.\) Monte Carlo
-integration proceeds by drawing \(B\) independent samples
-\(x_1, \ldots, x_B\) from density \(p\) and evaluating the empirical
-average of \(g,\) with \begin{align*}
-\mathsf{E}\{g(X)\} = \int_{\mathcal{X}} g(x) p(x) \mathrm{d} x \approx \widehat{\mathsf{E}}\{g(X)\}=\frac{1}{B}\sum_{b=1}^B g(x_b).
-\end{align*} By the law of large number, this estimator is convergent
-when \(B \to \infty\) provided that the expectation is finite. If the
-variance of \(g(X)\) is finite, we can approximate the latter by the
-sample variance of the simple random sample and obtain the Monte Carlo
-standard error of the estimator \begin{align*}
-\mathsf{se}^2[\widehat{\mathsf{E}}\{g(X)\}] = \frac{1}{B(B-1)} \sum_{b=1}^B \left[ g(x_b) -  \widehat{\mathsf{E}}\{g(X)\} \right]^2.
-\end{align*}
-
-\end{proposition}
-
-We can also use a similar idea to evaluate the integral of \(g(X)\) if
-\(X\) has density \(p\), by drawing instead samples from \(q\). This is
-formalized in the next proposition.
-
-\begin{proposition}[Importance
-sampling]\protect\hypertarget{prp-importance-sampling}{}\label{prp-importance-sampling}
-
-Consider a random variable \(X\) with density \(p(x)\) supported on
-\(\mathcal{X}\). We can calculate the integral
-\(\mathsf{E}_p\{g(X)\} = \int_{\mathcal{X}} g(x) p(x) \mathrm{d}x\) by
-considering instead draws from a density \(q(\cdot)\) with nested
-support, \(\mathcal{X} \subseteq \mathrm{supp}(q).\) Then,
-\begin{align*}
-\mathsf{E}\{g(X)\} = \int_{\mathcal{X}} g(x) \frac{p(x)}{q(x)} q(x) \mathrm{d} x
-\end{align*} and we can proceed similarly by drawing samples from \(q\).
-This is most useful when the variance is finite, which happens if the
-integral \begin{align*}
-\int_{\mathcal{X}} g^2(x) \frac{p^2(x)}{q(x)} \mathrm{d} x < \infty.
-\end{align*} An alternative Monte Carlo estimator, which is biased but
-has lower variance, is obtained by drawing independent
-\(x_1, \ldots, x_B\) from \(q\) and taking instead the weighted average
-of \begin{align*}
-\widetilde{\mathsf{E}}\{g(X)\} =\frac{B^{-1} \sum_{b=1}^B w_b g(x_b) }{B^{-1}\sum_{b=1}^B w_b}.
-\end{align*} with weights \(w_b = p(x_b)/q(x_b)\). The latter equal 1 on
-average, so one could omit the denominator without harm. The standard
-error for the independent draws equals \begin{align*}
-\mathsf{se}^2[\widetilde{\mathsf{E}}\{g(X)\}] = \frac{ \sum_{b=1}^B w_b^2 \left[ g(x_b) -  \widetilde{\mathsf{E}}\{g(X)\} \right]^2}{\left(\sum_{b=1}^B w_b\right)^2}.
-\end{align*}
-
-\end{proposition}
-
-\begin{example}[]\protect\hypertarget{exm-expectation-demo}{}\label{exm-expectation-demo}
-
-Consider \(X \sim \mathsf{gamma}(\alpha, \beta),\) a gamma distribution
-with shape \(\alpha\) and rate \(\beta.\) We can compute the probability
-that \(X < 1\) easily by Monte Carlo since
-\(\Pr(X <1) = \mathsf{E}\{\mathrm{I}(X<1)\}\) and this means we only
-need to compute the proportion of draws less than one. We can likewise
-compute the mean \(g(x) = x\) or variance.
-
-Suppose we have drawn a Monte Carlo sample of size \(B.\) If the
-function \(g(\cdot)\) is square integrable,\footnote{Meaning
-  \(\mathsf{E}\{g^2(X)\}<\infty,\) so the variance of \(g(X)\) exists.}
-with variance \(\sigma^2_g,\) then a central limit theorem applies. In
-large samples and for independent observations, our Monte Carlo average
-\(\widehat{\mu}_g = B^{-1}\sum_{b=1}^B g(X_i)\) has variance
-\(\sigma^2_g/B.\) We can approximate the unknown variance \(\sigma^2_g\)
-by it's empirical counterpart.\footnote{By contrasts, if data are
-  identically distributed but not independent, more care is needed.}.
-Note that, while the variance decreases linearly with \(B,\) the choice
-of \(g\) impacts the speed of convergence: for our examples, we can
-compute \[\sigma^2_g =\Pr(X \leq 1)\{1-\Pr(X \leq 1)\}=0.0434\] (left)
-and \(\sigma^2_g=\alpha/\beta^2=1/8\) (middle plot).
-
-Figure~\ref{fig-monte-carlo-path} shows the empirical trace plot of the
-Monte Carlo average (note the \(\sqrt{B}\) \(x\)-axis scale!) as a
-function of the Monte Carlo sample size \(B\) along with 95\% Wald-based
-confidence intervals (gray shaded region),
-\(\widehat{\mu}_g \pm 1.96 \times \sigma_g/\sqrt{B}.\) We can see that
-the `likely region' for the average shrinks with \(B.\)
-
-What happens if our function is not integrable? The right-hand plot of
-Figure~\ref{fig-monte-carlo-path} shows empirical averages of
-\(g(x) = x^{-1},\) which is not integrable if \(\alpha < 1.\) We can
-compute the empirical average, but the result won't converge to any
-meaningful quantity regardless of the sample size. The large jumps are
-testimonial of this.
-
-\begin{figure}[ht!]
-
-\centering{
-
-\pandocbounded{\includegraphics[keepaspectratio]{introduction_files/figure-pdf/fig-monte-carlo-path-1.pdf}}
-
-}
-
-\caption{\label{fig-monte-carlo-path}Running mean trace plots for
-\(g(x)=\mathrm{I}(x<1)\) (left), \(g(x)=x\) (middle) and \(g(x)=1/x\)
-(right) for a Gamma distribution with shape 0.5 and rate 2, as a
-function of the Monte Carlo sample size.}
-
-\end{figure}%
-
-\end{example}
-
-\begin{example}[Tail probability of a Gaussian
-distribution]\protect\hypertarget{exm-tail-probability}{}\label{exm-tail-probability}
-
-Consider estimation of the probability that a standard Gaussian random
-variable exceeds \(a=4\), which is \(p=1-\Phi(a)\). We can use standard
-numerical approximations to the distribution function implemented in any
-software package, which shows this probability is roughly one in
-\(\ensuremath{3.1574\times 10^{4}}\).
-
-If we consider a truncated Gaussian above \(a\), then the integral of
-\(\mathsf{I}(x>a)\) is one (since the truncated Gaussian is a valid
-density). Thus, we can estimate rather the normalizing constant by
-simulating standard Gaussian and comparing this with the importance
-sampling estimator, using the knowledge of the value of the integral to
-derive rather the normalizing constant. Monte Carlo integration from
-with \(B=10^6\) is demonstrated using the following code
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{a }\OtherTok{\textless{}{-}} \DecValTok{4}
-\NormalTok{B }\OtherTok{\textless{}{-}} \FloatTok{1e6}\NormalTok{L }\CommentTok{\# 1 million draws}
-\NormalTok{exact }\OtherTok{\textless{}{-}} \FunctionTok{pnorm}\NormalTok{(a, }\AttributeTok{lower.tail =} \ConstantTok{FALSE}\NormalTok{)}
-\CommentTok{\# Vanilla Monte Carlo}
-\NormalTok{X }\OtherTok{\textless{}{-}} \FunctionTok{rnorm}\NormalTok{(B)}
-\NormalTok{mc }\OtherTok{\textless{}{-}} \FunctionTok{mean}\NormalTok{(X }\SpecialCharTok{\textgreater{}=}\NormalTok{ a)}
-
-\CommentTok{\# Importance sampling with Rayleigh}
-\NormalTok{Y }\OtherTok{\textless{}{-}} \FunctionTok{sqrt}\NormalTok{(a}\SpecialCharTok{\^{}}\DecValTok{2} \SpecialCharTok{+} \DecValTok{2}\SpecialCharTok{*}\FunctionTok{rexp}\NormalTok{(B))}
-\NormalTok{drayleigh }\OtherTok{\textless{}{-}} \ControlFlowTok{function}\NormalTok{(x, a)\{ x}\SpecialCharTok{*}\FunctionTok{exp}\NormalTok{((a}\SpecialCharTok{\^{}}\DecValTok{2}\SpecialCharTok{{-}}\NormalTok{x}\SpecialCharTok{\^{}}\DecValTok{2}\NormalTok{)}\SpecialCharTok{/}\DecValTok{2}\NormalTok{)\}}
-\NormalTok{is }\OtherTok{\textless{}{-}} \FunctionTok{mean}\NormalTok{(}\FunctionTok{dnorm}\NormalTok{(Y)}\SpecialCharTok{/}\FunctionTok{drayleigh}\NormalTok{(Y, }\AttributeTok{a =}\NormalTok{ a))}
-\CommentTok{\# Relative error}
-\FunctionTok{c}\NormalTok{(}\AttributeTok{mc =}\NormalTok{ (mc }\SpecialCharTok{{-}}\NormalTok{ exact)}\SpecialCharTok{/}\NormalTok{exact, }\AttributeTok{is =}\NormalTok{ (is }\SpecialCharTok{{-}}\NormalTok{ exact)}\SpecialCharTok{/}\NormalTok{exact)}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{verbatim}
-           mc            is 
--2.119405e-02 -2.927613e-05 
-\end{verbatim}
 
 \end{example}
 
@@ -3986,7 +3611,7 @@ median and the bars the 50\% and 95\% percentile credible intervals.}
 
 \bookmarksetup{startatroot}
 
-\chapter{Monte Carlo methods}\label{monte-carlo-methods-1}
+\chapter{Monte Carlo methods}\label{monte-carlo-methods}
 
 There are two major approaches to handling the problem of the unknown
 normalizing constant: deterministic and stochastic approximations. The
@@ -4016,18 +3641,411 @@ methods generate correlated draws that will target the posterior under
 suitable conditions.\footnote{While we won't focus on the fine prints of
   the contract, there are conditions for validity and these matter!}
 
+\section{Monte Carlo methods}\label{monte-carlo-methods-1}
+
+Monte Carlo methods relies on the ability to simulate random variable.
+If the quantile function admits a closed-form, we can use this to
+simulation. Recall that if a random variable \(X\) has distribution
+function \(F,\) then we can define it's \textbf{generalized inverse}
+\begin{align*}
+F^{-1}(u) = \inf\{x: f(x) \geq u\}
+\end{align*} and if \(G\) is continuous, then
+\(F(X) \sim \mathsf{unif}(0,1).\) We can thus simulate data using the
+quantile function \(F^{-1}(U),,\) with \(U \sim \mathsf{unif}(0,1).\)
+
+\begin{theorem}[Fundamental theorem of
+simulation]\protect\hypertarget{thm-fundamental-simulation}{}\label{thm-fundamental-simulation}
+
+Consider a \(d\)-variate random vector \(\boldsymbol{X},\) independently
+\(U \sim \mathsf{unif}(0,1)\) and \(c>0\) any positive constant. If
+\((\boldsymbol{X}, U)\) is uniformly distributed on the set
+\begin{align*}
+\mathcal{A}_{f}=\{(\boldsymbol{x}, u): 0 \leq u \leq  c f(\boldsymbol{x})\},
+\end{align*} then \(\boldsymbol{X}\) has density \(f(\boldsymbol{x}).\)
+Conversely, if \(\boldsymbol{X}\) has density \(f(\boldsymbol{x})\) and
+\(U\sim\mathsf{unif}(0,1)\) independently, then
+\([\boldsymbol{X}, cUf(\boldsymbol{X})]\) is uniformly distributed on
+\(\mathcal{A}_f\)
+
+We cam thus view \(f\) as the marginal density of \(\boldsymbol{X}\)
+since \(f(\boldsymbol{x}) = \int_0^{f(\boldsymbol{x})} \mathrm{d} u.\)
+If we can simulate uniformly from \(\mathcal{A}_{f},\) then, we can
+discard the auxiliary variable \(u.\) See Devroye
+(\citeproc{ref-Devroye:1986}{1986}), Theorem 3.1 for a proof.
+
+\begin{figure}[ht!]
+
+\centering{
+
+\pandocbounded{\includegraphics[keepaspectratio]{markovchains_files/figure-pdf/fig-fundamental-theorem-1.pdf}}
+
+}
+
+\caption{\label{fig-fundamental-theorem}Illustration of the fundamental
+theorem of simulation. All points in blue below the density curve belong
+to \(\mathcal{A}_f.\)}
+
+\end{figure}%
+
+\end{theorem}
+
+The fundamental theorem of simulation underlies rejection sampling, the
+generalized ratio of uniform and slice sampling. The density function
+needs only to be known up to normalizing constant thanks to the
+arbitrariness of \(c,\) which will also allow us to work with
+unnormalized density functions.
+
+\begin{proposition}[Rejection
+sampling]\protect\hypertarget{prp-rejection-sampling}{}\label{prp-rejection-sampling}
+
+Rejection sampling (also termed accept-reject algorithm) samples from a
+random vector with density \(p(\cdot)\) by drawing candidates from a
+proposal with density \(q(\cdot)\) with nested support,
+\(\mathrm{supp}(p) \subseteq \mathrm{supp}(q).\) The density
+\(q(\cdot)\) must be such that
+\(p(\boldsymbol{\theta}) \leq C q(\boldsymbol{\theta})\) for
+\(C \geq 1\) for all values of \(\boldsymbol{\theta}\) in the support of
+\(p(\cdot).\)
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  Generate \(\boldsymbol{\theta}^{\star}\) from the proposal with
+  density \(q\) and \(U \sim \mathsf{U}(0,1)\)
+\item
+  Compute the ratio
+  \(R \gets p(\boldsymbol{\theta}^{\star})/ q(\boldsymbol{\theta}^{\star}).\)
+\item
+  If \(R \geq CU,\) return \(\boldsymbol{\theta},\) else go back to step
+  1.
+\end{enumerate}
+
+\end{proposition}
+
+\begin{figure}[ht!]
+
+\centering{
+
+\pandocbounded{\includegraphics[keepaspectratio]{markovchains_files/figure-pdf/fig-acceptreject-1.pdf}}
+
+}
+
+\caption{\label{fig-acceptreject}Target density (full) and scaled
+proposal density (dashed): the vertical segment at \$ heta=1\$ shows the
+percentage of acceptance for a uniform slice under the scaled proposal,
+giving an acceptance ratio of 0.58.}
+
+\end{figure}%
+
+Rejection sampling requires the proposal \(q\) to have a support at
+least as large as that of \(p\) and resemble closely the density. It
+should be chosen so that the upper bound \(C\) is as sharp as possible
+and close to 1. The dominating density \(q\) must have heavier tails
+than the density of interest. The expected number of simulations needed
+to accept one proposal is \(C.\) Finally, for the method to be useful,
+we need to be able to simulate easily and cheaply from the proposal. The
+optimal value of \(C\) is
+\(C = \sup_{\boldsymbol{\theta}} p(\boldsymbol{\theta}) / q(\boldsymbol{\theta}).\)
+This quantity may be obtained by numerical optimization, by finding the
+mode of the ratio of the log densities if the maximum is not known
+analytically.
+
+\begin{example}[Truncated Gaussian
+distribution]\protect\hypertarget{exm-accept-reject-truncated}{}\label{exm-accept-reject-truncated}
+
+Consider the problem of sampling from a Gaussian distribution
+\(Y \sim \mathsf{Gauss}(\mu, \sigma^2)\) truncated in the interval
+\([a, b],\) which has density \begin{align*}
+f(x; \mu, \sigma, a, b) = \frac{1}{\sigma}\frac{\phi\left(\frac{x-\mu}{\sigma}\right)}{\Phi\{(b-\mu)/\sigma\}-\Phi\{(a-\mu)/\sigma\}}.
+\end{align*} where \(\phi(\cdot), \Phi(\cdot)\) are respectively the
+density and distribution function of the standard Gaussian distribution.
+
+Since the Gaussian is a location-scale family, we can reduce the problem
+to sampling \(X\) from a standard Gaussian truncated on
+\(\alpha = (a-\mu)/\sigma\) and \(\beta = (b-\mu)/\sigma\) and back
+transform the result as \(Y = \mu + \sigma X.\)
+
+A crude accept-reject sampling algorithm would consider sampling from
+the same untruncated distribution with density
+\(g(X) = \sigma^{-1}\phi\{(x-\mu)/\sigma\},\) and the acceptance ratio
+is \(C^{-1}=\{\Phi(\beta) - \Phi(\alpha)\}.\) We thus simply simulate
+points from the Gaussian and accept any that falls within the bounds.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Standard Gaussian truncated on [0,1]}
+\NormalTok{candidate }\OtherTok{\textless{}{-}} \FunctionTok{rnorm}\NormalTok{(}\FloatTok{1e5}\NormalTok{)}
+\NormalTok{trunc\_samp }\OtherTok{\textless{}{-}}\NormalTok{ candidate[candidate }\SpecialCharTok{\textgreater{}=} \DecValTok{0} \SpecialCharTok{\&}\NormalTok{ candidate }\SpecialCharTok{\textless{}=} \DecValTok{1}\NormalTok{]}
+\CommentTok{\# Acceptance rate}
+\FunctionTok{length}\NormalTok{(trunc\_samp)}\SpecialCharTok{/}\FloatTok{1e5}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+[1] 0.33977
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Theoretical acceptance rate}
+\FunctionTok{pnorm}\NormalTok{(}\DecValTok{1}\NormalTok{)}\SpecialCharTok{{-}}\FunctionTok{pnorm}\NormalTok{(}\DecValTok{0}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+[1] 0.3413447
+\end{verbatim}
+
+We can of course do better: if we consider a random variable with
+distribution function \(F,\) but truncated over the interval \([a,b],\)
+then the resulting distribution function is
+\[\frac{F(x) - F(a)}{F(b)-F(a)}, \qquad a \leq x \leq b,\] and we can
+invert this expression to get the quantile function of the truncated
+variable in terms of the distribution function \(F\) and the quantile
+function \(F^{-1}\) of the original untruncated variable.
+
+For the Gaussian, this gives \begin{align*}
+X \sim \Phi^{-1}\left[\Phi(a) + \{\Phi(b)-\Phi(a)\}U\right]
+\end{align*} for \(U \sim \mathsf{U}(0,1).\) Although the quantile and
+distribution functions of the Gaussian, \texttt{pnorm} and
+\texttt{qnorm} in \textbf{R}, are very accurate, this method will fail
+for rare event simulation because it will return \(\Phi(x) = 0\) for
+\(x \leq -39\) and \(\Phi(x)=1\) for \(x \geq 8.3,\) implying that
+\(a \leq 8.3\) for this approach to work
+(\citeproc{ref-LEcuyer.Botev:2017}{Botev and L'Écuyer 2017}).
+
+Consider the problem of simulating events in the right tail for a
+standard Gaussian where \(a > 0\); Marsaglia's method
+(\citeproc{ref-Devroye:1986}{Devroye 1986, 381}), can be used for that
+purpose. Write the density of the Gaussian as
+\(f(x) = \exp(-x^2/2)/c_1,\) where
+\(c_1 = \int_{a}^{\infty}\exp(-z^2/2)\mathrm{d} z,\) and note that
+\[c_1f(x) \leq \frac{x}{a}\exp\left(-\frac{x^2}{2}\right)= a^{-1}\exp\left(-\frac{a^2}{2}\right)g(x), \qquad x \geq a;\]
+where \(g(x)\) is the density of a Rayleigh variable shifted by \(a,\)
+which has distribution function \(G(x) = 1-\exp\{(a^2-x^2)/2\}\) for
+\(x \geq a.\) We can simulate such a random variate \(X\) through the
+inversion method. The constant \(C= \exp(-a^2/2)(c_1a)^{-1}\) approaches
+1 quickly as \(a \to \infty.\)
+
+The accept-reject thus proceeds with
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  Generate a shifted Rayleigh above \(a,\)
+  \(X \gets  \{a^2 - 2\log(U)\}^{1/2}\) for \(U \sim \mathsf{U}(0,1)\)
+\item
+  Accept \(X\) if \(XV \leq a,\) where \(V \sim \mathsf{U}(0,1).\)
+\end{enumerate}
+
+Should we wish to obtain samples on \([a,b],\) we could instead propose
+from a Rayleigh truncated above at \(b\)
+(\citeproc{ref-LEcuyer.Botev:2017}{Botev and L'Écuyer 2017}).
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{a }\OtherTok{\textless{}{-}} \FloatTok{8.3}
+\NormalTok{niter }\OtherTok{\textless{}{-}} \DecValTok{1000}\NormalTok{L}
+\NormalTok{X }\OtherTok{\textless{}{-}} \FunctionTok{sqrt}\NormalTok{(a}\SpecialCharTok{\^{}}\DecValTok{2} \SpecialCharTok{+} \DecValTok{2}\SpecialCharTok{*}\FunctionTok{rexp}\NormalTok{(niter))}
+\NormalTok{samp }\OtherTok{\textless{}{-}}\NormalTok{ X[}\FunctionTok{runif}\NormalTok{(niter)}\SpecialCharTok{*}\NormalTok{X }\SpecialCharTok{\textless{}=}\NormalTok{ a]}
+\end{Highlighting}
+\end{Shaded}
+
+\end{example}
+
+For a given candidate density \(g\) which has a heavier tail than the
+target, we can resort to numerical methods to compute the mode of the
+ratio \(f/g\) and obtain the bound \(C\); see Albert
+(\citeproc{ref-Albert:2009}{2009}), Section 5.8 for an insightful
+example. A different use for the simulations is to approximate integrals
+numerically. Consider a target distribution with finite expected value.
+The law of large numbers guarantees that, if we can draw observations
+from our target distribution, then the sample average will converge to
+the expected value of that distribution, as the sample size becomes
+larger and larger, provided the expectation is finite. We can thus
+compute the probability of any event or the expected value of any
+(integrable) function by computing sample averages; the cost to pay for
+this generality is randomness.
+
+\begin{proposition}[Monte Carlo
+integration]\protect\hypertarget{prp-monte-carlo-integration}{}\label{prp-monte-carlo-integration}
+
+Specifically, suppose we are interested in the average
+\(\mathsf{E}\{g(X)\}\) of \(X\) with density or mass function \(f\)
+supported on \(\mathcal{X}\) for some function \(g.\) Monte Carlo
+integration proceeds by drawing \(B\) independent samples
+\(x_1, \ldots, x_B\) from density \(p\) and evaluating the empirical
+average of \(g,\) with \begin{align*}
+\mathsf{E}\{g(X)\} = \int_{\mathcal{X}} g(x) p(x) \mathrm{d} x \approx \widehat{\mathsf{E}}\{g(X)\}=\frac{1}{B}\sum_{b=1}^B g(x_b).
+\end{align*} By the law of large number, this estimator is convergent
+when \(B \to \infty\) provided that the expectation is finite. If the
+variance of \(g(X)\) is finite, we can approximate the latter by the
+sample variance of the simple random sample and obtain the Monte Carlo
+standard error of the estimator \begin{align*}
+\mathsf{se}^2[\widehat{\mathsf{E}}\{g(X)\}] = \frac{1}{B(B-1)} \sum_{b=1}^B \left[ g(x_b) -  \widehat{\mathsf{E}}\{g(X)\} \right]^2.
+\end{align*}
+
+\end{proposition}
+
+We can also use a similar idea to evaluate the integral of \(g(X)\) if
+\(X\) has density \(p,\) by drawing instead samples from \(q.\) This is
+formalized in the next proposition.
+
+\begin{proposition}[Importance
+sampling]\protect\hypertarget{prp-importance-sampling}{}\label{prp-importance-sampling}
+
+Consider a random variable \(X\) with density \(p(x)\) supported on
+\(\mathcal{X}.\) We can calculate the integral
+\(\mathsf{E}_p\{g(X)\} = \int_{\mathcal{X}} g(x) p(x) \mathrm{d}x\) by
+considering instead draws from a density \(q(\cdot)\) with nested
+support, \(\mathcal{X} \subseteq \mathrm{supp}(q).\) Then,
+\begin{align*}
+\mathsf{E}\{g(X)\} = \int_{\mathcal{X}} g(x) \frac{p(x)}{q(x)} q(x) \mathrm{d} x
+\end{align*} and we can proceed similarly by drawing samples from \(q.\)
+This is most useful when the variance is finite, which happens if the
+integral \begin{align*}
+\int_{\mathcal{X}} g^2(x) \frac{p^2(x)}{q(x)} \mathrm{d} x < \infty.
+\end{align*} An alternative Monte Carlo estimator, which is biased but
+has lower variance, is obtained by drawing independent
+\(x_1, \ldots, x_B\) from \(q\) and taking instead the weighted average
+of \begin{align*}
+\widetilde{\mathsf{E}}\{g(X)\} =\frac{B^{-1} \sum_{b=1}^B w_b g(x_b) }{B^{-1}\sum_{b=1}^B w_b}.
+\end{align*} with weights \(w_b = p(x_b)/q(x_b).\) The latter equal 1 on
+average, so one could omit the denominator without harm. The standard
+error for the independent draws equals \begin{align*}
+\mathsf{se}^2[\widetilde{\mathsf{E}}\{g(X)\}] = \frac{ \sum_{b=1}^B w_b^2 \left[ g(x_b) -  \widetilde{\mathsf{E}}\{g(X)\} \right]^2}{\left(\sum_{b=1}^B w_b\right)^2}.
+\end{align*}
+
+\end{proposition}
+
+\begin{example}[]\protect\hypertarget{exm-expectation-demo}{}\label{exm-expectation-demo}
+
+Consider \(X \sim \mathsf{gamma}(\alpha, \beta),\) a gamma distribution
+with shape \(\alpha\) and rate \(\beta.\) We can compute the probability
+that \(X < 1\) easily by Monte Carlo since
+\(\Pr(X <1) = \mathsf{E}\{\mathrm{I}(X<1)\}\) and this means we only
+need to compute the proportion of draws less than one. We can likewise
+compute the mean \(g(x) = x\) or variance.
+
+Suppose we have drawn a Monte Carlo sample of size \(B.\) If the
+function \(g(\cdot)\) is square integrable,\footnote{Meaning
+  \(\mathsf{E}\{g^2(X)\}<\infty,\) so the variance of \(g(X)\) exists.}
+with variance \(\sigma^2_g,\) then a central limit theorem applies. In
+large samples and for independent observations, our Monte Carlo average
+\(\widehat{\mu}_g = B^{-1}\sum_{b=1}^B g(X_i)\) has variance
+\(\sigma^2_g/B.\) We can approximate the unknown variance \(\sigma^2_g\)
+by it's empirical counterpart.\footnote{By contrasts, if data are
+  identically distributed but not independent, more care is needed.}.
+Note that, while the variance decreases linearly with \(B,\) the choice
+of \(g\) impacts the speed of convergence: for our examples, we can
+compute \[\sigma^2_g =\Pr(X \leq 1)\{1-\Pr(X \leq 1)\}=0.0434\] (left)
+and \(\sigma^2_g=\alpha/\beta^2=1/8\) (middle plot).
+
+Figure~\ref{fig-monte-carlo-path} shows the empirical trace plot of the
+Monte Carlo average (note the \(\sqrt{B}\) \(x\)-axis scale!) as a
+function of the Monte Carlo sample size \(B\) along with 95\% Wald-based
+confidence intervals (gray shaded region),
+\(\widehat{\mu}_g \pm 1.96 \times \sigma_g/\sqrt{B}.\) We can see that
+the `likely region' for the average shrinks with \(B.\)
+
+What happens if our function is not integrable? The right-hand plot of
+Figure~\ref{fig-monte-carlo-path} shows empirical averages of
+\(g(x) = x^{-1},\) which is not integrable if \(\alpha < 1.\) We can
+compute the empirical average, but the result won't converge to any
+meaningful quantity regardless of the sample size. The large jumps are
+testimonial of this.
+
+\begin{figure}[ht!]
+
+\centering{
+
+\pandocbounded{\includegraphics[keepaspectratio]{markovchains_files/figure-pdf/fig-monte-carlo-path-1.pdf}}
+
+}
+
+\caption{\label{fig-monte-carlo-path}Running mean trace plots for
+\(g(x)=\mathrm{I}(x<1)\) (left), \(g(x)=x\) (middle) and \(g(x)=1/x\)
+(right) for a Gamma distribution with shape 0.5 and rate 2, as a
+function of the Monte Carlo sample size.}
+
+\end{figure}%
+
+\end{example}
+
+\begin{example}[Importance
+sampling]\protect\hypertarget{exm-importance-sampling}{}\label{exm-importance-sampling}
+
+~
+
+\end{example}
+
+\begin{example}[Tail probability of a Gaussian
+distribution]\protect\hypertarget{exm-tail-probability}{}\label{exm-tail-probability}
+
+Consider estimation of the probability that a standard Gaussian random
+variable exceeds \(a=4,\) which is \(p=1-\Phi(a).\) We can use standard
+numerical approximations to the distribution function implemented in any
+software package, which shows this probability is roughly one in
+\(\ensuremath{3.1574\times 10^{4}}.\)
+
+If we consider a truncated Gaussian above \(a,\) then the integral of
+\(\mathsf{I}(x>a)\) is one (since the truncated Gaussian is a valid
+density). Thus, we can estimate rather the normalizing constant by
+simulating standard Gaussian and comparing this with the importance
+sampling estimator, using the knowledge of the value of the integral to
+derive rather the normalizing constant. Monte Carlo integration from
+with \(B=10^6\) is demonstrated using the following code
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{a }\OtherTok{\textless{}{-}} \DecValTok{4}
+\NormalTok{B }\OtherTok{\textless{}{-}} \FloatTok{1e6}\NormalTok{L }\CommentTok{\# 1 million draws}
+\NormalTok{exact }\OtherTok{\textless{}{-}} \FunctionTok{pnorm}\NormalTok{(a, }\AttributeTok{lower.tail =} \ConstantTok{FALSE}\NormalTok{)}
+\CommentTok{\# Vanilla Monte Carlo}
+\NormalTok{X }\OtherTok{\textless{}{-}} \FunctionTok{rnorm}\NormalTok{(B)}
+\NormalTok{mc }\OtherTok{\textless{}{-}} \FunctionTok{mean}\NormalTok{(X }\SpecialCharTok{\textgreater{}=}\NormalTok{ a)}
+
+\CommentTok{\# Importance sampling with Rayleigh}
+\NormalTok{Y }\OtherTok{\textless{}{-}} \FunctionTok{sqrt}\NormalTok{(a}\SpecialCharTok{\^{}}\DecValTok{2} \SpecialCharTok{+} \DecValTok{2}\SpecialCharTok{*}\FunctionTok{rexp}\NormalTok{(B))}
+\NormalTok{drayleigh }\OtherTok{\textless{}{-}} \ControlFlowTok{function}\NormalTok{(x, a)\{ x}\SpecialCharTok{*}\FunctionTok{exp}\NormalTok{((a}\SpecialCharTok{\^{}}\DecValTok{2}\SpecialCharTok{{-}}\NormalTok{x}\SpecialCharTok{\^{}}\DecValTok{2}\NormalTok{)}\SpecialCharTok{/}\DecValTok{2}\NormalTok{)\}}
+\NormalTok{is }\OtherTok{\textless{}{-}} \FunctionTok{mean}\NormalTok{(}\FunctionTok{dnorm}\NormalTok{(Y)}\SpecialCharTok{/}\FunctionTok{drayleigh}\NormalTok{(Y, }\AttributeTok{a =}\NormalTok{ a))}
+\CommentTok{\# Relative error}
+\FunctionTok{c}\NormalTok{(}\AttributeTok{mc =}\NormalTok{ (mc }\SpecialCharTok{{-}}\NormalTok{ exact)}\SpecialCharTok{/}\NormalTok{exact, }\AttributeTok{is =}\NormalTok{ (is }\SpecialCharTok{{-}}\NormalTok{ exact)}\SpecialCharTok{/}\NormalTok{exact)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+           mc            is 
+-2.119405e-02 -2.927613e-05 
+\end{verbatim}
+
+\end{example}
+
 \section{Markov chains}\label{markov-chains}
 
 Before going forward with algorithms for sampling, we introduce some
 terminology that should be familiar to people with a background in time
 series analysis.
 
+\begin{definition}[Discrete-time stochastic
+process]\protect\hypertarget{def-stoch-proc}{}\label{def-stoch-proc}
+
+A discrete-time stochastic process is a random sequences whose elements
+are part of some set (finite or countable), termed state space
+\(\mathcal{S}.\) We can encode the probability of moving from one state
+to the next via a transition matrix, whose rows contain the
+probabilities of moving from one state to the next and thus sum to one.
+
+\end{definition}
+
 \begin{definition}[Stationarity and Markov
 property]\protect\hypertarget{def-weak-stationarity}{}\label{def-weak-stationarity}
 
 A stochastic (i.e., random) process is (weakly) stationary if the
 distribution of \(\{X_1, \ldots, X_t\}\) is the same as that of
-\(\{X_{n+1}, \ldots X_{t+n}\}\) for any value of \(n\) and given \(t\).
+\(\{X_{n+1}, \ldots X_{t+n}\}\) for any value of \(n\) and given \(t.\)
 
 It is Markov if it satisfies the Markov property: given the current
 state of the chain, the future only depends on the current state and not
@@ -4038,12 +4056,96 @@ on the past.
 Autoregressive processes are not the only ones we can consider, although
 their simplicity lends itself to analytic calculations.
 
+We can run a Markov chain by sampling an initial state \(X_0\) at random
+from \(\mathcal{S}\) and then consider the transitions from the
+conditional distribution, sampling \(p(X_t \mid X_{t-1}).\) This results
+in correlated draws, due to the reliance on the previous observation.
+
+When can we use output from a Markov chain in place of independent Monte
+Carlo draws? The assumptions laid out in the ergodic theorem, which
+provides guarantees for the convergence of sample average, are that the
+chain is irreducible. If the chain is also acyclic, the chain has a
+unique stationary distribution.
+
+Consider a Markov chain on integers \(\{1, 2, 3\}.\) Because of the
+Markov property, the history of the chain does not matter: we only need
+to read the value \(i=X_{t-1}\) of the state and pick the \(i\)th row of
+the transition matrix \(\mathbf{P}\) to know the probability of the
+different moves from the current state.
+
+Irreducible means that the chain can move from anywhere to anywhere, so
+it doesn't get stuck in part of the space forever. A transition matrix
+such as \(P_1\) below describes a reducible Markov chain, because once
+you get into state \(2\) or \(3,\) you won't escape. With reducible
+chains, the stationary distribution need not be unique, and so the
+target would depend on the starting values.
+
+Cyclical chains loop around and visit periodically a state: \(P_2\) is
+an instance of transition matrix describing a chain that cycles from
+\(1\) to \(3,\) \(3\) to \(2\) and \(2\) to \(1\) every three iteration.
+An acyclic chain is needed for convergence of marginals.
+
+\[
+P_1 = \begin{pmatrix}
+0.5 & 0.3 & 0.2 \\
+0 & 0.4 & 0.6 \\
+0 & 0.5 & 0.5
+\end{pmatrix},
+\qquad
+P_2 = \begin{pmatrix}
+0 & 0 & 1 \\
+1 & 0 & 0 \\
+0 & 1 & 0
+\end{pmatrix}.
+\]
+
+If a chain is irreducible and aperiodic, it has a unique stationary
+distribution and the limiting distribution of the Markov chain will
+converge there. For example, we consider a transition \(P_3\) on
+\(1, \ldots, 5\) defined as \[
+P_3 = \begin{pmatrix}
+\frac{2}{3} & \frac{1}{3} &  0 & 0 & 0 \\
+\frac{1}{6} & \frac{2}{3} & \frac{1}{6} & 0 & 0 \\
+0 & \frac{1}{6} & \frac{2}{3} & \frac{1}{6} & 0 \\
+0 & 0 & \frac{1}{6} & \frac{2}{3} & \frac{1}{6} \\
+0 & 0 & 0 &  \frac{1}{3}  & \frac{2}{3} \\
+\end{pmatrix}
+\] The stationary distribution is the value of the row vector
+\(\boldsymbol{p},\) such that
+\(\boldsymbol{p} = \boldsymbol{p}\mathbf{P}\) for transition matrix
+\(\mathbf{P}\): we get \(\boldsymbol{p}_1=(0, 5/11, 6/11)\) for \(P_1,\)
+\((1/3, 1/3, 1/3)\) for \(P_2\) and \((1,2,2,2,1)/8\) for \(P_3.\)
+
+While the existence of a stationary distribution require aperiodicity,
+the latter is an hindrance from a computational perspective as
+ergodicity is valid without it.
+
+Figure~\ref{fig-discrete-markov-chain} shows the path of the walk and
+the empirical proportion of the time spent in each state, as time
+progress. Since the Markov chain has a unique stationary distribution,
+we expect these to converge to it.
+
+\begin{figure}[ht!]
+
+\centering{
+
+\pandocbounded{\includegraphics[keepaspectratio]{markovchains_files/figure-pdf/fig-discrete-markov-chain-1.pdf}}
+
+}
+
+\caption{\label{fig-discrete-markov-chain}Discrete Markov chain on
+integers from 1 to 5, with transition matrix \(P_3,\) with traceplot of
+1000 first iterations (left) and running mean plots of sample proportion
+of each state visited per 100 iterations (right).}
+
+\end{figure}%
+
 \begin{proposition}[Effective sample
 size]\protect\hypertarget{prp-variance-clt}{}\label{prp-variance-clt}
 
 Intuitively, a sample of correlated observations carries less
 information than an independent sample of draws. If we want to compute
-sample averages \(\overline{Y}_T=(Y_1+ \cdots + Y_T)/T\), the variance
+sample averages \(\overline{Y}_T=(Y_1+ \cdots + Y_T)/T,\) the variance
 will be \begin{align*}
 \mathsf{Va}\left(\overline{Y}_T\right) = \frac{1}{T}\sum_{t=1}^T \mathsf{Va}(Y_t) + \frac{2}{T} \sum_{t=1}^{T-1}\sum_{s = t+1}^T \mathsf{Co}(Y_t, Y_s).
 \end{align*}
@@ -4055,7 +4157,7 @@ constant, say \(\sigma^2\); this allows us to simplify calculations,
 \begin{align*}
 \mathsf{Va}(\overline{Y}_T) = \sigma^2 \left\{ 1 + \frac{2}{T}\sum_{t=1}^{T-1} (T-t) \mathsf{Cor}(Y_{T-k}, Y_{T})\right\}.
 \end{align*} Denote the lag-\(k\) autocorrelation
-\(\mathsf{Cor}(Y_{t}, Y_{t+k})\) by \(\gamma_k\). Under technical
+\(\mathsf{Cor}(Y_{t}, Y_{t+k})\) by \(\gamma_k.\) Under technical
 conditions\footnote{Geometric ergodicity and existence of moments, among
   other things.}, a central limit theorem applies and we get an
 asymptotic variance for the mean of \begin{align*}
@@ -4091,10 +4193,10 @@ details.
 \begin{example}[]\protect\hypertarget{exm-ar1-clt-variance}{}\label{exm-ar1-clt-variance}
 
 The lag-\(k\) correlation of the stationary autoregressive process of
-order 1 is \(\phi^k\), so summing the series gives an asymptotic
+order 1 is \(\phi^k,\) so summing the series gives an asymptotic
 variance of \(\sigma^2(1+\phi)/(1-\phi).\) We can constrast that to the
 variance of the stationary distribution for an independent sample, which
-is \(\sigma^2/(1-\phi^2)\). The price to pay for having correlated
+is \(\sigma^2/(1-\phi^2).\) The price to pay for having correlated
 samples is inefficiency: the higher the autocorrelation, the larger the
 variability of our mean estimators.
 
@@ -4102,7 +4204,7 @@ variability of our mean estimators.
 
 \centering{
 
-\pandocbounded{\includegraphics[keepaspectratio]{mcmc_files/figure-pdf/fig-ar1-variance-1.pdf}}
+\pandocbounded{\includegraphics[keepaspectratio]{markovchains_files/figure-pdf/fig-ar1-variance-1.pdf}}
 
 }
 
@@ -4124,8 +4226,8 @@ times as many observations: this is the prize to pay.
 
 \end{example}
 
-\subsection{Uncertainty estimation with Markov
-chains}\label{uncertainty-estimation-with-markov-chains}
+\begin{proposition}[Uncertainty estimation with Markov
+chains]\protect\hypertarget{prp-uncertainty}{}\label{prp-uncertainty}
 
 With a simple random sample containing independent and identically
 distributed observations, the standard error of the sample mean is
@@ -4148,7 +4250,7 @@ method of batch means.
 \tightlist
 \item
   Break the chain of length \(B\) (after burn in) in \(K\) blocks of
-  size \(\approx K/B\).
+  size \(\approx K/B.\)
 \item
   Compute the sample mean of each segment. These values form a Markov
   chain and should be approximately uncorrelated.
@@ -4156,6 +4258,8 @@ method of batch means.
   Compute the standard deviation of the segments mean. Rescale by
   \(K^{-1/2}\) to get standard error of the global mean.
 \end{enumerate}
+
+\end{proposition}
 
 Why does the approach work? If the chain samples from the stationary
 distribution, all samples have the same mean. If we partition the sample
@@ -4170,7 +4274,7 @@ the smaller blocks.
 
 \centering{
 
-\pandocbounded{\includegraphics[keepaspectratio]{mcmc_files/figure-pdf/fig-mcmc-batchmean-1.pdf}}
+\pandocbounded{\includegraphics[keepaspectratio]{markovchains_files/figure-pdf/fig-mcmc-batchmean-1.pdf}}
 
 }
 
@@ -4179,98 +4283,10 @@ the posterior mean using the batch method.}
 
 \end{figure}%
 
-When can we use output from a Markov chain in place of independent Monte
-Carlo draws? The assumptions laid out in the ergodic theorem, which
-provides guarantees for the convergence of sample average, are that the
-chain is irreducible. If the chain is also acyclic, the chain has a
-unique stationary distribution.
-
-A discrete-time stochastic process is a random sequences whose elements
-are part of some set (finite or countable), termed state space
-\(\mathcal{S}\). We can encode the probability of moving from one state
-to the next via a transition matrix, whose rows contain the
-probabilities of moving from one state to the next and thus sum to one.
-We can run a Markov chain by sampling an initial state \(X_0\) at random
-from \(\mathcal{S}\) and then consider the transitions from the
-conditional distribution, sampling \(p(X_t \mid X_{t-1})\).
-
-Consider a Markov chain on integers \(\{1, 2, 3\}\). Because of the
-Markov property, the history of the chain does not matter: we only need
-to read the value \(i=X_{t-1}\) of the state and pick the \(i\)th row of
-the transition matrix \(\mathbf{P}\) to know the probability of the
-different moves from the current state.
-
-Irreducible means that the chain can move from anywhere to anywhere, so
-it doesn't get stuck in part of the space forever. A transition matrix
-such as \(P_1\) below describes a reducible Markov chain, because once
-you get into state \(2\) or \(3\), you won't escape. With reducible
-chains, the stationary distribution need not be unique, and so the
-target would depend on the starting values.
-
-Cyclical chains loop around and visit periodically a state: \(P_2\) is
-an instance of transition matrix describing a chain that cycles from
-\(1\) to \(3\), \(3\) to \(2\) and \(2\) to \(1\) every three iteration.
-An acyclic chain is needed for convergence of marginals.
-
-\[
-P_1 = \begin{pmatrix}
-0.5 & 0.3 & 0.2 \\
-0 & 0.4 & 0.6 \\
-0 & 0.5 & 0.5
-\end{pmatrix},
-\qquad
-P_2 = \begin{pmatrix}
-0 & 0 & 1 \\
-1 & 0 & 0 \\
-0 & 1 & 0
-\end{pmatrix}.
-\]
-
-If a chain is irreducible and aperiodic, it has a unique stationary
-distribution and the limiting distribution of the Markov chain will
-converge there. For example, we consider a transition \(P_3\) on
-\(1, \ldots, 5\) defined as \[
-P_3 = \begin{pmatrix}
-\frac{2}{3} & \frac{1}{3} &  0 & 0 & 0 \\
-\frac{1}{6} & \frac{2}{3} & \frac{1}{6} & 0 & 0 \\
-0 & \frac{1}{6} & \frac{2}{3} & \frac{1}{6} & 0 \\
-0 & 0 & \frac{1}{6} & \frac{2}{3} & \frac{1}{6} \\
-0 & 0 & 0 &  \frac{1}{3}  & \frac{2}{3} \\
-\end{pmatrix}
-\] The stationary distribution is the value of the row vector
-\(\boldsymbol{p}\), such that
-\(\boldsymbol{p} = \boldsymbol{p}\mathbf{P}\) for transition matrix
-\(\mathbf{P}\): we get \(\boldsymbol{p}_1=(0, 5/11, 6/11)\) for \(P_1\),
-\((1/3, 1/3, 1/3)\) for \(P_2\) and \((1,2,2,2,1)/8\) for \(P_3\).
-
-While the existence of a stationary distribution require aperiodicity,
-the latter is an hindrance from a computational perspective as
-ergodicity is valid without it.
-
-Figure~\ref{fig-discrete-markov-chain} shows the path of the walk and
-the empirical proportion of the time spent in each state, as time
-progress. Since the Markov chain has a unique stationary distribution,
-we expect these to converge to it.
-
-\begin{figure}[ht!]
-
-\centering{
-
-\pandocbounded{\includegraphics[keepaspectratio]{mcmc_files/figure-pdf/fig-discrete-markov-chain-1.pdf}}
-
-}
-
-\caption{\label{fig-discrete-markov-chain}Discrete Markov chain on
-integers from 1 to 5, with transition matrix \(P_3\), with traceplot of
-1000 first iterations (left) and running mean plots of sample proportion
-of each state visited per 100 iterations (right).}
-
-\end{figure}%
-
 \bookmarksetup{startatroot}
 
-\chapter{Markov chain Monte Carlo
-algorithms}\label{markov-chain-monte-carlo-algorithms}
+\chapter{Metropolis--Hastings
+algorithm}\label{metropolishastings-algorithm}
 
 The Markov chain Monte Carlo revolution in the 1990s made Bayesian
 inference mainstream by allowing inference for models when only
@@ -4279,23 +4295,20 @@ computers became more widely available. The idea is to draw correlated
 samples from a posterior via Markov chains, constructed to have the
 posterior as invariant stationary distribution.
 
-\subsection{Metropolis--Hastings
-algorithm}\label{metropolishastings-algorithm}
-
 Named after Metropolis et al. (\citeproc{ref-Metropolis:1953}{1953}),
 Hastings (\citeproc{ref-Hastings:1970}{1970}), its relevance took a long
 time to gain traction in the statistical community. The idea of the
 Metropolis--Hastings algorithm is to construct a Markov chain targeting
-a distribution \(p(\cdot)\).
+a distribution \(p(\cdot).\)
 
 \begin{proposition}[Metropolis--Hastings
 algorithm]\protect\hypertarget{prp-metropolis}{}\label{prp-metropolis}
 
-We consider from a density function \(p(\boldsymbol{\theta})\), known up
-to a normalizing factor not depending on \(\boldsymbol{\theta}\). We use
+We consider from a density function \(p(\boldsymbol{\theta}),\) known up
+to a normalizing factor not depending on \(\boldsymbol{\theta}.\) We use
 a (conditional) proposal density
 \(q(\boldsymbol{\theta} \mid \boldsymbol{\theta}^*)\) which has non-zero
-probability over the support of \(p(\cdot)\), as transition kernel to
+probability over the support of \(p(\cdot),\) as transition kernel to
 generate proposals.
 
 The Metropolis--Hastings build a Markov chain starting from an initial
@@ -4306,17 +4319,17 @@ value \(\boldsymbol{\theta}_0:\)
 \tightlist
 \item
   draw a proposal value
-  \(\boldsymbol{\theta}_t^{\star} \sim q(\boldsymbol{\theta} \mid \boldsymbol{\theta}_{t-1})\).
+  \(\boldsymbol{\theta}_t^{\star} \sim q(\boldsymbol{\theta} \mid \boldsymbol{\theta}_{t-1}).\)
 \item
   Compute the acceptance ratio
   \begin{equation}\phantomsection\label{eq-metropolis-ratio}{
   R = \frac{p(\boldsymbol{\theta}_t^{\star})}{p(\boldsymbol{\theta}_{t-1})}\frac{q(\boldsymbol{\theta}_{t-1} \mid \boldsymbol{\theta}_t^{\star} )}{q(\boldsymbol{\theta}_t^{\star} \mid \boldsymbol{\theta}_{t-1})}
   }\end{equation}
 \item
-  With probability \(\min\{R, 1\}\), accept the proposal and set
-  \(\boldsymbol{\theta}_t \gets \boldsymbol{\theta}_t^{\star}\),
+  With probability \(\min\{R, 1\},\) accept the proposal and set
+  \(\boldsymbol{\theta}_t \gets \boldsymbol{\theta}_t^{\star},\)
   otherwise set the value to the previous state,
-  \(\boldsymbol{\theta}_t \gets \boldsymbol{\theta}_{t-1}\).
+  \(\boldsymbol{\theta}_t \gets \boldsymbol{\theta}_{t-1}.\)
 \end{enumerate}
 
 \end{proposition}
@@ -4325,15 +4338,15 @@ The Metropolis--Hastings algorithm generates samples from the posterior
 \(p(\boldsymbol{\theta} \mid \boldsymbol{y})\) if the Markov chain it
 defines is reversible: we say it satisfies the \emph{detailed balance
 condition} when the density of
-\(\boldsymbol{\theta}_{t+1} \mid \boldsymbol{\theta}_{t}\), say
-\(f(\boldsymbol{\theta}_{t+1} \mid \boldsymbol{\theta}_{t})\). Detailed
+\(\boldsymbol{\theta}_{t+1} \mid \boldsymbol{\theta}_{t},\) say
+\(f(\boldsymbol{\theta}_{t+1} \mid \boldsymbol{\theta}_{t}).\) Detailed
 balance means \begin{align*}
 f(\boldsymbol{\theta}_{t+1} \mid \boldsymbol{\theta}_{t})p(\boldsymbol{\theta}_{t} \mid \boldsymbol{y}) = f(\boldsymbol{\theta}_{t} \mid \boldsymbol{\theta}_{t+1})p(\boldsymbol{\theta}_{t+1} \mid \boldsymbol{y}).
 \end{align*} This guarantees that, if \(\boldsymbol{\theta}_{t}\) is
 drawn from the posterior, then the left hand side is the joint density
 of \((\boldsymbol{\theta}_{t}, \boldsymbol{\theta}_{t+1})\) and the
 marginal distribution obtained by integrating over
-\(\boldsymbol{\theta}_{t}\), \begin{align*}
+\(\boldsymbol{\theta}_{t},\) \begin{align*}
 \int f(\boldsymbol{\theta}_{t+1} \mid \boldsymbol{\theta}_{t})p(\boldsymbol{\theta}_{t} \mid \boldsymbol{y})\mathrm{d} \boldsymbol{\theta}_{t}
 & = \int f(\boldsymbol{\theta}_{t} \mid \boldsymbol{\theta}_{t+1})p(\boldsymbol{\theta}_{t+1} \mid \boldsymbol{y})\mathrm{d} \boldsymbol{\theta}_{t} 
 \\&\quad= p(\boldsymbol{\theta}_{t+1} \mid \boldsymbol{y})
@@ -4343,7 +4356,7 @@ starting value as non-zero probability under the posterior, the chain
 will converge to the stationarity distribution (albeit perhaps slowly).
 
 \begin{remark}[Interpretation of the algorithm]
-If \(R>1\), the proposal has higher density and we always accept the
+If \(R>1,\) the proposal has higher density and we always accept the
 move. If the ratio is less than one, the proposal is in a lower
 probability region, we accept the move with probability \(R\) and set
 \(\boldsymbol{\theta}_{t}=\boldsymbol{\theta}^{\star}_t\); if we reject,
@@ -4365,7 +4378,7 @@ proper (\citeproc{ref-Green:2001}{Green 2001, 55}).
 \begin{remark}[Symmetric proposals]
 Suppose we generate a candidate sample \(\boldsymbol{\theta}_t^{\star}\)
 from a symmetric distribution \(q(\cdot \mid \cdot)\) centered at
-\(\boldsymbol{\theta}_{t-1}\), such as the random walk
+\(\boldsymbol{\theta}_{t-1},\) such as the random walk
 \(\boldsymbol{\theta}_t^{\star} =\boldsymbol{\theta}_{t-1}+ Z\) where
 \(Z\) has a symmetric distribution. Then, the proposal density ratio
 cancels so need not be computed in the Metropolis ratio of
@@ -4373,13 +4386,13 @@ Equation~\ref{eq-metropolis-ratio}.
 \end{remark}
 
 \begin{remark}[Calculations]
-In practice, we compute the log of the acceptance ratio, \(\ln R\), to
+In practice, we compute the log of the acceptance ratio, \(\ln R,\) to
 avoid numerical overflow. If our target is log posterior density, we
 have \[
 \ln \left\{\frac{p(\boldsymbol{\theta}_t^{\star})}{p(\boldsymbol{\theta}_{t-1})}\right\} = \ell(\boldsymbol{\theta}_t^{\star}) + \ln p(\boldsymbol{\theta}_t^{\star}) - \ell(\boldsymbol{\theta}_{t-1}) - \ln p(\boldsymbol{\theta}_{t-1}) 
 \] and we proceed likewise for the log of the ratio of transition
 kernels. We then compare the value of \(\ln R\) (if less than zero) to
-\(\log(U)\), where \(U \sim \mathsf{U}(0,1)\). We accept the move if
+\(\log(U),\) where \(U \sim \mathsf{U}(0,1).\) We accept the move if
 \(\ln(R) >\log(U)\) and keep the previous value otherwise.
 \end{remark}
 
@@ -4389,8 +4402,8 @@ Consider again the Upworthy data from
 Example~\ref{exm-poisson-upworthy-question}. We model the Poisson rates
 \(\lambda_i\) \((i=1,2),\) this time with the usual Poisson regression
 parametrization in terms of log rate for the baseline \text{yes},
-\(\log(\lambda_2) = \beta\), and log odds rates
-\(\kappa = \log(\lambda_1) - \log(\lambda_2)\). Our model is
+\(\log(\lambda_2) = \beta,\) and log odds rates
+\(\kappa = \log(\lambda_1) - \log(\lambda_2).\) Our model is
 \begin{align*}
 Y_{i} &\sim \mathsf{Po}(n_i\lambda_i), \qquad (i=1,2)\\
 \lambda_1 &= \exp(\beta + \kappa) \\
@@ -4492,7 +4505,7 @@ kappa  0.06673  0.06933  0.07077  0.07212  0.07463
 \end{verbatim}
 
 The acceptance rate of the algorithm is 35.1\% and the posterior means
-are \(\beta =-4.51\) and \(\kappa =0.07\).
+are \(\beta =-4.51\) and \(\kappa =0.07.\)
 
 \begin{figure}[ht!]
 
@@ -4511,7 +4524,7 @@ Upworthy question data.}
 Figure~\ref{fig-scatterplot-upworthy-question} shows the posterior
 samples, which are very nearly bivariate Gaussian. The parametrization
 in terms of log odds ratio induces strong negative dependence, so if we
-were to sample \(\kappa\), then \(\beta\), we would have much larger
+were to sample \(\kappa,\) then \(\beta,\) we would have much larger
 inefficiency and slower exploration. Instead, the code used a bivariate
 Gaussian random walk proposal whose covariance matrix was taken as a
 multiple of the inverse of the negative hessian (equivalently, to the
@@ -4581,11 +4594,11 @@ We can tune the variance of the global proposal
 the mixing of the chains at approximate stationarity. This is done by
 increasing (decreasing) the variance if the historical acceptance rate
 is too high (respectively low) during the burn in period, and
-reinitializing after any change with an acceptance target of \(0.44\).
+reinitializing after any change with an acceptance target of \(0.44.\)
 We stop adapting to ensure convergence to the posterior after a suitable
 number of initial iterations. Adaptive MCMC methods use an initial warm
 up period to find good proposals: we can consider a block of length
-\(L\), compute the acceptance rate, multiply the variance by a scaling
+\(L,\) compute the acceptance rate, multiply the variance by a scaling
 factor and run the chain a little longer. We only keep samples obtained
 after the adaptation phase.
 
@@ -4616,7 +4629,7 @@ Markov chains.}
 
 \begin{remark}[Independence Metropolis--Hastings]
 If the proposal density \(q(\cdot)\) does not depend on the current
-state \(\boldsymbol{\theta}_{t-1}\), the algorithm is termed
+state \(\boldsymbol{\theta}_{t-1},\) the algorithm is termed
 \emph{independence}. To maximize acceptance, we could design a candidate
 distribution whose mode is at the maximum a posteriori value. To
 efficiently explore the state space, we need to place enough density in
@@ -4626,10 +4639,10 @@ and fail when the distribution of interest is multimodal. The
 independence Metropolis--Hastings algorithm then resembles
 accept-reject. If the ratio
 \(p(\boldsymbol{\theta})/q(\boldsymbol{\theta})\) is bounded above by
-\(C \geq 1\), then we can make comparisons with rejection sampling.
+\(C \geq 1,\) then we can make comparisons with rejection sampling.
 Lemma 7.9 of Robert and Casella
 (\citeproc{ref-Casella.Robert:2004}{2004}) shows that the probability of
-acceptance of a move for the Markov chain is at least \(1/C\), which is
+acceptance of a move for the Markov chain is at least \(1/C,\) which is
 larger than the accept-reject.
 \end{remark}
 
@@ -4649,8 +4662,8 @@ appear through priors, etc. This can reduce computational costs.
 \begin{proposition}[Parameter
 transformation]\protect\hypertarget{prp-parameter-transformation}{}\label{prp-parameter-transformation}
 
-If a parameter is bounded in the interval \((a,b)\), where
-\(-\infty \leq a < b \leq \infty\), we can consider a bijective
+If a parameter is bounded in the interval \((a,b),\) where
+\(-\infty \leq a < b \leq \infty,\) we can consider a bijective
 transformation \(\vartheta \equiv t(\theta): (a,b) \to \mathbb{R}\) with
 differentiable inverse. The log density of the transformed variable,
 assuming it exists, is \begin{align*}
@@ -4675,10 +4688,10 @@ for finite \(a, b\) in the software:
   \end{align*}
 \end{itemize}
 
-To guarantee that our proposals fall in the support of \(\theta\), we
+To guarantee that our proposals fall in the support of \(\theta,\) we
 can thus run a symmetric random walk proposal on the \emph{transformed
 scale} by drawing \(\vartheta_{t}^{\star} \sim \vartheta_{t-1}+\tau Z\)
-where \(Z\sim\mathsf{Gauss}(0, 1)\). Due to the transformation, the
+where \(Z\sim\mathsf{Gauss}(0, 1).\) Due to the transformation, the
 kernel ratio now contains the Jacobian.
 
 \end{proposition}
@@ -4687,7 +4700,7 @@ kernel ratio now contains the Jacobian.
 proposals]\protect\hypertarget{prp-truncated-proposals}{}\label{prp-truncated-proposals}
 
 As an alternative, if we are dealing with parameters that are restricted
-in \([a,b]\), we can simulate using a random walk but with truncated
+in \([a,b],\) we can simulate using a random walk but with truncated
 Gaussian steps, taking
 \(\theta^{\star}_{t} \sim \mathsf{trunc. Gauss}(\vartheta_{t-1}, \tau^2, a, b).\)
 The benefits of using the truncated proposal becomes more apparent when
@@ -4701,11 +4714,11 @@ such instances using results from Botev and L'Écuyer
 bounds are far from the mode. the normalizing constant of the truncated
 Gaussian in the denominator of the density is a function of the location
 and scale parameters: if these depend on the current value of
-\(\boldsymbol{\theta}_{t-1}\), as is the case for a random walk, we need
+\(\boldsymbol{\theta}_{t-1},\) as is the case for a random walk, we need
 to keep these terms as part of the Metropolis ratio. The mean and
 standard deviation of the truncated Gaussian are not equal to the
 parameters \(\mu\) (which corresponds to the mode, provided
-\(a < \mu < b\)) and \(\sigma\).
+\(a < \mu < b\)) and \(\sigma.\)
 
 \end{proposition}
 
@@ -4717,17 +4730,17 @@ the posterior using the gradient, via Metropolis-ajusted Langevin
 algorithm (MALA), or using local quadratic approximations of the target.
 
 Let \(p(\theta)\) denote the conditional (unnormalized) log posterior
-for a scalar parameter \(\theta \in (a, b)\). We considering a Taylor
+for a scalar parameter \(\theta \in (a, b).\) We considering a Taylor
 series expansion of \(p(\cdot)\) around the current parameter value
-\(\theta_{t-1}\), \begin{align*}
+\(\theta_{t-1},\) \begin{align*}
  p(\theta) \approx p(\theta_{t-1}) + p'(\theta_{t-1})(\theta - \theta_{t-1}) + \frac{1}{2} p''(\theta_{t-1})(\theta - \theta_{t-1})^2
 \end{align*} plus remainder, which suggests a Gaussian approximation
 with mean
 \(\mu_{t-1} = \theta_{t-1} - f'(\theta_{t-1})/f''(\theta_{t-1})\) and
-precision \(\tau^{-2} = -f''(\theta_{t-1})\). We can use truncated
+precision \(\tau^{-2} = -f''(\theta_{t-1}).\) We can use truncated
 Gaussian distribution on \((a, b)\) with mean \(\mu\) and standard
-deviation \(\tau\), denoted \(\mathsf{trunc. Gauss}(\mu, \tau, a, b)\)
-with corresponding density function \(q(\cdot; \mu, \tau, a, b)\). The
+deviation \(\tau,\) denoted \(\mathsf{trunc. Gauss}(\mu, \tau, a, b)\)
+with corresponding density function \(q(\cdot; \mu, \tau, a, b).\) The
 Metropolis acceptance ratio for a proposal
 \(\theta^{\star}_{t} \sim \mathsf{trunc. Gauss}(\mu_{t-1}, \tau_{t-1}, a, b)\)
 is \begin{align*}
@@ -4735,13 +4748,13 @@ is \begin{align*}
 \end{align*} and we set \(\theta^{(t+1)} = \theta^{\star}_{t}\) with
 probability \(\min\{1, r\}\) and \(\theta^{(t+1)} = \theta_{t-1}\)
 otherwise. To evaluate the ratio of truncated Gaussian densities
-\(q(\cdot; \mu, \tau, a, b)\), we need to compute the Taylor
+\(q(\cdot; \mu, \tau, a, b),\) we need to compute the Taylor
 approximation from the current parameter value, but also the reverse
-move from the proposal \(\theta^{\star}_{t}\). Another option is to
+move from the proposal \(\theta^{\star}_{t}.\) Another option is to
 modify the move dictated by the rescaled gradient by taking instead
 \[\mu_{t-1} = \theta_{t-1} - \eta f'(\theta_{t-1})/f''(\theta_{t-1}).\]
 The proposal includes an additional learning rate parameter,
-\(\eta \leq 1\), whose role is to prevent oscillations of the quadratic
+\(\eta \leq 1,\) whose role is to prevent oscillations of the quadratic
 approximation, as in a Newton--Raphson algorithm. Relative to a random
 walk Metropolis--Hastings, the proposal automatically adjusts to the
 local geometry of the target, which guarantees a higher acceptance rate
@@ -4755,8 +4768,8 @@ at the mode.
 The simpler Metropolis-adjusted Langevin algorithm is equivalent to
 using a Gaussian random walk where the proposal has mean
 \(\boldsymbol{\theta}_{t-1} + \mathbf{A}\eta \nabla \log p(\boldsymbol{\theta}_{t-1}; \boldsymbol{y})\)
-and variance \(\tau^2\mathbf{A}\), for some mass matrix \(\mathbf{A}\)
-and learning rate \(\eta < 1\). Taking \(\mathbf{A}\) as the identity
+and variance \(\tau^2\mathbf{A},\) for some mass matrix \(\mathbf{A}\)
+and learning rate \(\eta < 1.\) Taking \(\mathbf{A}\) as the identity
 matrix, which assumes the parameters are isotropic (same variance,
 uncorrelated) is the default choice although seldom far from optimal.
 
@@ -4783,13 +4796,13 @@ average \texttt{nclick}/\texttt{nimpression}, denoted \(y\) in the
 sequel, is approximately Gaussian. We assume that each story has a
 similar population rate and capture the heterogeneity inherent to each
 news story by treating each mean as a sample. The variance of the sample
-average or click rate is proportional to \(n^{-1}\), where \(n\) is the
+average or click rate is proportional to \(n^{-1},\) where \(n\) is the
 number of impressions. To allow for underdispersion or overdispersion,
 we thus consider a Gaussian likelihood
-\(Y_i \sim \mathsf{Gauss}(\mu, \sigma^2/n_i)\). We perform Bayesian
+\(Y_i \sim \mathsf{Gauss}(\mu, \sigma^2/n_i).\) We perform Bayesian
 inference for \(\mu, \sigma\) after assigning a truncated Gaussian prior
 for \(\mu \sim \mathsf{trunc. Gauss}(0.01, 0.1^2)\) over \([0,1]\) and
-an penalized complexity prior for \(\sigma \sim \mathsf{Exp}(0.7)\).
+an penalized complexity prior for \(\sigma \sim \mathsf{Exp}(0.7).\)
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -4909,7 +4922,7 @@ MALA requires critically a good mass matrix, especially if the gradient
 is very large at the starting values (often the case when the starting
 value is far from the mode). Given the precision of the original
 observations, we did not need to modify anything to deal with the
-parameter constraints \(0 \leq \mu \leq 1\) and \(\sigma>0\), outside of
+parameter constraints \(0 \leq \mu \leq 1\) and \(\sigma>0,\) outside of
 encoding them in the log posterior function.
 
 The posterior mean for the standard deviation is 0.64, which suggests
@@ -4917,7 +4930,9 @@ overdispersion.
 
 \end{example}
 
-\section{Gibbs sampling}\label{gibbs-sampling}
+\bookmarksetup{startatroot}
+
+\chapter{Gibbs sampling}\label{gibbs-sampling}
 
 The Gibbs sampling algorithm builds a Markov chain by iterating through
 a sequence of conditional distributions. Consider a model with
@@ -4957,7 +4972,7 @@ algorithm for a bivariate target.
 
 \centering{
 
-\pandocbounded{\includegraphics[keepaspectratio]{mcmc_files/figure-pdf/fig-Gibbs-steps-1.pdf}}
+\pandocbounded{\includegraphics[keepaspectratio]{gibbs_files/figure-pdf/fig-Gibbs-steps-1.pdf}}
 
 }
 
@@ -5003,10 +5018,10 @@ Gaussian where \begin{align*}
   \ControlFlowTok{for}\NormalTok{(j }\ControlFlowTok{in} \FunctionTok{sample}\NormalTok{(}\DecValTok{1}\SpecialCharTok{:}\NormalTok{d, }\AttributeTok{size =}\NormalTok{ d))\{}
     \CommentTok{\# sample from conditional Gaussian given curr}
 \NormalTok{    curr[j] }\OtherTok{\textless{}{-}}\NormalTok{ hecbayes}\SpecialCharTok{::}\FunctionTok{rcondmvnorm}\NormalTok{(}
-      \AttributeTok{n =} \DecValTok{1}\NormalTok{, }
-      \AttributeTok{value =}\NormalTok{ curr, }
-      \AttributeTok{ind =}\NormalTok{ j, }
-      \AttributeTok{mean =}\NormalTok{ mu, }
+      \AttributeTok{n =} \DecValTok{1}\NormalTok{,}
+      \AttributeTok{value =}\NormalTok{ curr,}
+      \AttributeTok{ind =}\NormalTok{ j,}
+      \AttributeTok{mean =}\NormalTok{ mu,}
       \AttributeTok{precision =}\NormalTok{ Q)}
 \NormalTok{  \}}
 \NormalTok{  chains[i,] }\OtherTok{\textless{}{-}}\NormalTok{ curr }\CommentTok{\# save values after full round of update}
@@ -5026,7 +5041,7 @@ is strong correlation, resulting in an inefficient sampler.
 
 \centering{
 
-\pandocbounded{\includegraphics[keepaspectratio]{mcmc_files/figure-pdf/fig-gibbs-normal-1.pdf}}
+\pandocbounded{\includegraphics[keepaspectratio]{gibbs_files/figure-pdf/fig-gibbs-normal-1.pdf}}
 
 }
 
@@ -5189,7 +5204,7 @@ Example~\ref{exm-accept-reject-truncated} to simulate these.
       \AttributeTok{sd =} \DecValTok{1}\NormalTok{)}
 \NormalTok{    beta.curr }\OtherTok{\textless{}{-}}\NormalTok{ chains[ind,] }\OtherTok{\textless{}{-}} \FunctionTok{as.numeric}\NormalTok{(}
 \NormalTok{      mvtnorm}\SpecialCharTok{::}\FunctionTok{rmvnorm}\NormalTok{(}
-        \AttributeTok{n =} \DecValTok{1}\NormalTok{, }
+        \AttributeTok{n =} \DecValTok{1}\NormalTok{,}
         \AttributeTok{mean =} \FunctionTok{coef}\NormalTok{(}\FunctionTok{lm}\NormalTok{(Z }\SpecialCharTok{\textasciitilde{}}\NormalTok{ x }\SpecialCharTok{{-}} \DecValTok{1}\NormalTok{)),}
         \AttributeTok{sigma =}\NormalTok{ xtxinv))}
 \NormalTok{  \}}
@@ -5252,7 +5267,7 @@ none of the posterior draws of \(\boldsymbol{\beta}\) are exactly zero.
 
 \centering{
 
-\pandocbounded{\includegraphics[keepaspectratio]{mcmc_files/figure-pdf/fig-lasso-traceplot-1.pdf}}
+\pandocbounded{\includegraphics[keepaspectratio]{gibbs_files/figure-pdf/fig-lasso-traceplot-1.pdf}}
 
 }
 
@@ -5290,7 +5305,7 @@ iterative framework, we can consider the complete data as the tuples
 \((X_i, Z_i)\), where \(Z_i = \mathsf{I}(C_i=k)\).
 
 With the augmented data, the conditional distribution of
-\(Z_i \mid X_i, \boldsymbol{\omega}, \boldsymbol{\theta} \sim \mathsf{Multinom}(1, \boldsymbol{\gamma}_{ik})\)
+\(Z_i \mid X_i, \boldsymbol{\omega}, \boldsymbol{\theta} \sim \mathsf{multinom}(1, \boldsymbol{\gamma}_{ik})\)
 where
 \[\gamma_{ik} = \frac{\omega_k f_k(X_i\boldsymbol{\theta}_k)}{\sum_{j=1}^K f_j(X_i\boldsymbol{\theta}_k)}.\]
 Given suitable priors for the probabilities \(\boldsymbol{\omega}\) and
@@ -5357,7 +5372,7 @@ uniformly across integers.
 
 \centering{
 
-\pandocbounded{\includegraphics[keepaspectratio]{mcmc_files/figure-pdf/fig-badstart-1.pdf}}
+\pandocbounded{\includegraphics[keepaspectratio]{workflow_files/figure-pdf/fig-badstart-1.pdf}}
 
 }
 
@@ -5385,9 +5400,10 @@ least to two significant digits).
 For the Poisson example, the effective sample size for the
 \(\boldsymbol{\beta}\) for the multilevel model is a bit higher than
 1000 with \(B=5000\) iterations, whereas we have for the simple naive
-model is \(\ensuremath{10^{4}}\) for \(B=10000\) draws, suggesting
-superefficient sampling. The dependency between \(\boldsymbol{\alpha}\)
-and \(\boldsymbol{\beta}\) is responsible for the drop in accuracy.
+model is \(\ensuremath{1.028\times 10^{4}}\) for \(B=10000\) draws,
+suggesting superefficient sampling. The dependency between
+\(\boldsymbol{\alpha}\) and \(\boldsymbol{\beta}\) is responsible for
+the drop in accuracy.
 
 The \texttt{coda} (convergence diagnosis and output analysis) \textbf{R}
 package contains many tests. For example, the Geweke \(Z\)-score
@@ -5395,7 +5411,7 @@ compares the averages for the beginning and the end of the chain:
 rejection of the null implies lack of convergence, or poor mixing.
 
 Running multiple Markov chains can be useful for diagnostics. The
-Gelman--Rubin diagnostic \(\widehat{R}\), also called potential scale
+Gelman--Rubin diagnostic \(\widehat{R},\) also called potential scale
 reduction statistic, is obtained by considering the difference between
 within-chains and between-chains variance. Suppose we run \(M\) chains
 for \(B\) iterations, post burn in. Denoting by \(\theta_{bm}\) the
@@ -5417,21 +5433,21 @@ problematic, it is not enough to have approximately \(\widehat{R}=1\) to
 guarantee convergence, but large values are usually indication of
 something being amiss. Figure~\ref{fig-rhat} shows two instances where
 the chains are visually very far from having the same average and this
-is reflected by the large values of \(\widehat{R}\).
+is reflected by the large values of \(\widehat{R}.\)
 
 \begin{figure}[ht!]
 
 \centering{
 
-\pandocbounded{\includegraphics[keepaspectratio]{mcmc_files/figure-pdf/fig-rhat-1.pdf}}
+\pandocbounded{\includegraphics[keepaspectratio]{workflow_files/figure-pdf/fig-rhat-1.pdf}}
 
 }
 
 \caption{\label{fig-rhat}Two pairs of Markov chains: the top ones seem
 stationary, but with different modes. This makes the between chain
-variance substantial, with a value of \(\widehat{R} \approx 3.4\),
+variance substantial, with a value of \(\widehat{R} \approx 3.4,\)
 whereas the chains on the right hover around the same values of zero,
-but do not appear stable with \(\widehat{R} \approx 1.6\).}
+but do not appear stable with \(\widehat{R} \approx 1.6.\)}
 
 \end{figure}%
 
@@ -5462,7 +5478,7 @@ Suppose we have \(B\) draws from the posterior and simulate for each
 \(n\) observations from the posterior predictive
 \(p(\widetilde{\boldsymbol{y}} \mid \boldsymbol{y})\): we can benchmark
 summary statistics from our original data \(\boldsymbol{y}\) with the
-posterior predictive copies \(\widetilde{\boldsymbol{y}}_b\).
+posterior predictive copies \(\widetilde{\boldsymbol{y}}_b.\)
 Figure~\ref{fig-posterior-pred-check} shows this for the two competing
 models and highlight the fact that the simpler model is not dispersed
 enough. Even the more complex model struggles to capture this additional
@@ -5473,7 +5489,7 @@ drawing board and consider a negative binomial model.
 
 \centering{
 
-\pandocbounded{\includegraphics[keepaspectratio]{mcmc_files/figure-pdf/fig-posterior-pred-check-1.pdf}}
+\pandocbounded{\includegraphics[keepaspectratio]{workflow_files/figure-pdf/fig-posterior-pred-check-1.pdf}}
 
 }
 
@@ -5491,10 +5507,10 @@ The widely applicable information criterion
 performance that approximates the cross-validation loss. Consider first
 the log pointwise predictive density, defined as the expected value over
 the posterior distribution
-\(p(\boldsymbol{\theta} \mid \boldsymbol{y})\), \begin{align*}
+\(p(\boldsymbol{\theta} \mid \boldsymbol{y}),\) \begin{align*}
 \mathsf{LPPD}_i = \mathsf{E}_{\boldsymbol{\theta} \mid \boldsymbol{y}} \left\{ \log p(y_i \mid \boldsymbol{\theta})\right\}.
 \end{align*} The higher the value of the predictive density
-\(\mathsf{LPPD}_i\), the better the fit for that observation.
+\(\mathsf{LPPD}_i,\) the better the fit for that observation.
 
 As in general information criteria, we sum over all observations, adding
 a penalization factor that approximates the effective number of
@@ -5503,11 +5519,11 @@ n\mathsf{WAIC} = -\sum_{i=1}^n \mathsf{LPPD}_i + \sum_{i=1}^n \mathsf{Va}_{\bold
 \end{align*} where we use again the empirical variance to compute the
 rightmost term. When comparing competing models, we can rely on their
 values of \(\mathsf{WAIC}\) to discriminate about the predictive
-performance. To compute \(\mathsf{WAIC}\), we need to store the values
+performance. To compute \(\mathsf{WAIC},\) we need to store the values
 of the log density of each observation, or at least minimally
 \href{https://www.johndcook.com/blog/standard_deviation/}{compute the
 running mean and variance accurately} pointwise at storage cost
-\(\mathrm{O}(n)\). Note that Section 7.2 of Gelman et al.
+\(\mathrm{O}(n).\) Note that Section 7.2 of Gelman et al.
 (\citeproc{ref-Gelman:2013}{2013}) define the widely applicable
 information criterion as \(2n \times \mathsf{WAIC}\) to make on par with
 other information criteria, which are defined typically on the deviance
@@ -5529,7 +5545,7 @@ likelihood evaluated at each posterior draw from a Markov chain Monte
 Carlo algorithm. The penalty term \(p_D\) is however not invariant to
 reparametrizations. Assuming we can derive a multivariate Gaussian
 approximation to the MLE under suitable regularity conditions, the
-\(\mathsf{DIC}\) is equivalent in large samples to \(\mathsf{AIC}\). The
+\(\mathsf{DIC}\) is equivalent in large samples to \(\mathsf{AIC}.\) The
 \(\mathsf{DIC}\) is considered by many authors as not being a Bayesian
 procedure; see Spiegelhalter et al.
 (\citeproc{ref-Spiegelhalter:2014}{2014}) and the discussion therein.
@@ -5537,13 +5553,23 @@ procedure; see Spiegelhalter et al.
 \begin{example}[Information criteria for smartwatch and Bayesian
 LASSO]\protect\hypertarget{exm-smartwatch-infocriteria}{}\label{exm-smartwatch-infocriteria}
 
-For the smartwatch model, we get a value of 3.06 for the complex model
-and 4.51: this suggests an improvement in using individual-specific
+For the smartwatch model, we get a value of 3.07 for the complex model
+and 4.5: this suggests an improvement in using individual-specific
 effects.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\#\textquotesingle{} WAIC}
+\CommentTok{\#\textquotesingle{} @param loglik\_pt B by n matrix of pointwise log likelihood}
+\NormalTok{WAIC }\OtherTok{\textless{}{-}} \ControlFlowTok{function}\NormalTok{(loglik\_pt)\{}
+  \SpecialCharTok{{-}}\FunctionTok{mean}\NormalTok{(}\FunctionTok{apply}\NormalTok{(loglik\_pt, }\DecValTok{2}\NormalTok{, mean)) }\SpecialCharTok{+}  \FunctionTok{mean}\NormalTok{(}\FunctionTok{apply}\NormalTok{(loglik\_pt, }\DecValTok{2}\NormalTok{, var))}
+\NormalTok{\}}
+\end{Highlighting}
+\end{Shaded}
 
 We can also look at the predictive performance. For the
 \texttt{diabetes} data application with the Bayesian LASSO with fixed
-\(\lambda\), the predictive performance is a trade-off between the
+\(\lambda,\) the predictive performance is a trade-off between the
 effective number of parameter (with larger penalties translating into
 smaller number of parameters) and the goodness-of-fit.
 Figure~\ref{fig-waic-blasso} shows that the decrease in predictive
@@ -5554,13 +5580,13 @@ performs equally well for small penalties.
 
 \centering{
 
-\pandocbounded{\includegraphics[keepaspectratio]{mcmc_files/figure-pdf/fig-waic-blasso-1.pdf}}
+\pandocbounded{\includegraphics[keepaspectratio]{workflow_files/figure-pdf/fig-waic-blasso-1.pdf}}
 
 }
 
 \caption{\label{fig-waic-blasso}Widely applicable information criterion
 for the Bayesian LASSO problem fitted to the diabetes data, as a
-function of the penalty \(\lambda\).}
+function of the penalty \(\lambda.\)}
 
 \end{figure}%
 
@@ -5568,7 +5594,7 @@ function of the penalty \(\lambda\).}
 
 Ideally, one would measure the predictive performance using the
 leave-one-out predictive distribution for observation \(i\) given all
-the rest, \(p(y_i \mid \boldsymbol{y}_{-i})\), to avoid double dipping
+the rest, \(p(y_i \mid \boldsymbol{y}_{-i}),\) to avoid double dipping
 --- the latter is computationally intractable because it would require
 running \(n\) Markov chains with \(n-1\) observations each, but we can
 get a good approximation using importance sampling. The \texttt{loo}
@@ -5576,7 +5602,7 @@ package uses this with generalized Pareto smoothing to avoid overly
 large weights.
 
 Once we have the collection of estimated
-\(p(y_i \mid \boldsymbol{y}_{-i})\), we can assess the probability level
+\(p(y_i \mid \boldsymbol{y}_{-i}),\) we can assess the probability level
 of each observation. This gives us a set of values which should be
 approximately uniform if the model was perfectly calibrated. The
 probability of seeing an outcome as extreme as \(y_i\) can be obtained
@@ -5588,7 +5614,7 @@ observation. Values close to zero or one may indicate outliers.
 
 \centering{
 
-\pandocbounded{\includegraphics[keepaspectratio]{mcmc_files/figure-pdf/fig-loocv-qqplots-1.pdf}}
+\pandocbounded{\includegraphics[keepaspectratio]{workflow_files/figure-pdf/fig-loocv-qqplots-1.pdf}}
 
 }
 
@@ -5709,7 +5735,7 @@ Association} 99 (467): 799--804.
 Geyer, Charles J. 2011. {``Introduction to {M}arkov Chain {M}onte
 {C}arlo.''} In \emph{Handbook of {M}arkov Chain {M}onte {C}arlo}, edited
 by S. Brooks, A. Gelman, G. Jones, and X. L. Meng, 3--48. Boca Raton:
-CRC Press. \url{https://doi.org/10.1201/b10905-2}.
+CRC Press. \url{https://doi.org/10.1201/b10905-3}.
 
 \bibitem[\citeproctext]{ref-Student:1908}
 Gosset, William Sealy. 1908. {``The Probable Error of a Mean.''}

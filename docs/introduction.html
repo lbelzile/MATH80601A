@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.7.1">
+<meta name="generator" content="quarto-1.7.3">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -91,10 +91,10 @@ div.csl-indent {
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="site_libs/quarto-html/anchor.min.js"></script>
 <link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-2bb0ec5e928ee8c40b12725cb7836c35.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-81b5c3e63835cfde897ecd3d35a35a41.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-a51e8ad160b68d9f8f1ac488cc0f242e.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-ad5ef081d17d57ab2b6cc5e45efb5d90.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
   "copy-button": false,
@@ -220,14 +220,32 @@ window.Quarto = {
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./mcmc.html" class="sidebar-item-text sidebar-link">
+  <a href="./markovchains.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Monte Carlo methods</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
+  <a href="./mcmc.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Metropolis–Hastings algorithm</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./gibbs.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Gibbs sampling</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./workflow.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Bayesian workflow</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
   <a href="./references.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">References</span></span></a>
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">References</span></span></a>
   </div>
 </li>
     </ul>
@@ -247,7 +265,6 @@ window.Quarto = {
   </ul></li>
   <li><a href="#expectations" id="toc-expectations" class="nav-link" data-scroll-target="#expectations"><span class="header-section-number">1.2</span> Expectations</a></li>
   <li><a href="#likelihood" id="toc-likelihood" class="nav-link" data-scroll-target="#likelihood"><span class="header-section-number">1.3</span> Likelihood</a></li>
-  <li><a href="#monte-carlo-methods" id="toc-monte-carlo-methods" class="nav-link" data-scroll-target="#monte-carlo-methods"><span class="header-section-number">1.4</span> Monte Carlo methods</a></li>
   </ul>
 <div class="toc-actions"><ul><li><a href="https://github.com/lbelzile/MATH80601A/edit/main/introduction.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li></ul></div></nav>
     </div>
@@ -930,170 +947,9 @@ f(\boldsymbol{y}) = f(y_1) \times f(y_2 \mid y_1) \times \ldots f(y_n \mid y_1, 
 \ell(\mu, \phi,\sigma^2)&amp; = -\frac{n}{2}\log(2\pi) - n\log \sigma + \frac{1}{2}\log(1-\phi^2) \\&amp;\quad -\frac{(1-\phi^2)(y_1- \mu)^2}{2\sigma^2} - \sum_{i=2}^n \frac{(y_t - \mu(1-\phi)- \phi y_{t-1})^2}{2\sigma^2}
 \end{align*}\]</span></p>
 </div>
-</section>
-<section id="monte-carlo-methods" class="level2" data-number="1.4">
-<h2 data-number="1.4" class="anchored" data-anchor-id="monte-carlo-methods"><span class="header-section-number">1.4</span> Monte Carlo methods</h2>
-<p>Monte Carlo methods relies on the ability to simulate random variable. If the quantile function admits a closed-form, we can use this to simulation. Recall that if a random variable <span class="math inline">\(X\)</span> has distribution function <span class="math inline">\(F\)</span>, then we can define it’s <strong>generalized inverse</strong> <span class="math display">\[\begin{align*}
-F^{-1}(u) = \inf\{x: f(x) \geq u\}
-\end{align*}\]</span> and if <span class="math inline">\(G\)</span> is continuous, then <span class="math inline">\(F(X) \sim \mathsf{unif}(0,1)\)</span>. We can thus simulate data using the quantile function <span class="math inline">\(F^{-1}(U),\)</span>, with <span class="math inline">\(U \sim \mathsf{unif}(0,1)\)</span>.</p>
-<div id="thm-fundamental-simulation" class="theorem">
-<p><span class="theorem-title"><strong>Theorem 1.2 (Fundamental theorem of simulation)</strong></span> Consider a <span class="math inline">\(d\)</span>-variate random vector <span class="math inline">\(\boldsymbol{X}\)</span>, independently <span class="math inline">\(U \sim \mathsf{unif}(0,1)\)</span> and <span class="math inline">\(c&gt;0\)</span> any positive constant. If <span class="math inline">\((\boldsymbol{X}, U)\)</span> is uniformly distributed on the set <span class="math display">\[\begin{align*}
-\mathcal{A}_{f}=\{(\boldsymbol{x}, u): 0 \leq u \leq  c f(\boldsymbol{x})\},
-\end{align*}\]</span> then <span class="math inline">\(\boldsymbol{X}\)</span> has density <span class="math inline">\(f(\boldsymbol{x})\)</span>. Conversely, if <span class="math inline">\(\boldsymbol{X}\)</span> has density <span class="math inline">\(f(\boldsymbol{x})\)</span> and <span class="math inline">\(U\sim\mathsf{unif}(0,1)\)</span> independently, then <span class="math inline">\([\boldsymbol{X}, cUf(\boldsymbol{X})]\)</span> is uniformly distributed on <span class="math inline">\(\mathcal{A}_f\)</span></p>
-<p>We cam thus view <span class="math inline">\(f\)</span> as the marginal density of <span class="math inline">\(\boldsymbol{X}\)</span> since <span class="math inline">\(f(\boldsymbol{x}) = \int_0^{f(\boldsymbol{x})} \mathrm{d} u.\)</span> If we can simulate uniformly from <span class="math inline">\(\mathcal{A}_{f}\)</span>, then, we can discard the auxiliary variable <span class="math inline">\(u\)</span>. See <span class="citation" data-cites="Devroye:1986">Devroye (<a href="references.html#ref-Devroye:1986" role="doc-biblioref">1986</a>)</span>, Theorem 3.1 for a proof.</p>
-<div class="cell">
-<div class="cell-output-display">
-<div id="fig-fundamental-theorem" class="quarto-float quarto-figure quarto-figure-center anchored">
-<figure class="quarto-float quarto-float-fig figure">
-<div aria-describedby="fig-fundamental-theorem-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="introduction_files/figure-html/fig-fundamental-theorem-1.png" class="img-fluid figure-img" width="672">
-</div>
-<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-fundamental-theorem-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;1.1: Illustration of the fundamental theorem of simulation. All points in blue below the density curve belong to <span class="math inline">\(\mathcal{A}_f\)</span>.
-</figcaption>
-</figure>
-</div>
-</div>
-</div>
-</div>
-<p>The fundamental theorem of simulation underlies rejection sampling, the generalized ratio of uniform and slice sampling. The density function needs only to be known up to normalizing constant thanks to the arbitrariness of <span class="math inline">\(c\)</span>, which will also allow us to work with unnormalized density functions.</p>
-<div id="prp-rejection-sampling" class="theorem proposition">
-<p><span class="theorem-title"><strong>Proposition 1.7 (Rejection sampling)</strong></span> Rejection sampling (also termed accept-reject algorithm) samples from a random vector with density <span class="math inline">\(p(\cdot)\)</span> by drawing candidates from a proposal with density <span class="math inline">\(q(\cdot)\)</span> with nested support, <span class="math inline">\(\mathrm{supp}(p) \subseteq \mathrm{supp}(q).\)</span> The density <span class="math inline">\(q(\cdot)\)</span> must be such that <span class="math inline">\(p(\boldsymbol{\theta}) \leq C q(\boldsymbol{\theta})\)</span> for <span class="math inline">\(C \geq 1\)</span> for all values of <span class="math inline">\(\boldsymbol{\theta}\)</span> in the support of <span class="math inline">\(p(\cdot).\)</span></p>
-<ol type="1">
-<li>Generate <span class="math inline">\(\boldsymbol{\theta}^{\star}\)</span> from the proposal with density <span class="math inline">\(q\)</span> and <span class="math inline">\(U \sim \mathsf{U}(0,1)\)</span></li>
-<li>Compute the ratio <span class="math inline">\(R \gets p(\boldsymbol{\theta}^{\star})/ q(\boldsymbol{\theta}^{\star}).\)</span></li>
-<li>If <span class="math inline">\(R \geq CU,\)</span> return <span class="math inline">\(\boldsymbol{\theta},\)</span> else go back to step 1.</li>
-</ol>
-</div>
-<div class="cell">
-<div class="cell-output-display">
-<div id="fig-acceptreject" class="quarto-float quarto-figure quarto-figure-center anchored">
-<figure class="quarto-float quarto-float-fig figure">
-<div aria-describedby="fig-acceptreject-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="introduction_files/figure-html/fig-acceptreject-1.png" class="img-fluid figure-img" width="672">
-</div>
-<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-acceptreject-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;1.2: Target density (full) and scaled proposal density (dashed): the vertical segment at $ heta=1$ shows the percentage of acceptance for a uniform slice under the scaled proposal, giving an acceptance ratio of 0.58.
-</figcaption>
-</figure>
-</div>
-</div>
-</div>
-<p>Rejection sampling requires the proposal <span class="math inline">\(q\)</span> to have a support at least as large as that of <span class="math inline">\(p\)</span> and resemble closely the density. It should be chosen so that the upper bound <span class="math inline">\(C\)</span> is as sharp as possible and close to 1. The dominating density <span class="math inline">\(q\)</span> must have heavier tails than the density of interest. The expected number of simulations needed to accept one proposal is <span class="math inline">\(C.\)</span> Finally, for the method to be useful, we need to be able to simulate easily and cheaply from the proposal. The optimal value of <span class="math inline">\(C\)</span> is <span class="math inline">\(C = \sup_{\boldsymbol{\theta}} p(\boldsymbol{\theta}) / q(\boldsymbol{\theta}).\)</span> This quantity may be obtained by numerical optimization, by finding the mode of the ratio of the log densities if the maximum is not known analytically.</p>
-<div id="exm-accept-reject-truncated" class="theorem example">
-<p><span class="theorem-title"><strong>Example 1.18 (Truncated Gaussian distribution)</strong></span> Consider the problem of sampling from a Gaussian distribution <span class="math inline">\(Y \sim \mathsf{Gauss}(\mu, \sigma^2)\)</span> truncated in the interval <span class="math inline">\([a, b],\)</span> which has density <span class="math display">\[\begin{align*}
-f(x; \mu, \sigma, a, b) = \frac{1}{\sigma}\frac{\phi\left(\frac{x-\mu}{\sigma}\right)}{\Phi\{(b-\mu)/\sigma\}-\Phi\{(a-\mu)/\sigma\}}.
-\end{align*}\]</span> where <span class="math inline">\(\phi(\cdot), \Phi(\cdot)\)</span> are respectively the density and distribution function of the standard Gaussian distribution.</p>
-<p>Since the Gaussian is a location-scale family, we can reduce the problem to sampling <span class="math inline">\(X\)</span> from a standard Gaussian truncated on <span class="math inline">\(\alpha = (a-\mu)/\sigma\)</span> and <span class="math inline">\(\beta = (b-\mu)/\sigma\)</span> and back transform the result as <span class="math inline">\(Y = \mu + \sigma X.\)</span></p>
-<p>A crude accept-reject sampling algorithm would consider sampling from the same untruncated distribution with density <span class="math inline">\(g(X) = \sigma^{-1}\phi\{(x-\mu)/\sigma\},\)</span> and the acceptance ratio is <span class="math inline">\(C^{-1}=\{\Phi(\beta) - \Phi(\alpha)\}.\)</span> We thus simply simulate points from the Gaussian and accept any that falls within the bounds.</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Standard Gaussian truncated on [0,1]</span></span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>candidate <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(<span class="fl">1e5</span>)</span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>trunc_samp <span class="ot">&lt;-</span> candidate[candidate <span class="sc">&gt;=</span> <span class="dv">0</span> <span class="sc">&amp;</span> candidate <span class="sc">&lt;=</span> <span class="dv">1</span>]</span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Acceptance rate</span></span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="fu">length</span>(trunc_samp)<span class="sc">/</span><span class="fl">1e5</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] 0.34242</code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Theoretical acceptance rate</span></span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="fu">pnorm</span>(<span class="dv">1</span>)<span class="sc">-</span><span class="fu">pnorm</span>(<span class="dv">0</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] 0.3413447</code></pre>
-</div>
-</div>
-<p>We can of course do better: if we consider a random variable with distribution function <span class="math inline">\(F,\)</span> but truncated over the interval <span class="math inline">\([a,b],\)</span> then the resulting distribution function is <span class="math display">\[\frac{F(x) - F(a)}{F(b)-F(a)}, \qquad a \leq x \leq b,\]</span> and we can invert this expression to get the quantile function of the truncated variable in terms of the distribution function <span class="math inline">\(F\)</span> and the quantile function <span class="math inline">\(F^{-1}\)</span> of the original untruncated variable.</p>
-<p>For the Gaussian, this gives <span class="math display">\[\begin{align*}
-X \sim \Phi^{-1}\left[\Phi(a) + \{\Phi(b)-\Phi(a)\}U\right]
-\end{align*}\]</span> for <span class="math inline">\(U \sim \mathsf{U}(0,1).\)</span> Although the quantile and distribution functions of the Gaussian, <code>pnorm</code> and <code>qnorm</code> in <strong>R</strong>, are very accurate, this method will fail for rare event simulation because it will return <span class="math inline">\(\Phi(x) = 0\)</span> for <span class="math inline">\(x \leq -39\)</span> and <span class="math inline">\(\Phi(x)=1\)</span> for <span class="math inline">\(x \geq 8.3,\)</span> implying that <span class="math inline">\(a \leq 8.3\)</span> for this approach to work <span class="citation" data-cites="LEcuyer.Botev:2017">(<a href="references.html#ref-LEcuyer.Botev:2017" role="doc-biblioref">Botev and L’Écuyer 2017</a>)</span>.</p>
-<p>Consider the problem of simulating events in the right tail for a standard Gaussian where <span class="math inline">\(a &gt; 0\)</span>; Marsaglia’s method <span class="citation" data-cites="Devroye:1986">(<a href="references.html#ref-Devroye:1986" role="doc-biblioref">Devroye 1986, 381</a>)</span>, can be used for that purpose. Write the density of the Gaussian as <span class="math inline">\(f(x) = \exp(-x^2/2)/c_1,\)</span> where <span class="math inline">\(c_1 = \int_{a}^{\infty}\exp(-z^2/2)\mathrm{d} z,\)</span> and note that <span class="math display">\[c_1f(x) \leq \frac{x}{a}\exp\left(-\frac{x^2}{2}\right)= a^{-1}\exp\left(-\frac{a^2}{2}\right)g(x), \qquad x \geq a;\]</span> where <span class="math inline">\(g(x)\)</span> is the density of a Rayleigh variable shifted by <span class="math inline">\(a,\)</span> which has distribution function <span class="math inline">\(G(x) = 1-\exp\{(a^2-x^2)/2\}\)</span> for <span class="math inline">\(x \geq a.\)</span> We can simulate such a random variate <span class="math inline">\(X\)</span> through the inversion method. The constant <span class="math inline">\(C= \exp(-a^2/2)(c_1a)^{-1}\)</span> approaches 1 quickly as <span class="math inline">\(a \to \infty.\)</span></p>
-<p>The accept-reject thus proceeds with</p>
-<ol type="1">
-<li>Generate a shifted Rayleigh above <span class="math inline">\(a,\)</span> <span class="math inline">\(X \gets  \{a^2 - 2\log(U)\}^{1/2}\)</span> for <span class="math inline">\(U \sim \mathsf{U}(0,1)\)</span></li>
-<li>Accept <span class="math inline">\(X\)</span> if <span class="math inline">\(XV \leq a,\)</span> where <span class="math inline">\(V \sim \mathsf{U}(0,1).\)</span></li>
-</ol>
-<p>Should we wish to obtain samples on <span class="math inline">\([a,b],\)</span> we could instead propose from a Rayleigh truncated above at <span class="math inline">\(b\)</span> <span class="citation" data-cites="LEcuyer.Botev:2017">(<a href="references.html#ref-LEcuyer.Botev:2017" role="doc-biblioref">Botev and L’Écuyer 2017</a>)</span>.</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>a <span class="ot">&lt;-</span> <span class="fl">8.3</span></span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>niter <span class="ot">&lt;-</span> <span class="dv">1000</span>L</span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>X <span class="ot">&lt;-</span> <span class="fu">sqrt</span>(a<span class="sc">^</span><span class="dv">2</span> <span class="sc">+</span> <span class="dv">2</span><span class="sc">*</span><span class="fu">rexp</span>(niter))</span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>samp <span class="ot">&lt;-</span> X[<span class="fu">runif</span>(niter)<span class="sc">*</span>X <span class="sc">&lt;=</span> a]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-</div>
-<p>For a given candidate density <span class="math inline">\(g\)</span> which has a heavier tail than the target, we can resort to numerical methods to compute the mode of the ratio <span class="math inline">\(f/g\)</span> and obtain the bound <span class="math inline">\(C\)</span>; see <span class="citation" data-cites="Albert:2009">Albert (<a href="references.html#ref-Albert:2009" role="doc-biblioref">2009</a>)</span>, Section 5.8 for an insightful example. A different use for the simulations is to approximate integrals numerically. Consider a target distribution with finite expected value. The law of large numbers guarantees that, if we can draw observations from our target distribution, then the sample average will converge to the expected value of that distribution, as the sample size becomes larger and larger, provided the expectation is finite. We can thus compute the probability of any event or the expected value of any (integrable) function by computing sample averages; the cost to pay for this generality is randomness.</p>
-<div id="prp-monte-carlo-integration" class="theorem proposition">
-<p><span class="theorem-title"><strong>Proposition 1.8 (Monte Carlo integration)</strong></span> Specifically, suppose we are interested in the average <span class="math inline">\(\mathsf{E}\{g(X)\}\)</span> of <span class="math inline">\(X\)</span> with density or mass function <span class="math inline">\(f\)</span> supported on <span class="math inline">\(\mathcal{X}\)</span> for some function <span class="math inline">\(g.\)</span> Monte Carlo integration proceeds by drawing <span class="math inline">\(B\)</span> independent samples <span class="math inline">\(x_1, \ldots, x_B\)</span> from density <span class="math inline">\(p\)</span> and evaluating the empirical average of <span class="math inline">\(g,\)</span> with <span class="math display">\[\begin{align*}
-\mathsf{E}\{g(X)\} = \int_{\mathcal{X}} g(x) p(x) \mathrm{d} x \approx \widehat{\mathsf{E}}\{g(X)\}=\frac{1}{B}\sum_{b=1}^B g(x_b).
-\end{align*}\]</span> By the law of large number, this estimator is convergent when <span class="math inline">\(B \to \infty\)</span> provided that the expectation is finite. If the variance of <span class="math inline">\(g(X)\)</span> is finite, we can approximate the latter by the sample variance of the simple random sample and obtain the Monte Carlo standard error of the estimator <span class="math display">\[\begin{align*}
-\mathsf{se}^2[\widehat{\mathsf{E}}\{g(X)\}] = \frac{1}{B(B-1)} \sum_{b=1}^B \left[ g(x_b) -  \widehat{\mathsf{E}}\{g(X)\} \right]^2.
-\end{align*}\]</span></p>
-</div>
-<p>We can also use a similar idea to evaluate the integral of <span class="math inline">\(g(X)\)</span> if <span class="math inline">\(X\)</span> has density <span class="math inline">\(p\)</span>, by drawing instead samples from <span class="math inline">\(q\)</span>. This is formalized in the next proposition.</p>
-<div id="prp-importance-sampling" class="theorem proposition">
-<p><span class="theorem-title"><strong>Proposition 1.9 (Importance sampling)</strong></span> Consider a random variable <span class="math inline">\(X\)</span> with density <span class="math inline">\(p(x)\)</span> supported on <span class="math inline">\(\mathcal{X}\)</span>. We can calculate the integral <span class="math inline">\(\mathsf{E}_p\{g(X)\} = \int_{\mathcal{X}} g(x) p(x) \mathrm{d}x\)</span> by considering instead draws from a density <span class="math inline">\(q(\cdot)\)</span> with nested support, <span class="math inline">\(\mathcal{X} \subseteq \mathrm{supp}(q).\)</span> Then, <span class="math display">\[\begin{align*}
-\mathsf{E}\{g(X)\} = \int_{\mathcal{X}} g(x) \frac{p(x)}{q(x)} q(x) \mathrm{d} x
-\end{align*}\]</span> and we can proceed similarly by drawing samples from <span class="math inline">\(q\)</span>. This is most useful when the variance is finite, which happens if the integral <span class="math display">\[\begin{align*}
-\int_{\mathcal{X}} g^2(x) \frac{p^2(x)}{q(x)} \mathrm{d} x &lt; \infty.
-\end{align*}\]</span> An alternative Monte Carlo estimator, which is biased but has lower variance, is obtained by drawing independent <span class="math inline">\(x_1, \ldots, x_B\)</span> from <span class="math inline">\(q\)</span> and taking instead the weighted average of <span class="math display">\[\begin{align*}
-\widetilde{\mathsf{E}}\{g(X)\} =\frac{B^{-1} \sum_{b=1}^B w_b g(x_b) }{B^{-1}\sum_{b=1}^B w_b}.
-\end{align*}\]</span> with weights <span class="math inline">\(w_b = p(x_b)/q(x_b)\)</span>. The latter equal 1 on average, so one could omit the denominator without harm. The standard error for the independent draws equals <span class="math display">\[\begin{align*}
-\mathsf{se}^2[\widetilde{\mathsf{E}}\{g(X)\}] = \frac{ \sum_{b=1}^B w_b^2 \left[ g(x_b) -  \widetilde{\mathsf{E}}\{g(X)\} \right]^2}{\left(\sum_{b=1}^B w_b\right)^2}.
-\end{align*}\]</span></p>
-</div>
-<div id="exm-expectation-demo" class="theorem example">
-<p><span class="theorem-title"><strong>Example 1.19</strong></span> Consider <span class="math inline">\(X \sim \mathsf{gamma}(\alpha, \beta),\)</span> a gamma distribution with shape <span class="math inline">\(\alpha\)</span> and rate <span class="math inline">\(\beta.\)</span> We can compute the probability that <span class="math inline">\(X &lt; 1\)</span> easily by Monte Carlo since <span class="math inline">\(\Pr(X &lt;1) = \mathsf{E}\{\mathrm{I}(X&lt;1)\}\)</span> and this means we only need to compute the proportion of draws less than one. We can likewise compute the mean <span class="math inline">\(g(x) = x\)</span> or variance.</p>
-<p>Suppose we have drawn a Monte Carlo sample of size <span class="math inline">\(B.\)</span> If the function <span class="math inline">\(g(\cdot)\)</span> is square integrable,<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a> with variance <span class="math inline">\(\sigma^2_g,\)</span> then a central limit theorem applies. In large samples and for independent observations, our Monte Carlo average <span class="math inline">\(\widehat{\mu}_g = B^{-1}\sum_{b=1}^B g(X_i)\)</span> has variance <span class="math inline">\(\sigma^2_g/B.\)</span> We can approximate the unknown variance <span class="math inline">\(\sigma^2_g\)</span> by it’s empirical counterpart.<a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a>. Note that, while the variance decreases linearly with <span class="math inline">\(B,\)</span> the choice of <span class="math inline">\(g\)</span> impacts the speed of convergence: for our examples, we can compute <span class="math display">\[\sigma^2_g =\Pr(X \leq 1)\{1-\Pr(X \leq 1)\}=0.0434\]</span> (left) and <span class="math inline">\(\sigma^2_g=\alpha/\beta^2=1/8\)</span> (middle plot).</p>
-<p><a href="#fig-monte-carlo-path" class="quarto-xref">Figure&nbsp;<span>1.3</span></a> shows the empirical trace plot of the Monte Carlo average (note the <span class="math inline">\(\sqrt{B}\)</span> <span class="math inline">\(x\)</span>-axis scale!) as a function of the Monte Carlo sample size <span class="math inline">\(B\)</span> along with 95% Wald-based confidence intervals (gray shaded region), <span class="math inline">\(\widehat{\mu}_g \pm 1.96 \times \sigma_g/\sqrt{B}.\)</span> We can see that the ‘likely region’ for the average shrinks with <span class="math inline">\(B.\)</span></p>
-<p>What happens if our function is not integrable? The right-hand plot of <a href="#fig-monte-carlo-path" class="quarto-xref">Figure&nbsp;<span>1.3</span></a> shows empirical averages of <span class="math inline">\(g(x) = x^{-1},\)</span> which is not integrable if <span class="math inline">\(\alpha &lt; 1.\)</span> We can compute the empirical average, but the result won’t converge to any meaningful quantity regardless of the sample size. The large jumps are testimonial of this.</p>
-<div class="cell">
-<div class="cell-output-display">
-<div id="fig-monte-carlo-path" class="quarto-float quarto-figure quarto-figure-center anchored">
-<figure class="quarto-float quarto-float-fig figure">
-<div aria-describedby="fig-monte-carlo-path-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="introduction_files/figure-html/fig-monte-carlo-path-1.png" class="img-fluid figure-img" width="672">
-</div>
-<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-monte-carlo-path-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;1.3: Running mean trace plots for <span class="math inline">\(g(x)=\mathrm{I}(x&lt;1)\)</span> (left), <span class="math inline">\(g(x)=x\)</span> (middle) and <span class="math inline">\(g(x)=1/x\)</span> (right) for a Gamma distribution with shape 0.5 and rate 2, as a function of the Monte Carlo sample size.
-</figcaption>
-</figure>
-</div>
-</div>
-</div>
-</div>
-<div id="exm-tail-probability" class="theorem example">
-<p><span class="theorem-title"><strong>Example 1.20 (Tail probability of a Gaussian distribution)</strong></span> Consider estimation of the probability that a standard Gaussian random variable exceeds <span class="math inline">\(a=4\)</span>, which is <span class="math inline">\(p=1-\Phi(a)\)</span>. We can use standard numerical approximations to the distribution function implemented in any software package, which shows this probability is roughly one in <span class="math inline">\(3.1574\times 10^{4}\)</span>.</p>
-<p>If we consider a truncated Gaussian above <span class="math inline">\(a\)</span>, then the integral of <span class="math inline">\(\mathsf{I}(x&gt;a)\)</span> is one (since the truncated Gaussian is a valid density). Thus, we can estimate rather the normalizing constant by simulating standard Gaussian and comparing this with the importance sampling estimator, using the knowledge of the value of the integral to derive rather the normalizing constant. Monte Carlo integration from with <span class="math inline">\(B=10^6\)</span> is demonstrated using the following code</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>a <span class="ot">&lt;-</span> <span class="dv">4</span></span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>B <span class="ot">&lt;-</span> <span class="fl">1e6</span>L <span class="co"># 1 million draws</span></span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>exact <span class="ot">&lt;-</span> <span class="fu">pnorm</span>(a, <span class="at">lower.tail =</span> <span class="cn">FALSE</span>)</span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Vanilla Monte Carlo</span></span>
-<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>X <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(B)</span>
-<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>mc <span class="ot">&lt;-</span> <span class="fu">mean</span>(X <span class="sc">&gt;=</span> a)</span>
-<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Importance sampling with Rayleigh</span></span>
-<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>Y <span class="ot">&lt;-</span> <span class="fu">sqrt</span>(a<span class="sc">^</span><span class="dv">2</span> <span class="sc">+</span> <span class="dv">2</span><span class="sc">*</span><span class="fu">rexp</span>(B))</span>
-<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>drayleigh <span class="ot">&lt;-</span> <span class="cf">function</span>(x, a){ x<span class="sc">*</span><span class="fu">exp</span>((a<span class="sc">^</span><span class="dv">2</span><span class="sc">-</span>x<span class="sc">^</span><span class="dv">2</span>)<span class="sc">/</span><span class="dv">2</span>)}</span>
-<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>is <span class="ot">&lt;-</span> <span class="fu">mean</span>(<span class="fu">dnorm</span>(Y)<span class="sc">/</span><span class="fu">drayleigh</span>(Y, <span class="at">a =</span> a))</span>
-<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Relative error</span></span>
-<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a><span class="fu">c</span>(<span class="at">mc =</span> (mc <span class="sc">-</span> exact)<span class="sc">/</span>exact, <span class="at">is =</span> (is <span class="sc">-</span> exact)<span class="sc">/</span>exact)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>           mc            is 
--2.119405e-02 -2.927613e-05 </code></pre>
-</div>
-</div>
-</div>
 
 
 <div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list" style="display: none">
-<div id="ref-Albert:2009" class="csl-entry" role="listitem">
-Albert, Jim. 2009. <em>Bayesian Computation with <span>R</span></em>. 2nd ed. New York: Springer. <a href="https://doi.org/10.1007/978-0-387-92298-0">https://doi.org/10.1007/978-0-387-92298-0</a>.
-</div>
-<div id="ref-LEcuyer.Botev:2017" class="csl-entry" role="listitem">
-Botev, Zdravko, and Pierre L’Écuyer. 2017. <span>“Simulation from the Normal Distribution Truncated to an Interval in the Tail.”</span> In <em>Proceedings of the 10th EAI International Conference on Performance Evaluation Methodologies and Tools on 10th EAI International Conference on Performance Evaluation Methodologies and Tools</em>, 23–29. <a href="https://doi.org/10.4108/eai.25-10-2016.2266879">https://doi.org/10.4108/eai.25-10-2016.2266879</a>.
-</div>
-<div id="ref-Devroye:1986" class="csl-entry" role="listitem">
-Devroye, L. 1986. <em>Non-Uniform Random Variate Generation</em>. New York: Springer. <a href="http://www.nrbook.com/devroye/">http://www.nrbook.com/devroye/</a>.
-</div>
 <div id="ref-Student:1908" class="csl-entry" role="listitem">
 Gosset, William Sealy. 1908. <span>“The Probable Error of a Mean.”</span> <em>Biometrika</em> 6 (1): 1–25. <a href="https://doi.org/10.1093/biomet/6.1.1">https://doi.org/10.1093/biomet/6.1.1</a>.
 </div>
@@ -1124,8 +980,6 @@ Nadarajah, Saralees. 2008. <span>“<span>M</span>arshall and <span>O</span>lkin
 <hr>
 <ol>
 <li id="fn1"><p>Using for example a symbolic calculator.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn2"><p>Meaning <span class="math inline">\(\mathsf{E}\{g^2(X)\}&lt;\infty,\)</span> so the variance of <span class="math inline">\(g(X)\)</span> exists.<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn3"><p>By contrasts, if data are identically distributed but not independent, more care is needed.<a href="#fnref3" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 </ol>
 </section>
 
