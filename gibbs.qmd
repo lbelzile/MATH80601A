@@ -566,7 +566,7 @@ Many elliptical distributions can be cast as scale mixture models of spherical o
 
 ## Mixture models
 
-In clustering problems, we can specify that observations arise from a mixture model with a fixed or unknown number of coefficients: the interest lies then in estimating
+In clustering problems, we can specify that observations arise from a mixture model with a fixed or unknown number of coefficients: the interest lies then in estimating the relative weights of the components, and their location and scale.
 
 A $K$-mixture model is a weighted combination of models frequently used in clustering or to model subpopulations with respective densities $f_k$, with density
 $$f(x; \boldsymbol{\theta}, \boldsymbol{\omega}) = \sum_{k=1}^K \omega_kf_k(x; \boldsymbol{\theta}_k), \qquad \omega_1 + \cdots \omega_K=1.$$

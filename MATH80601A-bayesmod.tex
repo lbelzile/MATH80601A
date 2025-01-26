@@ -266,6 +266,20 @@
 \DeclareMathAlphabet{\mathcrl}{U}{rsfs}{m}{n}
 \usepackage{utopia}
 \DeclareMathAlphabet{\mathcal}{OMS}{cmsy}{m}{n}
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{wrapfig}
+\usepackage{float}
+\usepackage{colortbl}
+\usepackage{pdflscape}
+\usepackage{tabu}
+\usepackage{threeparttable}
+\usepackage{threeparttablex}
+\usepackage[normalem]{ulem}
+\usepackage{makecell}
+\usepackage{xcolor}
 \makeatletter
 \@ifpackageloaded{bookmark}{}{\usepackage{bookmark}}
 \makeatother
@@ -305,15 +319,15 @@
 \newcommand*\listoflistings{\listof{codelisting}{List of Listings}}
 \usepackage{amsthm}
 \theoremstyle{definition}
-\newtheorem{definition}{Definition}[chapter]
+\newtheorem{example}{Example}[chapter]
 \theoremstyle{plain}
 \newtheorem{theorem}{Theorem}[chapter]
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}[chapter]
 \theoremstyle{plain}
 \newtheorem{proposition}{Proposition}[chapter]
 \theoremstyle{definition}
 \newtheorem{exercise}{Exercise}[chapter]
-\theoremstyle{definition}
-\newtheorem{example}{Example}[chapter]
 \theoremstyle{remark}
 \AtBeginDocument{\renewcommand*{\proofname}{Proof}}
 \newtheorem*{remark}{Remark}
@@ -369,7 +383,7 @@ details.
 These notes are licensed under a
 \href{http://creativecommons.org/licenses/by-nc-sa/4.0/}{Creative
 Commons Attribution-NonCommercial-ShareAlike 4.0 International License}
-and were last compiled on Saturday, January 25 2025.
+and were last compiled on dimanche, janvier 26 2025.
 
 The objective of the course is to provide a hands on introduction to
 Bayesian data analysis. The course will cover the formulation,
@@ -1574,7 +1588,7 @@ observation \(y_n\) to it's past.
 \begin{example}[First-order autoregressive
 process]\protect\hypertarget{exm-autoregressive-one}{}\label{exm-autoregressive-one}
 
-Consider a Gaussian \(\mathsf{AR}(1)\) model of the form
+Consider an \(\mathsf{AR}(1)\) model of the form
 \[Y_t = \mu + \phi(Y_{t-1} - \mu) + \varepsilon_t,\] where \(\phi\) is
 the lag-one correlation, \(\mu\) the global mean and \(\varepsilon_t\)
 is an iid innovation with mean zero and variance \(\sigma^2.\) If
@@ -1587,14 +1601,22 @@ value \(Y_{t-1}.\) The log likelihood thus becomes \begin{align*}
 \ell(\boldsymbol{\theta}) = \log f(y_1) + \sum_{i=2}^n \log f(y_i \mid y_{i-1}).
 \end{align*}
 
-If innovations are Gaussian, we have
+If innovations \(\{\varepsilon_t\}\) are Gaussian, we have
 \[Y_t \mid Y_{t-1}=y_{t-1} \sim \mathsf{Gauss}\{\mu(1-\phi)+ \phi y_{t-1}, \sigma^2\}, \qquad t>1.\]
 
 The \(\mathsf{AR}(1)\) stationarity process \(Y_t,\) marginally, has
-mean \(\mu\) and unconditional variance \(\sigma^2/(1-\phi^2).\) The
-\(\mathsf{AR}(1)\) process is first-order Markov since the conditional
-distribution \(p(Y_t \mid Y_{t-1}, \ldots, Y_{t-p})\) equals
-\(p(Y_t \mid Y_{t-1}).\) This means the likelihood is \begin{align*}
+mean \(\mu\) and unconditional variance \(\sigma^2/(1-\phi^2).\) If we
+use the recursive definition, we find \begin{align*}
+Y_t &= \mu (1-\phi) + \varepsilon_t + \phi \{\mu + \phi(Y_{t-2}-\mu) + \varepsilon_{t-1}\}
+\\&= \mu + \sum_{j=0}^\infty \phi_j\varepsilon_{t-j}
+\end{align*} whence \(\mathsf{E}(Y_t) = \mu\) and \begin{align*}
+\mathsf{Va}(Y_t) &= \mathsf{Va}\left(\sum_{j=0}^\infty \phi_j\varepsilon_{t-j}\right)
+\\&= \sum_{j=0}^\infty \phi_j^2 \mathsf{Va}(\varepsilon_{t-j})
+\\&=\frac{\sigma^2}{(1-\phi^2)}
+\end{align*} where the geometric series converges if \(\phi<1\) and
+diverges otherwise.
+
+The likelihood can be written as \begin{align*}
 \ell(\mu, \phi,\sigma^2)& = -\frac{n}{2}\log(2\pi) - n\log \sigma + \frac{1}{2}\log(1-\phi^2) \\&\quad -\frac{(1-\phi^2)(y_1- \mu)^2}{2\sigma^2} - \sum_{i=2}^n \frac{(y_t - \mu(1-\phi)- \phi y_{t-1})^2}{2\sigma^2}
 \end{align*}
 
@@ -3651,7 +3673,23 @@ function \(F,\) then we can define it's \textbf{generalized inverse}
 F^{-1}(u) = \inf\{x: f(x) \geq u\}
 \end{align*} and if \(G\) is continuous, then
 \(F(X) \sim \mathsf{unif}(0,1).\) We can thus simulate data using the
-quantile function \(F^{-1}(U),,\) with \(U \sim \mathsf{unif}(0,1).\)
+quantile function \(F^{-1}(U),\) with \(U \sim \mathsf{unif}(0,1).\)
+
+\begin{example}[Simulation of exponential
+variates]\protect\hypertarget{exm-simulation-inverse}{}\label{exm-simulation-inverse}
+
+The distribution function of \(Y \sim \mathsf{expo}(\lambda)\) is
+\(F(y) = \exp(-\lambda y)\), so the quantile function is
+\(F^{-1}(u) = -\log(u) / \lambda\)
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{n }\OtherTok{\textless{}{-}} \FloatTok{1e4}\NormalTok{L}
+\SpecialCharTok{{-}}\FunctionTok{log}\NormalTok{(}\FunctionTok{runif}\NormalTok{(n)) }\SpecialCharTok{/} \DecValTok{2} \CommentTok{\#simulate expo(2)}
+\end{Highlighting}
+\end{Shaded}
+
+\end{example}
 
 \begin{theorem}[Fundamental theorem of
 simulation]\protect\hypertarget{thm-fundamental-simulation}{}\label{thm-fundamental-simulation}
@@ -3783,7 +3821,7 @@ points from the Gaussian and accept any that falls within the bounds.
 \end{Shaded}
 
 \begin{verbatim}
-[1] 0.33977
+[1] 0.3404
 \end{verbatim}
 
 \begin{Shaded}
@@ -3920,14 +3958,103 @@ error for the independent draws equals \begin{align*}
 
 \end{proposition}
 
-\begin{example}[]\protect\hypertarget{exm-expectation-demo}{}\label{exm-expectation-demo}
+\begin{example}[Importance sampling for the variance of a beta
+distribution]\protect\hypertarget{exm-is-beta-variance}{}\label{exm-is-beta-variance}
+
+Consider \(X \sim \mathsf{beta}(\alpha, \alpha)\) for \(\alpha > 1\)
+with \(\mathsf{E}(X)=0.5\) since the density is symmetric. We tackle the
+estimation of the variance, which can be written as
+\(\mathsf{E}\{(X - 0.5)^2\}.\) While we can easily derive the
+theoretical expression, equal to
+\(\mathsf{Va}(X) = \{4 \cdot (2\alpha+1)\}^{-1},\) we can also use Monte
+Carlo integration as proof of concept.
+
+Rather than simulate directly from our data generating mechanism, we can
+use an importance sampling density \(q(x)\) which puts more mass away
+from \(0.5\) where the integral is zero. Consider the equiweighted
+mixture of \(\mathsf{beta}(\alpha, 3\alpha)\) and
+\(\mathsf{\beta}(3\alpha, \alpha)\), which is bimodal.
+Figure~\ref{fig-importance-sampling-beta} shows the function we wish to
+integrate, the density and the importance sampling density, and the
+weighting function \(p(x)/q(x)\) of the first 50 observations drawn from
+\(q(x)\) with \(\alpha=1.5.\) The variance ratio shows an improvement of
+more than 9\% for the same Monte Carlo sample size.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{B }\OtherTok{\textless{}{-}} \FloatTok{2e4}\NormalTok{L}
+\NormalTok{alpha }\OtherTok{\textless{}{-}} \FloatTok{1.5}
+\NormalTok{factor }\OtherTok{\textless{}{-}} \DecValTok{3}
+\CommentTok{\# Mode at the mean 0.5}
+\NormalTok{X0 }\OtherTok{\textless{}{-}} \FunctionTok{rbeta}\NormalTok{(}\AttributeTok{n =}\NormalTok{ B, alpha, alpha)}
+\NormalTok{px }\OtherTok{\textless{}{-}} \ControlFlowTok{function}\NormalTok{(x)\{}\FunctionTok{dbeta}\NormalTok{(x, alpha, alpha)\}}
+\CommentTok{\# Importance sampling density {-} mixture of two betas (alpha, factor*alpha)}
+\NormalTok{X1 }\OtherTok{\textless{}{-}} \FunctionTok{ifelse}\NormalTok{(}\FunctionTok{runif}\NormalTok{(B) }\SpecialCharTok{\textless{}} \FloatTok{0.5}\NormalTok{, }\FunctionTok{rbeta}\NormalTok{(B, alpha, factor}\SpecialCharTok{*}\NormalTok{alpha), }\FunctionTok{rbeta}\NormalTok{(B, factor}\SpecialCharTok{*}\NormalTok{alpha, alpha))}
+\NormalTok{qx }\OtherTok{\textless{}{-}} \ControlFlowTok{function}\NormalTok{(x)\{}\FloatTok{0.5}\SpecialCharTok{*}\FunctionTok{dbeta}\NormalTok{(x, alpha, factor}\SpecialCharTok{*}\NormalTok{alpha) }\SpecialCharTok{+} \FloatTok{0.5}\SpecialCharTok{*}\FunctionTok{dbeta}\NormalTok{(x, factor}\SpecialCharTok{*}\NormalTok{alpha, alpha)\}}
+\CommentTok{\# Function to integrate {-} gives variance of a symmetric beta distribution}
+\NormalTok{g }\OtherTok{\textless{}{-}} \ControlFlowTok{function}\NormalTok{(x)\{(x }\SpecialCharTok{{-}} \FloatTok{0.5}\NormalTok{)}\SpecialCharTok{\^{}}\DecValTok{2}\NormalTok{\}}
+\CommentTok{\# Weights for importance sampling}
+\NormalTok{w }\OtherTok{\textless{}{-}} \FunctionTok{px}\NormalTok{(X1)}\SpecialCharTok{/}\FunctionTok{qx}\NormalTok{(X1)}
+\CommentTok{\# Monte Carlo integration}
+\NormalTok{mc\_est }\OtherTok{\textless{}{-}} \FunctionTok{mean}\NormalTok{(}\FunctionTok{g}\NormalTok{(X0))}
+\NormalTok{mc\_var }\OtherTok{\textless{}{-}} \FunctionTok{var}\NormalTok{(}\FunctionTok{g}\NormalTok{(X0))}\SpecialCharTok{/}\NormalTok{B}
+\CommentTok{\# Importance sampling weighted mean and variance}
+\NormalTok{is\_est }\OtherTok{\textless{}{-}} \FunctionTok{weighted.mean}\NormalTok{(}\FunctionTok{g}\NormalTok{(X1), }\AttributeTok{w =}\NormalTok{ w) }\CommentTok{\# equivalent to mean(g(X1)*w)/mean(w)}
+\NormalTok{is\_var }\OtherTok{\textless{}{-}} \FunctionTok{sum}\NormalTok{(w}\SpecialCharTok{\^{}}\DecValTok{2}\SpecialCharTok{*}\NormalTok{(}\FunctionTok{g}\NormalTok{(X1) }\SpecialCharTok{{-}}\NormalTok{ is\_est)}\SpecialCharTok{\^{}}\DecValTok{2}\NormalTok{)}\SpecialCharTok{/}\NormalTok{ (}\FunctionTok{sum}\NormalTok{(w)}\SpecialCharTok{\^{}}\DecValTok{2}\NormalTok{)}
+\CommentTok{\# True value for the beta variance}
+\NormalTok{th\_est }\OtherTok{\textless{}{-}} \DecValTok{1}\SpecialCharTok{/}\NormalTok{(}\DecValTok{4}\SpecialCharTok{*}\NormalTok{(}\DecValTok{2}\SpecialCharTok{*}\NormalTok{alpha}\SpecialCharTok{+}\DecValTok{1}\NormalTok{))}
+\CommentTok{\# Point estimates and differences}
+\FunctionTok{round}\NormalTok{(}\FunctionTok{c}\NormalTok{(}\AttributeTok{true =}\NormalTok{ th\_est, }\StringTok{"monte carlo"} \OtherTok{=}\NormalTok{ mc\_est, }\StringTok{"importance sampling"} \OtherTok{=}\NormalTok{ is\_est),}\DecValTok{4}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+               true         monte carlo importance sampling 
+             0.0625              0.0628              0.0622 
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Ratio of std. errors for means}
+\NormalTok{mc\_var}\SpecialCharTok{/}\NormalTok{is\_var }\CommentTok{\# value \textgreater{} 1 means that IS is more efficient}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+[1] 1.119158
+\end{verbatim}
+
+\begin{figure}[ht!]
+
+\centering{
+
+\includegraphics[width=0.95\linewidth,height=\textheight,keepaspectratio]{markovchains_files/figure-pdf/fig-importance-sampling-beta-1.pdf}
+
+}
+
+\caption{\label{fig-importance-sampling-beta}Monte Carlo integration
+with importance sampling for the variance of a symmetric beta
+distribution. Top left: variance function \(f(x) = (x-0.5)^2\). Top
+right: density of \(\mathsf{beta}(\alpha, \alpha)\) (orange) and
+importance sampling mixture distribution (blue). Bottom left: weighting
+function and weights for 50 first importance sampling draws. Bottom
+right: sample paths of Monte Carlo mean with Wald 95\% confidence
+intervals.}
+
+\end{figure}%
+
+\end{example}
+
+\begin{example}[Expectations of functions of a gamma
+variate]\protect\hypertarget{exm-expectation-demo}{}\label{exm-expectation-demo}
 
 Consider \(X \sim \mathsf{gamma}(\alpha, \beta),\) a gamma distribution
 with shape \(\alpha\) and rate \(\beta.\) We can compute the probability
 that \(X < 1\) easily by Monte Carlo since
 \(\Pr(X <1) = \mathsf{E}\{\mathrm{I}(X<1)\}\) and this means we only
 need to compute the proportion of draws less than one. We can likewise
-compute the mean \(g(x) = x\) or variance.
+compute the mean \(g(x) = x\) or the variance as
+\(\mathsf{E}(X^2) - \{\mathsf{E}(X)\}^2.\)
 
 Suppose we have drawn a Monte Carlo sample of size \(B.\) If the
 function \(g(\cdot)\) is square integrable,\footnote{Meaning
@@ -3971,13 +4098,6 @@ testimonial of this.
 function of the Monte Carlo sample size.}
 
 \end{figure}%
-
-\end{example}
-
-\begin{example}[Importance
-sampling]\protect\hypertarget{exm-importance-sampling}{}\label{exm-importance-sampling}
-
-~
 
 \end{example}
 
@@ -4043,18 +4163,53 @@ probabilities of moving from one state to the next and thus sum to one.
 \begin{definition}[Stationarity and Markov
 property]\protect\hypertarget{def-weak-stationarity}{}\label{def-weak-stationarity}
 
-A stochastic (i.e., random) process is (weakly) stationary if the
+A stochastic (i.e., random) process is (strongly) stationary if the
 distribution of \(\{X_1, \ldots, X_t\}\) is the same as that of
 \(\{X_{n+1}, \ldots X_{t+n}\}\) for any value of \(n\) and given \(t.\)
 
-It is Markov if it satisfies the Markov property: given the current
-state of the chain, the future only depends on the current state and not
-on the past.
+It is weakly stationary if the expected value is constant, meaning
+\(\mathsf{E}(X_t) = \mu\) for all time points \(t\), and the covariance
+at lag \(h\), \(\mathsf{Cov}(X_t, X_{t+h}) = \gamma_h\), does not depend
+on \(t\). Strong stationarity implies weak stationarity.
+
+A stochastic process is markovian if it satisfies the Markov property:
+given the current state of the chain, the future only depends on the
+current state and not on the past.
 
 \end{definition}
 
 Autoregressive processes are not the only ones we can consider, although
 their simplicity lends itself to analytic calculations.
+
+\begin{example}[Stationarity and
+AR(1)]\protect\hypertarget{exm-ar1-stationarity}{}\label{exm-ar1-stationarity}
+
+Consider a Gaussian \(\mathsf{AR}(1)\) model with
+\(Y_t \sim \mathsf{Gauss}\{\mu + \phi(Y_{t-1} - \mu), \sigma^2\}\).
+
+Using the law of iterated expectation and variance, it the process is
+weakly stationary, then
+\(\mathsf{E}_{Y_{t}}(Y_t)=\mathsf{E}_{Y_{t-1}}(Y_{t-1})\) \begin{align*}
+\mathsf{E}_{Y_{t}}(Y_t) &= \mathsf{E}_{Y_{t-1}}\left\{\mathsf{E}_{Y_{t} \mid Y_{t-1}}(Y_t)\right\}
+\\&= \mu(1-\phi) + \phi\mathsf{E}_{Y_{t-1}}(Y_{t-1})
+\end{align*} and so the unconditional mean is \(\mu\). For the variance,
+we have \begin{align*}
+\mathsf{E}_{Y_{t}}(Y_t) &= \mathsf{E}_{Y_{t-1}}\left\{\mathsf{Va}_{Y_{t} \mid Y_{t-1}}(Y_t)\right\} + \mathsf{Va}_{Y_{t-1}}\left\{\mathsf{E}_{Y_{t} \mid Y_{t-1}}(Y_t)\right\}\\
+& = \sigma^2 + \mathsf{Va}_{Y_{t-1}}\left\{\mu + \phi(Y_{t-1} - \mu)\right\}
+\\&= \sigma^2 + \phi^2 \mathsf{Va}_{Y_{t-1}}(Y_{t-1}).
+\end{align*} and we recover the formulas from
+Example~\ref{exm-autoregressive-one}.
+
+The covariance at lag \(k\), in terms of innovations, gives
+\begin{align*}
+\gamma_k = \mathsf{Co}(Y_t, Y_{t-k}) = \mathsf{Va}(\phi Y_{t-1}, Y_{t-k}) + \mathsf{Va}(\varepsilon_t, Y_{t-k}) = \phi \gamma_{k-1}
+\end{align*} so by recursion \(\gamma_k = \gamma^k\mathsf{Va}(Y_t)\).
+
+The \(\mathsf{AR}(1)\) process is first-order Markov since the
+conditional distribution \(p(Y_t \mid Y_{t-1}, \ldots, Y_{t-p})\) equals
+\(p(Y_t \mid Y_{t-1}).\)
+
+\end{example}
 
 We can run a Markov chain by sampling an initial state \(X_0\) at random
 from \(\mathcal{S}\) and then consider the transitions from the
@@ -4147,7 +4302,7 @@ Intuitively, a sample of correlated observations carries less
 information than an independent sample of draws. If we want to compute
 sample averages \(\overline{Y}_T=(Y_1+ \cdots + Y_T)/T,\) the variance
 will be \begin{align*}
-\mathsf{Va}\left(\overline{Y}_T\right) = \frac{1}{T}\sum_{t=1}^T \mathsf{Va}(Y_t) + \frac{2}{T} \sum_{t=1}^{T-1}\sum_{s = t+1}^T \mathsf{Co}(Y_t, Y_s).
+\mathsf{Va}\left(\overline{Y}_T\right) = \frac{1}{T^2}\sum_{t=1}^T \mathsf{Va}(Y_t) + \frac{2}{T^2} \sum_{t=1}^{T-1}\sum_{s = t+1}^T \mathsf{Co}(Y_t, Y_s).
 \end{align*}
 
 In the independent case, the covariance is zero so we get the sum of
@@ -4157,7 +4312,7 @@ constant, say \(\sigma^2\); this allows us to simplify calculations,
 \begin{align*}
 \mathsf{Va}(\overline{Y}_T) = \sigma^2 \left\{ 1 + \frac{2}{T}\sum_{t=1}^{T-1} (T-t) \mathsf{Cor}(Y_{T-k}, Y_{T})\right\}.
 \end{align*} Denote the lag-\(k\) autocorrelation
-\(\mathsf{Cor}(Y_{t}, Y_{t+k})\) by \(\gamma_k.\) Under technical
+\(\mathsf{Cor}(Y_{t}, Y_{t+k})=\gamma_k.\) Under technical
 conditions\footnote{Geometric ergodicity and existence of moments, among
   other things.}, a central limit theorem applies and we get an
 asymptotic variance for the mean of \begin{align*}

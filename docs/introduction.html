@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.7.3">
+<meta name="generator" content="quarto-1.7.1">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -91,10 +91,10 @@ div.csl-indent {
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="site_libs/quarto-html/anchor.min.js"></script>
 <link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-81b5c3e63835cfde897ecd3d35a35a41.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-2bb0ec5e928ee8c40b12725cb7836c35.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-ad5ef081d17d57ab2b6cc5e45efb5d90.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-a51e8ad160b68d9f8f1ac488cc0f242e.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
   "copy-button": false,
@@ -938,12 +938,20 @@ i_{\alpha, \alpha} &amp; = n\alpha^{-2}(1 + \gamma^2-2\gamma+\pi^2/6)
 f(\boldsymbol{y}) = f(y_1) \times f(y_2 \mid y_1) \times \ldots f(y_n \mid y_1, \ldots, y_n)
 \end{align*}\]</span> in terms of conditional. Such a decomposition is particularly useful in the context of time series, where data are ordered from time <span class="math inline">\(1\)</span> until time <span class="math inline">\(n\)</span> and models typically relate observation <span class="math inline">\(y_n\)</span> to it’s past.</p>
 <div id="exm-autoregressive-one" class="theorem example">
-<p><span class="theorem-title"><strong>Example 1.17 (First-order autoregressive process)</strong></span> Consider a Gaussian <span class="math inline">\(\mathsf{AR}(1)\)</span> model of the form <span class="math display">\[Y_t = \mu + \phi(Y_{t-1} - \mu) + \varepsilon_t,\]</span> where <span class="math inline">\(\phi\)</span> is the lag-one correlation, <span class="math inline">\(\mu\)</span> the global mean and <span class="math inline">\(\varepsilon_t\)</span> is an iid innovation with mean zero and variance <span class="math inline">\(\sigma^2.\)</span> If <span class="math inline">\(|\phi| &lt; 1,\)</span> the process is stationary, and the variance does not increase with <span class="math inline">\(t.\)</span></p>
+<p><span class="theorem-title"><strong>Example 1.17 (First-order autoregressive process)</strong></span> Consider an <span class="math inline">\(\mathsf{AR}(1)\)</span> model of the form <span class="math display">\[Y_t = \mu + \phi(Y_{t-1} - \mu) + \varepsilon_t,\]</span> where <span class="math inline">\(\phi\)</span> is the lag-one correlation, <span class="math inline">\(\mu\)</span> the global mean and <span class="math inline">\(\varepsilon_t\)</span> is an iid innovation with mean zero and variance <span class="math inline">\(\sigma^2.\)</span> If <span class="math inline">\(|\phi| &lt; 1,\)</span> the process is stationary, and the variance does not increase with <span class="math inline">\(t.\)</span></p>
 <p>The Markov property states that the current realization depends on the past, <span class="math inline">\(Y_t \mid Y_1, \ldots, Y_{t-1},\)</span> only through the most recent value <span class="math inline">\(Y_{t-1}.\)</span> The log likelihood thus becomes <span class="math display">\[\begin{align*}
 \ell(\boldsymbol{\theta}) = \log f(y_1) + \sum_{i=2}^n \log f(y_i \mid y_{i-1}).
 \end{align*}\]</span></p>
-<p>If innovations are Gaussian, we have <span class="math display">\[Y_t \mid Y_{t-1}=y_{t-1} \sim \mathsf{Gauss}\{\mu(1-\phi)+ \phi y_{t-1}, \sigma^2\}, \qquad t&gt;1.\]</span></p>
-<p>The <span class="math inline">\(\mathsf{AR}(1)\)</span> stationarity process <span class="math inline">\(Y_t,\)</span> marginally, has mean <span class="math inline">\(\mu\)</span> and unconditional variance <span class="math inline">\(\sigma^2/(1-\phi^2).\)</span> The <span class="math inline">\(\mathsf{AR}(1)\)</span> process is first-order Markov since the conditional distribution <span class="math inline">\(p(Y_t \mid Y_{t-1}, \ldots, Y_{t-p})\)</span> equals <span class="math inline">\(p(Y_t \mid Y_{t-1}).\)</span> This means the likelihood is <span class="math display">\[\begin{align*}
+<p>If innovations <span class="math inline">\(\{\varepsilon_t\}\)</span> are Gaussian, we have <span class="math display">\[Y_t \mid Y_{t-1}=y_{t-1} \sim \mathsf{Gauss}\{\mu(1-\phi)+ \phi y_{t-1}, \sigma^2\}, \qquad t&gt;1.\]</span></p>
+<p>The <span class="math inline">\(\mathsf{AR}(1)\)</span> stationarity process <span class="math inline">\(Y_t,\)</span> marginally, has mean <span class="math inline">\(\mu\)</span> and unconditional variance <span class="math inline">\(\sigma^2/(1-\phi^2).\)</span> If we use the recursive definition, we find <span class="math display">\[\begin{align*}
+Y_t &amp;= \mu (1-\phi) + \varepsilon_t + \phi \{\mu + \phi(Y_{t-2}-\mu) + \varepsilon_{t-1}\}
+\\&amp;= \mu + \sum_{j=0}^\infty \phi_j\varepsilon_{t-j}
+\end{align*}\]</span> whence <span class="math inline">\(\mathsf{E}(Y_t) = \mu\)</span> and <span class="math display">\[\begin{align*}
+\mathsf{Va}(Y_t) &amp;= \mathsf{Va}\left(\sum_{j=0}^\infty \phi_j\varepsilon_{t-j}\right)
+\\&amp;= \sum_{j=0}^\infty \phi_j^2 \mathsf{Va}(\varepsilon_{t-j})
+\\&amp;=\frac{\sigma^2}{(1-\phi^2)}
+\end{align*}\]</span> where the geometric series converges if <span class="math inline">\(\phi&lt;1\)</span> and diverges otherwise.</p>
+<p>The likelihood can be written as <span class="math display">\[\begin{align*}
 \ell(\mu, \phi,\sigma^2)&amp; = -\frac{n}{2}\log(2\pi) - n\log \sigma + \frac{1}{2}\log(1-\phi^2) \\&amp;\quad -\frac{(1-\phi^2)(y_1- \mu)^2}{2\sigma^2} - \sum_{i=2}^n \frac{(y_t - \mu(1-\phi)- \phi y_{t-1})^2}{2\sigma^2}
 \end{align*}\]</span></p>
 </div>

@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.7.3">
+<meta name="generator" content="quarto-1.7.1">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -91,10 +91,10 @@ div.csl-indent {
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="site_libs/quarto-html/anchor.min.js"></script>
 <link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-81b5c3e63835cfde897ecd3d35a35a41.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-2bb0ec5e928ee8c40b12725cb7836c35.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-ad5ef081d17d57ab2b6cc5e45efb5d90.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-a51e8ad160b68d9f8f1ac488cc0f242e.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
   "copy-button": false,
@@ -278,7 +278,14 @@ window.Quarto = {
 <h2 data-number="4.1" class="anchored" data-anchor-id="monte-carlo-methods"><span class="header-section-number">4.1</span> Monte Carlo methods</h2>
 <p>Monte Carlo methods relies on the ability to simulate random variable. If the quantile function admits a closed-form, we can use this to simulation. Recall that if a random variable <span class="math inline">\(X\)</span> has distribution function <span class="math inline">\(F,\)</span> then we can define it’s <strong>generalized inverse</strong> <span class="math display">\[\begin{align*}
 F^{-1}(u) = \inf\{x: f(x) \geq u\}
-\end{align*}\]</span> and if <span class="math inline">\(G\)</span> is continuous, then <span class="math inline">\(F(X) \sim \mathsf{unif}(0,1).\)</span> We can thus simulate data using the quantile function <span class="math inline">\(F^{-1}(U),,\)</span> with <span class="math inline">\(U \sim \mathsf{unif}(0,1).\)</span></p>
+\end{align*}\]</span> and if <span class="math inline">\(G\)</span> is continuous, then <span class="math inline">\(F(X) \sim \mathsf{unif}(0,1).\)</span> We can thus simulate data using the quantile function <span class="math inline">\(F^{-1}(U),\)</span> with <span class="math inline">\(U \sim \mathsf{unif}(0,1).\)</span></p>
+<div id="exm-simulation-inverse" class="theorem example">
+<p><span class="theorem-title"><strong>Example 4.1 (Simulation of exponential variates)</strong></span> The distribution function of <span class="math inline">\(Y \sim \mathsf{expo}(\lambda)\)</span> is <span class="math inline">\(F(y) = \exp(-\lambda y)\)</span>, so the quantile function is <span class="math inline">\(F^{-1}(u) = -\log(u) / \lambda\)</span></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="fl">1e4</span>L</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="sc">-</span><span class="fu">log</span>(<span class="fu">runif</span>(n)) <span class="sc">/</span> <span class="dv">2</span> <span class="co">#simulate expo(2)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
 <div id="thm-fundamental-simulation" class="theorem">
 <p><span class="theorem-title"><strong>Theorem 4.1 (Fundamental theorem of simulation)</strong></span> Consider a <span class="math inline">\(d\)</span>-variate random vector <span class="math inline">\(\boldsymbol{X},\)</span> independently <span class="math inline">\(U \sim \mathsf{unif}(0,1)\)</span> and <span class="math inline">\(c&gt;0\)</span> any positive constant. If <span class="math inline">\((\boldsymbol{X}, U)\)</span> is uniformly distributed on the set <span class="math display">\[\begin{align*}
 \mathcal{A}_{f}=\{(\boldsymbol{x}, u): 0 \leq u \leq  c f(\boldsymbol{x})\},
@@ -324,22 +331,22 @@ Figure&nbsp;4.2: Target density (full) and scaled proposal density (dashed): the
 </div>
 <p>Rejection sampling requires the proposal <span class="math inline">\(q\)</span> to have a support at least as large as that of <span class="math inline">\(p\)</span> and resemble closely the density. It should be chosen so that the upper bound <span class="math inline">\(C\)</span> is as sharp as possible and close to 1. The dominating density <span class="math inline">\(q\)</span> must have heavier tails than the density of interest. The expected number of simulations needed to accept one proposal is <span class="math inline">\(C.\)</span> Finally, for the method to be useful, we need to be able to simulate easily and cheaply from the proposal. The optimal value of <span class="math inline">\(C\)</span> is <span class="math inline">\(C = \sup_{\boldsymbol{\theta}} p(\boldsymbol{\theta}) / q(\boldsymbol{\theta}).\)</span> This quantity may be obtained by numerical optimization, by finding the mode of the ratio of the log densities if the maximum is not known analytically.</p>
 <div id="exm-accept-reject-truncated" class="theorem example">
-<p><span class="theorem-title"><strong>Example 4.1 (Truncated Gaussian distribution)</strong></span> Consider the problem of sampling from a Gaussian distribution <span class="math inline">\(Y \sim \mathsf{Gauss}(\mu, \sigma^2)\)</span> truncated in the interval <span class="math inline">\([a, b],\)</span> which has density <span class="math display">\[\begin{align*}
+<p><span class="theorem-title"><strong>Example 4.2 (Truncated Gaussian distribution)</strong></span> Consider the problem of sampling from a Gaussian distribution <span class="math inline">\(Y \sim \mathsf{Gauss}(\mu, \sigma^2)\)</span> truncated in the interval <span class="math inline">\([a, b],\)</span> which has density <span class="math display">\[\begin{align*}
 f(x; \mu, \sigma, a, b) = \frac{1}{\sigma}\frac{\phi\left(\frac{x-\mu}{\sigma}\right)}{\Phi\{(b-\mu)/\sigma\}-\Phi\{(a-\mu)/\sigma\}}.
 \end{align*}\]</span> where <span class="math inline">\(\phi(\cdot), \Phi(\cdot)\)</span> are respectively the density and distribution function of the standard Gaussian distribution.</p>
 <p>Since the Gaussian is a location-scale family, we can reduce the problem to sampling <span class="math inline">\(X\)</span> from a standard Gaussian truncated on <span class="math inline">\(\alpha = (a-\mu)/\sigma\)</span> and <span class="math inline">\(\beta = (b-\mu)/\sigma\)</span> and back transform the result as <span class="math inline">\(Y = \mu + \sigma X.\)</span></p>
 <p>A crude accept-reject sampling algorithm would consider sampling from the same untruncated distribution with density <span class="math inline">\(g(X) = \sigma^{-1}\phi\{(x-\mu)/\sigma\},\)</span> and the acceptance ratio is <span class="math inline">\(C^{-1}=\{\Phi(\beta) - \Phi(\alpha)\}.\)</span> We thus simply simulate points from the Gaussian and accept any that falls within the bounds.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Standard Gaussian truncated on [0,1]</span></span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>candidate <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(<span class="fl">1e5</span>)</span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>trunc_samp <span class="ot">&lt;-</span> candidate[candidate <span class="sc">&gt;=</span> <span class="dv">0</span> <span class="sc">&amp;</span> candidate <span class="sc">&lt;=</span> <span class="dv">1</span>]</span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Acceptance rate</span></span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="fu">length</span>(trunc_samp)<span class="sc">/</span><span class="fl">1e5</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Standard Gaussian truncated on [0,1]</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>candidate <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(<span class="fl">1e5</span>)</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>trunc_samp <span class="ot">&lt;-</span> candidate[candidate <span class="sc">&gt;=</span> <span class="dv">0</span> <span class="sc">&amp;</span> candidate <span class="sc">&lt;=</span> <span class="dv">1</span>]</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Acceptance rate</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="fu">length</span>(trunc_samp)<span class="sc">/</span><span class="fl">1e5</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 0.34183</code></pre>
+<pre><code>[1] 0.34028</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Theoretical acceptance rate</span></span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="fu">pnorm</span>(<span class="dv">1</span>)<span class="sc">-</span><span class="fu">pnorm</span>(<span class="dv">0</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Theoretical acceptance rate</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="fu">pnorm</span>(<span class="dv">1</span>)<span class="sc">-</span><span class="fu">pnorm</span>(<span class="dv">0</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 0.3413447</code></pre>
 </div>
@@ -356,10 +363,10 @@ X \sim \Phi^{-1}\left[\Phi(a) + \{\Phi(b)-\Phi(a)\}U\right]
 </ol>
 <p>Should we wish to obtain samples on <span class="math inline">\([a,b],\)</span> we could instead propose from a Rayleigh truncated above at <span class="math inline">\(b\)</span> <span class="citation" data-cites="LEcuyer.Botev:2017">(<a href="references.html#ref-LEcuyer.Botev:2017" role="doc-biblioref">Botev and L’Écuyer 2017</a>)</span>.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>a <span class="ot">&lt;-</span> <span class="fl">8.3</span></span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>niter <span class="ot">&lt;-</span> <span class="dv">1000</span>L</span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>X <span class="ot">&lt;-</span> <span class="fu">sqrt</span>(a<span class="sc">^</span><span class="dv">2</span> <span class="sc">+</span> <span class="dv">2</span><span class="sc">*</span><span class="fu">rexp</span>(niter))</span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>samp <span class="ot">&lt;-</span> X[<span class="fu">runif</span>(niter)<span class="sc">*</span>X <span class="sc">&lt;=</span> a]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>a <span class="ot">&lt;-</span> <span class="fl">8.3</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>niter <span class="ot">&lt;-</span> <span class="dv">1000</span>L</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>X <span class="ot">&lt;-</span> <span class="fu">sqrt</span>(a<span class="sc">^</span><span class="dv">2</span> <span class="sc">+</span> <span class="dv">2</span><span class="sc">*</span><span class="fu">rexp</span>(niter))</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>samp <span class="ot">&lt;-</span> X[<span class="fu">runif</span>(niter)<span class="sc">*</span>X <span class="sc">&lt;=</span> a]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </div>
 <p>For a given candidate density <span class="math inline">\(g\)</span> which has a heavier tail than the target, we can resort to numerical methods to compute the mode of the ratio <span class="math inline">\(f/g\)</span> and obtain the bound <span class="math inline">\(C\)</span>; see <span class="citation" data-cites="Albert:2009">Albert (<a href="references.html#ref-Albert:2009" role="doc-biblioref">2009</a>)</span>, Section 5.8 for an insightful example. A different use for the simulations is to approximate integrals numerically. Consider a target distribution with finite expected value. The law of large numbers guarantees that, if we can draw observations from our target distribution, then the sample average will converge to the expected value of that distribution, as the sample size becomes larger and larger, provided the expectation is finite. We can thus compute the probability of any event or the expected value of any (integrable) function by computing sample averages; the cost to pay for this generality is randomness.</p>
@@ -382,11 +389,63 @@ X \sim \Phi^{-1}\left[\Phi(a) + \{\Phi(b)-\Phi(a)\}U\right]
 \mathsf{se}^2[\widetilde{\mathsf{E}}\{g(X)\}] = \frac{ \sum_{b=1}^B w_b^2 \left[ g(x_b) -  \widetilde{\mathsf{E}}\{g(X)\} \right]^2}{\left(\sum_{b=1}^B w_b\right)^2}.
 \end{align*}\]</span></p>
 </div>
+<div id="exm-is-beta-variance" class="theorem example">
+<p><span class="theorem-title"><strong>Example 4.3 (Importance sampling for the variance of a beta distribution)</strong></span> Consider <span class="math inline">\(X \sim \mathsf{beta}(\alpha, \alpha)\)</span> for <span class="math inline">\(\alpha &gt; 1\)</span> with <span class="math inline">\(\mathsf{E}(X)=0.5\)</span> since the density is symmetric. We tackle the estimation of the variance, which can be written as <span class="math inline">\(\mathsf{E}\{(X - 0.5)^2\}.\)</span> While we can easily derive the theoretical expression, equal to <span class="math inline">\(\mathsf{Va}(X) = \{4 \cdot (2\alpha+1)\}^{-1},\)</span> we can also use Monte Carlo integration as proof of concept.</p>
+<p>Rather than simulate directly from our data generating mechanism, we can use an importance sampling density <span class="math inline">\(q(x)\)</span> which puts more mass away from <span class="math inline">\(0.5\)</span> where the integral is zero. Consider the equiweighted mixture of <span class="math inline">\(\mathsf{beta}(\alpha, 3\alpha)\)</span> and <span class="math inline">\(\mathsf{\beta}(3\alpha, \alpha)\)</span>, which is bimodal. <a href="#fig-importance-sampling-beta" class="quarto-xref">Figure&nbsp;<span>4.3</span></a> shows the function we wish to integrate, the density and the importance sampling density, and the weighting function <span class="math inline">\(p(x)/q(x)\)</span> of the first 50 observations drawn from <span class="math inline">\(q(x)\)</span> with <span class="math inline">\(\alpha=1.5.\)</span> The variance ratio shows an improvement of more than 9% for the same Monte Carlo sample size.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>B <span class="ot">&lt;-</span> <span class="fl">2e4</span>L</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>alpha <span class="ot">&lt;-</span> <span class="fl">1.5</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>factor <span class="ot">&lt;-</span> <span class="dv">3</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Mode at the mean 0.5</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>X0 <span class="ot">&lt;-</span> <span class="fu">rbeta</span>(<span class="at">n =</span> B, alpha, alpha)</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>px <span class="ot">&lt;-</span> <span class="cf">function</span>(x){<span class="fu">dbeta</span>(x, alpha, alpha)}</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Importance sampling density - mixture of two betas (alpha, factor*alpha)</span></span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>X1 <span class="ot">&lt;-</span> <span class="fu">ifelse</span>(<span class="fu">runif</span>(B) <span class="sc">&lt;</span> <span class="fl">0.5</span>, <span class="fu">rbeta</span>(B, alpha, factor<span class="sc">*</span>alpha), <span class="fu">rbeta</span>(B, factor<span class="sc">*</span>alpha, alpha))</span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>qx <span class="ot">&lt;-</span> <span class="cf">function</span>(x){<span class="fl">0.5</span><span class="sc">*</span><span class="fu">dbeta</span>(x, alpha, factor<span class="sc">*</span>alpha) <span class="sc">+</span> <span class="fl">0.5</span><span class="sc">*</span><span class="fu">dbeta</span>(x, factor<span class="sc">*</span>alpha, alpha)}</span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Function to integrate - gives variance of a symmetric beta distribution</span></span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>g <span class="ot">&lt;-</span> <span class="cf">function</span>(x){(x <span class="sc">-</span> <span class="fl">0.5</span>)<span class="sc">^</span><span class="dv">2</span>}</span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Weights for importance sampling</span></span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>w <span class="ot">&lt;-</span> <span class="fu">px</span>(X1)<span class="sc">/</span><span class="fu">qx</span>(X1)</span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a><span class="co"># Monte Carlo integration</span></span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a>mc_est <span class="ot">&lt;-</span> <span class="fu">mean</span>(<span class="fu">g</span>(X0))</span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a>mc_var <span class="ot">&lt;-</span> <span class="fu">var</span>(<span class="fu">g</span>(X0))<span class="sc">/</span>B</span>
+<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a><span class="co"># Importance sampling weighted mean and variance</span></span>
+<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a>is_est <span class="ot">&lt;-</span> <span class="fu">weighted.mean</span>(<span class="fu">g</span>(X1), <span class="at">w =</span> w) <span class="co"># equivalent to mean(g(X1)*w)/mean(w)</span></span>
+<span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a>is_var <span class="ot">&lt;-</span> <span class="fu">sum</span>(w<span class="sc">^</span><span class="dv">2</span><span class="sc">*</span>(<span class="fu">g</span>(X1) <span class="sc">-</span> is_est)<span class="sc">^</span><span class="dv">2</span>)<span class="sc">/</span> (<span class="fu">sum</span>(w)<span class="sc">^</span><span class="dv">2</span>)</span>
+<span id="cb7-20"><a href="#cb7-20" aria-hidden="true" tabindex="-1"></a><span class="co"># True value for the beta variance</span></span>
+<span id="cb7-21"><a href="#cb7-21" aria-hidden="true" tabindex="-1"></a>th_est <span class="ot">&lt;-</span> <span class="dv">1</span><span class="sc">/</span>(<span class="dv">4</span><span class="sc">*</span>(<span class="dv">2</span><span class="sc">*</span>alpha<span class="sc">+</span><span class="dv">1</span>))</span>
+<span id="cb7-22"><a href="#cb7-22" aria-hidden="true" tabindex="-1"></a><span class="co"># Point estimates and differences</span></span>
+<span id="cb7-23"><a href="#cb7-23" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(<span class="fu">c</span>(<span class="at">true =</span> th_est, <span class="st">"monte carlo"</span> <span class="ot">=</span> mc_est, <span class="st">"importance sampling"</span> <span class="ot">=</span> is_est),<span class="dv">4</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>               true         monte carlo importance sampling 
+             0.0625              0.0626              0.0631 </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Ratio of std. errors for means</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>mc_var<span class="sc">/</span>is_var <span class="co"># value &gt; 1 means that IS is more efficient</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 1.095982</code></pre>
+</div>
+</div>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-importance-sampling-beta" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-importance-sampling-beta-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="markovchains_files/figure-html/fig-importance-sampling-beta-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:95.0%">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-importance-sampling-beta-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;4.3: Monte Carlo integration with importance sampling for the variance of a symmetric beta distribution. Top left: variance function <span class="math inline">\(f(x) = (x-0.5)^2\)</span>. Top right: density of <span class="math inline">\(\mathsf{beta}(\alpha, \alpha)\)</span> (orange) and importance sampling mixture distribution (blue). Bottom left: weighting function and weights for 50 first importance sampling draws. Bottom right: sample paths of Monte Carlo mean with Wald 95% confidence intervals.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</div>
 <div id="exm-expectation-demo" class="theorem example">
-<p><span class="theorem-title"><strong>Example 4.2</strong></span> Consider <span class="math inline">\(X \sim \mathsf{gamma}(\alpha, \beta),\)</span> a gamma distribution with shape <span class="math inline">\(\alpha\)</span> and rate <span class="math inline">\(\beta.\)</span> We can compute the probability that <span class="math inline">\(X &lt; 1\)</span> easily by Monte Carlo since <span class="math inline">\(\Pr(X &lt;1) = \mathsf{E}\{\mathrm{I}(X&lt;1)\}\)</span> and this means we only need to compute the proportion of draws less than one. We can likewise compute the mean <span class="math inline">\(g(x) = x\)</span> or variance.</p>
+<p><span class="theorem-title"><strong>Example 4.4 (Expectations of functions of a gamma variate)</strong></span> Consider <span class="math inline">\(X \sim \mathsf{gamma}(\alpha, \beta),\)</span> a gamma distribution with shape <span class="math inline">\(\alpha\)</span> and rate <span class="math inline">\(\beta.\)</span> We can compute the probability that <span class="math inline">\(X &lt; 1\)</span> easily by Monte Carlo since <span class="math inline">\(\Pr(X &lt;1) = \mathsf{E}\{\mathrm{I}(X&lt;1)\}\)</span> and this means we only need to compute the proportion of draws less than one. We can likewise compute the mean <span class="math inline">\(g(x) = x\)</span> or the variance as <span class="math inline">\(\mathsf{E}(X^2) - \{\mathsf{E}(X)\}^2.\)</span></p>
 <p>Suppose we have drawn a Monte Carlo sample of size <span class="math inline">\(B.\)</span> If the function <span class="math inline">\(g(\cdot)\)</span> is square integrable,<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a> with variance <span class="math inline">\(\sigma^2_g,\)</span> then a central limit theorem applies. In large samples and for independent observations, our Monte Carlo average <span class="math inline">\(\widehat{\mu}_g = B^{-1}\sum_{b=1}^B g(X_i)\)</span> has variance <span class="math inline">\(\sigma^2_g/B.\)</span> We can approximate the unknown variance <span class="math inline">\(\sigma^2_g\)</span> by it’s empirical counterpart.<a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a>. Note that, while the variance decreases linearly with <span class="math inline">\(B,\)</span> the choice of <span class="math inline">\(g\)</span> impacts the speed of convergence: for our examples, we can compute <span class="math display">\[\sigma^2_g =\Pr(X \leq 1)\{1-\Pr(X \leq 1)\}=0.0434\]</span> (left) and <span class="math inline">\(\sigma^2_g=\alpha/\beta^2=1/8\)</span> (middle plot).</p>
-<p><a href="#fig-monte-carlo-path" class="quarto-xref">Figure&nbsp;<span>4.3</span></a> shows the empirical trace plot of the Monte Carlo average (note the <span class="math inline">\(\sqrt{B}\)</span> <span class="math inline">\(x\)</span>-axis scale!) as a function of the Monte Carlo sample size <span class="math inline">\(B\)</span> along with 95% Wald-based confidence intervals (gray shaded region), <span class="math inline">\(\widehat{\mu}_g \pm 1.96 \times \sigma_g/\sqrt{B}.\)</span> We can see that the ‘likely region’ for the average shrinks with <span class="math inline">\(B.\)</span></p>
-<p>What happens if our function is not integrable? The right-hand plot of <a href="#fig-monte-carlo-path" class="quarto-xref">Figure&nbsp;<span>4.3</span></a> shows empirical averages of <span class="math inline">\(g(x) = x^{-1},\)</span> which is not integrable if <span class="math inline">\(\alpha &lt; 1.\)</span> We can compute the empirical average, but the result won’t converge to any meaningful quantity regardless of the sample size. The large jumps are testimonial of this.</p>
+<p><a href="#fig-monte-carlo-path" class="quarto-xref">Figure&nbsp;<span>4.4</span></a> shows the empirical trace plot of the Monte Carlo average (note the <span class="math inline">\(\sqrt{B}\)</span> <span class="math inline">\(x\)</span>-axis scale!) as a function of the Monte Carlo sample size <span class="math inline">\(B\)</span> along with 95% Wald-based confidence intervals (gray shaded region), <span class="math inline">\(\widehat{\mu}_g \pm 1.96 \times \sigma_g/\sqrt{B}.\)</span> We can see that the ‘likely region’ for the average shrinks with <span class="math inline">\(B.\)</span></p>
+<p>What happens if our function is not integrable? The right-hand plot of <a href="#fig-monte-carlo-path" class="quarto-xref">Figure&nbsp;<span>4.4</span></a> shows empirical averages of <span class="math inline">\(g(x) = x^{-1},\)</span> which is not integrable if <span class="math inline">\(\alpha &lt; 1.\)</span> We can compute the empirical average, but the result won’t converge to any meaningful quantity regardless of the sample size. The large jumps are testimonial of this.</p>
 <div class="cell">
 <div class="cell-output-display">
 <div id="fig-monte-carlo-path" class="quarto-float quarto-figure quarto-figure-center anchored">
@@ -395,33 +454,30 @@ X \sim \Phi^{-1}\left[\Phi(a) + \{\Phi(b)-\Phi(a)\}U\right]
 <img src="markovchains_files/figure-html/fig-monte-carlo-path-1.png" class="img-fluid figure-img" width="672">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-monte-carlo-path-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;4.3: Running mean trace plots for <span class="math inline">\(g(x)=\mathrm{I}(x&lt;1)\)</span> (left), <span class="math inline">\(g(x)=x\)</span> (middle) and <span class="math inline">\(g(x)=1/x\)</span> (right) for a Gamma distribution with shape 0.5 and rate 2, as a function of the Monte Carlo sample size.
+Figure&nbsp;4.4: Running mean trace plots for <span class="math inline">\(g(x)=\mathrm{I}(x&lt;1)\)</span> (left), <span class="math inline">\(g(x)=x\)</span> (middle) and <span class="math inline">\(g(x)=1/x\)</span> (right) for a Gamma distribution with shape 0.5 and rate 2, as a function of the Monte Carlo sample size.
 </figcaption>
 </figure>
 </div>
 </div>
 </div>
 </div>
-<div id="exm-importance-sampling" class="theorem example">
-<p><span class="theorem-title"><strong>Example 4.3 (Importance sampling)</strong></span> &nbsp;</p>
-</div>
 <div id="exm-tail-probability" class="theorem example">
-<p><span class="theorem-title"><strong>Example 4.4 (Tail probability of a Gaussian distribution)</strong></span> Consider estimation of the probability that a standard Gaussian random variable exceeds <span class="math inline">\(a=4,\)</span> which is <span class="math inline">\(p=1-\Phi(a).\)</span> We can use standard numerical approximations to the distribution function implemented in any software package, which shows this probability is roughly one in <span class="math inline">\(3.1574\times 10^{4}.\)</span></p>
+<p><span class="theorem-title"><strong>Example 4.5 (Tail probability of a Gaussian distribution)</strong></span> Consider estimation of the probability that a standard Gaussian random variable exceeds <span class="math inline">\(a=4,\)</span> which is <span class="math inline">\(p=1-\Phi(a).\)</span> We can use standard numerical approximations to the distribution function implemented in any software package, which shows this probability is roughly one in <span class="math inline">\(3.1574\times 10^{4}.\)</span></p>
 <p>If we consider a truncated Gaussian above <span class="math inline">\(a,\)</span> then the integral of <span class="math inline">\(\mathsf{I}(x&gt;a)\)</span> is one (since the truncated Gaussian is a valid density). Thus, we can estimate rather the normalizing constant by simulating standard Gaussian and comparing this with the importance sampling estimator, using the knowledge of the value of the integral to derive rather the normalizing constant. Monte Carlo integration from with <span class="math inline">\(B=10^6\)</span> is demonstrated using the following code</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>a <span class="ot">&lt;-</span> <span class="dv">4</span></span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>B <span class="ot">&lt;-</span> <span class="fl">1e6</span>L <span class="co"># 1 million draws</span></span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>exact <span class="ot">&lt;-</span> <span class="fu">pnorm</span>(a, <span class="at">lower.tail =</span> <span class="cn">FALSE</span>)</span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Vanilla Monte Carlo</span></span>
-<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>X <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(B)</span>
-<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>mc <span class="ot">&lt;-</span> <span class="fu">mean</span>(X <span class="sc">&gt;=</span> a)</span>
-<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Importance sampling with Rayleigh</span></span>
-<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>Y <span class="ot">&lt;-</span> <span class="fu">sqrt</span>(a<span class="sc">^</span><span class="dv">2</span> <span class="sc">+</span> <span class="dv">2</span><span class="sc">*</span><span class="fu">rexp</span>(B))</span>
-<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>drayleigh <span class="ot">&lt;-</span> <span class="cf">function</span>(x, a){ x<span class="sc">*</span><span class="fu">exp</span>((a<span class="sc">^</span><span class="dv">2</span><span class="sc">-</span>x<span class="sc">^</span><span class="dv">2</span>)<span class="sc">/</span><span class="dv">2</span>)}</span>
-<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>is <span class="ot">&lt;-</span> <span class="fu">mean</span>(<span class="fu">dnorm</span>(Y)<span class="sc">/</span><span class="fu">drayleigh</span>(Y, <span class="at">a =</span> a))</span>
-<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Relative error</span></span>
-<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a><span class="fu">c</span>(<span class="at">mc =</span> (mc <span class="sc">-</span> exact)<span class="sc">/</span>exact, <span class="at">is =</span> (is <span class="sc">-</span> exact)<span class="sc">/</span>exact)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>a <span class="ot">&lt;-</span> <span class="dv">4</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>B <span class="ot">&lt;-</span> <span class="fl">1e6</span>L <span class="co"># 1 million draws</span></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>exact <span class="ot">&lt;-</span> <span class="fu">pnorm</span>(a, <span class="at">lower.tail =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Vanilla Monte Carlo</span></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>X <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(B)</span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>mc <span class="ot">&lt;-</span> <span class="fu">mean</span>(X <span class="sc">&gt;=</span> a)</span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Importance sampling with Rayleigh</span></span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a>Y <span class="ot">&lt;-</span> <span class="fu">sqrt</span>(a<span class="sc">^</span><span class="dv">2</span> <span class="sc">+</span> <span class="dv">2</span><span class="sc">*</span><span class="fu">rexp</span>(B))</span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a>drayleigh <span class="ot">&lt;-</span> <span class="cf">function</span>(x, a){ x<span class="sc">*</span><span class="fu">exp</span>((a<span class="sc">^</span><span class="dv">2</span><span class="sc">-</span>x<span class="sc">^</span><span class="dv">2</span>)<span class="sc">/</span><span class="dv">2</span>)}</span>
+<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a>is <span class="ot">&lt;-</span> <span class="fu">mean</span>(<span class="fu">dnorm</span>(Y)<span class="sc">/</span><span class="fu">drayleigh</span>(Y, <span class="at">a =</span> a))</span>
+<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Relative error</span></span>
+<span id="cb11-13"><a href="#cb11-13" aria-hidden="true" tabindex="-1"></a><span class="fu">c</span>(<span class="at">mc =</span> (mc <span class="sc">-</span> exact)<span class="sc">/</span>exact, <span class="at">is =</span> (is <span class="sc">-</span> exact)<span class="sc">/</span>exact)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>           mc            is 
 -2.119405e-02 -2.927613e-05 </code></pre>
@@ -436,17 +492,26 @@ Figure&nbsp;4.3: Running mean trace plots for <span class="math inline">\(g(x)=\
 <p><span class="theorem-title"><strong>Definition 4.1 (Discrete-time stochastic process)</strong></span> A discrete-time stochastic process is a random sequences whose elements are part of some set (finite or countable), termed state space <span class="math inline">\(\mathcal{S}.\)</span> We can encode the probability of moving from one state to the next via a transition matrix, whose rows contain the probabilities of moving from one state to the next and thus sum to one.</p>
 </div>
 <div id="def-weak-stationarity" class="theorem definition">
-<p><span class="theorem-title"><strong>Definition 4.2 (Stationarity and Markov property)</strong></span> A stochastic (i.e., random) process is (weakly) stationary if the distribution of <span class="math inline">\(\{X_1, \ldots, X_t\}\)</span> is the same as that of <span class="math inline">\(\{X_{n+1}, \ldots X_{t+n}\}\)</span> for any value of <span class="math inline">\(n\)</span> and given <span class="math inline">\(t.\)</span></p>
-<p>It is Markov if it satisfies the Markov property: given the current state of the chain, the future only depends on the current state and not on the past.</p>
+<p><span class="theorem-title"><strong>Definition 4.2 (Stationarity and Markov property)</strong></span> A stochastic (i.e., random) process is (strongly) stationary if the distribution of <span class="math inline">\(\{X_1, \ldots, X_t\}\)</span> is the same as that of <span class="math inline">\(\{X_{n+1}, \ldots X_{t+n}\}\)</span> for any value of <span class="math inline">\(n\)</span> and given <span class="math inline">\(t.\)</span></p>
+<p>It is weakly stationary if the expected value is constant, meaning <span class="math inline">\(\mathsf{E}(X_t) = \mu\)</span> for all time points <span class="math inline">\(t\)</span>, and the covariance at lag <span class="math inline">\(h\)</span>, <span class="math inline">\(\mathsf{Cov}(X_t, X_{t+h}) = \gamma_h\)</span>, does not depend on <span class="math inline">\(t\)</span>. Strong stationarity implies weak stationarity.</p>
+<p>A stochastic process is markovian if it satisfies the Markov property: given the current state of the chain, the future only depends on the current state and not on the past.</p>
 </div>
 <p>Autoregressive processes are not the only ones we can consider, although their simplicity lends itself to analytic calculations.</p>
-<!--
-More generally, for a correlated sequence, the variance of the stationary distribution is
-\begin{align*}
-\mathsf{Va}(Y_t) + 2 \sum_{k=1}^\infty \mathsf{Co}(Y_t, Y_{t-k})
-\end{align*}
-
--->
+<div id="exm-ar1-stationarity" class="theorem example">
+<p><span class="theorem-title"><strong>Example 4.6 (Stationarity and AR(1))</strong></span> Consider a Gaussian <span class="math inline">\(\mathsf{AR}(1)\)</span> model with <span class="math inline">\(Y_t \sim \mathsf{Gauss}\{\mu + \phi(Y_{t-1} - \mu), \sigma^2\}\)</span>.</p>
+<p>Using the law of iterated expectation and variance, it the process is weakly stationary, then <span class="math inline">\(\mathsf{E}_{Y_{t}}(Y_t)=\mathsf{E}_{Y_{t-1}}(Y_{t-1})\)</span> <span class="math display">\[\begin{align*}
+\mathsf{E}_{Y_{t}}(Y_t) &amp;= \mathsf{E}_{Y_{t-1}}\left\{\mathsf{E}_{Y_{t} \mid Y_{t-1}}(Y_t)\right\}
+\\&amp;= \mu(1-\phi) + \phi\mathsf{E}_{Y_{t-1}}(Y_{t-1})
+\end{align*}\]</span> and so the unconditional mean is <span class="math inline">\(\mu\)</span>. For the variance, we have <span class="math display">\[\begin{align*}
+\mathsf{E}_{Y_{t}}(Y_t) &amp;= \mathsf{E}_{Y_{t-1}}\left\{\mathsf{Va}_{Y_{t} \mid Y_{t-1}}(Y_t)\right\} + \mathsf{Va}_{Y_{t-1}}\left\{\mathsf{E}_{Y_{t} \mid Y_{t-1}}(Y_t)\right\}\\
+&amp; = \sigma^2 + \mathsf{Va}_{Y_{t-1}}\left\{\mu + \phi(Y_{t-1} - \mu)\right\}
+\\&amp;= \sigma^2 + \phi^2 \mathsf{Va}_{Y_{t-1}}(Y_{t-1}).
+\end{align*}\]</span> and we recover the formulas from <a href="introduction.html#exm-autoregressive-one" class="quarto-xref">Example&nbsp;<span>1.17</span></a>.</p>
+<p>The covariance at lag <span class="math inline">\(k\)</span>, in terms of innovations, gives <span class="math display">\[\begin{align*}
+\gamma_k = \mathsf{Co}(Y_t, Y_{t-k}) = \mathsf{Va}(\phi Y_{t-1}, Y_{t-k}) + \mathsf{Va}(\varepsilon_t, Y_{t-k}) = \phi \gamma_{k-1}
+\end{align*}\]</span> so by recursion <span class="math inline">\(\gamma_k = \gamma^k\mathsf{Va}(Y_t)\)</span>.</p>
+<p>The <span class="math inline">\(\mathsf{AR}(1)\)</span> process is first-order Markov since the conditional distribution <span class="math inline">\(p(Y_t \mid Y_{t-1}, \ldots, Y_{t-p})\)</span> equals <span class="math inline">\(p(Y_t \mid Y_{t-1}).\)</span></p>
+</div>
 <p>We can run a Markov chain by sampling an initial state <span class="math inline">\(X_0\)</span> at random from <span class="math inline">\(\mathcal{S}\)</span> and then consider the transitions from the conditional distribution, sampling <span class="math inline">\(p(X_t \mid X_{t-1}).\)</span> This results in correlated draws, due to the reliance on the previous observation.</p>
 <p>When can we use output from a Markov chain in place of independent Monte Carlo draws? The assumptions laid out in the ergodic theorem, which provides guarantees for the convergence of sample average, are that the chain is irreducible. If the chain is also acyclic, the chain has a unique stationary distribution.</p>
 <p>Consider a Markov chain on integers <span class="math inline">\(\{1, 2, 3\}.\)</span> Because of the Markov property, the history of the chain does not matter: we only need to read the value <span class="math inline">\(i=X_{t-1}\)</span> of the state and pick the <span class="math inline">\(i\)</span>th row of the transition matrix <span class="math inline">\(\mathbf{P}\)</span> to know the probability of the different moves from the current state.</p>
@@ -475,7 +540,7 @@ P_3 = \begin{pmatrix}
 \end{pmatrix}
 \]</span> The stationary distribution is the value of the row vector <span class="math inline">\(\boldsymbol{p},\)</span> such that <span class="math inline">\(\boldsymbol{p} = \boldsymbol{p}\mathbf{P}\)</span> for transition matrix <span class="math inline">\(\mathbf{P}\)</span>: we get <span class="math inline">\(\boldsymbol{p}_1=(0, 5/11, 6/11)\)</span> for <span class="math inline">\(P_1,\)</span> <span class="math inline">\((1/3, 1/3, 1/3)\)</span> for <span class="math inline">\(P_2\)</span> and <span class="math inline">\((1,2,2,2,1)/8\)</span> for <span class="math inline">\(P_3.\)</span></p>
 <p>While the existence of a stationary distribution require aperiodicity, the latter is an hindrance from a computational perspective as ergodicity is valid without it.</p>
-<p><a href="#fig-discrete-markov-chain" class="quarto-xref">Figure&nbsp;<span>4.4</span></a> shows the path of the walk and the empirical proportion of the time spent in each state, as time progress. Since the Markov chain has a unique stationary distribution, we expect these to converge to it.</p>
+<p><a href="#fig-discrete-markov-chain" class="quarto-xref">Figure&nbsp;<span>4.5</span></a> shows the path of the walk and the empirical proportion of the time spent in each state, as time progress. Since the Markov chain has a unique stationary distribution, we expect these to converge to it.</p>
 <div class="cell">
 <div class="cell-output-display">
 <div id="fig-discrete-markov-chain" class="quarto-float quarto-figure quarto-figure-center anchored">
@@ -484,7 +549,7 @@ P_3 = \begin{pmatrix}
 <img src="markovchains_files/figure-html/fig-discrete-markov-chain-1.png" class="img-fluid figure-img" width="672">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-discrete-markov-chain-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;4.4: Discrete Markov chain on integers from 1 to 5, with transition matrix <span class="math inline">\(P_3,\)</span> with traceplot of 1000 first iterations (left) and running mean plots of sample proportion of each state visited per 100 iterations (right).
+Figure&nbsp;4.5: Discrete Markov chain on integers from 1 to 5, with transition matrix <span class="math inline">\(P_3,\)</span> with traceplot of 1000 first iterations (left) and running mean plots of sample proportion of each state visited per 100 iterations (right).
 </figcaption>
 </figure>
 </div>
@@ -492,11 +557,11 @@ Figure&nbsp;4.4: Discrete Markov chain on integers from 1 to 5, with transition 
 </div>
 <div id="prp-variance-clt" class="theorem proposition">
 <p><span class="theorem-title"><strong>Proposition 4.4 (Effective sample size)</strong></span> Intuitively, a sample of correlated observations carries less information than an independent sample of draws. If we want to compute sample averages <span class="math inline">\(\overline{Y}_T=(Y_1+ \cdots + Y_T)/T,\)</span> the variance will be <span class="math display">\[\begin{align*}
-\mathsf{Va}\left(\overline{Y}_T\right) = \frac{1}{T}\sum_{t=1}^T \mathsf{Va}(Y_t) + \frac{2}{T} \sum_{t=1}^{T-1}\sum_{s = t+1}^T \mathsf{Co}(Y_t, Y_s).
+\mathsf{Va}\left(\overline{Y}_T\right) = \frac{1}{T^2}\sum_{t=1}^T \mathsf{Va}(Y_t) + \frac{2}{T^2} \sum_{t=1}^{T-1}\sum_{s = t+1}^T \mathsf{Co}(Y_t, Y_s).
 \end{align*}\]</span></p>
 <p>In the independent case, the covariance is zero so we get the sum of variances. If the process is stationary, the covariances at lag <span class="math inline">\(k\)</span> are the same regardless of the time index and the variance is some constant, say <span class="math inline">\(\sigma^2\)</span>; this allows us to simplify calculations, <span class="math display">\[\begin{align*}
 \mathsf{Va}(\overline{Y}_T) = \sigma^2 \left\{ 1 + \frac{2}{T}\sum_{t=1}^{T-1} (T-t) \mathsf{Cor}(Y_{T-k}, Y_{T})\right\}.
-\end{align*}\]</span> Denote the lag-<span class="math inline">\(k\)</span> autocorrelation <span class="math inline">\(\mathsf{Cor}(Y_{t}, Y_{t+k})\)</span> by <span class="math inline">\(\gamma_k.\)</span> Under technical conditions<a href="#fn4" class="footnote-ref" id="fnref4" role="doc-noteref"><sup>4</sup></a>, a central limit theorem applies and we get an asymptotic variance for the mean of <span class="math display">\[\begin{align*}
+\end{align*}\]</span> Denote the lag-<span class="math inline">\(k\)</span> autocorrelation <span class="math inline">\(\mathsf{Cor}(Y_{t}, Y_{t+k})=\gamma_k.\)</span> Under technical conditions<a href="#fn4" class="footnote-ref" id="fnref4" role="doc-noteref"><sup>4</sup></a>, a central limit theorem applies and we get an asymptotic variance for the mean of <span class="math display">\[\begin{align*}
 \lim_{T \to \infty} T\mathsf{Va}\left(\overline{Y}_T\right) = \sigma^2 \left\{1+2\sum_{t=1}^\infty \gamma_t\right\}.
 \end{align*}\]</span> This statement holds only if we start with draws from the stationary distribution, otherwise bets are off.</p>
 <p>We need the <strong>effective sample size</strong> of our Monte Carlo averages based on a Markov chain of length <span class="math inline">\(B\)</span> to be sufficient for the estimates to be meaningful. The effective sample size is, loosely speaking, the equivalent number of observations if the marginal posterior draws where independent and more formally <span id="eq-effective-sample-size"><span class="math display">\[
@@ -505,7 +570,7 @@ Figure&nbsp;4.4: Discrete Markov chain on integers from 1 to 5, with transition 
 <p>In practice, we replace the unknown autocorrelations by sample estimates and truncate the series in <a href="#eq-effective-sample-size" class="quarto-xref">Equation&nbsp;<span>4.1</span></a> at the point where they become negligible — typically when the consecutive sum of two consecutive becomes negative; see Section 1.4 of the <a href="https://mc-stan.org/docs/reference-manual/effective-sample-size.html">Stan manual</a> or Section 1.10.2 of <span class="citation" data-cites="Geyer:2011">Geyer (<a href="references.html#ref-Geyer:2011" role="doc-biblioref">2011</a>)</span> for details.</p>
 </div>
 <div id="exm-ar1-clt-variance" class="theorem example">
-<p><span class="theorem-title"><strong>Example 4.5</strong></span> The lag-<span class="math inline">\(k\)</span> correlation of the stationary autoregressive process of order 1 is <span class="math inline">\(\phi^k,\)</span> so summing the series gives an asymptotic variance of <span class="math inline">\(\sigma^2(1+\phi)/(1-\phi).\)</span> We can constrast that to the variance of the stationary distribution for an independent sample, which is <span class="math inline">\(\sigma^2/(1-\phi^2).\)</span> The price to pay for having correlated samples is inefficiency: the higher the autocorrelation, the larger the variability of our mean estimators.</p>
+<p><span class="theorem-title"><strong>Example 4.7</strong></span> The lag-<span class="math inline">\(k\)</span> correlation of the stationary autoregressive process of order 1 is <span class="math inline">\(\phi^k,\)</span> so summing the series gives an asymptotic variance of <span class="math inline">\(\sigma^2(1+\phi)/(1-\phi).\)</span> We can constrast that to the variance of the stationary distribution for an independent sample, which is <span class="math inline">\(\sigma^2/(1-\phi^2).\)</span> The price to pay for having correlated samples is inefficiency: the higher the autocorrelation, the larger the variability of our mean estimators.</p>
 <div class="cell">
 <div class="cell-output-display">
 <div id="fig-ar1-variance" class="quarto-float quarto-figure quarto-figure-center anchored">
@@ -514,16 +579,16 @@ Figure&nbsp;4.4: Discrete Markov chain on integers from 1 to 5, with transition 
 <img src="markovchains_files/figure-html/fig-ar1-variance-1.png" class="img-fluid figure-img" width="672">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-ar1-variance-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;4.5: Scaled asymptotic variance of the sample mean for a stationary autoregressive first-order process with unit variance (full line) and a corresponding sample of independent observations with the same marginal variance (dashed line). The right panel gives the ratio of variances for positive correlation coefficients.
+Figure&nbsp;4.6: Scaled asymptotic variance of the sample mean for a stationary autoregressive first-order process with unit variance (full line) and a corresponding sample of independent observations with the same marginal variance (dashed line). The right panel gives the ratio of variances for positive correlation coefficients.
 </figcaption>
 </figure>
 </div>
 </div>
 </div>
-<p>We can see from <a href="#fig-ar1-variance" class="quarto-xref">Figure&nbsp;<span>4.5</span></a> that, when the autocorrelation is positive (as will be the cause in all applications of interest), we will suffer from variance inflation. To get the same uncertainty estimates for the mean with an <span class="math inline">\(\mathsf{AR}(1)\)</span> process with <span class="math inline">\(\phi \approx 0.75\)</span> than with an iid sample, we would need nine times as many observations: this is the prize to pay.</p>
+<p>We can see from <a href="#fig-ar1-variance" class="quarto-xref">Figure&nbsp;<span>4.6</span></a> that, when the autocorrelation is positive (as will be the cause in all applications of interest), we will suffer from variance inflation. To get the same uncertainty estimates for the mean with an <span class="math inline">\(\mathsf{AR}(1)\)</span> process with <span class="math inline">\(\phi \approx 0.75\)</span> than with an iid sample, we would need nine times as many observations: this is the prize to pay.</p>
 </div>
 <div id="prp-uncertainty" class="theorem proposition">
-<p><span class="theorem-title"><strong>Proposition 4.5 (Uncertainty estimation with Markov chains)</strong></span> With a simple random sample containing independent and identically distributed observations, the standard error of the sample mean is <span class="math inline">\(\sigma/\sqrt{n}\)</span> and we can use the empirical standard deviation <span class="math inline">\(\widehat{\sigma}\)</span> to estimate the first term. For Markov chains, the correlation prevents us from using this approach. The output of the<code>coda</code> package are based on fitting a high order autoregressive process to the Markov chain and using the formula of the unconditional variance of the <span class="math inline">\(\mathsf{AR}(p)\)</span> to obtain the central limit theorem variance. An alternative method recommended by <span class="citation" data-cites="Geyer:2011">Geyer (<a href="references.html#ref-Geyer:2011" role="doc-biblioref">2011</a>)</span> and implemented in his <strong>R</strong> package <code>mcmc</code>, is to segment the time series into batch, compute the means of each non-overlapping segment and use this standard deviation with suitable rescaling to get the central limit variance for the posterior mean. <a href="#fig-mcmc-batchmean" class="quarto-xref">Figure&nbsp;<span>4.6</span></a> illustrate the method of batch means.</p>
+<p><span class="theorem-title"><strong>Proposition 4.5 (Uncertainty estimation with Markov chains)</strong></span> With a simple random sample containing independent and identically distributed observations, the standard error of the sample mean is <span class="math inline">\(\sigma/\sqrt{n}\)</span> and we can use the empirical standard deviation <span class="math inline">\(\widehat{\sigma}\)</span> to estimate the first term. For Markov chains, the correlation prevents us from using this approach. The output of the<code>coda</code> package are based on fitting a high order autoregressive process to the Markov chain and using the formula of the unconditional variance of the <span class="math inline">\(\mathsf{AR}(p)\)</span> to obtain the central limit theorem variance. An alternative method recommended by <span class="citation" data-cites="Geyer:2011">Geyer (<a href="references.html#ref-Geyer:2011" role="doc-biblioref">2011</a>)</span> and implemented in his <strong>R</strong> package <code>mcmc</code>, is to segment the time series into batch, compute the means of each non-overlapping segment and use this standard deviation with suitable rescaling to get the central limit variance for the posterior mean. <a href="#fig-mcmc-batchmean" class="quarto-xref">Figure&nbsp;<span>4.7</span></a> illustrate the method of batch means.</p>
 <ol type="1">
 <li>Break the chain of length <span class="math inline">\(B\)</span> (after burn in) in <span class="math inline">\(K\)</span> blocks of size <span class="math inline">\(\approx K/B.\)</span></li>
 <li>Compute the sample mean of each segment. These values form a Markov chain and should be approximately uncorrelated.</li>
@@ -539,7 +604,7 @@ Figure&nbsp;4.5: Scaled asymptotic variance of the sample mean for a stationary 
 <img src="markovchains_files/figure-html/fig-mcmc-batchmean-1.png" class="img-fluid figure-img" width="672">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-mcmc-batchmean-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;4.6: Calculation of the standard error of the posterior mean using the batch method.
+Figure&nbsp;4.7: Calculation of the standard error of the posterior mean using the batch method.
 </figcaption>
 </figure>
 </div>

@@ -1242,7 +1242,7 @@ in terms of conditional. Such a decomposition is particularly useful in the cont
 
 ## First-order autoregressive process
 
-Consider a Gaussian $\mathsf{AR}(1)$ model of the form
+Consider an $\mathsf{AR}(1)$ model of the form
 $$Y_t = \mu + \phi(Y_{t-1} - \mu) + \varepsilon_t,$$ where $\phi$ is the lag-one correlation, $\mu$ the global mean and $\varepsilon_t$ is an iid innovation with mean zero and variance $\sigma^2.$ If $|\phi| < 1,$ the process is stationary, and the variance does not increase with $t.$
 
 The Markov property states that the current realization depends on the past, $Y_t \mid Y_1, \ldots, Y_{t-1},$ only through the most recent value $Y_{t-1}.$
@@ -1253,10 +1253,25 @@ The log likelihood thus becomes
 
 
 
-If innovations are Gaussian, we have
+If innovations $\{\varepsilon_t\}$ are Gaussian, we have
 $$Y_t \mid Y_{t-1}=y_{t-1} \sim \mathsf{Gauss}\{\mu(1-\phi)+ \phi y_{t-1}, \sigma^2\}, \qquad t>1.$$
 
-The $\mathsf{AR}(1)$ stationarity process $Y_t,$ marginally, has mean $\mu$ and unconditional variance $\sigma^2/(1-\phi^2).$ The $\mathsf{AR}(1)$ process is first-order Markov since the conditional distribution $p(Y_t \mid Y_{t-1}, \ldots, Y_{t-p})$ equals $p(Y_t \mid Y_{t-1}).$ This means the likelihood is
+The $\mathsf{AR}(1)$ stationarity process $Y_t,$ marginally, has mean $\mu$ and unconditional variance $\sigma^2/(1-\phi^2).$ If we use the recursive definition, we find
+\begin{align*}
+Y_t &= \mu (1-\phi) + \varepsilon_t + \phi \{\mu + \phi(Y_{t-2}-\mu) + \varepsilon_{t-1}\}
+\\&= \mu + \sum_{j=0}^\infty \phi_j\varepsilon_{t-j}
+\end{align*}
+whence $\mathsf{E}(Y_t) = \mu$ and
+\begin{align*}
+\mathsf{Va}(Y_t) &= \mathsf{Va}\left(\sum_{j=0}^\infty \phi_j\varepsilon_{t-j}\right)
+\\&= \sum_{j=0}^\infty \phi_j^2 \mathsf{Va}(\varepsilon_{t-j})
+\\&=\frac{\sigma^2}{(1-\phi^2)}
+\end{align*}
+where the geometric series converges if $\phi<1$ and diverges otherwise.
+
+
+
+The likelihood can be written as
 \begin{align*}
 \ell(\mu, \phi,\sigma^2)& = -\frac{n}{2}\log(2\pi) - n\log \sigma + \frac{1}{2}\log(1-\phi^2) \\&\quad -\frac{(1-\phi^2)(y_1- \mu)^2}{2\sigma^2} - \sum_{i=2}^n \frac{(y_t - \mu(1-\phi)- \phi y_{t-1})^2}{2\sigma^2}
 \end{align*}

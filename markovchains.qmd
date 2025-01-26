@@ -25,7 +25,22 @@ Monte Carlo methods relies on the ability to simulate random variable. If the qu
 \begin{align*}
 F^{-1}(u) = \inf\{x: f(x) \geq u\}
 \end{align*}
-and if $G$ is continuous, then $F(X) \sim \mathsf{unif}(0,1).$ We can thus simulate data using the quantile function $F^{-1}(U),,$ with $U \sim \mathsf{unif}(0,1).$ 
+and if $G$ is continuous, then $F(X) \sim \mathsf{unif}(0,1).$ We can thus simulate data using the quantile function $F^{-1}(U),$ with $U \sim \mathsf{unif}(0,1).$
+
+:::{#exm-simulation-inverse}
+
+## Simulation of exponential variates
+
+The distribution function of $Y \sim \mathsf{expo}(\lambda)$ is $F(y) = \exp(-\lambda y)$, so the quantile function is $F^{-1}(u) = -\log(u) / \lambda$
+
+```{r}
+#| echo: true
+#| eval: false
+n <- 1e4L
+-log(runif(n)) / 2 #simulate expo(2)
+```
+
+:::
 
 
 :::{#thm-fundamental-simulation}
@@ -234,9 +249,138 @@ with weights $w_b = p(x_b)/q(x_b).$ The latter equal 1 on average, so one could 
 
 :::
 
+
+::: {#exm-is-beta-variance}
+
+## Importance sampling for the variance of a beta distribution
+
+Consider $X \sim \mathsf{beta}(\alpha, \alpha)$ for $\alpha > 1$ with $\mathsf{E}(X)=0.5$ since the density is symmetric. We tackle the estimation of the variance, which can be written as $\mathsf{E}\{(X - 0.5)^2\}.$ While we can easily derive the theoretical expression, equal to $\mathsf{Va}(X) = \{4 \cdot (2\alpha+1)\}^{-1},$ we can also use Monte Carlo integration as proof of concept.
+
+
+Rather than simulate directly from our data generating mechanism, we can use an importance sampling density $q(x)$ which puts more mass away from $0.5$ where the integral is zero.
+Consider the equiweighted mixture of $\mathsf{beta}(\alpha, 3\alpha)$ and $\mathsf{\beta}(3\alpha, \alpha)$, which is bimodal. @fig-importance-sampling-beta shows the function we wish to integrate, the density and the importance sampling density, and the weighting function $p(x)/q(x)$ of the first 50 observations drawn from $q(x)$ with $\alpha=1.5.$
+The variance ratio shows an improvement of more than 9% for the same Monte Carlo sample size.
+
+```{r}
+#| eval: true
+#| echo: true
+B <- 2e4L
+alpha <- 1.5
+factor <- 3
+# Mode at the mean 0.5
+X0 <- rbeta(n = B, alpha, alpha)
+px <- function(x){dbeta(x, alpha, alpha)}
+# Importance sampling density - mixture of two betas (alpha, factor*alpha)
+X1 <- ifelse(runif(B) < 0.5, rbeta(B, alpha, factor*alpha), rbeta(B, factor*alpha, alpha))
+qx <- function(x){0.5*dbeta(x, alpha, factor*alpha) + 0.5*dbeta(x, factor*alpha, alpha)}
+# Function to integrate - gives variance of a symmetric beta distribution
+g <- function(x){(x - 0.5)^2}
+# Weights for importance sampling
+w <- px(X1)/qx(X1)
+# Monte Carlo integration
+mc_est <- mean(g(X0))
+mc_var <- var(g(X0))/B
+# Importance sampling weighted mean and variance
+is_est <- weighted.mean(g(X1), w = w) # equivalent to mean(g(X1)*w)/mean(w)
+is_var <- sum(w^2*(g(X1) - is_est)^2)/ (sum(w)^2)
+# True value for the beta variance
+th_est <- 1/(4*(2*alpha+1))
+# Point estimates and differences
+round(c(true = th_est, "monte carlo" = mc_est, "importance sampling" = is_est),4)
+# Ratio of std. errors for means
+mc_var/is_var # value > 1 means that IS is more efficient
+```
+
+```{r}
+#| eval: true
+#| echo: false
+#| warning: false
+#| message: false
+#| label: fig-importance-sampling-beta
+#| fig-cap: "Monte Carlo integration with importance sampling for the variance of a symmetric beta distribution. Top left: variance function $f(x) = (x-0.5)^2$. Top right: density of $\\mathsf{beta}(\\alpha, \\alpha)$ (orange) and importance sampling mixture distribution (blue). Bottom left: weighting function and weights for 50 first importance sampling draws. Bottom right: sample paths of Monte Carlo mean with Wald 95% confidence intervals."
+#| out-width: '95%'
+#| fig-align: 'center'
+# Compute quantities in a sequential manner
+mc_est_seq <- cumsum(g(X0))/seq_len(B)
+mc_var_seq <- sapply(1:B, function(i){var(g(X0[1:i]))/i})
+# Importance sampling estimator
+is_est_seq <- cumsum(g(X1)*w)/cumsum(w)
+is_var_seq <- sapply(1:B, function(i){sum(w[1:i]^2*(g(X1[1:i]) - is_est_seq[i])^2)/ sum(w[1:i])^2})
+# Function to integrate
+fn <- function(x){(x - 0.5)^2 * dbeta(x, alpha, alpha)}
+palette <- MetBrewer::met.brewer(name = "Hiroshige",n = 2)
+df1 <- data.frame(
+  nsim = 1:B,
+  ymc = mc_est_seq,
+  yis = is_est_seq,
+  interv1 = qnorm(0.975)*sqrt(mc_var_seq),
+  interv2 = qnorm(0.975)*sqrt(is_var_seq))
+g1 <- ggplot(data = df1[-(1:100),]) +
+  geom_ribbon(mapping = aes(x = nsim,
+                            y = ymc,
+                            ymin = ymc - interv1,
+                            ymax = ymc + interv1),
+              alpha = 0.4,
+              color = palette[1],
+              fill = palette[1]) +
+  geom_ribbon(mapping = aes(x = nsim,
+                            y = yis,
+                            ymin = yis - interv2,
+                            ymax = yis + interv2),
+              alpha = 0.4,
+              color = palette[2],
+              fill = palette[2]) +
+  geom_hline(yintercept = th_est) +
+  geom_line(aes(x = nsim, y = ymc), color = palette[1]) +
+  geom_line(aes(x = nsim, y = yis), color = palette[2]) +
+  scale_x_continuous(trans = "sqrt",
+                     labels = scales::unit_format(unit = "K", scale = 1e-3)) +
+  scale_y_continuous(limits = c(0.04, 0.08), expand = expansion()) +
+  labs(x = "number of simulations",
+       y = "",
+       subtitle = "Variance estimation")
+g2 <- ggplot() +
+  stat_function(fun = function(x){fn(x)*px(x)}, xlim = c(0,1)) +
+  scale_x_continuous(limits = c(0,1),
+                     breaks = seq(0, 1, by = 0.25),
+                     labels = c("0","0.25","0.5","0.75","1")) +
+  scale_y_continuous(limits = c(0, NA), expand = expansion(add = c(0, 0.01))) +
+  labs(x = "x", y = "", subtitle = expression(f(x)==(x-0.5)^2*p(x)))
+g3 <- ggplot() +
+  stat_function(fun = px, xlim = c(0,1), color = palette[1]) +
+  stat_function(fun = qx, linetype = "dashed", color = palette[2], xlim = c(0,1)) +
+  scale_x_continuous(limits = c(0,1),
+                     breaks = seq(0, 1, by = 0.25),
+                     labels = c("0","0.25","0.5","0.75","1")) +
+  scale_y_continuous(limits = c(0, NA), expand = expansion(add = c(0, 0.1))) +
+  labs(x = "x", y = "", subtitle = "density of Monte Carlo generator")
+g4 <- ggplot() +
+  stat_function(fun = function(x){px(x)/qx(x)}, xlim = c(0,1)) +
+  geom_segment(data = data.frame(x = X1[1:50], y = w[1:50]), mapping = aes(x = x, yend = y, y = 0)) +
+  scale_x_continuous(limits = c(0,1),
+                     breaks = seq(0, 1, by = 0.25),
+                     labels = c("0","0.25","0.5","0.75","1")) +
+  scale_y_continuous(limits = c(0, NA), expand = expansion(add = c(0,0.1))) +
+  labs(y = "", x = "x", subtitle = "weights")
+(g2 + g3) / (g4 + g1) +
+  theme_classic()
+# par(mfrow = c(1,3), bty = "l")
+# curve(fn, from = 0, to = 1, ylab = expression(f[n](x)), ylim = c(0, .125), yaxs ="i")
+# curve(px, from = 0, to = 1, ylim = c(0, 1.4), yaxs = "i", xlim = c(0,1), xaxs = "i")
+# curve(qx, from = 0, to = 1, add = TRUE, lty = 2, col = "gray")
+## Weight curve
+# curve(expr = px(x)/qx(x), from = 0, to = 1, n = 1001, xlim = c(0,1), xaxs = "i", ylab = "weights")
+# points(X1[1:50], w[1:50], type = "h")
+
+```
+
+:::
+
 ::: {#exm-expectation-demo}
 
-Consider $X \sim \mathsf{gamma}(\alpha, \beta),$ a gamma distribution with shape $\alpha$ and rate $\beta.$ We can compute the probability that $X < 1$ easily by Monte Carlo since $\Pr(X <1) = \mathsf{E}\{\mathrm{I}(X<1)\}$ and this means we only need to compute the proportion of draws less than one. We can likewise compute the mean $g(x) = x$ or variance.
+## Expectations of functions of a gamma variate
+
+Consider $X \sim \mathsf{gamma}(\alpha, \beta),$ a gamma distribution with shape $\alpha$ and rate $\beta.$ We can compute the probability that $X < 1$ easily by Monte Carlo since $\Pr(X <1) = \mathsf{E}\{\mathrm{I}(X<1)\}$ and this means we only need to compute the proportion of draws less than one. We can likewise compute the mean $g(x) = x$ or the variance as $\mathsf{E}(X^2) - \{\mathsf{E}(X)\}^2.$
 
 Suppose we have drawn a Monte Carlo sample of size $B.$ If the function $g(\cdot)$ is square integrable,[^mcmc-1] with variance $\sigma^2_g,$ then a central limit theorem applies. In large samples and for independent observations, our Monte Carlo average $\widehat{\mu}_g = B^{-1}\sum_{b=1}^B g(X_i)$ has variance $\sigma^2_g/B.$ We can approximate the unknown variance $\sigma^2_g$ by it's empirical counterpart.[^mcmc-2]. Note that, while the variance decreases linearly with $B,$ the choice of $g$ impacts the speed of convergence: for our examples, we can compute $$\sigma^2_g =\Pr(X \leq 1)\{1-\Pr(X \leq 1)\}=0.0434$$ (left) and $\sigma^2_g=\alpha/\beta^2=1/8$ (middle plot).
 
@@ -313,12 +457,6 @@ g1 + g2 + g3 & theme_classic()
 
 [^mcmc-2]: By contrasts, if data are identically distributed but not independent, more care is needed.
 
-:::{#exm-importance-sampling}
-
-## Importance sampling
-
-:::
-
 
 :::{#exm-tail-probability}
 
@@ -367,21 +505,49 @@ A discrete-time stochastic process is a random sequences whose elements are part
 ::: {#def-weak-stationarity}
 ## Stationarity and Markov property
 
-A stochastic (i.e., random) process is (weakly) stationary if the distribution of $\{X_1, \ldots, X_t\}$ is the same as that of $\{X_{n+1}, \ldots X_{t+n}\}$ for any value of $n$ and given $t.$
+A stochastic (i.e., random) process is (strongly) stationary if the distribution of $\{X_1, \ldots, X_t\}$ is the same as that of $\{X_{n+1}, \ldots X_{t+n}\}$ for any value of $n$ and given $t.$
 
-It is Markov if it satisfies the Markov property: given the current state of the chain, the future only depends on the current state and not on the past.
+It is weakly stationary if the expected value is constant, meaning $\mathsf{E}(X_t) = \mu$ for all time points $t$, and the covariance at lag $h$, $\mathsf{Cov}(X_t, X_{t+h}) = \gamma_h$, does not depend on $t$. Strong stationarity implies weak stationarity.
+
+A stochastic process is markovian if it satisfies the Markov property: given the current state of the chain, the future only depends on the current state and not on the past.
 :::
 
 
-Autoregressive processes are not the only ones we can consider, although their simplicity lends itself to analytic calculations. 
 
-<!--
-More generally, for a correlated sequence, the variance of the stationary distribution is
+Autoregressive processes are not the only ones we can consider, although their simplicity lends itself to analytic calculations.
+
+:::{#exm-ar1-stationarity}
+
+## Stationarity and AR(1)
+
+Consider a Gaussian $\mathsf{AR}(1)$ model with $Y_t \sim \mathsf{Gauss}\{\mu + \phi(Y_{t-1} - \mu), \sigma^2\}$.
+
+
+Using the law of iterated expectation and variance, it the process is weakly stationary, then $\mathsf{E}_{Y_{t}}(Y_t)=\mathsf{E}_{Y_{t-1}}(Y_{t-1})$
 \begin{align*}
-\mathsf{Va}(Y_t) + 2 \sum_{k=1}^\infty \mathsf{Co}(Y_t, Y_{t-k})
+\mathsf{E}_{Y_{t}}(Y_t) &= \mathsf{E}_{Y_{t-1}}\left\{\mathsf{E}_{Y_{t} \mid Y_{t-1}}(Y_t)\right\}
+\\&= \mu(1-\phi) + \phi\mathsf{E}_{Y_{t-1}}(Y_{t-1})
 \end{align*}
+and so the unconditional mean is $\mu$.
+For the variance, we have
+\begin{align*}
+\mathsf{E}_{Y_{t}}(Y_t) &= \mathsf{E}_{Y_{t-1}}\left\{\mathsf{Va}_{Y_{t} \mid Y_{t-1}}(Y_t)\right\} + \mathsf{Va}_{Y_{t-1}}\left\{\mathsf{E}_{Y_{t} \mid Y_{t-1}}(Y_t)\right\}\\
+& = \sigma^2 + \mathsf{Va}_{Y_{t-1}}\left\{\mu + \phi(Y_{t-1} - \mu)\right\}
+\\&= \sigma^2 + \phi^2 \mathsf{Va}_{Y_{t-1}}(Y_{t-1}).
+\end{align*}
+and we recover the formulas from @exm-autoregressive-one.
 
--->
+The covariance at lag $k$, in terms of innovations, gives
+\begin{align*}
+\gamma_k = \mathsf{Co}(Y_t, Y_{t-k}) = \mathsf{Va}(\phi Y_{t-1}, Y_{t-k}) + \mathsf{Va}(\varepsilon_t, Y_{t-k}) = \phi \gamma_{k-1}
+\end{align*}
+so by recursion $\gamma_k = \gamma^k\mathsf{Va}(Y_t)$.
+
+
+The $\mathsf{AR}(1)$ process is first-order Markov since the conditional distribution $p(Y_t \mid Y_{t-1}, \ldots, Y_{t-p})$ equals $p(Y_t \mid Y_{t-1}).$
+
+:::
+
 
 We can run a Markov chain by sampling an initial state $X_0$ at random from $\mathcal{S}$ and then consider the transitions from the conditional distribution, sampling $p(X_t \mid X_{t-1}).$ This results in correlated draws, due to the reliance on the previous observation. 
 
@@ -478,13 +644,13 @@ g1 + g2
 ## Effective sample size
 
 Intuitively, a sample of correlated observations carries less information than an independent sample of draws. If we want to compute sample averages $\overline{Y}_T=(Y_1+ \cdots + Y_T)/T,$ the variance will be \begin{align*}
-\mathsf{Va}\left(\overline{Y}_T\right) = \frac{1}{T}\sum_{t=1}^T \mathsf{Va}(Y_t) + \frac{2}{T} \sum_{t=1}^{T-1}\sum_{s = t+1}^T \mathsf{Co}(Y_t, Y_s).
+\mathsf{Va}\left(\overline{Y}_T\right) = \frac{1}{T^2}\sum_{t=1}^T \mathsf{Va}(Y_t) + \frac{2}{T^2} \sum_{t=1}^{T-1}\sum_{s = t+1}^T \mathsf{Co}(Y_t, Y_s).
 \end{align*}
 
 In the independent case, the covariance is zero so we get the sum of variances. If the process is stationary, the covariances at lag $k$ are the same regardless of the time index and the variance is some constant, say $\sigma^2$; this allows us to simplify calculations, \begin{align*}
 \mathsf{Va}(\overline{Y}_T) = \sigma^2 \left\{ 1 + \frac{2}{T}\sum_{t=1}^{T-1} (T-t) \mathsf{Cor}(Y_{T-k}, Y_{T})\right\}.
 \end{align*} 
-Denote the lag-$k$ autocorrelation $\mathsf{Cor}(Y_{t}, Y_{t+k})$ by $\gamma_k.$ Under technical conditions[^mcmc-4], a central limit theorem applies and we get an asymptotic variance for the mean of \begin{align*}
+Denote the lag-$k$ autocorrelation $\mathsf{Cor}(Y_{t}, Y_{t+k})=\gamma_k.$ Under technical conditions[^mcmc-4], a central limit theorem applies and we get an asymptotic variance for the mean of \begin{align*}
 \lim_{T \to \infty} T\mathsf{Va}\left(\overline{Y}_T\right) = \sigma^2 \left\{1+2\sum_{t=1}^\infty \gamma_t\right\}.
 \end{align*} This statement holds only if we start with draws from the stationary distribution, otherwise bets are off.
 
