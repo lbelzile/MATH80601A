@@ -25,12 +25,10 @@ book:
   - introduction.qmd
   - bayesics.qmd
   - priors.qmd
-  - part: montecarlo.qmd
-    chapters: 
-    - markovchains.qmd
-    - mcmc.qmd
-    - gibbs.qmd
-    - workflow.qmd
+  - montecarlo.qmd
+  - mcmc.qmd
+  - gibbs.qmd
+  - workflow.qmd
  # - regression.qmd
  # - laplace.qmd
   - references.qmd

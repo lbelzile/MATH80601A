@@ -321,13 +321,13 @@
 \theoremstyle{definition}
 \newtheorem{exercise}{Exercise}[chapter]
 \theoremstyle{definition}
-\newtheorem{definition}{Definition}[chapter]
-\theoremstyle{plain}
-\newtheorem{theorem}{Theorem}[chapter]
-\theoremstyle{definition}
 \newtheorem{example}{Example}[chapter]
 \theoremstyle{plain}
 \newtheorem{proposition}{Proposition}[chapter]
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}[chapter]
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}[chapter]
 \theoremstyle{remark}
 \AtBeginDocument{\renewcommand*{\proofname}{Proof}}
 \newtheorem*{remark}{Remark}
@@ -3694,7 +3694,9 @@ median and the bars the 50\% and 95\% percentile credible intervals.}
 
 \end{example}
 
-\part{}
+\bookmarksetup{startatroot}
+
+\chapter{Monte Carlo methods}\label{monte-carlo-methods}
 
 There are two major approaches to handling the problem of the unknown
 normalizing constant: deterministic and stochastic approximations. The
@@ -3705,8 +3707,6 @@ chain Monte Carlo algorithms. The simulation algorithms circumvent the
 need to calculate the normalizing constant of the posterior entirely. We
 present several examples of implementations, several tricks for tuning
 and diagnostics of convergence.
-
-\chapter{Monte Carlo methods}\label{monte-carlo-methods}
 
 We have already used Monte Carlo methods to compute posterior quantities
 of interest in conjugate models. Outside of models with conjugate
@@ -3778,7 +3778,7 @@ discard the auxiliary variable \(u.\) See Devroye
 
 \centering{
 
-\pandocbounded{\includegraphics[keepaspectratio]{markovchains_files/figure-pdf/fig-fundamental-theorem-1.pdf}}
+\includegraphics[width=0.85\linewidth,height=\textheight,keepaspectratio]{montecarlo_files/figure-pdf/fig-fundamental-theorem-1.pdf}
 
 }
 
@@ -3828,7 +3828,7 @@ proposal with density \(q(\cdot)\) with nested support,
 
 \centering{
 
-\pandocbounded{\includegraphics[keepaspectratio]{markovchains_files/figure-pdf/fig-acceptreject-1.pdf}}
+\includegraphics[width=0.85\linewidth,height=\textheight,keepaspectratio]{montecarlo_files/figure-pdf/fig-acceptreject-1.pdf}
 
 }
 
@@ -3880,23 +3880,12 @@ points from the Gaussian and accept any that falls within the bounds.
 \NormalTok{trunc\_samp }\OtherTok{\textless{}{-}}\NormalTok{ candidate[candidate }\SpecialCharTok{\textgreater{}=} \DecValTok{0} \SpecialCharTok{\&}\NormalTok{ candidate }\SpecialCharTok{\textless{}=} \DecValTok{1}\NormalTok{]}
 \CommentTok{\# Acceptance rate}
 \FunctionTok{length}\NormalTok{(trunc\_samp)}\SpecialCharTok{/}\FloatTok{1e5}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{verbatim}
-[1] 0.3404
-\end{verbatim}
-
-\begin{Shaded}
-\begin{Highlighting}[]
+\CommentTok{\#\textgreater{} [1] 0.341}
 \CommentTok{\# Theoretical acceptance rate}
 \FunctionTok{pnorm}\NormalTok{(}\DecValTok{1}\NormalTok{)}\SpecialCharTok{{-}}\FunctionTok{pnorm}\NormalTok{(}\DecValTok{0}\NormalTok{)}
+\CommentTok{\#\textgreater{} [1] 0.341}
 \end{Highlighting}
 \end{Shaded}
-
-\begin{verbatim}
-[1] 0.3413447
-\end{verbatim}
 
 We can of course do better: if we consider a random variable with
 distribution function \(F,\) but truncated over the interval \([a,b],\)
@@ -4020,7 +4009,9 @@ acceptance rate. Northrop proposes to use a Box--Cox transformation
 (\citeproc{ref-Box.Cox:1964}{Box and Cox 1964}) together with a rotation
 in the software Northrop (\citeproc{ref-rust}{2024}) to improve the
 acceptance rate. The bounding box may exist only for certain values of
-\(r\); see the vignettes for more examples.
+\(r\); see ee
+\href{https://paulnorthrop.github.io/rust/articles/rust-a-vignette.html}{the
+\texttt{rust} package vignette} for technical details and examples.
 
 \end{proposition}
 
@@ -4129,30 +4120,19 @@ more than 9\% for the same Monte Carlo sample size.
 \NormalTok{th\_est }\OtherTok{\textless{}{-}} \DecValTok{1}\SpecialCharTok{/}\NormalTok{(}\DecValTok{4}\SpecialCharTok{*}\NormalTok{(}\DecValTok{2}\SpecialCharTok{*}\NormalTok{alpha}\SpecialCharTok{+}\DecValTok{1}\NormalTok{))}
 \CommentTok{\# Point estimates and differences}
 \FunctionTok{round}\NormalTok{(}\FunctionTok{c}\NormalTok{(}\AttributeTok{true =}\NormalTok{ th\_est, }\StringTok{"monte carlo"} \OtherTok{=}\NormalTok{ mc\_est, }\StringTok{"importance sampling"} \OtherTok{=}\NormalTok{ is\_est),}\DecValTok{4}\NormalTok{)}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{verbatim}
-               true         monte carlo importance sampling 
-             0.0625              0.0628              0.0622 
-\end{verbatim}
-
-\begin{Shaded}
-\begin{Highlighting}[]
+\CommentTok{\#\textgreater{}                true         monte carlo importance sampling }
+\CommentTok{\#\textgreater{}              0.0625              0.0627              0.0620}
 \CommentTok{\# Ratio of std. errors for means}
 \NormalTok{mc\_var}\SpecialCharTok{/}\NormalTok{is\_var }\CommentTok{\# value \textgreater{} 1 means that IS is more efficient}
+\CommentTok{\#\textgreater{} [1] 1.11}
 \end{Highlighting}
 \end{Shaded}
-
-\begin{verbatim}
-[1] 1.119158
-\end{verbatim}
 
 \begin{figure}[ht!]
 
 \centering{
 
-\includegraphics[width=0.95\linewidth,height=\textheight,keepaspectratio]{markovchains_files/figure-pdf/fig-importance-sampling-beta-1.pdf}
+\includegraphics[width=0.95\linewidth,height=\textheight,keepaspectratio]{montecarlo_files/figure-pdf/fig-importance-sampling-beta-1.pdf}
 
 }
 
@@ -4212,7 +4192,7 @@ testimonial of this.
 
 \centering{
 
-\pandocbounded{\includegraphics[keepaspectratio]{markovchains_files/figure-pdf/fig-monte-carlo-path-1.pdf}}
+\includegraphics[width=0.85\linewidth,height=\textheight,keepaspectratio]{montecarlo_files/figure-pdf/fig-monte-carlo-path-1.pdf}
 
 }
 
@@ -4232,7 +4212,7 @@ Consider estimation of the probability that a standard Gaussian random
 variable exceeds \(a=4,\) which is \(p=1-\Phi(a).\) We can use standard
 numerical approximations to the distribution function implemented in any
 software package, which shows this probability is roughly one in
-\(\ensuremath{3.1574\times 10^{4}}.\)
+\(31574.\)
 
 If we consider a truncated Gaussian above \(a,\) then the integral of
 \(\mathsf{I}(x>a)\) is one (since the truncated Gaussian is a valid
@@ -4257,13 +4237,10 @@ with \(B=10^6\) is demonstrated using the following code
 \NormalTok{is }\OtherTok{\textless{}{-}} \FunctionTok{mean}\NormalTok{(}\FunctionTok{dnorm}\NormalTok{(Y)}\SpecialCharTok{/}\FunctionTok{drayleigh}\NormalTok{(Y, }\AttributeTok{a =}\NormalTok{ a))}
 \CommentTok{\# Relative error}
 \FunctionTok{c}\NormalTok{(}\AttributeTok{mc =}\NormalTok{ (mc }\SpecialCharTok{{-}}\NormalTok{ exact)}\SpecialCharTok{/}\NormalTok{exact, }\AttributeTok{is =}\NormalTok{ (is }\SpecialCharTok{{-}}\NormalTok{ exact)}\SpecialCharTok{/}\NormalTok{exact)}
+\CommentTok{\#\textgreater{}         mc         is }
+\CommentTok{\#\textgreater{} {-}0.0211940 {-}0.0000293}
 \end{Highlighting}
 \end{Shaded}
-
-\begin{verbatim}
-           mc            is 
--2.119405e-02 -2.927613e-05 
-\end{verbatim}
 
 \end{example}
 
@@ -4408,7 +4385,7 @@ we expect these to converge to it.
 
 \centering{
 
-\pandocbounded{\includegraphics[keepaspectratio]{markovchains_files/figure-pdf/fig-discrete-markov-chain-1.pdf}}
+\includegraphics[width=0.85\linewidth,height=\textheight,keepaspectratio]{montecarlo_files/figure-pdf/fig-discrete-markov-chain-1.pdf}
 
 }
 
@@ -4483,7 +4460,7 @@ variability of our mean estimators.
 
 \centering{
 
-\pandocbounded{\includegraphics[keepaspectratio]{markovchains_files/figure-pdf/fig-ar1-variance-1.pdf}}
+\includegraphics[width=0.85\linewidth,height=\textheight,keepaspectratio]{montecarlo_files/figure-pdf/fig-ar1-variance-1.pdf}
 
 }
 
@@ -4553,7 +4530,7 @@ the smaller blocks.
 
 \centering{
 
-\pandocbounded{\includegraphics[keepaspectratio]{markovchains_files/figure-pdf/fig-mcmc-batchmean-1.pdf}}
+\includegraphics[width=0.85\linewidth,height=\textheight,keepaspectratio]{montecarlo_files/figure-pdf/fig-mcmc-batchmean-1.pdf}
 
 }
 
@@ -4561,6 +4538,8 @@ the smaller blocks.
 the posterior mean using the batch method.}
 
 \end{figure}%
+
+\bookmarksetup{startatroot}
 
 \chapter{Metropolis--Hastings
 algorithm}\label{metropolishastings-algorithm}
@@ -5207,6 +5186,8 @@ overdispersion.
 
 \end{example}
 
+\bookmarksetup{startatroot}
+
 \chapter{Gibbs sampling}\label{gibbs-sampling}
 
 The Gibbs sampling algorithm builds a Markov chain by iterating through
@@ -5590,6 +5571,8 @@ we can use Gibbs sampling updating \(\boldsymbol{Z}\),
 \(\boldsymbol{\omega}\) and \(\boldsymbol{\theta}\) in turn.
 
 \end{example}
+
+\bookmarksetup{startatroot}
 
 \chapter{Bayesian workflow}\label{bayesian-workflow}
 
