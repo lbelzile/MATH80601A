@@ -85,7 +85,7 @@ div.csl-indent {
 <script src="site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="./">
 <link href="./mcmc.html" rel="next">
-<link href="./priors.html" rel="prev">
+<link href="./montecarlo.html" rel="prev">
 <script src="site_libs/quarto-html/quarto.js"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
@@ -165,7 +165,7 @@ window.Quarto = {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./markovchains.html"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Monte Carlo methods</span></a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./montecarlo.html">montecarlo.html</a></li><li class="breadcrumb-item"><a href="./markovchains.html"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Monte Carlo methods</span></a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -218,30 +218,41 @@ window.Quarto = {
  <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Priors</span></span></a>
   </div>
 </li>
-        <li class="sidebar-item">
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="./montecarlo.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">montecarlo.html</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./markovchains.html" class="sidebar-item-text sidebar-link active">
  <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Monte Carlo methods</span></span></a>
   </div>
 </li>
-        <li class="sidebar-item">
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./mcmc.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Metropolis–Hastings algorithm</span></span></a>
   </div>
 </li>
-        <li class="sidebar-item">
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./gibbs.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Gibbs sampling</span></span></a>
   </div>
 </li>
-        <li class="sidebar-item">
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./workflow.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Bayesian workflow</span></span></a>
   </div>
 </li>
+      </ul>
+  </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./references.html" class="sidebar-item-text sidebar-link">
@@ -264,7 +275,7 @@ window.Quarto = {
 <div class="toc-actions"><ul><li><a href="https://github.com/lbelzile/MATH80601A/edit/main/markovchains.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li></ul></div></nav>
     </div>
 <!-- main -->
-<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block"><h1 class="title display-7"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Monte Carlo methods</span></h1></header>
+<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./montecarlo.html">montecarlo.html</a></li><li class="breadcrumb-item"><a href="./markovchains.html"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Monte Carlo methods</span></a></li></ol></nav><h1 class="title display-7"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Monte Carlo methods</span></h1></header>
 
 <header id="title-block-header">
 
@@ -272,7 +283,6 @@ window.Quarto = {
 </header>
 
 
-<p>There are two major approaches to handling the problem of the unknown normalizing constant: deterministic and stochastic approximations. The former includes Laplace and nested Laplace approximations, variational methods and expectation propagation. This chapter covers the latter, stochastic approximations, and focuses on implementation of basic Markov chain Monte Carlo algorithms. The simulation algorithms circumvent the need to calculate the normalizing constant of the posterior entirely. We present several examples of implementations, several tricks for tuning and diagnostics of convergence.</p>
 <p>We have already used Monte Carlo methods to compute posterior quantities of interest in conjugate models. Outside of models with conjugate priors, the lack of closed-form expression for the posterior precludes inference. Indeed, calculating the posterior probability of an event, or posterior moments, requires integration of the normalized posterior density and thus knowledge of the marginal likelihood. It is seldom possible to sample independent and identically distributed (iid) samples from the target, especially if the model is high dimensional: rejection sampling and the ratio of uniform method are examples of Monte Carlo methods which can be used to generate iid draws. Ordinary Monte Carlo methods suffer from the curse of dimensionality, with few algorithms are generic enough to be useful in complex high-dimensional problems. Instead, we will construct a Markov chain with a given invariant distribution corresponding to the posterior. Markov chain Monte Carlo methods generate correlated draws that will target the posterior under suitable conditions.<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a></p>
 <section id="monte-carlo-methods" class="level2" data-number="4.1">
 <h2 data-number="4.1" class="anchored" data-anchor-id="monte-carlo-methods"><span class="header-section-number">4.1</span> Monte Carlo methods</h2>
@@ -290,7 +300,7 @@ F^{-1}(u) = \inf\{x: f(x) \geq u\}
 <p><span class="theorem-title"><strong>Theorem 4.1 (Fundamental theorem of simulation)</strong></span> Consider a <span class="math inline">\(d\)</span>-variate random vector <span class="math inline">\(\boldsymbol{X},\)</span> independently <span class="math inline">\(U \sim \mathsf{unif}(0,1)\)</span> and <span class="math inline">\(c&gt;0\)</span> any positive constant. If <span class="math inline">\((\boldsymbol{X}, U)\)</span> is uniformly distributed on the set <span class="math display">\[\begin{align*}
 \mathcal{A}_{f}=\{(\boldsymbol{x}, u): 0 \leq u \leq  c f(\boldsymbol{x})\},
 \end{align*}\]</span> then <span class="math inline">\(\boldsymbol{X}\)</span> has density <span class="math inline">\(f(\boldsymbol{x}).\)</span> Conversely, if <span class="math inline">\(\boldsymbol{X}\)</span> has density <span class="math inline">\(f(\boldsymbol{x})\)</span> and <span class="math inline">\(U\sim\mathsf{unif}(0,1)\)</span> independently, then <span class="math inline">\([\boldsymbol{X}, cUf(\boldsymbol{X})]\)</span> is uniformly distributed on <span class="math inline">\(\mathcal{A}_f\)</span></p>
-<p>We cam thus view <span class="math inline">\(f\)</span> as the marginal density of <span class="math inline">\(\boldsymbol{X}\)</span> since <span class="math inline">\(f(\boldsymbol{x}) = \int_0^{f(\boldsymbol{x})} \mathrm{d} u.\)</span> If we can simulate uniformly from <span class="math inline">\(\mathcal{A}_{f},\)</span> then, we can discard the auxiliary variable <span class="math inline">\(u.\)</span> See <span class="citation" data-cites="Devroye:1986">Devroye (<a href="references.html#ref-Devroye:1986" role="doc-biblioref">1986</a>)</span>, Theorem 3.1 for a proof.</p>
+<p>We can thus view <span class="math inline">\(f\)</span> as the marginal density of <span class="math inline">\(\boldsymbol{X}\)</span> since <span class="math inline">\(f(\boldsymbol{x}) = \int_0^{f(\boldsymbol{x})} \mathrm{d} u.\)</span> If we can simulate uniformly from <span class="math inline">\(\mathcal{A}_{f},\)</span> then, we can discard the auxiliary variable <span class="math inline">\(u.\)</span> See <span class="citation" data-cites="Devroye:1986">Devroye (<a href="references.html#ref-Devroye:1986" role="doc-biblioref">1986</a>)</span>, Theorem 3.1 for a proof.</p>
 <div class="cell">
 <div class="cell-output-display">
 <div id="fig-fundamental-theorem" class="quarto-float quarto-figure quarto-figure-center anchored">
@@ -370,8 +380,27 @@ X \sim \Phi^{-1}\left[\Phi(a) + \{\Phi(b)-\Phi(a)\}U\right]
 </div>
 </div>
 <p>For a given candidate density <span class="math inline">\(g\)</span> which has a heavier tail than the target, we can resort to numerical methods to compute the mode of the ratio <span class="math inline">\(f/g\)</span> and obtain the bound <span class="math inline">\(C\)</span>; see <span class="citation" data-cites="Albert:2009">Albert (<a href="references.html#ref-Albert:2009" role="doc-biblioref">2009</a>)</span>, Section 5.8 for an insightful example. A different use for the simulations is to approximate integrals numerically. Consider a target distribution with finite expected value. The law of large numbers guarantees that, if we can draw observations from our target distribution, then the sample average will converge to the expected value of that distribution, as the sample size becomes larger and larger, provided the expectation is finite. We can thus compute the probability of any event or the expected value of any (integrable) function by computing sample averages; the cost to pay for this generality is randomness.</p>
+<div id="prp-ratio-uniform" class="theorem proposition">
+<p><span class="theorem-title"><strong>Proposition 4.2 (Generalized ratio-of-uniform)</strong></span> An exact simulation algorithm is described in <span class="citation" data-cites="Kinderman.Monahan:1977">Kinderman and Monahan (<a href="references.html#ref-Kinderman.Monahan:1977" role="doc-biblioref">1977</a>)</span> and extended <span class="citation" data-cites="Wakefield.Gelfand.Smith:1991">Wakefield, Gelfand, and Smith (<a href="references.html#ref-Wakefield.Gelfand.Smith:1991" role="doc-biblioref">1991</a>)</span> for random number generation in low dimensions. Consider a <span class="math inline">\(d\)</span>-vector <span class="math inline">\(\boldsymbol{X}\)</span> with density <span class="math inline">\(cf(\boldsymbol{x}): \mathbb{R}^d \to \mathbb{R}^{+}\)</span> with support <span class="math inline">\(\mathcal{S} \subseteq \mathbb{R}^d\)</span>, and <span class="math inline">\(c&gt;0\)</span> is the (possibly unknown) normalizing constant. Consider uniform variables <span class="math inline">\(\boldsymbol{u} = (u_0, u_1, \ldots, u_d)\)</span> uniformly distributed over the set <span class="math display">\[\begin{align*}
+\mathcal{B}(r) = \left\{ (u_0, u_1, \ldots, u_d) \in \mathbb{R}^{d+1}: 0 &lt; u_0 \leq \left[ f\left( \frac{u_1}{u_0^r}, \ldots, \frac{u_d}{u_0^r} \right) \right] ^ {1/(r d + 1)} \right\}
+\end{align*}\]</span> for some positive radius parameter <span class="math inline">\(r \geq 0\)</span>. The measure of the set <span class="math inline">\(\mathcal{B}(r)=c^{-1}(1+rd)^{-1}.\)</span> By the <a href="#thm-fundamental-simulation" class="quarto-xref">Theorem&nbsp;<span>4.1</span></a>, <span class="math inline">\((u_1 / u_0^r, \ldots, u_d / u_0^r)\)</span> is drawn from the renormalized density <span class="math inline">\(cf(x)\)</span>. The challenge lies in simulating <span class="math inline">\(\boldsymbol{u}\)</span> uniformly over the bounding box <span class="math inline">\(\mathbb{B}\)</span>, but we can use accept-reject if the later is enclosed in a bounding box, keeping only samples that satisfy the constraints. If, over <span class="math inline">\(\\mathcal{S}\)</span>, <span class="math inline">\(f(\boldsymbol{x})\)</span> and <span class="math inline">\(x_i^{r d +1} f(\boldsymbol{x})^r\)</span> for <span class="math inline">\(i = 1, \ldots, d\)</span> are bounded then we can enclose <span class="math inline">\(\mathcal{B}(r)\)</span> within the <span class="math inline">\((d+1)\)</span>-dimensional bounding box <span class="math inline">\(\mathbb{B}=\{a_j(r) \leq u_i \leq b_j(r);  j = 0, \ldots, d \}\)</span>, with <span class="math inline">\(a_0(r)=0\)</span>. The parameters of the bounding box are<br>
+<span class="math display">\[\begin{align*}
+b_0(r) &amp;= \sup_{\boldsymbol{x} \in \mathcal{S}} \, f(x)^{1 / (r d + 1)}, \\
+a_j(r) &amp;= \inf_{\substack{\boldsymbol{x} \in \mathcal{S}\\ x_i \leq 0}} \, x_i \, f(\boldsymbol{x})^{r / (r d + 1)}, \\  
+b_j(r) &amp;= \sup_{{\substack{\boldsymbol{x} \in \mathcal{S}\\ x_i \geq 0}}} \, x_i \, f(\boldsymbol{x})^{r / (r d + 1)},  
+\end{align*}\]</span></p>
+<p>The probability of acceptance <span class="math inline">\(p_a(d, r)\)</span> of a point simulated uniformly over the bounding box depends on both the radius and the dimension and is <span class="math display">\[\begin{align*}
+p_a(d, r) = c\left[(r d + 1) \, b_0(r) \displaystyle\prod_{j=1}^d \left\{b_j(r) -a_j(r) \right\}\right]^{-1}.
+\end{align*}\]</span></p>
+<p>For the ratio-of-uniform method to work, we need the density <span class="math inline">\(f(\boldsymbol{x})\)</span> to be bounded, and the marginal moments of order <span class="math inline">\(rd+1\)</span>, meaning <span class="math display">\[\begin{align*}
+\mathsf{E}(X_i^{rd+1}) = \int_{\mathcal{S}} x_j^{rd+1} f(\boldsymbol{x}) \mathrm{d}x_1 \cdots \mathrm{d} x_d&lt; \infty
+\end{align*}\]</span> <span class="citation" data-cites="Wakefield.Gelfand.Smith:1991">Wakefield, Gelfand, and Smith (<a href="references.html#ref-Wakefield.Gelfand.Smith:1991" role="doc-biblioref">1991</a>)</span> propose using <span class="math inline">\(r=1/2\)</span> and relocating the mode of <span class="math inline">\(f\)</span> to the origin increase the acceptance rate. Northrop proposes to use a Box–Cox transformation <span class="citation" data-cites="Box.Cox:1964">(<a href="references.html#ref-Box.Cox:1964" role="doc-biblioref">Box and Cox 1964</a>)</span> together with a rotation in the software <span class="citation" data-cites="rust">Northrop (<a href="references.html#ref-rust" role="doc-biblioref">2024</a>)</span> to improve the acceptance rate. The bounding box may exist only for certain values of <span class="math inline">\(r\)</span>; see the vignettes for more examples.</p>
+</div>
+<div id="exm-rust" class="theorem example">
+<p><span class="theorem-title"><strong>Example 4.3 (Ratio-of-uniform in practice)</strong></span> &nbsp;</p>
+</div>
 <div id="prp-monte-carlo-integration" class="theorem proposition">
-<p><span class="theorem-title"><strong>Proposition 4.2 (Monte Carlo integration)</strong></span> Specifically, suppose we are interested in the average <span class="math inline">\(\mathsf{E}\{g(X)\}\)</span> of <span class="math inline">\(X\)</span> with density or mass function <span class="math inline">\(f\)</span> supported on <span class="math inline">\(\mathcal{X}\)</span> for some function <span class="math inline">\(g.\)</span> Monte Carlo integration proceeds by drawing <span class="math inline">\(B\)</span> independent samples <span class="math inline">\(x_1, \ldots, x_B\)</span> from density <span class="math inline">\(p\)</span> and evaluating the empirical average of <span class="math inline">\(g,\)</span> with <span class="math display">\[\begin{align*}
+<p><span class="theorem-title"><strong>Proposition 4.3 (Monte Carlo integration)</strong></span> Specifically, suppose we are interested in the average <span class="math inline">\(\mathsf{E}\{g(X)\}\)</span> of <span class="math inline">\(X\)</span> with density or mass function <span class="math inline">\(f\)</span> supported on <span class="math inline">\(\mathcal{X}\)</span> for some function <span class="math inline">\(g.\)</span> Monte Carlo integration proceeds by drawing <span class="math inline">\(B\)</span> independent samples <span class="math inline">\(x_1, \ldots, x_B\)</span> from density <span class="math inline">\(p\)</span> and evaluating the empirical average of <span class="math inline">\(g,\)</span> with <span class="math display">\[\begin{align*}
 \mathsf{E}\{g(X)\} = \int_{\mathcal{X}} g(x) p(x) \mathrm{d} x \approx \widehat{\mathsf{E}}\{g(X)\}=\frac{1}{B}\sum_{b=1}^B g(x_b).
 \end{align*}\]</span> By the law of large number, this estimator is convergent when <span class="math inline">\(B \to \infty\)</span> provided that the expectation is finite. If the variance of <span class="math inline">\(g(X)\)</span> is finite, we can approximate the latter by the sample variance of the simple random sample and obtain the Monte Carlo standard error of the estimator <span class="math display">\[\begin{align*}
 \mathsf{se}^2[\widehat{\mathsf{E}}\{g(X)\}] = \frac{1}{B(B-1)} \sum_{b=1}^B \left[ g(x_b) -  \widehat{\mathsf{E}}\{g(X)\} \right]^2.
@@ -379,7 +408,7 @@ X \sim \Phi^{-1}\left[\Phi(a) + \{\Phi(b)-\Phi(a)\}U\right]
 </div>
 <p>We can also use a similar idea to evaluate the integral of <span class="math inline">\(g(X)\)</span> if <span class="math inline">\(X\)</span> has density <span class="math inline">\(p,\)</span> by drawing instead samples from <span class="math inline">\(q.\)</span> This is formalized in the next proposition.</p>
 <div id="prp-importance-sampling" class="theorem proposition">
-<p><span class="theorem-title"><strong>Proposition 4.3 (Importance sampling)</strong></span> Consider a random variable <span class="math inline">\(X\)</span> with density <span class="math inline">\(p(x)\)</span> supported on <span class="math inline">\(\mathcal{X}.\)</span> We can calculate the integral <span class="math inline">\(\mathsf{E}_p\{g(X)\} = \int_{\mathcal{X}} g(x) p(x) \mathrm{d}x\)</span> by considering instead draws from a density <span class="math inline">\(q(\cdot)\)</span> with nested support, <span class="math inline">\(\mathcal{X} \subseteq \mathrm{supp}(q).\)</span> Then, <span class="math display">\[\begin{align*}
+<p><span class="theorem-title"><strong>Proposition 4.4 (Importance sampling)</strong></span> Consider a random variable <span class="math inline">\(X\)</span> with density <span class="math inline">\(p(x)\)</span> supported on <span class="math inline">\(\mathcal{X}.\)</span> We can calculate the integral <span class="math inline">\(\mathsf{E}_p\{g(X)\} = \int_{\mathcal{X}} g(x) p(x) \mathrm{d}x\)</span> by considering instead draws from a density <span class="math inline">\(q(\cdot)\)</span> with nested support, <span class="math inline">\(\mathcal{X} \subseteq \mathrm{supp}(q).\)</span> Then, <span class="math display">\[\begin{align*}
 \mathsf{E}\{g(X)\} = \int_{\mathcal{X}} g(x) \frac{p(x)}{q(x)} q(x) \mathrm{d} x
 \end{align*}\]</span> and we can proceed similarly by drawing samples from <span class="math inline">\(q.\)</span> This is most useful when the variance is finite, which happens if the integral <span class="math display">\[\begin{align*}
 \int_{\mathcal{X}} g^2(x) \frac{p^2(x)}{q(x)} \mathrm{d} x &lt; \infty.
@@ -390,7 +419,7 @@ X \sim \Phi^{-1}\left[\Phi(a) + \{\Phi(b)-\Phi(a)\}U\right]
 \end{align*}\]</span></p>
 </div>
 <div id="exm-is-beta-variance" class="theorem example">
-<p><span class="theorem-title"><strong>Example 4.3 (Importance sampling for the variance of a beta distribution)</strong></span> Consider <span class="math inline">\(X \sim \mathsf{beta}(\alpha, \alpha)\)</span> for <span class="math inline">\(\alpha &gt; 1\)</span> with <span class="math inline">\(\mathsf{E}(X)=0.5\)</span> since the density is symmetric. We tackle the estimation of the variance, which can be written as <span class="math inline">\(\mathsf{E}\{(X - 0.5)^2\}.\)</span> While we can easily derive the theoretical expression, equal to <span class="math inline">\(\mathsf{Va}(X) = \{4 \cdot (2\alpha+1)\}^{-1},\)</span> we can also use Monte Carlo integration as proof of concept.</p>
+<p><span class="theorem-title"><strong>Example 4.4 (Importance sampling for the variance of a beta distribution)</strong></span> Consider <span class="math inline">\(X \sim \mathsf{beta}(\alpha, \alpha)\)</span> for <span class="math inline">\(\alpha &gt; 1\)</span> with <span class="math inline">\(\mathsf{E}(X)=0.5\)</span> since the density is symmetric. We tackle the estimation of the variance, which can be written as <span class="math inline">\(\mathsf{E}\{(X - 0.5)^2\}.\)</span> While we can easily derive the theoretical expression, equal to <span class="math inline">\(\mathsf{Va}(X) = \{4 \cdot (2\alpha+1)\}^{-1},\)</span> we can also use Monte Carlo integration as proof of concept.</p>
 <p>Rather than simulate directly from our data generating mechanism, we can use an importance sampling density <span class="math inline">\(q(x)\)</span> which puts more mass away from <span class="math inline">\(0.5\)</span> where the integral is zero. Consider the equiweighted mixture of <span class="math inline">\(\mathsf{beta}(\alpha, 3\alpha)\)</span> and <span class="math inline">\(\mathsf{\beta}(3\alpha, \alpha)\)</span>, which is bimodal. <a href="#fig-importance-sampling-beta" class="quarto-xref">Figure&nbsp;<span>4.3</span></a> shows the function we wish to integrate, the density and the importance sampling density, and the weighting function <span class="math inline">\(p(x)/q(x)\)</span> of the first 50 observations drawn from <span class="math inline">\(q(x)\)</span> with <span class="math inline">\(\alpha=1.5.\)</span> The variance ratio shows an improvement of more than 9% for the same Monte Carlo sample size.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>B <span class="ot">&lt;-</span> <span class="fl">2e4</span>L</span>
@@ -442,7 +471,7 @@ Figure&nbsp;4.3: Monte Carlo integration with importance sampling for the varian
 </div>
 </div>
 <div id="exm-expectation-demo" class="theorem example">
-<p><span class="theorem-title"><strong>Example 4.4 (Expectations of functions of a gamma variate)</strong></span> Consider <span class="math inline">\(X \sim \mathsf{gamma}(\alpha, \beta),\)</span> a gamma distribution with shape <span class="math inline">\(\alpha\)</span> and rate <span class="math inline">\(\beta.\)</span> We can compute the probability that <span class="math inline">\(X &lt; 1\)</span> easily by Monte Carlo since <span class="math inline">\(\Pr(X &lt;1) = \mathsf{E}\{\mathrm{I}(X&lt;1)\}\)</span> and this means we only need to compute the proportion of draws less than one. We can likewise compute the mean <span class="math inline">\(g(x) = x\)</span> or the variance as <span class="math inline">\(\mathsf{E}(X^2) - \{\mathsf{E}(X)\}^2.\)</span></p>
+<p><span class="theorem-title"><strong>Example 4.5 (Expectations of functions of a gamma variate)</strong></span> Consider <span class="math inline">\(X \sim \mathsf{gamma}(\alpha, \beta),\)</span> a gamma distribution with shape <span class="math inline">\(\alpha\)</span> and rate <span class="math inline">\(\beta.\)</span> We can compute the probability that <span class="math inline">\(X &lt; 1\)</span> easily by Monte Carlo since <span class="math inline">\(\Pr(X &lt;1) = \mathsf{E}\{\mathrm{I}(X&lt;1)\}\)</span> and this means we only need to compute the proportion of draws less than one. We can likewise compute the mean <span class="math inline">\(g(x) = x\)</span> or the variance as <span class="math inline">\(\mathsf{E}(X^2) - \{\mathsf{E}(X)\}^2.\)</span></p>
 <p>Suppose we have drawn a Monte Carlo sample of size <span class="math inline">\(B.\)</span> If the function <span class="math inline">\(g(\cdot)\)</span> is square integrable,<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a> with variance <span class="math inline">\(\sigma^2_g,\)</span> then a central limit theorem applies. In large samples and for independent observations, our Monte Carlo average <span class="math inline">\(\widehat{\mu}_g = B^{-1}\sum_{b=1}^B g(X_i)\)</span> has variance <span class="math inline">\(\sigma^2_g/B.\)</span> We can approximate the unknown variance <span class="math inline">\(\sigma^2_g\)</span> by it’s empirical counterpart.<a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a>. Note that, while the variance decreases linearly with <span class="math inline">\(B,\)</span> the choice of <span class="math inline">\(g\)</span> impacts the speed of convergence: for our examples, we can compute <span class="math display">\[\sigma^2_g =\Pr(X \leq 1)\{1-\Pr(X \leq 1)\}=0.0434\]</span> (left) and <span class="math inline">\(\sigma^2_g=\alpha/\beta^2=1/8\)</span> (middle plot).</p>
 <p><a href="#fig-monte-carlo-path" class="quarto-xref">Figure&nbsp;<span>4.4</span></a> shows the empirical trace plot of the Monte Carlo average (note the <span class="math inline">\(\sqrt{B}\)</span> <span class="math inline">\(x\)</span>-axis scale!) as a function of the Monte Carlo sample size <span class="math inline">\(B\)</span> along with 95% Wald-based confidence intervals (gray shaded region), <span class="math inline">\(\widehat{\mu}_g \pm 1.96 \times \sigma_g/\sqrt{B}.\)</span> We can see that the ‘likely region’ for the average shrinks with <span class="math inline">\(B.\)</span></p>
 <p>What happens if our function is not integrable? The right-hand plot of <a href="#fig-monte-carlo-path" class="quarto-xref">Figure&nbsp;<span>4.4</span></a> shows empirical averages of <span class="math inline">\(g(x) = x^{-1},\)</span> which is not integrable if <span class="math inline">\(\alpha &lt; 1.\)</span> We can compute the empirical average, but the result won’t converge to any meaningful quantity regardless of the sample size. The large jumps are testimonial of this.</p>
@@ -462,7 +491,7 @@ Figure&nbsp;4.4: Running mean trace plots for <span class="math inline">\(g(x)=\
 </div>
 </div>
 <div id="exm-tail-probability" class="theorem example">
-<p><span class="theorem-title"><strong>Example 4.5 (Tail probability of a Gaussian distribution)</strong></span> Consider estimation of the probability that a standard Gaussian random variable exceeds <span class="math inline">\(a=4,\)</span> which is <span class="math inline">\(p=1-\Phi(a).\)</span> We can use standard numerical approximations to the distribution function implemented in any software package, which shows this probability is roughly one in <span class="math inline">\(3.1574\times 10^{4}.\)</span></p>
+<p><span class="theorem-title"><strong>Example 4.6 (Tail probability of a Gaussian distribution)</strong></span> Consider estimation of the probability that a standard Gaussian random variable exceeds <span class="math inline">\(a=4,\)</span> which is <span class="math inline">\(p=1-\Phi(a).\)</span> We can use standard numerical approximations to the distribution function implemented in any software package, which shows this probability is roughly one in <span class="math inline">\(3.1574\times 10^{4}.\)</span></p>
 <p>If we consider a truncated Gaussian above <span class="math inline">\(a,\)</span> then the integral of <span class="math inline">\(\mathsf{I}(x&gt;a)\)</span> is one (since the truncated Gaussian is a valid density). Thus, we can estimate rather the normalizing constant by simulating standard Gaussian and comparing this with the importance sampling estimator, using the knowledge of the value of the integral to derive rather the normalizing constant. Monte Carlo integration from with <span class="math inline">\(B=10^6\)</span> is demonstrated using the following code</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>a <span class="ot">&lt;-</span> <span class="dv">4</span></span>
@@ -498,8 +527,8 @@ Figure&nbsp;4.4: Running mean trace plots for <span class="math inline">\(g(x)=\
 </div>
 <p>Autoregressive processes are not the only ones we can consider, although their simplicity lends itself to analytic calculations.</p>
 <div id="exm-ar1-stationarity" class="theorem example">
-<p><span class="theorem-title"><strong>Example 4.6 (Stationarity and AR(1))</strong></span> Consider a Gaussian <span class="math inline">\(\mathsf{AR}(1)\)</span> model with <span class="math inline">\(Y_t \sim \mathsf{Gauss}\{\mu + \phi(Y_{t-1} - \mu), \sigma^2\}\)</span>.</p>
-<p>Using the law of iterated expectation and variance, it the process is weakly stationary, then <span class="math inline">\(\mathsf{E}_{Y_{t}}(Y_t)=\mathsf{E}_{Y_{t-1}}(Y_{t-1})\)</span> <span class="math display">\[\begin{align*}
+<p><span class="theorem-title"><strong>Example 4.7 (Stationarity and AR(1))</strong></span> Consider a Gaussian <span class="math inline">\(\mathsf{AR}(1)\)</span> model with <span class="math inline">\(Y_t \sim \mathsf{Gauss}\{\mu + \phi(Y_{t-1} - \mu), \sigma^2\}\)</span>.</p>
+<p>Using the law of iterated expectation and variance, if the process is weakly stationary, then <span class="math inline">\(\mathsf{E}_{Y_{t}}(Y_t)=\mathsf{E}_{Y_{t-1}}(Y_{t-1})\)</span> <span class="math display">\[\begin{align*}
 \mathsf{E}_{Y_{t}}(Y_t) &amp;= \mathsf{E}_{Y_{t-1}}\left\{\mathsf{E}_{Y_{t} \mid Y_{t-1}}(Y_t)\right\}
 \\&amp;= \mu(1-\phi) + \phi\mathsf{E}_{Y_{t-1}}(Y_{t-1})
 \end{align*}\]</span> and so the unconditional mean is <span class="math inline">\(\mu\)</span>. For the variance, we have <span class="math display">\[\begin{align*}
@@ -556,7 +585,7 @@ Figure&nbsp;4.5: Discrete Markov chain on integers from 1 to 5, with transition 
 </div>
 </div>
 <div id="prp-variance-clt" class="theorem proposition">
-<p><span class="theorem-title"><strong>Proposition 4.4 (Effective sample size)</strong></span> Intuitively, a sample of correlated observations carries less information than an independent sample of draws. If we want to compute sample averages <span class="math inline">\(\overline{Y}_T=(Y_1+ \cdots + Y_T)/T,\)</span> the variance will be <span class="math display">\[\begin{align*}
+<p><span class="theorem-title"><strong>Proposition 4.5 (Effective sample size)</strong></span> Intuitively, a sample of correlated observations carries less information than an independent sample of draws. If we want to compute sample averages <span class="math inline">\(\overline{Y}_T=(Y_1+ \cdots + Y_T)/T,\)</span> the variance will be <span class="math display">\[\begin{align*}
 \mathsf{Va}\left(\overline{Y}_T\right) = \frac{1}{T^2}\sum_{t=1}^T \mathsf{Va}(Y_t) + \frac{2}{T^2} \sum_{t=1}^{T-1}\sum_{s = t+1}^T \mathsf{Co}(Y_t, Y_s).
 \end{align*}\]</span></p>
 <p>In the independent case, the covariance is zero so we get the sum of variances. If the process is stationary, the covariances at lag <span class="math inline">\(k\)</span> are the same regardless of the time index and the variance is some constant, say <span class="math inline">\(\sigma^2\)</span>; this allows us to simplify calculations, <span class="math display">\[\begin{align*}
@@ -570,7 +599,7 @@ Figure&nbsp;4.5: Discrete Markov chain on integers from 1 to 5, with transition 
 <p>In practice, we replace the unknown autocorrelations by sample estimates and truncate the series in <a href="#eq-effective-sample-size" class="quarto-xref">Equation&nbsp;<span>4.1</span></a> at the point where they become negligible — typically when the consecutive sum of two consecutive becomes negative; see Section 1.4 of the <a href="https://mc-stan.org/docs/reference-manual/effective-sample-size.html">Stan manual</a> or Section 1.10.2 of <span class="citation" data-cites="Geyer:2011">Geyer (<a href="references.html#ref-Geyer:2011" role="doc-biblioref">2011</a>)</span> for details.</p>
 </div>
 <div id="exm-ar1-clt-variance" class="theorem example">
-<p><span class="theorem-title"><strong>Example 4.7</strong></span> The lag-<span class="math inline">\(k\)</span> correlation of the stationary autoregressive process of order 1 is <span class="math inline">\(\phi^k,\)</span> so summing the series gives an asymptotic variance of <span class="math inline">\(\sigma^2(1+\phi)/(1-\phi).\)</span> We can constrast that to the variance of the stationary distribution for an independent sample, which is <span class="math inline">\(\sigma^2/(1-\phi^2).\)</span> The price to pay for having correlated samples is inefficiency: the higher the autocorrelation, the larger the variability of our mean estimators.</p>
+<p><span class="theorem-title"><strong>Example 4.8</strong></span> The lag-<span class="math inline">\(k\)</span> correlation of the stationary autoregressive process of order 1 is <span class="math inline">\(\phi^k,\)</span> so summing the series gives an asymptotic variance of <span class="math inline">\(\sigma^2(1+\phi)/(1-\phi).\)</span> We can constrast that to the variance of the stationary distribution for an independent sample, which is <span class="math inline">\(\sigma^2/(1-\phi^2).\)</span> The price to pay for having correlated samples is inefficiency: the higher the autocorrelation, the larger the variability of our mean estimators.</p>
 <div class="cell">
 <div class="cell-output-display">
 <div id="fig-ar1-variance" class="quarto-float quarto-figure quarto-figure-center anchored">
@@ -588,7 +617,7 @@ Figure&nbsp;4.6: Scaled asymptotic variance of the sample mean for a stationary 
 <p>We can see from <a href="#fig-ar1-variance" class="quarto-xref">Figure&nbsp;<span>4.6</span></a> that, when the autocorrelation is positive (as will be the cause in all applications of interest), we will suffer from variance inflation. To get the same uncertainty estimates for the mean with an <span class="math inline">\(\mathsf{AR}(1)\)</span> process with <span class="math inline">\(\phi \approx 0.75\)</span> than with an iid sample, we would need nine times as many observations: this is the prize to pay.</p>
 </div>
 <div id="prp-uncertainty" class="theorem proposition">
-<p><span class="theorem-title"><strong>Proposition 4.5 (Uncertainty estimation with Markov chains)</strong></span> With a simple random sample containing independent and identically distributed observations, the standard error of the sample mean is <span class="math inline">\(\sigma/\sqrt{n}\)</span> and we can use the empirical standard deviation <span class="math inline">\(\widehat{\sigma}\)</span> to estimate the first term. For Markov chains, the correlation prevents us from using this approach. The output of the<code>coda</code> package are based on fitting a high order autoregressive process to the Markov chain and using the formula of the unconditional variance of the <span class="math inline">\(\mathsf{AR}(p)\)</span> to obtain the central limit theorem variance. An alternative method recommended by <span class="citation" data-cites="Geyer:2011">Geyer (<a href="references.html#ref-Geyer:2011" role="doc-biblioref">2011</a>)</span> and implemented in his <strong>R</strong> package <code>mcmc</code>, is to segment the time series into batch, compute the means of each non-overlapping segment and use this standard deviation with suitable rescaling to get the central limit variance for the posterior mean. <a href="#fig-mcmc-batchmean" class="quarto-xref">Figure&nbsp;<span>4.7</span></a> illustrate the method of batch means.</p>
+<p><span class="theorem-title"><strong>Proposition 4.6 (Uncertainty estimation with Markov chains)</strong></span> With a simple random sample containing independent and identically distributed observations, the standard error of the sample mean is <span class="math inline">\(\sigma/\sqrt{n}\)</span> and we can use the empirical standard deviation <span class="math inline">\(\widehat{\sigma}\)</span> to estimate the first term. For Markov chains, the correlation prevents us from using this approach. The output of the<code>coda</code> package are based on fitting a high order autoregressive process to the Markov chain and using the formula of the unconditional variance of the <span class="math inline">\(\mathsf{AR}(p)\)</span> to obtain the central limit theorem variance. An alternative method recommended by <span class="citation" data-cites="Geyer:2011">Geyer (<a href="references.html#ref-Geyer:2011" role="doc-biblioref">2011</a>)</span> and implemented in his <strong>R</strong> package <code>mcmc</code>, is to segment the time series into batch, compute the means of each non-overlapping segment and use this standard deviation with suitable rescaling to get the central limit variance for the posterior mean. <a href="#fig-mcmc-batchmean" class="quarto-xref">Figure&nbsp;<span>4.7</span></a> illustrate the method of batch means.</p>
 <ol type="1">
 <li>Break the chain of length <span class="math inline">\(B\)</span> (after burn in) in <span class="math inline">\(K\)</span> blocks of size <span class="math inline">\(\approx K/B.\)</span></li>
 <li>Compute the sample mean of each segment. These values form a Markov chain and should be approximately uncorrelated.</li>
@@ -619,11 +648,23 @@ Albert, Jim. 2009. <em>Bayesian Computation with <span>R</span></em>. 2nd ed. Ne
 <div id="ref-LEcuyer.Botev:2017" class="csl-entry" role="listitem">
 Botev, Zdravko, and Pierre L’Écuyer. 2017. <span>“Simulation from the Normal Distribution Truncated to an Interval in the Tail.”</span> In <em>Proceedings of the 10th EAI International Conference on Performance Evaluation Methodologies and Tools on 10th EAI International Conference on Performance Evaluation Methodologies and Tools</em>, 23–29. <a href="https://doi.org/10.4108/eai.25-10-2016.2266879">https://doi.org/10.4108/eai.25-10-2016.2266879</a>.
 </div>
+<div id="ref-Box.Cox:1964" class="csl-entry" role="listitem">
+Box, G. E. P., and D. R. Cox. 1964. <span>“An Analysis of Transformations.”</span> <em>Journal of the Royal Statistical Society: Series B (Methodological)</em> 26 (2): 211–43. <a href="https://doi.org/10.1111/j.2517-6161.1964.tb00553.x">https://doi.org/10.1111/j.2517-6161.1964.tb00553.x</a>.
+</div>
 <div id="ref-Devroye:1986" class="csl-entry" role="listitem">
 Devroye, L. 1986. <em>Non-Uniform Random Variate Generation</em>. New York: Springer. <a href="http://www.nrbook.com/devroye/">http://www.nrbook.com/devroye/</a>.
 </div>
 <div id="ref-Geyer:2011" class="csl-entry" role="listitem">
 Geyer, Charles J. 2011. <span>“Introduction to <span>M</span>arkov Chain <span>M</span>onte <span>C</span>arlo.”</span> In <em>Handbook of <span>M</span>arkov Chain <span>M</span>onte <span>C</span>arlo</em>, edited by S. Brooks, A. Gelman, G. Jones, and X. L. Meng, 3–48. Boca Raton: CRC Press. <a href="https://doi.org/10.1201/b10905-3">https://doi.org/10.1201/b10905-3</a>.
+</div>
+<div id="ref-Kinderman.Monahan:1977" class="csl-entry" role="listitem">
+Kinderman, A. J., and J. F. Monahan. 1977. <span>“Computer Generation of Random Variables Using the Ratio of Uniform Deviates.”</span> <em>ACM Transactions on Mathematical Software</em> 3 (3): 257–60. <a href="https://doi.org/10.1145/355744.355750">https://doi.org/10.1145/355744.355750</a>.
+</div>
+<div id="ref-rust" class="csl-entry" role="listitem">
+Northrop, Paul J. 2024. <em><code>rust</code>: Ratio-of-Uniforms Simulation with Transformation</em>. <a href="https://doi.org/10.32614/CRAN.package.rust">https://doi.org/10.32614/CRAN.package.rust</a>.
+</div>
+<div id="ref-Wakefield.Gelfand.Smith:1991" class="csl-entry" role="listitem">
+Wakefield, J. C., A. E. Gelfand, and A. F. M. Smith. 1991. <span>“Efficient Generation of Random Variates via the Ratio-of-Uniforms Method.”</span> <em>Statistics and Computing</em> 1 (2): 129–33. <a href="https://doi.org/10.1007/BF01889987">https://doi.org/10.1007/BF01889987</a>.
 </div>
 </div>
 </section>
@@ -1057,8 +1098,8 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="./priors.html" class="pagination-link" aria-label="Priors">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Priors</span></span>
+      <a href="./montecarlo.html" class="pagination-link" aria-label="montecarlo.html">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">montecarlo.html</span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
@@ -1068,8 +1109,21 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
   </div>
 </nav>
 </div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+      &nbsp;
+    </div>   
+    <div class="nav-footer-center">
+<p>Copyright 2024-2025, Léo Belzile</p>
+<div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/lbelzile/MATH80601A/edit/main/markovchains.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li></ul></div></div>
+    <div class="nav-footer-right">
+      &nbsp;
+    </div>
+  </div>
+</footer>
 
 
 
 
-<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/lbelzile/MATH80601A/edit/main/markovchains.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li></ul></div></div></div></footer></body></html>
+</body></html>

@@ -52,7 +52,7 @@ If $(\boldsymbol{X}, U)$ is uniformly distributed on the set
 \end{align*}
 then $\boldsymbol{X}$ has density $f(\boldsymbol{x}).$ Conversely, if $\boldsymbol{X}$ has density $f(\boldsymbol{x})$ and $U\sim\mathsf{unif}(0,1)$ independently, then $[\boldsymbol{X}, cUf(\boldsymbol{X})]$ is uniformly distributed on $\mathcal{A}_f$
 
-We cam thus view $f$ as the marginal density of $\boldsymbol{X}$ since $f(\boldsymbol{x}) = \int_0^{f(\boldsymbol{x})} \mathrm{d} u.$ If we can simulate uniformly from $\mathcal{A}_{f},$ then, we can discard the auxiliary variable $u.$ See @Devroye:1986, Theorem 3.1 for a proof.
+We can thus view $f$ as the marginal density of $\boldsymbol{X}$ since $f(\boldsymbol{x}) = \int_0^{f(\boldsymbol{x})} \mathrm{d} u.$ If we can simulate uniformly from $\mathcal{A}_{f},$ then, we can discard the auxiliary variable $u.$ See @Devroye:1986, Theorem 3.1 for a proof.
 
 ```{r}
 #| eval: true
@@ -557,7 +557,7 @@ Autoregressive processes are not the only ones we can consider, although their s
 Consider a Gaussian $\mathsf{AR}(1)$ model with $Y_t \sim \mathsf{Gauss}\{\mu + \phi(Y_{t-1} - \mu), \sigma^2\}$.
 
 
-Using the law of iterated expectation and variance, it the process is weakly stationary, then $\mathsf{E}_{Y_{t}}(Y_t)=\mathsf{E}_{Y_{t-1}}(Y_{t-1})$
+Using the law of iterated expectation and variance, if the process is weakly stationary, then $\mathsf{E}_{Y_{t}}(Y_t)=\mathsf{E}_{Y_{t-1}}(Y_{t-1})$
 \begin{align*}
 \mathsf{E}_{Y_{t}}(Y_t) &= \mathsf{E}_{Y_{t-1}}\left\{\mathsf{E}_{Y_{t} \mid Y_{t-1}}(Y_t)\right\}
 \\&= \mu(1-\phi) + \phi\mathsf{E}_{Y_{t-1}}(Y_{t-1})

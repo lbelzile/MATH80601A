@@ -165,7 +165,7 @@ window.Quarto = {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./gibbs.html"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Gibbs sampling</span></a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./montecarlo.html">montecarlo.html</a></li><li class="breadcrumb-item"><a href="./gibbs.html"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Gibbs sampling</span></a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -218,30 +218,41 @@ window.Quarto = {
  <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Priors</span></span></a>
   </div>
 </li>
-        <li class="sidebar-item">
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="./montecarlo.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">montecarlo.html</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./markovchains.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Monte Carlo methods</span></span></a>
   </div>
 </li>
-        <li class="sidebar-item">
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./mcmc.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Metropolis–Hastings algorithm</span></span></a>
   </div>
 </li>
-        <li class="sidebar-item">
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./gibbs.html" class="sidebar-item-text sidebar-link active">
  <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Gibbs sampling</span></span></a>
   </div>
 </li>
-        <li class="sidebar-item">
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./workflow.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Bayesian workflow</span></span></a>
   </div>
 </li>
+      </ul>
+  </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./references.html" class="sidebar-item-text sidebar-link">
@@ -263,7 +274,7 @@ window.Quarto = {
 <div class="toc-actions"><ul><li><a href="https://github.com/lbelzile/MATH80601A/edit/main/gibbs.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li></ul></div></nav>
     </div>
 <!-- main -->
-<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block"><h1 class="title display-7"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Gibbs sampling</span></h1></header>
+<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./montecarlo.html">montecarlo.html</a></li><li class="breadcrumb-item"><a href="./gibbs.html"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Gibbs sampling</span></a></li></ol></nav><h1 class="title display-7"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Gibbs sampling</span></h1></header>
 
 <header id="title-block-header">
 
@@ -452,7 +463,7 @@ Figure&nbsp;6.3: Traceplot of <span class="math inline">\(\beta\)</span> coeffic
 <p>Many elliptical distributions can be cast as scale mixture models of spherical or Gaussian variables; see, e.g., Section 10.2 of <span class="citation" data-cites="Albert:2009">Albert (<a href="references.html#ref-Albert:2009" role="doc-biblioref">2009</a>)</span> for a similar derivation with a Student-<span class="math inline">\(t\)</span> distribution.</p>
 </div>
 <div id="exm-mixture" class="theorem example">
-<p><span class="theorem-title"><strong>Example 6.4 (Mixture models)</strong></span> In clustering problems, we can specify that observations arise from a mixture model with a fixed or unknown number of coefficients: the interest lies then in estimating</p>
+<p><span class="theorem-title"><strong>Example 6.4 (Mixture models)</strong></span> In clustering problems, we can specify that observations arise from a mixture model with a fixed or unknown number of coefficients: the interest lies then in estimating the relative weights of the components, and their location and scale.</p>
 <p>A <span class="math inline">\(K\)</span>-mixture model is a weighted combination of models frequently used in clustering or to model subpopulations with respective densities <span class="math inline">\(f_k\)</span>, with density <span class="math display">\[f(x; \boldsymbol{\theta}, \boldsymbol{\omega}) = \sum_{k=1}^K \omega_kf_k(x; \boldsymbol{\theta}_k), \qquad \omega_1 + \cdots \omega_K=1.\]</span> Since the density involves a sum, numerical optimization is challenging. Let <span class="math inline">\(C_i\)</span> denote the cluster index for observation <span class="math inline">\(i\)</span>: if we knew the value of <span class="math inline">\(C_i =j\)</span>, the density would involve only <span class="math inline">\(f_j\)</span>. We can thus use latent variables representing the group allocation to simplify the problem and run an EM algorithm or use the data augmentation. In an iterative framework, we can consider the complete data as the tuples <span class="math inline">\((X_i, Z_i)\)</span>, where <span class="math inline">\(Z_i = \mathsf{I}(C_i=k)\)</span>.</p>
 <p>With the augmented data, the conditional distribution of <span class="math inline">\(Z_i \mid X_i, \boldsymbol{\omega}, \boldsymbol{\theta} \sim \mathsf{multinom}(1, \boldsymbol{\gamma}_{ik})\)</span> where <span class="math display">\[\gamma_{ik} = \frac{\omega_k f_k(X_i\boldsymbol{\theta}_k)}{\sum_{j=1}^K f_j(X_i\boldsymbol{\theta}_k)}.\]</span> Given suitable priors for the probabilities <span class="math inline">\(\boldsymbol{\omega}\)</span> and <span class="math inline">\(\boldsymbol{\theta} \equiv \{\boldsymbol{\theta}_1, \ldots, \boldsymbol{\theta}_k\}\)</span>, we can use Gibbs sampling updating <span class="math inline">\(\boldsymbol{Z}\)</span>, <span class="math inline">\(\boldsymbol{\omega}\)</span> and <span class="math inline">\(\boldsymbol{\theta}\)</span> in turn.</p>
 </div>
@@ -917,8 +928,21 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
   </div>
 </nav>
 </div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+      &nbsp;
+    </div>   
+    <div class="nav-footer-center">
+<p>Copyright 2024-2025, Léo Belzile</p>
+<div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/lbelzile/MATH80601A/edit/main/gibbs.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li></ul></div></div>
+    <div class="nav-footer-right">
+      &nbsp;
+    </div>
+  </div>
+</footer>
 
 
 
 
-<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/lbelzile/MATH80601A/edit/main/gibbs.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li></ul></div></div></div></footer></body></html>
+</body></html>

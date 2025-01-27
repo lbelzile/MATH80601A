@@ -319,15 +319,15 @@
 \newcommand*\listoflistings{\listof{codelisting}{List of Listings}}
 \usepackage{amsthm}
 \theoremstyle{definition}
-\newtheorem{example}{Example}[chapter]
-\theoremstyle{plain}
-\newtheorem{theorem}{Theorem}[chapter]
+\newtheorem{exercise}{Exercise}[chapter]
 \theoremstyle{definition}
 \newtheorem{definition}{Definition}[chapter]
 \theoremstyle{plain}
-\newtheorem{proposition}{Proposition}[chapter]
+\newtheorem{theorem}{Theorem}[chapter]
 \theoremstyle{definition}
-\newtheorem{exercise}{Exercise}[chapter]
+\newtheorem{example}{Example}[chapter]
+\theoremstyle{plain}
+\newtheorem{proposition}{Proposition}[chapter]
 \theoremstyle{remark}
 \AtBeginDocument{\renewcommand*{\proofname}{Proof}}
 \newtheorem*{remark}{Remark}
@@ -383,7 +383,7 @@ details.
 These notes are licensed under a
 \href{http://creativecommons.org/licenses/by-nc-sa/4.0/}{Creative
 Commons Attribution-NonCommercial-ShareAlike 4.0 International License}
-and were last compiled on dimanche, janvier 26 2025.
+and were last compiled on lundi, janvier 27 2025.
 
 The objective of the course is to provide a hands on introduction to
 Bayesian data analysis. The course will cover the formulation,
@@ -2396,7 +2396,7 @@ method]\protect\hypertarget{prp-ratio-uniform}{}\label{prp-ratio-uniform}
 
 The ratio-of-uniform method
 (\citeproc{ref-Kinderman.Monahan:1977}{Kinderman and Monahan 1977};
-\citeproc{ref-Wakefield:1991}{Wakefield, Gelfand, and Smith 1991}) is a
+\citeproc{ref-Wakefield:1991}{Wakefield, Gelfand, and Smith 1991a}) is a
 variant of accept-reject used to draw samples from a unnormalized
 density \(f(\boldsymbol{\theta})\) for
 \(\boldsymbol{\theta} \in \boldsymbol{\Theta} \subseteq \mathbb{R}^d\).
@@ -3349,6 +3349,65 @@ specify sensible values for hyperparameters.
 
 \end{example}
 
+\begin{example}[Priors in extreme value
+theory]\protect\hypertarget{exm-martins}{}\label{exm-martins}
+
+The generalized extreme value distribution obtained as the limit of
+maximum of blocks of size \(m\) when suitably normalizes is a
+location-scale family with a shape parameter \(\xi \in \mathbb{R}\). The
+latter describes the heavyness of the tail, with negative values
+corresponding to approximation by bounded upper tail distributions (such
+as the beta), \(\xi=0\) to exponential tail decay and \(\xi>0\) to
+polynomial tails, with finite moments of order \(1/\xi\). For example,
+the Cauchy or Student-\(t\) distribution with one degree of freedom has
+infinite first moment and \(\xi=1\).
+
+In practice, the maximum likelihood estimators do not exist if
+\(\xi < -1\) as the model is degenerate
+(\citeproc{ref-Smith:1984}{\textbf{Smith:1984?}}), and the cumulant of
+order \(k\) exists only if \(\xi > -1/k\); the Fisher information matrix
+exists only when \(\xi > -1/2\). Thus, informative priors that restrict
+the range of the shape, may be useful as in environmental applications
+the shapes would be in the vicinity of zero. Martins and Stedinger
+(\citeproc{ref-Martins.Stedinger:2000}{2000}) proposed a prior of the
+form \begin{align*}
+p(\xi) =\frac{(0.5+\xi)^{p-1}(0.5-\xi)^{q-1}}{\mathrm{beta}(p,q)}, \qquad \xi \in [-0.5, 0.5]
+\end{align*} a shifted \(\mathsf{beta}(p,q)\) prior.
+
+On the contrary, the \textbf{maximal data information} (MDI) prior
+(\citeproc{ref-Zellner:1971}{Zellner 1971}) is defined in terms of
+entropy,
+\[p(\boldsymbol{\theta}) = \exp \mathsf{E}\{\log f(Y \mid \boldsymbol{\theta})\}.\]
+It is an objective prior that reflects little about the parameter and
+leads to inferences that have good frequentist property.
+
+For the generalized Pareto distribution, \(p(\xi) \propto \exp(-\xi)\).
+In this particular case, however, it is improper without modification
+since \(\lim_{\xi \to -\infty} \exp(-\xi) = \infty\), and the prior
+density increases without bound as \(\xi\) becomes smaller.
+
+\begin{figure}[ht!]
+
+\centering{
+
+\includegraphics[width=1\linewidth,height=\textheight,keepaspectratio]{priors_files/figure-pdf/fig-mdiprior-1.pdf}
+
+}
+
+\caption{\label{fig-mdiprior}Unscaled maximum data information (MDI)
+prior density.}
+
+\end{figure}%
+
+If we restrict the range of the MDI prior \(p(\xi)\) to \(\xi \geq -1\),
+then \(p(\xi + 1) \sim \mathsf{expo}(1)\) and the resulting posterior is
+proper (\citeproc{ref-Northrop.Attalides:2016}{Northrop and Attalides
+2016, Zhang.Shaby:2023}). While being ``objective'', it is perhaps not
+much suitable as it puts mass towards lower values of the shape, an
+undesirable feature.
+
+\end{example}
+
 \begin{example}[Extreme rainfall in Abisko,
 Sweden]\protect\hypertarget{exm-rainfall-abisko}{}\label{exm-rainfall-abisko}
 
@@ -3472,6 +3531,10 @@ relating the parameter to the variance of the one-step ahead forecast
 error.
 
 \end{example}
+
+\phantomsection\label{rmk-raneff}
+\section{Random effects and Bayesian
+inference}\label{random-effects-and-bayesian-inference}
 
 Gaussian components are widespread: not only for linear regression
 models, but more generally for the specification of random effects that
@@ -3631,9 +3694,7 @@ median and the bars the 50\% and 95\% percentile credible intervals.}
 
 \end{example}
 
-\bookmarksetup{startatroot}
-
-\chapter{Monte Carlo methods}\label{monte-carlo-methods}
+\part{}
 
 There are two major approaches to handling the problem of the unknown
 normalizing constant: deterministic and stochastic approximations. The
@@ -3644,6 +3705,8 @@ chain Monte Carlo algorithms. The simulation algorithms circumvent the
 need to calculate the normalizing constant of the posterior entirely. We
 present several examples of implementations, several tricks for tuning
 and diagnostics of convergence.
+
+\chapter{Monte Carlo methods}\label{monte-carlo-methods}
 
 We have already used Monte Carlo methods to compute posterior quantities
 of interest in conjugate models. Outside of models with conjugate
@@ -3705,7 +3768,7 @@ Conversely, if \(\boldsymbol{X}\) has density \(f(\boldsymbol{x})\) and
 \([\boldsymbol{X}, cUf(\boldsymbol{X})]\) is uniformly distributed on
 \(\mathcal{A}_f\)
 
-We cam thus view \(f\) as the marginal density of \(\boldsymbol{X}\)
+We can thus view \(f\) as the marginal density of \(\boldsymbol{X}\)
 since \(f(\boldsymbol{x}) = \int_0^{f(\boldsymbol{x})} \mathrm{d} u.\)
 If we can simulate uniformly from \(\mathcal{A}_{f},\) then, we can
 discard the auxiliary variable \(u.\) See Devroye
@@ -3906,6 +3969,67 @@ larger and larger, provided the expectation is finite. We can thus
 compute the probability of any event or the expected value of any
 (integrable) function by computing sample averages; the cost to pay for
 this generality is randomness.
+
+\begin{proposition}[Generalized
+ratio-of-uniform]\protect\hypertarget{prp-ratio-uniform}{}\label{prp-ratio-uniform}
+
+An exact simulation algorithm is described in Kinderman and Monahan
+(\citeproc{ref-Kinderman.Monahan:1977}{1977}) and extended Wakefield,
+Gelfand, and Smith (\citeproc{ref-Wakefield.Gelfand.Smith:1991}{1991b})
+for random number generation in low dimensions. Consider a \(d\)-vector
+\(\boldsymbol{X}\) with density
+\(cf(\boldsymbol{x}): \mathbb{R}^d \to \mathbb{R}^{+}\) with support
+\(\mathcal{S} \subseteq \mathbb{R}^d\), and \(c>0\) is the (possibly
+unknown) normalizing constant. Consider uniform variables
+\(\boldsymbol{u} = (u_0, u_1, \ldots, u_d)\) uniformly distributed over
+the set \begin{align*}
+\mathcal{B}(r) = \left\{ (u_0, u_1, \ldots, u_d) \in \mathbb{R}^{d+1}: 0 < u_0 \leq \left[ f\left( \frac{u_1}{u_0^r}, \ldots, \frac{u_d}{u_0^r} \right) \right] ^ {1/(r d + 1)} \right\}
+\end{align*} for some positive radius parameter \(r \geq 0\). The
+measure of the set \(\mathcal{B}(r)=c^{-1}(1+rd)^{-1}.\) By the
+Theorem~\ref{thm-fundamental-simulation},
+\((u_1 / u_0^r, \ldots, u_d / u_0^r)\) is drawn from the renormalized
+density \(cf(x)\). The challenge lies in simulating \(\boldsymbol{u}\)
+uniformly over the bounding box \(\mathbb{B}\), but we can use
+accept-reject if the later is enclosed in a bounding box, keeping only
+samples that satisfy the constraints. If, over \(\\mathcal{S}\),
+\(f(\boldsymbol{x})\) and \(x_i^{r d +1} f(\boldsymbol{x})^r\) for
+\(i = 1, \ldots, d\) are bounded then we can enclose \(\mathcal{B}(r)\)
+within the \((d+1)\)-dimensional bounding box
+\(\mathbb{B}=\{a_j(r) \leq u_i \leq b_j(r);  j = 0, \ldots, d \}\), with
+\(a_0(r)=0\). The parameters of the bounding box are\\
+\begin{align*}
+b_0(r) &= \sup_{\boldsymbol{x} \in \mathcal{S}} \, f(x)^{1 / (r d + 1)}, \\
+a_j(r) &= \inf_{\substack{\boldsymbol{x} \in \mathcal{S}\\ x_i \leq 0}} \, x_i \, f(\boldsymbol{x})^{r / (r d + 1)}, \\  
+b_j(r) &= \sup_{{\substack{\boldsymbol{x} \in \mathcal{S}\\ x_i \geq 0}}} \, x_i \, f(\boldsymbol{x})^{r / (r d + 1)},  
+\end{align*}
+
+The probability of acceptance \(p_a(d, r)\) of a point simulated
+uniformly over the bounding box depends on both the radius and the
+dimension and is \begin{align*}
+p_a(d, r) = c\left[(r d + 1) \, b_0(r) \displaystyle\prod_{j=1}^d \left\{b_j(r) -a_j(r) \right\}\right]^{-1}.
+\end{align*}
+
+For the ratio-of-uniform method to work, we need the density
+\(f(\boldsymbol{x})\) to be bounded, and the marginal moments of order
+\(rd+1\), meaning \begin{align*}
+\mathsf{E}(X_i^{rd+1}) = \int_{\mathcal{S}} x_j^{rd+1} f(\boldsymbol{x}) \mathrm{d}x_1 \cdots \mathrm{d} x_d< \infty
+\end{align*} Wakefield, Gelfand, and Smith
+(\citeproc{ref-Wakefield.Gelfand.Smith:1991}{1991b}) propose using
+\(r=1/2\) and relocating the mode of \(f\) to the origin increase the
+acceptance rate. Northrop proposes to use a Box--Cox transformation
+(\citeproc{ref-Box.Cox:1964}{Box and Cox 1964}) together with a rotation
+in the software Northrop (\citeproc{ref-rust}{2024}) to improve the
+acceptance rate. The bounding box may exist only for certain values of
+\(r\); see the vignettes for more examples.
+
+\end{proposition}
+
+\begin{example}[Ratio-of-uniform in
+practice]\protect\hypertarget{exm-rust}{}\label{exm-rust}
+
+~
+
+\end{example}
 
 \begin{proposition}[Monte Carlo
 integration]\protect\hypertarget{prp-monte-carlo-integration}{}\label{prp-monte-carlo-integration}
@@ -4187,7 +4311,7 @@ AR(1)]\protect\hypertarget{exm-ar1-stationarity}{}\label{exm-ar1-stationarity}
 Consider a Gaussian \(\mathsf{AR}(1)\) model with
 \(Y_t \sim \mathsf{Gauss}\{\mu + \phi(Y_{t-1} - \mu), \sigma^2\}\).
 
-Using the law of iterated expectation and variance, it the process is
+Using the law of iterated expectation and variance, if the process is
 weakly stationary, then
 \(\mathsf{E}_{Y_{t}}(Y_t)=\mathsf{E}_{Y_{t-1}}(Y_{t-1})\) \begin{align*}
 \mathsf{E}_{Y_{t}}(Y_t) &= \mathsf{E}_{Y_{t-1}}\left\{\mathsf{E}_{Y_{t} \mid Y_{t-1}}(Y_t)\right\}
@@ -4437,8 +4561,6 @@ the smaller blocks.
 the posterior mean using the batch method.}
 
 \end{figure}%
-
-\bookmarksetup{startatroot}
 
 \chapter{Metropolis--Hastings
 algorithm}\label{metropolishastings-algorithm}
@@ -5085,8 +5207,6 @@ overdispersion.
 
 \end{example}
 
-\bookmarksetup{startatroot}
-
 \chapter{Gibbs sampling}\label{gibbs-sampling}
 
 The Gibbs sampling algorithm builds a Markov chain by iterating through
@@ -5445,7 +5565,8 @@ models]\protect\hypertarget{exm-mixture}{}\label{exm-mixture}
 
 In clustering problems, we can specify that observations arise from a
 mixture model with a fixed or unknown number of coefficients: the
-interest lies then in estimating
+interest lies then in estimating the relative weights of the components,
+and their location and scale.
 
 A \(K\)-mixture model is a weighted combination of models frequently
 used in clustering or to model subpopulations with respective densities
@@ -5469,8 +5590,6 @@ we can use Gibbs sampling updating \(\boldsymbol{Z}\),
 \(\boldsymbol{\omega}\) and \(\boldsymbol{\theta}\) in turn.
 
 \end{example}
-
-\bookmarksetup{startatroot}
 
 \chapter{Bayesian workflow}\label{bayesian-workflow}
 
@@ -5812,6 +5931,12 @@ Performance Evaluation Methodologies and Tools on 10th EAI International
 Conference on Performance Evaluation Methodologies and Tools}, 23--29.
 \url{https://doi.org/10.4108/eai.25-10-2016.2266879}.
 
+\bibitem[\citeproctext]{ref-Box.Cox:1964}
+Box, G. E. P., and D. R. Cox. 1964. {``An Analysis of
+Transformations.''} \emph{Journal of the Royal Statistical Society:
+Series B (Methodological)} 26 (2): 211--43.
+\url{https://doi.org/10.1111/j.2517-6161.1964.tb00553.x}.
+
 \bibitem[\citeproctext]{ref-Brodeur:2021}
 Brodeur, Mathieu, Perrine Ruer, Pierre-Majorique Léger, and Sylvain
 Sénécal. 2021. {``Smartwatches Are More Distracting Than Mobile Phones
@@ -5931,15 +6056,22 @@ Bittel, and Michael Nagler. 2021. {``Diagnostic Accuracy of a
 118--22. \url{https://doi.org/10.1016/j.ijid.2021.07.010}.
 
 \bibitem[\citeproctext]{ref-Kinderman.Monahan:1977}
-Kinderman, Albert J, and John F Monahan. 1977. {``Computer Generation of
+Kinderman, A. J., and J. F. Monahan. 1977. {``Computer Generation of
 Random Variables Using the Ratio of Uniform Deviates.''} \emph{ACM
-Transactions on Mathematical Software (TOMS)} 3 (3): 257--60.
+Transactions on Mathematical Software} 3 (3): 257--60.
+\url{https://doi.org/10.1145/355744.355750}.
 
 \bibitem[\citeproctext]{ref-Marshall.Olkin:1985}
 Marshall, Albert W., and Ingram Olkin. 1985. {``A Family of Bivariate
 Distributions Generated by the Bivariate {B}ernoulli Distribution.''}
 \emph{Journal of the American Statistical Association} 80 (390):
 332--38. \url{https://doi.org/10.1080/01621459.1985.10478116}.
+
+\bibitem[\citeproctext]{ref-Martins.Stedinger:2000}
+Martins, Eduardo S., and Jery R. Stedinger. 2000. {``Generalized
+Maximum-Likelihood Generalized Extreme-Value Quantile Estimators for
+Hydrologic Data.''} \emph{Water Resources Research} 36 (3): 737--44.
+\url{https://doi.org/10.1029/1999WR900330}.
 
 \bibitem[\citeproctext]{ref-owidcoronavirus}
 Mathieu, Edouard, Hannah Ritchie, Lucas Rodés-Guirao, Cameron Appel,
@@ -5968,6 +6100,17 @@ Chemical Physics} 21 (6): 1087--92.
 Nadarajah, Saralees. 2008. {``{M}arshall and {O}lkin's Distributions.''}
 \emph{Acta Applicandae Mathematicae} 103 (1): 87--100.
 \url{https://doi.org/10.1007/s10440-008-9221-7}.
+
+\bibitem[\citeproctext]{ref-rust}
+Northrop, Paul J. 2024. \emph{\texttt{rust}: Ratio-of-Uniforms
+Simulation with Transformation}.
+\url{https://doi.org/10.32614/CRAN.package.rust}.
+
+\bibitem[\citeproctext]{ref-Northrop.Attalides:2016}
+Northrop, Paul J., and Nicolas Attalides. 2016. {``Posterior Propriety
+in {B}ayesian Extreme Value Analyses Using Reference Priors.''}
+\emph{Statistica Sinica} 26 (2): 721--43.
+\url{https://doi.org/10.5705/ss.2014.034}.
 
 \bibitem[\citeproctext]{ref-Park.Casella:2008}
 Park, Trevor, and George Casella. 2008. {``The {B}ayesian {L}asso.''}
@@ -6023,10 +6166,15 @@ American Statistical Association} 82 (398): 528--40.
 \url{https://doi.org/10.1080/01621459.1987.10478458}.
 
 \bibitem[\citeproctext]{ref-Wakefield:1991}
-Wakefield, J. C., A. E. Gelfand, and A. F. M. Smith. 1991. {``Efficient
+Wakefield, J. C., A. E. Gelfand, and A. F. M. Smith. 1991a. {``Efficient
 Generation of Random Variates via the Ratio-of-Uniforms Method.''}
 \emph{Statistics and Computing} 1 (2): 129--33.
 \url{https://doi.org/10.1007/bf01889987}.
+
+\bibitem[\citeproctext]{ref-Wakefield.Gelfand.Smith:1991}
+---------. 1991b. {``Efficient Generation of Random Variates via the
+Ratio-of-Uniforms Method.''} \emph{Statistics and Computing} 1 (2):
+129--33. \url{https://doi.org/10.1007/BF01889987}.
 
 \bibitem[\citeproctext]{ref-Watanabe:2010}
 Watanabe, Sumio. 2010. {``Asymptotic Equivalence of {B}ayes Cross
@@ -6034,9 +6182,13 @@ Validation and Widely Applicable Information Criterion in Singular
 Learning Theory.''} \emph{Journal of Machine Learning Research} 11
 (116): 3571--94. \url{http://jmlr.org/papers/v11/watanabe10a.html}.
 
+\bibitem[\citeproctext]{ref-Zellner:1971}
+Zellner, Arnold. 1971. \emph{An Introduction to {B}ayesian Inference in
+Econometrics}. Wiley.
+
 \bibitem[\citeproctext]{ref-Zellner:1986}
-Zellner, Arnold. 1986. {``On Assessing Prior Distributions and
-{B}ayesian Regression Analysis with \(g\)-Prior Distributions.''} In
+---------. 1986. {``On Assessing Prior Distributions and {B}ayesian
+Regression Analysis with \(g\)-Prior Distributions.''} In
 \emph{{B}ayesian Inference and Decision Techniques: Essays in Honor of
 {B}runo de {F}inetti}, 233--43. North-Holland/Elsevier.
 

@@ -84,7 +84,7 @@ div.csl-indent {
 <script src="site_libs/quarto-search/fuse.min.js"></script>
 <script src="site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="./">
-<link href="./markovchains.html" rel="next">
+<link href="./montecarlo.html" rel="next">
 <link href="./bayesics.html" rel="prev">
 <script src="site_libs/quarto-html/quarto.js"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
@@ -218,30 +218,41 @@ window.Quarto = {
  <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Priors</span></span></a>
   </div>
 </li>
-        <li class="sidebar-item">
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="./montecarlo.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">montecarlo.html</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./markovchains.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Monte Carlo methods</span></span></a>
   </div>
 </li>
-        <li class="sidebar-item">
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./mcmc.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Metropolis–Hastings algorithm</span></span></a>
   </div>
 </li>
-        <li class="sidebar-item">
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./gibbs.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Gibbs sampling</span></span></a>
   </div>
 </li>
-        <li class="sidebar-item">
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./workflow.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Bayesian workflow</span></span></a>
   </div>
 </li>
+      </ul>
+  </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./references.html" class="sidebar-item-text sidebar-link">
@@ -263,7 +274,8 @@ window.Quarto = {
   <li><a href="#uninformative-priors" id="toc-uninformative-priors" class="nav-link" data-scroll-target="#uninformative-priors"><span class="header-section-number">3.3</span> Uninformative priors</a></li>
   <li><a href="#priors-for-regression-models" id="toc-priors-for-regression-models" class="nav-link" data-scroll-target="#priors-for-regression-models"><span class="header-section-number">3.4</span> Priors for regression models</a></li>
   <li><a href="#informative-priors" id="toc-informative-priors" class="nav-link" data-scroll-target="#informative-priors"><span class="header-section-number">3.5</span> Informative priors</a></li>
-  <li><a href="#sensitivity-analysis" id="toc-sensitivity-analysis" class="nav-link" data-scroll-target="#sensitivity-analysis"><span class="header-section-number">3.6</span> Sensitivity analysis</a></li>
+  <li><a href="#random-effects-and-bayesian-inference" id="toc-random-effects-and-bayesian-inference" class="nav-link" data-scroll-target="#random-effects-and-bayesian-inference"><span class="header-section-number">3.6</span> Random effects and Bayesian inference</a></li>
+  <li><a href="#sensitivity-analysis" id="toc-sensitivity-analysis" class="nav-link" data-scroll-target="#sensitivity-analysis"><span class="header-section-number">3.7</span> Sensitivity analysis</a></li>
   </ul>
 <div class="toc-actions"><ul><li><a href="https://github.com/lbelzile/MATH80601A/edit/main/priors.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li></ul></div></nav>
     </div>
@@ -565,9 +577,32 @@ Q(p) \mu + \sigma \frac{(-\log p)^{-\xi}-1}{\xi}
 p(\boldsymbol{q}) \propto q_1^{\alpha_1-1}\exp(-\beta_1 q_1) \prod_{i=2}^3 (q_i-q_{i-1})^{\alpha_i-1} \exp\{\beta_i(q_i-q_{i-1})\}.
 \end{align*}\]</span> where <span class="math inline">\(0 \leq q_1 \leq q_2 \leq q_3.\)</span> The fact that these quantities refer to moments or risk estimates which practitioners often must compute as part of regulatory requirements makes it easier to specify sensible values for hyperparameters.</p>
 </div>
+<div id="exm-martins" class="theorem example">
+<p><span class="theorem-title"><strong>Example 3.11 (Priors in extreme value theory)</strong></span> The generalized extreme value distribution obtained as the limit of maximum of blocks of size <span class="math inline">\(m\)</span> when suitably normalizes is a location-scale family with a shape parameter <span class="math inline">\(\xi \in \mathbb{R}\)</span>. The latter describes the heavyness of the tail, with negative values corresponding to approximation by bounded upper tail distributions (such as the beta), <span class="math inline">\(\xi=0\)</span> to exponential tail decay and <span class="math inline">\(\xi&gt;0\)</span> to polynomial tails, with finite moments of order <span class="math inline">\(1/\xi\)</span>. For example, the Cauchy or Student-<span class="math inline">\(t\)</span> distribution with one degree of freedom has infinite first moment and <span class="math inline">\(\xi=1\)</span>.</p>
+<p>In practice, the maximum likelihood estimators do not exist if <span class="math inline">\(\xi &lt; -1\)</span> as the model is degenerate <span class="citation" data-cites="Smith:1984">(<a href="references.html#ref-Smith:1984" role="doc-biblioref"><strong>Smith:1984?</strong></a>)</span>, and the cumulant of order <span class="math inline">\(k\)</span> exists only if <span class="math inline">\(\xi &gt; -1/k\)</span>; the Fisher information matrix exists only when <span class="math inline">\(\xi &gt; -1/2\)</span>. Thus, informative priors that restrict the range of the shape, may be useful as in environmental applications the shapes would be in the vicinity of zero. <span class="citation" data-cites="Martins.Stedinger:2000">Martins and Stedinger (<a href="references.html#ref-Martins.Stedinger:2000" role="doc-biblioref">2000</a>)</span> proposed a prior of the form <span class="math display">\[\begin{align*}
+p(\xi) =\frac{(0.5+\xi)^{p-1}(0.5-\xi)^{q-1}}{\mathrm{beta}(p,q)}, \qquad \xi \in [-0.5, 0.5]
+\end{align*}\]</span> a shifted <span class="math inline">\(\mathsf{beta}(p,q)\)</span> prior.</p>
+<p>On the contrary, the <strong>maximal data information</strong> (MDI) prior <span class="citation" data-cites="Zellner:1971">(<a href="references.html#ref-Zellner:1971" role="doc-biblioref">Zellner 1971</a>)</span> is defined in terms of entropy, <span class="math display">\[p(\boldsymbol{\theta}) = \exp \mathsf{E}\{\log f(Y \mid \boldsymbol{\theta})\}.\]</span> It is an objective prior that reflects little about the parameter and leads to inferences that have good frequentist property.</p>
+<p>For the generalized Pareto distribution, <span class="math inline">\(p(\xi) \propto \exp(-\xi)\)</span>. In this particular case, however, it is improper without modification since <span class="math inline">\(\lim_{\xi \to -\infty} \exp(-\xi) = \infty\)</span>, and the prior density increases without bound as <span class="math inline">\(\xi\)</span> becomes smaller.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-mdiprior" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-mdiprior-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="priors_files/figure-html/fig-mdiprior-1.png" class="img-fluid figure-img" style="width:100.0%">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-mdiprior-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;3.4: Unscaled maximum data information (MDI) prior density.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>If we restrict the range of the MDI prior <span class="math inline">\(p(\xi)\)</span> to <span class="math inline">\(\xi \geq -1\)</span>, then <span class="math inline">\(p(\xi + 1) \sim \mathsf{expo}(1)\)</span> and the resulting posterior is proper <span class="citation" data-cites="Northrop.Attalides:2016">(<a href="references.html#ref-Northrop.Attalides:2016" role="doc-biblioref">Northrop and Attalides 2016, Zhang.Shaby:2023</a>)</span>. While being “objective”, it is perhaps not much suitable as it puts mass towards lower values of the shape, an undesirable feature.</p>
+</div>
 <div id="exm-rainfall-abisko" class="theorem example">
-<p><span class="theorem-title"><strong>Example 3.11 (Extreme rainfall in Abisko, Sweden)</strong></span> As illustrating example, consider maximum daily cumulated rainfall in Abisko, Sweden. The time series spans from 1913 until December 2014; we compute the 102 yearly maximum, which range from 11mm to 62mm, and fit a generalized extreme value distribution to these.</p>
-<p>For the priors, suppose an expert elicits quantiles of the 10, 50 and 100 years return levels; say 30mm, 45mm and 70mm, respectively, for the median and likewise 40mm, 70mm and 120mm for the 90% percentile of the return levels. We can compute the differences and calculate the parameters of the gamma distribution through moment-matching: this gives roughly a shape of <span class="math inline">\(\alpha_1=18.27\)</span> and <span class="math inline">\(\beta_1=0.6,\)</span> etc. <a href="#fig-gev-colestawn-quant-prior" class="quarto-xref">Figure&nbsp;<span>3.4</span></a> shows the transfer from the prior predictive to the posterior distribution. The prior is much more dispersed and concentrated on the tail, which translates in a less peaked posterior than using a weakly informative prior (dotted line): the mode of the latter is slightly to the left and with lower density in the tail.</p>
+<p><span class="theorem-title"><strong>Example 3.12 (Extreme rainfall in Abisko, Sweden)</strong></span> As illustrating example, consider maximum daily cumulated rainfall in Abisko, Sweden. The time series spans from 1913 until December 2014; we compute the 102 yearly maximum, which range from 11mm to 62mm, and fit a generalized extreme value distribution to these.</p>
+<p>For the priors, suppose an expert elicits quantiles of the 10, 50 and 100 years return levels; say 30mm, 45mm and 70mm, respectively, for the median and likewise 40mm, 70mm and 120mm for the 90% percentile of the return levels. We can compute the differences and calculate the parameters of the gamma distribution through moment-matching: this gives roughly a shape of <span class="math inline">\(\alpha_1=18.27\)</span> and <span class="math inline">\(\beta_1=0.6,\)</span> etc. <a href="#fig-gev-colestawn-quant-prior" class="quarto-xref">Figure&nbsp;<span>3.5</span></a> shows the transfer from the prior predictive to the posterior distribution. The prior is much more dispersed and concentrated on the tail, which translates in a less peaked posterior than using a weakly informative prior (dotted line): the mode of the latter is slightly to the left and with lower density in the tail.</p>
 <div class="cell">
 <div class="cell-output-display">
 <div id="fig-gev-colestawn-quant-prior" class="quarto-float quarto-figure quarto-figure-center anchored">
@@ -576,7 +611,7 @@ p(\boldsymbol{q}) \propto q_1^{\alpha_1-1}\exp(-\beta_1 q_1) \prod_{i=2}^3 (q_i-
 <img src="priors_files/figure-html/fig-gev-colestawn-quant-prior-1.png" class="img-fluid figure-img" width="672">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-gev-colestawn-quant-prior-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;3.4: Kernel density estimates of draws from the posterior distribution of 100 year return levels with a Coles–Tawn quantile prior (full line) and from the corresponding prior predictive (dashed). The dotted line gives the posterior distribution for a maximum domain information prior on the shape with improper priors on location and scale.
+Figure&nbsp;3.5: Kernel density estimates of draws from the posterior distribution of 100 year return levels with a Coles–Tawn quantile prior (full line) and from the corresponding prior predictive (dashed). The dotted line gives the posterior distribution for a maximum domain information prior on the shape with improper priors on location and scale.
 </figcaption>
 </figure>
 </div>
@@ -596,25 +631,31 @@ Figure&nbsp;3.4: Kernel density estimates of draws from the posterior distributi
 <p>The construction of Wasserstein complexity priors <span class="citation" data-cites="Bolin:2023">(<a href="references.html#ref-Bolin:2023" role="doc-biblioref">Bolin, Simas, and Xiong 2023</a>)</span> is more involved, but those priors are also parametrization-invariant and well-defined even when the Kullback–Leibler divergence limit does not exist.</p>
 </div>
 <div id="exm-pcprior-randomeffect" class="theorem example">
-<p><span class="theorem-title"><strong>Example 3.12 (Penalized complexity prior for random effects models)</strong></span> <span class="citation" data-cites="Bolin:2023">Bolin, Simas, and Xiong (<a href="references.html#ref-Bolin:2023" role="doc-biblioref">2023</a>)</span> consider a Gaussian prior for independent and identically random effects <span class="math inline">\(\boldsymbol{\alpha},\)</span> of the form <span class="math inline">\(\alpha_j \mid \zeta \sim \mathsf{Gauss}(0, \zeta^2)\)</span> where <span class="math inline">\(\zeta_0=0\)</span> corresponds to the absence of random subject-variability. The penalized complexity prior for the scale <span class="math inline">\(\zeta\)</span> is then an exponential with rate <span class="math inline">\(\lambda,\)</span> with density <span class="math display">\[p(\zeta \mid \lambda) = \lambda \exp(-\lambda \zeta).\]</span></p>
+<p><span class="theorem-title"><strong>Example 3.13 (Penalized complexity prior for random effects models)</strong></span> <span class="citation" data-cites="Bolin:2023">Bolin, Simas, and Xiong (<a href="references.html#ref-Bolin:2023" role="doc-biblioref">2023</a>)</span> consider a Gaussian prior for independent and identically random effects <span class="math inline">\(\boldsymbol{\alpha},\)</span> of the form <span class="math inline">\(\alpha_j \mid \zeta \sim \mathsf{Gauss}(0, \zeta^2)\)</span> where <span class="math inline">\(\zeta_0=0\)</span> corresponds to the absence of random subject-variability. The penalized complexity prior for the scale <span class="math inline">\(\zeta\)</span> is then an exponential with rate <span class="math inline">\(\lambda,\)</span> with density <span class="math display">\[p(\zeta \mid \lambda) = \lambda \exp(-\lambda \zeta).\]</span></p>
 <p>We can elicit a high quantile <span class="math inline">\(Q_\zeta\)</span> at tail probability <span class="math inline">\(\alpha\)</span> for the standard deviation parameter <span class="math inline">\(\zeta\)</span> and set <span class="math inline">\(\lambda = -\ln(\alpha/Q_\zeta)\)</span>.</p>
 </div>
 <div id="exm-pcprior-arorder" class="theorem example">
-<p><span class="theorem-title"><strong>Example 3.13 (Penalized complexity prior for autoregressive model of order 1)</strong></span> <span class="citation" data-cites="Sorbye.Holbek.Rue:2017">Sørbye and Rue (<a href="references.html#ref-Sorbye.Holbek.Rue:2017" role="doc-biblioref">2017</a>)</span> derive penalized complexity prior for the Gaussian stationary AR(1) model with autoregressive parameter <span class="math inline">\(\phi \in (-1,1),\)</span> where <span class="math inline">\(Y_t \mid Y_{t-1}, \phi, \sigma^2 \sim \mathsf{Gauss}(\phi Y_{t-1}, \sigma^2).\)</span> There are two based models that could be of interest: one with <span class="math inline">\(\phi=0,\)</span> corresponding to a memoryless model with no autocorrelation, and a static mean <span class="math inline">\(\phi=1\)</span> for no change in time; note that the latter is not stationary. For the former <span class="math inline">\((\phi=0)\)</span>, the penalized complexity prior is <span class="math display">\[\begin{align*}
+<p><span class="theorem-title"><strong>Example 3.14 (Penalized complexity prior for autoregressive model of order 1)</strong></span> <span class="citation" data-cites="Sorbye.Holbek.Rue:2017">Sørbye and Rue (<a href="references.html#ref-Sorbye.Holbek.Rue:2017" role="doc-biblioref">2017</a>)</span> derive penalized complexity prior for the Gaussian stationary AR(1) model with autoregressive parameter <span class="math inline">\(\phi \in (-1,1),\)</span> where <span class="math inline">\(Y_t \mid Y_{t-1}, \phi, \sigma^2 \sim \mathsf{Gauss}(\phi Y_{t-1}, \sigma^2).\)</span> There are two based models that could be of interest: one with <span class="math inline">\(\phi=0,\)</span> corresponding to a memoryless model with no autocorrelation, and a static mean <span class="math inline">\(\phi=1\)</span> for no change in time; note that the latter is not stationary. For the former <span class="math inline">\((\phi=0)\)</span>, the penalized complexity prior is <span class="math display">\[\begin{align*}
 p(\phi \mid \lambda) = \frac{\lambda}{2} \exp\left[-\lambda \left\{-\ln(1-\phi^2)\right\}^{1/2}\right] \frac{|\phi|}{(1-\phi^2)\left\{-\ln(1-\phi^2)\right\}^{1/2}}.
 \end{align*}\]</span> One can set <span class="math inline">\(\lambda\)</span> by considering plausible values by relating the parameter to the variance of the one-step ahead forecast error.</p>
 </div>
+</section>
+<div id="rmk-raneff">
+<section id="random-effects-and-bayesian-inference" class="level2" data-number="3.6">
+<h2 data-number="3.6" class="anchored" data-anchor-id="random-effects-and-bayesian-inference"><span class="header-section-number">3.6</span> Random effects and Bayesian inference</h2>
 <p>Gaussian components are widespread: not only for linear regression models, but more generally for the specification of random effects that capture group-specific effects, residuals spatial or temporal variability. In the Bayesian paradigm, there is no difference between fixed effects <span class="math inline">\(\boldsymbol{\beta}\)</span> and the random effect parameters: both are random quantities that get assigned priors, but we will treat these priors differently.</p>
 <p>The reason why we would like to use a penalized complexity prior for a random effect, say <span class="math inline">\(\alpha_j \sim \mathsf{Gauss}(0, \zeta^2),\)</span> is because we don’t know a prior if there is variability between groups. The inverse gamma prior for <span class="math inline">\(\zeta,\)</span> <span class="math inline">\(\zeta \sim \mathsf{InvGamma}(\epsilon, \epsilon)\)</span> does not have a mode at zero unless it is improper with <span class="math inline">\(\epsilon \to 0.\)</span> Generally, we want our prior for the variance to have significant probability density at the null <span class="math inline">\(\zeta=0.\)</span> The penalized complexity prior is not the only sensible choice. Posterior inference is unfortunately sensitive to the value of <span class="math inline">\(\epsilon\)</span> in hierarchical models when the random effect variance is close to zero, and more so when there are few levels for the groups since the relative weight of the prior relative to that of the likelihood contribution is then large.</p>
+</section>
+</div>
 <div id="exm-random-effect-variance" class="theorem example">
-<p><span class="theorem-title"><strong>Example 3.14 (Student-t prior for variance components)</strong></span> <span class="citation" data-cites="Gelman:2006">Gelman (<a href="references.html#ref-Gelman:2006" role="doc-biblioref">2006</a>)</span> recommends a Student-<span class="math inline">\(t\)</span> distribution truncated below at <span class="math inline">\(0,\)</span> with low degrees of freedom. The rationale for this choice comes from the simple two level model with <span class="math inline">\(n_j\)</span> independent in each group <span class="math inline">\(j=1, \ldots, J\)</span>: for observation <span class="math inline">\(i\)</span> in group <span class="math inline">\(j,\)</span> <span class="math display">\[\begin{align*}
+<p><span class="theorem-title"><strong>Example 3.15 (Student-t prior for variance components)</strong></span> <span class="citation" data-cites="Gelman:2006">Gelman (<a href="references.html#ref-Gelman:2006" role="doc-biblioref">2006</a>)</span> recommends a Student-<span class="math inline">\(t\)</span> distribution truncated below at <span class="math inline">\(0,\)</span> with low degrees of freedom. The rationale for this choice comes from the simple two level model with <span class="math inline">\(n_j\)</span> independent in each group <span class="math inline">\(j=1, \ldots, J\)</span>: for observation <span class="math inline">\(i\)</span> in group <span class="math inline">\(j,\)</span> <span class="math display">\[\begin{align*}
 Y_{ij} &amp;\sim \mathsf{Gauss}(\mu + \alpha_j, \sigma^2),\\
 \alpha_j &amp;\sim \mathsf{Gauss}(0, \tau^2_\alpha),
 \end{align*}\]</span> The conditionally conjugate prior <span class="math inline">\(p(\tau \mid \boldsymbol{\alpha}, \mu, \sigma)\)</span> is inverse gamma. Standard inference with this parametrization is however complicated, because there is strong dependence between parameters.</p>
 <p>To reduce this dependence, one can add a parameter, taking <span class="math inline">\(\alpha_j = \xi \eta_j\)</span> and <span class="math inline">\(\tau_\alpha=|\xi|\tau_{\eta}\)</span>; the model is now overparametrized. Suppose <span class="math inline">\(\eta_j \sim \mathsf{Gauss}(0, \tau^2_\eta)\)</span> and consider the likelihood conditional on <span class="math inline">\(\mu, \eta_j\)</span>: we have that <span class="math inline">\((y_{ij} - \mu)/\eta_j \sim \mathsf{Gauss}(\xi, \sigma^2/\eta_j)\)</span> so conditionally conjugate priors for <span class="math inline">\(\xi\)</span> and <span class="math inline">\(\tau_\eta\)</span> are respectively Gaussian and inverse gamma. This translates into a prior distribution for <span class="math inline">\(\tau_\alpha\)</span> which is that of the absolute value of a noncentral Student-<span class="math inline">\(t\)</span> with location, scale and degrees of freedom <span class="math inline">\(\nu.\)</span> If we set the location to zero, the prior puts high mass at the origin, but is heavy tailed with polynomial decay. We recommend to set degrees of freedom so that the variance is heavy-tailed, e.g., <span class="math inline">\(\nu=3.\)</span> While this prior is not conjugate, it compares favorably to the <span class="math inline">\(\mathsf{inv. gamma}(\epsilon, \epsilon).\)</span></p>
 </div>
 <div id="exm-randomeffects" class="theorem example">
-<p><span class="theorem-title"><strong>Example 3.15 (Poisson random effect models)</strong></span> We consider data from an experimental study conducted at Tech3Lab on road safety. In <span class="citation" data-cites="Brodeur:2021">Brodeur et al. (<a href="references.html#ref-Brodeur:2021" role="doc-biblioref">2021</a>)</span>, 31 participants were asked to drive in a virtual environment; the number of road violation was measured for different type of distractions (phone notification, phone on speaker, texting and smartwatch). The data are balanced, with each participant exposed to each task exactly once.</p>
+<p><span class="theorem-title"><strong>Example 3.16 (Poisson random effect models)</strong></span> We consider data from an experimental study conducted at Tech3Lab on road safety. In <span class="citation" data-cites="Brodeur:2021">Brodeur et al. (<a href="references.html#ref-Brodeur:2021" role="doc-biblioref">2021</a>)</span>, 31 participants were asked to drive in a virtual environment; the number of road violation was measured for different type of distractions (phone notification, phone on speaker, texting and smartwatch). The data are balanced, with each participant exposed to each task exactly once.</p>
 <p>We model the data using a Poisson mixed model to measure the number of violations, <code>nviolation</code>, with a fixed effect for <code>task</code>, which captures the type of distraction, and a random effect for participant <code>id</code>. The hierarchical model fitted for individual <span class="math inline">\(i\)</span> <span class="math inline">\((i=1, \ldots, 34)\)</span> and distraction type <span class="math inline">\(j\)</span> <span class="math inline">\((j=1, \ldots, 4)\)</span> is <span class="math display">\[\begin{align*}
 Y_{ij} &amp;\sim \mathsf{Poisson}\{\mu = \exp(\beta_{j} + \alpha_i)\},\\
 \beta_j &amp;\sim \mathsf{Gauss}(0, 100), \\
@@ -631,19 +672,18 @@ Y_{ij} &amp;\sim \mathsf{Poisson}\{\mu = \exp(\beta_{j} + \alpha_i)\},\\
 <img src="priors_files/figure-html/fig-post-dist-poisson-mixed-1.png" class="img-fluid figure-img" width="672">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-post-dist-poisson-mixed-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;3.5: Posterior density plots with 50% credible intervals and median value for the random effects of the first five individuals (left) and the fixed effects and random effect variance (right).
+Figure&nbsp;3.6: Posterior density plots with 50% credible intervals and median value for the random effects of the first five individuals (left) and the fixed effects and random effect variance (right).
 </figcaption>
 </figure>
 </div>
 </div>
 </div>
 </div>
-</section>
-<section id="sensitivity-analysis" class="level2" data-number="3.6">
-<h2 data-number="3.6" class="anchored" data-anchor-id="sensitivity-analysis"><span class="header-section-number">3.6</span> Sensitivity analysis</h2>
+<section id="sensitivity-analysis" class="level2" data-number="3.7">
+<h2 data-number="3.7" class="anchored" data-anchor-id="sensitivity-analysis"><span class="header-section-number">3.7</span> Sensitivity analysis</h2>
 <p>Do priors matter? The answer to that question depends strongly on the model, and how much information the data provides about hyperparameters. While this question is easily answered in conjugate models (the relative weight of hyperparameters relative to data can be derived from the posterior parameters), it is not so simple in hierarchical models, where the interplay between prior distributions is often more intricate. To see the impact, one often has to rely on doing several analyses with different values fr the prior and see the sensitivity of the conclusions to these changes, for example by considering a vague prior or modifying the parameters values (say halving or doubling). If the changes are immaterial, then this provides reassurance that our analyses are robust.</p>
 <div id="exm-sensitivity-poisson-mixed" class="theorem example">
-<p><span class="theorem-title"><strong>Example 3.16</strong></span> To check the sensitivity of the conclusion, we revisit the modelling of the <code>smartwatch</code> experiment data using a Poisson regression and compare four priors: a uniform prior truncated to <span class="math inline">\([0, 10],\)</span> an inverse gamma <span class="math inline">\(\mathsf{InvGamma}(0.01, 0.01)\)</span> prior, a penalized complexity prior such that the 0.95 percentile of the scale is 5, corresponding to <span class="math inline">\(\mathsf{Exp}(0.6).\)</span> Since each distraction type appears 31 times, there is plenty of information to reliably estimate the dispersion <span class="math inline">\(\kappa\)</span> of the random effects <span class="math inline">\(\alpha\)</span>: the different density plots in <a href="#fig-sensitivity" class="quarto-xref">Figure&nbsp;<span>3.6</span></a> are virtually indistinguishable from one another. This is perhaps unsurprising given the large number of replicates, and the significant variability between groups.</p>
+<p><span class="theorem-title"><strong>Example 3.17</strong></span> To check the sensitivity of the conclusion, we revisit the modelling of the <code>smartwatch</code> experiment data using a Poisson regression and compare four priors: a uniform prior truncated to <span class="math inline">\([0, 10],\)</span> an inverse gamma <span class="math inline">\(\mathsf{InvGamma}(0.01, 0.01)\)</span> prior, a penalized complexity prior such that the 0.95 percentile of the scale is 5, corresponding to <span class="math inline">\(\mathsf{Exp}(0.6).\)</span> Since each distraction type appears 31 times, there is plenty of information to reliably estimate the dispersion <span class="math inline">\(\kappa\)</span> of the random effects <span class="math inline">\(\alpha\)</span>: the different density plots in <a href="#fig-sensitivity" class="quarto-xref">Figure&nbsp;<span>3.7</span></a> are virtually indistinguishable from one another. This is perhaps unsurprising given the large number of replicates, and the significant variability between groups.</p>
 <div class="cell">
 <div class="cell-output-display">
 <div id="fig-sensitivity" class="quarto-float quarto-figure quarto-figure-center anchored">
@@ -652,7 +692,7 @@ Figure&nbsp;3.5: Posterior density plots with 50% credible intervals and median 
 <img src="priors_files/figure-html/fig-sensitivity-1.png" class="img-fluid figure-img" width="672">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-sensitivity-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;3.6: Posterior density of the scale of the random effects with uniform, inverse gamma, penalized complexity and folded Student-t with three degrees of freedom. The circle denotes the median and the bars the 50% and 95% percentile credible intervals.
+Figure&nbsp;3.7: Posterior density of the scale of the random effects with uniform, inverse gamma, penalized complexity and folded Student-t with three degrees of freedom. The circle denotes the median and the bars the 50% and 95% percentile credible intervals.
 </figcaption>
 </figure>
 </div>
@@ -716,8 +756,14 @@ Gelman, Andrew. 2006. <span>“Prior Distributions for Variance Parameters in Hi
 <div id="ref-Gelman:2013" class="csl-entry" role="listitem">
 Gelman, Andrew, John B. Carlin, Hal S. Stern, David B. Dunson, Aki Vehtari, and Donald B. Rubin. 2013. <em>Bayesian Data Analysis</em>. 3rd ed. New York: Chapman; Hall/CRC. <a href="https://doi.org/10.1201/b16018">https://doi.org/10.1201/b16018</a>.
 </div>
+<div id="ref-Martins.Stedinger:2000" class="csl-entry" role="listitem">
+Martins, Eduardo S., and Jery R. Stedinger. 2000. <span>“Generalized Maximum-Likelihood Generalized Extreme-Value Quantile Estimators for Hydrologic Data.”</span> <em>Water Resources Research</em> 36 (3): 737–44. <a href="https://doi.org/10.1029/1999WR900330">https://doi.org/10.1029/1999WR900330</a>.
+</div>
 <div id="ref-Matias:2021" class="csl-entry" role="listitem">
 Matias, J. Nathan, Kevin Munger, Marianne Aubin Le Quere, and Charles Ebersole. 2021. <span>“The <span>U</span>pworthy <span>R</span>esearch <span>A</span>rchive, a Time Series of 32,487 Experiments in <span>U.S.</span> Media.”</span> <em>Scientific Data</em> 8 (195). <a href="https://doi.org/10.1038/s41597-021-00934-7">https://doi.org/10.1038/s41597-021-00934-7</a>.
+</div>
+<div id="ref-Northrop.Attalides:2016" class="csl-entry" role="listitem">
+Northrop, Paul J., and Nicolas Attalides. 2016. <span>“Posterior Propriety in <span>B</span>ayesian Extreme Value Analyses Using Reference Priors.”</span> <em>Statistica Sinica</em> 26 (2): 721–43. <a href="https://doi.org/10.5705/ss.2014.034">https://doi.org/10.5705/ss.2014.034</a>.
 </div>
 <div id="ref-Simpson:2017" class="csl-entry" role="listitem">
 Simpson, Daniel, Håvard Rue, Andrea Riebler, Thiago G. Martins, and Sigrunn H. Sørbye. 2017. <span>“Penalising Model Component Complexity: A Principled, Practical Approach to Constructing Priors.”</span> <em>Statistical Science</em> 32 (1): 1–28. <a href="https://doi.org/10.1214/16-sts576">https://doi.org/10.1214/16-sts576</a>.
@@ -725,8 +771,11 @@ Simpson, Daniel, Håvard Rue, Andrea Riebler, Thiago G. Martins, and Sigrunn H. 
 <div id="ref-Sorbye.Holbek.Rue:2017" class="csl-entry" role="listitem">
 Sørbye, Sigrunn Holbek, and Håvard Rue. 2017. <span>“Penalised Complexity Priors for Stationary Autoregressive Processes.”</span> <em>Journal of Time Series Analysis</em> 38 (6): 923–35. <a href="https://doi.org/10.1111/jtsa.12242">https://doi.org/10.1111/jtsa.12242</a>.
 </div>
+<div id="ref-Zellner:1971" class="csl-entry" role="listitem">
+Zellner, Arnold. 1971. <em>An Introduction to <span>B</span>ayesian Inference in Econometrics</em>. Wiley.
+</div>
 <div id="ref-Zellner:1986" class="csl-entry" role="listitem">
-Zellner, Arnold. 1986. <span>“On Assessing Prior Distributions and <span>B</span>ayesian Regression Analysis with <span class="math inline">\(g\)</span>-Prior Distributions.”</span> In <em><span>B</span>ayesian Inference and Decision Techniques: Essays in Honor of <span>B</span>runo de <span>F</span>inetti</em>, 233–43. North-Holland/Elsevier.
+———. 1986. <span>“On Assessing Prior Distributions and <span>B</span>ayesian Regression Analysis with <span class="math inline">\(g\)</span>-Prior Distributions.”</span> In <em><span>B</span>ayesian Inference and Decision Techniques: Essays in Honor of <span>B</span>runo de <span>F</span>inetti</em>, 233–43. North-Holland/Elsevier.
 </div>
 </div>
 </section>
@@ -1166,14 +1215,27 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="./markovchains.html" class="pagination-link" aria-label="Monte Carlo methods">
-        <span class="nav-page-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Monte Carlo methods</span></span> <i class="bi bi-arrow-right-short"></i>
+      <a href="./montecarlo.html" class="pagination-link" aria-label="montecarlo.html">
+        <span class="nav-page-text">montecarlo.html</span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>
 </div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+      &nbsp;
+    </div>   
+    <div class="nav-footer-center">
+<p>Copyright 2024-2025, Léo Belzile</p>
+<div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/lbelzile/MATH80601A/edit/main/priors.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li></ul></div></div>
+    <div class="nav-footer-right">
+      &nbsp;
+    </div>
+  </div>
+</footer>
 
 
 
 
-<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/lbelzile/MATH80601A/edit/main/priors.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li></ul></div></div></div></footer></body></html>
+</body></html>

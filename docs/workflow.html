@@ -165,7 +165,7 @@ window.Quarto = {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./workflow.html"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Bayesian workflow</span></a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./montecarlo.html">montecarlo.html</a></li><li class="breadcrumb-item"><a href="./workflow.html"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Bayesian workflow</span></a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -218,30 +218,41 @@ window.Quarto = {
  <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Priors</span></span></a>
   </div>
 </li>
-        <li class="sidebar-item">
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="./montecarlo.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">montecarlo.html</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./markovchains.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Monte Carlo methods</span></span></a>
   </div>
 </li>
-        <li class="sidebar-item">
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./mcmc.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Metropolis–Hastings algorithm</span></span></a>
   </div>
 </li>
-        <li class="sidebar-item">
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./gibbs.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Gibbs sampling</span></span></a>
   </div>
 </li>
-        <li class="sidebar-item">
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./workflow.html" class="sidebar-item-text sidebar-link active">
  <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Bayesian workflow</span></span></a>
   </div>
 </li>
+      </ul>
+  </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./references.html" class="sidebar-item-text sidebar-link">
@@ -266,7 +277,7 @@ window.Quarto = {
 <div class="toc-actions"><ul><li><a href="https://github.com/lbelzile/MATH80601A/edit/main/workflow.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li></ul></div></nav>
     </div>
 <!-- main -->
-<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block"><h1 class="title display-7"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Bayesian workflow</span></h1></header>
+<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./montecarlo.html">montecarlo.html</a></li><li class="breadcrumb-item"><a href="./workflow.html"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Bayesian workflow</span></a></li></ol></nav><h1 class="title display-7"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Bayesian workflow</span></h1></header>
 
 <header id="title-block-header">
 
@@ -276,7 +287,7 @@ window.Quarto = {
 
 <p>For a given problem, there are many different Markov chain Monte Carlo algorithms that one can implement: they will typically be distinguished based on the running time and the efficiency (with algorithms providing chains that have low autocorrelation being better). Many visual diagnostics and standard tests can be used to diagnose lack of convergence, or inefficiency. The purpose of this section is to review these in turn.</p>
 <p>The Bayesian workflow is a coherent framework for model construction, estimation and validation. It typically involves multiple iterations tuning, adapting and modifying both the models and the algorithms in the hope of achieving a model that is useful <span class="citation" data-cites="Gelman:2020">(<a href="references.html#ref-Gelman:2020" role="doc-biblioref">Gelman et al. 2020</a>)</span>; see also <a href="https://betanalpha.github.io/assets/case_studies/principled_bayesian_workflow.html">Michael Betancourt</a> for excellent visualizations.</p>
-<p>To illustrate these, we revisit the model from <a href="priors.html#exm-randomeffects" class="quarto-xref">Example&nbsp;<span>3.15</span></a> with a penalized complexity prior for the individual effect <span class="math inline">\(\alpha_i\)</span> and vague normal priors. We also fit a simple Poisson model with only the fixed effect, taking <span class="math inline">\(Y_{ij} \sim \mathsf{Poisson}\{\exp(\beta_j)\}\)</span> with <span class="math inline">\(\beta_j \sim \mathsf{Gauss}(0,100)\)</span> has much too little variability relative to the observations.</p>
+<p>To illustrate these, we revisit the model from <a href="priors.html#exm-randomeffects" class="quarto-xref">Example&nbsp;<span>3.16</span></a> with a penalized complexity prior for the individual effect <span class="math inline">\(\alpha_i\)</span> and vague normal priors. We also fit a simple Poisson model with only the fixed effect, taking <span class="math inline">\(Y_{ij} \sim \mathsf{Poisson}\{\exp(\beta_j)\}\)</span> with <span class="math inline">\(\beta_j \sim \mathsf{Gauss}(0,100)\)</span> has much too little variability relative to the observations.</p>
 <section id="trace-plots" class="level3" data-number="7.0.1">
 <h3 data-number="7.0.1" class="anchored" data-anchor-id="trace-plots"><span class="header-section-number">7.0.1</span> Trace plots</h3>
 <p>It is useful to inspect visually the Markov chain, as it may indicate several problems. If the chain drifts around without stabilizing around the posterior mode, then we can suspect that it hasn’t reached it’s stationary distribution (likely due to poor starting values). In such cases, we need to disregard the dubious draws from the chain by discarding the so-called warm up or <strong>burn in</strong> period. While there are some guarantees of convergence in the long term, silly starting values may translate into tens of thousands of iterations lost wandering around in regions with low posterior mass. Preliminary optimization and plausible starting values help alleviate these problems. <a href="#fig-badstart" class="quarto-xref">Figure&nbsp;<span>7.1</span></a> shows the effect of bad starting values on a toy problem where convergence to the mode is relatively fast. If the proposal is in a flat region of the space, it can wander around for a very long time before converging to the stationary distribution.</p>
@@ -881,8 +892,21 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
   </div>
 </nav>
 </div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+      &nbsp;
+    </div>   
+    <div class="nav-footer-center">
+<p>Copyright 2024-2025, Léo Belzile</p>
+<div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/lbelzile/MATH80601A/edit/main/workflow.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li></ul></div></div>
+    <div class="nav-footer-right">
+      &nbsp;
+    </div>
+  </div>
+</footer>
 
 
 
 
-<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/lbelzile/MATH80601A/edit/main/workflow.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li></ul></div></div></div></footer></body></html>
+</body></html>
