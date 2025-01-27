@@ -10,8 +10,6 @@
 theme_set(theme_classic())
 ```
 
-There are two major approaches to handling the problem of the unknown normalizing constant: deterministic and stochastic approximations. The former includes Laplace and nested Laplace approximations, variational methods and expectation propagation. This chapter covers the latter, stochastic approximations, and focuses on implementation of basic Markov chain Monte Carlo algorithms. The simulation algorithms circumvent the need to calculate the normalizing constant of the posterior entirely. We present several examples of implementations, several tricks for tuning and diagnostics of convergence.
-
 
 We have already used Monte Carlo methods to compute posterior quantities of interest in conjugate models. Outside of models with conjugate priors, the lack of closed-form expression for the posterior precludes inference. Indeed, calculating the posterior probability of an event, or posterior moments, requires integration of the normalized posterior density and thus knowledge of the marginal likelihood. It is seldom possible to sample independent and identically distributed (iid) samples from the target, especially if the model is high dimensional: rejection sampling and the ratio of uniform method are examples of Monte Carlo methods which can be used to generate iid draws. Ordinary Monte Carlo methods suffer from the curse of dimensionality, with few algorithms are generic enough to be useful in complex high-dimensional problems. Instead, we will construct a Markov chain with a given invariant distribution corresponding to the posterior. Markov chain Monte Carlo methods generate correlated draws that will target the posterior under suitable conditions.[^mcmc-3]
 
@@ -206,6 +204,42 @@ samp <- X[runif(niter)*X <= a]
 
 For a given candidate density $g$ which has a heavier tail than the target, we can resort to numerical methods to compute the mode of the ratio $f/g$ and obtain the bound $C$; see @Albert:2009, Section 5.8 for an insightful example. A different use for the simulations is to approximate integrals numerically. Consider a target distribution with finite expected value. The law of large numbers guarantees that, if we can draw observations from our target distribution, then the sample average will converge to the expected value of that distribution, as the sample size becomes larger and larger, provided the expectation is finite. We can thus compute the probability of any event or the expected value of any (integrable) function by computing sample averages; the cost to pay for this generality is randomness.
 
+
+:::{#prp-ratio-uniform}
+
+## Generalized ratio-of-uniform
+
+An exact simulation algorithm is described in @Kinderman.Monahan:1977 and extended @Wakefield.Gelfand.Smith:1991  for random number generation in low dimensions. Consider a $d$-vector $\boldsymbol{X}$ with density  $cf(\boldsymbol{x}): \mathbb{R}^d \to \mathbb{R}^{+}$ with support $\mathcal{S} \subseteq \mathbb{R}^d$, and $c>0$ is the (possibly unknown) normalizing constant. Consider uniform variables $\boldsymbol{u} = (u_0, u_1, \ldots, u_d)$ uniformly distributed over the set
+\begin{align*}
+\mathcal{B}(r) = \left\{ (u_0, u_1, \ldots, u_d) \in \mathbb{R}^{d+1}: 0 < u_0 \leq \left[ f\left( \frac{u_1}{u_0^r}, \ldots, \frac{u_d}{u_0^r} \right) \right] ^ {1/(r d + 1)} \right\}
+\end{align*}
+for some positive radius parameter $r \geq 0$. The measure of the set $\mathcal{B}(r)=c^{-1}(1+rd)^{-1}.$ By the @thm-fundamental-simulation, $(u_1 / u_0^r, \ldots, u_d / u_0^r)$ is drawn from the renormalized density $cf(x)$. The challenge lies in simulating $\boldsymbol{u}$ uniformly over the bounding box $\mathbb{B}$, but we can use accept-reject if the later is enclosed in a bounding box, keeping only samples that satisfy the constraints. If, over $\\mathcal{S}$, $f(\boldsymbol{x})$ and $x_i^{r d +1} f(\boldsymbol{x})^r$ for $i = 1, \ldots, d$ are bounded then we can enclose $\mathcal{B}(r)$ within the $(d+1)$-dimensional bounding box $\mathbb{B}=\{a_j(r) \leq u_i \leq b_j(r);  j = 0, \ldots, d \}$, with $a_0(r)=0$. The parameters of the bounding box are  
+\begin{align*}
+b_0(r) &= \sup_{\boldsymbol{x} \in \mathcal{S}} \, f(x)^{1 / (r d + 1)}, \\
+a_j(r) &= \inf_{\substack{\boldsymbol{x} \in \mathcal{S}\\ x_i \leq 0}} \, x_i \, f(\boldsymbol{x})^{r / (r d + 1)}, \\  
+b_j(r) &= \sup_{{\substack{\boldsymbol{x} \in \mathcal{S}\\ x_i \geq 0}}} \, x_i \, f(\boldsymbol{x})^{r / (r d + 1)},  
+\end{align*}
+
+The probability of acceptance $p_a(d, r)$ of a point simulated uniformly over the bounding box depends on both the radius and the dimension and is
+\begin{align*}
+p_a(d, r) = c\left[(r d + 1) \, b_0(r) \displaystyle\prod_{j=1}^d \left\{b_j(r) -a_j(r) \right\}\right]^{-1}.
+\end{align*}
+
+For the ratio-of-uniform method to work, we need the density $f(\boldsymbol{x})$ to be bounded, and the marginal moments of order $rd+1$, meaning 
+\begin{align*}
+\mathsf{E}(X_i^{rd+1}) = \int_{\mathcal{S}} x_j^{rd+1} f(\boldsymbol{x}) \mathrm{d}x_1 \cdots \mathrm{d} x_d< \infty
+\end{align*}
+@Wakefield.Gelfand.Smith:1991 propose using $r=1/2$ and relocating the mode of $f$ to the origin increase the acceptance rate. Northrop proposes to use a Box--Cox transformation [@Box.Cox:1964] together with a rotation in the software @rust to improve the acceptance rate. The bounding box may exist only for certain values of $r$; see the vignettes for more examples.
+
+:::
+
+
+:::{#exm-rust}
+
+## Ratio-of-uniform in practice
+
+
+:::
 
 :::{#prp-monte-carlo-integration}
 

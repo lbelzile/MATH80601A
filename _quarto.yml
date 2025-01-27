@@ -25,10 +25,12 @@ book:
   - introduction.qmd
   - bayesics.qmd
   - priors.qmd
-  - markovchains.qmd
-  - mcmc.qmd
-  - gibbs.qmd
-  - workflow.qmd
+  - part: montecarlo.qmd
+    chapters: 
+    - markovchains.qmd
+    - mcmc.qmd
+    - gibbs.qmd
+    - workflow.qmd
  # - regression.qmd
  # - laplace.qmd
   - references.qmd
@@ -38,6 +40,7 @@ book:
   repo-actions: [edit]
   search: true
   downloads: [pdf]
+  page-footer: "Copyright 2024-2025, Léo Belzile" 
 format:
   html:
     title-block-style: none

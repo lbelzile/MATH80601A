@@ -495,6 +495,45 @@ where $0 \leq q_1 \leq q_2 \leq q_3.$ The fact that these quantities refer to mo
 
 :::
 
+:::{#exm-martins}
+
+## Priors in extreme value theory
+
+The generalized extreme value distribution obtained as the limit of maximum of blocks of size $m$ when suitably normalizes is a location-scale family with a shape parameter $\xi \in \mathbb{R}$. The latter describes the heavyness of the tail, with negative values corresponding to approximation by bounded upper tail distributions (such as the beta), $\xi=0$ to exponential tail decay and $\xi>0$ to polynomial tails, with finite moments of order $1/\xi$. For example, the Cauchy or Student-$t$ distribution with one degree of freedom has infinite first moment and $\xi=1$.
+
+In practice, the maximum likelihood estimators do not exist if $\xi < -1$ as the model is degenerate [@Smith:1984], and the cumulant of order $k$ exists only if $\xi > -1/k$; the Fisher information matrix exists only when $\xi > -1/2$. Thus, informative priors that restrict the range of the shape, may be useful as in environmental applications the shapes would be in the vicinity of zero. @Martins.Stedinger:2000 proposed a prior of the form
+\begin{align*}
+p(\xi) =\frac{(0.5+\xi)^{p-1}(0.5-\xi)^{q-1}}{\mathrm{beta}(p,q)}, \qquad \xi \in [-0.5, 0.5]
+\end{align*}
+a shifted $\mathsf{beta}(p,q)$ prior.
+
+On the contrary, the **maximal data information** (MDI) prior [@Zellner:1971] is defined in terms of entropy, $$p(\boldsymbol{\theta}) = \exp \mathsf{E}\{\log f(Y \mid \boldsymbol{\theta})\}.$$
+It is an objective prior that reflects little about the parameter and leads to inferences that have good frequentist property.
+
+For the generalized Pareto distribution, $p(\xi) \propto \exp(-\xi)$.  In this particular case, however, it is improper without modification since $\lim_{\xi \to -\infty} \exp(-\xi) = \infty$, and the prior density increases without bound as $\xi$ becomes smaller. 
+
+```{r}
+#| eval: true
+#| echo: false
+#| fig-width: 6
+#| fig-height: 3
+#| out-width: '100%'
+#| label: fig-mdiprior
+#| fig-cap: "Unscaled maximum data information (MDI) prior density."
+ggplot() + 
+  stat_function(fun = function(x){exp(-x)}, xlim = c(-1.5, 1)) +
+  geom_vline(xintercept = -1, linetype = "dashed") +
+  theme_classic() +
+  labs(x = expression(xi),
+       y = "",
+       subtitle = "unscaled prior density")
+```
+
+If we restrict the range of the MDI prior $p(\xi)$ to $\xi \geq -1$, then $p(\xi + 1) \sim \mathsf{expo}(1)$ and the resulting posterior is proper [@Northrop.Attalides:2016,Zhang.Shaby:2023]. While being "objective", it is perhaps not much suitable as it puts mass towards lower values of the shape, an undesirable feature.
+
+
+:::
+
 :::{#exm-rainfall-abisko}
 
 ## Extreme rainfall in Abisko, Sweden
@@ -649,9 +688,15 @@ One can set $\lambda$ by considering plausible values by relating the parameter 
 
 :::
 
+:::{#rmk-raneff}
+
+## Random effects and Bayesian inference
+
 Gaussian components are widespread: not only for linear regression models, but more generally for the specification of random effects that capture group-specific effects, residuals spatial or temporal variability. In the Bayesian paradigm, there is no difference between fixed effects $\boldsymbol{\beta}$ and the random effect parameters: both are random quantities that get assigned priors, but we will treat these priors differently. 
 
 The reason why we would like to use a penalized complexity prior for a random effect, say $\alpha_j \sim \mathsf{Gauss}(0, \zeta^2),$ is because we don't know a prior if there is variability between groups. The inverse gamma prior for $\zeta,$ $\zeta \sim \mathsf{InvGamma}(\epsilon, \epsilon)$ does not have a mode at zero unless it is improper with $\epsilon \to 0.$ Generally, we want our prior for the variance to have significant probability density at the null $\zeta=0.$ The penalized complexity prior is not the only sensible choice. Posterior inference is unfortunately sensitive to the value of $\epsilon$ in hierarchical models when the random effect variance is close to zero, and more so when there are few levels for the groups since the relative weight of the prior relative to that of the likelihood contribution is then large.
+
+:::
 
 :::{#exm-random-effect-variance}
 
