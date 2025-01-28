@@ -501,7 +501,7 @@ where $0 \leq q_1 \leq q_2 \leq q_3.$ The fact that these quantities refer to mo
 
 The generalized extreme value distribution obtained as the limit of maximum of blocks of size $m$ when suitably normalizes is a location-scale family with a shape parameter $\xi \in \mathbb{R}$. The latter describes the heavyness of the tail, with negative values corresponding to approximation by bounded upper tail distributions (such as the beta), $\xi=0$ to exponential tail decay and $\xi>0$ to polynomial tails, with finite moments of order $1/\xi$. For example, the Cauchy or Student-$t$ distribution with one degree of freedom has infinite first moment and $\xi=1$.
 
-In practice, the maximum likelihood estimators do not exist if $\xi < -1$ as the model is degenerate [@Smith:1984], and the cumulant of order $k$ exists only if $\xi > -1/k$; the Fisher information matrix exists only when $\xi > -1/2$. Thus, informative priors that restrict the range of the shape, may be useful as in environmental applications the shapes would be in the vicinity of zero. @Martins.Stedinger:2000 proposed a prior of the form
+In practice, the maximum likelihood estimators do not exist if $\xi < -1$ as the model is nonregular [@Smith:1985], and the cumulant of order $k$ exists only if $\xi > -1/k$; the Fisher information matrix exists only when $\xi > -1/2$. Thus, informative priors that restrict the range of the shape, may be useful as in environmental applications the shapes would be in the vicinity of zero. @Martins.Stedinger:2000 proposed a prior of the form
 \begin{align*}
 p(\xi) =\frac{(0.5+\xi)^{p-1}(0.5-\xi)^{q-1}}{\mathrm{beta}(p,q)}, \qquad \xi \in [-0.5, 0.5]
 \end{align*}

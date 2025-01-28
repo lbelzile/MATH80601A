@@ -36,10 +36,10 @@ On page 3, de Finetti continues [@deFinetti:1974]
 
 ## Posterior distribution
 
-We consider a parametric model with parameters $\boldsymbol{\theta}$ defined on  $\boldsymbol{\Theta} \subseteq \mathbb{R}^p$. In Bayesian learning, we adjoin to the likelihood $\mathcal{L}(\boldsymbol{\theta}; \boldsymbol{y}) \equiv p(\boldsymbol{y} \mid \boldsymbol{\theta})$ a **prior** function $p(\boldsymbol{\theta})$ that reflects the prior knowledge about potential values taken by the $p$-dimensional parameter vector, before observing the data $\boldsymbol{y}$. The prior makes $\boldsymbol{\theta}$ random and the distribution of the parameter reflects our uncertainty about the true value of the model parameters. 
+We consider a parametric model with parameters $\boldsymbol{\theta}$ defined on  $\boldsymbol{\Theta} \subseteq \mathbb{R}^p.$ In Bayesian learning, we adjoin to the likelihood $\mathcal{L}(\boldsymbol{\theta}; \boldsymbol{y}) \equiv p(\boldsymbol{y} \mid \boldsymbol{\theta})$ a **prior** function $p(\boldsymbol{\theta})$ that reflects the prior knowledge about potential values taken by the $p$-dimensional parameter vector, before observing the data $\boldsymbol{y}.$ The prior makes $\boldsymbol{\theta}$ random and the distribution of the parameter reflects our uncertainty about the true value of the model parameters. 
 
 
-In a Bayesian analysis, observations are random variables but inference is performed conditional on the observed sample values. By Bayes' theorem, our target is therefore the posterior density $p(\boldsymbol{\theta} \mid \boldsymbol{y})$, defined as
+In a Bayesian analysis, observations are random variables but inference is performed conditional on the observed sample values. By Bayes' theorem, our target is therefore the posterior density $p(\boldsymbol{\theta} \mid \boldsymbol{y}),$ defined as
 
 $$
 \underbracket[0.25pt]{p(\boldsymbol{\theta} \mid \boldsymbol{y})}_{\text{posterior}} = \frac{\overbracket[0.25pt]{p(\boldsymbol{y} \mid \boldsymbol{\theta})}^{\text{likelihood}} \times  \overbracket[0.25pt]{p(\boldsymbol{\theta})}^{\text{prior}}}{\underbracket[0.25pt]{\int p(\boldsymbol{y} \mid \boldsymbol{\theta}) p(\boldsymbol{\theta}) \mathrm{d} \boldsymbol{\theta}}_{\text{marginal likelihood }p(\boldsymbol{y})}}.
@@ -48,7 +48,7 @@ $$ {#eq-posterior}
 The posterior $p(\boldsymbol{\theta} \mid \boldsymbol{y})$ is proportional, as a function of $\theta,$ to the product of the likelihood and the prior function. 
 
 
-For the posterior to be **proper**, we need the product of the prior and the likelihood on the right hand side to be integrable as a function of $\boldsymbol{\theta}$ over the parameter domain $\boldsymbol{\Theta}$. The integral in the denominator, termed marginal likelihood or prior predictive distribution and denoted $p(\boldsymbol{y}) = \mathsf{E}_{\boldsymbol{\theta}}\{p(\boldsymbol{y} \mid \boldsymbol{\theta})\}$. It represents the distribution of the data before data collection, the respective weights being governed by the prior probability of different parameters values. The denominator of @eq-posterior is a normalizing constant, making the posterior density integrate to unity. The marginal likelihood plays a central role in Bayesian testing. 
+For the posterior to be **proper**, we need the product of the prior and the likelihood on the right hand side to be integrable as a function of $\boldsymbol{\theta}$ over the parameter domain $\boldsymbol{\Theta}.$ The integral in the denominator, termed marginal likelihood or prior predictive distribution and denoted $p(\boldsymbol{y}) = \mathsf{E}_{\boldsymbol{\theta}}\{p(\boldsymbol{y} \mid \boldsymbol{\theta})\}.$ It represents the distribution of the data before data collection, the respective weights being governed by the prior probability of different parameters values. The denominator of @eq-posterior is a normalizing constant, making the posterior density integrate to unity. The marginal likelihood plays a central role in Bayesian testing. 
 
 If $\boldsymbol{\theta}$ is low dimensional, numerical integration such as quadrature methods can be used to compute the marginal likelihood. 
 
@@ -58,17 +58,17 @@ To fix ideas, we consider next a simple one-parameter model where the marginal l
 
 ## Binomial model with beta prior
 
-Consider a binomial likelihood with probability of success $\theta \in [0,1]$ and $n$ trials, $Y \sim \mathsf{binom}(n, \theta)$. If we take a beta prior, $\theta \sim \mathsf{beta}(\alpha, \beta)$ and observe $y$ successes, the posterior is 
+Consider a binomial likelihood with probability of success $\theta \in [0,1]$ and $n$ trials, $Y \sim \mathsf{binom}(n, \theta).$ If we take a beta prior, $\theta \sim \mathsf{beta}(\alpha, \beta)$ and observe $y$ successes, the posterior is 
 \begin{align*}
 p(\theta \mid y = y) &\propto \binom{n}{y} \theta^y (1-\theta)^{n-y} \frac{\Gamma(\alpha + \beta)}{\Gamma(\alpha) \Gamma(\beta)}\theta^{\alpha-1} (1-\theta)^{\beta-1}
 \\&\stackrel{\theta}{\propto} \theta^{y+\alpha-1}(1-\theta)^{n-y+\beta-1}
 \end{align*}
-and is $$\int_{0}^{1} \theta^{y+\alpha-1}(1-\theta)^{n-y+\beta-1}\mathrm{d} \theta = \frac{\Gamma(y+\alpha)\Gamma(n-y+\beta)}{\Gamma(n+\alpha+\beta)},$$ a beta function. Since we need only to keep track of the terms that are function of the parameter $\theta$, we could recognize directly that the posterior distribution is $\mathsf{beta}(y+\alpha, n-y+\beta)$ and deduce the normalizing constant from there.
+and is $$\int_{0}^{1} \theta^{y+\alpha-1}(1-\theta)^{n-y+\beta-1}\mathrm{d} \theta = \frac{\Gamma(y+\alpha)\Gamma(n-y+\beta)}{\Gamma(n+\alpha+\beta)},$$ a beta function. Since we need only to keep track of the terms that are function of the parameter $\theta,$ we could recognize directly that the posterior distribution is $\mathsf{beta}(y+\alpha, n-y+\beta)$ and deduce the normalizing constant from there.
 
-If $Y \sim \mathsf{binom}(n, \theta)$, the expected number of success is $n\theta$ and the expected number of failures $n(1-\theta)$ and so the likelihood contribution, relative to the prior, will dominate as the sample size $n$ grows. 
+If $Y \sim \mathsf{binom}(n, \theta),$ the expected number of success is $n\theta$ and the expected number of failures $n(1-\theta)$ and so the likelihood contribution, relative to the prior, will dominate as the sample size $n$ grows. 
 
 Another way to see this is to track moments (expectation, variance, etc.)
-The Beta distribution, whose density is $f(x; \alpha, \beta) \propto x^{\alpha-1} (1-x)^{\beta-1}$, has expectation $\alpha/(\alpha+\beta)$ and variance $\alpha\beta/\{(\alpha+\beta)^2(\alpha+\beta+1)\}$. The posterior mean is
+From @def-beta, the posterior mean is
  \begin{align*}
  \mathsf{E}(\theta \mid y) = w\frac{y}{n} + (1-w) \frac{\alpha}{\alpha+\beta}, 
  \qquad w = \frac{n}{n+\alpha + \beta},
@@ -213,17 +213,17 @@ Any term appearing in the likelihood times prior function that does not depend o
 
 :::{.remark }
 
-An alternative parametrization for the beta distribution sets $\alpha=\mu \kappa$, $\beta = (1-\mu)\kappa$ for $\mu \in (0,1)$ and $\kappa>0$, so that the model is parametrized directly in terms of mean $\mu$, with $\kappa$ capturing the dispersion.
+An alternative parametrization for the beta distribution sets $\alpha=\mu \kappa,$ $\beta = (1-\mu)\kappa$ for $\mu \in (0,1)$ and $\kappa>0,$ so that the model is parametrized directly in terms of mean $\mu,$ with $\kappa$ capturing the dispersion.
 
 :::
 
 ::: {.remark}
 
-A density integrates to 1 over the range of possible outcomes, but there is no guarantee that the likelihood function, as a function of $\boldsymbol{\theta}$, integrates to one over the parameter domain $\boldsymbol{\Theta}$.
+A density integrates to 1 over the range of possible outcomes, but there is no guarantee that the likelihood function, as a function of $\boldsymbol{\theta},$ integrates to one over the parameter domain $\boldsymbol{\Theta}.$
 
 For example, the binomial likelihood with $n$ trials and $y$ successes satisfies $$\int_0^1 \binom{n}{y}\theta^y(1-\theta)^{n-y} \mathrm{d} \theta = \frac{1}{n+1}.$$ 
 
-Moreover, the binomial distribution is discrete with support $0, \ldots, n$, whereas the likelihood is continuous as a function of the probability of success, as evidenced by @fig-binom-massvslik
+Moreover, the binomial distribution is discrete with support $0, \ldots, n,$ whereas the likelihood is continuous as a function of the probability of success, as evidenced by @fig-binom-massvslik
 
 ```{r}
 #| label: fig-binom-massvslik
@@ -266,17 +266,19 @@ g2 + g1
 
 ## Bayes factor and model comparison
 
-The marginal likelihood enters in the comparison of different models. Suppose that we have models $\mathcal{M}_m$ $(m=1, \ldots, M)$ to be compared, with parameter vectors $\boldsymbol{\theta}^{(m)}$ and data vector $\boldsymbol{y}$. Consider $p_m =\Pr(\mathcal{M}_m)$ the prior probability of the different models under consideration, with $p_1 + \cdots + p_M = 1$. The posterior odds for Models $\mathcal{M}_i$ vs $\mathcal{M}_j$ are
+The marginal likelihood enters in the comparison of different models. Suppose that we have models $\mathcal{M}_m$ $(m=1, \ldots, M)$ to be compared, with parameter vectors $\boldsymbol{\theta}^{(m)}$ and data vector $\boldsymbol{y}.$ Consider $p_m =\Pr(\mathcal{M}_m)$ the prior probability of the different models under consideration, with $p_1 + \cdots + p_M = 1.$ The posterior odds for Models $\mathcal{M}_i$ vs $\mathcal{M}_j$ are
 \begin{align*}
 \underbracket[0.25pt]{\frac{\Pr(\mathcal{M}_i \mid \boldsymbol{y})}{\Pr(\mathcal{M}_j \mid \boldsymbol{y})}}_{\text{posterior odds}} = \underbracket[0.25pt]{\frac{p(\boldsymbol{y} \mid \mathcal{M}_i)}{p(\boldsymbol{y} \mid \mathcal{M}_j)}}_{\text{Bayes factor}} \underbracket[0.25pt]{\frac{\Pr(\mathcal{M}_i)}{\Pr(\mathcal{M}_j)}}_{\text{prior odds}}
 \end{align*}
-where the first term on the right hand side is the Bayes factor for model $i$ vs $j$, denoted $\mathsf{BF}_{ij}$. The Bayes factor is the ratio of marginal likelihoods, as
+where the first term on the right hand side is the Bayes factor for model $i$ vs $j,$ denoted $\mathsf{BF}_{ij}.$ The Bayes factor is the ratio of marginal likelihoods, as
 \begin{align*}
 p(\boldsymbol{y} \mid \mathcal{M}_i) = \int p(y \mid \boldsymbol{\theta}^{(i)}, \mathcal{M}_i) p( \boldsymbol{\theta}^{(i)} \mid \mathcal{M}_i) \mathrm{d}  \boldsymbol{\theta}^{(i)}.
 \end{align*}
-Values of $\mathsf{BF}_{ij}>1$ correspond to model $\mathcal{M}_i$ being more likely than $\mathcal{M}_j$.
+Values of $\mathsf{BF}_{ij}>1$ correspond to model $\mathcal{M}_i$ being more likely than $\mathcal{M}_j.$
 
 While Bayes factors are used for model comparison, the answers depend very strongly on the prior $p( \boldsymbol{\theta}^{(i)} \mid \mathcal{M}_i)$ specified and the latter must be proper as a general rule for the ratio to be well-defined.
+
+The Bayes factor require that we compare the same data, but both likelihood and priors could be different from one model to the next.
 
 :::
 
@@ -290,9 +292,9 @@ p_{Y}(y) = \binom{n}{y} \frac{\mathrm{beta}(\alpha + y, \beta + n - y)}{\mathrm{
 \end{align*}
 where $\mathrm{beta}(\alpha, \beta) = \Gamma(\alpha)\Gamma(\beta)/\Gamma(\alpha+\beta)$ is the beta function, expressed in terms of gamma functions.
 
-Consider three models with $Y \mid P^{(i)}=p, \mathcal{M}_i \sim \mathsf{binom}(n, p)$ for $i=1, 2, 3$ and uniform, point mass and beta priors $P^{(1)}\sim \mathsf{unif}(0,1)$,  $P^{(2)} \sim \mathsf{beta}(3/2, 3/2)$ and $P^{(3)}\sim \mathsf{1}_{p=0.5}$. For $\mathcal{M}_3$, the marginal likelihood is simply equal to the binomial distribution with $p=0.5$.
+Consider three models with $Y \mid P^{(i)}=p, \mathcal{M}_i \sim \mathsf{binom}(n, p)$ for $i=1, 2, 3$ and uniform, point mass and beta priors $P^{(1)}\sim \mathsf{unif}(0,1),$  $P^{(2)} \sim \mathsf{beta}(3/2, 3/2)$ and $P^{(3)}\sim \mathsf{1}_{p=0.5}.$ For $\mathcal{M}_3,$ the marginal likelihood is simply equal to the binomial distribution with $p=0.5.$
 
-If $n=14$, but we let instead the number of success varies, the models that put more mass closer to the ratio $y/n$ will be favored. The uniform prior in model $\mathcal{M}_1$ will have a higher Bayes factor than model $\mathcal{M}_2$ or $\mathcal{M}_3$ for values closer to $p=0$ or $p=1$, but there is mild evidence as shown in @fig-bayesfactor.
+If $n=14,$ but we let instead the number of success varies, the models that put more mass closer to the ratio $y/n$ will be favored. The uniform prior in model $\mathcal{M}_1$ will have a higher Bayes factor than model $\mathcal{M}_2$ or $\mathcal{M}_3$ for values closer to $p=0$ or $p=1,$ but there is mild evidence as shown in @fig-bayesfactor.
 
 ```{r}
 #| eval: true
@@ -311,7 +313,7 @@ logBF2vs3 <- function(y, n){ # model 2 (beta(1.5,1.5) vs 3 (point mass at 0.5)
 #| eval: true
 #| echo: false 
 #| label: fig-bayesfactor
-#| fig-cap: "Log of Bayes factors for comparison of binomial models with $n=14$ trials as a function of the number of successes $n$. Values larger than zero (on log scale) indicate preference for Model 2."
+#| fig-cap: "Log of Bayes factors for comparison of binomial models with $n=14$ trials as a function of the number of successes $n.$ Values larger than zero (on log scale) indicate preference for Model 2."
 n <- 14
 ys <- 0:14
 BFs23 <- sapply(ys, function(y){logBF2vs3(y = y, n = n)})
@@ -339,7 +341,7 @@ The likelihood is invariant to the order of the observations if they are indepen
 so it makes no difference if we treat data all at once or in blocks.
 More generally, for data exhibiting spatial or serial dependence, it makes sense to consider rather the conditional (sequential) decomposition
 $$f(\boldsymbol{y}; \boldsymbol{\theta}) = f(\boldsymbol{y}_1; \boldsymbol{\theta}) f(\boldsymbol{y}_2; \boldsymbol{\theta}, \boldsymbol{y}_1) \cdots f(\boldsymbol{y}_n; \boldsymbol{\theta}, \boldsymbol{y}_1, \ldots, \boldsymbol{y}_{n-1})$$
-where $f(\boldsymbol{y}_k; \boldsymbol{y}_1, \ldots, \boldsymbol{y}_{k-1})$ denotes the conditional density function given observations $\boldsymbol{y}_1, \ldots, \boldsymbol{y}_{k-1}$.
+where $f(\boldsymbol{y}_k; \boldsymbol{y}_1, \ldots, \boldsymbol{y}_{k-1})$ denotes the conditional density function given observations $\boldsymbol{y}_1, \ldots, \boldsymbol{y}_{k-1}.$
 
 
 By Bayes' rule, we can consider *updating* the posterior by adding terms to the likelihood, noting that
@@ -559,7 +561,7 @@ post_odds_seq <- (post_p_seq / (1 - post_p_seq))
 post_oddsratio <- post_odds_int / post_odds_seq
 ```
 
-@fig-post-Duke_Amir shows the posterior of the probability of buying for each group, and the odds. It is clear that the integrated format leads to much more sales in the experiment, with a posterior ratio exceeding 1 with probability $`r mean(post_oddsratio > 1)*100`\%$.
+@fig-post-Duke_Amir shows the posterior of the probability of buying for each group, and the odds. It is clear that the integrated format leads to much more sales in the experiment, with a posterior ratio exceeding 1 with probability $`r mean(post_oddsratio > 1)*100`\%.$
 
 ```{r}
 #| label: fig-post-Duke_Amir
@@ -609,7 +611,7 @@ p(y_{\text{new}} \mid \boldsymbol{y}) =
 \int_{\Theta} p(y_{\text{new}}  \mid \boldsymbol{\theta}) p(\boldsymbol{\theta} \mid  \boldsymbol{y}) \mathrm{d} \boldsymbol{\theta}
 \end{align*}
 
-Given draws from the posterior distribution, say $\boldsymbol{\theta}_b$ $(b=1, \ldots, B)$, we sample from each a new realization from the distribution appearing in the likelihood $p(y_{\text{new}}  \mid \boldsymbol{\theta}_b)$. This is different from the frequentist setting, which fixes the value of the parameter to some estimate $\widehat{\boldsymbol{\theta}}$; by contrast, the posterior predictive, here a beta-binomial distribution $\mathsf{BetaBin}(n, \alpha + y, n - y + \beta)$, carries over the uncertainty so will typically be wider and overdispersed relative to the corresponding binomial model. This can be easily seen from the left-panel of @fig-betabinompostpred, which contrasts the binomial mass function evaluated at the maximum likelihood estimator $\widehat{\theta}=6/14$ with the posterior predictive.
+Given draws from the posterior distribution, say $\boldsymbol{\theta}_b$ $(b=1, \ldots, B),$ we sample from each a new realization from the distribution appearing in the likelihood $p(y_{\text{new}}  \mid \boldsymbol{\theta}_b).$ This is different from the frequentist setting, which fixes the value of the parameter to some estimate $\widehat{\boldsymbol{\theta}}$; by contrast, the posterior predictive, here a beta-binomial distribution $\mathsf{BetaBin}(n, \alpha + y, n - y + \beta),$ carries over the uncertainty so will typically be wider and overdispersed relative to the corresponding binomial model. This can be easily seen from the left-panel of @fig-betabinompostpred, which contrasts the binomial mass function evaluated at the maximum likelihood estimator $\widehat{\theta}=6/14$ with the posterior predictive.
 
 :::{.exm-betabinompred}
 
@@ -685,7 +687,7 @@ g1
 # g1 + g2
 ```
 
-Given the $\mathsf{Be}(a, b)$  posterior with  $a=y + \alpha$ and $b=n-y + \beta$, the predictive distribution of $Y_{\text{new}}$ for fixed $n_{\text{new}}$ number of trials is beta-binomial with mass function
+Given the $\mathsf{Be}(a, b)$  posterior with  $a=y + \alpha$ and $b=n-y + \beta,$ the predictive distribution of $Y_{\text{new}}$ for fixed $n_{\text{new}}$ number of trials is beta-binomial with mass function
 \begin{align*}
 p(y_{\text{new}}\mid y) &= \int_0^1 \binom{n_{\text{new}}}{y_{\text{new}}} \frac{\theta^{a + y_{\text{new}}-1}(1-\theta)^{b + n_{\text{new}} - y_{\text{new}}-1}}{
 \mathrm{Be}(a, b)}\mathrm{d} \theta
@@ -698,11 +700,11 @@ p(y_{\text{new}}\mid y) &= \int_0^1 \binom{n_{\text{new}}}{y_{\text{new}}} \frac
 
 ## Posterior predictive distribution of univariate Gaussian with known mean
 
-Consider an $n$ sample of independent and identically distributed Gaussian, $Y_i \sim \mathsf{Gauss}(0, \tau^{-1})$ ($i=1, \ldots, n$), where we assign a gamma prior on the precision $\tau \sim \mathsf{gamma}(\alpha, \beta)$. The posterior is
+Consider an $n$ sample of independent and identically distributed Gaussian, $Y_i \sim \mathsf{Gauss}(0, \tau^{-1})$ ($i=1, \ldots, n$), where we assign a gamma prior on the precision $\tau \sim \mathsf{gamma}(\alpha, \beta).$ The posterior is
 \begin{align*}
 p(\tau \mid \boldsymbol{y}) \stackrel{\tau}{\propto} \prod_{i=1}^n \tau^{n/2}\exp\left(-\tau \frac{\sum_{i=1}^n{y_i^2}}{2}\right) \times \tau^{\alpha-1} \exp(-\beta \tau)
 \end{align*}
-and rearranging the terms to collect powers of $\tau$, etc. we find that the posterior for $\tau$ must also be gamma, with shape parameter $\alpha^* = \alpha + n/2$ and rate $\beta^* = \beta + \sum_{i=1}^n y_i^2/2$.
+and rearranging the terms to collect powers of $\tau,$ etc. we find that the posterior for $\tau$ must also be gamma, with shape parameter $\alpha^* = \alpha + n/2$ and rate $\beta^* = \beta + \sum_{i=1}^n y_i^2/2.$
 
 The posterior predictive is
 \begin{align*}
@@ -712,7 +714,7 @@ p(y_{\text{new}} \mid \boldsymbol{y}) &= \int_0^\infty \frac{\tau^{1/2}}{(2\pi)^
 \\&= \frac{\Gamma\left(\frac{2\alpha^* + 1}{2}\right)}{\sqrt{2\pi}\Gamma\left(\frac{2\alpha^*}{2}\right)\beta^{*1/2}} \left( 1+ \frac{y_{\text{new}}^2}{2\beta^*}\right)^{-\alpha^*-1/2}
 \\&= \frac{\Gamma\left(\frac{2\alpha^* + 1}{2}\right)}{\sqrt{\pi}\sqrt{ 2\alpha^*}\Gamma\left(\frac{2\alpha^*}{2}\right)(\beta^*/\alpha^*)^{1/2}} \left( 1+ \frac{1}{2\alpha^*}\frac{y_{\text{new}}^2}{(\beta^*/\alpha^*)}\right)^{-\alpha^*-1/2}
 \end{align*}
-which entails that $Y_{\text{new}}$ is a scaled Student-$t$ distribution with scale $(\beta^*/\alpha^*)^{1/2}$ and $2\alpha+n$ degrees of freedom. This example also exemplifies the additional variability relative to the distribution generating the data: indeed, the Student-$t$ distribution is more heavy-tailed than the Gaussian, but since the degrees of freedom increase linearly with $n$, the distribution converges to a Gaussian as $n \to \infty$, reflecting the added information as we collect more and more data points and the variance gets better estimated through $\sum_{i=1}^n y_i^2/n$.
+which entails that $Y_{\text{new}}$ is a scaled Student-$t$ distribution with scale $(\beta^*/\alpha^*)^{1/2}$ and $2\alpha+n$ degrees of freedom. This example also exemplifies the additional variability relative to the distribution generating the data: indeed, the Student-$t$ distribution is more heavy-tailed than the Gaussian, but since the degrees of freedom increase linearly with $n,$ the distribution converges to a Gaussian as $n \to \infty,$ reflecting the added information as we collect more and more data points and the variance gets better estimated through $\sum_{i=1}^n y_i^2/n.$
 
 :::
 
@@ -740,15 +742,25 @@ The choice of point summary to keep has it's root in decision theory.
 
 ## Loss function
 
-A loss function $c(\boldsymbol{\theta}, \boldsymbol{\upsilon})$ is a mapping from $\boldsymbol{\Theta} \to \mathbb{R}^k$ that assigns a weight to each value of $\boldsymbol{\theta}$, corresponding to the regret or loss arising from choosing this value. The corresponding point estimator $\widehat{\boldsymbol{\upsilon}}$ is the minimizer of the expected loss,
+A loss function $c(\boldsymbol{\theta}, \boldsymbol{\upsilon})$ is a mapping from $\mathbb{R}^p \to \mathbb{R}^k$ that assigns a weight to each value of $\boldsymbol{\theta},$ corresponding to the regret or loss arising from choosing this value. The corresponding point estimator $\widehat{\boldsymbol{\upsilon}}$ is the minimizer of the expected loss,
 
 \begin{align*}
-\widehat{\boldsymbol{\upsilon}} &= \mathop{\mathrm{argmin}}_{\boldsymbol{\upsilon}}\mathsf{E}_{\boldsymbol{\Theta} \mid \boldsymbol{Y}}\{c(\boldsymbol{\theta}, \boldsymbol{v})\} \\&=\mathop{\mathrm{argmin}}_{\boldsymbol{\upsilon}} \int_{\boldsymbol{\Theta}} c(\boldsymbol{\theta}, \boldsymbol{\upsilon})p(\boldsymbol{\theta} \mid \boldsymbol{y}) \mathrm{d} \boldsymbol{\theta}
+\widehat{\boldsymbol{\upsilon}} &= \mathop{\mathrm{argmin}}_{\boldsymbol{\upsilon}}\mathsf{E}_{\boldsymbol{\Theta} \mid \boldsymbol{Y}}\{c(\boldsymbol{\theta}, \boldsymbol{v})\} \\&=\mathop{\mathrm{argmin}}_{\boldsymbol{\upsilon}} \int_{\mathbb{R}^d} c(\boldsymbol{\theta}, \boldsymbol{\upsilon})p(\boldsymbol{\theta} \mid \boldsymbol{y}) \mathrm{d} \boldsymbol{\theta}
 \end{align*}
 
 :::
 
-For example, in a univariate setting, the quadratic loss $c(\theta, \upsilon) = (\theta-\upsilon)^2$ returns the posterior mean, the absolute loss $c(\theta, \upsilon)=|\theta - \upsilon|$ returns the posterior median and the 0-1 loss $c(\theta, \upsilon) = \mathrm{I}(\upsilon \neq \theta)$ returns the posterior mode. All of these point estimators are central tendency measures, but some may be more adequate depending on the setting as they can correspond to potentially different values, as shown in the left-panel of @fig-central-moments. The choice is application specific: for multimodal distributions, the mode is likely a better choice.
+For example, in a univariate setting, the quadratic loss $c(\theta, \upsilon) = (\theta-\upsilon)^2$ returns the posterior mean, the absolute loss $c(\theta, \upsilon)=|\theta - \upsilon|$ returns the posterior median and the 0-1 loss $c(\theta, \upsilon) = \mathrm{I}(\upsilon \neq \theta)$ returns the posterior mode. 
+
+For example consider the quadratic loss function which is differentiable. Provided we can interchange differential operator and integral sign,
+\begin{align*}
+0&= \int_{\mathbb{R}} \frac{\partial (\upsilon-\theta)^2}{\partial \upsilon} p(\theta \mid \boldsymbol{y}) \mathrm{d} \theta 
+\\&= \int_{\mathbb{R}} \frac{\partial 2(\upsilon-\theta)}{\partial \upsilon} p(\theta \mid \boldsymbol{y}) \mathrm{d} \theta 
+\\& = 2\upsilon - 2 \mathsf{E}(\theta)
+\end{align*}
+which is minimized when $\widehat{\upsilon}=\mathsf{E}_{\Theta \mid \boldsymbol{Y}}(\theta)$.
+
+All of these point estimators are central tendency measures, but some may be more adequate depending on the setting as they can correspond to potentially different values, as shown in the left-panel of @fig-central-moments. The choice is application specific: for multimodal distributions, the mode is likely a better choice.
 
 If we know how to evaluate the distribution numerically, we can optimize to find the mode or else return the value for the pointwise evaluation on a grid at which the density achieves it's maximum. The mean and median would have to be evaluated by numerical integration if there is no closed-form expression for the latter.
 
@@ -841,17 +853,11 @@ The loss function is often a functional (meaning a one-dimensional summary) from
 
 :::{#exm-loss-extremes}
 
-## Danish insurance losses
+## Value-at-risk for Danish insurance losses
 
-In extreme value, we are often interested in assessing the risk of events that are rare enough that they lie beyond the range of observed data. To provide a scientific extrapolation, it often is justified to fit a generalized Pareto distribution to exceedances of $Z=Y-u$, for some user-specified threshold $u$ which is often taken as a large quantile of the distribution of $Y$. The generalized Pareto distribution function is
-\begin{align*}
-F(z; \tau, \xi) = 1- \begin{cases}
-\left(1+\xi/\tau z\right)^{-1/\xi}_{+}, & \xi \neq 0\\
-\exp(-z/\tau), & \xi = 0. \end{cases}
-\end{align*}
-The shape $\xi$ governs how heavy-tailed the distribution is, while $\tau$ is a scale parameter.
+In extreme value, we are often interested in assessing the risk of events that are rare enough that they lie beyond the range of observed data. To provide a scientific extrapolation, it often is justified to fit a generalized Pareto distribution to exceedances of $Z=Y-u,$ for some user-specified threshold $u$ which is often taken as a large quantile of the distribution of $Z \sim \mathsf{gen. Pareto}(\tau, \xi);$ see @def-gen-pareto
 
-Insurance companies provide coverage in exchange for premiums, but need to safeguard themselves against very high claims by buying reinsurance products. These risks are often communicated through the value-at-risk (VaR), a high quantile exceeded with probability $p$. We model Danish fire insurance claim amounts for inflation-adjusted data collected from January 1980 until December 1990 that are in excess of a million Danish kroner, found in the `evir` package and analyzed in Example 7.23 of @McNeil.Frey.Embrechts:2005. These claims are denoted $Y$ and there are 2167 observations.
+Insurance companies provide coverage in exchange for premiums, but need to safeguard themselves against very high claims by buying reinsurance products. These risks are often communicated through the value-at-risk (VaR), a high quantile exceeded with probability $p.$ We model Danish fire insurance claim amounts for inflation-adjusted data collected from January 1980 until December 1990 that are in excess of a million Danish kroner, found in the `evir` package and analyzed in Example 7.23 of @McNeil.Frey.Embrechts:2005. These claims are denoted $Y$ and there are 2167 observations.
 
 We fit a generalized Pareto distribution to exceedances above 10 millions krones, keeping 109 observations or roughly the largest 5% of the original sample. Preliminary analysis shows that we can treat data as roughly independent and identically distributed and goodness-of-fit diagnostics (not shown) for the generalized Pareto suggest that the fit is adequate for all but the three largest observations, which are (somewhat severely) underestimated by the model.
 
@@ -891,97 +897,20 @@ g2 <- ggplot(data = post_samp,
 g1 + g2
 ```
 
-The generalized Pareto model only describes the $n_u$ exceedances above $u=10$, so we need to incorporate in the likelihood a binomial contribution for the probability $\zeta_u$ of exceeding the threshold $u$. 
-<!-- The log likelihood for the full model is -->
-<!-- \begin{align*} -->
-<!-- -109 \log \tau + \sum_{i=1}^{109} (1+1/\xi)\log\left(1+\xi\frac{y_i-10}{\tau}\right)_{+} + \\& \quad  \log \binom{2167}{109} + 109\log \zeta_u + 2058 \log(1-\zeta_u) -->
-<!-- \end{align*} -->
+The generalized Pareto model only describes the $n_u$ exceedances above $u=10,$ so we need to incorporate in the likelihood a binomial contribution for the probability $\zeta_u$ of exceeding the threshold $u.$ 
+The log likelihood for the full model for $y_i>u$ is
+\begin{align*}
+\ell(\tau, \xi, \zeta_u) &\propto -109 \log \tau + \sum_{i=1}^{109} (1+1/\xi)\log\left(1+\xi\frac{y_i-10}{\tau}\right)_{+} + \\& \quad   109\log \zeta_u + 2058 \log(1-\zeta_u), 
+\end{align*}
 <!-- and, p -->
-Provided that the priors for $(\tau, \xi)$ are independent of those for $\zeta_u$, the posterior also factorizes as a product, so $\zeta_u$ and $(\tau, \xi)$ are a posteriori independent.
+Provided that the priors for $(\tau, \xi)$ are independent of those for $\zeta_u,$ the posterior also factorizes as a product, so $\zeta_u$ and $(\tau, \xi)$ are a posteriori independent.
 
 Suppose for now that we set a $\mathsf{beta}(0.5, 0.5)$ prior for $\zeta_u$ and a non-informative prior for the generalized Pareto parameters. 
 
-:::
+We consider the modelling of insurance losses exceeding $u=10$ millions krones using a generalized Pareto distribution to the `danish` fire insurance data with some prior; see @def-gen-pareto for the model. The model has three parameters: the scale $\tau$, the shape $\xi$ and the probability of exceeding the threshold $\zeta_u$.
 
 
-::: {#prp-ratio-uniform}
-## Ratio of uniform method
-
-The ratio-of-uniform method [@Kinderman.Monahan:1977; @Wakefield:1991] is a variant of accept-reject used to draw samples from a unnormalized density $f(\boldsymbol{\theta})$ for $\boldsymbol{\theta} \in \boldsymbol{\Theta} \subseteq \mathbb{R}^d$. For some $r \geq 0$, consider the set \begin{align*}
-\mathcal{C}_r = \left\{ (u_0, \ldots, u_d): 0 < u_0 \leq \left[f(u_1/u_0^r, \ldots, u_d/u_0^r)\right]^{\frac{1}{rd+1}}\right\}.
-\end{align*} If we can generate $u_0, \ldots, u_d$ uniformly over $\mathcal{C}_R$, then the draws $(u_1/u_0^r, \ldots, u_d/u_0^r)$ are from the normalized density $f$. Rejection sampling is used to obtain uniform draws over $\mathcal{C}_r$ under some conditions on the density and marginal moments. See [the `rust` package vignette](https://paulnorthrop.github.io/rust/articles/rust-a-vignette.html) for technical details and examples. Like with other accept-reject algorithms, the acceptance rate of the proposal goes down with the dimension of the problem. 
-:::
-
-:::{#exm-rust}
-
-We use the ratio-of-uniform algorithm for the data from @exm-loss-extremes to generate draws from the posterior. We illustrate below the `rust` package with a user-specified prior and posterior. We fit a generalized Pareto distribution $Y \sim \mathsf{GP}(\sigma, \xi)$ to exceedances above 10 millions krones to the `danish` fire insurance data, using a truncated maximal data information prior $p(\sigma, \xi) \propto \sigma^{-1}\exp(-\xi+1)\mathrm{I}(\xi > -1)$.
-
-```{r}
-#| eval: true
-#| echo: true
-#| label: danish-rou-demo
-data(danish, package = "evir")
-# Extract threshold exceedances
-exc <- danish[danish > 10] - 10
-# Create a function for the log prior
-logmdiprior <- function(par, ...){
-  if(isTRUE(any(par[1] <= 0, par[2] < -1))){
-    return(-Inf)
-  }
-  -log(par[1]) - par[2]
-}
-# Same for log likelihood, assuming independent data
-loglik_gp <- function(par, data = exc, ...){
-  if(isTRUE(any(par[1] <= 0, par[2] < -1))){
-    return(-Inf)
-  }
-  sum(mev::dgp(x = data, scale = par[1], shape = par[2], log = TRUE))
-}
-logpost <- function(par, ...){
-  logmdiprior(par) + loglik_gp(par)
-}
-# Sampler using ratio-of-uniform method
-ru_output <- rust::ru(
-  logf = logpost,  # log posterior function
-  n = 10000, # number of posterior draws
-  d = 2, # dimension of the parameter vector
-  init = mev::fit.gpd(danish, thresh = 10)$par,
-  lower = c(0, -1))
-## Acceptance rate 
-# ru_output$pa
-## Posterior samples
-postsamp <- ru_output$sim_vals
-```
-
-Even without modification, the acceptance rate is `r round(100*ru_output$pa, 0)`%, which is quite efficient in the context. The generalized Pareto approximation suggests a very heavy tail: values of $\xi \geq 1$ correspond to distributions with infinite first moment, and those with $\xi \geq 1/2$ to infinite variance.
-
-```{r}
-#| eval: true
-#| echo: false
-#| label: fig-danish-rou
-#| fig-cap: "Scatterplot of posterior samples from the generalized Pareto model applied to Danish fire insurance losses above 10 millions krones, with maximal data information prior (left) and posterior predictive density on log scale (right)."
-colnames(postsamp) <- c("scale","shape")
-g1 <- ggplot(data = data.frame(postsamp),
-        mapping = aes(x = scale, y = shape)) +
-  geom_point(alpha = 0.1) +
-  labs(x = expression(sigma), y = expression(xi)) +
-  theme_classic()
-postpred <- revdbayes::rgp(n = 10000, 
-                           loc = 10, 
-                           scale = postsamp[,1],
-                           shape = postsamp[,2])
-g2 <- ggplot(data = data.frame(x = postpred),
-             mapping = aes(x = x)) +
-  geom_density() + 
-  scale_x_continuous(trans = "log10") +
-  labs(x = "insurance claims (in millions krones)") +
-  theme_classic()
-g1 + g2 
-```
-
-
-
-The `post_samp` matrix contains exact samples from the posterior distribution of $(\tau, \xi, \zeta_u)$, obtained using a Monte Carlo algorithm. Our aim is to evaluate the posterior distribution for the value-at-risk, the $\alpha$ quantile of $Y$ for high values of $\alpha$ and see what point estimator one would obtain depending on our choice of loss function. For any $\alpha > 1-\zeta_u$, the $q_{\alpha}$ is
+Our aim is to evaluate the posterior distribution for the value-at-risk, the $\alpha$ quantile of $Y$ for high values of $\alpha$ and see what point estimator one would obtain depending on our choice of loss function. For any $\alpha > 1-\zeta_u,$ the $q_{\alpha}$ can be written in terms of the generalized Pareto survival function times the probability of exceedance above the threshold,
 \begin{align*}
 1- \alpha  &= \Pr(Y > q_\alpha \mid Y > u) \Pr(Y > u) 
 \\ &= \left(1+\xi \frac{q_{\alpha}-u}{\tau}\right)_{+}^{-1/\xi}\zeta_u
@@ -990,8 +919,8 @@ and solving for $q_{\alpha}$ gives
 \begin{align*}
 q_{\alpha} = u+ \frac{\tau}{\xi} \left\{\left(\frac{\zeta_u}{1-\alpha}\right)^\xi-1\right\}.
 \end{align*}
-
-To obtain the posterior distribution of the $\alpha$ quantile, $q_{\alpha}$, it suffices to plug in each posterior sample and evaluate the function: the uncertainty is carried over from the simulated values of the parameters to those of the quantile $q_{\alpha}$. The left panel of @fig-lossfn shows the posterior density estimate of the $\mathsf{VaR}(0.99)$ along with the maximum a posteriori (mode) of the latter.
+We obtained, using tools that will be discussed in @exm-rust, a matrix `post_samp` that contains exact samples from the posterior distribution of $(\tau, \xi, \zeta_u).$ 
+To obtain the posterior distribution of the $\alpha$ quantile, $q_{\alpha},$ it thus suffices to plug in each posterior sample and evaluate the function: the uncertainty is carried over from the simulated values of the parameters to those of the quantile $q_{\alpha}.$ The left panel of @fig-lossfn shows the posterior density estimate of the $\mathsf{VaR}(0.99)$ along with the maximum a posteriori (mode) of the latter.
 
 Suppose that we prefer to under-estimate the value-at-risk rather than overestimate: this could be captured by the custom loss function
 \begin{align*}
@@ -1005,7 +934,7 @@ For a given value of the value-at-risk $q_0$ evaluated on a grid, we thus comput
 \begin{align*}
  r(q_0) = \int_{\boldsymbol{\Theta}}c(q(\boldsymbol{\theta}), q_0) p (\boldsymbol{\theta} \mid \boldsymbol{y}) \mathrm{d} \boldsymbol{\theta}
 \end{align*}
-and we seek to minimize the risk, $\widehat{q} =\mathrm{argmin}_{q_0 \in \mathbb{R}_{+}} r(q_0)$. The value returned that minimizes the loss, shown in @fig-lossfn, is to the left of the posterior mean for $q_\alpha$.
+and we seek to minimize the risk, $\widehat{q} =\mathrm{argmin}_{q_0 \in \mathbb{R}_{+}} r(q_0).$ The value returned that minimizes the loss, shown in @fig-lossfn, is to the left of the posterior mean for $q_\alpha.$
 
 ```{r}
 #| label: lossfn
@@ -1106,7 +1035,7 @@ g1 + g2
 To communicate uncertainty, we may resort to credible regions and intervals.
 
 :::{#def-credible-region}
-A $(1-\alpha)$ **credible region** (or credible interval in the univariate setting) is a set $\mathcal{S}_\alpha$ such that, with probability level $\alpha$, 
+A $(1-\alpha)$ **credible region** (or credible interval in the univariate setting) is a set $\mathcal{S}_\alpha$ such that, with probability level $\alpha,$ 
 \begin{align*}
 \Pr(\boldsymbol{\theta} \in \mathcal{S}_\alpha \mid \boldsymbol{Y}=\boldsymbol{y}) = 1-\alpha
 \end{align*}

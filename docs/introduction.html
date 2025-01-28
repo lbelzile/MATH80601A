@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.7.1">
+<meta name="generator" content="quarto-1.7.3">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -91,10 +91,10 @@ div.csl-indent {
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="site_libs/quarto-html/anchor.min.js"></script>
 <link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-2bb0ec5e928ee8c40b12725cb7836c35.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-81b5c3e63835cfde897ecd3d35a35a41.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-a51e8ad160b68d9f8f1ac488cc0f242e.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-ad5ef081d17d57ab2b6cc5e45efb5d90.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
   "copy-button": false,
@@ -297,12 +297,12 @@ F_{\boldsymbol{X}}(\boldsymbol{x}) = \int_{-\infty}^{x_d} \cdots \int_{-\infty}^
 f(x) = \frac{\beta^\alpha}{\Gamma(\alpha)}x^{\alpha-1}\exp(-\beta x), \qquad x \in (0, \infty),
 \end{align*}\]</span> where <span class="math inline">\(\Gamma(\alpha)\coloneqq\int_0^\infty t^{\alpha-1}\exp(-t)\mathrm{d} t\)</span> is the gamma function.</p>
 <p>If <span class="math inline">\(\alpha=1,\)</span> the density simplifies to <span class="math inline">\(\beta \exp(-\beta x)\)</span> and we recover the <strong>exponential distribution</strong>, denote <span class="math inline">\(\mathsf{expo}(\beta).\)</span> The case <span class="math inline">\(\mathsf{gamma}(\nu/2, 1/2)\)</span> corresponds to the chi-square distribution <span class="math inline">\(\chi^2_\nu.\)</span></p>
-<p>The mean and variance of a gamma are <span class="math inline">\(\mathsf{E}(Y)=alpha/\beta\)</span> and <span class="math inline">\(\mathsf{Va}(Y)=alpha/\beta^2\)</span>.</p>
+<p>The mean and variance of a gamma are <span class="math inline">\(\mathsf{E}(Y)=\alpha/\beta\)</span> and <span class="math inline">\(\mathsf{Va}(Y)=\alpha/\beta^2\)</span>.</p>
 </div>
 <div id="def-beta" class="theorem definition">
 <p><span class="theorem-title"><strong>Definition 1.3 (Beta and uniform distribution)</strong></span> The beta distribution <span class="math inline">\(\mathsf{beta}(\alpha_1, \alpha_2)\)</span> is a distribution supported on the unit interval <span class="math inline">\([0,1]\)</span> with shape parameters <span class="math inline">\(\alpha_1&gt;0\)</span> and <span class="math inline">\(\alpha_2&gt;0.\)</span> It’s density is <span class="math display">\[\begin{align*}
 f(x) = \frac{\Gamma(\alpha_1+\alpha_2)}{\Gamma(\alpha_1)\Gamma(\alpha_2)}x^{\alpha_1-1}(1-x)^{1-\alpha_2}, \qquad x \in [0,1].
-\end{align*}\]</span> The case <span class="math inline">\(\mathsf{beta}(1,1),\)</span> also denoted <span class="math inline">\(\mathsf{unif}(0,1),\)</span> corresponds to a standard uniform distribution.</p>
+\end{align*}\]</span> The case <span class="math inline">\(\mathsf{beta}(1,1),\)</span> also denoted <span class="math inline">\(\mathsf{unif}(0,1),\)</span> corresponds to a standard uniform distribution. The beta distribution <span class="math inline">\(Y \sim \mathsf{beta}(\alpha, \beta)\)</span> has expectation <span class="math inline">\(\mathsf{E}(Y)=\alpha/(\alpha+\beta)\)</span> and variance <span class="math inline">\(\mathsf{Va}(Y)=\alpha\beta/\{(\alpha+\beta)^2(\alpha+\beta+1)\}\)</span>.</p>
 </div>
 <p>The beta distribution is commonly used to model proportions, and can be generalized to the multivariate setting as follows.</p>
 <div id="def-dirichlet-dist" class="theorem definition">
@@ -346,21 +346,33 @@ f(\boldsymbol{x}) = \frac{\Gamma \left( \frac{\nu+d}{2}\right)|\boldsymbol{Q}|^{
 \end{align*}\]</span> The Student distribution is a location-scale family and an elliptical distribution. The distribution has polynomial tails, is symmetric around <span class="math inline">\(\boldsymbol{\mu}\)</span> and is unimodal. As <span class="math inline">\(\nu \to \infty,\)</span> the Student distribution converges to a normal distribution. It has heavier tails than the normal distribution and only the first <span class="math inline">\(\nu-1\)</span> moments of the distribution exist. The case <span class="math inline">\(\nu=1\)</span> is termed Cauchy distribution.</p>
 </div>
 <div id="def-weibull" class="theorem definition">
-<p><span class="theorem-title"><strong>Definition 1.10 (Weibull distribution)</strong></span> The distribution function of a <strong>Weibull</strong> random variable with scale <span class="math inline">\(\lambda&gt;0\)</span> and shape <span class="math inline">\(\alpha&gt;0\)</span> is <span class="math display">\[\begin{align*}
-F(x; \lambda, \alpha) &amp;= 1 - \exp\left\{-(x/\lambda)^\alpha\right\}, \qquad x \geq 0, \lambda&gt;0, \alpha&gt;0,
+<p><span class="theorem-title"><strong>Definition 1.10 (Weibull distribution)</strong></span> The distribution function of a Weibull random variable with scale <span class="math inline">\(\lambda&gt;0\)</span> and shape <span class="math inline">\(\alpha&gt;0\)</span> is <span class="math display">\[\begin{align*}
+F(x; \lambda, \alpha) &amp;= 1 - \exp\left\{-(x/\lambda)^\alpha\right\}, \qquad x \geq 0,
 \end{align*}\]</span> while the corresponding density is <span class="math display">\[\begin{align*}
-f(x; \lambda, \alpha) &amp;= \frac{\alpha}{\lambda^\alpha} x^{\alpha-1}\exp\left\{-(x/\lambda)^\alpha\right\}, \qquad x \geq 0, \lambda&gt;0, \alpha&gt;0.
+f(x; \lambda, \alpha) &amp;= \frac{\alpha}{\lambda^\alpha} x^{\alpha-1}\exp\left\{-(x/\lambda)^\alpha\right\}, \qquad x \geq 0.
 \end{align*}\]</span></p>
-<!--
-The quantile function, the inverse of the distribution function, is $Q(p) = \lambda\{-\log(1-p)\}^{1/\alpha}.$ The Weibull distribution includes the exponential as special case when $\alpha=1.$ The expected value of $Y \sim \mathsf{Weibull}(\lambda, \alpha)$ is $\mathsf{E}(Y) = \lambda \Gamma(1+1/\alpha).$
--->
+<p>The quantile function, the inverse of the distribution function, is <span class="math inline">\(Q(p) = \lambda\{-\log(1-p)\}^{1/\alpha}.\)</span> The Weibull distribution includes the exponential as special case when <span class="math inline">\(\alpha=1.\)</span> The expected value of <span class="math inline">\(Y \sim \mathsf{Weibull}(\lambda, \alpha)\)</span> is <span class="math inline">\(\mathsf{E}(Y) = \lambda \Gamma(1+1/\alpha).\)</span></p>
+</div>
+<div id="def-gen-pareto" class="theorem definition">
+<p><span class="theorem-title"><strong>Definition 1.11 (Generalized Pareto distribution)</strong></span> The generalized Pareto distribution with scale <span class="math inline">\(\tau&gt;0\)</span> and shape <span class="math inline">\(\xi \in \mathbb{R}\)</span> has distribution and density functions equal to, respectively <span class="math display">\[\begin{align*}
+F(x) &amp;=
+\begin{cases}
+1 - \left(1+\frac{\xi}{\tau}x\right)_{+}^{-1/\xi} &amp; \xi \neq 0 \\
+1 - \exp(-x/\tau) &amp; \xi=0
+\end{cases}, \quad x \geq 0; \\
+f(x) &amp;=
+\begin{cases}
+\tau^{-1}\left(1+\frac{\xi}{\tau}x\right)_{+}^{-1/\xi-1} &amp; \xi \neq 0 \\
+\tau^{-1}\exp(-x/\tau) &amp; \xi=0
+\end{cases}\quad x \geq 0;
+\end{align*}\]</span> with <span class="math inline">\(x_{+} = \max\{x, 0\}.\)</span> The case <span class="math inline">\(\xi=0\)</span> corresponding to the exponential distribution with rate <span class="math inline">\(\tau^{-1}\)</span>. The distribution is used to model excesses over a large threshold <span class="math inline">\(u\)</span>, as extreme value theory dictates that, under broad conditions, <span class="math inline">\(Y-u \mid Y &gt; u \sim \mathsf{gen. Pareto}(\tau_u, \xi)\)</span> as <span class="math inline">\(u\)</span> tends to the endpoint of the support of <span class="math inline">\(Y\)</span>, regardless of the underlying distribution of <span class="math inline">\(Y\)</span>. See <a href="bayesics.html#exm-loss-extremes" class="quarto-xref">Example&nbsp;<span>2.6</span></a> for an application of this model.</p>
 </div>
 <div id="def-location-scale" class="theorem definition">
-<p><span class="theorem-title"><strong>Definition 1.11 (Location and scale distribution)</strong></span> A random variable <span class="math inline">\(Y\)</span> is said to belong to a location scale family with location parameter <span class="math inline">\(b\)</span> and scale <span class="math inline">\(a&gt;0\)</span> if it is equal in distribution to a location and scale transformation of a standard variable <span class="math inline">\(X\)</span> with location zero and unit scale, denoted <span class="math inline">\(Y \stackrel{\mathrm{d}}{=} aX + b\)</span> and meaning, <span class="math display">\[\Pr(Y \leq y) = \Pr(aX + b \leq y).\]</span> If the density exists, then <span class="math inline">\(f_Y(y) = a^{-1}f_X\{(y-b)/a\}.\)</span></p>
+<p><span class="theorem-title"><strong>Definition 1.12 (Location and scale distribution)</strong></span> A random variable <span class="math inline">\(Y\)</span> is said to belong to a location scale family with location parameter <span class="math inline">\(b\)</span> and scale <span class="math inline">\(a&gt;0\)</span> if it is equal in distribution to a location and scale transformation of a standard variable <span class="math inline">\(X\)</span> with location zero and unit scale, denoted <span class="math inline">\(Y {=}_d\, aX + b\)</span> and meaning, <span class="math display">\[\Pr(Y \leq y) = \Pr(aX + b \leq y).\]</span> If the density exists, then <span class="math inline">\(f_Y(y) = a^{-1}f_X\{(y-b)/a\}.\)</span></p>
 <p>We can extend this definition to the multivariate setting for location vector <span class="math inline">\(\boldsymbol{b} \in \mathbb{R}^d\)</span> and positive definite scale matrix <span class="math inline">\(\mathbf{A},\)</span> such that <span class="math display">\[\Pr(\boldsymbol{Y} \leq \boldsymbol{y}) = \Pr(\mathbf{A}\boldsymbol{X} + \boldsymbol{b} \leq \boldsymbol{y}).\]</span></p>
 </div>
 <div id="def-exponential-family" class="theorem definition">
-<p><span class="theorem-title"><strong>Definition 1.12 (Exponential family)</strong></span> A univariate distribution is an exponential family if it’s density or mass function can be written for all <span class="math inline">\(\boldsymbol{\theta} \in \boldsymbol{\Theta}\)</span> and <span class="math inline">\(y \in \mathbb{R}\)</span> as <span class="math display">\[\begin{align*}
+<p><span class="theorem-title"><strong>Definition 1.13 (Exponential family)</strong></span> A univariate distribution is an exponential family if it’s density or mass function can be written for all <span class="math inline">\(\boldsymbol{\theta} \in \boldsymbol{\Theta}\)</span> and <span class="math inline">\(y \in \mathbb{R}\)</span> as <span class="math display">\[\begin{align*}
 f(y; \boldsymbol{\theta}) = \exp\left\{ \sum_{k=1}^K Q_k(\boldsymbol{\theta}) t_k(y) + D(\boldsymbol{\theta}) + h(y)\right\},
 \end{align*}\]</span> where functions <span class="math inline">\(Q_1(\cdot), \ldots, Q_K(\cdot)\)</span> and <span class="math inline">\(D(\cdot)\)</span> depend only on <span class="math inline">\(\boldsymbol{\theta}\)</span> and not on the data, and conversely <span class="math inline">\(t_1(\cdot), \ldots, t_K(\cdot)\)</span> and <span class="math inline">\(h(\cdot)\)</span> do not depend on the vector of parameters <span class="math inline">\(\boldsymbol{\theta}.\)</span></p>
 <p>The support of <span class="math inline">\(f\)</span> must not depend on <span class="math inline">\(\boldsymbol{\theta}.\)</span> The transformed parameters <span class="math inline">\(Q_k(\boldsymbol{\theta})\)</span> <span class="math inline">\((k=1, \ldots, K)\)</span> are termed canonical parameters.</p>
@@ -395,7 +407,7 @@ f(y; p)=\exp \left\{ - \mu + y \log \mu - \log \Gamma(x+1)\right\}.
 \Pr(\boldsymbol{Y} \leq \boldsymbol{y}) = \Pr\{\boldsymbol{g}(\boldsymbol{X}) \leq \boldsymbol{y}\} = \Pr\{\boldsymbol{X} \leq \boldsymbol{x} = \boldsymbol{g}^{-1}(\boldsymbol{y})\}.
 \end{align*}\]</span> Using the chain rule, we get that the density of <span class="math inline">\(\boldsymbol{Y}\)</span> may be written as <span class="math display">\[\begin{align*}
 f_{\boldsymbol{Y}}(\boldsymbol{y}) = f_{\boldsymbol{X}}\left\{\boldsymbol{g}^{-1}(\boldsymbol{y})\right\} \left| \mathbf{J}_{\boldsymbol{g}^{-1}}(\boldsymbol{y})\right| = f_{\boldsymbol{X}}(\boldsymbol{x}) \left| \mathbf{J}_{\boldsymbol{g}}(\boldsymbol{x})\right|^{-1}
-\end{align*}\]</span> where <span class="math inline">\(\mathbf{J}_{\boldsymbol{g}}(\boldsymbol{x})\)</span> is the Jacobian matrix with <span class="math inline">\(i,j\)</span>th element <span class="math inline">\(\partial [\boldsymbol{g}(\boldsymbol{x})]_i / \partial x_j.\)</span></p>
+\end{align*}\]</span> where <span class="math inline">\(\mathbf{J}_{\boldsymbol{g}}(\boldsymbol{x})\)</span> is the Jacobian matrix with <span class="math inline">\((i,j)\)</span>th element <span class="math inline">\(\partial [\boldsymbol{g}(\boldsymbol{x})]_i / \partial x_j.\)</span></p>
 </div>
 <div id="exm-locationscale-Gauss" class="theorem example">
 <p><span class="theorem-title"><strong>Example 1.4 (Location-scale transformation of Gaussian vectors)</strong></span> Consider <span class="math inline">\(d\)</span> independent standard Gaussian variates <span class="math inline">\(X_j \sim \mathsf{Gauss}(0, 1)\)</span> for <span class="math inline">\(j=1, \ldots, d,\)</span> with joint density function <span class="math display">\[\begin{align*}
@@ -430,7 +442,7 @@ f_{\boldsymbol{Y}}(\boldsymbol{y}) &amp;= \prod_{j=1}^{d}  \frac{(zy_j)^{\alpha_
 <section id="marginal-and-conditional-distributions" class="level3" data-number="1.1.2">
 <h3 data-number="1.1.2" class="anchored" data-anchor-id="marginal-and-conditional-distributions"><span class="header-section-number">1.1.2</span> Marginal and conditional distributions</h3>
 <div id="def-marginal" class="theorem definition">
-<p><span class="theorem-title"><strong>Definition 1.13 (Marginal distribution)</strong></span> The <strong>marginal distribution</strong> of a subvector <span class="math inline">\(\boldsymbol{X}_{1:k}=(X_1, \ldots, X_k)^\top,\)</span> without loss of generality consisting of the <span class="math inline">\(k\)</span> first components of <span class="math inline">\(\boldsymbol{X}\)</span> <span class="math inline">\((1 \leq k &lt; d)\)</span> is <span class="math display">\[\begin{align*}
+<p><span class="theorem-title"><strong>Definition 1.14 (Marginal distribution)</strong></span> The <strong>marginal distribution</strong> of a subvector <span class="math inline">\(\boldsymbol{X}_{1:k}=(X_1, \ldots, X_k)^\top,\)</span> without loss of generality consisting of the <span class="math inline">\(k\)</span> first components of <span class="math inline">\(\boldsymbol{X}\)</span> <span class="math inline">\((1 \leq k &lt; d)\)</span> is <span class="math display">\[\begin{align*}
 F_{\boldsymbol{X}_{1:k}}(\boldsymbol{x}_{1:k}) = \Pr(\boldsymbol{X}_{1:k} \leq \boldsymbol{x}_{1:k}) = F_{\boldsymbol{X}}(x_1, \ldots, x_k, \infty, \ldots, \infty).
 \end{align*}\]</span> and thus the marginal distribution of component <span class="math inline">\(j,\)</span> <span class="math inline">\(F_j(x_j),\)</span> is obtained by evaluating all components but the <span class="math inline">\(j\)</span>th at <span class="math inline">\(\infty.\)</span></p>
 <p>We likewise obtain the marginal density <span class="math display">\[\begin{align*}
@@ -440,15 +452,15 @@ f_{1:k}(\boldsymbol{x}_{1:k}) = \int_{-\infty}^\infty \cdots  \int_{-\infty}^\in
 \end{align*}\]</span></p>
 </div>
 <div id="def-conditional-dist" class="theorem definition">
-<p><span class="theorem-title"><strong>Definition 1.14 (Conditional distribution)</strong></span> Let <span class="math inline">\((\boldsymbol{X}^\top, \boldsymbol{Y}^\top)^\top\)</span> be a <span class="math inline">\(d\)</span>-dimensional random vector with joint density or mass function <span class="math inline">\(f_{\boldsymbol{X}, \boldsymbol{Y}}(\boldsymbol{x}, \boldsymbol{y})\)</span> and marginal distribution <span class="math inline">\(f_{\boldsymbol{X}}(\boldsymbol{x}).\)</span> The conditional distribution function of <span class="math inline">\(\boldsymbol{Y}\)</span> given <span class="math inline">\(\boldsymbol{X}=\boldsymbol{x},\)</span> is <span class="math display">\[\begin{align*}
+<p><span class="theorem-title"><strong>Definition 1.15 (Conditional distribution)</strong></span> Let <span class="math inline">\((\boldsymbol{X}^\top, \boldsymbol{Y}^\top)^\top\)</span> be a <span class="math inline">\(d\)</span>-dimensional random vector with joint density or mass function <span class="math inline">\(f_{\boldsymbol{X}, \boldsymbol{Y}}(\boldsymbol{x}, \boldsymbol{y})\)</span> and marginal distribution <span class="math inline">\(f_{\boldsymbol{X}}(\boldsymbol{x}).\)</span> The conditional distribution function of <span class="math inline">\(\boldsymbol{Y}\)</span> given <span class="math inline">\(\boldsymbol{X}=\boldsymbol{x},\)</span> is <span class="math display">\[\begin{align*}
 f_{\boldsymbol{Y} \mid \boldsymbol{X}}(\boldsymbol{y}; \boldsymbol{x}) = \frac{f_{\boldsymbol{X}, \boldsymbol{Y}}(\boldsymbol{x}, \boldsymbol{y})}{f_{\boldsymbol{X}}(\boldsymbol{x})}
 \end{align*}\]</span> for any value of <span class="math inline">\(\boldsymbol{x}\)</span> in the support of <span class="math inline">\(\boldsymbol{X},\)</span> i.e., the set of values with non-zero density or mass, meaning <span class="math inline">\(f_{\boldsymbol{X}}(\boldsymbol{x})&gt;0\)</span>; it is undefined otherwise.</p>
 </div>
 <div id="thm-Bayes" class="theorem">
-<p><span class="theorem-title"><strong>Theorem 1.1 (Bayes’ theorem)</strong></span> Denote by <span class="math inline">\(f_X\)</span> and <span class="math inline">\(f_Y\)</span> denotes the marginal density of <span class="math inline">\(X\)</span> and <span class="math inline">\(Y,\)</span> respectively, <span class="math inline">\(f_{X \mid Y}\)</span> the conditional of <span class="math inline">\(X\)</span> given <span class="math inline">\(Y\)</span> and <span class="math inline">\(f_{X,Y}\)</span> the joint density. Bayes’ theorem states that for <span class="math inline">\(y\)</span> in the support of <span class="math inline">\(Y,\)</span> <span class="math display">\[\begin{align*}
-f_{X\mid Y}(x; y) = \frac{f_{Y\mid X}(y; x)f_X(x)}{f_Y(y)}
-\end{align*}\]</span> which follows since <span class="math inline">\(f_{X|Y}(x; y)f_Y(y) = f_{X,Y}(x,y)\)</span> and likewise <span class="math inline">\(f_{Y \mid X}(y; x)f_X(x) = f_{X,Y}(x,y).\)</span></p>
-<p>In the case of discrete random variable <span class="math inline">\(X\)</span> with support <span class="math inline">\(\mathcal{X},\)</span> the denominator can be evaluated using the law of total probability, and</p>
+<p><span class="theorem-title"><strong>Theorem 1.1 (Bayes’ theorem)</strong></span> Denote by <span class="math inline">\(f_{\boldsymbol{X}}\)</span> and <span class="math inline">\(f_{\boldsymbol{Y}}\)</span> denotes the marginal density of <span class="math inline">\(\boldsymbol{X}\)</span> and <span class="math inline">\(\boldsymbol{Y},\)</span> respectively, <span class="math inline">\(f_{\boldsymbol{X} \mid \boldsymbol{Y}}\)</span> the conditional of <span class="math inline">\(\boldsymbol{X}\)</span> given <span class="math inline">\(\boldsymbol{Y}\)</span> and <span class="math inline">\(f_{\boldsymbol{X},\boldsymbol{Y}}\)</span> the joint density. Bayes’ theorem states that for <span class="math inline">\(\boldsymbol{y}\)</span> in the support of <span class="math inline">\(\boldsymbol{Y},\)</span> <span class="math display">\[\begin{align*}
+f_{\boldsymbol{X}\mid \boldsymbol{Y}}(\boldsymbol{x}; \boldsymbol{y}) = \frac{f_{\boldsymbol{Y}\mid \boldsymbol{X}}(\boldsymbol{y}; \boldsymbol{x})f_{\boldsymbol{X}}(\boldsymbol{x})}{f_{\boldsymbol{Y}}(\boldsymbol{y})}
+\end{align*}\]</span> which follows since <span class="math inline">\(f_{\boldsymbol{X}|\boldsymbol{Y}}(\boldsymbol{x}; \boldsymbol{y})f_{\boldsymbol{Y}}(\boldsymbol{y}) = f_{\boldsymbol{X},\boldsymbol{Y}}(\boldsymbol{x},\boldsymbol{y})\)</span> and likewise <span class="math inline">\(f_{\boldsymbol{Y} \mid \boldsymbol{X}}(\boldsymbol{y}; \boldsymbol{x})f_{\boldsymbol{X}}(\boldsymbol{x}) = f_{\boldsymbol{X},\boldsymbol{Y}}(\boldsymbol{x},\boldsymbol{y}).\)</span></p>
+<p>In the case of a discrete random variable <span class="math inline">\(X\)</span> with support <span class="math inline">\(\mathcal{X},\)</span> the denominator can be evaluated using the law of total probability, and</p>
 <p><span class="math display">\[\begin{align*}
 \Pr(X = x \mid Y=y) &amp;= \frac{\Pr(Y=y \mid X=x)\Pr(X=x)}{\Pr(Y=y)} \\&amp;= \frac{\Pr(Y=y \mid X=x)\Pr(X=x)}{\sum_{x \in \mathcal{X}}\Pr(Y =y \mid X=x)\Pr(X=x)}.
 \end{align*}\]</span></p>
@@ -646,7 +658,7 @@ p_{00}^l p_{\bullet 0}^{k-l} &amp; 0\leq l &lt; k\\
 \end{align*}\]</span> and so both margins are geometric.</p>
 </div>
 <div id="def-independence" class="theorem definition">
-<p><span class="theorem-title"><strong>Definition 1.15 (Independence)</strong></span> We say that <span class="math inline">\(\boldsymbol{Y}\)</span> and <span class="math inline">\(\boldsymbol{X}\)</span> are independent if their joint distribution function factorizes as <span class="math display">\[\begin{align*}
+<p><span class="theorem-title"><strong>Definition 1.16 (Independence)</strong></span> We say that <span class="math inline">\(\boldsymbol{Y}\)</span> and <span class="math inline">\(\boldsymbol{X}\)</span> are independent if their joint distribution function factorizes as <span class="math display">\[\begin{align*}
 F_{\boldsymbol{X}, \boldsymbol{Y}}(\boldsymbol{x}, \boldsymbol{y}) = F_{\boldsymbol{X}}(\boldsymbol{x})F_{\boldsymbol{Y}}(\boldsymbol{y})
 \end{align*}\]</span> for any value of <span class="math inline">\(\boldsymbol{x},\)</span> <span class="math inline">\(\boldsymbol{y}.\)</span> It follows from the definition of joint density that, should the latter exists, it also factorizes as <span class="math display">\[\begin{align*}
 f_{\boldsymbol{X}, \boldsymbol{Y}}(\boldsymbol{x}, \boldsymbol{y}) = f_{\boldsymbol{X}}(\boldsymbol{x})f_{\boldsymbol{Y}}(\boldsymbol{y}).
@@ -695,7 +707,8 @@ Joint distribution, conditional
 \mathsf{Co}(Y_n, Y_1) &amp; \mathsf{Co}(Y_n, Y_2) &amp;\cdots &amp; \mathsf{Va}(Y_n)
 \end{pmatrix}
 \end{align*}\]</span> The <span class="math inline">\(i\)</span>th diagonal element of <span class="math inline">\(\boldsymbol{\Sigma},\)</span> <span class="math inline">\(\sigma_{ii}=\sigma_i^2,\)</span> is the variance of <span class="math inline">\(Y_i,\)</span> whereas the off-diagonal entries <span class="math inline">\(\sigma_{ij}=\sigma_{ji}\)</span> <span class="math inline">\((i \neq j)\)</span> are the covariance of pairwise entries, with <span class="math display">\[\begin{align*}
-\mathsf{Co}(Y_i, Y_j) = \int_{\mathbb{R}^2} (y_i-\mu_i)(y_j-\mu_j) f_{Y_i, Y_j}(y_i, y_j) \mathrm{d} y_i \mathrm{d} y_j.
+\mathsf{Co}(Y_i, Y_j) &amp;= \int_{\mathbb{R}^2} (y_i-\mu_i)(y_j-\mu_j) f_{Y_i, Y_j}(y_i, y_j) \mathrm{d} y_i \mathrm{d} y_j \\
+&amp;= \mathsf{E}_{Y_i, Y_j}\left[\left\{Y_i-\mathsf{E}_{Y_i}(Y_i)\right\}\left\{Y_j-\mathsf{E}_{Y_j}(Y_j)\right\}\right]
 \end{align*}\]</span> The covariance matrix <span class="math inline">\(\boldsymbol{\Sigma}\)</span> is thus symmetric. It is customary to normalize the pairwise dependence so they do not depend on the component variance. The linear <strong>correlation</strong> between <span class="math inline">\(Y_i\)</span> and <span class="math inline">\(Y_j\)</span> is <span class="math display">\[\begin{align*}
 \rho_{ij}=\mathsf{Cor}(Y_i,Y_j)=\frac{\mathsf{Co}(Y_i, Y_j)}{\sqrt{\mathsf{Va}(Y_i)}\sqrt{\mathsf{Va}(Y_j)}}=\frac{\sigma_{ij}}{\sigma_i\sigma_j}.
 \end{align*}\]</span></p>
@@ -826,7 +839,7 @@ making use of the identity $|\boldsymbol{Q}| = |\boldsymbol{Q}_{11}||\boldsymbol
 <section id="likelihood" class="level2" data-number="1.3">
 <h2 data-number="1.3" class="anchored" data-anchor-id="likelihood"><span class="header-section-number">1.3</span> Likelihood</h2>
 <div id="def-likelihood" class="theorem definition">
-<p><span class="theorem-title"><strong>Definition 1.16 (Likelihood)</strong></span> The <strong>likelihood</strong> <span class="math inline">\(L(\boldsymbol{\theta})\)</span> is a function of the parameter vector <span class="math inline">\(\boldsymbol{\theta}\)</span> that gives the probability (or density) of observing a sample under a postulated distribution, treating the observations as fixed, <span class="math display">\[\begin{align*}
+<p><span class="theorem-title"><strong>Definition 1.17 (Likelihood)</strong></span> The <strong>likelihood</strong> <span class="math inline">\(L(\boldsymbol{\theta})\)</span> is a function of the parameter vector <span class="math inline">\(\boldsymbol{\theta}\)</span> that gives the probability (or density) of observing a sample under a postulated distribution, treating the observations as fixed, <span class="math display">\[\begin{align*}
 L(\boldsymbol{\theta}; \boldsymbol{y}) = f(\boldsymbol{y}; \boldsymbol{\theta}),
 \end{align*}\]</span> where <span class="math inline">\(f(\boldsymbol{y}; \boldsymbol{\theta})\)</span> denotes the joint density or mass function of the <span class="math inline">\(n\)</span>-vector containing the observations.</p>
 <p>If the latter are independent, the joint density factorizes as the product of the density of individual observations, and the likelihood becomes <span class="math display">\[\begin{align*}
@@ -836,7 +849,7 @@ L(\boldsymbol{\theta}; \boldsymbol{y})=\prod_{i=1}^n f_i(y_i; \boldsymbol{\theta
 \end{align*}\]</span></p>
 </div>
 <div id="def-information" class="theorem definition">
-<p><span class="theorem-title"><strong>Definition 1.17 (Score and information matrix)</strong></span> Let <span class="math inline">\(\ell(\boldsymbol{\theta}),\)</span> <span class="math inline">\(\boldsymbol{\theta} \in \boldsymbol{\Theta} \subseteq \mathbb{R}^p,\)</span> be the log likelihood function. The gradient of the log likelihood <span class="math inline">\(U(\boldsymbol{\theta}) = \partial \ell(\boldsymbol{\theta}) / \partial \boldsymbol{\theta}\)</span> is termed <strong>score</strong> function.</p>
+<p><span class="theorem-title"><strong>Definition 1.18 (Score and information matrix)</strong></span> Let <span class="math inline">\(\ell(\boldsymbol{\theta}),\)</span> <span class="math inline">\(\boldsymbol{\theta} \in \boldsymbol{\Theta} \subseteq \mathbb{R}^p,\)</span> be the log likelihood function. The gradient of the log likelihood <span class="math inline">\(U(\boldsymbol{\theta}) = \partial \ell(\boldsymbol{\theta}) / \partial \boldsymbol{\theta}\)</span> is termed <strong>score</strong> function.</p>
 <p>The <strong>observed information matrix</strong> is the hessian of the negative log likelihood <span class="math display">\[\begin{align*}
 j(\boldsymbol{\theta}; \boldsymbol{y})=-\frac{\partial^2 \ell(\boldsymbol{\theta}; \boldsymbol{y})}{\partial \boldsymbol{\theta} \partial \boldsymbol{\theta}^\top},
 \end{align*}\]</span> evaluated at the maximum likelihood estimate <span class="math inline">\(\widehat{\boldsymbol{\theta}},\)</span> so <span class="math inline">\(j(\widehat{\boldsymbol{\theta}}).\)</span> Under regularity conditions, the <strong>expected information</strong>, also called <strong>Fisher information</strong> matrix, is <span class="math display">\[\begin{align*}
@@ -938,20 +951,19 @@ i_{\alpha, \alpha} &amp; = n\alpha^{-2}(1 + \gamma^2-2\gamma+\pi^2/6)
 f(\boldsymbol{y}) = f(y_1) \times f(y_2 \mid y_1) \times \ldots f(y_n \mid y_1, \ldots, y_n)
 \end{align*}\]</span> in terms of conditional. Such a decomposition is particularly useful in the context of time series, where data are ordered from time <span class="math inline">\(1\)</span> until time <span class="math inline">\(n\)</span> and models typically relate observation <span class="math inline">\(y_n\)</span> to it’s past.</p>
 <div id="exm-autoregressive-one" class="theorem example">
-<p><span class="theorem-title"><strong>Example 1.17 (First-order autoregressive process)</strong></span> Consider an <span class="math inline">\(\mathsf{AR}(1)\)</span> model of the form <span class="math display">\[Y_t = \mu + \phi(Y_{t-1} - \mu) + \varepsilon_t,\]</span> where <span class="math inline">\(\phi\)</span> is the lag-one correlation, <span class="math inline">\(\mu\)</span> the global mean and <span class="math inline">\(\varepsilon_t\)</span> is an iid innovation with mean zero and variance <span class="math inline">\(\sigma^2.\)</span> If <span class="math inline">\(|\phi| &lt; 1,\)</span> the process is stationary, and the variance does not increase with <span class="math inline">\(t.\)</span></p>
+<p><span class="theorem-title"><strong>Example 1.17 (First-order autoregressive process)</strong></span> Consider an <span class="math inline">\(\mathsf{AR}(1)\)</span> model of the form <span class="math display">\[Y_t = \mu + \phi(Y_{t-1} - \mu) + \varepsilon_t,\]</span> where <span class="math inline">\(\phi\)</span> is the lag-one correlation, <span class="math inline">\(\mu\)</span> the global mean and <span class="math inline">\(\varepsilon_t\)</span> is an iid innovation with mean zero and variance <span class="math inline">\(\sigma^2.\)</span> If <span class="math inline">\(|\phi| &lt; 1,\)</span> the process is stationary.</p>
 <p>The Markov property states that the current realization depends on the past, <span class="math inline">\(Y_t \mid Y_1, \ldots, Y_{t-1},\)</span> only through the most recent value <span class="math inline">\(Y_{t-1}.\)</span> The log likelihood thus becomes <span class="math display">\[\begin{align*}
 \ell(\boldsymbol{\theta}) = \log f(y_1) + \sum_{i=2}^n \log f(y_i \mid y_{i-1}).
 \end{align*}\]</span></p>
-<p>If innovations <span class="math inline">\(\{\varepsilon_t\}\)</span> are Gaussian, we have <span class="math display">\[Y_t \mid Y_{t-1}=y_{t-1} \sim \mathsf{Gauss}\{\mu(1-\phi)+ \phi y_{t-1}, \sigma^2\}, \qquad t&gt;1.\]</span></p>
-<p>The <span class="math inline">\(\mathsf{AR}(1)\)</span> stationarity process <span class="math inline">\(Y_t,\)</span> marginally, has mean <span class="math inline">\(\mu\)</span> and unconditional variance <span class="math inline">\(\sigma^2/(1-\phi^2).\)</span> If we use the recursive definition, we find <span class="math display">\[\begin{align*}
+<p>The <span class="math inline">\(\mathsf{AR}(1)\)</span> stationary process <span class="math inline">\(Y_t,\)</span> marginally, has mean <span class="math inline">\(\mu\)</span> and unconditional variance <span class="math inline">\(\sigma^2/(1-\phi^2).\)</span> If we use the recursive definition, we find <span class="math display">\[\begin{align*}
 Y_t &amp;= \mu (1-\phi) + \varepsilon_t + \phi \{\mu + \phi(Y_{t-2}-\mu) + \varepsilon_{t-1}\}
-\\&amp;= \mu + \sum_{j=0}^\infty \phi_j\varepsilon_{t-j}
+= \mu + \sum_{j=0}^\infty \phi^j\varepsilon_{t-j}
 \end{align*}\]</span> whence <span class="math inline">\(\mathsf{E}(Y_t) = \mu\)</span> and <span class="math display">\[\begin{align*}
-\mathsf{Va}(Y_t) &amp;= \mathsf{Va}\left(\sum_{j=0}^\infty \phi_j\varepsilon_{t-j}\right)
-\\&amp;= \sum_{j=0}^\infty \phi_j^2 \mathsf{Va}(\varepsilon_{t-j})
-\\&amp;=\frac{\sigma^2}{(1-\phi^2)}
+\mathsf{Va}(Y_t) &amp;= \mathsf{Va}\left(\sum_{j=0}^\infty \phi^j\varepsilon_{t-j}\right)
+= \sum_{j=0}^\infty \phi^{2j} \mathsf{Va}(\varepsilon_{t-j})
+=\frac{\sigma^2}{(1-\phi^2)}
 \end{align*}\]</span> where the geometric series converges if <span class="math inline">\(\phi&lt;1\)</span> and diverges otherwise.</p>
-<p>The likelihood can be written as <span class="math display">\[\begin{align*}
+<p>If innovations <span class="math inline">\(\{\varepsilon_t\}\)</span> are Gaussian, we have <span class="math display">\[Y_t \mid Y_{t-1}=y_{t-1} \sim \mathsf{Gauss}\{\mu(1-\phi)+ \phi y_{t-1}, \sigma^2\}, \qquad t&gt;1;\]</span> The likelihood can then be written as <span class="math display">\[\begin{align*}
 \ell(\mu, \phi,\sigma^2)&amp; = -\frac{n}{2}\log(2\pi) - n\log \sigma + \frac{1}{2}\log(1-\phi^2) \\&amp;\quad -\frac{(1-\phi^2)(y_1- \mu)^2}{2\sigma^2} - \sum_{i=2}^n \frac{(y_t - \mu(1-\phi)- \phi y_{t-1})^2}{2\sigma^2}
 \end{align*}\]</span></p>
 </div>

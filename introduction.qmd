@@ -55,7 +55,7 @@ where $\Gamma(\alpha)\coloneqq\int_0^\infty t^{\alpha-1}\exp(-t)\mathrm{d} t$ is
 
 If $\alpha=1,$ the density simplifies to $\beta \exp(-\beta x)$ and we recover the **exponential distribution**, denote $\mathsf{expo}(\beta).$ The case $\mathsf{gamma}(\nu/2, 1/2)$ corresponds to the chi-square distribution $\chi^2_\nu.$
 
-The mean and variance of a gamma are $\mathsf{E}(Y)=alpha/\beta$ and $\mathsf{Va}(Y)=alpha/\beta^2$.
+The mean and variance of a gamma are $\mathsf{E}(Y)=\alpha/\beta$ and $\mathsf{Va}(Y)=\alpha/\beta^2$.
 
 :::
 
@@ -69,6 +69,8 @@ The beta distribution $\mathsf{beta}(\alpha_1, \alpha_2)$ is a distribution supp
 f(x) = \frac{\Gamma(\alpha_1+\alpha_2)}{\Gamma(\alpha_1)\Gamma(\alpha_2)}x^{\alpha_1-1}(1-x)^{1-\alpha_2}, \qquad x \in [0,1].
 \end{align*}
 The case $\mathsf{beta}(1,1),$ also denoted $\mathsf{unif}(0,1),$ corresponds to a standard uniform distribution.
+The beta distribution $Y \sim \mathsf{beta}(\alpha, \beta)$ has expectation $\mathsf{E}(Y)=\alpha/(\alpha+\beta)$ and variance $\mathsf{Va}(Y)=\alpha\beta/\{(\alpha+\beta)^2(\alpha+\beta+1)\}$.
+
 :::
 
 
@@ -286,18 +288,40 @@ g2 + plot_spacer() + g1 + g3 +
 
 ## Weibull distribution
 
-The distribution function of a **Weibull** random variable with scale $\lambda>0$ and shape $\alpha>0$ is
+The distribution function of a Weibull random variable with scale $\lambda>0$ and shape $\alpha>0$ is
 \begin{align*}
-F(x; \lambda, \alpha) &= 1 - \exp\left\{-(x/\lambda)^\alpha\right\}, \qquad x \geq 0, \lambda>0, \alpha>0,
+F(x; \lambda, \alpha) &= 1 - \exp\left\{-(x/\lambda)^\alpha\right\}, \qquad x \geq 0,
 \end{align*}
 while the corresponding density is
 \begin{align*}
-f(x; \lambda, \alpha) &= \frac{\alpha}{\lambda^\alpha} x^{\alpha-1}\exp\left\{-(x/\lambda)^\alpha\right\}, \qquad x \geq 0, \lambda>0, \alpha>0.
+f(x; \lambda, \alpha) &= \frac{\alpha}{\lambda^\alpha} x^{\alpha-1}\exp\left\{-(x/\lambda)^\alpha\right\}, \qquad x \geq 0.
 \end{align*}
 
-<!--
+
 The quantile function, the inverse of the distribution function, is $Q(p) = \lambda\{-\log(1-p)\}^{1/\alpha}.$ The Weibull distribution includes the exponential as special case when $\alpha=1.$ The expected value of $Y \sim \mathsf{Weibull}(\lambda, \alpha)$ is $\mathsf{E}(Y) = \lambda \Gamma(1+1/\alpha).$
--->
+
+
+:::
+
+
+:::{#def-gen-pareto}
+
+## Generalized Pareto distribution
+
+The generalized Pareto distribution with scale $\tau>0$ and shape $\xi \in \mathbb{R}$ has distribution and density functions equal to, respectively
+\begin{align*}
+F(x) &=
+\begin{cases} 
+1 - \left(1+\frac{\xi}{\tau}x\right)_{+}^{-1/\xi} & \xi \neq 0 \\
+1 - \exp(-x/\tau) & \xi=0 
+\end{cases}, \quad x \geq 0; \\
+f(x) &=
+\begin{cases} 
+\tau^{-1}\left(1+\frac{\xi}{\tau}x\right)_{+}^{-1/\xi-1} & \xi \neq 0 \\
+\tau^{-1}\exp(-x/\tau) & \xi=0 
+\end{cases}\quad x \geq 0;
+\end{align*}
+with $x_{+} = \max\{x, 0\}.$ The case $\xi=0$ corresponding to the exponential distribution with rate $\tau^{-1}$. The distribution is used to model excesses over a large threshold $u$, as extreme value theory dictates that, under broad conditions, $Y-u \mid Y > u \sim \mathsf{gen. Pareto}(\tau_u, \xi)$ as $u$ tends to the endpoint of the support of $Y$, regardless of the underlying distribution of $Y$. See @exm-loss-extremes for an application of this model.
 
 :::
 
@@ -306,7 +330,7 @@ The quantile function, the inverse of the distribution function, is $Q(p) = \lam
 
 ## Location and scale distribution
 
-A random variable $Y$ is said to belong to a location scale family with location parameter $b$ and scale $a>0$ if it is equal in distribution to a location and scale transformation of a standard variable $X$ with location zero and unit scale, denoted $Y \stackrel{\mathrm{d}}{=} aX + b$ and meaning, 
+A random variable $Y$ is said to belong to a location scale family with location parameter $b$ and scale $a>0$ if it is equal in distribution to a location and scale transformation of a standard variable $X$ with location zero and unit scale, denoted $Y {=}_d\, aX + b$ and meaning, 
 $$\Pr(Y \leq y) = \Pr(aX + b \leq y).$$
 If the density exists, then $f_Y(y) = a^{-1}f_X\{(y-b)/a\}.$
 
@@ -405,7 +429,7 @@ Using the chain rule, we get that the density of $\boldsymbol{Y}$ may be written
 \begin{align*}
 f_{\boldsymbol{Y}}(\boldsymbol{y}) = f_{\boldsymbol{X}}\left\{\boldsymbol{g}^{-1}(\boldsymbol{y})\right\} \left| \mathbf{J}_{\boldsymbol{g}^{-1}}(\boldsymbol{y})\right| = f_{\boldsymbol{X}}(\boldsymbol{x}) \left| \mathbf{J}_{\boldsymbol{g}}(\boldsymbol{x})\right|^{-1}
 \end{align*}
-where $\mathbf{J}_{\boldsymbol{g}}(\boldsymbol{x})$ is the Jacobian matrix with $i,j$th element $\partial [\boldsymbol{g}(\boldsymbol{x})]_i / \partial x_j.$
+where $\mathbf{J}_{\boldsymbol{g}}(\boldsymbol{x})$ is the Jacobian matrix with $(i,j)$th element $\partial [\boldsymbol{g}(\boldsymbol{x})]_i / \partial x_j.$
 
 :::
 
@@ -525,13 +549,13 @@ for any value of $\boldsymbol{x}$ in the support of $\boldsymbol{X},$ i.e., the 
 
 ## Bayes' theorem
 
-Denote by $f_X$ and $f_Y$ denotes the marginal density of $X$ and $Y,$ respectively, $f_{X \mid Y}$ the conditional of $X$ given $Y$ and $f_{X,Y}$ the joint density. Bayes' theorem states that for $y$ in the support of $Y,$
+Denote by $f_{\boldsymbol{X}}$ and $f_{\boldsymbol{Y}}$ denotes the marginal density of $\boldsymbol{X}$ and $\boldsymbol{Y},$ respectively, $f_{\boldsymbol{X} \mid \boldsymbol{Y}}$ the conditional of $\boldsymbol{X}$ given $\boldsymbol{Y}$ and $f_{\boldsymbol{X},\boldsymbol{Y}}$ the joint density. Bayes' theorem states that for $\boldsymbol{y}$ in the support of $\boldsymbol{Y},$
 \begin{align*}
-f_{X\mid Y}(x; y) = \frac{f_{Y\mid X}(y; x)f_X(x)}{f_Y(y)}
+f_{\boldsymbol{X}\mid \boldsymbol{Y}}(\boldsymbol{x}; \boldsymbol{y}) = \frac{f_{\boldsymbol{Y}\mid \boldsymbol{X}}(\boldsymbol{y}; \boldsymbol{x})f_{\boldsymbol{X}}(\boldsymbol{x})}{f_{\boldsymbol{Y}}(\boldsymbol{y})}
 \end{align*}
-which follows since $f_{X|Y}(x; y)f_Y(y) = f_{X,Y}(x,y)$ and likewise $f_{Y \mid X}(y; x)f_X(x) = f_{X,Y}(x,y).$
+which follows since $f_{\boldsymbol{X}|\boldsymbol{Y}}(\boldsymbol{x}; \boldsymbol{y})f_{\boldsymbol{Y}}(\boldsymbol{y}) = f_{\boldsymbol{X},\boldsymbol{Y}}(\boldsymbol{x},\boldsymbol{y})$ and likewise $f_{\boldsymbol{Y} \mid \boldsymbol{X}}(\boldsymbol{y}; \boldsymbol{x})f_{\boldsymbol{X}}(\boldsymbol{x}) = f_{\boldsymbol{X},\boldsymbol{Y}}(\boldsymbol{x},\boldsymbol{y}).$
 
-In the case of discrete random variable $X$ with support $\mathcal{X},$ the denominator can be evaluated using the law of total probability, and
+In the case of a discrete random variable $X$ with support $\mathcal{X},$ the denominator can be evaluated using the law of total probability, and
 
 \begin{align*}
 \Pr(X = x \mid Y=y) &= \frac{\Pr(Y=y \mid X=x)\Pr(X=x)}{\Pr(Y=y)} \\&= \frac{\Pr(Y=y \mid X=x)\Pr(X=x)}{\sum_{x \in \mathcal{X}}\Pr(Y =y \mid X=x)\Pr(X=x)}.
@@ -823,7 +847,8 @@ whereas the second moment of $\boldsymbol{Y}$ is encoded in the $n \times n$ **c
 \end{align*}
 The $i$th diagonal element of $\boldsymbol{\Sigma},$ $\sigma_{ii}=\sigma_i^2,$ is the variance of $Y_i,$ whereas the off-diagonal entries $\sigma_{ij}=\sigma_{ji}$ $(i \neq j)$ are the covariance of pairwise entries, with
 \begin{align*}
-\mathsf{Co}(Y_i, Y_j) = \int_{\mathbb{R}^2} (y_i-\mu_i)(y_j-\mu_j) f_{Y_i, Y_j}(y_i, y_j) \mathrm{d} y_i \mathrm{d} y_j.
+\mathsf{Co}(Y_i, Y_j) &= \int_{\mathbb{R}^2} (y_i-\mu_i)(y_j-\mu_j) f_{Y_i, Y_j}(y_i, y_j) \mathrm{d} y_i \mathrm{d} y_j \\
+&= \mathsf{E}_{Y_i, Y_j}\left[\left\{Y_i-\mathsf{E}_{Y_i}(Y_i)\right\}\left\{Y_j-\mathsf{E}_{Y_j}(Y_j)\right\}\right]
 \end{align*}
 The covariance matrix $\boldsymbol{\Sigma}$ is thus symmetric. It is customary to normalize the pairwise dependence so they do not depend on the component variance. The linear **correlation** between $Y_i$ and $Y_j$ is
 \begin{align*}
@@ -1243,7 +1268,7 @@ in terms of conditional. Such a decomposition is particularly useful in the cont
 ## First-order autoregressive process
 
 Consider an $\mathsf{AR}(1)$ model of the form
-$$Y_t = \mu + \phi(Y_{t-1} - \mu) + \varepsilon_t,$$ where $\phi$ is the lag-one correlation, $\mu$ the global mean and $\varepsilon_t$ is an iid innovation with mean zero and variance $\sigma^2.$ If $|\phi| < 1,$ the process is stationary, and the variance does not increase with $t.$
+$$Y_t = \mu + \phi(Y_{t-1} - \mu) + \varepsilon_t,$$ where $\phi$ is the lag-one correlation, $\mu$ the global mean and $\varepsilon_t$ is an iid innovation with mean zero and variance $\sigma^2.$ If $|\phi| < 1,$ the process is stationary.
 
 The Markov property states that the current realization depends on the past, $Y_t \mid Y_1, \ldots, Y_{t-1},$ only through the most recent value $Y_{t-1}.$
 The log likelihood thus becomes
@@ -1253,25 +1278,24 @@ The log likelihood thus becomes
 
 
 
-If innovations $\{\varepsilon_t\}$ are Gaussian, we have
-$$Y_t \mid Y_{t-1}=y_{t-1} \sim \mathsf{Gauss}\{\mu(1-\phi)+ \phi y_{t-1}, \sigma^2\}, \qquad t>1.$$
-
-The $\mathsf{AR}(1)$ stationarity process $Y_t,$ marginally, has mean $\mu$ and unconditional variance $\sigma^2/(1-\phi^2).$ If we use the recursive definition, we find
+The $\mathsf{AR}(1)$ stationary process $Y_t,$ marginally, has mean $\mu$ and unconditional variance $\sigma^2/(1-\phi^2).$ If we use the recursive definition, we find
 \begin{align*}
 Y_t &= \mu (1-\phi) + \varepsilon_t + \phi \{\mu + \phi(Y_{t-2}-\mu) + \varepsilon_{t-1}\}
-\\&= \mu + \sum_{j=0}^\infty \phi_j\varepsilon_{t-j}
+= \mu + \sum_{j=0}^\infty \phi^j\varepsilon_{t-j}
 \end{align*}
 whence $\mathsf{E}(Y_t) = \mu$ and
 \begin{align*}
-\mathsf{Va}(Y_t) &= \mathsf{Va}\left(\sum_{j=0}^\infty \phi_j\varepsilon_{t-j}\right)
-\\&= \sum_{j=0}^\infty \phi_j^2 \mathsf{Va}(\varepsilon_{t-j})
-\\&=\frac{\sigma^2}{(1-\phi^2)}
+\mathsf{Va}(Y_t) &= \mathsf{Va}\left(\sum_{j=0}^\infty \phi^j\varepsilon_{t-j}\right)
+= \sum_{j=0}^\infty \phi^{2j} \mathsf{Va}(\varepsilon_{t-j})
+=\frac{\sigma^2}{(1-\phi^2)}
 \end{align*}
 where the geometric series converges if $\phi<1$ and diverges otherwise.
 
 
 
-The likelihood can be written as
+If innovations $\{\varepsilon_t\}$ are Gaussian, we have
+$$Y_t \mid Y_{t-1}=y_{t-1} \sim \mathsf{Gauss}\{\mu(1-\phi)+ \phi y_{t-1}, \sigma^2\}, \qquad t>1;$$
+The likelihood can then be written as
 \begin{align*}
 \ell(\mu, \phi,\sigma^2)& = -\frac{n}{2}\log(2\pi) - n\log \sigma + \frac{1}{2}\log(1-\phi^2) \\&\quad -\frac{(1-\phi^2)(y_1- \mu)^2}{2\sigma^2} - \sum_{i=2}^n \frac{(y_t - \mu(1-\phi)- \phi y_{t-1})^2}{2\sigma^2}
 \end{align*}

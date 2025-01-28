@@ -235,13 +235,86 @@ For the ratio-of-uniform method to work, we need the density $f(\boldsymbol{x})$
 \end{align*}
 @Wakefield.Gelfand.Smith:1991 propose using $r=1/2$ and relocating the mode of $f$ to the origin increase the acceptance rate. Northrop proposes to use a Box--Cox transformation [@Box.Cox:1964] together with a rotation in the software @rust to improve the acceptance rate. The bounding box may exist only for certain values of $r$; see ee [the `rust` package vignette](https://paulnorthrop.github.io/rust/articles/rust-a-vignette.html) for technical details and examples.
 
+<!--
+
+
+The ratio-of-uniform method [@Kinderman.Monahan:1977; @Wakefield:1991] is a variant of accept-reject used to draw samples from a unnormalized density $f(\boldsymbol{\theta})$ for $\boldsymbol{\theta} \in \boldsymbol{\Theta} \subseteq \mathbb{R}^d.$ For some $r \geq 0,$ consider the set \begin{align*}
+\mathcal{C}_r = \left\{ (u_0, \ldots, u_d): 0 < u_0 \leq \left[f(u_1/u_0^r, \ldots, u_d/u_0^r)\right]^{\frac{1}{rd+1}}\right\}.
+\end{align*} If we can generate $u_0, \ldots, u_d$ uniformly over $\mathcal{C}_R,$ then the draws $(u_1/u_0^r, \ldots, u_d/u_0^r)$ are from the normalized density $f.$ Rejection sampling is used to obtain uniform draws over $\mathcal{C}_r$ under some conditions on the density and marginal moments. See [the `rust` package vignette](https://paulnorthrop.github.io/rust/articles/rust-a-vignette.html) for technical details and examples. Like with other accept-reject algorithms, the acceptance rate of the proposal goes down with the dimension of the problem. 
+
+-->
+
 :::
 
 
 :::{#exm-rust}
 
-## Ratio-of-uniform in practice
+## Ratio-of-uniform for insurance loss
 
+We use the ratio-of-uniform algorithm presented in @prp-ratio-uniform for the data from @exm-loss-extremes to generate draws from the posterior. We illustrate below the `rust` package with a user-specified prior and posterior. We fit a generalized Pareto distribution $Y \sim \mathsf{GP}(\tau, \xi)$ to exceedances above 10 millions krones to the `danish` fire insurance data, using a truncated maximal data information prior $p(\tau, \xi) \propto \tau^{-1}\exp(-\xi+1)\mathrm{I}(\xi > -1).$
+
+```{r}
+#| eval: true
+#| echo: true
+#| label: danish-rou-demo
+data(danish, package = "evir")
+# Extract threshold exceedances
+exc <- danish[danish > 10] - 10
+# Create a function for the log prior
+logmdiprior <- function(par, ...){
+  if(isTRUE(any(par[1] <= 0, par[2] < -1))){
+    return(-Inf)
+  }
+  -log(par[1]) - par[2]
+}
+# Same for log likelihood, assuming independent data
+loglik_gp <- function(par, data = exc, ...){
+  if(isTRUE(any(par[1] <= 0, par[2] < -1))){
+    return(-Inf)
+  }
+  sum(mev::dgp(x = data, scale = par[1], shape = par[2], log = TRUE))
+}
+logpost <- function(par, ...){
+  logmdiprior(par) + loglik_gp(par)
+}
+# Sampler using ratio-of-uniform method
+ru_output <- rust::ru(
+  logf = logpost,  # log posterior function
+  n = 10000, # number of posterior draws
+  d = 2, # dimension of the parameter vector
+  init = mev::fit.gpd(danish, thresh = 10)$par, #mle
+  lower = c(0, -1))
+## Acceptance rate 
+# ru_output$pa
+## Posterior samples
+postsamp <- ru_output$sim_vals
+```
+
+Even without modification, the acceptance rate is `r round(100*ru_output$pa, 0)`%, which is quite efficient in the context. The generalized Pareto approximation suggests a very heavy tail: values of $\xi \geq 1$ correspond to distributions with infinite first moment, and those with $\xi \geq 1/2$ to infinite variance.
+
+```{r}
+#| eval: true
+#| echo: false
+#| label: fig-danish-rou
+#| fig-cap: "Scatterplot of posterior samples from the generalized Pareto model applied to Danish fire insurance losses above 10 millions krones, with maximal data information prior (left) and posterior predictive density on log scale (right)."
+colnames(postsamp) <- c("scale","shape")
+g1 <- ggplot(data = data.frame(postsamp),
+        mapping = aes(x = scale, y = shape)) +
+  geom_point(alpha = 0.1) +
+  labs(x = expression(sigma), y = expression(xi)) +
+  theme_classic()
+postpred <- revdbayes::rgp(n = 10000, 
+                           loc = 10, 
+                           scale = postsamp[,1],
+                           shape = postsamp[,2])
+g2 <- ggplot(data = data.frame(x = postpred),
+             mapping = aes(x = x)) +
+  geom_density() + 
+  scale_x_continuous(trans = "log10") +
+  labs(x = "insurance claims (in millions krones)") +
+  theme_classic()
+g1 + g2 
+```
 
 :::
 

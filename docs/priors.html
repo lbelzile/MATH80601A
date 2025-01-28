@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.7.1">
+<meta name="generator" content="quarto-1.7.3">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -91,10 +91,10 @@ div.csl-indent {
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="site_libs/quarto-html/anchor.min.js"></script>
 <link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-2bb0ec5e928ee8c40b12725cb7836c35.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-81b5c3e63835cfde897ecd3d35a35a41.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-a51e8ad160b68d9f8f1ac488cc0f242e.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-ad5ef081d17d57ab2b6cc5e45efb5d90.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
   "copy-button": false,
@@ -311,7 +311,7 @@ Figure&nbsp;3.1: Prior draws of the linear regressions with observed data superi
 <p>In very simple models, there may exists prior densities that result in a posterior distribution of the same family. We can thus directly extract characteristics of the posterior. Conjugate priors are chosen for computational convenience and because interpretation is convenient, as the parameters of the posterior will often be some weighted average of prior and likelihood component.</p>
 <div id="def-conjugate-prior" class="theorem definition">
 <p><span class="theorem-title"><strong>Definition 3.1 (Conjugate priors)</strong></span> A prior density <span class="math inline">\(p(\boldsymbol{\theta})\)</span> is conjugate for likelihood <span class="math inline">\(L(\boldsymbol{\theta}; \boldsymbol{y})\)</span> if the product <span class="math inline">\(L(\boldsymbol{\theta}; \boldsymbol{y})p(\boldsymbol{\theta}),\)</span> after renormalization, is of the same parametric family as the prior.</p>
-<p>Exponential families (see <a href="introduction.html#def-exponential-family" class="quarto-xref">Definition&nbsp;<span>1.12</span></a>, including the binomial, Poisson, exponential, Gaussian distributions) admit conjugate priors.</p>
+<p>Exponential families (see <a href="introduction.html#def-exponential-family" class="quarto-xref">Definition&nbsp;<span>1.13</span></a>, including the binomial, Poisson, exponential, Gaussian distributions) admit conjugate priors.</p>
 <table class="caption-top table">
 <colgroup>
 <col style="width: 34%">
@@ -568,7 +568,7 @@ p(\boldsymbol{q}) \propto q_1^{\alpha_1-1}\exp(-\beta_1 q_1) \prod_{i=2}^3 (q_i-
 </div>
 <div id="exm-martins" class="theorem example">
 <p><span class="theorem-title"><strong>Example 3.11 (Priors in extreme value theory)</strong></span> The generalized extreme value distribution obtained as the limit of maximum of blocks of size <span class="math inline">\(m\)</span> when suitably normalizes is a location-scale family with a shape parameter <span class="math inline">\(\xi \in \mathbb{R}\)</span>. The latter describes the heavyness of the tail, with negative values corresponding to approximation by bounded upper tail distributions (such as the beta), <span class="math inline">\(\xi=0\)</span> to exponential tail decay and <span class="math inline">\(\xi&gt;0\)</span> to polynomial tails, with finite moments of order <span class="math inline">\(1/\xi\)</span>. For example, the Cauchy or Student-<span class="math inline">\(t\)</span> distribution with one degree of freedom has infinite first moment and <span class="math inline">\(\xi=1\)</span>.</p>
-<p>In practice, the maximum likelihood estimators do not exist if <span class="math inline">\(\xi &lt; -1\)</span> as the model is degenerate <span class="citation" data-cites="Smith:1984">(<a href="references.html#ref-Smith:1984" role="doc-biblioref"><strong>Smith:1984?</strong></a>)</span>, and the cumulant of order <span class="math inline">\(k\)</span> exists only if <span class="math inline">\(\xi &gt; -1/k\)</span>; the Fisher information matrix exists only when <span class="math inline">\(\xi &gt; -1/2\)</span>. Thus, informative priors that restrict the range of the shape, may be useful as in environmental applications the shapes would be in the vicinity of zero. <span class="citation" data-cites="Martins.Stedinger:2000">Martins and Stedinger (<a href="references.html#ref-Martins.Stedinger:2000" role="doc-biblioref">2000</a>)</span> proposed a prior of the form <span class="math display">\[\begin{align*}
+<p>In practice, the maximum likelihood estimators do not exist if <span class="math inline">\(\xi &lt; -1\)</span> as the model is nonregular <span class="citation" data-cites="Smith:1985">(<a href="references.html#ref-Smith:1985" role="doc-biblioref">Smith 1985</a>)</span>, and the cumulant of order <span class="math inline">\(k\)</span> exists only if <span class="math inline">\(\xi &gt; -1/k\)</span>; the Fisher information matrix exists only when <span class="math inline">\(\xi &gt; -1/2\)</span>. Thus, informative priors that restrict the range of the shape, may be useful as in environmental applications the shapes would be in the vicinity of zero. <span class="citation" data-cites="Martins.Stedinger:2000">Martins and Stedinger (<a href="references.html#ref-Martins.Stedinger:2000" role="doc-biblioref">2000</a>)</span> proposed a prior of the form <span class="math display">\[\begin{align*}
 p(\xi) =\frac{(0.5+\xi)^{p-1}(0.5-\xi)^{q-1}}{\mathrm{beta}(p,q)}, \qquad \xi \in [-0.5, 0.5]
 \end{align*}\]</span> a shifted <span class="math inline">\(\mathsf{beta}(p,q)\)</span> prior.</p>
 <p>On the contrary, the <strong>maximal data information</strong> (MDI) prior <span class="citation" data-cites="Zellner:1971">(<a href="references.html#ref-Zellner:1971" role="doc-biblioref">Zellner 1971</a>)</span> is defined in terms of entropy, <span class="math display">\[p(\boldsymbol{\theta}) = \exp \mathsf{E}\{\log f(Y \mid \boldsymbol{\theta})\}.\]</span> It is an objective prior that reflects little about the parameter and leads to inferences that have good frequentist property.</p>
@@ -756,6 +756,9 @@ Northrop, Paul J., and Nicolas Attalides. 2016. <span>“Posterior Propriety in 
 </div>
 <div id="ref-Simpson:2017" class="csl-entry" role="listitem">
 Simpson, Daniel, Håvard Rue, Andrea Riebler, Thiago G. Martins, and Sigrunn H. Sørbye. 2017. <span>“Penalising Model Component Complexity: A Principled, Practical Approach to Constructing Priors.”</span> <em>Statistical Science</em> 32 (1): 1–28. <a href="https://doi.org/10.1214/16-sts576">https://doi.org/10.1214/16-sts576</a>.
+</div>
+<div id="ref-Smith:1985" class="csl-entry" role="listitem">
+Smith, Richard L. 1985. <span>“Maximum Likelihood Estimation in a Class of Nonregular Cases.”</span> <em>Biometrika</em> 72 (1): 67–90. <a href="https://doi.org/10.1093/biomet/72.1.67">https://doi.org/10.1093/biomet/72.1.67</a>.
 </div>
 <div id="ref-Sorbye.Holbek.Rue:2017" class="csl-entry" role="listitem">
 Sørbye, Sigrunn Holbek, and Håvard Rue. 2017. <span>“Penalised Complexity Priors for Stationary Autoregressive Processes.”</span> <em>Journal of Time Series Analysis</em> 38 (6): 923–35. <a href="https://doi.org/10.1111/jtsa.12242">https://doi.org/10.1111/jtsa.12242</a>.

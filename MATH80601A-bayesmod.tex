@@ -321,11 +321,11 @@
 \theoremstyle{definition}
 \newtheorem{exercise}{Exercise}[chapter]
 \theoremstyle{definition}
+\newtheorem{definition}{Definition}[chapter]
+\theoremstyle{definition}
 \newtheorem{example}{Example}[chapter]
 \theoremstyle{plain}
 \newtheorem{proposition}{Proposition}[chapter]
-\theoremstyle{definition}
-\newtheorem{definition}{Definition}[chapter]
 \theoremstyle{plain}
 \newtheorem{theorem}{Theorem}[chapter]
 \theoremstyle{remark}
@@ -383,7 +383,7 @@ details.
 These notes are licensed under a
 \href{http://creativecommons.org/licenses/by-nc-sa/4.0/}{Creative
 Commons Attribution-NonCommercial-ShareAlike 4.0 International License}
-and were last compiled on lundi, janvier 27 2025.
+and were last compiled on Tuesday, January 28 2025.
 
 The objective of the course is to provide a hands on introduction to
 Bayesian data analysis. The course will cover the formulation,
@@ -454,8 +454,8 @@ we recover the \textbf{exponential distribution}, denote
 \(\mathsf{expo}(\beta).\) The case \(\mathsf{gamma}(\nu/2, 1/2)\)
 corresponds to the chi-square distribution \(\chi^2_\nu.\)
 
-The mean and variance of a gamma are \(\mathsf{E}(Y)=alpha/\beta\) and
-\(\mathsf{Va}(Y)=alpha/\beta^2\).
+The mean and variance of a gamma are \(\mathsf{E}(Y)=\alpha/\beta\) and
+\(\mathsf{Va}(Y)=\alpha/\beta^2\).
 
 \end{definition}
 
@@ -469,6 +469,9 @@ parameters \(\alpha_1>0\) and \(\alpha_2>0.\) It's density is
 f(x) = \frac{\Gamma(\alpha_1+\alpha_2)}{\Gamma(\alpha_1)\Gamma(\alpha_2)}x^{\alpha_1-1}(1-x)^{1-\alpha_2}, \qquad x \in [0,1].
 \end{align*} The case \(\mathsf{beta}(1,1),\) also denoted
 \(\mathsf{unif}(0,1),\) corresponds to a standard uniform distribution.
+The beta distribution \(Y \sim \mathsf{beta}(\alpha, \beta)\) has
+expectation \(\mathsf{E}(Y)=\alpha/(\alpha+\beta)\) and variance
+\(\mathsf{Va}(Y)=\alpha\beta/\{(\alpha+\beta)^2(\alpha+\beta+1)\}\).
 
 \end{definition}
 
@@ -592,12 +595,45 @@ the first \(\nu-1\) moments of the distribution exist. The case
 \begin{definition}[Weibull
 distribution]\protect\hypertarget{def-weibull}{}\label{def-weibull}
 
-The distribution function of a \textbf{Weibull} random variable with
-scale \(\lambda>0\) and shape \(\alpha>0\) is \begin{align*}
-F(x; \lambda, \alpha) &= 1 - \exp\left\{-(x/\lambda)^\alpha\right\}, \qquad x \geq 0, \lambda>0, \alpha>0,
+The distribution function of a Weibull random variable with scale
+\(\lambda>0\) and shape \(\alpha>0\) is \begin{align*}
+F(x; \lambda, \alpha) &= 1 - \exp\left\{-(x/\lambda)^\alpha\right\}, \qquad x \geq 0,
 \end{align*} while the corresponding density is \begin{align*}
-f(x; \lambda, \alpha) &= \frac{\alpha}{\lambda^\alpha} x^{\alpha-1}\exp\left\{-(x/\lambda)^\alpha\right\}, \qquad x \geq 0, \lambda>0, \alpha>0.
+f(x; \lambda, \alpha) &= \frac{\alpha}{\lambda^\alpha} x^{\alpha-1}\exp\left\{-(x/\lambda)^\alpha\right\}, \qquad x \geq 0.
 \end{align*}
+
+The quantile function, the inverse of the distribution function, is
+\(Q(p) = \lambda\{-\log(1-p)\}^{1/\alpha}.\) The Weibull distribution
+includes the exponential as special case when \(\alpha=1.\) The expected
+value of \(Y \sim \mathsf{Weibull}(\lambda, \alpha)\) is
+\(\mathsf{E}(Y) = \lambda \Gamma(1+1/\alpha).\)
+
+\end{definition}
+
+\begin{definition}[Generalized Pareto
+distribution]\protect\hypertarget{def-gen-pareto}{}\label{def-gen-pareto}
+
+The generalized Pareto distribution with scale \(\tau>0\) and shape
+\(\xi \in \mathbb{R}\) has distribution and density functions equal to,
+respectively \begin{align*}
+F(x) &=
+\begin{cases} 
+1 - \left(1+\frac{\xi}{\tau}x\right)_{+}^{-1/\xi} & \xi \neq 0 \\
+1 - \exp(-x/\tau) & \xi=0 
+\end{cases}, \quad x \geq 0; \\
+f(x) &=
+\begin{cases} 
+\tau^{-1}\left(1+\frac{\xi}{\tau}x\right)_{+}^{-1/\xi-1} & \xi \neq 0 \\
+\tau^{-1}\exp(-x/\tau) & \xi=0 
+\end{cases}\quad x \geq 0;
+\end{align*} with \(x_{+} = \max\{x, 0\}.\) The case \(\xi=0\)
+corresponding to the exponential distribution with rate \(\tau^{-1}\).
+The distribution is used to model excesses over a large threshold \(u\),
+as extreme value theory dictates that, under broad conditions,
+\(Y-u \mid Y > u \sim \mathsf{gen. Pareto}(\tau_u, \xi)\) as \(u\) tends
+to the endpoint of the support of \(Y\), regardless of the underlying
+distribution of \(Y\). See Example~\ref{exm-loss-extremes} for an
+application of this model.
 
 \end{definition}
 
@@ -608,7 +644,7 @@ A random variable \(Y\) is said to belong to a location scale family
 with location parameter \(b\) and scale \(a>0\) if it is equal in
 distribution to a location and scale transformation of a standard
 variable \(X\) with location zero and unit scale, denoted
-\(Y \stackrel{\mathrm{d}}{=} aX + b\) and meaning,
+\(Y {=}_d\, aX + b\) and meaning,
 \[\Pr(Y \leq y) = \Pr(aX + b \leq y).\] If the density exists, then
 \(f_Y(y) = a^{-1}f_X\{(y-b)/a\}.\)
 
@@ -711,7 +747,7 @@ Consider an injective (one-to-one) differentiable function
 \(\boldsymbol{Y}\) may be written as \begin{align*}
 f_{\boldsymbol{Y}}(\boldsymbol{y}) = f_{\boldsymbol{X}}\left\{\boldsymbol{g}^{-1}(\boldsymbol{y})\right\} \left| \mathbf{J}_{\boldsymbol{g}^{-1}}(\boldsymbol{y})\right| = f_{\boldsymbol{X}}(\boldsymbol{x}) \left| \mathbf{J}_{\boldsymbol{g}}(\boldsymbol{x})\right|^{-1}
 \end{align*} where \(\mathbf{J}_{\boldsymbol{g}}(\boldsymbol{x})\) is
-the Jacobian matrix with \(i,j\)th element
+the Jacobian matrix with \((i,j)\)th element
 \(\partial [\boldsymbol{g}(\boldsymbol{x})]_i / \partial x_j.\)
 
 \end{proposition}
@@ -849,15 +885,20 @@ otherwise.
 \begin{theorem}[Bayes'
 theorem]\protect\hypertarget{thm-Bayes}{}\label{thm-Bayes}
 
-Denote by \(f_X\) and \(f_Y\) denotes the marginal density of \(X\) and
-\(Y,\) respectively, \(f_{X \mid Y}\) the conditional of \(X\) given
-\(Y\) and \(f_{X,Y}\) the joint density. Bayes' theorem states that for
-\(y\) in the support of \(Y,\) \begin{align*}
-f_{X\mid Y}(x; y) = \frac{f_{Y\mid X}(y; x)f_X(x)}{f_Y(y)}
-\end{align*} which follows since \(f_{X|Y}(x; y)f_Y(y) = f_{X,Y}(x,y)\)
-and likewise \(f_{Y \mid X}(y; x)f_X(x) = f_{X,Y}(x,y).\)
+Denote by \(f_{\boldsymbol{X}}\) and \(f_{\boldsymbol{Y}}\) denotes the
+marginal density of \(\boldsymbol{X}\) and \(\boldsymbol{Y},\)
+respectively, \(f_{\boldsymbol{X} \mid \boldsymbol{Y}}\) the conditional
+of \(\boldsymbol{X}\) given \(\boldsymbol{Y}\) and
+\(f_{\boldsymbol{X},\boldsymbol{Y}}\) the joint density. Bayes' theorem
+states that for \(\boldsymbol{y}\) in the support of \(\boldsymbol{Y},\)
+\begin{align*}
+f_{\boldsymbol{X}\mid \boldsymbol{Y}}(\boldsymbol{x}; \boldsymbol{y}) = \frac{f_{\boldsymbol{Y}\mid \boldsymbol{X}}(\boldsymbol{y}; \boldsymbol{x})f_{\boldsymbol{X}}(\boldsymbol{x})}{f_{\boldsymbol{Y}}(\boldsymbol{y})}
+\end{align*} which follows since
+\(f_{\boldsymbol{X}|\boldsymbol{Y}}(\boldsymbol{x}; \boldsymbol{y})f_{\boldsymbol{Y}}(\boldsymbol{y}) = f_{\boldsymbol{X},\boldsymbol{Y}}(\boldsymbol{x},\boldsymbol{y})\)
+and likewise
+\(f_{\boldsymbol{Y} \mid \boldsymbol{X}}(\boldsymbol{y}; \boldsymbol{x})f_{\boldsymbol{X}}(\boldsymbol{x}) = f_{\boldsymbol{X},\boldsymbol{Y}}(\boldsymbol{x},\boldsymbol{y}).\)
 
-In the case of discrete random variable \(X\) with support
+In the case of a discrete random variable \(X\) with support
 \(\mathcal{X},\) the denominator can be evaluated using the law of total
 probability, and
 
@@ -1162,7 +1203,8 @@ in the \(n \times n\) \textbf{covariance} matrix \begin{align*}
 \(\sigma_{ii}=\sigma_i^2,\) is the variance of \(Y_i,\) whereas the
 off-diagonal entries \(\sigma_{ij}=\sigma_{ji}\) \((i \neq j)\) are the
 covariance of pairwise entries, with \begin{align*}
-\mathsf{Co}(Y_i, Y_j) = \int_{\mathbb{R}^2} (y_i-\mu_i)(y_j-\mu_j) f_{Y_i, Y_j}(y_i, y_j) \mathrm{d} y_i \mathrm{d} y_j.
+\mathsf{Co}(Y_i, Y_j) &= \int_{\mathbb{R}^2} (y_i-\mu_i)(y_j-\mu_j) f_{Y_i, Y_j}(y_i, y_j) \mathrm{d} y_i \mathrm{d} y_j \\
+&= \mathsf{E}_{Y_i, Y_j}\left[\left\{Y_i-\mathsf{E}_{Y_i}(Y_i)\right\}\left\{Y_j-\mathsf{E}_{Y_j}(Y_j)\right\}\right]
 \end{align*} The covariance matrix \(\boldsymbol{\Sigma}\) is thus
 symmetric. It is customary to normalize the pairwise dependence so they
 do not depend on the component variance. The linear \textbf{correlation}
@@ -1592,8 +1634,7 @@ Consider an \(\mathsf{AR}(1)\) model of the form
 \[Y_t = \mu + \phi(Y_{t-1} - \mu) + \varepsilon_t,\] where \(\phi\) is
 the lag-one correlation, \(\mu\) the global mean and \(\varepsilon_t\)
 is an iid innovation with mean zero and variance \(\sigma^2.\) If
-\(|\phi| < 1,\) the process is stationary, and the variance does not
-increase with \(t.\)
+\(|\phi| < 1,\) the process is stationary.
 
 The Markov property states that the current realization depends on the
 past, \(Y_t \mid Y_1, \ldots, Y_{t-1},\) only through the most recent
@@ -1601,22 +1642,21 @@ value \(Y_{t-1}.\) The log likelihood thus becomes \begin{align*}
 \ell(\boldsymbol{\theta}) = \log f(y_1) + \sum_{i=2}^n \log f(y_i \mid y_{i-1}).
 \end{align*}
 
-If innovations \(\{\varepsilon_t\}\) are Gaussian, we have
-\[Y_t \mid Y_{t-1}=y_{t-1} \sim \mathsf{Gauss}\{\mu(1-\phi)+ \phi y_{t-1}, \sigma^2\}, \qquad t>1.\]
-
-The \(\mathsf{AR}(1)\) stationarity process \(Y_t,\) marginally, has
-mean \(\mu\) and unconditional variance \(\sigma^2/(1-\phi^2).\) If we
-use the recursive definition, we find \begin{align*}
+The \(\mathsf{AR}(1)\) stationary process \(Y_t,\) marginally, has mean
+\(\mu\) and unconditional variance \(\sigma^2/(1-\phi^2).\) If we use
+the recursive definition, we find \begin{align*}
 Y_t &= \mu (1-\phi) + \varepsilon_t + \phi \{\mu + \phi(Y_{t-2}-\mu) + \varepsilon_{t-1}\}
-\\&= \mu + \sum_{j=0}^\infty \phi_j\varepsilon_{t-j}
+= \mu + \sum_{j=0}^\infty \phi^j\varepsilon_{t-j}
 \end{align*} whence \(\mathsf{E}(Y_t) = \mu\) and \begin{align*}
-\mathsf{Va}(Y_t) &= \mathsf{Va}\left(\sum_{j=0}^\infty \phi_j\varepsilon_{t-j}\right)
-\\&= \sum_{j=0}^\infty \phi_j^2 \mathsf{Va}(\varepsilon_{t-j})
-\\&=\frac{\sigma^2}{(1-\phi^2)}
+\mathsf{Va}(Y_t) &= \mathsf{Va}\left(\sum_{j=0}^\infty \phi^j\varepsilon_{t-j}\right)
+= \sum_{j=0}^\infty \phi^{2j} \mathsf{Va}(\varepsilon_{t-j})
+=\frac{\sigma^2}{(1-\phi^2)}
 \end{align*} where the geometric series converges if \(\phi<1\) and
 diverges otherwise.
 
-The likelihood can be written as \begin{align*}
+If innovations \(\{\varepsilon_t\}\) are Gaussian, we have
+\[Y_t \mid Y_{t-1}=y_{t-1} \sim \mathsf{Gauss}\{\mu(1-\phi)+ \phi y_{t-1}, \sigma^2\}, \qquad t>1;\]
+The likelihood can then be written as \begin{align*}
 \ell(\mu, \phi,\sigma^2)& = -\frac{n}{2}\log(2\pi) - n\log \sigma + \frac{1}{2}\log(1-\phi^2) \\&\quad -\frac{(1-\phi^2)(y_1- \mu)^2}{2\sigma^2} - \sum_{i=2}^n \frac{(y_t - \mu(1-\phi)- \phi y_{t-1})^2}{2\sigma^2}
 \end{align*}
 
@@ -1719,12 +1759,12 @@ instant and with a given set of information.
 \section{Posterior distribution}\label{posterior-distribution}
 
 We consider a parametric model with parameters \(\boldsymbol{\theta}\)
-defined on \(\boldsymbol{\Theta} \subseteq \mathbb{R}^p\). In Bayesian
+defined on \(\boldsymbol{\Theta} \subseteq \mathbb{R}^p.\) In Bayesian
 learning, we adjoin to the likelihood
 \(\mathcal{L}(\boldsymbol{\theta}; \boldsymbol{y}) \equiv p(\boldsymbol{y} \mid \boldsymbol{\theta})\)
 a \textbf{prior} function \(p(\boldsymbol{\theta})\) that reflects the
 prior knowledge about potential values taken by the \(p\)-dimensional
-parameter vector, before observing the data \(\boldsymbol{y}\). The
+parameter vector, before observing the data \(\boldsymbol{y}.\) The
 prior makes \(\boldsymbol{\theta}\) random and the distribution of the
 parameter reflects our uncertainty about the true value of the model
 parameters.
@@ -1732,7 +1772,7 @@ parameters.
 In a Bayesian analysis, observations are random variables but inference
 is performed conditional on the observed sample values. By Bayes'
 theorem, our target is therefore the posterior density
-\(p(\boldsymbol{\theta} \mid \boldsymbol{y})\), defined as
+\(p(\boldsymbol{\theta} \mid \boldsymbol{y}),\) defined as
 
 \begin{equation}\phantomsection\label{eq-posterior}{
 \underbracket[0.25pt]{p(\boldsymbol{\theta} \mid \boldsymbol{y})}_{\text{posterior}} = \frac{\overbracket[0.25pt]{p(\boldsymbol{y} \mid \boldsymbol{\theta})}^{\text{likelihood}} \times  \overbracket[0.25pt]{p(\boldsymbol{\theta})}^{\text{prior}}}{\underbracket[0.25pt]{\int p(\boldsymbol{y} \mid \boldsymbol{\theta}) p(\boldsymbol{\theta}) \mathrm{d} \boldsymbol{\theta}}_{\text{marginal likelihood }p(\boldsymbol{y})}}.
@@ -1745,9 +1785,9 @@ likelihood and the prior function.
 For the posterior to be \textbf{proper}, we need the product of the
 prior and the likelihood on the right hand side to be integrable as a
 function of \(\boldsymbol{\theta}\) over the parameter domain
-\(\boldsymbol{\Theta}\). The integral in the denominator, termed
+\(\boldsymbol{\Theta}.\) The integral in the denominator, termed
 marginal likelihood or prior predictive distribution and denoted
-\(p(\boldsymbol{y}) = \mathsf{E}_{\boldsymbol{\theta}}\{p(\boldsymbol{y} \mid \boldsymbol{\theta})\}\).
+\(p(\boldsymbol{y}) = \mathsf{E}_{\boldsymbol{\theta}}\{p(\boldsymbol{y} \mid \boldsymbol{\theta})\}.\)
 It represents the distribution of the data before data collection, the
 respective weights being governed by the prior probability of different
 parameters values. The denominator of Equation~\ref{eq-posterior} is a
@@ -1766,7 +1806,7 @@ prior]\protect\hypertarget{exm-betabinomconjugate}{}\label{exm-betabinomconjugat
 
 Consider a binomial likelihood with probability of success
 \(\theta \in [0,1]\) and \(n\) trials,
-\(Y \sim \mathsf{binom}(n, \theta)\). If we take a beta prior,
+\(Y \sim \mathsf{binom}(n, \theta).\) If we take a beta prior,
 \(\theta \sim \mathsf{beta}(\alpha, \beta)\) and observe \(y\)
 successes, the posterior is \begin{align*}
 p(\theta \mid y = y) &\propto \binom{n}{y} \theta^y (1-\theta)^{n-y} \frac{\Gamma(\alpha + \beta)}{\Gamma(\alpha) \Gamma(\beta)}\theta^{\alpha-1} (1-\theta)^{\beta-1}
@@ -1774,21 +1814,18 @@ p(\theta \mid y = y) &\propto \binom{n}{y} \theta^y (1-\theta)^{n-y} \frac{\Gamm
 \end{align*} and is
 \[\int_{0}^{1} \theta^{y+\alpha-1}(1-\theta)^{n-y+\beta-1}\mathrm{d} \theta = \frac{\Gamma(y+\alpha)\Gamma(n-y+\beta)}{\Gamma(n+\alpha+\beta)},\]
 a beta function. Since we need only to keep track of the terms that are
-function of the parameter \(\theta\), we could recognize directly that
+function of the parameter \(\theta,\) we could recognize directly that
 the posterior distribution is \(\mathsf{beta}(y+\alpha, n-y+\beta)\) and
 deduce the normalizing constant from there.
 
-If \(Y \sim \mathsf{binom}(n, \theta)\), the expected number of success
+If \(Y \sim \mathsf{binom}(n, \theta),\) the expected number of success
 is \(n\theta\) and the expected number of failures \(n(1-\theta)\) and
 so the likelihood contribution, relative to the prior, will dominate as
 the sample size \(n\) grows.
 
 Another way to see this is to track moments (expectation, variance,
-etc.) The Beta distribution, whose density is
-\(f(x; \alpha, \beta) \propto x^{\alpha-1} (1-x)^{\beta-1}\), has
-expectation \(\alpha/(\alpha+\beta)\) and variance
-\(\alpha\beta/\{(\alpha+\beta)^2(\alpha+\beta+1)\}\). The posterior mean
-is \begin{align*}
+etc.) From Definition~\ref{def-beta}, the posterior mean is
+\begin{align*}
  \mathsf{E}(\theta \mid y) = w\frac{y}{n} + (1-w) \frac{\alpha}{\alpha+\beta}, 
  \qquad w = \frac{n}{n+\alpha + \beta},
  \end{align*} a weighted average of the maximum likelihood estimator and
@@ -1833,23 +1870,23 @@ constants or likelihood ratios.
 
 \begin{remark}
 An alternative parametrization for the beta distribution sets
-\(\alpha=\mu \kappa\), \(\beta = (1-\mu)\kappa\) for \(\mu \in (0,1)\)
-and \(\kappa>0\), so that the model is parametrized directly in terms of
-mean \(\mu\), with \(\kappa\) capturing the dispersion.
+\(\alpha=\mu \kappa,\) \(\beta = (1-\mu)\kappa\) for \(\mu \in (0,1)\)
+and \(\kappa>0,\) so that the model is parametrized directly in terms of
+mean \(\mu,\) with \(\kappa\) capturing the dispersion.
 \end{remark}
 
 \begin{remark}
 A density integrates to 1 over the range of possible outcomes, but there
 is no guarantee that the likelihood function, as a function of
-\(\boldsymbol{\theta}\), integrates to one over the parameter domain
-\(\boldsymbol{\Theta}\).
+\(\boldsymbol{\theta},\) integrates to one over the parameter domain
+\(\boldsymbol{\Theta}.\)
 
 For example, the binomial likelihood with \(n\) trials and \(y\)
 successes satisfies
 \[\int_0^1 \binom{n}{y}\theta^y(1-\theta)^{n-y} \mathrm{d} \theta = \frac{1}{n+1}.\]
 
 Moreover, the binomial distribution is discrete with support
-\(0, \ldots, n\), whereas the likelihood is continuous as a function of
+\(0, \ldots, n,\) whereas the likelihood is continuous as a function of
 the probability of success, as evidenced by
 Figure~\ref{fig-binom-massvslik}
 
@@ -1874,23 +1911,26 @@ comparison]\protect\hypertarget{def-bayes-factor}{}\label{def-bayes-factor}
 The marginal likelihood enters in the comparison of different models.
 Suppose that we have models \(\mathcal{M}_m\) \((m=1, \ldots, M)\) to be
 compared, with parameter vectors \(\boldsymbol{\theta}^{(m)}\) and data
-vector \(\boldsymbol{y}\). Consider \(p_m =\Pr(\mathcal{M}_m)\) the
+vector \(\boldsymbol{y}.\) Consider \(p_m =\Pr(\mathcal{M}_m)\) the
 prior probability of the different models under consideration, with
-\(p_1 + \cdots + p_M = 1\). The posterior odds for Models
+\(p_1 + \cdots + p_M = 1.\) The posterior odds for Models
 \(\mathcal{M}_i\) vs \(\mathcal{M}_j\) are \begin{align*}
 \underbracket[0.25pt]{\frac{\Pr(\mathcal{M}_i \mid \boldsymbol{y})}{\Pr(\mathcal{M}_j \mid \boldsymbol{y})}}_{\text{posterior odds}} = \underbracket[0.25pt]{\frac{p(\boldsymbol{y} \mid \mathcal{M}_i)}{p(\boldsymbol{y} \mid \mathcal{M}_j)}}_{\text{Bayes factor}} \underbracket[0.25pt]{\frac{\Pr(\mathcal{M}_i)}{\Pr(\mathcal{M}_j)}}_{\text{prior odds}}
 \end{align*} where the first term on the right hand side is the Bayes
-factor for model \(i\) vs \(j\), denoted \(\mathsf{BF}_{ij}\). The Bayes
+factor for model \(i\) vs \(j,\) denoted \(\mathsf{BF}_{ij}.\) The Bayes
 factor is the ratio of marginal likelihoods, as \begin{align*}
 p(\boldsymbol{y} \mid \mathcal{M}_i) = \int p(y \mid \boldsymbol{\theta}^{(i)}, \mathcal{M}_i) p( \boldsymbol{\theta}^{(i)} \mid \mathcal{M}_i) \mathrm{d}  \boldsymbol{\theta}^{(i)}.
 \end{align*} Values of \(\mathsf{BF}_{ij}>1\) correspond to model
-\(\mathcal{M}_i\) being more likely than \(\mathcal{M}_j\).
+\(\mathcal{M}_i\) being more likely than \(\mathcal{M}_j.\)
 
 While Bayes factors are used for model comparison, the answers depend
 very strongly on the prior
 \(p( \boldsymbol{\theta}^{(i)} \mid \mathcal{M}_i)\) specified and the
 latter must be proper as a general rule for the ratio to be
 well-defined.
+
+The Bayes factor require that we compare the same data, but both
+likelihood and priors could be different from one model to the next.
 
 \end{definition}
 
@@ -1908,16 +1948,16 @@ is the beta function, expressed in terms of gamma functions.
 Consider three models with
 \(Y \mid P^{(i)}=p, \mathcal{M}_i \sim \mathsf{binom}(n, p)\) for
 \(i=1, 2, 3\) and uniform, point mass and beta priors
-\(P^{(1)}\sim \mathsf{unif}(0,1)\),
+\(P^{(1)}\sim \mathsf{unif}(0,1),\)
 \(P^{(2)} \sim \mathsf{beta}(3/2, 3/2)\) and
-\(P^{(3)}\sim \mathsf{1}_{p=0.5}\). For \(\mathcal{M}_3\), the marginal
-likelihood is simply equal to the binomial distribution with \(p=0.5\).
+\(P^{(3)}\sim \mathsf{1}_{p=0.5}.\) For \(\mathcal{M}_3,\) the marginal
+likelihood is simply equal to the binomial distribution with \(p=0.5.\)
 
-If \(n=14\), but we let instead the number of success varies, the models
+If \(n=14,\) but we let instead the number of success varies, the models
 that put more mass closer to the ratio \(y/n\) will be favored. The
 uniform prior in model \(\mathcal{M}_1\) will have a higher Bayes factor
 than model \(\mathcal{M}_2\) or \(\mathcal{M}_3\) for values closer to
-\(p=0\) or \(p=1\), but there is mild evidence as shown in
+\(p=0\) or \(p=1,\) but there is mild evidence as shown in
 Figure~\ref{fig-bayesfactor}.
 
 \begin{Shaded}
@@ -1943,7 +1983,7 @@ Figure~\ref{fig-bayesfactor}.
 
 \caption{\label{fig-bayesfactor}Log of Bayes factors for comparison of
 binomial models with \(n=14\) trials as a function of the number of
-successes \(n\). Values larger than zero (on log scale) indicate
+successes \(n.\) Values larger than zero (on log scale) indicate
 preference for Model 2.}
 
 \end{figure}%
@@ -1965,7 +2005,7 @@ decomposition
 where
 \(f(\boldsymbol{y}_k; \boldsymbol{y}_1, \ldots, \boldsymbol{y}_{k-1})\)
 denotes the conditional density function given observations
-\(\boldsymbol{y}_1, \ldots, \boldsymbol{y}_{k-1}\).
+\(\boldsymbol{y}_1, \ldots, \boldsymbol{y}_{k-1}.\)
 
 By Bayes' rule, we can consider \emph{updating} the posterior by adding
 terms to the likelihood, noting that \begin{align*}
@@ -2123,7 +2163,7 @@ and computing the odds ratio.
 Figure~\ref{fig-post-Duke_Amir} shows the posterior of the probability
 of buying for each group, and the odds. It is clear that the integrated
 format leads to much more sales in the experiment, with a posterior
-ratio exceeding 1 with probability \(99.89\%\).
+ratio exceeding 1 with probability \(99.89\%.\)
 
 \begin{figure}[ht!]
 
@@ -2150,13 +2190,13 @@ p(y_{\text{new}} \mid \boldsymbol{y}) =
 \end{align*}
 
 Given draws from the posterior distribution, say
-\(\boldsymbol{\theta}_b\) \((b=1, \ldots, B)\), we sample from each a
+\(\boldsymbol{\theta}_b\) \((b=1, \ldots, B),\) we sample from each a
 new realization from the distribution appearing in the likelihood
-\(p(y_{\text{new}}  \mid \boldsymbol{\theta}_b)\). This is different
+\(p(y_{\text{new}}  \mid \boldsymbol{\theta}_b).\) This is different
 from the frequentist setting, which fixes the value of the parameter to
 some estimate \(\widehat{\boldsymbol{\theta}}\); by contrast, the
 posterior predictive, here a beta-binomial distribution
-\(\mathsf{BetaBin}(n, \alpha + y, n - y + \beta)\), carries over the
+\(\mathsf{BetaBin}(n, \alpha + y, n - y + \beta),\) carries over the
 uncertainty so will typically be wider and overdispersed relative to the
 corresponding binomial model. This can be easily seen from the
 left-panel of Figure~\ref{fig-betabinompostpred}, which contrasts the
@@ -2188,7 +2228,7 @@ maximum likelihood estimator.}
 \end{figure}%
 
 Given the \(\mathsf{Be}(a, b)\) posterior with \(a=y + \alpha\) and
-\(b=n-y + \beta\), the predictive distribution of \(Y_{\text{new}}\) for
+\(b=n-y + \beta,\) the predictive distribution of \(Y_{\text{new}}\) for
 fixed \(n_{\text{new}}\) number of trials is beta-binomial with mass
 function \begin{align*}
 p(y_{\text{new}}\mid y) &= \int_0^1 \binom{n_{\text{new}}}{y_{\text{new}}} \frac{\theta^{a + y_{\text{new}}-1}(1-\theta)^{b + n_{\text{new}} - y_{\text{new}}-1}}{
@@ -2203,13 +2243,13 @@ mean]\protect\hypertarget{exm-normal-post-pred}{}\label{exm-normal-post-pred}
 Consider an \(n\) sample of independent and identically distributed
 Gaussian, \(Y_i \sim \mathsf{Gauss}(0, \tau^{-1})\)
 (\(i=1, \ldots, n\)), where we assign a gamma prior on the precision
-\(\tau \sim \mathsf{gamma}(\alpha, \beta)\). The posterior is
+\(\tau \sim \mathsf{gamma}(\alpha, \beta).\) The posterior is
 \begin{align*}
 p(\tau \mid \boldsymbol{y}) \stackrel{\tau}{\propto} \prod_{i=1}^n \tau^{n/2}\exp\left(-\tau \frac{\sum_{i=1}^n{y_i^2}}{2}\right) \times \tau^{\alpha-1} \exp(-\beta \tau)
-\end{align*} and rearranging the terms to collect powers of \(\tau\),
+\end{align*} and rearranging the terms to collect powers of \(\tau,\)
 etc. we find that the posterior for \(\tau\) must also be gamma, with
 shape parameter \(\alpha^* = \alpha + n/2\) and rate
-\(\beta^* = \beta + \sum_{i=1}^n y_i^2/2\).
+\(\beta^* = \beta + \sum_{i=1}^n y_i^2/2.\)
 
 The posterior predictive is \begin{align*}
 p(y_{\text{new}} \mid \boldsymbol{y}) &= \int_0^\infty \frac{\tau^{1/2}}{(2\pi)^{1/2}}\exp(-\tau y_{\text{new}}^2/2) \frac{\beta^{*\alpha^*}}{\Gamma(\alpha^*)}\tau^{\alpha^*-1}\exp(-\beta^* \tau) \mathrm{d} \tau 
@@ -2222,10 +2262,10 @@ Student-\(t\) distribution with scale \((\beta^*/\alpha^*)^{1/2}\) and
 \(2\alpha+n\) degrees of freedom. This example also exemplifies the
 additional variability relative to the distribution generating the data:
 indeed, the Student-\(t\) distribution is more heavy-tailed than the
-Gaussian, but since the degrees of freedom increase linearly with \(n\),
-the distribution converges to a Gaussian as \(n \to \infty\), reflecting
+Gaussian, but since the degrees of freedom increase linearly with \(n,\)
+the distribution converges to a Gaussian as \(n \to \infty,\) reflecting
 the added information as we collect more and more data points and the
-variance gets better estimated through \(\sum_{i=1}^n y_i^2/n\).
+variance gets better estimated through \(\sum_{i=1}^n y_i^2/n.\)
 
 \end{example}
 
@@ -2275,14 +2315,14 @@ The choice of point summary to keep has it's root in decision theory.
 function]\protect\hypertarget{def-lossfunction}{}\label{def-lossfunction}
 
 A loss function \(c(\boldsymbol{\theta}, \boldsymbol{\upsilon})\) is a
-mapping from \(\boldsymbol{\Theta} \to \mathbb{R}^k\) that assigns a
-weight to each value of \(\boldsymbol{\theta}\), corresponding to the
-regret or loss arising from choosing this value. The corresponding point
-estimator \(\widehat{\boldsymbol{\upsilon}}\) is the minimizer of the
-expected loss,
+mapping from \(\mathbb{R}^p \to \mathbb{R}^k\) that assigns a weight to
+each value of \(\boldsymbol{\theta},\) corresponding to the regret or
+loss arising from choosing this value. The corresponding point estimator
+\(\widehat{\boldsymbol{\upsilon}}\) is the minimizer of the expected
+loss,
 
 \begin{align*}
-\widehat{\boldsymbol{\upsilon}} &= \mathop{\mathrm{argmin}}_{\boldsymbol{\upsilon}}\mathsf{E}_{\boldsymbol{\Theta} \mid \boldsymbol{Y}}\{c(\boldsymbol{\theta}, \boldsymbol{v})\} \\&=\mathop{\mathrm{argmin}}_{\boldsymbol{\upsilon}} \int_{\boldsymbol{\Theta}} c(\boldsymbol{\theta}, \boldsymbol{\upsilon})p(\boldsymbol{\theta} \mid \boldsymbol{y}) \mathrm{d} \boldsymbol{\theta}
+\widehat{\boldsymbol{\upsilon}} &= \mathop{\mathrm{argmin}}_{\boldsymbol{\upsilon}}\mathsf{E}_{\boldsymbol{\Theta} \mid \boldsymbol{Y}}\{c(\boldsymbol{\theta}, \boldsymbol{v})\} \\&=\mathop{\mathrm{argmin}}_{\boldsymbol{\upsilon}} \int_{\mathbb{R}^d} c(\boldsymbol{\theta}, \boldsymbol{\upsilon})p(\boldsymbol{\theta} \mid \boldsymbol{y}) \mathrm{d} \boldsymbol{\theta}
 \end{align*}
 
 \end{definition}
@@ -2292,12 +2332,22 @@ For example, in a univariate setting, the quadratic loss
 mean, the absolute loss \(c(\theta, \upsilon)=|\theta - \upsilon|\)
 returns the posterior median and the 0-1 loss
 \(c(\theta, \upsilon) = \mathrm{I}(\upsilon \neq \theta)\) returns the
-posterior mode. All of these point estimators are central tendency
-measures, but some may be more adequate depending on the setting as they
-can correspond to potentially different values, as shown in the
-left-panel of Figure~\ref{fig-central-moments}. The choice is
-application specific: for multimodal distributions, the mode is likely a
-better choice.
+posterior mode.
+
+For example consider the quadratic loss function which is
+differentiable. Provided we can interchange differential operator and
+integral sign, \begin{align*}
+0&= \int_{\mathbb{R}} \frac{\partial (\upsilon-\theta)^2}{\partial \upsilon} p(\theta \mid \boldsymbol{y}) \mathrm{d} \theta 
+\\&= \int_{\mathbb{R}} \frac{\partial 2(\upsilon-\theta)}{\partial \upsilon} p(\theta \mid \boldsymbol{y}) \mathrm{d} \theta 
+\\& = 2\upsilon - 2 \mathsf{E}(\theta)
+\end{align*} which is minimized when
+\(\widehat{\upsilon}=\mathsf{E}_{\Theta \mid \boldsymbol{Y}}(\theta)\).
+
+All of these point estimators are central tendency measures, but some
+may be more adequate depending on the setting as they can correspond to
+potentially different values, as shown in the left-panel of
+Figure~\ref{fig-central-moments}. The choice is application specific:
+for multimodal distributions, the mode is likely a better choice.
 
 If we know how to evaluate the distribution numerically, we can optimize
 to find the mode or else return the value for the pointwise evaluation
@@ -2328,26 +2378,22 @@ The loss function is often a functional (meaning a one-dimensional
 summary) from the posterior. The following example shows how it reduces
 a three-dimensional problem into a single risk measure.
 
-\begin{example}[Danish insurance
+\begin{example}[Value-at-risk for Danish insurance
 losses]\protect\hypertarget{exm-loss-extremes}{}\label{exm-loss-extremes}
 
 In extreme value, we are often interested in assessing the risk of
 events that are rare enough that they lie beyond the range of observed
 data. To provide a scientific extrapolation, it often is justified to
-fit a generalized Pareto distribution to exceedances of \(Z=Y-u\), for
+fit a generalized Pareto distribution to exceedances of \(Z=Y-u,\) for
 some user-specified threshold \(u\) which is often taken as a large
-quantile of the distribution of \(Y\). The generalized Pareto
-distribution function is \begin{align*}
-F(z; \tau, \xi) = 1- \begin{cases}
-\left(1+\xi/\tau z\right)^{-1/\xi}_{+}, & \xi \neq 0\\
-\exp(-z/\tau), & \xi = 0. \end{cases}
-\end{align*} The shape \(\xi\) governs how heavy-tailed the distribution
-is, while \(\tau\) is a scale parameter.
+quantile of the distribution of
+\(Z \sim \mathsf{gen. Pareto}(\tau, \xi);\) see
+Definition~\ref{def-gen-pareto}
 
 Insurance companies provide coverage in exchange for premiums, but need
 to safeguard themselves against very high claims by buying reinsurance
 products. These risks are often communicated through the value-at-risk
-(VaR), a high quantile exceeded with probability \(p\). We model Danish
+(VaR), a high quantile exceeded with probability \(p.\) We model Danish
 fire insurance claim amounts for inflation-adjusted data collected from
 January 1980 until December 1990 that are in excess of a million Danish
 kroner, found in the \texttt{evir} package and analyzed in Example 7.23
@@ -2379,127 +2425,45 @@ above 10 million krone (right).}
 \end{figure}%
 
 The generalized Pareto model only describes the \(n_u\) exceedances
-above \(u=10\), so we need to incorporate in the likelihood a binomial
+above \(u=10,\) so we need to incorporate in the likelihood a binomial
 contribution for the probability \(\zeta_u\) of exceeding the threshold
-\(u\). Provided that the priors for \((\tau, \xi)\) are independent of
-those for \(\zeta_u\), the posterior also factorizes as a product, so
-\(\zeta_u\) and \((\tau, \xi)\) are a posteriori independent.
+\(u.\) The log likelihood for the full model for \(y_i>u\) is
+\begin{align*}
+\ell(\tau, \xi, \zeta_u) &\propto -109 \log \tau + \sum_{i=1}^{109} (1+1/\xi)\log\left(1+\xi\frac{y_i-10}{\tau}\right)_{+} + \\& \quad   109\log \zeta_u + 2058 \log(1-\zeta_u), 
+\end{align*} Provided that the priors for \((\tau, \xi)\) are
+independent of those for \(\zeta_u,\) the posterior also factorizes as a
+product, so \(\zeta_u\) and \((\tau, \xi)\) are a posteriori
+independent.
 
 Suppose for now that we set a \(\mathsf{beta}(0.5, 0.5)\) prior for
 \(\zeta_u\) and a non-informative prior for the generalized Pareto
 parameters.
 
-\end{example}
+We consider the modelling of insurance losses exceeding \(u=10\)
+millions krones using a generalized Pareto distribution to the
+\texttt{danish} fire insurance data with some prior; see
+Definition~\ref{def-gen-pareto} for the model. The model has three
+parameters: the scale \(\tau\), the shape \(\xi\) and the probability of
+exceeding the threshold \(\zeta_u\).
 
-\begin{proposition}[Ratio of uniform
-method]\protect\hypertarget{prp-ratio-uniform}{}\label{prp-ratio-uniform}
-
-The ratio-of-uniform method
-(\citeproc{ref-Kinderman.Monahan:1977}{Kinderman and Monahan 1977};
-\citeproc{ref-Wakefield:1991}{Wakefield, Gelfand, and Smith 1991a}) is a
-variant of accept-reject used to draw samples from a unnormalized
-density \(f(\boldsymbol{\theta})\) for
-\(\boldsymbol{\theta} \in \boldsymbol{\Theta} \subseteq \mathbb{R}^d\).
-For some \(r \geq 0\), consider the set \begin{align*}
-\mathcal{C}_r = \left\{ (u_0, \ldots, u_d): 0 < u_0 \leq \left[f(u_1/u_0^r, \ldots, u_d/u_0^r)\right]^{\frac{1}{rd+1}}\right\}.
-\end{align*} If we can generate \(u_0, \ldots, u_d\) uniformly over
-\(\mathcal{C}_R\), then the draws \((u_1/u_0^r, \ldots, u_d/u_0^r)\) are
-from the normalized density \(f\). Rejection sampling is used to obtain
-uniform draws over \(\mathcal{C}_r\) under some conditions on the
-density and marginal moments. See
-\href{https://paulnorthrop.github.io/rust/articles/rust-a-vignette.html}{the
-\texttt{rust} package vignette} for technical details and examples. Like
-with other accept-reject algorithms, the acceptance rate of the proposal
-goes down with the dimension of the problem.
-
-\end{proposition}
-
-\begin{example}[]\protect\hypertarget{exm-rust}{}\label{exm-rust}
-
-We use the ratio-of-uniform algorithm for the data from
-Example~\ref{exm-loss-extremes} to generate draws from the posterior. We
-illustrate below the \texttt{rust} package with a user-specified prior
-and posterior. We fit a generalized Pareto distribution
-\(Y \sim \mathsf{GP}(\sigma, \xi)\) to exceedances above 10 millions
-krones to the \texttt{danish} fire insurance data, using a truncated
-maximal data information prior
-\(p(\sigma, \xi) \propto \sigma^{-1}\exp(-\xi+1)\mathrm{I}(\xi > -1)\).
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\FunctionTok{data}\NormalTok{(danish, }\AttributeTok{package =} \StringTok{"evir"}\NormalTok{)}
-\CommentTok{\# Extract threshold exceedances}
-\NormalTok{exc }\OtherTok{\textless{}{-}}\NormalTok{ danish[danish }\SpecialCharTok{\textgreater{}} \DecValTok{10}\NormalTok{] }\SpecialCharTok{{-}} \DecValTok{10}
-\CommentTok{\# Create a function for the log prior}
-\NormalTok{logmdiprior }\OtherTok{\textless{}{-}} \ControlFlowTok{function}\NormalTok{(par, ...)\{}
-  \ControlFlowTok{if}\NormalTok{(}\FunctionTok{isTRUE}\NormalTok{(}\FunctionTok{any}\NormalTok{(par[}\DecValTok{1}\NormalTok{] }\SpecialCharTok{\textless{}=} \DecValTok{0}\NormalTok{, par[}\DecValTok{2}\NormalTok{] }\SpecialCharTok{\textless{}} \SpecialCharTok{{-}}\DecValTok{1}\NormalTok{)))\{}
-    \FunctionTok{return}\NormalTok{(}\SpecialCharTok{{-}}\ConstantTok{Inf}\NormalTok{)}
-\NormalTok{  \}}
-  \SpecialCharTok{{-}}\FunctionTok{log}\NormalTok{(par[}\DecValTok{1}\NormalTok{]) }\SpecialCharTok{{-}}\NormalTok{ par[}\DecValTok{2}\NormalTok{]}
-\NormalTok{\}}
-\CommentTok{\# Same for log likelihood, assuming independent data}
-\NormalTok{loglik\_gp }\OtherTok{\textless{}{-}} \ControlFlowTok{function}\NormalTok{(par, }\AttributeTok{data =}\NormalTok{ exc, ...)\{}
-  \ControlFlowTok{if}\NormalTok{(}\FunctionTok{isTRUE}\NormalTok{(}\FunctionTok{any}\NormalTok{(par[}\DecValTok{1}\NormalTok{] }\SpecialCharTok{\textless{}=} \DecValTok{0}\NormalTok{, par[}\DecValTok{2}\NormalTok{] }\SpecialCharTok{\textless{}} \SpecialCharTok{{-}}\DecValTok{1}\NormalTok{)))\{}
-    \FunctionTok{return}\NormalTok{(}\SpecialCharTok{{-}}\ConstantTok{Inf}\NormalTok{)}
-\NormalTok{  \}}
-  \FunctionTok{sum}\NormalTok{(mev}\SpecialCharTok{::}\FunctionTok{dgp}\NormalTok{(}\AttributeTok{x =}\NormalTok{ data, }\AttributeTok{scale =}\NormalTok{ par[}\DecValTok{1}\NormalTok{], }\AttributeTok{shape =}\NormalTok{ par[}\DecValTok{2}\NormalTok{], }\AttributeTok{log =} \ConstantTok{TRUE}\NormalTok{))}
-\NormalTok{\}}
-\NormalTok{logpost }\OtherTok{\textless{}{-}} \ControlFlowTok{function}\NormalTok{(par, ...)\{}
-  \FunctionTok{logmdiprior}\NormalTok{(par) }\SpecialCharTok{+} \FunctionTok{loglik\_gp}\NormalTok{(par)}
-\NormalTok{\}}
-\CommentTok{\# Sampler using ratio{-}of{-}uniform method}
-\NormalTok{ru\_output }\OtherTok{\textless{}{-}}\NormalTok{ rust}\SpecialCharTok{::}\FunctionTok{ru}\NormalTok{(}
-  \AttributeTok{logf =}\NormalTok{ logpost,  }\CommentTok{\# log posterior function}
-  \AttributeTok{n =} \DecValTok{10000}\NormalTok{, }\CommentTok{\# number of posterior draws}
-  \AttributeTok{d =} \DecValTok{2}\NormalTok{, }\CommentTok{\# dimension of the parameter vector}
-  \AttributeTok{init =}\NormalTok{ mev}\SpecialCharTok{::}\FunctionTok{fit.gpd}\NormalTok{(danish, }\AttributeTok{thresh =} \DecValTok{10}\NormalTok{)}\SpecialCharTok{$}\NormalTok{par,}
-  \AttributeTok{lower =} \FunctionTok{c}\NormalTok{(}\DecValTok{0}\NormalTok{, }\SpecialCharTok{{-}}\DecValTok{1}\NormalTok{))}
-\DocumentationTok{\#\# Acceptance rate }
-\CommentTok{\# ru\_output$pa}
-\DocumentationTok{\#\# Posterior samples}
-\NormalTok{postsamp }\OtherTok{\textless{}{-}}\NormalTok{ ru\_output}\SpecialCharTok{$}\NormalTok{sim\_vals}
-\end{Highlighting}
-\end{Shaded}
-
-Even without modification, the acceptance rate is 52\%, which is quite
-efficient in the context. The generalized Pareto approximation suggests
-a very heavy tail: values of \(\xi \geq 1\) correspond to distributions
-with infinite first moment, and those with \(\xi \geq 1/2\) to infinite
-variance.
-
-\begin{figure}[ht!]
-
-\centering{
-
-\pandocbounded{\includegraphics[keepaspectratio]{bayesics_files/figure-pdf/fig-danish-rou-1.pdf}}
-
-}
-
-\caption{\label{fig-danish-rou}Scatterplot of posterior samples from the
-generalized Pareto model applied to Danish fire insurance losses above
-10 millions krones, with maximal data information prior (left) and
-posterior predictive density on log scale (right).}
-
-\end{figure}%
-
-The \texttt{post\_samp} matrix contains exact samples from the posterior
-distribution of \((\tau, \xi, \zeta_u)\), obtained using a Monte Carlo
-algorithm. Our aim is to evaluate the posterior distribution for the
-value-at-risk, the \(\alpha\) quantile of \(Y\) for high values of
-\(\alpha\) and see what point estimator one would obtain depending on
-our choice of loss function. For any \(\alpha > 1-\zeta_u\), the
-\(q_{\alpha}\) is \begin{align*}
+Our aim is to evaluate the posterior distribution for the value-at-risk,
+the \(\alpha\) quantile of \(Y\) for high values of \(\alpha\) and see
+what point estimator one would obtain depending on our choice of loss
+function. For any \(\alpha > 1-\zeta_u,\) the \(q_{\alpha}\) can be
+written in terms of the generalized Pareto survival function times the
+probability of exceedance above the threshold, \begin{align*}
 1- \alpha  &= \Pr(Y > q_\alpha \mid Y > u) \Pr(Y > u) 
 \\ &= \left(1+\xi \frac{q_{\alpha}-u}{\tau}\right)_{+}^{-1/\xi}\zeta_u
 \end{align*} and solving for \(q_{\alpha}\) gives \begin{align*}
 q_{\alpha} = u+ \frac{\tau}{\xi} \left\{\left(\frac{\zeta_u}{1-\alpha}\right)^\xi-1\right\}.
-\end{align*}
-
-To obtain the posterior distribution of the \(\alpha\) quantile,
-\(q_{\alpha}\), it suffices to plug in each posterior sample and
+\end{align*} We obtained, using tools that will be discussed in
+Example~\ref{exm-rust}, a matrix \texttt{post\_samp} that contains exact
+samples from the posterior distribution of \((\tau, \xi, \zeta_u).\) To
+obtain the posterior distribution of the \(\alpha\) quantile,
+\(q_{\alpha},\) it thus suffices to plug in each posterior sample and
 evaluate the function: the uncertainty is carried over from the
 simulated values of the parameters to those of the quantile
-\(q_{\alpha}\). The left panel of Figure~\ref{fig-lossfn} shows the
+\(q_{\alpha}.\) The left panel of Figure~\ref{fig-lossfn} shows the
 posterior density estimate of the \(\mathsf{VaR}(0.99)\) along with the
 maximum a posteriori (mode) of the latter.
 
@@ -2515,10 +2479,10 @@ c(q, q_0) =
 a grid, we thus compute \begin{align*}
  r(q_0) = \int_{\boldsymbol{\Theta}}c(q(\boldsymbol{\theta}), q_0) p (\boldsymbol{\theta} \mid \boldsymbol{y}) \mathrm{d} \boldsymbol{\theta}
 \end{align*} and we seek to minimize the risk,
-\(\widehat{q} =\mathrm{argmin}_{q_0 \in \mathbb{R}_{+}} r(q_0)\). The
+\(\widehat{q} =\mathrm{argmin}_{q_0 \in \mathbb{R}_{+}} r(q_0).\) The
 value returned that minimizes the loss, shown in
 Figure~\ref{fig-lossfn}, is to the left of the posterior mean for
-\(q_\alpha\).
+\(q_\alpha.\)
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -2575,7 +2539,7 @@ intervals.
 
 A \((1-\alpha)\) \textbf{credible region} (or credible interval in the
 univariate setting) is a set \(\mathcal{S}_\alpha\) such that, with
-probability level \(\alpha\), \begin{align*}
+probability level \(\alpha,\) \begin{align*}
 \Pr(\boldsymbol{\theta} \in \mathcal{S}_\alpha \mid \boldsymbol{Y}=\boldsymbol{y}) = 1-\alpha
 \end{align*}
 
@@ -3363,12 +3327,12 @@ the Cauchy or Student-\(t\) distribution with one degree of freedom has
 infinite first moment and \(\xi=1\).
 
 In practice, the maximum likelihood estimators do not exist if
-\(\xi < -1\) as the model is degenerate
-(\citeproc{ref-Smith:1984}{\textbf{Smith:1984?}}), and the cumulant of
-order \(k\) exists only if \(\xi > -1/k\); the Fisher information matrix
-exists only when \(\xi > -1/2\). Thus, informative priors that restrict
-the range of the shape, may be useful as in environmental applications
-the shapes would be in the vicinity of zero. Martins and Stedinger
+\(\xi < -1\) as the model is nonregular (\citeproc{ref-Smith:1985}{Smith
+1985}), and the cumulant of order \(k\) exists only if \(\xi > -1/k\);
+the Fisher information matrix exists only when \(\xi > -1/2\). Thus,
+informative priors that restrict the range of the shape, may be useful
+as in environmental applications the shapes would be in the vicinity of
+zero. Martins and Stedinger
 (\citeproc{ref-Martins.Stedinger:2000}{2000}) proposed a prior of the
 form \begin{align*}
 p(\xi) =\frac{(0.5+\xi)^{p-1}(0.5-\xi)^{q-1}}{\mathrm{beta}(p,q)}, \qquad \xi \in [-0.5, 0.5]
@@ -3778,7 +3742,7 @@ discard the auxiliary variable \(u.\) See Devroye
 
 \centering{
 
-\includegraphics[width=0.85\linewidth,height=\textheight,keepaspectratio]{montecarlo_files/figure-pdf/fig-fundamental-theorem-1.pdf}
+\pandocbounded{\includegraphics[keepaspectratio]{montecarlo_files/figure-pdf/fig-fundamental-theorem-1.pdf}}
 
 }
 
@@ -3828,7 +3792,7 @@ proposal with density \(q(\cdot)\) with nested support,
 
 \centering{
 
-\includegraphics[width=0.85\linewidth,height=\textheight,keepaspectratio]{montecarlo_files/figure-pdf/fig-acceptreject-1.pdf}
+\pandocbounded{\includegraphics[keepaspectratio]{montecarlo_files/figure-pdf/fig-acceptreject-1.pdf}}
 
 }
 
@@ -3880,12 +3844,23 @@ points from the Gaussian and accept any that falls within the bounds.
 \NormalTok{trunc\_samp }\OtherTok{\textless{}{-}}\NormalTok{ candidate[candidate }\SpecialCharTok{\textgreater{}=} \DecValTok{0} \SpecialCharTok{\&}\NormalTok{ candidate }\SpecialCharTok{\textless{}=} \DecValTok{1}\NormalTok{]}
 \CommentTok{\# Acceptance rate}
 \FunctionTok{length}\NormalTok{(trunc\_samp)}\SpecialCharTok{/}\FloatTok{1e5}
-\CommentTok{\#\textgreater{} [1] 0.341}
-\CommentTok{\# Theoretical acceptance rate}
-\FunctionTok{pnorm}\NormalTok{(}\DecValTok{1}\NormalTok{)}\SpecialCharTok{{-}}\FunctionTok{pnorm}\NormalTok{(}\DecValTok{0}\NormalTok{)}
-\CommentTok{\#\textgreater{} [1] 0.341}
 \end{Highlighting}
 \end{Shaded}
+
+\begin{verbatim}
+[1] 0.34002
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Theoretical acceptance rate}
+\FunctionTok{pnorm}\NormalTok{(}\DecValTok{1}\NormalTok{)}\SpecialCharTok{{-}}\FunctionTok{pnorm}\NormalTok{(}\DecValTok{0}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+[1] 0.3413447
+\end{verbatim}
 
 We can of course do better: if we consider a random variable with
 distribution function \(F,\) but truncated over the interval \([a,b],\)
@@ -3964,7 +3939,7 @@ ratio-of-uniform]\protect\hypertarget{prp-ratio-uniform}{}\label{prp-ratio-unifo
 
 An exact simulation algorithm is described in Kinderman and Monahan
 (\citeproc{ref-Kinderman.Monahan:1977}{1977}) and extended Wakefield,
-Gelfand, and Smith (\citeproc{ref-Wakefield.Gelfand.Smith:1991}{1991b})
+Gelfand, and Smith (\citeproc{ref-Wakefield.Gelfand.Smith:1991}{1991})
 for random number generation in low dimensions. Consider a \(d\)-vector
 \(\boldsymbol{X}\) with density
 \(cf(\boldsymbol{x}): \mathbb{R}^d \to \mathbb{R}^{+}\) with support
@@ -4003,7 +3978,7 @@ For the ratio-of-uniform method to work, we need the density
 \(rd+1\), meaning \begin{align*}
 \mathsf{E}(X_i^{rd+1}) = \int_{\mathcal{S}} x_j^{rd+1} f(\boldsymbol{x}) \mathrm{d}x_1 \cdots \mathrm{d} x_d< \infty
 \end{align*} Wakefield, Gelfand, and Smith
-(\citeproc{ref-Wakefield.Gelfand.Smith:1991}{1991b}) propose using
+(\citeproc{ref-Wakefield.Gelfand.Smith:1991}{1991}) propose using
 \(r=1/2\) and relocating the mode of \(f\) to the origin increase the
 acceptance rate. Northrop proposes to use a Box--Cox transformation
 (\citeproc{ref-Box.Cox:1964}{Box and Cox 1964}) together with a rotation
@@ -4015,10 +3990,75 @@ acceptance rate. The bounding box may exist only for certain values of
 
 \end{proposition}
 
-\begin{example}[Ratio-of-uniform in
-practice]\protect\hypertarget{exm-rust}{}\label{exm-rust}
+\begin{example}[Ratio-of-uniform for insurance
+loss]\protect\hypertarget{exm-rust}{}\label{exm-rust}
 
-~
+We use the ratio-of-uniform algorithm presented in
+Proposition~\ref{prp-ratio-uniform} for the data from
+Example~\ref{exm-loss-extremes} to generate draws from the posterior. We
+illustrate below the \texttt{rust} package with a user-specified prior
+and posterior. We fit a generalized Pareto distribution
+\(Y \sim \mathsf{GP}(\tau, \xi)\) to exceedances above 10 millions
+krones to the \texttt{danish} fire insurance data, using a truncated
+maximal data information prior
+\(p(\tau, \xi) \propto \tau^{-1}\exp(-\xi+1)\mathrm{I}(\xi > -1).\)
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{data}\NormalTok{(danish, }\AttributeTok{package =} \StringTok{"evir"}\NormalTok{)}
+\CommentTok{\# Extract threshold exceedances}
+\NormalTok{exc }\OtherTok{\textless{}{-}}\NormalTok{ danish[danish }\SpecialCharTok{\textgreater{}} \DecValTok{10}\NormalTok{] }\SpecialCharTok{{-}} \DecValTok{10}
+\CommentTok{\# Create a function for the log prior}
+\NormalTok{logmdiprior }\OtherTok{\textless{}{-}} \ControlFlowTok{function}\NormalTok{(par, ...)\{}
+  \ControlFlowTok{if}\NormalTok{(}\FunctionTok{isTRUE}\NormalTok{(}\FunctionTok{any}\NormalTok{(par[}\DecValTok{1}\NormalTok{] }\SpecialCharTok{\textless{}=} \DecValTok{0}\NormalTok{, par[}\DecValTok{2}\NormalTok{] }\SpecialCharTok{\textless{}} \SpecialCharTok{{-}}\DecValTok{1}\NormalTok{)))\{}
+    \FunctionTok{return}\NormalTok{(}\SpecialCharTok{{-}}\ConstantTok{Inf}\NormalTok{)}
+\NormalTok{  \}}
+  \SpecialCharTok{{-}}\FunctionTok{log}\NormalTok{(par[}\DecValTok{1}\NormalTok{]) }\SpecialCharTok{{-}}\NormalTok{ par[}\DecValTok{2}\NormalTok{]}
+\NormalTok{\}}
+\CommentTok{\# Same for log likelihood, assuming independent data}
+\NormalTok{loglik\_gp }\OtherTok{\textless{}{-}} \ControlFlowTok{function}\NormalTok{(par, }\AttributeTok{data =}\NormalTok{ exc, ...)\{}
+  \ControlFlowTok{if}\NormalTok{(}\FunctionTok{isTRUE}\NormalTok{(}\FunctionTok{any}\NormalTok{(par[}\DecValTok{1}\NormalTok{] }\SpecialCharTok{\textless{}=} \DecValTok{0}\NormalTok{, par[}\DecValTok{2}\NormalTok{] }\SpecialCharTok{\textless{}} \SpecialCharTok{{-}}\DecValTok{1}\NormalTok{)))\{}
+    \FunctionTok{return}\NormalTok{(}\SpecialCharTok{{-}}\ConstantTok{Inf}\NormalTok{)}
+\NormalTok{  \}}
+  \FunctionTok{sum}\NormalTok{(mev}\SpecialCharTok{::}\FunctionTok{dgp}\NormalTok{(}\AttributeTok{x =}\NormalTok{ data, }\AttributeTok{scale =}\NormalTok{ par[}\DecValTok{1}\NormalTok{], }\AttributeTok{shape =}\NormalTok{ par[}\DecValTok{2}\NormalTok{], }\AttributeTok{log =} \ConstantTok{TRUE}\NormalTok{))}
+\NormalTok{\}}
+\NormalTok{logpost }\OtherTok{\textless{}{-}} \ControlFlowTok{function}\NormalTok{(par, ...)\{}
+  \FunctionTok{logmdiprior}\NormalTok{(par) }\SpecialCharTok{+} \FunctionTok{loglik\_gp}\NormalTok{(par)}
+\NormalTok{\}}
+\CommentTok{\# Sampler using ratio{-}of{-}uniform method}
+\NormalTok{ru\_output }\OtherTok{\textless{}{-}}\NormalTok{ rust}\SpecialCharTok{::}\FunctionTok{ru}\NormalTok{(}
+  \AttributeTok{logf =}\NormalTok{ logpost,  }\CommentTok{\# log posterior function}
+  \AttributeTok{n =} \DecValTok{10000}\NormalTok{, }\CommentTok{\# number of posterior draws}
+  \AttributeTok{d =} \DecValTok{2}\NormalTok{, }\CommentTok{\# dimension of the parameter vector}
+  \AttributeTok{init =}\NormalTok{ mev}\SpecialCharTok{::}\FunctionTok{fit.gpd}\NormalTok{(danish, }\AttributeTok{thresh =} \DecValTok{10}\NormalTok{)}\SpecialCharTok{$}\NormalTok{par, }\CommentTok{\#mle}
+  \AttributeTok{lower =} \FunctionTok{c}\NormalTok{(}\DecValTok{0}\NormalTok{, }\SpecialCharTok{{-}}\DecValTok{1}\NormalTok{))}
+\DocumentationTok{\#\# Acceptance rate }
+\CommentTok{\# ru\_output$pa}
+\DocumentationTok{\#\# Posterior samples}
+\NormalTok{postsamp }\OtherTok{\textless{}{-}}\NormalTok{ ru\_output}\SpecialCharTok{$}\NormalTok{sim\_vals}
+\end{Highlighting}
+\end{Shaded}
+
+Even without modification, the acceptance rate is 52\%, which is quite
+efficient in the context. The generalized Pareto approximation suggests
+a very heavy tail: values of \(\xi \geq 1\) correspond to distributions
+with infinite first moment, and those with \(\xi \geq 1/2\) to infinite
+variance.
+
+\begin{figure}[ht!]
+
+\centering{
+
+\pandocbounded{\includegraphics[keepaspectratio]{montecarlo_files/figure-pdf/fig-danish-rou-1.pdf}}
+
+}
+
+\caption{\label{fig-danish-rou}Scatterplot of posterior samples from the
+generalized Pareto model applied to Danish fire insurance losses above
+10 millions krones, with maximal data information prior (left) and
+posterior predictive density on log scale (right).}
+
+\end{figure}%
 
 \end{example}
 
@@ -4120,13 +4160,24 @@ more than 9\% for the same Monte Carlo sample size.
 \NormalTok{th\_est }\OtherTok{\textless{}{-}} \DecValTok{1}\SpecialCharTok{/}\NormalTok{(}\DecValTok{4}\SpecialCharTok{*}\NormalTok{(}\DecValTok{2}\SpecialCharTok{*}\NormalTok{alpha}\SpecialCharTok{+}\DecValTok{1}\NormalTok{))}
 \CommentTok{\# Point estimates and differences}
 \FunctionTok{round}\NormalTok{(}\FunctionTok{c}\NormalTok{(}\AttributeTok{true =}\NormalTok{ th\_est, }\StringTok{"monte carlo"} \OtherTok{=}\NormalTok{ mc\_est, }\StringTok{"importance sampling"} \OtherTok{=}\NormalTok{ is\_est),}\DecValTok{4}\NormalTok{)}
-\CommentTok{\#\textgreater{}                true         monte carlo importance sampling }
-\CommentTok{\#\textgreater{}              0.0625              0.0627              0.0620}
-\CommentTok{\# Ratio of std. errors for means}
-\NormalTok{mc\_var}\SpecialCharTok{/}\NormalTok{is\_var }\CommentTok{\# value \textgreater{} 1 means that IS is more efficient}
-\CommentTok{\#\textgreater{} [1] 1.11}
 \end{Highlighting}
 \end{Shaded}
+
+\begin{verbatim}
+               true         monte carlo importance sampling 
+             0.0625              0.0622              0.0627 
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Ratio of std. errors for means}
+\NormalTok{mc\_var}\SpecialCharTok{/}\NormalTok{is\_var }\CommentTok{\# value \textgreater{} 1 means that IS is more efficient}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+[1] 1.087118
+\end{verbatim}
 
 \begin{figure}[ht!]
 
@@ -4192,7 +4243,7 @@ testimonial of this.
 
 \centering{
 
-\includegraphics[width=0.85\linewidth,height=\textheight,keepaspectratio]{montecarlo_files/figure-pdf/fig-monte-carlo-path-1.pdf}
+\pandocbounded{\includegraphics[keepaspectratio]{montecarlo_files/figure-pdf/fig-monte-carlo-path-1.pdf}}
 
 }
 
@@ -4212,7 +4263,7 @@ Consider estimation of the probability that a standard Gaussian random
 variable exceeds \(a=4,\) which is \(p=1-\Phi(a).\) We can use standard
 numerical approximations to the distribution function implemented in any
 software package, which shows this probability is roughly one in
-\(31574.\)
+\(\ensuremath{3.1574\times 10^{4}}.\)
 
 If we consider a truncated Gaussian above \(a,\) then the integral of
 \(\mathsf{I}(x>a)\) is one (since the truncated Gaussian is a valid
@@ -4237,10 +4288,13 @@ with \(B=10^6\) is demonstrated using the following code
 \NormalTok{is }\OtherTok{\textless{}{-}} \FunctionTok{mean}\NormalTok{(}\FunctionTok{dnorm}\NormalTok{(Y)}\SpecialCharTok{/}\FunctionTok{drayleigh}\NormalTok{(Y, }\AttributeTok{a =}\NormalTok{ a))}
 \CommentTok{\# Relative error}
 \FunctionTok{c}\NormalTok{(}\AttributeTok{mc =}\NormalTok{ (mc }\SpecialCharTok{{-}}\NormalTok{ exact)}\SpecialCharTok{/}\NormalTok{exact, }\AttributeTok{is =}\NormalTok{ (is }\SpecialCharTok{{-}}\NormalTok{ exact)}\SpecialCharTok{/}\NormalTok{exact)}
-\CommentTok{\#\textgreater{}         mc         is }
-\CommentTok{\#\textgreater{} {-}0.0211940 {-}0.0000293}
 \end{Highlighting}
 \end{Shaded}
+
+\begin{verbatim}
+           mc            is 
+-2.119405e-02 -2.927613e-05 
+\end{verbatim}
 
 \end{example}
 
@@ -4385,7 +4439,7 @@ we expect these to converge to it.
 
 \centering{
 
-\includegraphics[width=0.85\linewidth,height=\textheight,keepaspectratio]{montecarlo_files/figure-pdf/fig-discrete-markov-chain-1.pdf}
+\pandocbounded{\includegraphics[keepaspectratio]{montecarlo_files/figure-pdf/fig-discrete-markov-chain-1.pdf}}
 
 }
 
@@ -4460,7 +4514,7 @@ variability of our mean estimators.
 
 \centering{
 
-\includegraphics[width=0.85\linewidth,height=\textheight,keepaspectratio]{montecarlo_files/figure-pdf/fig-ar1-variance-1.pdf}
+\pandocbounded{\includegraphics[keepaspectratio]{montecarlo_files/figure-pdf/fig-ar1-variance-1.pdf}}
 
 }
 
@@ -4530,7 +4584,7 @@ the smaller blocks.
 
 \centering{
 
-\includegraphics[width=0.85\linewidth,height=\textheight,keepaspectratio]{montecarlo_files/figure-pdf/fig-mcmc-batchmean-1.pdf}
+\pandocbounded{\includegraphics[keepaspectratio]{montecarlo_files/figure-pdf/fig-mcmc-batchmean-1.pdf}}
 
 }
 
@@ -6123,6 +6177,11 @@ Principled, Practical Approach to Constructing Priors.''}
 \emph{Statistical Science} 32 (1): 1--28.
 \url{https://doi.org/10.1214/16-sts576}.
 
+\bibitem[\citeproctext]{ref-Smith:1985}
+Smith, Richard L. 1985. {``Maximum Likelihood Estimation in a Class of
+Nonregular Cases.''} \emph{Biometrika} 72 (1): 67--90.
+\url{https://doi.org/10.1093/biomet/72.1.67}.
+
 \bibitem[\citeproctext]{ref-Sorbye.Holbek.Rue:2017}
 Sørbye, Sigrunn Holbek, and Håvard Rue. 2017. {``Penalised Complexity
 Priors for Stationary Autoregressive Processes.''} \emph{Journal of Time
@@ -6148,16 +6207,11 @@ Posterior Distributions by Data Augmentation.''} \emph{Journal of the
 American Statistical Association} 82 (398): 528--40.
 \url{https://doi.org/10.1080/01621459.1987.10478458}.
 
-\bibitem[\citeproctext]{ref-Wakefield:1991}
-Wakefield, J. C., A. E. Gelfand, and A. F. M. Smith. 1991a. {``Efficient
+\bibitem[\citeproctext]{ref-Wakefield.Gelfand.Smith:1991}
+Wakefield, J. C., A. E. Gelfand, and A. F. M. Smith. 1991. {``Efficient
 Generation of Random Variates via the Ratio-of-Uniforms Method.''}
 \emph{Statistics and Computing} 1 (2): 129--33.
-\url{https://doi.org/10.1007/bf01889987}.
-
-\bibitem[\citeproctext]{ref-Wakefield.Gelfand.Smith:1991}
----------. 1991b. {``Efficient Generation of Random Variates via the
-Ratio-of-Uniforms Method.''} \emph{Statistics and Computing} 1 (2):
-129--33. \url{https://doi.org/10.1007/BF01889987}.
+\url{https://doi.org/10.1007/BF01889987}.
 
 \bibitem[\citeproctext]{ref-Watanabe:2010}
 Watanabe, Sumio. 2010. {``Asymptotic Equivalence of {B}ayes Cross

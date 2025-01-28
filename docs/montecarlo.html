@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.7.1">
+<meta name="generator" content="quarto-1.7.3">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -91,10 +91,10 @@ div.csl-indent {
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="site_libs/quarto-html/anchor.min.js"></script>
 <link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-2bb0ec5e928ee8c40b12725cb7836c35.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-81b5c3e63835cfde897ecd3d35a35a41.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-a51e8ad160b68d9f8f1ac488cc0f242e.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-ad5ef081d17d57ab2b6cc5e45efb5d90.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
   "copy-button": false,
@@ -281,7 +281,7 @@ F^{-1}(u) = \inf\{x: f(x) \geq u\}
 \end{align*}\]</span> and if <span class="math inline">\(G\)</span> is continuous, then <span class="math inline">\(F(X) \sim \mathsf{unif}(0,1).\)</span> We can thus simulate data using the quantile function <span class="math inline">\(F^{-1}(U),\)</span> with <span class="math inline">\(U \sim \mathsf{unif}(0,1).\)</span></p>
 <div id="exm-simulation-inverse" class="theorem example">
 <p><span class="theorem-title"><strong>Example 4.1 (Simulation of exponential variates)</strong></span> The distribution function of <span class="math inline">\(Y \sim \mathsf{expo}(\lambda)\)</span> is <span class="math inline">\(F(y) = \exp(-\lambda y)\)</span>, so the quantile function is <span class="math inline">\(F^{-1}(u) = -\log(u) / \lambda\)</span></p>
-<div class="cell" data-layout-align="center">
+<div class="cell">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="fl">1e4</span>L</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="sc">-</span><span class="fu">log</span>(<span class="fu">runif</span>(n)) <span class="sc">/</span> <span class="dv">2</span> <span class="co">#simulate expo(2)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
@@ -291,12 +291,12 @@ F^{-1}(u) = \inf\{x: f(x) \geq u\}
 \mathcal{A}_{f}=\{(\boldsymbol{x}, u): 0 \leq u \leq  c f(\boldsymbol{x})\},
 \end{align*}\]</span> then <span class="math inline">\(\boldsymbol{X}\)</span> has density <span class="math inline">\(f(\boldsymbol{x}).\)</span> Conversely, if <span class="math inline">\(\boldsymbol{X}\)</span> has density <span class="math inline">\(f(\boldsymbol{x})\)</span> and <span class="math inline">\(U\sim\mathsf{unif}(0,1)\)</span> independently, then <span class="math inline">\([\boldsymbol{X}, cUf(\boldsymbol{X})]\)</span> is uniformly distributed on <span class="math inline">\(\mathcal{A}_f\)</span></p>
 <p>We can thus view <span class="math inline">\(f\)</span> as the marginal density of <span class="math inline">\(\boldsymbol{X}\)</span> since <span class="math inline">\(f(\boldsymbol{x}) = \int_0^{f(\boldsymbol{x})} \mathrm{d} u.\)</span> If we can simulate uniformly from <span class="math inline">\(\mathcal{A}_{f},\)</span> then, we can discard the auxiliary variable <span class="math inline">\(u.\)</span> See <span class="citation" data-cites="Devroye:1986">Devroye (<a href="references.html#ref-Devroye:1986" role="doc-biblioref">1986</a>)</span>, Theorem 3.1 for a proof.</p>
-<div class="cell" data-layout-align="center">
+<div class="cell">
 <div class="cell-output-display">
-<div id="fig-fundamental-theorem" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
+<div id="fig-fundamental-theorem" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-fundamental-theorem-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="montecarlo_files/figure-html/fig-fundamental-theorem-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:85.0%">
+<img src="montecarlo_files/figure-html/fig-fundamental-theorem-1.png" class="img-fluid figure-img" width="672">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-fundamental-theorem-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Figure&nbsp;4.1: Illustration of the fundamental theorem of simulation. All points in blue below the density curve belong to <span class="math inline">\(\mathcal{A}_f.\)</span>
@@ -315,12 +315,12 @@ Figure&nbsp;4.1: Illustration of the fundamental theorem of simulation. All poin
 <li>If <span class="math inline">\(R \geq CU,\)</span> return <span class="math inline">\(\boldsymbol{\theta},\)</span> else go back to step 1.</li>
 </ol>
 </div>
-<div class="cell" data-layout-align="center">
+<div class="cell">
 <div class="cell-output-display">
-<div id="fig-acceptreject" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
+<div id="fig-acceptreject" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-acceptreject-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="montecarlo_files/figure-html/fig-acceptreject-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:85.0%">
+<img src="montecarlo_files/figure-html/fig-acceptreject-1.png" class="img-fluid figure-img" width="672">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-acceptreject-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Figure&nbsp;4.2: Target density (full) and scaled proposal density (dashed): the vertical segment at $ heta=1$ shows the percentage of acceptance for a uniform slice under the scaled proposal, giving an acceptance ratio of 0.58.
@@ -336,16 +336,20 @@ f(x; \mu, \sigma, a, b) = \frac{1}{\sigma}\frac{\phi\left(\frac{x-\mu}{\sigma}\r
 \end{align*}\]</span> where <span class="math inline">\(\phi(\cdot), \Phi(\cdot)\)</span> are respectively the density and distribution function of the standard Gaussian distribution.</p>
 <p>Since the Gaussian is a location-scale family, we can reduce the problem to sampling <span class="math inline">\(X\)</span> from a standard Gaussian truncated on <span class="math inline">\(\alpha = (a-\mu)/\sigma\)</span> and <span class="math inline">\(\beta = (b-\mu)/\sigma\)</span> and back transform the result as <span class="math inline">\(Y = \mu + \sigma X.\)</span></p>
 <p>A crude accept-reject sampling algorithm would consider sampling from the same untruncated distribution with density <span class="math inline">\(g(X) = \sigma^{-1}\phi\{(x-\mu)/\sigma\},\)</span> and the acceptance ratio is <span class="math inline">\(C^{-1}=\{\Phi(\beta) - \Phi(\alpha)\}.\)</span> We thus simply simulate points from the Gaussian and accept any that falls within the bounds.</p>
-<div class="cell" data-layout-align="center">
+<div class="cell">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Standard Gaussian truncated on [0,1]</span></span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>candidate <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(<span class="fl">1e5</span>)</span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>trunc_samp <span class="ot">&lt;-</span> candidate[candidate <span class="sc">&gt;=</span> <span class="dv">0</span> <span class="sc">&amp;</span> candidate <span class="sc">&lt;=</span> <span class="dv">1</span>]</span>
 <span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Acceptance rate</span></span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="fu">length</span>(trunc_samp)<span class="sc">/</span><span class="fl">1e5</span></span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 0.342</span></span>
-<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Theoretical acceptance rate</span></span>
-<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a><span class="fu">pnorm</span>(<span class="dv">1</span>)<span class="sc">-</span><span class="fu">pnorm</span>(<span class="dv">0</span>)</span>
-<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 0.341</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="fu">length</span>(trunc_samp)<span class="sc">/</span><span class="fl">1e5</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.3401</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Theoretical acceptance rate</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="fu">pnorm</span>(<span class="dv">1</span>)<span class="sc">-</span><span class="fu">pnorm</span>(<span class="dv">0</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.3413447</code></pre>
+</div>
 </div>
 <p>We can of course do better: if we consider a random variable with distribution function <span class="math inline">\(F,\)</span> but truncated over the interval <span class="math inline">\([a,b],\)</span> then the resulting distribution function is <span class="math display">\[\frac{F(x) - F(a)}{F(b)-F(a)}, \qquad a \leq x \leq b,\]</span> and we can invert this expression to get the quantile function of the truncated variable in terms of the distribution function <span class="math inline">\(F\)</span> and the quantile function <span class="math inline">\(F^{-1}\)</span> of the original untruncated variable.</p>
 <p>For the Gaussian, this gives <span class="math display">\[\begin{align*}
@@ -358,11 +362,11 @@ X \sim \Phi^{-1}\left[\Phi(a) + \{\Phi(b)-\Phi(a)\}U\right]
 <li>Accept <span class="math inline">\(X\)</span> if <span class="math inline">\(XV \leq a,\)</span> where <span class="math inline">\(V \sim \mathsf{U}(0,1).\)</span></li>
 </ol>
 <p>Should we wish to obtain samples on <span class="math inline">\([a,b],\)</span> we could instead propose from a Rayleigh truncated above at <span class="math inline">\(b\)</span> <span class="citation" data-cites="LEcuyer.Botev:2017">(<a href="references.html#ref-LEcuyer.Botev:2017" role="doc-biblioref">Botev and L’Écuyer 2017</a>)</span>.</p>
-<div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>a <span class="ot">&lt;-</span> <span class="fl">8.3</span></span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>niter <span class="ot">&lt;-</span> <span class="dv">1000</span>L</span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>X <span class="ot">&lt;-</span> <span class="fu">sqrt</span>(a<span class="sc">^</span><span class="dv">2</span> <span class="sc">+</span> <span class="dv">2</span><span class="sc">*</span><span class="fu">rexp</span>(niter))</span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>samp <span class="ot">&lt;-</span> X[<span class="fu">runif</span>(niter)<span class="sc">*</span>X <span class="sc">&lt;=</span> a]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>a <span class="ot">&lt;-</span> <span class="fl">8.3</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>niter <span class="ot">&lt;-</span> <span class="dv">1000</span>L</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>X <span class="ot">&lt;-</span> <span class="fu">sqrt</span>(a<span class="sc">^</span><span class="dv">2</span> <span class="sc">+</span> <span class="dv">2</span><span class="sc">*</span><span class="fu">rexp</span>(niter))</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>samp <span class="ot">&lt;-</span> X[<span class="fu">runif</span>(niter)<span class="sc">*</span>X <span class="sc">&lt;=</span> a]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </div>
 <p>For a given candidate density <span class="math inline">\(g\)</span> which has a heavier tail than the target, we can resort to numerical methods to compute the mode of the ratio <span class="math inline">\(f/g\)</span> and obtain the bound <span class="math inline">\(C\)</span>; see <span class="citation" data-cites="Albert:2009">Albert (<a href="references.html#ref-Albert:2009" role="doc-biblioref">2009</a>)</span>, Section 5.8 for an insightful example. A different use for the simulations is to approximate integrals numerically. Consider a target distribution with finite expected value. The law of large numbers guarantees that, if we can draw observations from our target distribution, then the sample average will converge to the expected value of that distribution, as the sample size becomes larger and larger, provided the expectation is finite. We can thus compute the probability of any event or the expected value of any (integrable) function by computing sample averages; the cost to pay for this generality is randomness.</p>
@@ -381,9 +385,65 @@ p_a(d, r) = c\left[(r d + 1) \, b_0(r) \displaystyle\prod_{j=1}^d \left\{b_j(r) 
 <p>For the ratio-of-uniform method to work, we need the density <span class="math inline">\(f(\boldsymbol{x})\)</span> to be bounded, and the marginal moments of order <span class="math inline">\(rd+1\)</span>, meaning <span class="math display">\[\begin{align*}
 \mathsf{E}(X_i^{rd+1}) = \int_{\mathcal{S}} x_j^{rd+1} f(\boldsymbol{x}) \mathrm{d}x_1 \cdots \mathrm{d} x_d&lt; \infty
 \end{align*}\]</span> <span class="citation" data-cites="Wakefield.Gelfand.Smith:1991">Wakefield, Gelfand, and Smith (<a href="references.html#ref-Wakefield.Gelfand.Smith:1991" role="doc-biblioref">1991</a>)</span> propose using <span class="math inline">\(r=1/2\)</span> and relocating the mode of <span class="math inline">\(f\)</span> to the origin increase the acceptance rate. Northrop proposes to use a Box–Cox transformation <span class="citation" data-cites="Box.Cox:1964">(<a href="references.html#ref-Box.Cox:1964" role="doc-biblioref">Box and Cox 1964</a>)</span> together with a rotation in the software <span class="citation" data-cites="rust">Northrop (<a href="references.html#ref-rust" role="doc-biblioref">2024</a>)</span> to improve the acceptance rate. The bounding box may exist only for certain values of <span class="math inline">\(r\)</span>; see ee <a href="https://paulnorthrop.github.io/rust/articles/rust-a-vignette.html">the <code>rust</code> package vignette</a> for technical details and examples.</p>
+<!--
+
+
+The ratio-of-uniform method [@Kinderman.Monahan:1977; @Wakefield:1991] is a variant of accept-reject used to draw samples from a unnormalized density $f(\boldsymbol{\theta})$ for $\boldsymbol{\theta} \in \boldsymbol{\Theta} \subseteq \mathbb{R}^d.$ For some $r \geq 0,$ consider the set \begin{align*}
+\mathcal{C}_r = \left\{ (u_0, \ldots, u_d): 0 < u_0 \leq \left[f(u_1/u_0^r, \ldots, u_d/u_0^r)\right]^{\frac{1}{rd+1}}\right\}.
+\end{align*} If we can generate $u_0, \ldots, u_d$ uniformly over $\mathcal{C}_R,$ then the draws $(u_1/u_0^r, \ldots, u_d/u_0^r)$ are from the normalized density $f.$ Rejection sampling is used to obtain uniform draws over $\mathcal{C}_r$ under some conditions on the density and marginal moments. See [the `rust` package vignette](https://paulnorthrop.github.io/rust/articles/rust-a-vignette.html) for technical details and examples. Like with other accept-reject algorithms, the acceptance rate of the proposal goes down with the dimension of the problem. 
+
+-->
 </div>
 <div id="exm-rust" class="theorem example">
-<p><span class="theorem-title"><strong>Example 4.3 (Ratio-of-uniform in practice)</strong></span> &nbsp;</p>
+<p><span class="theorem-title"><strong>Example 4.3 (Ratio-of-uniform for insurance loss)</strong></span> We use the ratio-of-uniform algorithm presented in <a href="#prp-ratio-uniform" class="quarto-xref">Proposition&nbsp;<span>4.2</span></a> for the data from <a href="bayesics.html#exm-loss-extremes" class="quarto-xref">Example&nbsp;<span>2.6</span></a> to generate draws from the posterior. We illustrate below the <code>rust</code> package with a user-specified prior and posterior. We fit a generalized Pareto distribution <span class="math inline">\(Y \sim \mathsf{GP}(\tau, \xi)\)</span> to exceedances above 10 millions krones to the <code>danish</code> fire insurance data, using a truncated maximal data information prior <span class="math inline">\(p(\tau, \xi) \propto \tau^{-1}\exp(-\xi+1)\mathrm{I}(\xi &gt; -1).\)</span></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(danish, <span class="at">package =</span> <span class="st">"evir"</span>)</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Extract threshold exceedances</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>exc <span class="ot">&lt;-</span> danish[danish <span class="sc">&gt;</span> <span class="dv">10</span>] <span class="sc">-</span> <span class="dv">10</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Create a function for the log prior</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>logmdiprior <span class="ot">&lt;-</span> <span class="cf">function</span>(par, ...){</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span>(<span class="fu">isTRUE</span>(<span class="fu">any</span>(par[<span class="dv">1</span>] <span class="sc">&lt;=</span> <span class="dv">0</span>, par[<span class="dv">2</span>] <span class="sc">&lt;</span> <span class="sc">-</span><span class="dv">1</span>))){</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>    <span class="fu">return</span>(<span class="sc">-</span><span class="cn">Inf</span>)</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>  <span class="sc">-</span><span class="fu">log</span>(par[<span class="dv">1</span>]) <span class="sc">-</span> par[<span class="dv">2</span>]</span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Same for log likelihood, assuming independent data</span></span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>loglik_gp <span class="ot">&lt;-</span> <span class="cf">function</span>(par, <span class="at">data =</span> exc, ...){</span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span>(<span class="fu">isTRUE</span>(<span class="fu">any</span>(par[<span class="dv">1</span>] <span class="sc">&lt;=</span> <span class="dv">0</span>, par[<span class="dv">2</span>] <span class="sc">&lt;</span> <span class="sc">-</span><span class="dv">1</span>))){</span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>    <span class="fu">return</span>(<span class="sc">-</span><span class="cn">Inf</span>)</span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">sum</span>(mev<span class="sc">::</span><span class="fu">dgp</span>(<span class="at">x =</span> data, <span class="at">scale =</span> par[<span class="dv">1</span>], <span class="at">shape =</span> par[<span class="dv">2</span>], <span class="at">log =</span> <span class="cn">TRUE</span>))</span>
+<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a>logpost <span class="ot">&lt;-</span> <span class="cf">function</span>(par, ...){</span>
+<span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">logmdiprior</span>(par) <span class="sc">+</span> <span class="fu">loglik_gp</span>(par)</span>
+<span id="cb7-20"><a href="#cb7-20" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb7-21"><a href="#cb7-21" aria-hidden="true" tabindex="-1"></a><span class="co"># Sampler using ratio-of-uniform method</span></span>
+<span id="cb7-22"><a href="#cb7-22" aria-hidden="true" tabindex="-1"></a>ru_output <span class="ot">&lt;-</span> rust<span class="sc">::</span><span class="fu">ru</span>(</span>
+<span id="cb7-23"><a href="#cb7-23" aria-hidden="true" tabindex="-1"></a>  <span class="at">logf =</span> logpost,  <span class="co"># log posterior function</span></span>
+<span id="cb7-24"><a href="#cb7-24" aria-hidden="true" tabindex="-1"></a>  <span class="at">n =</span> <span class="dv">10000</span>, <span class="co"># number of posterior draws</span></span>
+<span id="cb7-25"><a href="#cb7-25" aria-hidden="true" tabindex="-1"></a>  <span class="at">d =</span> <span class="dv">2</span>, <span class="co"># dimension of the parameter vector</span></span>
+<span id="cb7-26"><a href="#cb7-26" aria-hidden="true" tabindex="-1"></a>  <span class="at">init =</span> mev<span class="sc">::</span><span class="fu">fit.gpd</span>(danish, <span class="at">thresh =</span> <span class="dv">10</span>)<span class="sc">$</span>par, <span class="co">#mle</span></span>
+<span id="cb7-27"><a href="#cb7-27" aria-hidden="true" tabindex="-1"></a>  <span class="at">lower =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="sc">-</span><span class="dv">1</span>))</span>
+<span id="cb7-28"><a href="#cb7-28" aria-hidden="true" tabindex="-1"></a><span class="do">## Acceptance rate </span></span>
+<span id="cb7-29"><a href="#cb7-29" aria-hidden="true" tabindex="-1"></a><span class="co"># ru_output$pa</span></span>
+<span id="cb7-30"><a href="#cb7-30" aria-hidden="true" tabindex="-1"></a><span class="do">## Posterior samples</span></span>
+<span id="cb7-31"><a href="#cb7-31" aria-hidden="true" tabindex="-1"></a>postsamp <span class="ot">&lt;-</span> ru_output<span class="sc">$</span>sim_vals</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Even without modification, the acceptance rate is 52%, which is quite efficient in the context. The generalized Pareto approximation suggests a very heavy tail: values of <span class="math inline">\(\xi \geq 1\)</span> correspond to distributions with infinite first moment, and those with <span class="math inline">\(\xi \geq 1/2\)</span> to infinite variance.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-danish-rou" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-danish-rou-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="montecarlo_files/figure-html/fig-danish-rou-1.png" class="img-fluid figure-img" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-danish-rou-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;4.3: Scatterplot of posterior samples from the generalized Pareto model applied to Danish fire insurance losses above 10 millions krones, with maximal data information prior (left) and posterior predictive density on log scale (right).
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
 </div>
 <div id="prp-monte-carlo-integration" class="theorem proposition">
 <p><span class="theorem-title"><strong>Proposition 4.3 (Monte Carlo integration)</strong></span> Specifically, suppose we are interested in the average <span class="math inline">\(\mathsf{E}\{g(X)\}\)</span> of <span class="math inline">\(X\)</span> with density or mass function <span class="math inline">\(f\)</span> supported on <span class="math inline">\(\mathcal{X}\)</span> for some function <span class="math inline">\(g.\)</span> Monte Carlo integration proceeds by drawing <span class="math inline">\(B\)</span> independent samples <span class="math inline">\(x_1, \ldots, x_B\)</span> from density <span class="math inline">\(p\)</span> and evaluating the empirical average of <span class="math inline">\(g,\)</span> with <span class="math display">\[\begin{align*}
@@ -406,36 +466,40 @@ p_a(d, r) = c\left[(r d + 1) \, b_0(r) \displaystyle\prod_{j=1}^d \left\{b_j(r) 
 </div>
 <div id="exm-is-beta-variance" class="theorem example">
 <p><span class="theorem-title"><strong>Example 4.4 (Importance sampling for the variance of a beta distribution)</strong></span> Consider <span class="math inline">\(X \sim \mathsf{beta}(\alpha, \alpha)\)</span> for <span class="math inline">\(\alpha &gt; 1\)</span> with <span class="math inline">\(\mathsf{E}(X)=0.5\)</span> since the density is symmetric. We tackle the estimation of the variance, which can be written as <span class="math inline">\(\mathsf{E}\{(X - 0.5)^2\}.\)</span> While we can easily derive the theoretical expression, equal to <span class="math inline">\(\mathsf{Va}(X) = \{4 \cdot (2\alpha+1)\}^{-1},\)</span> we can also use Monte Carlo integration as proof of concept.</p>
-<p>Rather than simulate directly from our data generating mechanism, we can use an importance sampling density <span class="math inline">\(q(x)\)</span> which puts more mass away from <span class="math inline">\(0.5\)</span> where the integral is zero. Consider the equiweighted mixture of <span class="math inline">\(\mathsf{beta}(\alpha, 3\alpha)\)</span> and <span class="math inline">\(\mathsf{\beta}(3\alpha, \alpha)\)</span>, which is bimodal. <a href="#fig-importance-sampling-beta" class="quarto-xref">Figure&nbsp;<span>4.3</span></a> shows the function we wish to integrate, the density and the importance sampling density, and the weighting function <span class="math inline">\(p(x)/q(x)\)</span> of the first 50 observations drawn from <span class="math inline">\(q(x)\)</span> with <span class="math inline">\(\alpha=1.5.\)</span> The variance ratio shows an improvement of more than 9% for the same Monte Carlo sample size.</p>
-<div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>B <span class="ot">&lt;-</span> <span class="fl">2e4</span>L</span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>alpha <span class="ot">&lt;-</span> <span class="fl">1.5</span></span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>factor <span class="ot">&lt;-</span> <span class="dv">3</span></span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Mode at the mean 0.5</span></span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>X0 <span class="ot">&lt;-</span> <span class="fu">rbeta</span>(<span class="at">n =</span> B, alpha, alpha)</span>
-<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>px <span class="ot">&lt;-</span> <span class="cf">function</span>(x){<span class="fu">dbeta</span>(x, alpha, alpha)}</span>
-<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Importance sampling density - mixture of two betas (alpha, factor*alpha)</span></span>
-<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>X1 <span class="ot">&lt;-</span> <span class="fu">ifelse</span>(<span class="fu">runif</span>(B) <span class="sc">&lt;</span> <span class="fl">0.5</span>, <span class="fu">rbeta</span>(B, alpha, factor<span class="sc">*</span>alpha), <span class="fu">rbeta</span>(B, factor<span class="sc">*</span>alpha, alpha))</span>
-<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>qx <span class="ot">&lt;-</span> <span class="cf">function</span>(x){<span class="fl">0.5</span><span class="sc">*</span><span class="fu">dbeta</span>(x, alpha, factor<span class="sc">*</span>alpha) <span class="sc">+</span> <span class="fl">0.5</span><span class="sc">*</span><span class="fu">dbeta</span>(x, factor<span class="sc">*</span>alpha, alpha)}</span>
-<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Function to integrate - gives variance of a symmetric beta distribution</span></span>
-<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>g <span class="ot">&lt;-</span> <span class="cf">function</span>(x){(x <span class="sc">-</span> <span class="fl">0.5</span>)<span class="sc">^</span><span class="dv">2</span>}</span>
-<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Weights for importance sampling</span></span>
-<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>w <span class="ot">&lt;-</span> <span class="fu">px</span>(X1)<span class="sc">/</span><span class="fu">qx</span>(X1)</span>
-<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a><span class="co"># Monte Carlo integration</span></span>
-<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>mc_est <span class="ot">&lt;-</span> <span class="fu">mean</span>(<span class="fu">g</span>(X0))</span>
-<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>mc_var <span class="ot">&lt;-</span> <span class="fu">var</span>(<span class="fu">g</span>(X0))<span class="sc">/</span>B</span>
-<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a><span class="co"># Importance sampling weighted mean and variance</span></span>
-<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a>is_est <span class="ot">&lt;-</span> <span class="fu">weighted.mean</span>(<span class="fu">g</span>(X1), <span class="at">w =</span> w) <span class="co"># equivalent to mean(g(X1)*w)/mean(w)</span></span>
-<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a>is_var <span class="ot">&lt;-</span> <span class="fu">sum</span>(w<span class="sc">^</span><span class="dv">2</span><span class="sc">*</span>(<span class="fu">g</span>(X1) <span class="sc">-</span> is_est)<span class="sc">^</span><span class="dv">2</span>)<span class="sc">/</span> (<span class="fu">sum</span>(w)<span class="sc">^</span><span class="dv">2</span>)</span>
-<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a><span class="co"># True value for the beta variance</span></span>
-<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a>th_est <span class="ot">&lt;-</span> <span class="dv">1</span><span class="sc">/</span>(<span class="dv">4</span><span class="sc">*</span>(<span class="dv">2</span><span class="sc">*</span>alpha<span class="sc">+</span><span class="dv">1</span>))</span>
-<span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a><span class="co"># Point estimates and differences</span></span>
-<span id="cb4-23"><a href="#cb4-23" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(<span class="fu">c</span>(<span class="at">true =</span> th_est, <span class="st">"monte carlo"</span> <span class="ot">=</span> mc_est, <span class="st">"importance sampling"</span> <span class="ot">=</span> is_est),<span class="dv">4</span>)</span>
-<span id="cb4-24"><a href="#cb4-24" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;                true         monte carlo importance sampling </span></span>
-<span id="cb4-25"><a href="#cb4-25" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;              0.0625              0.0623              0.0627</span></span>
-<span id="cb4-26"><a href="#cb4-26" aria-hidden="true" tabindex="-1"></a><span class="co"># Ratio of std. errors for means</span></span>
-<span id="cb4-27"><a href="#cb4-27" aria-hidden="true" tabindex="-1"></a>mc_var<span class="sc">/</span>is_var <span class="co"># value &gt; 1 means that IS is more efficient</span></span>
-<span id="cb4-28"><a href="#cb4-28" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 1.09</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Rather than simulate directly from our data generating mechanism, we can use an importance sampling density <span class="math inline">\(q(x)\)</span> which puts more mass away from <span class="math inline">\(0.5\)</span> where the integral is zero. Consider the equiweighted mixture of <span class="math inline">\(\mathsf{beta}(\alpha, 3\alpha)\)</span> and <span class="math inline">\(\mathsf{\beta}(3\alpha, \alpha)\)</span>, which is bimodal. <a href="#fig-importance-sampling-beta" class="quarto-xref">Figure&nbsp;<span>4.4</span></a> shows the function we wish to integrate, the density and the importance sampling density, and the weighting function <span class="math inline">\(p(x)/q(x)\)</span> of the first 50 observations drawn from <span class="math inline">\(q(x)\)</span> with <span class="math inline">\(\alpha=1.5.\)</span> The variance ratio shows an improvement of more than 9% for the same Monte Carlo sample size.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>B <span class="ot">&lt;-</span> <span class="fl">2e4</span>L</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>alpha <span class="ot">&lt;-</span> <span class="fl">1.5</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>factor <span class="ot">&lt;-</span> <span class="dv">3</span></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Mode at the mean 0.5</span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>X0 <span class="ot">&lt;-</span> <span class="fu">rbeta</span>(<span class="at">n =</span> B, alpha, alpha)</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>px <span class="ot">&lt;-</span> <span class="cf">function</span>(x){<span class="fu">dbeta</span>(x, alpha, alpha)}</span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Importance sampling density - mixture of two betas (alpha, factor*alpha)</span></span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>X1 <span class="ot">&lt;-</span> <span class="fu">ifelse</span>(<span class="fu">runif</span>(B) <span class="sc">&lt;</span> <span class="fl">0.5</span>, <span class="fu">rbeta</span>(B, alpha, factor<span class="sc">*</span>alpha), <span class="fu">rbeta</span>(B, factor<span class="sc">*</span>alpha, alpha))</span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>qx <span class="ot">&lt;-</span> <span class="cf">function</span>(x){<span class="fl">0.5</span><span class="sc">*</span><span class="fu">dbeta</span>(x, alpha, factor<span class="sc">*</span>alpha) <span class="sc">+</span> <span class="fl">0.5</span><span class="sc">*</span><span class="fu">dbeta</span>(x, factor<span class="sc">*</span>alpha, alpha)}</span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Function to integrate - gives variance of a symmetric beta distribution</span></span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>g <span class="ot">&lt;-</span> <span class="cf">function</span>(x){(x <span class="sc">-</span> <span class="fl">0.5</span>)<span class="sc">^</span><span class="dv">2</span>}</span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Weights for importance sampling</span></span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a>w <span class="ot">&lt;-</span> <span class="fu">px</span>(X1)<span class="sc">/</span><span class="fu">qx</span>(X1)</span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a><span class="co"># Monte Carlo integration</span></span>
+<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a>mc_est <span class="ot">&lt;-</span> <span class="fu">mean</span>(<span class="fu">g</span>(X0))</span>
+<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a>mc_var <span class="ot">&lt;-</span> <span class="fu">var</span>(<span class="fu">g</span>(X0))<span class="sc">/</span>B</span>
+<span id="cb8-17"><a href="#cb8-17" aria-hidden="true" tabindex="-1"></a><span class="co"># Importance sampling weighted mean and variance</span></span>
+<span id="cb8-18"><a href="#cb8-18" aria-hidden="true" tabindex="-1"></a>is_est <span class="ot">&lt;-</span> <span class="fu">weighted.mean</span>(<span class="fu">g</span>(X1), <span class="at">w =</span> w) <span class="co"># equivalent to mean(g(X1)*w)/mean(w)</span></span>
+<span id="cb8-19"><a href="#cb8-19" aria-hidden="true" tabindex="-1"></a>is_var <span class="ot">&lt;-</span> <span class="fu">sum</span>(w<span class="sc">^</span><span class="dv">2</span><span class="sc">*</span>(<span class="fu">g</span>(X1) <span class="sc">-</span> is_est)<span class="sc">^</span><span class="dv">2</span>)<span class="sc">/</span> (<span class="fu">sum</span>(w)<span class="sc">^</span><span class="dv">2</span>)</span>
+<span id="cb8-20"><a href="#cb8-20" aria-hidden="true" tabindex="-1"></a><span class="co"># True value for the beta variance</span></span>
+<span id="cb8-21"><a href="#cb8-21" aria-hidden="true" tabindex="-1"></a>th_est <span class="ot">&lt;-</span> <span class="dv">1</span><span class="sc">/</span>(<span class="dv">4</span><span class="sc">*</span>(<span class="dv">2</span><span class="sc">*</span>alpha<span class="sc">+</span><span class="dv">1</span>))</span>
+<span id="cb8-22"><a href="#cb8-22" aria-hidden="true" tabindex="-1"></a><span class="co"># Point estimates and differences</span></span>
+<span id="cb8-23"><a href="#cb8-23" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(<span class="fu">c</span>(<span class="at">true =</span> th_est, <span class="st">"monte carlo"</span> <span class="ot">=</span> mc_est, <span class="st">"importance sampling"</span> <span class="ot">=</span> is_est),<span class="dv">4</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>               true         monte carlo importance sampling 
+             0.0625              0.0623              0.0625 </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Ratio of std. errors for means</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>mc_var<span class="sc">/</span>is_var <span class="co"># value &gt; 1 means that IS is more efficient</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 1.104177</code></pre>
+</div>
 </div>
 <div class="cell" data-layout-align="center">
 <div class="cell-output-display">
@@ -445,7 +509,7 @@ p_a(d, r) = c\left[(r d + 1) \, b_0(r) \displaystyle\prod_{j=1}^d \left\{b_j(r) 
 <img src="montecarlo_files/figure-html/fig-importance-sampling-beta-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:95.0%">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-importance-sampling-beta-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;4.3: Monte Carlo integration with importance sampling for the variance of a symmetric beta distribution. Top left: variance function <span class="math inline">\(f(x) = (x-0.5)^2\)</span>. Top right: density of <span class="math inline">\(\mathsf{beta}(\alpha, \alpha)\)</span> (orange) and importance sampling mixture distribution (blue). Bottom left: weighting function and weights for 50 first importance sampling draws. Bottom right: sample paths of Monte Carlo mean with Wald 95% confidence intervals.
+Figure&nbsp;4.4: Monte Carlo integration with importance sampling for the variance of a symmetric beta distribution. Top left: variance function <span class="math inline">\(f(x) = (x-0.5)^2\)</span>. Top right: density of <span class="math inline">\(\mathsf{beta}(\alpha, \alpha)\)</span> (orange) and importance sampling mixture distribution (blue). Bottom left: weighting function and weights for 50 first importance sampling draws. Bottom right: sample paths of Monte Carlo mean with Wald 95% confidence intervals.
 </figcaption>
 </figure>
 </div>
@@ -455,17 +519,17 @@ Figure&nbsp;4.3: Monte Carlo integration with importance sampling for the varian
 <div id="exm-expectation-demo" class="theorem example">
 <p><span class="theorem-title"><strong>Example 4.5 (Expectations of functions of a gamma variate)</strong></span> Consider <span class="math inline">\(X \sim \mathsf{gamma}(\alpha, \beta),\)</span> a gamma distribution with shape <span class="math inline">\(\alpha\)</span> and rate <span class="math inline">\(\beta.\)</span> We can compute the probability that <span class="math inline">\(X &lt; 1\)</span> easily by Monte Carlo since <span class="math inline">\(\Pr(X &lt;1) = \mathsf{E}\{\mathrm{I}(X&lt;1)\}\)</span> and this means we only need to compute the proportion of draws less than one. We can likewise compute the mean <span class="math inline">\(g(x) = x\)</span> or the variance as <span class="math inline">\(\mathsf{E}(X^2) - \{\mathsf{E}(X)\}^2.\)</span></p>
 <p>Suppose we have drawn a Monte Carlo sample of size <span class="math inline">\(B.\)</span> If the function <span class="math inline">\(g(\cdot)\)</span> is square integrable,<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a> with variance <span class="math inline">\(\sigma^2_g,\)</span> then a central limit theorem applies. In large samples and for independent observations, our Monte Carlo average <span class="math inline">\(\widehat{\mu}_g = B^{-1}\sum_{b=1}^B g(X_i)\)</span> has variance <span class="math inline">\(\sigma^2_g/B.\)</span> We can approximate the unknown variance <span class="math inline">\(\sigma^2_g\)</span> by it’s empirical counterpart.<a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a>. Note that, while the variance decreases linearly with <span class="math inline">\(B,\)</span> the choice of <span class="math inline">\(g\)</span> impacts the speed of convergence: for our examples, we can compute <span class="math display">\[\sigma^2_g =\Pr(X \leq 1)\{1-\Pr(X \leq 1)\}=0.0434\]</span> (left) and <span class="math inline">\(\sigma^2_g=\alpha/\beta^2=1/8\)</span> (middle plot).</p>
-<p><a href="#fig-monte-carlo-path" class="quarto-xref">Figure&nbsp;<span>4.4</span></a> shows the empirical trace plot of the Monte Carlo average (note the <span class="math inline">\(\sqrt{B}\)</span> <span class="math inline">\(x\)</span>-axis scale!) as a function of the Monte Carlo sample size <span class="math inline">\(B\)</span> along with 95% Wald-based confidence intervals (gray shaded region), <span class="math inline">\(\widehat{\mu}_g \pm 1.96 \times \sigma_g/\sqrt{B}.\)</span> We can see that the ‘likely region’ for the average shrinks with <span class="math inline">\(B.\)</span></p>
-<p>What happens if our function is not integrable? The right-hand plot of <a href="#fig-monte-carlo-path" class="quarto-xref">Figure&nbsp;<span>4.4</span></a> shows empirical averages of <span class="math inline">\(g(x) = x^{-1},\)</span> which is not integrable if <span class="math inline">\(\alpha &lt; 1.\)</span> We can compute the empirical average, but the result won’t converge to any meaningful quantity regardless of the sample size. The large jumps are testimonial of this.</p>
-<div class="cell" data-layout-align="center">
+<p><a href="#fig-monte-carlo-path" class="quarto-xref">Figure&nbsp;<span>4.5</span></a> shows the empirical trace plot of the Monte Carlo average (note the <span class="math inline">\(\sqrt{B}\)</span> <span class="math inline">\(x\)</span>-axis scale!) as a function of the Monte Carlo sample size <span class="math inline">\(B\)</span> along with 95% Wald-based confidence intervals (gray shaded region), <span class="math inline">\(\widehat{\mu}_g \pm 1.96 \times \sigma_g/\sqrt{B}.\)</span> We can see that the ‘likely region’ for the average shrinks with <span class="math inline">\(B.\)</span></p>
+<p>What happens if our function is not integrable? The right-hand plot of <a href="#fig-monte-carlo-path" class="quarto-xref">Figure&nbsp;<span>4.5</span></a> shows empirical averages of <span class="math inline">\(g(x) = x^{-1},\)</span> which is not integrable if <span class="math inline">\(\alpha &lt; 1.\)</span> We can compute the empirical average, but the result won’t converge to any meaningful quantity regardless of the sample size. The large jumps are testimonial of this.</p>
+<div class="cell">
 <div class="cell-output-display">
-<div id="fig-monte-carlo-path" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
+<div id="fig-monte-carlo-path" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-monte-carlo-path-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="montecarlo_files/figure-html/fig-monte-carlo-path-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:85.0%">
+<img src="montecarlo_files/figure-html/fig-monte-carlo-path-1.png" class="img-fluid figure-img" width="672">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-monte-carlo-path-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;4.4: Running mean trace plots for <span class="math inline">\(g(x)=\mathrm{I}(x&lt;1)\)</span> (left), <span class="math inline">\(g(x)=x\)</span> (middle) and <span class="math inline">\(g(x)=1/x\)</span> (right) for a Gamma distribution with shape 0.5 and rate 2, as a function of the Monte Carlo sample size.
+Figure&nbsp;4.5: Running mean trace plots for <span class="math inline">\(g(x)=\mathrm{I}(x&lt;1)\)</span> (left), <span class="math inline">\(g(x)=x\)</span> (middle) and <span class="math inline">\(g(x)=1/x\)</span> (right) for a Gamma distribution with shape 0.5 and rate 2, as a function of the Monte Carlo sample size.
 </figcaption>
 </figure>
 </div>
@@ -473,24 +537,26 @@ Figure&nbsp;4.4: Running mean trace plots for <span class="math inline">\(g(x)=\
 </div>
 </div>
 <div id="exm-tail-probability" class="theorem example">
-<p><span class="theorem-title"><strong>Example 4.6 (Tail probability of a Gaussian distribution)</strong></span> Consider estimation of the probability that a standard Gaussian random variable exceeds <span class="math inline">\(a=4,\)</span> which is <span class="math inline">\(p=1-\Phi(a).\)</span> We can use standard numerical approximations to the distribution function implemented in any software package, which shows this probability is roughly one in <span class="math inline">\(31574.\)</span></p>
+<p><span class="theorem-title"><strong>Example 4.6 (Tail probability of a Gaussian distribution)</strong></span> Consider estimation of the probability that a standard Gaussian random variable exceeds <span class="math inline">\(a=4,\)</span> which is <span class="math inline">\(p=1-\Phi(a).\)</span> We can use standard numerical approximations to the distribution function implemented in any software package, which shows this probability is roughly one in <span class="math inline">\(3.1574\times 10^{4}.\)</span></p>
 <p>If we consider a truncated Gaussian above <span class="math inline">\(a,\)</span> then the integral of <span class="math inline">\(\mathsf{I}(x&gt;a)\)</span> is one (since the truncated Gaussian is a valid density). Thus, we can estimate rather the normalizing constant by simulating standard Gaussian and comparing this with the importance sampling estimator, using the knowledge of the value of the integral to derive rather the normalizing constant. Monte Carlo integration from with <span class="math inline">\(B=10^6\)</span> is demonstrated using the following code</p>
-<div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>a <span class="ot">&lt;-</span> <span class="dv">4</span></span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>B <span class="ot">&lt;-</span> <span class="fl">1e6</span>L <span class="co"># 1 million draws</span></span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>exact <span class="ot">&lt;-</span> <span class="fu">pnorm</span>(a, <span class="at">lower.tail =</span> <span class="cn">FALSE</span>)</span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Vanilla Monte Carlo</span></span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>X <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(B)</span>
-<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>mc <span class="ot">&lt;-</span> <span class="fu">mean</span>(X <span class="sc">&gt;=</span> a)</span>
-<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Importance sampling with Rayleigh</span></span>
-<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>Y <span class="ot">&lt;-</span> <span class="fu">sqrt</span>(a<span class="sc">^</span><span class="dv">2</span> <span class="sc">+</span> <span class="dv">2</span><span class="sc">*</span><span class="fu">rexp</span>(B))</span>
-<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>drayleigh <span class="ot">&lt;-</span> <span class="cf">function</span>(x, a){ x<span class="sc">*</span><span class="fu">exp</span>((a<span class="sc">^</span><span class="dv">2</span><span class="sc">-</span>x<span class="sc">^</span><span class="dv">2</span>)<span class="sc">/</span><span class="dv">2</span>)}</span>
-<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>is <span class="ot">&lt;-</span> <span class="fu">mean</span>(<span class="fu">dnorm</span>(Y)<span class="sc">/</span><span class="fu">drayleigh</span>(Y, <span class="at">a =</span> a))</span>
-<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Relative error</span></span>
-<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a><span class="fu">c</span>(<span class="at">mc =</span> (mc <span class="sc">-</span> exact)<span class="sc">/</span>exact, <span class="at">is =</span> (is <span class="sc">-</span> exact)<span class="sc">/</span>exact)</span>
-<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;         mc         is </span></span>
-<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; -0.0211940 -0.0000293</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>a <span class="ot">&lt;-</span> <span class="dv">4</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>B <span class="ot">&lt;-</span> <span class="fl">1e6</span>L <span class="co"># 1 million draws</span></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>exact <span class="ot">&lt;-</span> <span class="fu">pnorm</span>(a, <span class="at">lower.tail =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Vanilla Monte Carlo</span></span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>X <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(B)</span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>mc <span class="ot">&lt;-</span> <span class="fu">mean</span>(X <span class="sc">&gt;=</span> a)</span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Importance sampling with Rayleigh</span></span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>Y <span class="ot">&lt;-</span> <span class="fu">sqrt</span>(a<span class="sc">^</span><span class="dv">2</span> <span class="sc">+</span> <span class="dv">2</span><span class="sc">*</span><span class="fu">rexp</span>(B))</span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a>drayleigh <span class="ot">&lt;-</span> <span class="cf">function</span>(x, a){ x<span class="sc">*</span><span class="fu">exp</span>((a<span class="sc">^</span><span class="dv">2</span><span class="sc">-</span>x<span class="sc">^</span><span class="dv">2</span>)<span class="sc">/</span><span class="dv">2</span>)}</span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a>is <span class="ot">&lt;-</span> <span class="fu">mean</span>(<span class="fu">dnorm</span>(Y)<span class="sc">/</span><span class="fu">drayleigh</span>(Y, <span class="at">a =</span> a))</span>
+<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Relative error</span></span>
+<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a><span class="fu">c</span>(<span class="at">mc =</span> (mc <span class="sc">-</span> exact)<span class="sc">/</span>exact, <span class="at">is =</span> (is <span class="sc">-</span> exact)<span class="sc">/</span>exact)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>           mc            is 
+-2.119405e-02 -2.927613e-05 </code></pre>
+</div>
 </div>
 </div>
 </section>
@@ -549,16 +615,16 @@ P_3 = \begin{pmatrix}
 \end{pmatrix}
 \]</span> The stationary distribution is the value of the row vector <span class="math inline">\(\boldsymbol{p},\)</span> such that <span class="math inline">\(\boldsymbol{p} = \boldsymbol{p}\mathbf{P}\)</span> for transition matrix <span class="math inline">\(\mathbf{P}\)</span>: we get <span class="math inline">\(\boldsymbol{p}_1=(0, 5/11, 6/11)\)</span> for <span class="math inline">\(P_1,\)</span> <span class="math inline">\((1/3, 1/3, 1/3)\)</span> for <span class="math inline">\(P_2\)</span> and <span class="math inline">\((1,2,2,2,1)/8\)</span> for <span class="math inline">\(P_3.\)</span></p>
 <p>While the existence of a stationary distribution require aperiodicity, the latter is an hindrance from a computational perspective as ergodicity is valid without it.</p>
-<p><a href="#fig-discrete-markov-chain" class="quarto-xref">Figure&nbsp;<span>4.5</span></a> shows the path of the walk and the empirical proportion of the time spent in each state, as time progress. Since the Markov chain has a unique stationary distribution, we expect these to converge to it.</p>
-<div class="cell" data-layout-align="center">
+<p><a href="#fig-discrete-markov-chain" class="quarto-xref">Figure&nbsp;<span>4.6</span></a> shows the path of the walk and the empirical proportion of the time spent in each state, as time progress. Since the Markov chain has a unique stationary distribution, we expect these to converge to it.</p>
+<div class="cell">
 <div class="cell-output-display">
-<div id="fig-discrete-markov-chain" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
+<div id="fig-discrete-markov-chain" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-discrete-markov-chain-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="montecarlo_files/figure-html/fig-discrete-markov-chain-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:85.0%">
+<img src="montecarlo_files/figure-html/fig-discrete-markov-chain-1.png" class="img-fluid figure-img" width="672">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-discrete-markov-chain-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;4.5: Discrete Markov chain on integers from 1 to 5, with transition matrix <span class="math inline">\(P_3,\)</span> with traceplot of 1000 first iterations (left) and running mean plots of sample proportion of each state visited per 100 iterations (right).
+Figure&nbsp;4.6: Discrete Markov chain on integers from 1 to 5, with transition matrix <span class="math inline">\(P_3,\)</span> with traceplot of 1000 first iterations (left) and running mean plots of sample proportion of each state visited per 100 iterations (right).
 </figcaption>
 </figure>
 </div>
@@ -580,24 +646,24 @@ Figure&nbsp;4.5: Discrete Markov chain on integers from 1 to 5, with transition 
 </div>
 <div id="exm-ar1-clt-variance" class="theorem example">
 <p><span class="theorem-title"><strong>Example 4.8</strong></span> The lag-<span class="math inline">\(k\)</span> correlation of the stationary autoregressive process of order 1 is <span class="math inline">\(\phi^k,\)</span> so summing the series gives an asymptotic variance of <span class="math inline">\(\sigma^2(1+\phi)/(1-\phi).\)</span> We can constrast that to the variance of the stationary distribution for an independent sample, which is <span class="math inline">\(\sigma^2/(1-\phi^2).\)</span> The price to pay for having correlated samples is inefficiency: the higher the autocorrelation, the larger the variability of our mean estimators.</p>
-<div class="cell" data-layout-align="center">
+<div class="cell">
 <div class="cell-output-display">
-<div id="fig-ar1-variance" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
+<div id="fig-ar1-variance" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-ar1-variance-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="montecarlo_files/figure-html/fig-ar1-variance-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:85.0%">
+<img src="montecarlo_files/figure-html/fig-ar1-variance-1.png" class="img-fluid figure-img" width="672">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-ar1-variance-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;4.6: Scaled asymptotic variance of the sample mean for a stationary autoregressive first-order process with unit variance (full line) and a corresponding sample of independent observations with the same marginal variance (dashed line). The right panel gives the ratio of variances for positive correlation coefficients.
+Figure&nbsp;4.7: Scaled asymptotic variance of the sample mean for a stationary autoregressive first-order process with unit variance (full line) and a corresponding sample of independent observations with the same marginal variance (dashed line). The right panel gives the ratio of variances for positive correlation coefficients.
 </figcaption>
 </figure>
 </div>
 </div>
 </div>
-<p>We can see from <a href="#fig-ar1-variance" class="quarto-xref">Figure&nbsp;<span>4.6</span></a> that, when the autocorrelation is positive (as will be the cause in all applications of interest), we will suffer from variance inflation. To get the same uncertainty estimates for the mean with an <span class="math inline">\(\mathsf{AR}(1)\)</span> process with <span class="math inline">\(\phi \approx 0.75\)</span> than with an iid sample, we would need nine times as many observations: this is the prize to pay.</p>
+<p>We can see from <a href="#fig-ar1-variance" class="quarto-xref">Figure&nbsp;<span>4.7</span></a> that, when the autocorrelation is positive (as will be the cause in all applications of interest), we will suffer from variance inflation. To get the same uncertainty estimates for the mean with an <span class="math inline">\(\mathsf{AR}(1)\)</span> process with <span class="math inline">\(\phi \approx 0.75\)</span> than with an iid sample, we would need nine times as many observations: this is the prize to pay.</p>
 </div>
 <div id="prp-uncertainty" class="theorem proposition">
-<p><span class="theorem-title"><strong>Proposition 4.6 (Uncertainty estimation with Markov chains)</strong></span> With a simple random sample containing independent and identically distributed observations, the standard error of the sample mean is <span class="math inline">\(\sigma/\sqrt{n}\)</span> and we can use the empirical standard deviation <span class="math inline">\(\widehat{\sigma}\)</span> to estimate the first term. For Markov chains, the correlation prevents us from using this approach. The output of the<code>coda</code> package are based on fitting a high order autoregressive process to the Markov chain and using the formula of the unconditional variance of the <span class="math inline">\(\mathsf{AR}(p)\)</span> to obtain the central limit theorem variance. An alternative method recommended by <span class="citation" data-cites="Geyer:2011">Geyer (<a href="references.html#ref-Geyer:2011" role="doc-biblioref">2011</a>)</span> and implemented in his <strong>R</strong> package <code>mcmc</code>, is to segment the time series into batch, compute the means of each non-overlapping segment and use this standard deviation with suitable rescaling to get the central limit variance for the posterior mean. <a href="#fig-mcmc-batchmean" class="quarto-xref">Figure&nbsp;<span>4.7</span></a> illustrate the method of batch means.</p>
+<p><span class="theorem-title"><strong>Proposition 4.6 (Uncertainty estimation with Markov chains)</strong></span> With a simple random sample containing independent and identically distributed observations, the standard error of the sample mean is <span class="math inline">\(\sigma/\sqrt{n}\)</span> and we can use the empirical standard deviation <span class="math inline">\(\widehat{\sigma}\)</span> to estimate the first term. For Markov chains, the correlation prevents us from using this approach. The output of the<code>coda</code> package are based on fitting a high order autoregressive process to the Markov chain and using the formula of the unconditional variance of the <span class="math inline">\(\mathsf{AR}(p)\)</span> to obtain the central limit theorem variance. An alternative method recommended by <span class="citation" data-cites="Geyer:2011">Geyer (<a href="references.html#ref-Geyer:2011" role="doc-biblioref">2011</a>)</span> and implemented in his <strong>R</strong> package <code>mcmc</code>, is to segment the time series into batch, compute the means of each non-overlapping segment and use this standard deviation with suitable rescaling to get the central limit variance for the posterior mean. <a href="#fig-mcmc-batchmean" class="quarto-xref">Figure&nbsp;<span>4.8</span></a> illustrate the method of batch means.</p>
 <ol type="1">
 <li>Break the chain of length <span class="math inline">\(B\)</span> (after burn in) in <span class="math inline">\(K\)</span> blocks of size <span class="math inline">\(\approx K/B.\)</span></li>
 <li>Compute the sample mean of each segment. These values form a Markov chain and should be approximately uncorrelated.</li>
@@ -605,15 +671,15 @@ Figure&nbsp;4.6: Scaled asymptotic variance of the sample mean for a stationary 
 </ol>
 </div>
 <p>Why does the approach work? If the chain samples from the stationary distribution, all samples have the same mean. If we partition the sample into long enough, the sample mean of each blocks should be roughly independent (otherwise we could remove an overlapping portion). We can then compute the empirical standard deviation of the estimators. We can then compute the overall mean and use a scaling argument to relate the variability of the global estimator with the variability of the means of the smaller blocks.</p>
-<div class="cell" data-layout-align="center">
+<div class="cell">
 <div class="cell-output-display">
-<div id="fig-mcmc-batchmean" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
+<div id="fig-mcmc-batchmean" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-mcmc-batchmean-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="montecarlo_files/figure-html/fig-mcmc-batchmean-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:85.0%">
+<img src="montecarlo_files/figure-html/fig-mcmc-batchmean-1.png" class="img-fluid figure-img" width="672">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-mcmc-batchmean-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;4.7: Calculation of the standard error of the posterior mean using the batch method.
+Figure&nbsp;4.8: Calculation of the standard error of the posterior mean using the batch method.
 </figcaption>
 </figure>
 </div>
