@@ -19,7 +19,6 @@ The Markov chain Monte Carlo revolution in the 1990s made Bayesian inference mai
 
 Named after @Metropolis:1953, @Hastings:1970, its relevance took a long time to gain traction in the statistical community. The idea of the Metropolis--Hastings algorithm is to construct a Markov chain targeting a distribution $p(\cdot).$
 
-
 ::: {#prp-metropolis}
 ## Metropolis--Hastings algorithm
 
@@ -35,17 +34,46 @@ The Metropolis--Hastings build a Markov chain starting from an initial value $\b
 :::
 
 
+he following theoretical details provided for completeness only.
+
+
+:::{#def-detailed balance}
+
+## Detailed balance
+
+If our target is $p(\cdot)$, then the Markov chain satisfies the **detailed balance** condition with respect to $p(\cdot)$ if
+\begin{align*}
+K(\boldsymbol{\theta}^{\text{cur}}, \boldsymbol{\theta}^{\text{prop}})p(\boldsymbol{\theta}^{\text{cur}}) = K(\boldsymbol{\theta}^{\text{prop}}, \boldsymbol{\theta}^{\text{cur}})p(\boldsymbol{\theta}^{\text{prop}}).
+\end{align*}
+If a Markov chain satisfies the detailed balance with respect to $p(\cdot)$, then the latter is necessarily the invariant density of the Markov chain and the latter is reversible.
+
+:::
+
+
+:::{#prp-detailed balance-mh}
+
+The Metropolis--Hastings algorithm has transition kernel for a move from $\boldsymbol{x}$ to a proposal $\boldsymbol{y}$
+\begin{align*}
+K(\boldsymbol{x}, \boldsymbol{y}) = \alpha(\boldsymbol{x}, \boldsymbol{y}) q(\boldsymbol{y} \mid \boldsymbol{x}) + \{1- r(\boldsymbol{x})\}\mathsf{I}(\boldsymbol{y}=\boldsymbol{x})
+\end{align*}
+where $r(\boldsymbol{x})=\int \alpha(\boldsymbol{x}, \boldsymbol{y}) q(\boldsymbol{y} \mid \boldsymbol{x})\mathrm{d} \boldsymbol{y}$ is the average probability of acceptance of a move from $\boldsymbol{x}$, $\mathsf{I}(\cdot = \boldsymbol{x})$ is a point mass at $\boldsymbol{x},$ and $\alpha(\cdot)$ is defined on the next slide.
+
+One can show that the Metropolis--Hastings algorithm satisfies detailed balanced; see, e.g., Theorem 7.2 of @Casella.Robert:2004.
+:::
+
+<!--
 The Metropolis--Hastings algorithm generates samples from the posterior $p(\boldsymbol{\theta} \mid \boldsymbol{y})$ if the Markov chain it defines is reversible: we say it satisfies the *detailed balance condition* when the density of $\boldsymbol{\theta}_{t+1} \mid \boldsymbol{\theta}_{t},$ say $f(\boldsymbol{\theta}_{t+1} \mid \boldsymbol{\theta}_{t}).$ Detailed balance means
 \begin{align*}
 f(\boldsymbol{\theta}_{t+1} \mid \boldsymbol{\theta}_{t})p(\boldsymbol{\theta}_{t} \mid \boldsymbol{y}) = f(\boldsymbol{\theta}_{t} \mid \boldsymbol{\theta}_{t+1})p(\boldsymbol{\theta}_{t+1} \mid \boldsymbol{y}).
 \end{align*}
-This guarantees that, if $\boldsymbol{\theta}_{t}$ is drawn from the posterior, then the left hand side is the joint density of $(\boldsymbol{\theta}_{t}, \boldsymbol{\theta}_{t+1})$ and the marginal distribution obtained by integrating over $\boldsymbol{\theta}_{t},$
+-->
+If $\boldsymbol{\theta}_{t}$ is drawn from the posterior, then the left hand side is the joint density of $(\boldsymbol{\theta}_{t}, \boldsymbol{\theta}_{t+1})$ and the marginal distribution obtained by integrating over $\boldsymbol{\theta}_{t},$
 \begin{align*}
 \int f(\boldsymbol{\theta}_{t+1} \mid \boldsymbol{\theta}_{t})p(\boldsymbol{\theta}_{t} \mid \boldsymbol{y})\mathrm{d} \boldsymbol{\theta}_{t}
 & = \int f(\boldsymbol{\theta}_{t} \mid \boldsymbol{\theta}_{t+1})p(\boldsymbol{\theta}_{t+1} \mid \boldsymbol{y})\mathrm{d} \boldsymbol{\theta}_{t} 
 \\&\quad= p(\boldsymbol{\theta}_{t+1} \mid \boldsymbol{y})
 \end{align*}
-and any draw from the posterior will generate a new realization from the posterior. We also ensure that, provided the starting value as non-zero probability under the posterior, the chain will converge to the stationarity distribution (albeit perhaps slowly).
+and any draw from the posterior will generate a new realization from the posterior. It also ensures that, provided the starting value has non-zero probability under the posterior, the chain will converge to the stationarity distribution (albeit perhaps slowly).
 
 
 
@@ -53,7 +81,7 @@ and any draw from the posterior will generate a new realization from the posteri
 
 ## Interpretation of the algorithm
 
-If $R>1,$ the proposal has higher density and we always accept the move. If the ratio is less than one, the proposal is in a lower probability region,  we accept the move with probability $R$ and set $\boldsymbol{\theta}_{t}=\boldsymbol{\theta}^{\star}_t$; if we reject, the Markov chain stays at the current value, which induces autocorrelation. Since the acceptance probability depends only on the density through ratios, we can work with unnormalized density functions and this is what allows us, if our proposal density is the (marginal) posterior of the parameter, to obtain approximate posterior samples without having to compute the marginal likelihood.
+If $R>1,$ the proposal has higher density and we always accept the move. If the ratio is less than one, the proposal is in a lower probability region,  we accept the move with probability $R$ and set $\boldsymbol{\theta}_{t}=\boldsymbol{\theta}^{\star}_t$; if we reject, the Markov chain *stays at the current value*, which induces autocorrelation. Since the acceptance probability depends only on the density through ratios, we can work with unnormalized density functions and this is what allows us, if our proposal density is the (marginal) posterior of the parameter, to obtain approximate posterior samples without having to compute the marginal likelihood.
 :::
 
 :::{.remark}
