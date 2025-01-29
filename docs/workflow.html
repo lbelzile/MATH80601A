@@ -258,10 +258,15 @@ window.Quarto = {
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#trace-plots" id="toc-trace-plots" class="nav-link active" data-scroll-target="#trace-plots"><span class="header-section-number">7.0.1</span> Trace plots</a></li>
-  <li><a href="#diagnostics-of-convergence" id="toc-diagnostics-of-convergence" class="nav-link" data-scroll-target="#diagnostics-of-convergence"><span class="header-section-number">7.0.2</span> Diagnostics of convergence</a></li>
-  <li><a href="#posterior-predictive-checks" id="toc-posterior-predictive-checks" class="nav-link" data-scroll-target="#posterior-predictive-checks"><span class="header-section-number">7.0.3</span> Posterior predictive checks</a></li>
-  <li><a href="#information-criterion" id="toc-information-criterion" class="nav-link" data-scroll-target="#information-criterion"><span class="header-section-number">7.0.4</span> Information criterion</a></li>
+  <li><a href="#graphical-diagnostics" id="toc-graphical-diagnostics" class="nav-link active" data-scroll-target="#graphical-diagnostics"><span class="header-section-number">7.1</span> Graphical diagnostics</a>
+  <ul class="collapse">
+  <li><a href="#trace-plots" id="toc-trace-plots" class="nav-link" data-scroll-target="#trace-plots"><span class="header-section-number">7.1.1</span> Trace plots</a></li>
+  <li><a href="#posterior-predictive-checks" id="toc-posterior-predictive-checks" class="nav-link" data-scroll-target="#posterior-predictive-checks"><span class="header-section-number">7.1.2</span> Posterior predictive checks</a></li>
+  </ul></li>
+  <li><a href="#goodness-of-fit-criteria" id="toc-goodness-of-fit-criteria" class="nav-link" data-scroll-target="#goodness-of-fit-criteria"><span class="header-section-number">7.2</span> Goodness-of-fit criteria</a>
+  <ul class="collapse">
+  <li><a href="#information-criterion" id="toc-information-criterion" class="nav-link" data-scroll-target="#information-criterion"><span class="header-section-number">7.2.1</span> Information criterion</a></li>
+  </ul></li>
   </ul>
 <div class="toc-actions"><ul><li><a href="https://github.com/lbelzile/MATH80601A/edit/main/workflow.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li></ul></div></nav>
     </div>
@@ -277,8 +282,10 @@ window.Quarto = {
 <p>For a given problem, there are many different Markov chain Monte Carlo algorithms that one can implement: they will typically be distinguished based on the running time and the efficiency (with algorithms providing chains that have low autocorrelation being better). Many visual diagnostics and standard tests can be used to diagnose lack of convergence, or inefficiency. The purpose of this section is to review these in turn.</p>
 <p>The Bayesian workflow is a coherent framework for model construction, estimation and validation. It typically involves multiple iterations tuning, adapting and modifying both the models and the algorithms in the hope of achieving a model that is useful <span class="citation" data-cites="Gelman:2020">(<a href="references.html#ref-Gelman:2020" role="doc-biblioref">Gelman et al. 2020</a>)</span>; see also <a href="https://betanalpha.github.io/assets/case_studies/principled_bayesian_workflow.html">Michael Betancourt</a> for excellent visualizations.</p>
 <p>To illustrate these, we revisit the model from <a href="priors.html#exm-randomeffects" class="quarto-xref">Example&nbsp;<span>3.16</span></a> with a penalized complexity prior for the individual effect <span class="math inline">\(\alpha_i\)</span> and vague normal priors. We also fit a simple Poisson model with only the fixed effect, taking <span class="math inline">\(Y_{ij} \sim \mathsf{Poisson}\{\exp(\beta_j)\}\)</span> with <span class="math inline">\(\beta_j \sim \mathsf{Gauss}(0,100)\)</span> has much too little variability relative to the observations.</p>
-<section id="trace-plots" class="level3" data-number="7.0.1">
-<h3 data-number="7.0.1" class="anchored" data-anchor-id="trace-plots"><span class="header-section-number">7.0.1</span> Trace plots</h3>
+<section id="graphical-diagnostics" class="level2" data-number="7.1">
+<h2 data-number="7.1" class="anchored" data-anchor-id="graphical-diagnostics"><span class="header-section-number">7.1</span> Graphical diagnostics</h2>
+<section id="trace-plots" class="level3" data-number="7.1.1">
+<h3 data-number="7.1.1" class="anchored" data-anchor-id="trace-plots"><span class="header-section-number">7.1.1</span> Trace plots</h3>
 <p>It is useful to inspect visually the Markov chain, as it may indicate several problems. If the chain drifts around without stabilizing around the posterior mode, then we can suspect that it hasn’t reached it’s stationary distribution (likely due to poor starting values). In such cases, we need to disregard the dubious draws from the chain by discarding the so-called warm up or <strong>burn in</strong> period. While there are some guarantees of convergence in the long term, silly starting values may translate into tens of thousands of iterations lost wandering around in regions with low posterior mass. Preliminary optimization and plausible starting values help alleviate these problems. <a href="#fig-badstart" class="quarto-xref">Figure&nbsp;<span>7.1</span></a> shows the effect of bad starting values on a toy problem where convergence to the mode is relatively fast. If the proposal is in a flat region of the space, it can wander around for a very long time before converging to the stationary distribution.</p>
 <p>If we run several chains, as in <a href="#fig-badstart" class="quarto-xref">Figure&nbsp;<span>7.1</span></a>, with different starting values, we can monitor convergence by checking whether these chains converge to the same target. A <strong>trace rank</strong> plots, shown on right panel of <a href="#fig-badstart" class="quarto-xref">Figure&nbsp;<span>7.1</span></a>, compares the rank of the values of the different chain at a given iteration: with good mixing, the ranks should switch frequently and be distributed uniformly across integers.</p>
 <div class="cell">
@@ -295,11 +302,8 @@ Figure&nbsp;7.1: Traceplots of three Markov chains for the same target with diff
 </div>
 </div>
 </div>
-</section>
-<section id="diagnostics-of-convergence" class="level3" data-number="7.0.2">
-<h3 data-number="7.0.2" class="anchored" data-anchor-id="diagnostics-of-convergence"><span class="header-section-number">7.0.2</span> Diagnostics of convergence</h3>
-<p>Generally, one would run a MCMC algorithm. The first iterations, used during the burn in period to tune proposal variances and allow the chains to converge to the stationary distribution, are discarded. If visual inspection of the chains reveal that some of the chains for one or more parameters are not stationary until some iteration, we will discard all of these in addition.</p>
-<p>The target of inference is functional (i.e., one-dimensional summaries of the chain): we need to have convergence of the latter, but also sufficient effective sample size for our averages to be accurate (at least to two significant digits).</p>
+<p>The first iterations of a MCMC algorithm, used during the burn in period to tune proposal variances and allow the chains to converge to the stationary distribution, are discarded. If visual inspection of the chains reveal that some of the chains for one or more parameters are not stationary until some iteration, we will discard all of these in addition.</p>
+<p>The target of inference is a functional (i.e., one-dimensional summaries of the chain): we need to have convergence of the latter, but also sufficient effective sample size for our averages to be accurate (at least to two significant digits).</p>
 <p>For the Poisson example, the effective sample size for the <span class="math inline">\(\boldsymbol{\beta}\)</span> for the multilevel model is a bit higher than 1000 with <span class="math inline">\(B=5000\)</span> iterations, whereas we have for the simple naive model is <span class="math inline">\(1.028\times 10^{4}\)</span> for <span class="math inline">\(B=10000\)</span> draws, suggesting superefficient sampling. The dependency between <span class="math inline">\(\boldsymbol{\alpha}\)</span> and <span class="math inline">\(\boldsymbol{\beta}\)</span> is responsible for the drop in accuracy.</p>
 <p>The <code>coda</code> (convergence diagnosis and output analysis) <strong>R</strong> package contains many tests. For example, the Geweke <span class="math inline">\(Z\)</span>-score compares the averages for the beginning and the end of the chain: rejection of the null implies lack of convergence, or poor mixing.</p>
 <!-- The Gelman--Rubin $\widehat{R}$ diagnostic, which is advocated in STAN, is a multi-chain diagnostic that compares the within-chain variability to the between-chain variability. The value should be  -->
@@ -326,8 +330,8 @@ Figure&nbsp;7.2: Two pairs of Markov chains: the top ones seem stationary, but w
 <p>More generally, it is preferable to run a single chain for a longer period than run multiple chains sequentially, as there is a cost to initializing multiple times with different starting values since we must discard initial draws. With parallel computations, multiple chains are more frequent nowadays.</p>
 <p>MCMC algorithms are often run thinning the chain (i.e., keeping only a fraction of the samples drawn, typically every <span class="math inline">\(k\)</span> iteration). This is wasteful as we can of course get more precise estimates by keeping all posterior draws, whether correlated or not. The only argument in favor of thinning is limited storage capacity: if we run very long chains in a model with hundreds of parameters, we may run out of memory.</p>
 </section>
-<section id="posterior-predictive-checks" class="level3" data-number="7.0.3">
-<h3 data-number="7.0.3" class="anchored" data-anchor-id="posterior-predictive-checks"><span class="header-section-number">7.0.3</span> Posterior predictive checks</h3>
+<section id="posterior-predictive-checks" class="level3" data-number="7.1.2">
+<h3 data-number="7.1.2" class="anchored" data-anchor-id="posterior-predictive-checks"><span class="header-section-number">7.1.2</span> Posterior predictive checks</h3>
 <p>Posterior predictive checks can be used to compare models of varying complexity.One of the visual diagnostics, outlined in <span class="citation" data-cites="Gabry:2019">Gabry et al. (<a href="references.html#ref-Gabry:2019" role="doc-biblioref">2019</a>)</span>, consists in computing a summary statistic of interest from the posterior predictive (whether mean, median, quantile, skewness, etc.) which is relevant for the problem at hand and which we hope our model can adequately capture.</p>
 <p>Suppose we have <span class="math inline">\(B\)</span> draws from the posterior and simulate for each <span class="math inline">\(n\)</span> observations from the posterior predictive <span class="math inline">\(p(\widetilde{\boldsymbol{y}} \mid \boldsymbol{y})\)</span>: we can benchmark summary statistics from our original data <span class="math inline">\(\boldsymbol{y}\)</span> with the posterior predictive copies <span class="math inline">\(\widetilde{\boldsymbol{y}}_b.\)</span> <a href="#fig-posterior-pred-check" class="quarto-xref">Figure&nbsp;<span>7.3</span></a> shows this for the two competing models and highlight the fact that the simpler model is not dispersed enough. Even the more complex model struggles to capture this additional heterogeneity with the additional variables. One could go back to the drawing board and consider a negative binomial model.</p>
 <div class="cell">
@@ -345,8 +349,11 @@ Figure&nbsp;7.3: Posterior predictive checks for the standard deviation (top) an
 </div>
 </div>
 </section>
-<section id="information-criterion" class="level3" data-number="7.0.4">
-<h3 data-number="7.0.4" class="anchored" data-anchor-id="information-criterion"><span class="header-section-number">7.0.4</span> Information criterion</h3>
+</section>
+<section id="goodness-of-fit-criteria" class="level2" data-number="7.2">
+<h2 data-number="7.2" class="anchored" data-anchor-id="goodness-of-fit-criteria"><span class="header-section-number">7.2</span> Goodness-of-fit criteria</h2>
+<section id="information-criterion" class="level3" data-number="7.2.1">
+<h3 data-number="7.2.1" class="anchored" data-anchor-id="information-criterion"><span class="header-section-number">7.2.1</span> Information criterion</h3>
 <p>The widely applicable information criterion <span class="citation" data-cites="Watanabe:2010">(<a href="references.html#ref-Watanabe:2010" role="doc-biblioref">Watanabe 2010</a>)</span> is a measure of predictive performance that approximates the cross-validation loss. Consider first the log pointwise predictive density, defined as the expected value over the posterior distribution <span class="math inline">\(p(\boldsymbol{\theta} \mid \boldsymbol{y}),\)</span> <span class="math display">\[\begin{align*}
 \mathsf{LPPD}_i = \mathsf{E}_{\boldsymbol{\theta} \mid \boldsymbol{y}} \left\{ \log p(y_i \mid \boldsymbol{\theta})\right\}.
 \end{align*}\]</span> The higher the value of the predictive density <span class="math inline">\(\mathsf{LPPD}_i,\)</span> the better the fit for that observation.</p>
@@ -448,6 +455,7 @@ Spiegelhalter, David J., Nicola G. Best, Bradley P. Carlin, and Angelika Van Der
 Watanabe, Sumio. 2010. <span>“Asymptotic Equivalence of <span>B</span>ayes Cross Validation and Widely Applicable Information Criterion in Singular Learning Theory.”</span> <em>Journal of Machine Learning Research</em> 11 (116): 3571–94. <a href="http://jmlr.org/papers/v11/watanabe10a.html">http://jmlr.org/papers/v11/watanabe10a.html</a>.
 </div>
 </div>
+</section>
 </section>
 
 </main> <!-- /main -->

@@ -694,11 +694,12 @@ We can run a Markov chain by sampling an initial state $X_0$ at random from $\ma
 ::: {#prp-variance-clt}
 ## Effective sample size
 
-Intuitively, a sample of correlated observations carries less information than an independent sample of draws. If we want to compute sample averages $\overline{Y}_T=(Y_1+ \cdots + Y_T)/T,$ the variance will be \begin{align*}
+Intuitively, a sample of correlated observations carries less information than an independent sample of draws. If we want to compute sample averages $\overline{Y}_T=(Y_1+ \cdots + Y_T)/T,$ the variance will be 
+\begin{align*}
 \mathsf{Va}\left(\overline{Y}_T\right) = \frac{1}{T^2}\sum_{t=1}^T \mathsf{Va}(Y_t) + \frac{2}{T^2} \sum_{t=1}^{T-1}\sum_{s = t+1}^T \mathsf{Co}(Y_t, Y_s).
 \end{align*}
 
-In the independent case, the covariance is zero so we get the sum of variances. If the process is stationary, the covariances at lag $k$ are the same regardless of the time index and the variance is some constant, say $\sigma^2$; this allows us to simplify calculations, \begin{align*}
+In the independent case, the covariance is zero so we get the sum of variances. If the process is stationary, the covariance at lag $k$ are the same regardless of the time index and the variance is some constant, say $\sigma^2$; this allows us to simplify calculations, \begin{align*}
 \mathsf{Va}(\overline{Y}_T) = \sigma^2 \left\{ 1 + \frac{2}{T}\sum_{t=1}^{T-1} (T-t) \mathsf{Cor}(Y_{T-k}, Y_{T})\right\}.
 \end{align*} 
 Denote the lag-$k$ autocorrelation $\mathsf{Cor}(Y_{t}, Y_{t+k})=\rho_k.$ Under technical conditions[^mcmc-4], a central limit theorem applies and we get an asymptotic variance for the mean of \begin{align*}

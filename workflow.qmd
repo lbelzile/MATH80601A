@@ -20,6 +20,8 @@ The Bayesian workflow is a coherent framework for model construction, estimation
 
 To illustrate these, we revisit the model from @exm-randomeffects with a penalized complexity prior for the individual effect $\alpha_i$ and vague normal priors. We also fit a simple Poisson model with only the fixed effect, taking $Y_{ij} \sim \mathsf{Poisson}\{\exp(\beta_j)\}$ with $\beta_j \sim \mathsf{Gauss}(0,100)$ has much too little variability relative to the observations.
 
+## Graphical diagnostics
+
 ### Trace plots
 
 It is useful to inspect visually the Markov chain, as it may indicate several problems. If the chain drifts around without stabilizing around the posterior mode, then we can suspect that it hasn't reached it's stationary distribution (likely due to poor starting values). In such cases, we need to disregard the dubious draws from the chain by discarding the so-called warm up or **burn in** period. While there are some guarantees of convergence in the long term, silly starting values may translate into tens of thousands of iterations lost wandering around in regions with low posterior mass. Preliminary optimization and plausible starting values help alleviate these problems. @fig-badstart shows the effect of bad starting values on a toy problem where convergence to the mode is relatively fast. If the proposal is in a flat region of the space, it can wander around for a very long time before converging to the stationary distribution.
@@ -60,10 +62,12 @@ g1 <- bayesplot::mcmc_trace(
   x = mcmc_list,
   n_warmup = 0,window = c(1,500)) +
   labs(y = "") +
+  theme_classic() +
   theme(legend.position = "none")
 g2 <- bayesplot::mcmc_rank_overlay(
   x = mcmc_list2) +
   labs(y = "") +
+  theme_classic() +
   theme(legend.position = "none")
 g1 + g2
 ```
@@ -130,12 +134,10 @@ postpred2[b,] <- rpois(
 
 ```
 
-### Diagnostics of convergence
-
-Generally, one would run a MCMC algorithm. The first iterations, used during the burn in period to tune proposal variances and allow the chains to converge to the stationary distribution, are discarded.
+The first iterations of a MCMC algorithm, used during the burn in period to tune proposal variances and allow the chains to converge to the stationary distribution, are discarded.
 If visual inspection of the chains reveal that some of the chains for one or more parameters are not stationary until some iteration, we will discard all of these in addition.
 
-The target of inference is functional (i.e., one-dimensional summaries of the chain): we need to have convergence of the latter, but also sufficient effective sample size for our averages to be accurate (at least to two significant digits).
+The target of inference is a functional (i.e., one-dimensional summaries of the chain): we need to have convergence of the latter, but also sufficient effective sample size for our averages to be accurate (at least to two significant digits).
 
 ```{r}
 #| eval: true
@@ -279,10 +281,12 @@ postlist <- list(
   yrep = postpred1)
 class(postlist) <- "foo"
 g3 <- pp_check(postlist,
-  type = "overlaid")
+  type = "overlaid") + 
+theme_classic()
 postlist$yrep <- postpred2
 g4 <- pp_check(postlist,
-  type = "overlaid")
+  type = "overlaid") + 
+theme_classic()
 # g3 <- ggplot(data = data.frame(med= apply(postpred1, 2, median)),
 #              mapping =aes(x=med)) +
 #   geom_histogram(mapping = aes(y = ..density..)) +
@@ -311,6 +315,8 @@ waic2 <- round(-mean(apply(loglik_pt2, 2, mean)) +
                  mean(apply(loglik_pt2, 2, var)),2)
 
 ```
+
+## Goodness-of-fit criteria
 
 ### Information criterion
 
@@ -402,13 +408,13 @@ g1 <- bayesplot::ppc_loo_pit_qq(
   y = smartwatch$nviolation,
   yrep = postpred1,
   lw = weights(loo_test1$psis_object)
-)
+) + theme_classic()
 loo_test2 <- loo::loo(loglik_pt2, save_psis = TRUE)
 g2 <- bayesplot::ppc_loo_pit_qq(
   y = smartwatch$nviolation,
   yrep = postpred2,
   lw = weights(loo_test2$psis_object)
-)
+) + theme_classic()
 g1 + g2
 ```
 

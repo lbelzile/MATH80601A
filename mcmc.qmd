@@ -34,10 +34,10 @@ The Metropolis--Hastings build a Markov chain starting from an initial value $\b
 :::
 
 
-he following theoretical details provided for completeness only.
+The following theoretical details provided for completeness only.
 
 
-:::{#def-detailed balance}
+:::{#def-detailed-balance}
 
 ## Detailed balance
 
@@ -50,7 +50,9 @@ If a Markov chain satisfies the detailed balance with respect to $p(\cdot)$, the
 :::
 
 
-:::{#prp-detailed balance-mh}
+:::{#prp-detailed-balance-mh}
+
+## Metropolis--Hastings satisfies detailed balance
 
 The Metropolis--Hastings algorithm has transition kernel for a move from $\boldsymbol{x}$ to a proposal $\boldsymbol{y}$
 \begin{align*}
@@ -59,6 +61,7 @@ K(\boldsymbol{x}, \boldsymbol{y}) = \alpha(\boldsymbol{x}, \boldsymbol{y}) q(\bo
 where $r(\boldsymbol{x})=\int \alpha(\boldsymbol{x}, \boldsymbol{y}) q(\boldsymbol{y} \mid \boldsymbol{x})\mathrm{d} \boldsymbol{y}$ is the average probability of acceptance of a move from $\boldsymbol{x}$, $\mathsf{I}(\cdot = \boldsymbol{x})$ is a point mass at $\boldsymbol{x},$ and $\alpha(\cdot)$ is defined on the next slide.
 
 One can show that the Metropolis--Hastings algorithm satisfies detailed balanced; see, e.g., Theorem 7.2 of @Casella.Robert:2004.
+
 :::
 
 <!--

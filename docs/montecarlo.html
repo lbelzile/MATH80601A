@@ -371,20 +371,18 @@ X \sim \Phi^{-1}\left[\Phi(a) + \{\Phi(b)-\Phi(a)\}U\right]
 </div>
 <p>For a given candidate density <span class="math inline">\(g\)</span> which has a heavier tail than the target, we can resort to numerical methods to compute the mode of the ratio <span class="math inline">\(f/g\)</span> and obtain the bound <span class="math inline">\(C\)</span>; see <span class="citation" data-cites="Albert:2009">Albert (<a href="references.html#ref-Albert:2009" role="doc-biblioref">2009</a>)</span>, Section 5.8 for an insightful example. A different use for the simulations is to approximate integrals numerically. Consider a target distribution with finite expected value. The law of large numbers guarantees that, if we can draw observations from our target distribution, then the sample average will converge to the expected value of that distribution, as the sample size becomes larger and larger, provided the expectation is finite. We can thus compute the probability of any event or the expected value of any (integrable) function by computing sample averages; the cost to pay for this generality is randomness.</p>
 <div id="prp-ratio-uniform" class="theorem proposition">
-<p><span class="theorem-title"><strong>Proposition 4.2 (Generalized ratio-of-uniform)</strong></span> An exact simulation algorithm is described in <span class="citation" data-cites="Kinderman.Monahan:1977">Kinderman and Monahan (<a href="references.html#ref-Kinderman.Monahan:1977" role="doc-biblioref">1977</a>)</span> and extended <span class="citation" data-cites="Wakefield.Gelfand.Smith:1991">Wakefield, Gelfand, and Smith (<a href="references.html#ref-Wakefield.Gelfand.Smith:1991" role="doc-biblioref">1991</a>)</span> for random number generation in low dimensions. Consider a <span class="math inline">\(d\)</span>-vector <span class="math inline">\(\boldsymbol{X}\)</span> with density <span class="math inline">\(cf(\boldsymbol{x}): \mathbb{R}^d \to \mathbb{R}^{+}\)</span> with support <span class="math inline">\(\mathcal{S} \subseteq \mathbb{R}^d\)</span>, and <span class="math inline">\(c&gt;0\)</span> is the (possibly unknown) normalizing constant. Consider uniform variables <span class="math inline">\(\boldsymbol{u} = (u_0, u_1, \ldots, u_d)\)</span> uniformly distributed over the set <span class="math display">\[\begin{align*}
+<p><span class="theorem-title"><strong>Proposition 4.2 (Generalized ratio-of-uniform)</strong></span> An exact simulation algorithm is described in <span class="citation" data-cites="Kinderman.Monahan:1977">Kinderman and Monahan (<a href="references.html#ref-Kinderman.Monahan:1977" role="doc-biblioref">1977</a>)</span> and extended <span class="citation" data-cites="Wakefield.Gelfand.Smith:1991">Wakefield, Gelfand, and Smith (<a href="references.html#ref-Wakefield.Gelfand.Smith:1991" role="doc-biblioref">1991</a>)</span> for random number generation in low dimensions. Consider a <span class="math inline">\(d\)</span>-vector <span class="math inline">\(\boldsymbol{X}\)</span> with density <span class="math inline">\(cf(\boldsymbol{x}): \mathbb{R}^d \to \mathbb{R}^{+}\)</span> with support <span class="math inline">\(\mathcal{S} \subseteq \mathbb{R}^d\)</span>, and <span class="math inline">\(c&gt;0\)</span> is the (possibly unknown) normalizing constant. Consider variables <span class="math inline">\(\boldsymbol{u} = (u_0, u_1, \ldots, u_d)\)</span> uniformly distributed over the set <span class="math display">\[\begin{align*}
 \mathcal{B}(r) = \left\{ (u_0, u_1, \ldots, u_d) \in \mathbb{R}^{d+1}: 0 &lt; u_0 \leq \left[ f\left( \frac{u_1}{u_0^r}, \ldots, \frac{u_d}{u_0^r} \right) \right] ^ {1/(r d + 1)} \right\}
-\end{align*}\]</span> for some positive radius parameter <span class="math inline">\(r \geq 0\)</span>. The measure of the set <span class="math inline">\(\mathcal{B}(r)=c^{-1}(1+rd)^{-1}.\)</span> By the <a href="#thm-fundamental-simulation" class="quarto-xref">Theorem&nbsp;<span>4.1</span></a>, <span class="math inline">\((u_1 / u_0^r, \ldots, u_d / u_0^r)\)</span> is drawn from the renormalized density <span class="math inline">\(cf(x)\)</span>. The challenge lies in simulating <span class="math inline">\(\boldsymbol{u}\)</span> uniformly over the bounding box <span class="math inline">\(\mathbb{B}\)</span>, but we can use accept-reject if the later is enclosed in a bounding box, keeping only samples that satisfy the constraints. If, over <span class="math inline">\(\\mathcal{S}\)</span>, <span class="math inline">\(f(\boldsymbol{x})\)</span> and <span class="math inline">\(x_i^{r d +1} f(\boldsymbol{x})^r\)</span> for <span class="math inline">\(i = 1, \ldots, d\)</span> are bounded then we can enclose <span class="math inline">\(\mathcal{B}(r)\)</span> within the <span class="math inline">\((d+1)\)</span>-dimensional bounding box <span class="math inline">\(\mathbb{B}=\{a_j(r) \leq u_i \leq b_j(r);  j = 0, \ldots, d \}\)</span>, with <span class="math inline">\(a_0(r)=0\)</span>. The parameters of the bounding box are<br>
+\end{align*}\]</span> for some positive radius parameter <span class="math inline">\(r \geq 0\)</span>. The measure of the set <span class="math inline">\(\mathcal{B}(r)=c^{-1}(1+rd)^{-1}.\)</span> By <a href="#thm-fundamental-simulation" class="quarto-xref">Theorem&nbsp;<span>4.1</span></a>, <span class="math inline">\((u_1 / u_0^r, \ldots, u_d / u_0^r)\)</span> is drawn from the renormalized density <span class="math inline">\(cf(x)\)</span>. The challenge lies in simulating <span class="math inline">\(\boldsymbol{u}\)</span> uniformly over <span class="math inline">\(\mathcal{B}_r\)</span>, but we can use accept-reject if the later is enclosed in a bounding box <span class="math inline">\(\mathbb{B}\)</span>, keeping only samples that satisfy the constraints. If, over <span class="math inline">\(\mathcal{S}\)</span>, <span class="math inline">\(f(\boldsymbol{x})\)</span> and <span class="math inline">\(x_i^{r d +1} f(\boldsymbol{x})^r\)</span> for <span class="math inline">\(i = 1, \ldots, d\)</span> are bounded then we can enclose <span class="math inline">\(\mathcal{B}(r)\)</span> within the <span class="math inline">\((d+1)\)</span>-dimensional bounding box <span class="math display">\[\mathbb{B}=\{a_j(r) \leq u_i \leq b_j(r);  j = 0, \ldots, d \},\]</span> with <span class="math inline">\(a_0(r)=0\)</span>. The parameters of the bounding box are<br>
 <span class="math display">\[\begin{align*}
-b_0(r) &amp;= \sup_{\boldsymbol{x} \in \mathcal{S}} \, f(x)^{1 / (r d + 1)}, \\
+b_0(r) &amp;= \sup_{\boldsymbol{x} \in \mathcal{S}} \, f(\boldsymbol{x})^{1 / (r d + 1)}, \\
 a_j(r) &amp;= \inf_{\substack{\boldsymbol{x} \in \mathcal{S}\\ x_i \leq 0}} \, x_i \, f(\boldsymbol{x})^{r / (r d + 1)}, \\  
 b_j(r) &amp;= \sup_{{\substack{\boldsymbol{x} \in \mathcal{S}\\ x_i \geq 0}}} \, x_i \, f(\boldsymbol{x})^{r / (r d + 1)},  
 \end{align*}\]</span></p>
 <p>The probability of acceptance <span class="math inline">\(p_a(d, r)\)</span> of a point simulated uniformly over the bounding box depends on both the radius and the dimension and is <span class="math display">\[\begin{align*}
 p_a(d, r) = c\left[(r d + 1) \, b_0(r) \displaystyle\prod_{j=1}^d \left\{b_j(r) -a_j(r) \right\}\right]^{-1}.
 \end{align*}\]</span></p>
-<p>For the ratio-of-uniform method to work, we need the density <span class="math inline">\(f(\boldsymbol{x})\)</span> to be bounded, and the marginal moments of order <span class="math inline">\(rd+1\)</span>, meaning <span class="math display">\[\begin{align*}
-\mathsf{E}(X_i^{rd+1}) = \int_{\mathcal{S}} x_j^{rd+1} f(\boldsymbol{x}) \mathrm{d}x_1 \cdots \mathrm{d} x_d&lt; \infty
-\end{align*}\]</span> <span class="citation" data-cites="Wakefield.Gelfand.Smith:1991">Wakefield, Gelfand, and Smith (<a href="references.html#ref-Wakefield.Gelfand.Smith:1991" role="doc-biblioref">1991</a>)</span> propose using <span class="math inline">\(r=1/2\)</span> and relocating the mode of <span class="math inline">\(f\)</span> to the origin increase the acceptance rate. Northrop proposes to use a Box–Cox transformation <span class="citation" data-cites="Box.Cox:1964">(<a href="references.html#ref-Box.Cox:1964" role="doc-biblioref">Box and Cox 1964</a>)</span> together with a rotation in the software <span class="citation" data-cites="rust">Northrop (<a href="references.html#ref-rust" role="doc-biblioref">2024</a>)</span> to improve the acceptance rate. The bounding box may exist only for certain values of <span class="math inline">\(r\)</span>; see ee <a href="https://paulnorthrop.github.io/rust/articles/rust-a-vignette.html">the <code>rust</code> package vignette</a> for technical details and examples.</p>
+<p><span class="citation" data-cites="Wakefield.Gelfand.Smith:1991">Wakefield, Gelfand, and Smith (<a href="references.html#ref-Wakefield.Gelfand.Smith:1991" role="doc-biblioref">1991</a>)</span> propose using <span class="math inline">\(r=1/2\)</span> and relocating the mode of <span class="math inline">\(f\)</span> to the origin increase the acceptance rate. Northrop proposes to use a Box–Cox transformation <span class="citation" data-cites="Box.Cox:1964">(<a href="references.html#ref-Box.Cox:1964" role="doc-biblioref">Box and Cox 1964</a>)</span> together with a rotation in the software <span class="citation" data-cites="rust">Northrop (<a href="references.html#ref-rust" role="doc-biblioref">2024</a>)</span> to improve the acceptance rate. The bounding box may exist only for certain values of <span class="math inline">\(r\)</span>; see the <a href="https://paulnorthrop.github.io/rust/articles/rust-a-vignette.html"><code>rust</code> package vignette</a> for technical details and examples.</p>
 <!--
 
 
@@ -395,7 +393,7 @@ The ratio-of-uniform method [@Kinderman.Monahan:1977; @Wakefield:1991] is a vari
 -->
 </div>
 <div id="exm-rust" class="theorem example">
-<p><span class="theorem-title"><strong>Example 4.3 (Ratio-of-uniform for insurance loss)</strong></span> We use the ratio-of-uniform algorithm presented in <a href="#prp-ratio-uniform" class="quarto-xref">Proposition&nbsp;<span>4.2</span></a> for the data from <a href="bayesics.html#exm-loss-extremes" class="quarto-xref">Example&nbsp;<span>2.6</span></a> to generate draws from the posterior. We illustrate below the <code>rust</code> package with a user-specified prior and posterior. We fit a generalized Pareto distribution <span class="math inline">\(Y \sim \mathsf{GP}(\tau, \xi)\)</span> to exceedances above 10 millions krones to the <code>danish</code> fire insurance data, using a truncated maximal data information prior <span class="math inline">\(p(\tau, \xi) \propto \tau^{-1}\exp(-\xi+1)\mathrm{I}(\xi &gt; -1).\)</span></p>
+<p><span class="theorem-title"><strong>Example 4.3 (Ratio-of-uniform for insurance loss)</strong></span> We use the ratio-of-uniform algorithm presented in <a href="#prp-ratio-uniform" class="quarto-xref">Proposition&nbsp;<span>4.2</span></a> for the data from <a href="bayesics.html#exm-loss-extremes" class="quarto-xref">Example&nbsp;<span>2.6</span></a> to generate draws from the posterior. We illustrate below the <code>rust</code> package with a user-specified prior and posterior. We fit a generalized Pareto distribution <span class="math inline">\(Y \sim \mathsf{gen. Pareto}(\tau, \xi)\)</span> to exceedances above 10 millions krones to the <code>danish</code> fire insurance data, using a truncated maximal data information prior <span class="math inline">\(p(\tau, \xi) \propto \tau^{-1}\exp(-\xi+1)\mathrm{I}(\xi &gt; -1).\)</span></p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(danish, <span class="at">package =</span> <span class="st">"evir"</span>)</span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Extract threshold exceedances</span></span>
@@ -562,19 +560,26 @@ Figure&nbsp;4.5: Running mean trace plots for <span class="math inline">\(g(x)=\
 </section>
 <section id="markov-chains" class="level2" data-number="4.2">
 <h2 data-number="4.2" class="anchored" data-anchor-id="markov-chains"><span class="header-section-number">4.2</span> Markov chains</h2>
-<p>Before going forward with algorithms for sampling, we introduce some terminology that should be familiar to people with a background in time series analysis.</p>
+<p>Before going forward with algorithms for sampling, we introduce some terminology that should be familiar to people with a background in time series analysis. The treatment of Markov chains in this chapter is rather loose and non-formal. Readers can refer to Chapter 6 of <span class="citation" data-cites="Casella.Robert:2004">Robert and Casella (<a href="references.html#ref-Casella.Robert:2004" role="doc-biblioref">2004</a>)</span> for a more rigourous exposition.</p>
 <div id="def-stoch-proc" class="theorem definition">
 <p><span class="theorem-title"><strong>Definition 4.1 (Discrete-time stochastic process)</strong></span> A discrete-time stochastic process is a random sequences whose elements are part of some set (finite or countable), termed state space <span class="math inline">\(\mathcal{S}.\)</span> We can encode the probability of moving from one state to the next via a transition matrix, whose rows contain the probabilities of moving from one state to the next and thus sum to one.</p>
 </div>
 <div id="def-weak-stationarity" class="theorem definition">
-<p><span class="theorem-title"><strong>Definition 4.2 (Stationarity and Markov property)</strong></span> A stochastic (i.e., random) process is (strongly) stationary if the distribution of <span class="math inline">\(\{X_1, \ldots, X_t\}\)</span> is the same as that of <span class="math inline">\(\{X_{n+1}, \ldots X_{t+n}\}\)</span> for any value of <span class="math inline">\(n\)</span> and given <span class="math inline">\(t.\)</span></p>
+<p><span class="theorem-title"><strong>Definition 4.6 (Stationarity)</strong></span> A stochastic (i.e., random) process is (strongly) stationary if the distribution of <span class="math inline">\(\{X_1, \ldots, X_n\}\)</span> is the same as that of <span class="math inline">\(\{X_{t+1}, \ldots X_{n+t}\}\)</span> for any value of <span class="math inline">\(t\)</span> and given <span class="math inline">\(n.\)</span></p>
 <p>It is weakly stationary if the expected value is constant, meaning <span class="math inline">\(\mathsf{E}(X_t) = \mu\)</span> for all time points <span class="math inline">\(t\)</span>, and the covariance at lag <span class="math inline">\(h\)</span>, <span class="math inline">\(\mathsf{Cov}(X_t, X_{t+h}) = \gamma_h\)</span>, does not depend on <span class="math inline">\(t\)</span>. Strong stationarity implies weak stationarity.</p>
-<p>A stochastic process is markovian if it satisfies the Markov property: given the current state of the chain, the future only depends on the current state and not on the past.</p>
+<div id="def-markov-property" class="theorem definition">
+<p><span class="theorem-title"><strong>Definition 4.2 (Markov property)</strong></span> A stochastic process is markovian if it satisfies the Markov property: given the current state of the chain, the future only depends on the current state and not on the past.</p>
+</div>
+<div id="def-ergodic" class="theorem definition">
+<p><span class="theorem-title"><strong>Definition 4.3 (Ergodicity)</strong></span> Let <span class="math inline">\(\{Y_t\}\)</span> is a weakly stationary sequence with mean <span class="math inline">\(\mathsf{E}(Y_t)=\mu\)</span> and <span class="math inline">\(\gamma_h = \mathsf{Cov}(Y_t, Y_{t+h})\)</span>. Then, if the autocovariance series is convergent, meaning <span class="math display">\[\sum_{t=0}^\infty |\gamma_h| &lt; \infty,\]</span> then <span class="math inline">\(\{Y_t\}\)</span> is ergodic for the mean and <span class="math inline">\(\overline{Y} \stackrel{\mathrm{p}}{\to} \mu\)</span>. In other words, the ergodic theorem is a law of large numbers for stochastic processes that allows for serial dependence between observations, provided the latter is not too large.</p>
+<p>Ergodicity means that two segments of a time series far enough apart act as independent.</p>
+</div>
+<div id="prp-ergodicity-transfo" class="theorem proposition">
+<p><span class="theorem-title"><strong>Proposition 4.5 (Ergodicity and transformations)</strong></span> Any transformation <span class="math inline">\(g(\cdot)\)</span> of a stationary and ergodic process <span class="math inline">\(\{Y_t\}\)</span> retains the ergodicity properties, so <span class="math inline">\(\overline{g} = T^{-1} \sum_{t=1}^T g(Y_t) \to \mathsf{E}\{g(Y_t)\}\)</span> as <span class="math inline">\(T \to \infty.\)</span></p>
 </div>
 <p>Autoregressive processes are not the only ones we can consider, although their simplicity lends itself to analytic calculations.</p>
 <div id="exm-ar1-stationarity" class="theorem example">
-<p><span class="theorem-title"><strong>Example 4.7 (Stationarity and AR(1))</strong></span> Consider a Gaussian <span class="math inline">\(\mathsf{AR}(1)\)</span> model with <span class="math inline">\(Y_t \sim \mathsf{Gauss}\{\mu + \phi(Y_{t-1} - \mu), \sigma^2\}\)</span>.</p>
-<p>Using the law of iterated expectation and variance, if the process is weakly stationary, then <span class="math inline">\(\mathsf{E}_{Y_{t}}(Y_t)=\mathsf{E}_{Y_{t-1}}(Y_{t-1})\)</span> <span class="math display">\[\begin{align*}
+<p><span class="theorem-title"><strong>Example 4.7 (Stationarity and AR(1))</strong></span> Consider a Gaussian <span class="math inline">\(\mathsf{AR}(1)\)</span> model with conditional mean and variance <span class="math inline">\(\mathsf{E}_{Y_t \mid Y_{t-1}}(Y_t) = \mu + \phi(Y_{t-1} - \mu)\)</span> and <span class="math inline">\(\mathsf{Va}_{Y_t \mid Y_{t-1}}(Y_t)=\sigma^2.\)</span> Using the law of iterated expectation and variance, if the process is weakly stationary, then <span class="math inline">\(\mathsf{E}_{Y_{t}}(Y_t)=\mathsf{E}_{Y_{t-1}}(Y_{t-1})\)</span> <span class="math display">\[\begin{align*}
 \mathsf{E}_{Y_{t}}(Y_t) &amp;= \mathsf{E}_{Y_{t-1}}\left\{\mathsf{E}_{Y_{t} \mid Y_{t-1}}(Y_t)\right\}
 \\&amp;= \mu(1-\phi) + \phi\mathsf{E}_{Y_{t-1}}(Y_{t-1})
 \end{align*}\]</span> and so the unconditional mean is <span class="math inline">\(\mu\)</span>. For the variance, we have <span class="math display">\[\begin{align*}
@@ -584,11 +589,30 @@ Figure&nbsp;4.5: Running mean trace plots for <span class="math inline">\(g(x)=\
 \end{align*}\]</span> and we recover the formulas from <a href="introduction.html#exm-autoregressive-one" class="quarto-xref">Example&nbsp;<span>1.17</span></a>.</p>
 <p>The covariance at lag <span class="math inline">\(k\)</span>, in terms of innovations, gives <span class="math display">\[\begin{align*}
 \gamma_k = \mathsf{Co}(Y_t, Y_{t-k}) = \mathsf{Va}(\phi Y_{t-1}, Y_{t-k}) + \mathsf{Va}(\varepsilon_t, Y_{t-k}) = \phi \gamma_{k-1}
-\end{align*}\]</span> so by recursion <span class="math inline">\(\gamma_k = \gamma^k\mathsf{Va}(Y_t)\)</span>.</p>
+\end{align*}\]</span> so by recursion <span class="math inline">\(\gamma_k = \phi^k\mathsf{Va}(Y_t)\)</span>.</p>
 <p>The <span class="math inline">\(\mathsf{AR}(1)\)</span> process is first-order Markov since the conditional distribution <span class="math inline">\(p(Y_t \mid Y_{t-1}, \ldots, Y_{t-p})\)</span> equals <span class="math inline">\(p(Y_t \mid Y_{t-1}).\)</span></p>
 </div>
-<p>We can run a Markov chain by sampling an initial state <span class="math inline">\(X_0\)</span> at random from <span class="math inline">\(\mathcal{S}\)</span> and then consider the transitions from the conditional distribution, sampling <span class="math inline">\(p(X_t \mid X_{t-1}).\)</span> This results in correlated draws, due to the reliance on the previous observation.</p>
 <p>When can we use output from a Markov chain in place of independent Monte Carlo draws? The assumptions laid out in the ergodic theorem, which provides guarantees for the convergence of sample average, are that the chain is irreducible. If the chain is also acyclic, the chain has a unique stationary distribution.</p>
+<p>We can run a Markov chain by sampling an initial state <span class="math inline">\(X_0\)</span> at random from <span class="math inline">\(\mathcal{S}\)</span> and then consider the transitions from the conditional distribution, sampling <span class="math inline">\(p(X_t \mid X_{t-1}).\)</span> This results in correlated draws, due to the reliance on the previous observation.</p>
+<div id="prp-variance-clt" class="theorem proposition">
+<p><span class="theorem-title"><strong>Proposition 4.6 (Effective sample size)</strong></span> Intuitively, a sample of correlated observations carries less information than an independent sample of draws. If we want to compute sample averages <span class="math inline">\(\overline{Y}_T=(Y_1+ \cdots + Y_T)/T,\)</span> the variance will be <span class="math display">\[\begin{align*}
+\mathsf{Va}\left(\overline{Y}_T\right) = \frac{1}{T^2}\sum_{t=1}^T \mathsf{Va}(Y_t) + \frac{2}{T^2} \sum_{t=1}^{T-1}\sum_{s = t+1}^T \mathsf{Co}(Y_t, Y_s).
+\end{align*}\]</span></p>
+<p>In the independent case, the covariance is zero so we get the sum of variances. If the process is stationary, the covariance at lag <span class="math inline">\(k\)</span> are the same regardless of the time index and the variance is some constant, say <span class="math inline">\(\sigma^2\)</span>; this allows us to simplify calculations, <span class="math display">\[\begin{align*}
+\mathsf{Va}(\overline{Y}_T) = \sigma^2 \left\{ 1 + \frac{2}{T}\sum_{t=1}^{T-1} (T-t) \mathsf{Cor}(Y_{T-k}, Y_{T})\right\}.
+\end{align*}\]</span> Denote the lag-<span class="math inline">\(k\)</span> autocorrelation <span class="math inline">\(\mathsf{Cor}(Y_{t}, Y_{t+k})=\rho_k.\)</span> Under technical conditions<a href="#fn4" class="footnote-ref" id="fnref4" role="doc-noteref"><sup>4</sup></a>, a central limit theorem applies and we get an asymptotic variance for the mean of <span class="math display">\[\begin{align*}
+\lim_{T \to \infty} T\mathsf{Va}\left(\overline{Y}_T\right) = \sigma^2 \left\{1+2\sum_{t=1}^\infty \rho_t\right\}.
+\end{align*}\]</span> This statement holds only if we start with draws from the stationary distribution, otherwise bets are off.</p>
+<p>We need the <strong>effective sample size</strong> of our Monte Carlo averages based on a Markov chain of length <span class="math inline">\(B\)</span> to be sufficient for the estimates to be meaningful.</p>
+<div id="def-ess" class="theorem definition">
+<p><span class="theorem-title"><strong>Definition 4.4 (Effective sample size)</strong></span> Loosely speaking, the effective sample size is the equivalent number of observations if the marginal posterior draws were independent. We define it as</p>
+<p><span id="eq-effective-sample-size"><span class="math display">\[
+\mathsf{ESS} = \frac{B}{\left\{1+2\sum_{t=1}^\infty \rho_t\right\}}
+\tag{4.1}\]</span></span> where <span class="math inline">\(\rho_t\)</span> is the lag <span class="math inline">\(t\)</span> correlation. The relative effective sample size is simply the fraction of the effective sample size over the Monte Carlo number of replications: small values of <span class="math inline">\(\mathsf{ESS}/B\)</span> indicate pathological or inefficient samplers. If the ratio is larger than one, it indicates the sample is superefficient (as it generates negatively correlated draws).</p>
+</div>
+<p>In practice, we replace the unknown autocorrelations by sample estimates and truncate the series in <a href="#eq-effective-sample-size" class="quarto-xref">Equation&nbsp;<span>4.1</span></a> at the point where they become negligible — typically when the consecutive sum of two consecutive becomes negative; see Section 1.4 of the <a href="https://mc-stan.org/docs/reference-manual/effective-sample-size.html">Stan manual</a> or Section 1.10.2 of <span class="citation" data-cites="Geyer:2011">Geyer (<a href="references.html#ref-Geyer:2011" role="doc-biblioref">2011</a>)</span> for details.</p>
+<section id="discrete-markov-chains" class="level3" data-number="4.2.1">
+<h3 data-number="4.2.1" class="anchored" data-anchor-id="discrete-markov-chains"><span class="header-section-number">4.2.1</span> Discrete Markov chains</h3>
 <p>Consider a Markov chain on integers <span class="math inline">\(\{1, 2, 3\}.\)</span> Because of the Markov property, the history of the chain does not matter: we only need to read the value <span class="math inline">\(i=X_{t-1}\)</span> of the state and pick the <span class="math inline">\(i\)</span>th row of the transition matrix <span class="math inline">\(\mathbf{P}\)</span> to know the probability of the different moves from the current state.</p>
 <p>Irreducible means that the chain can move from anywhere to anywhere, so it doesn’t get stuck in part of the space forever. A transition matrix such as <span class="math inline">\(P_1\)</span> below describes a reducible Markov chain, because once you get into state <span class="math inline">\(2\)</span> or <span class="math inline">\(3,\)</span> you won’t escape. With reducible chains, the stationary distribution need not be unique, and so the target would depend on the starting values.</p>
 <p>Cyclical chains loop around and visit periodically a state: <span class="math inline">\(P_2\)</span> is an instance of transition matrix describing a chain that cycles from <span class="math inline">\(1\)</span> to <span class="math inline">\(3,\)</span> <span class="math inline">\(3\)</span> to <span class="math inline">\(2\)</span> and <span class="math inline">\(2\)</span> to <span class="math inline">\(1\)</span> every three iteration. An acyclic chain is needed for convergence of marginals.</p>
@@ -605,7 +629,95 @@ P_2 = \begin{pmatrix}
 0 &amp; 1 &amp; 0
 \end{pmatrix}.
 \]</span></p>
-<p>If a chain is irreducible and aperiodic, it has a unique stationary distribution and the limiting distribution of the Markov chain will converge there. For example, we consider a transition <span class="math inline">\(P_3\)</span> on <span class="math inline">\(1, \ldots, 5\)</span> defined as <span class="math display">\[
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-P1" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-P1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div>
+<svg width="672" height="480" viewbox="0.00 0.00 183.68 221.60" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" style="; max-width: none; max-height: none">
+<g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 217.6)">
+<title>G</title>
+<polygon fill="white" stroke="transparent" points="-4,4 -4,-217.6 179.68,-217.6 179.68,4 -4,4"></polygon>
+<!-- A -->
+<g id="node1" class="node">
+<title>A</title>
+<ellipse fill="none" stroke="black" cx="95.59" cy="-195.6" rx="37.68" ry="18"></ellipse>
+<text text-anchor="middle" x="95.59" y="-191.4" font-family="Times,serif" font-size="14.00">State 1</text>
+</g>
+<!-- A&#45;&gt;A -->
+<g id="edge6" class="edge">
+<title>A-&gt;A</title>
+<path fill="none" stroke="black" d="M129.24,-203.84C141.32,-204.02 151.18,-201.27 151.18,-195.6 151.18,-191.7 146.52,-189.18 139.68,-188.05"></path>
+<polygon fill="black" stroke="black" points="139.45,-184.53 129.24,-187.36 138.99,-191.51 139.45,-184.53"></polygon>
+<text text-anchor="middle" x="163.43" y="-191.4" font-family="Times,serif" font-size="14.00"> 0.5 </text>
+</g>
+<!-- B -->
+<g id="node2" class="node">
+<title>B</title>
+<ellipse fill="none" stroke="black" cx="37.59" cy="-106.8" rx="37.68" ry="18"></ellipse>
+<text text-anchor="middle" x="37.59" y="-102.6" font-family="Times,serif" font-size="14.00">State 2</text>
+</g>
+<!-- A&#45;&gt;B -->
+<g id="edge1" class="edge">
+<title>A-&gt;B</title>
+<path fill="none" stroke="black" d="M84.68,-178.27C76.09,-165.42 63.98,-147.3 54.19,-132.65"></path>
+<polygon fill="black" stroke="black" points="56.91,-130.42 48.45,-124.05 51.09,-134.31 56.91,-130.42"></polygon>
+<text text-anchor="middle" x="84.84" y="-147" font-family="Times,serif" font-size="14.00"> 0.3 </text>
+</g>
+<!-- C -->
+<g id="node3" class="node">
+<title>C</title>
+<ellipse fill="none" stroke="black" cx="85.59" cy="-18" rx="37.68" ry="18"></ellipse>
+<text text-anchor="middle" x="85.59" y="-13.8" font-family="Times,serif" font-size="14.00">State 3</text>
+</g>
+<!-- A&#45;&gt;C -->
+<g id="edge5" class="edge">
+<title>A-&gt;C</title>
+<path fill="none" stroke="black" d="M106.2,-178.16C118.26,-157.41 135.23,-120.57 126.59,-88.8 122.15,-72.49 112.84,-56.1 104.21,-43.31"></path>
+<polygon fill="black" stroke="black" points="107.03,-41.23 98.41,-35.07 101.3,-45.26 107.03,-41.23"></polygon>
+<text text-anchor="middle" x="140.84" y="-102.6" font-family="Times,serif" font-size="14.00"> 0.2 </text>
+</g>
+<!-- B&#45;&gt;B -->
+<g id="edge3" class="edge">
+<title>B-&gt;B</title>
+<path fill="none" stroke="black" d="M71.24,-115.04C83.32,-115.22 93.18,-112.47 93.18,-106.8 93.18,-102.9 88.52,-100.38 81.68,-99.25"></path>
+<polygon fill="black" stroke="black" points="81.45,-95.73 71.24,-98.56 80.99,-102.71 81.45,-95.73"></polygon>
+<text text-anchor="middle" x="105.43" y="-102.6" font-family="Times,serif" font-size="14.00"> 0.6 </text>
+</g>
+<!-- B&#45;&gt;C -->
+<g id="edge2" class="edge">
+<title>B-&gt;C</title>
+<path fill="none" stroke="black" d="M34.46,-88.54C33.4,-77.99 33.63,-64.55 39.09,-54 42.27,-47.85 47.08,-42.48 52.42,-37.92"></path>
+<polygon fill="black" stroke="black" points="54.62,-40.64 60.49,-31.82 50.4,-35.06 54.62,-40.64"></polygon>
+<text text-anchor="middle" x="51.84" y="-58.2" font-family="Times,serif" font-size="14.00"> 0.5 </text>
+</g>
+<!-- C&#45;&gt;B -->
+<g id="edge7" class="edge">
+<title>C-&gt;B</title>
+<path fill="none" stroke="black" d="M79.62,-35.81C75.65,-46.19 70,-59.61 63.59,-70.8 61.57,-74.32 59.26,-77.9 56.86,-81.36"></path>
+<polygon fill="black" stroke="black" points="53.91,-79.47 50.86,-89.62 59.57,-83.59 53.91,-79.47"></polygon>
+<text text-anchor="middle" x="84.84" y="-58.2" font-family="Times,serif" font-size="14.00"> 0.5 </text>
+</g>
+<!-- C&#45;&gt;C -->
+<g id="edge4" class="edge">
+<title>C-&gt;C</title>
+<path fill="none" stroke="black" d="M119.24,-26.24C131.32,-26.42 141.18,-23.67 141.18,-18 141.18,-14.1 136.52,-11.58 129.68,-10.45"></path>
+<polygon fill="black" stroke="black" points="129.45,-6.93 119.24,-9.76 128.99,-13.91 129.45,-6.93"></polygon>
+<text text-anchor="middle" x="153.43" y="-13.8" font-family="Times,serif" font-size="14.00"> 0.5 </text>
+</g>
+</g>
+</svg>
+</div>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-P1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;4.6: Graphical representation of the transition matrix <span class="math inline">\(P_1\)</span>.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>If a chain is irreducible and aperiodic, it has a unique stationary distribution and the limiting distribution of the Markov chain will converge there. For example, consider a transition <span class="math inline">\(P_3\)</span> on <span class="math inline">\(1, \ldots, 5\)</span> defined as <span class="math display">\[
 P_3 = \begin{pmatrix}
 \frac{2}{3} &amp; \frac{1}{3} &amp;  0 &amp; 0 &amp; 0 \\
 \frac{1}{6} &amp; \frac{2}{3} &amp; \frac{1}{6} &amp; 0 &amp; 0 \\
@@ -614,8 +726,8 @@ P_3 = \begin{pmatrix}
 0 &amp; 0 &amp; 0 &amp;  \frac{1}{3}  &amp; \frac{2}{3} \\
 \end{pmatrix}
 \]</span> The stationary distribution is the value of the row vector <span class="math inline">\(\boldsymbol{p},\)</span> such that <span class="math inline">\(\boldsymbol{p} = \boldsymbol{p}\mathbf{P}\)</span> for transition matrix <span class="math inline">\(\mathbf{P}\)</span>: we get <span class="math inline">\(\boldsymbol{p}_1=(0, 5/11, 6/11)\)</span> for <span class="math inline">\(P_1,\)</span> <span class="math inline">\((1/3, 1/3, 1/3)\)</span> for <span class="math inline">\(P_2\)</span> and <span class="math inline">\((1,2,2,2,1)/8\)</span> for <span class="math inline">\(P_3.\)</span></p>
-<p>While the existence of a stationary distribution require aperiodicity, the latter is an hindrance from a computational perspective as ergodicity is valid without it.</p>
-<p><a href="#fig-discrete-markov-chain" class="quarto-xref">Figure&nbsp;<span>4.6</span></a> shows the path of the walk and the empirical proportion of the time spent in each state, as time progress. Since the Markov chain has a unique stationary distribution, we expect these to converge to it.</p>
+<p>While the existence of a stationary distribution require aperiodicity, the latter is not really important from a computational perspective as ergodicity holds without it.</p>
+<p><a href="#fig-discrete-markov-chain" class="quarto-xref">Figure&nbsp;<span>4.7</span></a> shows the path of the random walk driven by <span class="math inline">\(P_3\)</span> and the empirical proportion of the time spent in each state, as time progress. Since the Markov chain has a unique stationary distribution, we expect the sample proportions to converge to the stationary distribution proportions.</p>
 <div class="cell">
 <div class="cell-output-display">
 <div id="fig-discrete-markov-chain" class="quarto-float quarto-figure quarto-figure-center anchored">
@@ -624,28 +736,20 @@ P_3 = \begin{pmatrix}
 <img src="montecarlo_files/figure-html/fig-discrete-markov-chain-1.png" class="img-fluid figure-img" width="672">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-discrete-markov-chain-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;4.6: Discrete Markov chain on integers from 1 to 5, with transition matrix <span class="math inline">\(P_3,\)</span> with traceplot of 1000 first iterations (left) and running mean plots of sample proportion of each state visited per 100 iterations (right).
+Figure&nbsp;4.7: Discrete Markov chain on integers from 1 to 5, with transition matrix <span class="math inline">\(P_3,\)</span> with traceplot of 1000 first iterations (left) and running mean plots of sample proportion of each state visited per 100 iterations (right).
 </figcaption>
 </figure>
 </div>
 </div>
 </div>
-<div id="prp-variance-clt" class="theorem proposition">
-<p><span class="theorem-title"><strong>Proposition 4.5 (Effective sample size)</strong></span> Intuitively, a sample of correlated observations carries less information than an independent sample of draws. If we want to compute sample averages <span class="math inline">\(\overline{Y}_T=(Y_1+ \cdots + Y_T)/T,\)</span> the variance will be <span class="math display">\[\begin{align*}
-\mathsf{Va}\left(\overline{Y}_T\right) = \frac{1}{T^2}\sum_{t=1}^T \mathsf{Va}(Y_t) + \frac{2}{T^2} \sum_{t=1}^{T-1}\sum_{s = t+1}^T \mathsf{Co}(Y_t, Y_s).
-\end{align*}\]</span></p>
-<p>In the independent case, the covariance is zero so we get the sum of variances. If the process is stationary, the covariances at lag <span class="math inline">\(k\)</span> are the same regardless of the time index and the variance is some constant, say <span class="math inline">\(\sigma^2\)</span>; this allows us to simplify calculations, <span class="math display">\[\begin{align*}
-\mathsf{Va}(\overline{Y}_T) = \sigma^2 \left\{ 1 + \frac{2}{T}\sum_{t=1}^{T-1} (T-t) \mathsf{Cor}(Y_{T-k}, Y_{T})\right\}.
-\end{align*}\]</span> Denote the lag-<span class="math inline">\(k\)</span> autocorrelation <span class="math inline">\(\mathsf{Cor}(Y_{t}, Y_{t+k})=\gamma_k.\)</span> Under technical conditions<a href="#fn4" class="footnote-ref" id="fnref4" role="doc-noteref"><sup>4</sup></a>, a central limit theorem applies and we get an asymptotic variance for the mean of <span class="math display">\[\begin{align*}
-\lim_{T \to \infty} T\mathsf{Va}\left(\overline{Y}_T\right) = \sigma^2 \left\{1+2\sum_{t=1}^\infty \gamma_t\right\}.
-\end{align*}\]</span> This statement holds only if we start with draws from the stationary distribution, otherwise bets are off.</p>
-<p>We need the <strong>effective sample size</strong> of our Monte Carlo averages based on a Markov chain of length <span class="math inline">\(B\)</span> to be sufficient for the estimates to be meaningful. The effective sample size is, loosely speaking, the equivalent number of observations if the marginal posterior draws where independent and more formally <span id="eq-effective-sample-size"><span class="math display">\[
-\mathsf{ESS} = \frac{B}{\left\{1+2\sum_{t=1}^\infty \gamma_t\right\}}
-\tag{4.1}\]</span></span> where <span class="math inline">\(\gamma_t\)</span> is the lag <span class="math inline">\(t\)</span> correlation. The relative effective sample size is simply the fraction of the effective sample size over the Monte Carlo number of replications: small values of <span class="math inline">\(\mathsf{ESS}/B\)</span> indicate pathological or inefficient samplers. If the ratio is larger than one, it indicates the sample is superefficient (as it generates negatively correlated draws).</p>
-<p>In practice, we replace the unknown autocorrelations by sample estimates and truncate the series in <a href="#eq-effective-sample-size" class="quarto-xref">Equation&nbsp;<span>4.1</span></a> at the point where they become negligible — typically when the consecutive sum of two consecutive becomes negative; see Section 1.4 of the <a href="https://mc-stan.org/docs/reference-manual/effective-sample-size.html">Stan manual</a> or Section 1.10.2 of <span class="citation" data-cites="Geyer:2011">Geyer (<a href="references.html#ref-Geyer:2011" role="doc-biblioref">2011</a>)</span> for details.</p>
+<p>Since we will be dealing with continuous random variables in later chapters, we use transition kernels rather than transition matrices, but the intuition will carry forward.</p>
+<div id="def-transition-kernel" class="theorem definition">
+<p><span class="theorem-title"><strong>Definition 4.5 (Transition kernel)</strong></span> A transition kernel <span class="math inline">\(K(\boldsymbol{\theta}^{\text{cur}}, \boldsymbol{\theta}^{\text{prop}})\)</span> proposes a move from the current value <span class="math inline">\(\boldsymbol{\theta}^{\text{cur}}\)</span> to a proposal <span class="math inline">\(\boldsymbol{\theta}^{\text{prop}}\)</span>.</p>
+</div>
+</section>
 </div>
 <div id="exm-ar1-clt-variance" class="theorem example">
-<p><span class="theorem-title"><strong>Example 4.8</strong></span> The lag-<span class="math inline">\(k\)</span> correlation of the stationary autoregressive process of order 1 is <span class="math inline">\(\phi^k,\)</span> so summing the series gives an asymptotic variance of <span class="math inline">\(\sigma^2(1+\phi)/(1-\phi).\)</span> We can constrast that to the variance of the stationary distribution for an independent sample, which is <span class="math inline">\(\sigma^2/(1-\phi^2).\)</span> The price to pay for having correlated samples is inefficiency: the higher the autocorrelation, the larger the variability of our mean estimators.</p>
+<p><span class="theorem-title"><strong>Example 4.8 (Effective sample size of first-order autoregressive process)</strong></span> The lag-<span class="math inline">\(k\)</span> correlation of the stationary autoregressive process of order 1 is <span class="math inline">\(\rho_k=\phi^k,\)</span> so summing the series gives an effective sample size for <span class="math inline">\(B\)</span> draws of <span class="math inline">\(B(1-\phi)/(1+\phi).\)</span> The price to pay for having correlated samples is inefficiency: the higher the autocorrelation, the larger the variability of our mean estimators.</p>
 <div class="cell">
 <div class="cell-output-display">
 <div id="fig-ar1-variance" class="quarto-float quarto-figure quarto-figure-center anchored">
@@ -654,16 +758,16 @@ Figure&nbsp;4.6: Discrete Markov chain on integers from 1 to 5, with transition 
 <img src="montecarlo_files/figure-html/fig-ar1-variance-1.png" class="img-fluid figure-img" width="672">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-ar1-variance-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;4.7: Scaled asymptotic variance of the sample mean for a stationary autoregressive first-order process with unit variance (full line) and a corresponding sample of independent observations with the same marginal variance (dashed line). The right panel gives the ratio of variances for positive correlation coefficients.
+Figure&nbsp;4.8: Scaled asymptotic variance of the sample mean for a stationary autoregressive first-order process with unit variance (full line) and a corresponding sample of independent observations with the same marginal variance (dashed line). The right panel gives the ratio of variances for a restricted range of positive correlation coefficients.
 </figcaption>
 </figure>
 </div>
 </div>
 </div>
-<p>We can see from <a href="#fig-ar1-variance" class="quarto-xref">Figure&nbsp;<span>4.7</span></a> that, when the autocorrelation is positive (as will be the cause in all applications of interest), we will suffer from variance inflation. To get the same uncertainty estimates for the mean with an <span class="math inline">\(\mathsf{AR}(1)\)</span> process with <span class="math inline">\(\phi \approx 0.75\)</span> than with an iid sample, we would need nine times as many observations: this is the prize to pay.</p>
+<p>We can see from <a href="#fig-ar1-variance" class="quarto-xref">Figure&nbsp;<span>4.8</span></a> that, when the autocorrelation is positive (as will be the cause in all applications of interest), we will suffer from variance inflation. To get the same variance estimates for the mean with an <span class="math inline">\(\mathsf{AR}(1)\)</span> process with <span class="math inline">\(\phi = 0.75\)</span> than with an iid sample, we would need <span class="math inline">\(7\)</span> times as many observations: this is the prize to pay for autocorrelation.</p>
 </div>
 <div id="prp-uncertainty" class="theorem proposition">
-<p><span class="theorem-title"><strong>Proposition 4.6 (Uncertainty estimation with Markov chains)</strong></span> With a simple random sample containing independent and identically distributed observations, the standard error of the sample mean is <span class="math inline">\(\sigma/\sqrt{n}\)</span> and we can use the empirical standard deviation <span class="math inline">\(\widehat{\sigma}\)</span> to estimate the first term. For Markov chains, the correlation prevents us from using this approach. The output of the<code>coda</code> package are based on fitting a high order autoregressive process to the Markov chain and using the formula of the unconditional variance of the <span class="math inline">\(\mathsf{AR}(p)\)</span> to obtain the central limit theorem variance. An alternative method recommended by <span class="citation" data-cites="Geyer:2011">Geyer (<a href="references.html#ref-Geyer:2011" role="doc-biblioref">2011</a>)</span> and implemented in his <strong>R</strong> package <code>mcmc</code>, is to segment the time series into batch, compute the means of each non-overlapping segment and use this standard deviation with suitable rescaling to get the central limit variance for the posterior mean. <a href="#fig-mcmc-batchmean" class="quarto-xref">Figure&nbsp;<span>4.8</span></a> illustrate the method of batch means.</p>
+<p><span class="theorem-title"><strong>Proposition 4.7 (Uncertainty estimation with Markov chains)</strong></span> With a simple random sample containing independent and identically distributed observations, the standard error of the sample mean is <span class="math inline">\(\sigma/\sqrt{n}\)</span> and we can use the empirical standard deviation <span class="math inline">\(\widehat{\sigma}\)</span> to estimate the first term. For Markov chains, the correlation prevents us from using this approach. The output of the<code>coda</code> package are based on fitting a high order autoregressive process to the Markov chain and using the formula of the unconditional variance of the <span class="math inline">\(\mathsf{AR}(p)\)</span> to obtain the central limit theorem variance. An alternative method recommended by <span class="citation" data-cites="Geyer:2011">Geyer (<a href="references.html#ref-Geyer:2011" role="doc-biblioref">2011</a>)</span> and implemented in his <strong>R</strong> package <code>mcmc</code>, is to segment the time series into batch, compute the means of each non-overlapping segment and use this standard deviation with suitable rescaling to get the central limit variance for the posterior mean. <a href="#fig-mcmc-batchmean" class="quarto-xref">Figure&nbsp;<span>4.9</span></a> illustrate the method of batch means.</p>
 <ol type="1">
 <li>Break the chain of length <span class="math inline">\(B\)</span> (after burn in) in <span class="math inline">\(K\)</span> blocks of size <span class="math inline">\(\approx K/B.\)</span></li>
 <li>Compute the sample mean of each segment. These values form a Markov chain and should be approximately uncorrelated.</li>
@@ -679,7 +783,7 @@ Figure&nbsp;4.7: Scaled asymptotic variance of the sample mean for a stationary 
 <img src="montecarlo_files/figure-html/fig-mcmc-batchmean-1.png" class="img-fluid figure-img" width="672">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-mcmc-batchmean-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;4.8: Calculation of the standard error of the posterior mean using the batch method.
+Figure&nbsp;4.9: Calculation of the standard error of the posterior mean using the batch method.
 </figcaption>
 </figure>
 </div>
@@ -687,6 +791,7 @@ Figure&nbsp;4.8: Calculation of the standard error of the posterior mean using t
 </div>
 
 
+</div>
 <div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list" style="display: none">
 <div id="ref-Albert:2009" class="csl-entry" role="listitem">
 Albert, Jim. 2009. <em>Bayesian Computation with <span>R</span></em>. 2nd ed. New York: Springer. <a href="https://doi.org/10.1007/978-0-387-92298-0">https://doi.org/10.1007/978-0-387-92298-0</a>.
@@ -708,6 +813,9 @@ Kinderman, A. J., and J. F. Monahan. 1977. <span>“Computer Generation of Rando
 </div>
 <div id="ref-rust" class="csl-entry" role="listitem">
 Northrop, Paul J. 2024. <em><code>rust</code>: Ratio-of-Uniforms Simulation with Transformation</em>. <a href="https://doi.org/10.32614/CRAN.package.rust">https://doi.org/10.32614/CRAN.package.rust</a>.
+</div>
+<div id="ref-Casella.Robert:2004" class="csl-entry" role="listitem">
+Robert, Christian P., and George Casella. 2004. <em><span>M</span>onte <span>C</span>arlo Statistical Methods</em>. 2nd ed. New York, NY: Springer. <a href="https://doi.org/10.1007/978-1-4757-4145-2">https://doi.org/10.1007/978-1-4757-4145-2</a>.
 </div>
 <div id="ref-Wakefield.Gelfand.Smith:1991" class="csl-entry" role="listitem">
 Wakefield, J. C., A. E. Gelfand, and A. F. M. Smith. 1991. <span>“Efficient Generation of Random Variates via the Ratio-of-Uniforms Method.”</span> <em>Statistics and Computing</em> 1 (2): 129–33. <a href="https://doi.org/10.1007/BF01889987">https://doi.org/10.1007/BF01889987</a>.
