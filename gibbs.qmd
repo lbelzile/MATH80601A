@@ -261,6 +261,8 @@ In many problems, the likelihood $p(\boldsymbol{y}; \boldsymbol{\theta})$ is int
 
 :::{#exm-probit-regression}
 
+## Probit regression
+
 Consider binary responses $\boldsymbol{Y}_i$, for which we postulate a probit regression model,
 \begin{align*}
 p_i = \Pr(Y_i=1) = \Phi(\beta_0 + \beta_1 \mathrm{X}_{i1} + \cdots + \beta_p\mathrm{X}_{ip}),
@@ -576,3 +578,82 @@ With the augmented data, the conditional distribution of $Z_i \mid X_i, \boldsym
 Given suitable priors for the probabilities $\boldsymbol{\omega}$ and $\boldsymbol{\theta} \equiv \{\boldsymbol{\theta}_1, \ldots, \boldsymbol{\theta}_k\}$, we can use Gibbs sampling updating $\boldsymbol{Z}$, $\boldsymbol{\omega}$ and $\boldsymbol{\theta}$ in turn.
 
 :::
+
+
+:::{#exm-Tokyo-rainfall}
+
+## Tokyo rainfall
+
+We consider data from @Kitagawa:1987 that provide a binomial time series giving the number of days in years 1983 and 1984 (a leap year) in which there was more than 1mm of rain in Tokyo. These data and the model we consider are discussed in in section 4.3.4 of @Rue.Held:2004. We thus have $n_t \in \{1,2\}$ $(t=1, \ldots, 366)$ the number of observations in day $t$ and $y_t=\{0,\ldots, n_t\}$ the number of days with rain. The objective is to obtain a smoothed probability of rain. The underlying probit model considered takes $Y_t \mid n_t, p_t \sim \mathsf{binom}(n_t, p_t)$ and $p_t \sim \Phi(\beta_t).$
+
+We specify the random effects $\boldsymbol{\beta} \sim \mathsf{Gauss}_{366}(\boldsymbol{0}, \tau^{-1}\mathbf{Q})$, where $\mathbf{Q}$ is a precision matrix that encodes the local dependence. A circular random walk structure of order 2 is used to model the smooth curves by smoothing over neighbours, and enforces small second derivative. This amounts to specifying the process with 
+\begin{align*}
+\Delta^2\beta_t &= (\beta_{t+1} - \beta_t) - (\beta_t - \beta_{t-1})
+\\&=-\beta_{t-1} +2 \beta_t - \beta_{t+1} \sim \mathsf{Gauss}(0, \tau^{-1}), \qquad t= \in \mathbb{N} \mod 366.
+\end{align*}
+This yields an intrinsic Gaussian Markov random field with a circulant precision matrix $\tau\mathbf{Q}=\tau\mathbf{GG}$ of rank $n-1,$ where
+\begin{align*}
+\mathbf{G} = 
+\begin{pmatrix} 
+2 & -1 & 0 & 0 & \cdots & -1\\
+-1 & 2 & -1 & 0 & \ddots & 0 \\
+0 & -1 & 2 & -1 & \ddots & 0 \\
+\vdots & \ddots & \ddots  & \ddots  & \ddots  & \vdots \\
+-1 & 0 & 0 & 0 & \cdots & 2
+\end{pmatrix},
+\quad 
+\begin{align*}
+\mathbf{Q} = 
+\begin{pmatrix} 
+6 & -4 & 1 & 0 & \cdots 1 & -4\\
+-4 & 6 & -4 & 1 & \ddots & 0 & 1 \\
+1 & -4 & 6 & -4 & \ddots & 0 & 0 \\
+\vdots & \ddots & \ddots  & \ddots  & \ddots  & \ddots & \vdots \\
+-4 & 1 & 0 & 0 & \cdots & -4 & 6
+\end{pmatrix}.
+\end{align*}
+
+The contribution from the latent mean parameters is multivariate Gaussian and 
+\begin{align*}
+p(\boldsymbol{\beta} \mid \tau) \propto \tau^{(n-1)/2}\exp(-\tau \boldsymbol{\beta}^\top \mathbf{Q}\boldsymbol{\beta}/2).
+\end{align*}
+with $\mathbf{Q}$ a sparse precision matrix, which can be exploited for computations.
+
+We can perform data augmentation by imputing Gaussian variables, say $\boldsymbol{x}_t$ following @exm-probit-regression from truncated Gaussian, where $x_{t,y} = \beta_t + \varepsilon_{t,y}$ and $\varepsilon_{t,y} \sim \mathsf{Gauss}(0,1)$ are standard Gaussian. The model has the form
+\begin{align*}
+\prod_{t=1}^{366} p(y_t \mid \boldsymbol{x}_t) p(\boldsymbol{x} \mid \boldsymbol{\beta})p(\tau)
+\end{align*}
+Only the aggregated data enters the conditional distributions, so we can set arbitrarily to the first years the rain for which $n_t=2, y_t=1.$
+
+
+
+
+
+
+```{r}
+#| eval: true
+#| echo: false
+
+data(tokyorain, package = "hecbayes")
+# Hierarchical model y_t ~ binom(n_t, p_t)
+library(Matrix)
+# Encode precision as a sparse matrix
+K <- ngme2::rw2(1:366, cyclic = TRUE)
+Q <- crossprod(K$K)
+as.integer(rankMatrix(Q, method = "qr"))
+
+
+# Initialize value of beta and tau=1
+x <- 
+# Simulate from Gauss(Qinv * b, Qinv) # Rue (2001), alg. 3.1.2
+rGaussQ <- function(b, Q){
+ stopifnot(nrow(Q) == length(b))
+ Lmat <- chol(Q)
+ v <- solve(a = L, b = b)
+ nu <- solve(a = t(L), b = v)
+ y <- solve(a = t(L), rnorm(n = length(b))
+ nu + y
+}
+
+
+```
