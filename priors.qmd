@@ -688,9 +688,9 @@ One can set $\lambda$ by considering plausible values by relating the parameter 
 
 :::
 
-:::{#rmk-raneff}
+:::{#rem-raneff}
 
-## Random effects and Bayesian inference
+## Variance parameters in hierarchical models
 
 Gaussian components are widespread: not only for linear regression models, but more generally for the specification of random effects that capture group-specific effects, residuals spatial or temporal variability. In the Bayesian paradigm, there is no difference between fixed effects $\boldsymbol{\beta}$ and the random effect parameters: both are random quantities that get assigned priors, but we will treat these priors differently. 
 

@@ -196,7 +196,7 @@ The main bottleneck in Gibbs sampling is determining all of the relevant conditi
 
 :::{#exm-gaussian-gamma}
 
-Consider a Gaussian model $Y_i \sim \mathsf{Gauss}(\mu, \tau)$ ($i=1, \ldots, n$) are independent, and where we assign priors $\mu \sim \mathsf{Gauss}(\nu, \omega)$ and $\tau \sim \mathsf{InvGamma}(\alpha, \beta)$.
+Consider a Gaussian model $Y_i \sim \mathsf{Gauss}(\mu, \tau)$ ($i=1, \ldots, n$) are independent, and where we assign priors $\mu \sim \mathsf{Gauss}(\nu, \omega)$ and $\tau \sim \mathsf{inv. gamma}(\alpha, \beta).$
 
 The joint posterior is not available in closed form, but the independent priors for the mean and variance of the observations are conditionally conjugate, since the joint posterior
 \begin{align*}
@@ -249,7 +249,16 @@ The joint posterior is Gaussian-inverse gamma and can be factorized
 \begin{align*}
 p(\boldsymbol{\beta}, \sigma^2 \mid y) = p(\sigma^2 \mid y) p(\boldsymbol{\beta} \mid \sigma^2, y)
 \end{align*}
-where $p(\sigma^2 \mid y) \sim \mathsf{InvGamma}(\alpha^*, \beta^*)$ and $p(\boldsymbol{\beta} \mid \sigma^2, y) \sim \mathsf{No}_p(\mathbf{M}\boldsymbol{m}, \sigma^2\mathbf{M})$ with $\alpha^* = \alpha + n/2$, $\beta^*=\beta + 0.5 \boldsymbol{\nu}_\beta^\top \mathbf{Q}_\beta\boldsymbol{\nu}_\beta + \boldsymbol{y}^\top\boldsymbol{y} - \boldsymbol{m}^\top\mathbf{M}\boldsymbol{m}$, $\boldsymbol{m} = \mathbf{Q}_\beta \boldsymbol{\nu}_\beta + \mathbf{X}^\top \mathbf{Q}_y\boldsymbol{y}$ and $\mathbf{M} = (\mathbf{Q}_\beta + \mathbf{X}^\top\mathbf{Q}_y\mathbf{X})^{-1};$ the latter can be evaluated efficiently using Shermann--Morrisson--Woodbury identity. Given the conditionally conjugate priors, we can easily sample from the posterior using Gibbs sampling.
+where $p(\sigma^2 \mid y) \sim \mathsf{InvGamma}(\alpha^*, \beta^*)$ and 
+\begin{align*}
+\boldsymbol{\beta} \mid \sigma^2, y & \sim \mathsf{Gauss}_p(\mathbf{M}\boldsymbol{m}, \sigma^2\mathbf{M})
+\\
+\alpha^* &= \alpha + n/2,\\ 
+\beta^* &=\beta + 0.5 \boldsymbol{\nu}_\beta^\top \mathbf{Q}_\beta\boldsymbol{\nu}_\beta + \boldsymbol{y}^\top\boldsymbol{y} - \boldsymbol{m}^\top\mathbf{M}\boldsymbol{m}, \\
+\boldsymbol{m} &= \mathbf{Q}_\beta \boldsymbol{\nu}_\beta + \mathbf{X}^\top \mathbf{Q}_y\boldsymbol{y}\\
+\mathbf{M} &= (\mathbf{Q}_\beta + \mathbf{X}^\top\mathbf{Q}_y\mathbf{X})^{-1};
+\end{align*}
+the latter can be evaluated efficiently using Shermann--Morrisson--Woodbury identity. Given the conditionally conjugate priors, we can easily sample from the posterior using Gibbs sampling.
 
 :::
 
@@ -335,7 +344,7 @@ The Laplace distribution with mean $\mu$ and scale $\sigma$, which has density
 \begin{align*}
 f(x; \mu, \sigma) = \frac{1}{2\sigma}\exp\left(-\frac{|x-\mu|}{\sigma}\right),
 \end{align*}
-can be expressed as a scale mixture of Gaussians, where $Y \sim \mathsf{La}(\mu, \sigma)$ is equivalent to $Z \mid \tau \sim \mathsf{Gauss}(\mu, \tau)$ and $\tau \sim \mathsf{Exp}\{(2\sigma)^{-1}\}$.
+can be expressed as a scale mixture of Gaussians, where $Y \sim \mathsf{Laplace}(\mu, \sigma)$ is equivalent to $Z \mid \tau \sim \mathsf{Gauss}(\mu, \tau)$ and $\tau \sim \mathsf{expo}\{(2\sigma)^{-1}\}$.
 With the improper prior $p(\mu, \sigma) \propto \sigma^{-1}$ and with $n$ independent and identically distributed Laplace variates, the joint posterior can be written
 \begin{align*}
 p(\boldsymbol{\tau}, \mu, \sigma \mid \boldsymbol{y}) &\propto \left(\prod_{i=1}^n \tau_i\right)^{-1/2}\exp\left\{-\frac{1}{2}\sum_{i=1}^n \frac{(y_i-\mu)^2}{\tau_i}\right\} \\&\quad \times \frac{1}{\sigma^{n+1}}\exp\left(-\frac{1}{2\sigma}\sum_{i=1}^n \tau_i\right)
@@ -359,7 +368,7 @@ for location $\nu >0$ and shape $\lambda>0$, where $\xi_i \sim \mathsf{Wald}(\nu
 \begin{align*}
 \boldsymbol{Y} \mid \mu, \boldsymbol{\beta}, \sigma^2 &\sim  \mathsf{Gauss}_n(\mu \boldsymbol{1}_n + \mathbf{X}\boldsymbol{\beta}, \sigma \mathbf{I}_n)\\
 \beta_j \mid \sigma, \tau &\sim \mathsf{Gauss}(0, \sigma\tau)\\
-\tau &\sim \mathsf{Exp}(\lambda/2)
+\tau &\sim \mathsf{expo}(\lambda/2)
 \end{align*}
 If we set an improper prior $p(\mu, \sigma) \propto \sigma^{-1}$, the resulting conditional distributions are all available and thus the model is amenable to Gibbs sampling.
 
@@ -575,23 +584,77 @@ $$f(x; \boldsymbol{\theta}, \boldsymbol{\omega}) = \sum_{k=1}^K \omega_kf_k(x; \
 Since the density involves a sum, numerical optimization is challenging. Let $C_i$ denote the cluster index for observation $i$: if we knew the value of $C_i =j$, the density would involve only $f_j$. We can thus use latent variables representing the group allocation to simplify the problem and run an EM algorithm or use the data augmentation. In an iterative framework, we can consider the complete data as the tuples $(X_i, Z_i)$, where $Z_i = \mathsf{I}(C_i=k)$.
 
 With the augmented data, the conditional distribution of $Z_i \mid X_i, \boldsymbol{\omega}, \boldsymbol{\theta} \sim \mathsf{multinom}(1, \boldsymbol{\gamma}_{ik})$ where $$\gamma_{ik} = \frac{\omega_k f_k(X_i\boldsymbol{\theta}_k)}{\sum_{j=1}^K f_j(X_i\boldsymbol{\theta}_k)}.$$
-Given suitable priors for the probabilities $\boldsymbol{\omega}$ and $\boldsymbol{\theta} \equiv \{\boldsymbol{\theta}_1, \ldots, \boldsymbol{\theta}_k\}$, we can use Gibbs sampling updating $\boldsymbol{Z}$, $\boldsymbol{\omega}$ and $\boldsymbol{\theta}$ in turn.
+Given suitable priors for the probabilities $\boldsymbol{\omega}$ and $\boldsymbol{\theta} \equiv \{\boldsymbol{\theta}_1, \ldots, \boldsymbol{\theta}_k\}$, we can use Gibbs sampling updating $\boldsymbol{Z}$, $\boldsymbol{\omega}$ and $\boldsymbol{\theta}$ in turn, assigning a conjugate Dirichlet prior for $\boldsymbol{\omega}.$
 
 :::
 
+If we run a MCMC algorithm to sample from a mixture models, the likelihood is invariant to permutation of the group labels, leading to identifiability issues when running multiple Markov chains.
+
+:::{#exm-mixture-model}
+
+## Mixture model
+
+We consider a Gaussian mixture model for waiting time between two eruptions of the Old Faithful geyser in Yellowstone. The distribution is of the form
+\begin{align*}
+f_i(x) = p_i f_{1}(x_i; \mu_1, \tau_1^{-1}) + (1-p_i)f_{2}(x_i; \mu_2, \tau_2^{-1}).
+\end{align*}
+We assign conjugate priors with $p_i \sim \mathsf{beta}(a_1, a_2),$  $\mu_j \sim \mathsf{Gauss}\{c, (\tau_jd)^{-1}\}$ and $\tau_j \sim \mathsf{gamma}(b_1, b_2)$. For the hyperpriors, we use $a_1=a_2=1,$ $b_1=1, b_2 = 0.1,$ $c = 60,$ and $d = 1/40.$
+
+```{r}
+#| eval: false
+#| echo: true
+data(faithful)
+n <- nrow(faithful)
+y <- faithful$waiting
+# Fix hyperpriors
+a1 <- 2; a2 <- 2; c <- 60; d <- 1/40; b1 <- 1; b2 <- 0.01
+# Assign observations at random to groups
+set.seed(80601)
+cut <- runif(1, 0.1, 0.9)*diff(range(y)) + min(y)
+group <- y < cut
+p <- sum(group == 0)/n
+mu <- c(mean(y[group == 0]), mean(y[group == 1]))
+prec <- 1/c(var(y[group == 0]), var(y[group == 1]))
+# Storage and number of replications
+B <- 1e4L
+theta <- matrix(nrow = B, ncol = 5L)
+# Step 1: assign variables to clusters
+for(b in 1:B){
+  d1 <- dnorm(y, mean = mu[1], sd = 1/sqrt(prec[1]))
+  d2 <- dnorm(y, mean = mu[2], sd = 1/sqrt(prec[2]))
+  # Data augmentation: group labels
+  group <- rbinom(n = n, size = rep(1, n), prob = p*d1/(p*d1 + (1-p)*d2))
+  # Step 2: update probability of cluster
+  p <- rbeta(n = 1, shape1 = sum(group) + a1, n - sum(group) + a2)
+  for(j in 1:2){
+    yg <- y[group == (j-1L)]
+    ng <- length(yg)
+    prec_mu <- ng*prec[j] + d
+    mean_mu <- (sum(yg)*prec[j] + c*d)/prec_mu
+    mu[j] <- rnorm(n = 1, mean = mean_mu, sd = 1/sqrt(prec_mu))
+    prec[j] <- rgamma(n = 1, 
+                      shape = b1 + ng/2, 
+                      rate = b2 + 0.5*sum((yg-mu[j])^2))
+  }
+  theta[b, ] <- c(p, mu, prec)
+}
+```
+
+
+:::
 
 :::{#exm-Tokyo-rainfall}
 
 ## Tokyo rainfall
 
-We consider data from @Kitagawa:1987 that provide a binomial time series giving the number of days in years 1983 and 1984 (a leap year) in which there was more than 1mm of rain in Tokyo. These data and the model we consider are discussed in in section 4.3.4 of @Rue.Held:2004. We thus have $n_t \in \{1,2\}$ $(t=1, \ldots, 366)$ the number of observations in day $t$ and $y_t=\{0,\ldots, n_t\}$ the number of days with rain. The objective is to obtain a smoothed probability of rain. The underlying probit model considered takes $Y_t \mid n_t, p_t \sim \mathsf{binom}(n_t, p_t)$ and $p_t \sim \Phi(\beta_t).$
+We consider data from @Kitagawa:1987 that provide a binomial time series giving the number of days in years 1983 and 1984 (a leap year) in which there was more than 1mm of rain in Tokyo. These data and the model we consider are discussed in in section 4.3.4 of @Rue.Held:2004. We thus have $T=366$ days and $n_t \in \{1,2\}$ $(t=1, \ldots, T)$ the number of observations in day $t$ and $y_t=\{0,\ldots, n_t\}$ the number of days with rain. The objective is to obtain a smoothed probability of rain. The underlying probit model considered takes $Y_t \mid n_t, p_t \sim \mathsf{binom}(n_t, p_t)$ and $p_t = \Phi(\beta_t).$
 
-We specify the random effects $\boldsymbol{\beta} \sim \mathsf{Gauss}_{366}(\boldsymbol{0}, \tau^{-1}\mathbf{Q})$, where $\mathbf{Q}$ is a precision matrix that encodes the local dependence. A circular random walk structure of order 2 is used to model the smooth curves by smoothing over neighbours, and enforces small second derivative. This amounts to specifying the process with 
+We specify the random effects $\boldsymbol{\beta} \sim \mathsf{Gauss}_{T}(\boldsymbol{0}, \tau^{-1}\mathbf{Q})$, where $\mathbf{Q}$ is a $T \times T$ precision matrix that encodes the local dependence. A circular random walk structure of order 2 is used to model the smooth curves by smoothing over neighbors, and enforces small second derivative. This is a suitable prior because it enforces no constraint on the mean structure. This amounts to specifying the process with 
 \begin{align*}
 \Delta^2\beta_t &= (\beta_{t+1} - \beta_t) - (\beta_t - \beta_{t-1})
 \\&=-\beta_{t-1} +2 \beta_t - \beta_{t+1} \sim \mathsf{Gauss}(0, \tau^{-1}), \qquad t= \in \mathbb{N} \mod 366.
 \end{align*}
-This yields an intrinsic Gaussian Markov random field with a circulant precision matrix $\tau\mathbf{Q}=\tau\mathbf{GG}$ of rank $n-1,$ where
+This yields an intrinsic Gaussian Markov random field with a circulant precision matrix $\tau\mathbf{Q}=\tau\mathbf{GG}$ of rank $T-1,$ where
 \begin{align*}
 \mathbf{G} = 
 \begin{pmatrix} 
@@ -612,20 +675,49 @@ This yields an intrinsic Gaussian Markov random field with a circulant precision
 -4 & 1 & 0 & 0 & \cdots & -4 & 6
 \end{pmatrix}.
 \end{align*}
+Because of the linear dependency, the determinant of $\mathbf{Q}$ as presented is zero. The contribution from the latent mean parameters is multivariate Gaussian and we exploit for computations the sparsity of the precision matrix $\mathbf{Q}.$ @fig-CRW2-prior shows five draws from the prior model, which loops back between December 31st and January 1st, and is rather smooth.
 
-The contribution from the latent mean parameters is multivariate Gaussian and 
+```{r}
+#| eval: true
+#| echo: false
+#| fig-cap: "Five realizations from the cyclical random walk Gaussian prior of order 2 with unit variance."
+#| label: fig-CRW2-prior
+nt <- 366
+K <- ngme2::rw2(1:nt, cyclic = TRUE)
+Q <- crossprod(K$K)
+set.seed(1234)
+samps <- solve(Matrix::chol(Q), matrix(rnorm(5*366), ncol = 5))
+matplot(scale(samps, scale = FALSE), 
+        bty = "l",
+        ylab = "",
+ xlab = "day of year",
+type = "l", 
+col = RColorBrewer::brewer.pal(n = 5, name = "Blues"),lwd = seq(2, 1, length.out = 5))
+
+```
+
+We can perform data augmentation by imputing Gaussian variables, say $x_{1,1}, x_{i,2}, \ldots, x_{366,2}$ following @exm-probit-regression from truncated Gaussian, where $x_{t,i} = \beta_t + \varepsilon_{t,i}$ and $\varepsilon_{t,i} \sim \mathsf{Gauss}(0,1)$ are independent standard Gaussian and 
 \begin{align*}
-p(\boldsymbol{\beta} \mid \tau) \propto \tau^{(n-1)/2}\exp(-\tau \boldsymbol{\beta}^\top \mathbf{Q}\boldsymbol{\beta}/2).
+x_{t,i} \mid  y_{t,i}, \beta_t \sim 
+\begin{cases}
+\mathsf{trunc. Gauss}(\beta_t, 1, 0, \infty) & y_{t,i} = 0 \\
+\mathsf{trunc. Gauss}(\beta_t, 1, -\infty, 0) & y_{t,i} =1 
+\end{cases}
 \end{align*}
-with $\mathbf{Q}$ a sparse precision matrix, which can be exploited for computations.
-
-We can perform data augmentation by imputing Gaussian variables, say $\boldsymbol{x}_t$ following @exm-probit-regression from truncated Gaussian, where $x_{t,y} = \beta_t + \varepsilon_{t,y}$ and $\varepsilon_{t,y} \sim \mathsf{Gauss}(0,1)$ are standard Gaussian. The model has the form
+The posterior is proportional to
 \begin{align*}
-\prod_{t=1}^{366} p(y_t \mid \boldsymbol{x}_t) p(\boldsymbol{x} \mid \boldsymbol{\beta})p(\tau)
+p(\boldsymbol{\beta} \mid \tau)p(\tau)\prod_{t=1}^{T}\prod_{i=1}^{n_t}p(y_{t,i} \mid x_{t,i}) p(x_{t,i} \mid \beta_t)
 \end{align*}
-Only the aggregated data enters the conditional distributions, so we can set arbitrarily to the first years the rain for which $n_t=2, y_t=1.$
-
-
+and once we have imputed the Gaussian latent vectors, we can work directly with the values of $x_t = \sum_{i=1}^{n_t} x_{i,t}.$ The posterior has the form
+\begin{align*}
+p(\boldsymbol{\beta}, \tau) \propto \tau^{(n-1)/2}\exp \left( - \frac{\tau}{2} \boldsymbol{\beta}^\top \mathbf{Q} \boldsymbol{\beta}\right)\exp\left\{ - \frac{1}{2} (\boldsymbol{x} - \boldsymbol{\beta})^\top \mathrm{diag}(\boldsymbol{n})(\boldsymbol{x} - \boldsymbol{\beta})\right\} \tau^{a-1}\exp(-\tau b)
+\end{align*}
+where $\boldsymbol{x} = (x_1, \ldots, x_T).$
+Completing the quadratic form shows that 
+\begin{align*}
+\boldsymbol{\beta} \mid \boldsymbol{x}, \tau &\sim \mathsf{Gauss}_T\left[\left\{\tau \mathbf{Q} + \mathrm{diag}(\boldsymbol{n})\right\}^{-1} \mathrm{diag}(\boldsymbol{n}) \boldsymbol{x}, \left\{\tau \mathbf{Q} + \mathrm{diag}(\boldsymbol{n})\right\}^{-1}\right]\\
+\tau \mid \boldsymbol{\beta}, \boldsymbol{x} & \sim \mathsf{gamma}\left( \frac{n-1}{2} + a, \frac{\boldsymbol{beta}^\top \mathbf{Q}\boldsymbol{\beta}{2} + b \right)
+\end{align*}
 
 
 
@@ -633,27 +725,105 @@ Only the aggregated data enters the conditional distributions, so we can set arb
 ```{r}
 #| eval: true
 #| echo: false
-
-data(tokyorain, package = "hecbayes")
-# Hierarchical model y_t ~ binom(n_t, p_t)
 library(Matrix)
-# Encode precision as a sparse matrix
-K <- ngme2::rw2(1:366, cyclic = TRUE)
+library(TruncatedNormal)
+data(Tokyo, package = "INLA")
+# Hierarchical model
+# data: (probit regression) y_t ~ binom(n_t, Phi(beta_t))
+# prior: Delta2 beta_t ~ Gaussian prior(0, tau)
+# hyperprior: tau ~ gamma(a, b)
+# Encode sparse circulant precision matrix
+nt <- 366L
+K <- ngme2::rw2(1:nt, cyclic = TRUE)
 Q <- crossprod(K$K)
-as.integer(rankMatrix(Q, method = "qr"))
-
-
-# Initialize value of beta and tau=1
-x <- 
-# Simulate from Gauss(Qinv * b, Qinv) # Rue (2001), alg. 3.1.2
-rGaussQ <- function(b, Q){
- stopifnot(nrow(Q) == length(b))
- Lmat <- chol(Q)
- v <- solve(a = L, b = b)
- nu <- solve(a = t(L), b = v)
- y <- solve(a = t(L), rnorm(n = length(b))
- nu + y
+cholQ <- Matrix::chol(Q)
+N <- Matrix::Diagonal(n = nt, x = Tokyo$n)
+y <- with(Tokyo, c(pmin(y, 1), pmax(0, y[-60]-1)))
+day <- c(1:366, 1:59, 61:366)
+B <- 1e4L # number of draws
+# Create containers
+beta_s <- matrix(nrow = B, ncol = nt)
+x_s <- matrix(nrow = B, ncol = nt)
+tau_s <- numeric(B)
+# Initial values
+beta <- rep(0, nt)
+tau <- 1000
+# Prior parameter values
+tau_a <- 1
+tau_b <- 0.0001
+# Data
+# Gibbs sampling
+for(b in seq_len(B)){
+  if(b %% 100L == 0L){
+    print(paste(b, 'iterations completed'));
+  }
+# Step 1: data augmentation
+x <- TruncatedNormal::rtnorm(
+  n = 1,
+  lb = ifelse(y == 0, -Inf, -beta),
+  ub = ifelse(y == 0, -beta, Inf)) + beta[day]
+tx <- aggregate(x = x, by = list(day), FUN = sum)$x
+x_s[b,] <- tx
+# Simulate random effects in block
+beta <- beta_s[b,] <- rGaussQ(
+  n = 1,
+  b = Tokyo$n * tx,
+  Q = tau * Q + N)
+# st <- sample.int(nt, 1)
+## Update individually looping over
+# for(i in (st + seq_len(nt)) %% nt + 1L){
+#   im1 <- ifelse(i == 1L, 366, i-1)
+#   im2 <- ifelse(i %in% 1:2, 364+i, i-2)
+#   ip1 <- ifelse(i == 366L, 1, i+1)
+#   ip2 <- ifelse(i %in% 365:366, i-364, i + 2)
+#   prec <- tau * 6 + Tokyo$n[i]
+#   condmean <- x[i] - tau *
+#             (-4* (beta[im1] + beta[ip1] - x[im1] - x[ip1]) +
+#                 (beta[im2] + beta[ip2] - x[im2] - x[ip2])) / prec
+#   beta[i] <- rnorm(n = 1, mean = condmean, sd = 1/sqrt(prec))
+# }
+# beta_s[b,] <- beta
+# Simulate precision
+tau <- tau_s[b] <- rgamma(
+  n = 1, 
+  shape = (nt-1)/2 + tau_a, 
+  rate = 0.5*as.numeric(crossprod(cholQ %*% beta)) + tau_b)
+# if beta is VERY smooth, then precision is large
 }
 
+```
 
+```{r}
+#| eval: false
+#| echo: false
+## NOTE: this seemingly doesn't work with Q not full rank
+# Simulate from Gauss(Qinv * b, Qinv) # Rue (2001), alg. 3.1.2
+
+rIGMRF <- function(n, Q, rank){
+  nt <- nrow(Q)
+  if(missing(rank)){
+    rank <- as.integer(rankMatrix(Q, method = "qr"))
+  }
+  nz <- nt - rank
+  lambda <- eigen(Q, symmetric = TRUE, only.values = TRUE)$values[-((rank+1):nt)]
+  y <- diag(c(rep(0, nz), rep(1, rank))) %*% 
+    c(rep(0, nz), 
+      rnorm(n = length(lambda), 
+            sd = 1/sqrt(lambda)))
+}
+
+#' Simulate from Gaussian random field 
+#' 
+#' Given a Gaussian random field with precision matrix \eqn{Q} and mean \eqn{Q^{-1}b}, simulate a
+rGaussQ <- function(n, b, Q){
+ stopifnot(nrow(Q) == length(b))
+ Lmat <- Matrix::chol(Q) # yields upper triangular matrix!
+ v <- Matrix::solve(a = Matrix::t(Lmat), b = b)
+ nu <- Matrix::solve(a = Lmat, b = v)
+ y <- Matrix::solve(a = Lmat, matrix(rnorm(n = n*length(b)), ncol = n))
+ if(n == 1L){
+   y <- as.numeric(y) 
+ }
+ (nu + y)
+}
 ```
