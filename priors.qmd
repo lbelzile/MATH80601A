@@ -534,106 +534,6 @@ If we restrict the range of the MDI prior $p(\xi)$ to $\xi \geq -1$, then $p(\xi
 
 :::
 
-:::{#exm-rainfall-abisko}
-
-## Extreme rainfall in Abisko, Sweden
-
-As illustrating example, consider maximum daily cumulated rainfall in Abisko, Sweden. The time series spans from 1913 until December 2014; we compute the 102 yearly maximum, which range from 11mm to 62mm, and fit a generalized extreme value distribution to these. 
-
-For the priors, suppose an expert elicits quantiles of the 10, 50 and 100 years return levels; say 30mm, 45mm and 70mm, respectively, for the median and likewise 40mm, 70mm and 120mm for the 90% percentile of the return levels. We can compute the differences and calculate the parameters of the gamma distribution through moment-matching: this gives roughly a shape of $\alpha_1=18.27$ and $\beta_1=0.6,$ etc. @fig-gev-colestawn-quant-prior shows the transfer from the prior predictive to the posterior distribution. The prior is much more dispersed and concentrated on the tail, which translates in a less peaked posterior than using a weakly informative prior (dotted line): the mode of the latter is slightly to the left and with lower density in the tail.
-
-
-```{r}
-#| eval: true
-#| label: fig-gev-colestawn-quant-prior
-#| echo: false
-#| fig-cap: "Kernel density estimates of draws from the posterior distribution of 100 year return levels with a Coles--Tawn quantile prior (full line) and from the corresponding prior predictive (dashed). The dotted line gives the posterior distribution for a maximum domain information prior on the shape with improper priors on location and scale."
-# Extract time series and compute annual maximum
-data(abisko, package = "mev")
-abi <- with(abisko, xts::xts(precip, order.by = lubridate::ymd(date)))
-abimax <- as.numeric(xts::apply.yearly(abi, max))
-abimax <- abimax[-length(abimax)]
-# Set prior on 10, 50 and 100 years return levels.
-# say 30, 45, 70mm for the median
-# and 90% of 40, 70 and 120
-# 0, 30, 15, 25 for 0.5
-# 0, 40, 30, 50 for 0.9
-gamma_moment_match <- function(quantiles, plev){
-  quantiles <- sort(quantiles)
-  plev <- sort(plev)
-  stopifnot(length(quantiles) == 2L,
-            length(plev) == 2L,
-            all(plev > 0, plev < 1, quantiles > 0))
- rootSolve::multiroot(f = function(par){
-   pgamma(quantiles, shape = par[1], rate = par[2]) - plev
-   }, 
-   positive = TRUE, 
-   start = c(quantiles[1]/10,0.1))$root
-}
-pars1 <- gamma_moment_match(c(30, 40), plev = c(0.5, 0.9))
-pars2 <- gamma_moment_match(c(15, 30), plev = c(0.5, 0.9))
-pars3 <- gamma_moment_match(c(25, 50), plev = c(0.5, 0.9))
-# Convert quantiles to GEV parameters
-library(revdbayes)
-quant_prior <- set_prior(prior = "quant", model = "gev",
-  prob = c(1/10,1/50, 1/100),
-  shape = c(pars1[1], pars2[1], pars3[1]),
-  scale = 1/c(pars1[2], pars2[2], pars3[2]),
-  min_xi = -0.5, 
-  max_xi = 1)
-postsamp_expert <- rpost_rcpp(n = 1e4, 
-           data = abimax,
-           model = "gev",
-           prior = quant_prior)
-prior_samp <- revdbayes::rprior_quant(n = 2500, prob = c(1/10,1/50, 1/100),
-                        shape = c(pars1[1], pars2[1], pars3[1]),
-                        scale = 1/c(pars1[2], pars2[2], pars3[2]))
-retlev100_prior<-  revdbayes::qgev(
-    p = 0.99, 
-    loc = prior_samp[,"location"], 
-    scale = prior_samp[,"scale"], 
-    shape = prior_samp[,"shape"])
-retlev100_expert <- with(
-  postsamp_expert,
-  revdbayes::qgev(
-    p = 0.99, 
-    loc = sim_vals[,"mu"], 
-    scale = sim_vals[,"sigma"], 
-    shape = sim_vals[,"xi"]))
-postsamp_mdi <- rpost_rcpp(n = 1e4, 
-           data = abimax,
-           model = "gev",
-           prior = set_prior("mdi", model = "gev"))
-retlev100_mdi <- with(
-  postsamp_mdi,
-  revdbayes::qgev(
-    p = 0.99, 
-    loc = sim_vals[,"mu"], 
-    scale = sim_vals[,"sigma"], 
-    shape = sim_vals[,"xi"]))
-
-ggplot() +
-  geom_density(data = data.frame(x = retlev100_expert),
-            mapping = aes(x = x),
-            alpha = 0.5, n =1001) +
-  geom_density(data = data.frame(x = retlev100_mdi),
-            mapping = aes(x = x),
-            alpha = 0.5,
-            n = 1001,
-            linetype = "dotted") +
-  geom_density(data = data.frame(x = retlev100_prior),
-            mapping = aes(x = x),
-            alpha = 0.5,
-            n = 1001,
-            linetype = "dashed") +
-  scale_y_continuous(limits = c(0, 0.08), expand = c(0,0)) + 
-  labs(x = "daily cumulated rainfall (in mm)", y = "",
-       subtitle = "kernel density estimate of 100-year return level",
-       caption = "quantile prior") +
-  theme_classic()
-```
-
-:::
 
 What would you do if we you had prior information from different sources? One way to combine these is through a mixture: given $M$ different prior distributions $p_m(\boldsymbol{\theta}),$ we can assign each a positive weight $w_m$ to form a mixture of experts prior through the linear combination
 $$ p(\boldsymbol{\theta}) \propto \sum_{m=1}^M w_m p_m(\boldsymbol{\theta})$$
@@ -895,6 +795,108 @@ ggplot(data = data.frame(
 
 :::
 
+
+
+:::{#exm-rainfall-abisko}
+
+## Extreme rainfall in Abisko, Sweden
+
+As illustrating example, consider maximum daily cumulated rainfall in Abisko, Sweden. The time series spans from 1913 until December 2014; we compute the 102 yearly maximum, which range from 11mm to 62mm, and fit a generalized extreme value distribution to these. 
+
+For the priors, suppose an expert elicits quantiles of the 10, 50 and 100 years return levels; say 30mm, 45mm and 70mm, respectively, for the median and likewise 40mm, 70mm and 120mm for the 90% percentile of the return levels. We can compute the differences and calculate the parameters of the gamma distribution through moment-matching: this gives roughly a shape of $\alpha_1=18.27$ and $\beta_1=0.6,$ etc. @fig-gev-colestawn-quant-prior shows the transfer from the prior predictive to the posterior distribution. The prior is much more dispersed and concentrated on the tail, which translates in a less peaked posterior than using a weakly informative prior (dotted line): the mode of the latter is slightly to the left and with lower density in the tail.
+
+
+```{r}
+#| eval: true
+#| label: fig-gev-colestawn-quant-prior
+#| echo: false
+#| fig-cap: "Kernel density estimates of draws from the posterior distribution of 100 year return levels with a Coles--Tawn quantile prior (full line) and from the corresponding prior predictive (dashed). The dotted line gives the posterior distribution for a maximum domain information prior on the shape with improper priors on location and scale."
+# Extract time series and compute annual maximum
+data(abisko, package = "mev")
+abi <- with(abisko, xts::xts(precip, order.by = lubridate::ymd(date)))
+abimax <- as.numeric(xts::apply.yearly(abi, max))
+abimax <- abimax[-length(abimax)]
+# Set prior on 10, 50 and 100 years return levels.
+# say 30, 45, 70mm for the median
+# and 90% of 40, 70 and 120
+# 0, 30, 15, 25 for 0.5
+# 0, 40, 30, 50 for 0.9
+gamma_moment_match <- function(quantiles, plev){
+  quantiles <- sort(quantiles)
+  plev <- sort(plev)
+  stopifnot(length(quantiles) == 2L,
+            length(plev) == 2L,
+            all(plev > 0, plev < 1, quantiles > 0))
+ rootSolve::multiroot(f = function(par){
+   pgamma(quantiles, shape = par[1], rate = par[2]) - plev
+   }, 
+   positive = TRUE, 
+   start = c(quantiles[1]/10,0.1))$root
+}
+pars1 <- gamma_moment_match(c(30, 40), plev = c(0.5, 0.9))
+pars2 <- gamma_moment_match(c(15, 30), plev = c(0.5, 0.9))
+pars3 <- gamma_moment_match(c(25, 50), plev = c(0.5, 0.9))
+# Convert quantiles to GEV parameters
+library(revdbayes)
+quant_prior <- set_prior(prior = "quant", model = "gev",
+  prob = c(1/10,1/50, 1/100),
+  shape = c(pars1[1], pars2[1], pars3[1]),
+  scale = 1/c(pars1[2], pars2[2], pars3[2]),
+  min_xi = -0.5, 
+  max_xi = 1)
+postsamp_expert <- rpost_rcpp(n = 1e4, 
+           data = abimax,
+           model = "gev",
+           prior = quant_prior)
+prior_samp <- revdbayes::rprior_quant(n = 2500, prob = c(1/10,1/50, 1/100),
+                        shape = c(pars1[1], pars2[1], pars3[1]),
+                        scale = 1/c(pars1[2], pars2[2], pars3[2]))
+retlev100_prior<-  revdbayes::qgev(
+    p = 0.99, 
+    loc = prior_samp[,"location"], 
+    scale = prior_samp[,"scale"], 
+    shape = prior_samp[,"shape"])
+retlev100_expert <- with(
+  postsamp_expert,
+  revdbayes::qgev(
+    p = 0.99, 
+    loc = sim_vals[,"mu"], 
+    scale = sim_vals[,"sigma"], 
+    shape = sim_vals[,"xi"]))
+postsamp_mdi <- rpost_rcpp(n = 1e4, 
+           data = abimax,
+           model = "gev",
+           prior = set_prior("mdi", model = "gev"))
+retlev100_mdi <- with(
+  postsamp_mdi,
+  revdbayes::qgev(
+    p = 0.99, 
+    loc = sim_vals[,"mu"], 
+    scale = sim_vals[,"sigma"], 
+    shape = sim_vals[,"xi"]))
+
+ggplot() +
+  geom_density(data = data.frame(x = retlev100_expert),
+            mapping = aes(x = x),
+            alpha = 0.5, n =1001) +
+  geom_density(data = data.frame(x = retlev100_mdi),
+            mapping = aes(x = x),
+            alpha = 0.5,
+            n = 1001,
+            linetype = "dotted") +
+  geom_density(data = data.frame(x = retlev100_prior),
+            mapping = aes(x = x),
+            alpha = 0.5,
+            n = 1001,
+            linetype = "dashed") +
+  scale_y_continuous(limits = c(0, 0.08), expand = c(0,0)) + 
+  labs(x = "daily cumulated rainfall (in mm)", y = "",
+       subtitle = "kernel density estimate of 100-year return level",
+       caption = "quantile prior") +
+  theme_classic()
+```
+
+:::
 <!--
 
 Hierarchical linear model with half-t prior

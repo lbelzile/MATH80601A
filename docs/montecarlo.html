@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.7.3">
+<meta name="generator" content="quarto-1.7.1">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -91,10 +91,10 @@ div.csl-indent {
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="site_libs/quarto-html/anchor.min.js"></script>
 <link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-81b5c3e63835cfde897ecd3d35a35a41.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-2bb0ec5e928ee8c40b12725cb7836c35.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-ad5ef081d17d57ab2b6cc5e45efb5d90.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-a51e8ad160b68d9f8f1ac488cc0f242e.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
   "copy-button": false,
@@ -343,7 +343,7 @@ f(x; \mu, \sigma, a, b) = \frac{1}{\sigma}\frac{\phi\left(\frac{x-\mu}{\sigma}\r
 <span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Acceptance rate</span></span>
 <span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="fu">length</span>(trunc_samp)<span class="sc">/</span><span class="fl">1e5</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 0.3401</code></pre>
+<pre><code>[1] 0.34133</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Theoretical acceptance rate</span></span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="fu">pnorm</span>(<span class="dv">1</span>)<span class="sc">-</span><span class="fu">pnorm</span>(<span class="dv">0</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -491,12 +491,12 @@ Figure&nbsp;4.3: Scatterplot of posterior samples from the generalized Pareto mo
 <span id="cb8-23"><a href="#cb8-23" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(<span class="fu">c</span>(<span class="at">true =</span> th_est, <span class="st">"monte carlo"</span> <span class="ot">=</span> mc_est, <span class="st">"importance sampling"</span> <span class="ot">=</span> is_est),<span class="dv">4</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>               true         monte carlo importance sampling 
-             0.0625              0.0623              0.0625 </code></pre>
+             0.0625              0.0633              0.0629 </code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Ratio of std. errors for means</span></span>
 <span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>mc_var<span class="sc">/</span>is_var <span class="co"># value &gt; 1 means that IS is more efficient</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 1.104177</code></pre>
+<pre><code>[1] 1.10847</code></pre>
 </div>
 </div>
 <div class="cell" data-layout-align="center">
@@ -565,13 +565,14 @@ Figure&nbsp;4.5: Running mean trace plots for <span class="math inline">\(g(x)=\
 <p><span class="theorem-title"><strong>Definition 4.1 (Discrete-time stochastic process)</strong></span> A discrete-time stochastic process is a random sequences whose elements are part of some set (finite or countable), termed state space <span class="math inline">\(\mathcal{S}.\)</span> We can encode the probability of moving from one state to the next via a transition matrix, whose rows contain the probabilities of moving from one state to the next and thus sum to one.</p>
 </div>
 <div id="def-weak-stationarity" class="theorem definition">
-<p><span class="theorem-title"><strong>Definition 4.6 (Stationarity)</strong></span> A stochastic (i.e., random) process is (strongly) stationary if the distribution of <span class="math inline">\(\{X_1, \ldots, X_n\}\)</span> is the same as that of <span class="math inline">\(\{X_{t+1}, \ldots X_{n+t}\}\)</span> for any value of <span class="math inline">\(t\)</span> and given <span class="math inline">\(n.\)</span></p>
+<p><span class="theorem-title"><strong>Definition 4.2 (Stationarity)</strong></span> A stochastic (i.e., random) process is (strongly) stationary if the distribution of <span class="math inline">\(\{X_1, \ldots, X_n\}\)</span> is the same as that of <span class="math inline">\(\{X_{t+1}, \ldots X_{n+t}\}\)</span> for any value of <span class="math inline">\(t\)</span> and given <span class="math inline">\(n.\)</span></p>
 <p>It is weakly stationary if the expected value is constant, meaning <span class="math inline">\(\mathsf{E}(X_t) = \mu\)</span> for all time points <span class="math inline">\(t\)</span>, and the covariance at lag <span class="math inline">\(h\)</span>, <span class="math inline">\(\mathsf{Cov}(X_t, X_{t+h}) = \gamma_h\)</span>, does not depend on <span class="math inline">\(t\)</span>. Strong stationarity implies weak stationarity.</p>
+</div>
 <div id="def-markov-property" class="theorem definition">
-<p><span class="theorem-title"><strong>Definition 4.2 (Markov property)</strong></span> A stochastic process is markovian if it satisfies the Markov property: given the current state of the chain, the future only depends on the current state and not on the past.</p>
+<p><span class="theorem-title"><strong>Definition 4.3 (Markov property)</strong></span> A stochastic process is markovian if it satisfies the Markov property: given the current state of the chain, the future only depends on the current state and not on the past.</p>
 </div>
 <div id="def-ergodic" class="theorem definition">
-<p><span class="theorem-title"><strong>Definition 4.3 (Ergodicity)</strong></span> Let <span class="math inline">\(\{Y_t\}\)</span> is a weakly stationary sequence with mean <span class="math inline">\(\mathsf{E}(Y_t)=\mu\)</span> and <span class="math inline">\(\gamma_h = \mathsf{Cov}(Y_t, Y_{t+h})\)</span>. Then, if the autocovariance series is convergent, meaning <span class="math display">\[\sum_{t=0}^\infty |\gamma_h| &lt; \infty,\]</span> then <span class="math inline">\(\{Y_t\}\)</span> is ergodic for the mean and <span class="math inline">\(\overline{Y} \stackrel{\mathrm{p}}{\to} \mu\)</span>. In other words, the ergodic theorem is a law of large numbers for stochastic processes that allows for serial dependence between observations, provided the latter is not too large.</p>
+<p><span class="theorem-title"><strong>Definition 4.4 (Ergodicity)</strong></span> Let <span class="math inline">\(\{Y_t\}\)</span> is a weakly stationary sequence with mean <span class="math inline">\(\mathsf{E}(Y_t)=\mu\)</span> and <span class="math inline">\(\gamma_h = \mathsf{Cov}(Y_t, Y_{t+h})\)</span>. Then, if the autocovariance series is convergent, meaning <span class="math display">\[\sum_{t=0}^\infty |\gamma_h| &lt; \infty,\]</span> then <span class="math inline">\(\{Y_t\}\)</span> is ergodic for the mean and <span class="math inline">\(\overline{Y} \stackrel{\mathrm{p}}{\to} \mu\)</span>. In other words, the ergodic theorem is a law of large numbers for stochastic processes that allows for serial dependence between observations, provided the latter is not too large.</p>
 <p>Ergodicity means that two segments of a time series far enough apart act as independent.</p>
 </div>
 <div id="prp-ergodicity-transfo" class="theorem proposition">
@@ -605,7 +606,7 @@ Figure&nbsp;4.5: Running mean trace plots for <span class="math inline">\(g(x)=\
 \end{align*}\]</span> This statement holds only if we start with draws from the stationary distribution, otherwise bets are off.</p>
 <p>We need the <strong>effective sample size</strong> of our Monte Carlo averages based on a Markov chain of length <span class="math inline">\(B\)</span> to be sufficient for the estimates to be meaningful.</p>
 <div id="def-ess" class="theorem definition">
-<p><span class="theorem-title"><strong>Definition 4.4 (Effective sample size)</strong></span> Loosely speaking, the effective sample size is the equivalent number of observations if the marginal posterior draws were independent. We define it as</p>
+<p><span class="theorem-title"><strong>Definition 4.5 (Effective sample size)</strong></span> Loosely speaking, the effective sample size is the equivalent number of observations if the marginal posterior draws were independent. We define it as</p>
 <p><span id="eq-effective-sample-size"><span class="math display">\[
 \mathsf{ESS} = \frac{B}{\left\{1+2\sum_{t=1}^\infty \rho_t\right\}}
 \tag{4.1}\]</span></span> where <span class="math inline">\(\rho_t\)</span> is the lag <span class="math inline">\(t\)</span> correlation. The relative effective sample size is simply the fraction of the effective sample size over the Monte Carlo number of replications: small values of <span class="math inline">\(\mathsf{ESS}/B\)</span> indicate pathological or inefficient samplers. If the ratio is larger than one, it indicates the sample is superefficient (as it generates negatively correlated draws).</p>
@@ -744,7 +745,7 @@ Figure&nbsp;4.7: Discrete Markov chain on integers from 1 to 5, with transition 
 </div>
 <p>Since we will be dealing with continuous random variables in later chapters, we use transition kernels rather than transition matrices, but the intuition will carry forward.</p>
 <div id="def-transition-kernel" class="theorem definition">
-<p><span class="theorem-title"><strong>Definition 4.5 (Transition kernel)</strong></span> A transition kernel <span class="math inline">\(K(\boldsymbol{\theta}^{\text{cur}}, \boldsymbol{\theta}^{\text{prop}})\)</span> proposes a move from the current value <span class="math inline">\(\boldsymbol{\theta}^{\text{cur}}\)</span> to a proposal <span class="math inline">\(\boldsymbol{\theta}^{\text{prop}}\)</span>.</p>
+<p><span class="theorem-title"><strong>Definition 4.6 (Transition kernel)</strong></span> A transition kernel <span class="math inline">\(K(\boldsymbol{\theta}^{\text{cur}}, \boldsymbol{\theta}^{\text{prop}})\)</span> proposes a move from the current value <span class="math inline">\(\boldsymbol{\theta}^{\text{cur}}\)</span> to a proposal <span class="math inline">\(\boldsymbol{\theta}^{\text{prop}}\)</span>.</p>
 </div>
 </section>
 </div>
@@ -791,7 +792,6 @@ Figure&nbsp;4.9: Calculation of the standard error of the posterior mean using t
 </div>
 
 
-</div>
 <div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list" style="display: none">
 <div id="ref-Albert:2009" class="csl-entry" role="listitem">
 Albert, Jim. 2009. <em>Bayesian Computation with <span>R</span></em>. 2nd ed. New York: Springer. <a href="https://doi.org/10.1007/978-0-387-92298-0">https://doi.org/10.1007/978-0-387-92298-0</a>.

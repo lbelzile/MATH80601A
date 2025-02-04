@@ -12,16 +12,16 @@
 
 
 The Gibbs sampling algorithm builds a Markov chain by iterating through a sequence of conditional distributions.
-Consider a model with $\boldsymbol{\theta} \in \boldsymbol{\Theta} \subseteq \mathbb{R}^p$. We consider a single (or $m \leq p$ blocks of parameters), say $\boldsymbol{\theta}^{[j]}$, such that, conditional on the remaining components of the parameter vector $\boldsymbol{\theta}^{-[j]}$, the conditional posterior $p(\boldsymbol{\theta}^{[j]} \mid \boldsymbol{\theta}^{-[j]}, \boldsymbol{y})$ is from a known distribution from which we can simulate draws
+Consider a model with $\boldsymbol{\theta} \in \boldsymbol{\Theta} \subseteq \mathbb{R}^p.$ We consider a single (or $m \leq p$ blocks of parameters), say $\boldsymbol{\theta}^{[j]},$ such that, conditional on the remaining components of the parameter vector $\boldsymbol{\theta}^{-[j]},$ the conditional posterior $p(\boldsymbol{\theta}^{[j]} \mid \boldsymbol{\theta}^{-[j]}, \boldsymbol{y})$ is from a known distribution from which we can simulate draws
 
-At iteration $t$, we can update each block in turn: note that the $k$th block uses the partially updated state
+At iteration $t,$ we can update each block in turn: note that the $k$th block uses the partially updated state
 \begin{align*}
 \boldsymbol{\theta}^{-[k]\star} = (\boldsymbol{\theta}_{t}^{[1]}, \ldots, \boldsymbol{\theta}_{t}^{[k-1]},\boldsymbol{\theta}_{t-1}^{[k+1]}, \boldsymbol{\theta}_{t-1}^{[m]})
 \end{align*}
 which corresponds to the current value of the parameter vector after the updates. To check the validity of the Gibbs sampler, see the methods proposed in @Geweke:2004.
 
 
-The Gibbs sampling can be viewed as a special case of Metropolis--Hastings where the proposal distribution $q$ is $p(\boldsymbol{\theta}^{[j]} \mid \boldsymbol{\theta}^{-[j]\star}, \boldsymbol{y})$. The particularity is that all proposals get accepted because the log posterior of the partial update, equals the proposal distribution, so
+The Gibbs sampling can be viewed as a special case of Metropolis--Hastings where the proposal distribution $q$ is $p(\boldsymbol{\theta}^{[j]} \mid \boldsymbol{\theta}^{-[j]\star}, \boldsymbol{y}).$ The particularity is that all proposals get accepted because the log posterior of the partial update, equals the proposal distribution, so
 \begin{align*}
 R = \frac{p(\boldsymbol{\theta}_t^{[j]\star} \mid \boldsymbol{\theta}^{-[j]\star}, \boldsymbol{y})}{p(\boldsymbol{\theta}_{t-1}^{[j]\star} \mid \boldsymbol{\theta}^{-[j]\star}, \boldsymbol{y})}\frac{p(\boldsymbol{\theta}_{t-1}^{[j]\star} \mid \boldsymbol{\theta}^{-[j]\star}, \boldsymbol{y})}{p(\boldsymbol{\theta}_t^{[j]\star} \mid \boldsymbol{\theta}^{-[j]\star}, \boldsymbol{y})}=1.
 \end{align*}
@@ -75,7 +75,7 @@ ggplot() +
 
 :::{exm-normal-Gibbs}
 
-As a toy illustration, we use Gibbs sampling to simulate data from a $d$-dimensional multivariate Gaussian target with mean $\boldsymbol{\mu}$ and equicorrelation covariance matrix $\mathbf{\Sigma} = (1-\rho)\mathbf{I}_d + \rho\boldsymbol{1}_{d}\boldsymbol{1}^\top_d$ with inverse $$\mathbf{Q} = \boldsymbol{\Sigma}^{-1}=(1-\rho)^{-1}\left\{\mathbf{I}_d - \rho \mathbf{1}_d\mathbf{1}_d/(1+(d-1)\rho)\right\},$$ for known correlation coefficient $\rho$. While we can easily sample independent observations, the exercise is insightful to see how well the methods works as the dimension increases, and when the correlation between pairs becomes stronger.
+As a toy illustration, we use Gibbs sampling to simulate data from a $d$-dimensional multivariate Gaussian target with mean $\boldsymbol{\mu}$ and equicorrelation covariance matrix $\mathbf{\Sigma} = (1-\rho)\mathbf{I}_d + \rho\boldsymbol{1}_{d}\boldsymbol{1}^\top_d$ with inverse $$\mathbf{Q} = \boldsymbol{\Sigma}^{-1}=(1-\rho)^{-1}\left\{\mathbf{I}_d - \rho \mathbf{1}_d\mathbf{1}_d/(1+(d-1)\rho)\right\},$$ for known correlation coefficient $\rho.$ While we can easily sample independent observations, the exercise is insightful to see how well the methods works as the dimension increases, and when the correlation between pairs becomes stronger.
 
 Consider $\boldsymbol{Y} \sim \mathsf{Gauss}_d(\boldsymbol{\mu}, \boldsymbol{\Sigma})$ and a partition $(\boldsymbol{Y}_1^\top, \boldsymbol{Y}_2^\top)^\top$: the conditional distribution of the $k$ subvector $\boldsymbol{Y}_1$ given the $d-k$ other components $\boldsymbol{Y}_2$ is, in terms of either the covariance (first line) or the precision (second line), Gaussian where
 \begin{align*}
@@ -110,7 +110,7 @@ for(i in seq_len(B)){
 }
 ```
 
-As the dimension of the parameter space increases, and as the correlation between components becomes larger, the efficiency of the Gibbs sampler degrades: @fig-gibbs-normal shows the first component for updating one-parameter at a time for a multivariate Gaussian target in dimensions $d=20$ and $d=3$, started at four deviation away from the mode. The chain makes smaller steps when there is strong correlation, resulting in an inefficient sampler.
+As the dimension of the parameter space increases, and as the correlation between components becomes larger, the efficiency of the Gibbs sampler degrades: @fig-gibbs-normal shows the first component for updating one-parameter at a time for a multivariate Gaussian target in dimensions $d=20$ and $d=3,$ started at four deviation away from the mode. The chain makes smaller steps when there is strong correlation, resulting in an inefficient sampler.
 
 ```{r}
 #| eval: true
@@ -205,7 +205,7 @@ p(\mu, \tau \mid \boldsymbol{y}) \propto& \tau^{-n/2}\exp\left\{-\frac{1}{2\tau}
 gives us
 \begin{align*}
 p(\mu \mid \tau, \boldsymbol{y}) &\propto \exp\left\{-\frac{1}{2} \left( \frac{\mu^2-2\mu\overline{y}}{\tau/n} + \frac{\mu^2-2\nu \mu}{\omega}\right)\right\}\\
-p(\tau \mid \mu, \boldsymbol{y}) & \propto \tau^{-n/2-\alpha-1}\exp\left[-\left\{\frac{\sum_{i=1}^n (y_i-\mu)^2}{2} + \beta \right\}/\tau\right]
+p(\tau \mid \mu, \boldsymbol{y}) & \propto \tau^{-n/2-\alpha-1}\exp\left[-\frac{1}{\tau}\left\{\frac{\sum_{i=1}^n (y_i-\mu)^2}{2} + \beta \right\}\right]
 \end{align*}
 so we can simulate in turn
 \begin{align*}
@@ -229,13 +229,13 @@ Gibbs sampling cannot be used to determine if the posterior is improper. If the 
 
 ## Bayesian linear model
 
-Consider a linear regression model with observation-specific mean $\mu_i = \mathbf{x}_i\boldsymbol{\beta}$ $(i=1,\ldots, n)$ with $\mathbf{x}_i$ the $i$th row of the $n \times p$ model matrix $\mathbf{X}$.
+Consider a linear regression model with observation-specific mean $\mu_i = \mathbf{x}_i\boldsymbol{\beta}$ $(i=1,\ldots, n)$ with $\mathbf{x}_i$ the $i$th row of the $n \times p$ model matrix $\mathbf{X}.$
 
-Concatenating records, $\boldsymbol{Y} \sim \mathsf{No}_n(\mathbf{X}\boldsymbol{\beta}, \sigma^2 \mathbf{Q}_y^{-1})$, for a known precision matrix $\mathbf{Q}_y$, typically $\mathbf{I}_n$. To construct a conjugate joint prior for $p(\boldsymbol{\beta}, \sigma^2)$, we consider the sequential formulation
+Concatenating records, $\boldsymbol{Y} \sim \mathsf{No}_n(\mathbf{X}\boldsymbol{\beta}, \sigma^2 \mathbf{Q}_y^{-1}),$ for a known precision matrix $\mathbf{Q}_y,$ typically $\mathbf{I}_n.$ To construct a conjugate joint prior for $p(\boldsymbol{\beta}, \sigma^2),$ we consider the sequential formulation
 \begin{align*}
-\boldsymbol{\beta} \mid \sigma^2 \sim \mathsf{Gauss}_p(\boldsymbol{\nu}_\beta, \sigma^2 \mathbf{Q}^{-1}_\beta), \qquad \sigma^2 \sim \mathsf{InvGamma}(\alpha,\beta)
+\boldsymbol{\beta} \mid \sigma^2 \sim \mathsf{Gauss}_p(\boldsymbol{\nu}_\beta, \sigma^2 \mathbf{Q}^{-1}_\beta), \qquad \sigma^2 \sim \mathsf{inv. gamma}(\alpha,\beta)
 \end{align*}
-where $\mathsf{InvGamma}$ denotes the inverse gamma distribution^[This simply means that the precision $\sigma^{-2}$, the reciprocal of the variance, has a gamma distribution with shape $\alpha$ and rate $\beta$.]
+where $\mathsf{inv. gamma}$ denotes the inverse gamma distribution^[This simply means that the precision $\sigma^{-2},$ the reciprocal of the variance, has a gamma distribution with shape $\alpha$ and rate $\beta.$]
 
 <!--
 Writing the log likelihood in exponential family form,
@@ -249,7 +249,7 @@ The joint posterior is Gaussian-inverse gamma and can be factorized
 \begin{align*}
 p(\boldsymbol{\beta}, \sigma^2 \mid y) = p(\sigma^2 \mid y) p(\boldsymbol{\beta} \mid \sigma^2, y)
 \end{align*}
-where $p(\sigma^2 \mid y) \sim \mathsf{InvGamma}(\alpha^*, \beta^*)$ and 
+where $p(\sigma^2 \mid y) \sim \mathsf{inv. gamma}(\alpha^*, \beta^*)$ and 
 \begin{align*}
 \boldsymbol{\beta} \mid \sigma^2, y & \sim \mathsf{Gauss}_p(\mathbf{M}\boldsymbol{m}, \sigma^2\mathbf{M})
 \\
@@ -262,34 +262,34 @@ the latter can be evaluated efficiently using Shermann--Morrisson--Woodbury iden
 
 :::
 
-### Data augmentation and auxiliary variables
+## Data augmentation and auxiliary variables
 
 
-In many problems, the likelihood $p(\boldsymbol{y}; \boldsymbol{\theta})$ is intractable or costly to evaluate and auxiliary variables are introduced to simplify calculations, as in the expectation-maximization algorithm. The Bayesian analog is  data augmentation [@Tanner.Wong:1987], which we present succinctly: let $\boldsymbol{\theta} \in \Theta$ be a vector of parameters and consider auxiliary variables $\boldsymbol{u} \in \mathbb{R}^k$ such that $\int_{\mathbb{R}^k} p(\boldsymbol{u}, \boldsymbol{\theta}; \boldsymbol{y}) \mathrm{d} \boldsymbol{u} = p(\boldsymbol{\theta}; \boldsymbol{y})$, i.e., the marginal distribution is that of interest, but evaluation of $p(\boldsymbol{u}, \boldsymbol{\theta}; \boldsymbol{y})$ is cheaper. The data augmentation algorithm consists in running a Markov chain on the augmented state space $(\Theta, \mathbb{R}^k)$, simulating in turn from the conditionals $p(\boldsymbol{u}; \boldsymbol{\theta}, \boldsymbol{y})$ and $p(\boldsymbol{\theta}; \boldsymbol{u}, \boldsymbol{y})$ with new variables chosen to simplify the likelihood. If simulation from the conditionals is straightforward, we can also use data augmentation to speed up calculations or improve mixing. For more details and examples, see @vanDyk.Meng:2001 and @Hobert:2011.
+In many problems, the likelihood $p(\boldsymbol{y}; \boldsymbol{\theta})$ is intractable or costly to evaluate and auxiliary variables are introduced to simplify calculations, as in the expectation-maximization algorithm. The Bayesian analog is  data augmentation [@Tanner.Wong:1987], which we present succinctly: let $\boldsymbol{\theta} \in \Theta$ be a vector of parameters and consider auxiliary variables $\boldsymbol{u} \in \mathbb{R}^k$ such that $\int_{\mathbb{R}^k} p(\boldsymbol{u}, \boldsymbol{\theta}; \boldsymbol{y}) \mathrm{d} \boldsymbol{u} = p(\boldsymbol{\theta}; \boldsymbol{y}),$ i.e., the marginal distribution is that of interest, but evaluation of $p(\boldsymbol{u}, \boldsymbol{\theta}; \boldsymbol{y})$ is cheaper. The data augmentation algorithm consists in running a Markov chain on the augmented state space $(\Theta, \mathbb{R}^k),$ simulating in turn from the conditionals $p(\boldsymbol{u}; \boldsymbol{\theta}, \boldsymbol{y})$ and $p(\boldsymbol{\theta}; \boldsymbol{u}, \boldsymbol{y})$ with new variables chosen to simplify the likelihood. If simulation from the conditionals is straightforward, we can also use data augmentation to speed up calculations or improve mixing. For more details and examples, see @vanDyk.Meng:2001 and @Hobert:2011.
 
 
 :::{#exm-probit-regression}
 
 ## Probit regression
 
-Consider binary responses $\boldsymbol{Y}_i$, for which we postulate a probit regression model,
+Consider binary responses $\boldsymbol{Y}_i,$ for which we postulate a probit regression model,
 \begin{align*}
 p_i = \Pr(Y_i=1) = \Phi(\beta_0 + \beta_1 \mathrm{X}_{i1} + \cdots + \beta_p\mathrm{X}_{ip}),
 \end{align*}
 where $\Phi$ is the distribution function of the standard Gaussian distribution.
 The likelihood of the probit model for a sample of $n$ independent observations is
 $$L(\boldsymbol{\beta}; \boldsymbol{y}) = \prod_{i=1}^n p_i^{y_i}(1-p_i)^{1-y_i},$$
-and this prevents easy simulation. We can consider a data augmentation scheme where $Y_i = \mathsf{I}(Z_i > 0)$, where $Z_i \sim \mathsf{Gauss}(\mathbf{x}_i\boldsymbol{\beta}, 1)$, with $\mathbf{x}_i$ denoting the $i$th row of the design matrix.
+and this prevents easy simulation. We can consider a data augmentation scheme where $Y_i = \mathsf{I}(Z_i > 0),$ where $Z_i \sim \mathsf{Gauss}(\mathbf{x}_i\boldsymbol{\beta}, 1),$ with $\mathbf{x}_i$ denoting the $i$th row of the design matrix.
 
 The augmented data likelihood is
 \begin{align*}
 p(\boldsymbol{z}, \boldsymbol{y} \mid \boldsymbol{\beta}) \propto \exp\left\{-\frac{1}{2}(\boldsymbol{z} - \mathbf{X}\boldsymbol{\beta})^\top(\boldsymbol{z} - \mathbf{X}\boldsymbol{\beta})\right\} \times \prod_{i=1}^n \mathsf{I}(z_i > 0)^{y_i}\mathsf{I}(z_i \le 0)^{1-y_i}
 \end{align*}
-Given $Z_i$, the coefficients $\boldsymbol{\beta}$ are simply the results of ordinary linear regression with unit variance, so
+Given $Z_i,$ the coefficients $\boldsymbol{\beta}$ are simply the results of ordinary linear regression with unit variance, so
 \begin{align*}
 \boldsymbol{\beta} \mid \boldsymbol{z}, \boldsymbol{y} &\sim \mathsf{Gauss}\left\{\widehat{\boldsymbol{\beta}}, (\mathbf{X}^\top\mathbf{X})^{-1}\right\}
 \end{align*}
-with $\widehat{\boldsymbol{\beta}}=(\mathbf{X}^\top\mathbf{X})^{-1}\mathbf{X}^\top\boldsymbol{z}$ is the ordinary least square estimator from the regression with model matrix $\mathbf{X}$ and response vector $\boldsymbol{z}$. The augmented variables $Z_i$ are conditionally independent and truncated Gaussian with
+with $\widehat{\boldsymbol{\beta}}=(\mathbf{X}^\top\mathbf{X})^{-1}\mathbf{X}^\top\boldsymbol{z}$ is the ordinary least square estimator from the regression with model matrix $\mathbf{X}$ and response vector $\boldsymbol{z}.$ The augmented variables $Z_i$ are conditionally independent and truncated Gaussian with
 \begin{align*}
 Z_i \mid y_i, \boldsymbol{\beta} \sim \begin{cases}
 \mathsf{trunc. Gauss}(\mathbf{x}_i\boldsymbol{\beta}, -\infty, 0) & y_i =0 \\
@@ -340,20 +340,20 @@ return(chains)
 
 ## Bayesian LASSO
 
-The Laplace distribution with mean $\mu$ and scale $\sigma$, which has density
+The Laplace distribution with mean $\mu$ and scale $\sigma,$ which has density
 \begin{align*}
 f(x; \mu, \sigma) = \frac{1}{2\sigma}\exp\left(-\frac{|x-\mu|}{\sigma}\right),
 \end{align*}
-can be expressed as a scale mixture of Gaussians, where $Y \sim \mathsf{Laplace}(\mu, \sigma)$ is equivalent to $Z \mid \tau \sim \mathsf{Gauss}(\mu, \tau)$ and $\tau \sim \mathsf{expo}\{(2\sigma)^{-1}\}$.
+can be expressed as a scale mixture of Gaussians, where $Y \sim \mathsf{Laplace}(\mu, \sigma)$ is equivalent to $Z \mid \tau \sim \mathsf{Gauss}(\mu, \tau)$ and $\tau \sim \mathsf{expo}\{(2\sigma)^{-1}\}.$
 With the improper prior $p(\mu, \sigma) \propto \sigma^{-1}$ and with $n$ independent and identically distributed Laplace variates, the joint posterior can be written
 \begin{align*}
 p(\boldsymbol{\tau}, \mu, \sigma \mid \boldsymbol{y}) &\propto \left(\prod_{i=1}^n \tau_i\right)^{-1/2}\exp\left\{-\frac{1}{2}\sum_{i=1}^n \frac{(y_i-\mu)^2}{\tau_i}\right\} \\&\quad \times \frac{1}{\sigma^{n+1}}\exp\left(-\frac{1}{2\sigma}\sum_{i=1}^n \tau_i\right)
 \end{align*}
-and $\mu \mid \cdots$ and $\sigma \mid \cdots$ are, as usual, Gaussian and inverse gamma, respectively. The variances, $\tau_j$, are conditionally independent of one another with
+and $\mu \mid \cdots$ and $\sigma \mid \cdots$ are, as usual, Gaussian and inverse gamma, respectively. The variances, $\tau_j,$ are conditionally independent of one another with
 \begin{align*}
 p(\tau_j \mid \mu, \sigma, y_j) &\propto \tau_j^{-1/2}\exp\left\{-\frac{1}{2}\frac{(y_j-\mu)^2}{\tau_j} -\frac{1}{2} \frac{\tau_j}{\sigma}\right\}
 \end{align*}
-so with $\xi_j=1/\tau_j$, we have
+so with $\xi_j=1/\tau_j,$ we have
 \begin{align*}
 p(\xi_j \mid \mu, \sigma, y_j) &\propto \xi_j^{-3/2}\exp\left\{-\frac{1}{2\sigma}\frac{\xi_j(y_j-\mu)^2}{\sigma} -\frac{1}{2} \frac{1}{\xi_j}\right\}\\
 \end{align*}
@@ -362,7 +362,7 @@ and we recognize the latter as a Wald (or inverse Gaussian) distribution, whose 
 f(y; \nu, \lambda) &= \left(\frac{\lambda}{2\pi y^{3}}\right)^{1/2} \exp\left\{ - \frac{\lambda (y-\nu)^2}{2\nu^2y}\right\}, \quad y > 0
 \\ &\stackrel{y}{\propto} y^{-3/2}\exp\left\{-\frac{\lambda}{2} \left(\frac{y}{\nu} + \frac{1}{y}\right)\right\}
 \end{align*}
-for location $\nu >0$ and shape $\lambda>0$, where $\xi_i \sim \mathsf{Wald}(\nu_i, \lambda)$ with $\nu_i=\{\sigma/(y_i-\mu)^2\}^{1/2}$ and $\lambda=\sigma^{-1}$.
+for location $\nu >0$ and shape $\lambda>0,$ where $\xi_i \sim \mathsf{Wald}(\nu_i, \lambda)$ with $\nu_i=\{\sigma/(y_i-\mu)^2\}^{1/2}$ and $\lambda=\sigma^{-1}.$
 
 @Park.Casella:2008 use this hierarchical construction to defined the Bayesian LASSO. With a model matrix $\mathbf{X}$ whose columns are standardized to have mean zero and unit standard deviation, we may write
 \begin{align*}
@@ -370,7 +370,7 @@ for location $\nu >0$ and shape $\lambda>0$, where $\xi_i \sim \mathsf{Wald}(\nu
 \beta_j \mid \sigma, \tau &\sim \mathsf{Gauss}(0, \sigma\tau)\\
 \tau &\sim \mathsf{expo}(\lambda/2)
 \end{align*}
-If we set an improper prior $p(\mu, \sigma) \propto \sigma^{-1}$, the resulting conditional distributions are all available and thus the model is amenable to Gibbs sampling.
+If we set an improper prior $p(\mu, \sigma) \propto \sigma^{-1},$ the resulting conditional distributions are all available and thus the model is amenable to Gibbs sampling.
 
 The Bayesian LASSO places a Laplace penalty on the regression coefficients, with lower values of $\lambda$ yielding more shrinkage. @fig-lasso-traceplot shows a replication of Figure 1 of @Park.Casella:2008, fitted to the `diabetes` data. Note that, contrary to the frequentist setting, none of the posterior draws of $\boldsymbol{\beta}$ are exactly zero.
 
@@ -500,7 +500,7 @@ attr(regpar, "l1norm") <- l1norm
 #| echo: false
 #| cache: true
 #| label: fig-lasso-traceplot
-#| fig-cap: "Traceplot of $\\beta$ coefficients (penalized maximum likelihood estimates and median aposteriori as a function of the $l_1$ norm of the coefficients, with lower values of the latter corresponding to higher values of the penalty $\\lambda$."
+#| fig-cap: "Traceplot of $\\beta$ coefficients (penalized maximum likelihood estimates and median aposteriori as a function of the $l_1$ norm of the coefficients, with lower values of the latter corresponding to higher values of the penalty $\\lambda.$"
 # Call the MCMC sampler
 set.seed(2023)
 data(diabetes, package = "lars")
@@ -579,30 +579,34 @@ Many elliptical distributions can be cast as scale mixture models of spherical o
 
 In clustering problems, we can specify that observations arise from a mixture model with a fixed or unknown number of coefficients: the interest lies then in estimating the relative weights of the components, and their location and scale.
 
-A $K$-mixture model is a weighted combination of models frequently used in clustering or to model subpopulations with respective densities $f_k$, with density
+A $K$-mixture model is a weighted combination of models frequently used in clustering or to model subpopulations with respective densities $f_k,$ with density
 $$f(x; \boldsymbol{\theta}, \boldsymbol{\omega}) = \sum_{k=1}^K \omega_kf_k(x; \boldsymbol{\theta}_k), \qquad \omega_1 + \cdots \omega_K=1.$$
-Since the density involves a sum, numerical optimization is challenging. Let $C_i$ denote the cluster index for observation $i$: if we knew the value of $C_i =j$, the density would involve only $f_j$. We can thus use latent variables representing the group allocation to simplify the problem and run an EM algorithm or use the data augmentation. In an iterative framework, we can consider the complete data as the tuples $(X_i, Z_i)$, where $Z_i = \mathsf{I}(C_i=k)$.
+Since the density involves a sum, numerical optimization is challenging. Let $C_i$ denote the cluster index for observation $i$: if we knew the value of $C_i =j,$ the density would involve only $f_j.$ We can thus use latent variables representing the group allocation to simplify the problem and run an EM algorithm or use the data augmentation. In an iterative framework, we can consider the complete data as the tuples $(X_i, Z_i),$ where $Z_i = \mathsf{I}(C_i=k).$
 
 With the augmented data, the conditional distribution of $Z_i \mid X_i, \boldsymbol{\omega}, \boldsymbol{\theta} \sim \mathsf{multinom}(1, \boldsymbol{\gamma}_{ik})$ where $$\gamma_{ik} = \frac{\omega_k f_k(X_i\boldsymbol{\theta}_k)}{\sum_{j=1}^K f_j(X_i\boldsymbol{\theta}_k)}.$$
-Given suitable priors for the probabilities $\boldsymbol{\omega}$ and $\boldsymbol{\theta} \equiv \{\boldsymbol{\theta}_1, \ldots, \boldsymbol{\theta}_k\}$, we can use Gibbs sampling updating $\boldsymbol{Z}$, $\boldsymbol{\omega}$ and $\boldsymbol{\theta}$ in turn, assigning a conjugate Dirichlet prior for $\boldsymbol{\omega}.$
+Given suitable priors for the probabilities $\boldsymbol{\omega}$ and $\boldsymbol{\theta} \equiv \{\boldsymbol{\theta}_1, \ldots, \boldsymbol{\theta}_k\},$ we can use Gibbs sampling updating $\boldsymbol{Z},$ $\boldsymbol{\omega}$ and $\boldsymbol{\theta}$ in turn, assigning a conjugate Dirichlet prior for $\boldsymbol{\omega}.$
 
 :::
 
-If we run a MCMC algorithm to sample from a mixture models, the likelihood is invariant to permutation of the group labels, leading to identifiability issues when running multiple Markov chains.
+
 
 :::{#exm-mixture-model}
 
-## Mixture model
+## Mixture model for geyser
 
 We consider a Gaussian mixture model for waiting time between two eruptions of the Old Faithful geyser in Yellowstone. The distribution is of the form
 \begin{align*}
-f_i(x) = p_i f_{1}(x_i; \mu_1, \tau_1^{-1}) + (1-p_i)f_{2}(x_i; \mu_2, \tau_2^{-1}).
+f_i(x) = p_i \phi_{1}(x_i; \mu_1, \tau_1^{-1}) + (1-p_i)\phi_{2}(x_i; \mu_2, \tau_2^{-1}).
 \end{align*}
-We assign conjugate priors with $p_i \sim \mathsf{beta}(a_1, a_2),$  $\mu_j \sim \mathsf{Gauss}\{c, (\tau_jd)^{-1}\}$ and $\tau_j \sim \mathsf{gamma}(b_1, b_2)$. For the hyperpriors, we use $a_1=a_2=1,$ $b_1=1, b_2 = 0.1,$ $c = 60,$ and $d = 1/40.$
+where $\phi(\cdot; \mu, \tau^{-1})$ is the density function of a Gaussian with mean $\mu$ and precision $\tau.$ 
+We assign conjugate priors with $p_i \sim \mathsf{beta}(a_1, a_2),$  $\mu_j \sim \mathsf{Gauss}\{c, (\tau_jd)^{-1}\}$ and $\tau_j \sim \mathsf{gamma}(b_1, b_2).$ For the hyperpriors, we use $a_1=a_2=1,$ $b_1=1, b_2 = 0.1,$ $c = 60,$ and $d = 1/40.$
+
+
 
 ```{r}
-#| eval: false
+#| eval: true
 #| echo: true
+#| cache: false
 data(faithful)
 n <- nrow(faithful)
 y <- faithful$waiting
@@ -611,8 +615,8 @@ a1 <- 2; a2 <- 2; c <- 60; d <- 1/40; b1 <- 1; b2 <- 0.01
 # Assign observations at random to groups
 set.seed(80601)
 cut <- runif(1, 0.1, 0.9)*diff(range(y)) + min(y)
-group <- y < cut
-p <- sum(group == 0)/n
+group <- as.integer(y > cut)
+p <- sum(group == 0L)/n
 mu <- c(mean(y[group == 0]), mean(y[group == 1]))
 prec <- 1/c(var(y[group == 0]), var(y[group == 1]))
 # Storage and number of replications
@@ -620,12 +624,12 @@ B <- 1e4L
 theta <- matrix(nrow = B, ncol = 5L)
 # Step 1: assign variables to clusters
 for(b in 1:B){
-  d1 <- dnorm(y, mean = mu[1], sd = 1/sqrt(prec[1]))
-  d2 <- dnorm(y, mean = mu[2], sd = 1/sqrt(prec[2]))
+  d1 <- dnorm(y, mean = mu[1], sd = 1/sqrt(prec[1])) # group 0 
+  d2 <- dnorm(y, mean = mu[2], sd = 1/sqrt(prec[2])) # group 1
   # Data augmentation: group labels
-  group <- rbinom(n = n, size = rep(1, n), prob = p*d1/(p*d1 + (1-p)*d2))
+  group <- rbinom(n = n, size = rep(1, n), prob = (1-p)*d2/(p*d1 + (1-p)*d2))
   # Step 2: update probability of cluster
-  p <- rbeta(n = 1, shape1 = sum(group) + a1, n - sum(group) + a2)
+  p <- rbeta(n = 1, shape1 = n - sum(group) + a1, sum(group) + a2)
   for(j in 1:2){
     yg <- y[group == (j-1L)]
     ng <- length(yg)
@@ -638,8 +642,57 @@ for(b in 1:B){
   }
   theta[b, ] <- c(p, mu, prec)
 }
+# Discard initial observations (burn in)
+theta <- theta[-(1:100),]
 ```
 
+```{r}
+#| eval: true
+#| echo: false
+#| label: fig-density-mixt
+#| fig-cap: "One-dimensional density mixture for the Old Faithful data, with histogram of data (left) and line ribbon of posterior density draws (right)."
+#| cache: false
+library(ggplot2)
+library(patchwork)
+g1 <- ggplot(data = faithful, 
+       mapping = aes(x = waiting)) +
+    geom_histogram(bins = 30) +
+    scale_y_continuous(limits = c(0, NA), 
+                       expand = expansion(add = c(0, 0.5))) + 
+    labs(x = "waiting time (in seconds)") +
+   theme_classic()
+mixtdens <- function(theta, x){ 
+   theta[1]*dnorm(x, theta[2], sd = 1/sqrt(theta[4])) +
+      (1-theta[1]) * dnorm(x, theta[3], sd = 1/sqrt(theta[5]))
+}
+xlim <- range(faithful$waiting) + c(-5,5)
+xseq <- seq(xlim[1], xlim[2], length.out = 101)
+map <- apply(theta[seq(1, nrow(theta), length.out = 400),], 1, function(theta_b){ mixtdens(theta_b, x = xseq)})
+
+g2 <- ggplot(data = data.frame(
+                x = rep(xseq, length.out = prod(dim(map))), 
+                y = c(map), 
+                .draw = rep(1:ncol(map), each = nrow(map))),
+             mapping = aes(x = x, y = y, group = .draw)) + 
+  # ggdist::stat_lineribbon(mapping = aes(fill = after_stat(.width)),
+  #                 .width = ppoints(50)) +
+  #  scale_fill_distiller() +
+   geom_line(alpha = 0.2) +
+   scale_y_continuous(limits = c(0, NA), 
+                       expand = expansion(add = c(0, 0.01))) + 
+   labs(x = "waiting time (in seconds)", y = "density") + 
+   theme_classic()
+g1 + g2
+```
+
+
+:::
+
+:::{#rem-label-switching}
+
+## Label switching in mixture models
+
+If we run a MCMC algorithm to sample from a mixture models, the likelihood is invariant to permutation of the group labels, leading to identifiability issues when the chain swaps modes, when running multiple Markov chains with symmetric priors or using tempering algorithms. Two chains may thus reach the same stationary distribution, with group labels swapped. It is sometimes necessary to impose ordering constraints on the mean parameters $\boldsymbol{\mu},$ although this isn't necessarily easy to generalize beyond the univariate setting. See @Jasra.Holmes.Stephens:2005 and @Stephens:2002 for more details.
 
 :::
 
@@ -647,14 +700,14 @@ for(b in 1:B){
 
 ## Tokyo rainfall
 
-We consider data from @Kitagawa:1987 that provide a binomial time series giving the number of days in years 1983 and 1984 (a leap year) in which there was more than 1mm of rain in Tokyo. These data and the model we consider are discussed in in section 4.3.4 of @Rue.Held:2004. We thus have $T=366$ days and $n_t \in \{1,2\}$ $(t=1, \ldots, T)$ the number of observations in day $t$ and $y_t=\{0,\ldots, n_t\}$ the number of days with rain. The objective is to obtain a smoothed probability of rain. The underlying probit model considered takes $Y_t \mid n_t, p_t \sim \mathsf{binom}(n_t, p_t)$ and $p_t = \Phi(\beta_t).$
+We consider data from @Kitagawa:1987 that provide a binomial time series giving the number of days in years 1983 and 1984 (a leap year) in which there was more than 1mm of rain in Tokyo. These data and the model we consider are discussed in in section 4.3.4 of @Rue.Held:2005. We thus have $T=366$ days and $n_t \in \{1,2\}$ $(t=1, \ldots, T)$ the number of observations in day $t$ and $y_t=\{0,\ldots, n_t\}$ the number of days with rain. The objective is to obtain a smoothed probability of rain. The underlying probit model considered takes $Y_t \mid n_t, p_t \sim \mathsf{binom}(n_t, p_t)$ and $p_t = \Phi(\beta_t).$
 
-We specify the random effects $\boldsymbol{\beta} \sim \mathsf{Gauss}_{T}(\boldsymbol{0}, \tau^{-1}\mathbf{Q})$, where $\mathbf{Q}$ is a $T \times T$ precision matrix that encodes the local dependence. A circular random walk structure of order 2 is used to model the smooth curves by smoothing over neighbors, and enforces small second derivative. This is a suitable prior because it enforces no constraint on the mean structure. This amounts to specifying the process with 
+We specify the random effects $\boldsymbol{\beta} \sim \mathsf{Gauss}_{T}(\boldsymbol{0}, \tau^{-1}\mathbf{Q}),$ where $\mathbf{Q}$ is a $T \times T$ precision matrix that encodes the local dependence. A circular random walk structure of order 2 is used to model the smooth curves by smoothing over neighbors, and enforces small second derivative. This is a suitable prior because it enforces no constraint on the mean structure. This amounts to specifying the process with 
 \begin{align*}
 \Delta^2\beta_t &= (\beta_{t+1} - \beta_t) - (\beta_t - \beta_{t-1})
 \\&=-\beta_{t-1} +2 \beta_t - \beta_{t+1} \sim \mathsf{Gauss}(0, \tau^{-1}), \qquad t= \in \mathbb{N} \mod 366.
 \end{align*}
-This yields an intrinsic Gaussian Markov random field with a circulant precision matrix $\tau\mathbf{Q}=\tau\mathbf{GG}$ of rank $T-1,$ where
+This yields an intrinsic Gaussian Markov random field with a circulant precision matrix $\tau\mathbf{Q}=\tau\mathbf{GG^\top}$ of rank $T-1,$ where
 \begin{align*}
 \mathbf{G} = 
 \begin{pmatrix} 
@@ -665,10 +718,9 @@ This yields an intrinsic Gaussian Markov random field with a circulant precision
 -1 & 0 & 0 & 0 & \cdots & 2
 \end{pmatrix},
 \quad 
-\begin{align*}
 \mathbf{Q} = 
 \begin{pmatrix} 
-6 & -4 & 1 & 0 & \cdots 1 & -4\\
+6 & -4 & 1 & 0 & \cdots & 1 & -4\\
 -4 & 6 & -4 & 1 & \ddots & 0 & 1 \\
 1 & -4 & 6 & -4 & \ddots & 0 & 0 \\
 \vdots & \ddots & \ddots  & \ddots  & \ddots  & \ddots & \vdots \\
@@ -698,25 +750,25 @@ col = RColorBrewer::brewer.pal(n = 5, name = "Blues"),lwd = seq(2, 1, length.out
 
 We can perform data augmentation by imputing Gaussian variables, say $x_{1,1}, x_{i,2}, \ldots, x_{366,2}$ following @exm-probit-regression from truncated Gaussian, where $x_{t,i} = \beta_t + \varepsilon_{t,i}$ and $\varepsilon_{t,i} \sim \mathsf{Gauss}(0,1)$ are independent standard Gaussian and 
 \begin{align*}
-x_{t,i} \mid  y_{t,i}, \beta_t \sim 
+z_{t,i} \mid  y_{t,i}, \beta_t \sim 
 \begin{cases}
-\mathsf{trunc. Gauss}(\beta_t, 1, 0, \infty) & y_{t,i} = 0 \\
-\mathsf{trunc. Gauss}(\beta_t, 1, -\infty, 0) & y_{t,i} =1 
+\mathsf{trunc. Gauss}(\beta_t, 1, -\infty, 0) & y_{t,i} = 0 \\
+\mathsf{trunc. Gauss}(\beta_t, 1,  0, \infty) & y_{t,i} =1 
 \end{cases}
 \end{align*}
 The posterior is proportional to
 \begin{align*}
-p(\boldsymbol{\beta} \mid \tau)p(\tau)\prod_{t=1}^{T}\prod_{i=1}^{n_t}p(y_{t,i} \mid x_{t,i}) p(x_{t,i} \mid \beta_t)
+p(\boldsymbol{\beta} \mid \tau)p(\tau)\prod_{t=1}^{T}\prod_{i=1}^{n_t}p(y_{t,i} \mid z_{t,i}) p(z_{t,i} \mid \beta_t)
 \end{align*}
-and once we have imputed the Gaussian latent vectors, we can work directly with the values of $x_t = \sum_{i=1}^{n_t} x_{i,t}.$ The posterior has the form
+and once we have imputed the Gaussian latent vectors, we can work directly with the values of $z_t = \sum_{i=1}^{n_t} z_{i,t}.$ The posterior has the form
 \begin{align*}
-p(\boldsymbol{\beta}, \tau) \propto \tau^{(n-1)/2}\exp \left( - \frac{\tau}{2} \boldsymbol{\beta}^\top \mathbf{Q} \boldsymbol{\beta}\right)\exp\left\{ - \frac{1}{2} (\boldsymbol{x} - \boldsymbol{\beta})^\top \mathrm{diag}(\boldsymbol{n})(\boldsymbol{x} - \boldsymbol{\beta})\right\} \tau^{a-1}\exp(-\tau b)
+p(\boldsymbol{\beta}, \tau) \propto \tau^{(n-1)/2}\exp \left( - \frac{\tau}{2} \boldsymbol{\beta}^\top \mathbf{Q} \boldsymbol{\beta}\right)\exp\left\{ - \frac{1}{2} (\boldsymbol{z} - \boldsymbol{\beta})^\top \mathrm{diag}(\boldsymbol{n})(\boldsymbol{z} - \boldsymbol{\beta})\right\} \tau^{a-1}\exp(-\tau b)
 \end{align*}
-where $\boldsymbol{x} = (x_1, \ldots, x_T).$
+where $\boldsymbol{z} = (z_1, \ldots, z_T).$
 Completing the quadratic form shows that 
 \begin{align*}
-\boldsymbol{\beta} \mid \boldsymbol{x}, \tau &\sim \mathsf{Gauss}_T\left[\left\{\tau \mathbf{Q} + \mathrm{diag}(\boldsymbol{n})\right\}^{-1} \mathrm{diag}(\boldsymbol{n}) \boldsymbol{x}, \left\{\tau \mathbf{Q} + \mathrm{diag}(\boldsymbol{n})\right\}^{-1}\right]\\
-\tau \mid \boldsymbol{\beta}, \boldsymbol{x} & \sim \mathsf{gamma}\left( \frac{n-1}{2} + a, \frac{\boldsymbol{beta}^\top \mathbf{Q}\boldsymbol{\beta}{2} + b \right)
+\boldsymbol{\beta} \mid \boldsymbol{x}, \tau &\sim \mathsf{Gauss}_T\left[\left\{\tau \mathbf{Q} + \mathrm{diag}(\boldsymbol{n})\right\}^{-1} \boldsymbol{z}, \left\{\tau \mathbf{Q} + \mathrm{diag}(\boldsymbol{n})\right\}^{-1}\right]\\
+\tau \mid \boldsymbol{\beta} & \sim \mathsf{gamma}\left( \frac{n-1}{2} + a, \frac{\boldsymbol{\beta}^\top \mathbf{Q}\boldsymbol{\beta}}{2} + b \right)
 \end{align*}
 
 
@@ -724,7 +776,7 @@ Completing the quadratic form shows that
 
 ```{r}
 #| eval: true
-#| echo: false
+#| echo: true
 library(Matrix)
 library(TruncatedNormal)
 data(Tokyo, package = "INLA")
@@ -737,9 +789,23 @@ nt <- 366L
 K <- ngme2::rw2(1:nt, cyclic = TRUE)
 Q <- crossprod(K$K)
 cholQ <- Matrix::chol(Q)
+# Reconstruct daily data
 N <- Matrix::Diagonal(n = nt, x = Tokyo$n)
 y <- with(Tokyo, c(pmin(y, 1), pmax(0, y[-60]-1)))
 day <- c(1:366, 1:59, 61:366)
+#' Simulate a Gaussian random field with precision matrix \eqn{Q} and mean \eqn{Q^{-1}b}
+#' Exploiting the sparsity structure as much as possible
+rGaussQ <- function(n, b, Q){
+  stopifnot(nrow(Q) == length(b))
+  Lmat <- Matrix::chol(Q) # yields upper triangular matrix!
+  v <- Matrix::solve(a = Matrix::t(Lmat), b = b)
+  nu <- as.numeric(Matrix::solve(a = Lmat, b = v))
+  y <- Matrix::solve(a = Lmat, matrix(rnorm(n = n*length(b)), ncol = n))
+  if(n == 1L){
+    y <- as.numeric(y) 
+  }
+  t(nu + y)
+}
 B <- 1e4L # number of draws
 # Create containers
 beta_s <- matrix(nrow = B, ncol = nt)
@@ -751,53 +817,72 @@ tau <- 1000
 # Prior parameter values
 tau_a <- 1
 tau_b <- 0.0001
-# Data
 # Gibbs sampling
 for(b in seq_len(B)){
-  if(b %% 100L == 0L){
-    print(paste(b, 'iterations completed'));
-  }
-# Step 1: data augmentation
-x <- TruncatedNormal::rtnorm(
-  n = 1,
-  lb = ifelse(y == 0, -Inf, -beta),
-  ub = ifelse(y == 0, -beta, Inf)) + beta[day]
-tx <- aggregate(x = x, by = list(day), FUN = sum)$x
-x_s[b,] <- tx
-# Simulate random effects in block
-beta <- beta_s[b,] <- rGaussQ(
-  n = 1,
-  b = Tokyo$n * tx,
-  Q = tau * Q + N)
-# st <- sample.int(nt, 1)
-## Update individually looping over
-# for(i in (st + seq_len(nt)) %% nt + 1L){
-#   im1 <- ifelse(i == 1L, 366, i-1)
-#   im2 <- ifelse(i %in% 1:2, 364+i, i-2)
-#   ip1 <- ifelse(i == 366L, 1, i+1)
-#   ip2 <- ifelse(i %in% 365:366, i-364, i + 2)
-#   prec <- tau * 6 + Tokyo$n[i]
-#   condmean <- x[i] - tau *
-#             (-4* (beta[im1] + beta[ip1] - x[im1] - x[ip1]) +
-#                 (beta[im2] + beta[ip2] - x[im2] - x[ip2])) / prec
-#   beta[i] <- rnorm(n = 1, mean = condmean, sd = 1/sqrt(prec))
-# }
-# beta_s[b,] <- beta
-# Simulate precision
-tau <- tau_s[b] <- rgamma(
-  n = 1, 
-  shape = (nt-1)/2 + tau_a, 
-  rate = 0.5*as.numeric(crossprod(cholQ %*% beta)) + tau_b)
-# if beta is VERY smooth, then precision is large
-}
+  # if(b %% 100L == 0L){print(paste(b, 'iterations completed')); }
+  # Step 1: data augmentation
+  x <- TruncatedNormal::rtnorm(
+    n = 1,  mu = beta[day], sd = 1,
+    lb = ifelse(y == 0, -Inf, 0),
+    ub = ifelse(y == 0, 0, Inf))
+  tx <- aggregate(x = x, by = list(day), FUN = sum)$x
+  x_s[b,] <- tx
+  # Step 2: Simulate random effects in block
+  beta <- beta_s[b,] <- c(rGaussQ(
+    n = 1,
+    b = tx, 
+    Q = tau * Q + N))
+  ## Step 2 b: alternative Update individually looping over indices
+  # st <- sample.int(nt, 1)
 
+  # for(i in (st + seq_len(nt)) %% nt + 1L){
+  #   im1 <- ifelse(i == 1L, 366, i-1)
+  #   im2 <- ifelse(i %in% 1:2, 364+i, i-2)
+  #   ip1 <- ifelse(i == 366L, 1, i+1)
+  #   ip2 <- ifelse(i %in% 365:366, i-364, i + 2)
+  #   prec <- tau * 6 + Tokyo$n[i]
+  #   condmean <- x[i] - tau *
+  #             (-4* (beta[im1] + beta[ip1] - x[im1] - x[ip1]) +
+  #                 (beta[im2] + beta[ip2] - x[im2] - x[ip2])) / prec
+  #   beta[i] <- rnorm(n = 1, mean = condmean, sd = 1/sqrt(prec))
+  # }
+  # beta_s[b,] <- beta
+
+# Simulate precision
+  tau <- tau_s[b] <- rgamma(
+    n = 1, 
+    shape = (nt-1)/2 + tau_a, 
+    rate = 0.5*as.numeric(crossprod(cholQ %*% beta)) + tau_b)
+  # if beta is VERY smooth, then precision is large
+}
 ```
+
+```{r}
+#| eval: true
+#| echo: false
+#| label: fig-rainfall
+#| fig-cap: "Tokyo rainfall fitted median probability with 50% and 89% pointwise credible intervals as a function of time of the year, with the proportion of days of rain (points)."
+quants <- apply(pnorm(beta_s), 2, quantile, probs = c((1-0.89)/2, 0.25, 0.5, 0.75, 0.89 + (1-0.89)/2))
+matplot(x = 1:nt, 
+        y = t(quants), 
+        type = "l", 
+        lty = c(3,2,1,2,3), 
+        col = c("gray90","gray50","black","gray50","gray90"),
+        xlab = "day of year", 
+        ylab = expression(Phi(beta[t])), 
+        bty = "l",
+        ylim = c(0,1),
+        yaxs = "i")
+with(Tokyo, points(x = time, y = y/2, pch = 20,cex = 0.1)) 
+```
+
 
 ```{r}
 #| eval: false
 #| echo: false
 ## NOTE: this seemingly doesn't work with Q not full rank
 # Simulate from Gauss(Qinv * b, Qinv) # Rue (2001), alg. 3.1.2
+
 
 rIGMRF <- function(n, Q, rank){
   nt <- nrow(Q)
@@ -811,19 +896,7 @@ rIGMRF <- function(n, Q, rank){
       rnorm(n = length(lambda), 
             sd = 1/sqrt(lambda)))
 }
-
-#' Simulate from Gaussian random field 
-#' 
-#' Given a Gaussian random field with precision matrix \eqn{Q} and mean \eqn{Q^{-1}b}, simulate a
-rGaussQ <- function(n, b, Q){
- stopifnot(nrow(Q) == length(b))
- Lmat <- Matrix::chol(Q) # yields upper triangular matrix!
- v <- Matrix::solve(a = Matrix::t(Lmat), b = b)
- nu <- Matrix::solve(a = Lmat, b = v)
- y <- Matrix::solve(a = Lmat, matrix(rnorm(n = n*length(b)), ncol = n))
- if(n == 1L){
-   y <- as.numeric(y) 
- }
- (nu + y)
-}
 ```
+
+
+:::

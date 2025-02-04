@@ -620,6 +620,8 @@ A stochastic (i.e., random) process is (strongly) stationary if the distribution
 
 It is weakly stationary if the expected value is constant, meaning $\mathsf{E}(X_t) = \mu$ for all time points $t$, and the covariance at lag $h$, $\mathsf{Cov}(X_t, X_{t+h}) = \gamma_h$, does not depend on $t$. Strong stationarity implies weak stationarity.
 
+:::
+
 :::{#def-markov-property}
 
 ## Markov property

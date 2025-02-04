@@ -41,11 +41,11 @@ The following theoretical details provided for completeness only.
 
 ## Detailed balance
 
-If our target is $p(\cdot)$, then the Markov chain satisfies the **detailed balance** condition with respect to $p(\cdot)$ if
+If our target is $p(\cdot),$ then the Markov chain satisfies the **detailed balance** condition with respect to $p(\cdot)$ if
 \begin{align*}
 K(\boldsymbol{\theta}^{\text{cur}}, \boldsymbol{\theta}^{\text{prop}})p(\boldsymbol{\theta}^{\text{cur}}) = K(\boldsymbol{\theta}^{\text{prop}}, \boldsymbol{\theta}^{\text{cur}})p(\boldsymbol{\theta}^{\text{prop}}).
 \end{align*}
-If a Markov chain satisfies the detailed balance with respect to $p(\cdot)$, then the latter is necessarily the invariant density of the Markov chain and the latter is reversible.
+If a Markov chain satisfies the detailed balance with respect to $p(\cdot),$ then the latter is necessarily the invariant density of the Markov chain and the latter is reversible.
 
 :::
 
@@ -58,7 +58,7 @@ The Metropolis--Hastings algorithm has transition kernel for a move from $\bolds
 \begin{align*}
 K(\boldsymbol{x}, \boldsymbol{y}) = \alpha(\boldsymbol{x}, \boldsymbol{y}) q(\boldsymbol{y} \mid \boldsymbol{x}) + \{1- r(\boldsymbol{x})\}\mathsf{I}(\boldsymbol{y}=\boldsymbol{x})
 \end{align*}
-where $r(\boldsymbol{x})=\int \alpha(\boldsymbol{x}, \boldsymbol{y}) q(\boldsymbol{y} \mid \boldsymbol{x})\mathrm{d} \boldsymbol{y}$ is the average probability of acceptance of a move from $\boldsymbol{x}$, $\mathsf{I}(\cdot = \boldsymbol{x})$ is a point mass at $\boldsymbol{x},$ and $\alpha(\cdot)$ is defined on the next slide.
+where $r(\boldsymbol{x})=\int \alpha(\boldsymbol{x}, \boldsymbol{y}) q(\boldsymbol{y} \mid \boldsymbol{x})\mathrm{d} \boldsymbol{y}$ is the average probability of acceptance of a move from $\boldsymbol{x},$ $\mathsf{I}(\cdot = \boldsymbol{x})$ is a point mass at $\boldsymbol{x},$ and $\alpha(\cdot)$ is defined on the next slide.
 
 One can show that the Metropolis--Hastings algorithm satisfies detailed balanced; see, e.g., Theorem 7.2 of @Casella.Robert:2004.
 
@@ -342,7 +342,7 @@ plus remainder, which suggests a Gaussian approximation with mean $\mu_{t-1} = \
 \begin{align*}
  \alpha = \frac{p(\theta^{\star}_{t})}{p(\theta_{t-1})} \frac{ q(\theta_{t-1} \mid \mu_{t}^{\star}, \tau_{t}^{\star}, a, b)}{q(\theta^{\star}_{t} \mid \mu_{t-1}, \tau_{t-1}, a, b)}
 \end{align*}
-and we set $\theta^{(t+1)} = \theta^{\star}_{t}$ with probability $\min\{1, r\}$ and $\theta^{(t+1)} = \theta_{t-1}$ otherwise. To evaluate the ratio of truncated Gaussian densities $q(\cdot; \mu, \tau, a, b),$ we need to compute the Taylor approximation from the current parameter value, but also the reverse move from the proposal $\theta^{\star}_{t}.$ Another option is to modify the move dictated by the rescaled gradient by taking instead $$\mu_{t-1} = \theta_{t-1} - \eta f'(\theta_{t-1})/f''(\theta_{t-1}).$$ The proposal includes an additional learning rate parameter, $\eta \leq 1,$ whose role is to prevent oscillations of the quadratic approximation, as in a Newton--Raphson algorithm. Relative to a random walk Metropolis--Hastings, the proposal automatically adjusts to the local geometry of the target, which guarantees a higher acceptance rate and lower autocorrelation for the Markov chain despite the higher evaluation costs. The proposal requires that both $f''(\theta_{t-1})$ and $f''(\theta^{\star}_{t})$ be negative since the variance is $-1/f''(\theta)$: this shouldn't be problematic in the vicinity of the mode. Otherwise, one could use a global scaling derived from the hessian at the mode.
+and we set $\theta^{(t+1)} = \theta^{\star}_{t}$ with probability $\min\{1, r\}$ and $\theta^{(t+1)} = \theta_{t-1}$ otherwise. To evaluate the ratio of truncated Gaussian densities $q(\cdot; \mu, \tau, a, b),$ we need to compute the Taylor approximation from the current parameter value, but also the reverse move from the proposal $\theta^{\star}_{t}.$ Another option is to modify the move dictated by the rescaled gradient by taking instead $$\mu_{t-1} = \theta_{t-1} - \eta f'(\theta_{t-1})/f''(\theta_{t-1}).$$ The proposal includes an additional learning rate parameter, $\eta \leq 1,$ whose role is to prevent oscillations of the quadratic approximation, as in a Newton--Raphson algorithm. Relative to a random walk Metropolis--Hastings, the proposal automatically adjusts to the local geometry of the target, which guarantees a higher acceptance rate and lower autocorrelation for the Markov chain despite the higher evaluation costs. The proposal requires that both $f''(\theta_{t-1})$ and $f''(\theta^{\star}_{t})$ be negative since the variance is $-1/f''(\theta)$: this shouldn't be problematic in the vicinity of the mode. Otherwise, one could use a global scaling derived from the hessian at the mode [@Rue.Held:2005].
 
 The simpler Metropolis-adjusted Langevin algorithm is equivalent to using a Gaussian random walk where the proposal has mean $\boldsymbol{\theta}_{t-1} + \mathbf{A}\eta \nabla \log p(\boldsymbol{\theta}_{t-1}; \boldsymbol{y})$ and variance $\tau^2\mathbf{A},$ for some mass matrix $\mathbf{A}$ and learning rate $\eta < 1.$ Taking $\mathbf{A}$ as the identity matrix, which assumes the parameters are isotropic (same variance, uncorrelated) is the default choice although seldom far from optimal.
 

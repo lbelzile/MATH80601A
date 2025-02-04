@@ -266,6 +266,20 @@
 \DeclareMathAlphabet{\mathcrl}{U}{rsfs}{m}{n}
 \usepackage{utopia}
 \DeclareMathAlphabet{\mathcal}{OMS}{cmsy}{m}{n}
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{wrapfig}
+\usepackage{float}
+\usepackage{colortbl}
+\usepackage{pdflscape}
+\usepackage{tabu}
+\usepackage{threeparttable}
+\usepackage{threeparttablex}
+\usepackage[normalem]{ulem}
+\usepackage{makecell}
+\usepackage{xcolor}
 \makeatletter
 \@ifpackageloaded{bookmark}{}{\usepackage{bookmark}}
 \makeatother
@@ -304,16 +318,16 @@
 \floatname{codelisting}{Listing}
 \newcommand*\listoflistings{\listof{codelisting}{List of Listings}}
 \usepackage{amsthm}
-\theoremstyle{plain}
-\newtheorem{theorem}{Theorem}[chapter]
 \theoremstyle{definition}
 \newtheorem{exercise}{Exercise}[chapter]
 \theoremstyle{plain}
-\newtheorem{proposition}{Proposition}[chapter]
+\newtheorem{theorem}{Theorem}[chapter]
 \theoremstyle{definition}
 \newtheorem{definition}{Definition}[chapter]
 \theoremstyle{definition}
 \newtheorem{example}{Example}[chapter]
+\theoremstyle{plain}
+\newtheorem{proposition}{Proposition}[chapter]
 \theoremstyle{remark}
 \AtBeginDocument{\renewcommand*{\proofname}{Proof}}
 \newtheorem*{remark}{Remark}
@@ -369,7 +383,7 @@ details.
 These notes are licensed under a
 \href{http://creativecommons.org/licenses/by-nc-sa/4.0/}{Creative
 Commons Attribution-NonCommercial-ShareAlike 4.0 International License}
-and were last compiled on Tuesday, January 28 2025.
+and were last compiled on lundi, février 03 2025.
 
 The objective of the course is to provide a hands on introduction to
 Bayesian data analysis. The course will cover the formulation,
@@ -3358,46 +3372,6 @@ undesirable feature.
 
 \end{example}
 
-\begin{example}[Extreme rainfall in Abisko,
-Sweden]\protect\hypertarget{exm-rainfall-abisko}{}\label{exm-rainfall-abisko}
-
-As illustrating example, consider maximum daily cumulated rainfall in
-Abisko, Sweden. The time series spans from 1913 until December 2014; we
-compute the 102 yearly maximum, which range from 11mm to 62mm, and fit a
-generalized extreme value distribution to these.
-
-For the priors, suppose an expert elicits quantiles of the 10, 50 and
-100 years return levels; say 30mm, 45mm and 70mm, respectively, for the
-median and likewise 40mm, 70mm and 120mm for the 90\% percentile of the
-return levels. We can compute the differences and calculate the
-parameters of the gamma distribution through moment-matching: this gives
-roughly a shape of \(\alpha_1=18.27\) and \(\beta_1=0.6,\) etc.
-Figure~\ref{fig-gev-colestawn-quant-prior} shows the transfer from the
-prior predictive to the posterior distribution. The prior is much more
-dispersed and concentrated on the tail, which translates in a less
-peaked posterior than using a weakly informative prior (dotted line):
-the mode of the latter is slightly to the left and with lower density in
-the tail.
-
-\begin{figure}[ht!]
-
-\centering{
-
-\pandocbounded{\includegraphics[keepaspectratio]{priors_files/figure-pdf/fig-gev-colestawn-quant-prior-1.pdf}}
-
-}
-
-\caption{\label{fig-gev-colestawn-quant-prior}Kernel density estimates
-of draws from the posterior distribution of 100 year return levels with
-a Coles--Tawn quantile prior (full line) and from the corresponding
-prior predictive (dashed). The dotted line gives the posterior
-distribution for a maximum domain information prior on the shape with
-improper priors on location and scale.}
-
-\end{figure}%
-
-\end{example}
-
 What would you do if we you had prior information from different
 sources? One way to combine these is through a mixture: given \(M\)
 different prior distributions \(p_m(\boldsymbol{\theta}),\) we can
@@ -3482,10 +3456,7 @@ error.
 
 \end{example}
 
-\phantomsection\label{rmk-raneff}
-\section{Random effects and Bayesian
-inference}\label{random-effects-and-bayesian-inference}
-
+\begin{refremark}[Variance parameters in hierarchical models]
 Gaussian components are widespread: not only for linear regression
 models, but more generally for the specification of random effects that
 capture group-specific effects, residuals spatial or temporal
@@ -3507,6 +3478,10 @@ to the value of \(\epsilon\) in hierarchical models when the random
 effect variance is close to zero, and more so when there are few levels
 for the groups since the relative weight of the prior relative to that
 of the likelihood contribution is then large.
+
+\label{rem-raneff}
+
+\end{refremark}
 
 \begin{example}[Student-t prior for variance
 components]\protect\hypertarget{exm-random-effect-variance}{}\label{exm-random-effect-variance}
@@ -3639,6 +3614,46 @@ groups.
 random effects with uniform, inverse gamma, penalized complexity and
 folded Student-t with three degrees of freedom. The circle denotes the
 median and the bars the 50\% and 95\% percentile credible intervals.}
+
+\end{figure}%
+
+\end{example}
+
+\begin{example}[Extreme rainfall in Abisko,
+Sweden]\protect\hypertarget{exm-rainfall-abisko}{}\label{exm-rainfall-abisko}
+
+As illustrating example, consider maximum daily cumulated rainfall in
+Abisko, Sweden. The time series spans from 1913 until December 2014; we
+compute the 102 yearly maximum, which range from 11mm to 62mm, and fit a
+generalized extreme value distribution to these.
+
+For the priors, suppose an expert elicits quantiles of the 10, 50 and
+100 years return levels; say 30mm, 45mm and 70mm, respectively, for the
+median and likewise 40mm, 70mm and 120mm for the 90\% percentile of the
+return levels. We can compute the differences and calculate the
+parameters of the gamma distribution through moment-matching: this gives
+roughly a shape of \(\alpha_1=18.27\) and \(\beta_1=0.6,\) etc.
+Figure~\ref{fig-gev-colestawn-quant-prior} shows the transfer from the
+prior predictive to the posterior distribution. The prior is much more
+dispersed and concentrated on the tail, which translates in a less
+peaked posterior than using a weakly informative prior (dotted line):
+the mode of the latter is slightly to the left and with lower density in
+the tail.
+
+\begin{figure}[ht!]
+
+\centering{
+
+\pandocbounded{\includegraphics[keepaspectratio]{priors_files/figure-pdf/fig-gev-colestawn-quant-prior-1.pdf}}
+
+}
+
+\caption{\label{fig-gev-colestawn-quant-prior}Kernel density estimates
+of draws from the posterior distribution of 100 year return levels with
+a Coles--Tawn quantile prior (full line) and from the corresponding
+prior predictive (dashed). The dotted line gives the posterior
+distribution for a maximum domain information prior on the shape with
+improper priors on location and scale.}
 
 \end{figure}%
 
@@ -3834,7 +3849,7 @@ points from the Gaussian and accept any that falls within the bounds.
 \end{Shaded}
 
 \begin{verbatim}
-[1] 0.34002
+[1] 0.34174
 \end{verbatim}
 
 \begin{Shaded}
@@ -4147,7 +4162,7 @@ more than 9\% for the same Monte Carlo sample size.
 
 \begin{verbatim}
                true         monte carlo importance sampling 
-             0.0625              0.0622              0.0627 
+             0.0625              0.0620              0.0623 
 \end{verbatim}
 
 \begin{Shaded}
@@ -4158,7 +4173,7 @@ more than 9\% for the same Monte Carlo sample size.
 \end{Shaded}
 
 \begin{verbatim}
-[1] 1.087118
+[1] 1.080627
 \end{verbatim}
 
 \begin{figure}[ht!]
@@ -4310,6 +4325,8 @@ It is weakly stationary if the expected value is constant, meaning
 \(\mathsf{E}(X_t) = \mu\) for all time points \(t\), and the covariance
 at lag \(h\), \(\mathsf{Cov}(X_t, X_{t+h}) = \gamma_h\), does not depend
 on \(t\). Strong stationarity implies weak stationarity.
+
+\end{definition}
 
 \begin{definition}[Markov
 property]\protect\hypertarget{def-markov-property}{}\label{def-markov-property}
@@ -4701,12 +4718,12 @@ The following theoretical details provided for completeness only.
 \begin{definition}[Detailed
 balance]\protect\hypertarget{def-detailed-balance}{}\label{def-detailed-balance}
 
-If our target is \(p(\cdot)\), then the Markov chain satisfies the
+If our target is \(p(\cdot),\) then the Markov chain satisfies the
 \textbf{detailed balance} condition with respect to \(p(\cdot)\) if
 \begin{align*}
 K(\boldsymbol{\theta}^{\text{cur}}, \boldsymbol{\theta}^{\text{prop}})p(\boldsymbol{\theta}^{\text{cur}}) = K(\boldsymbol{\theta}^{\text{prop}}, \boldsymbol{\theta}^{\text{cur}})p(\boldsymbol{\theta}^{\text{prop}}).
 \end{align*} If a Markov chain satisfies the detailed balance with
-respect to \(p(\cdot)\), then the latter is necessarily the invariant
+respect to \(p(\cdot),\) then the latter is necessarily the invariant
 density of the Markov chain and the latter is reversible.
 
 \end{definition}
@@ -4720,7 +4737,7 @@ K(\boldsymbol{x}, \boldsymbol{y}) = \alpha(\boldsymbol{x}, \boldsymbol{y}) q(\bo
 \end{align*} where
 \(r(\boldsymbol{x})=\int \alpha(\boldsymbol{x}, \boldsymbol{y}) q(\boldsymbol{y} \mid \boldsymbol{x})\mathrm{d} \boldsymbol{y}\)
 is the average probability of acceptance of a move from
-\(\boldsymbol{x}\), \(\mathsf{I}(\cdot = \boldsymbol{x})\) is a point
+\(\boldsymbol{x},\) \(\mathsf{I}(\cdot = \boldsymbol{x})\) is a point
 mass at \(\boldsymbol{x},\) and \(\alpha(\cdot)\) is defined on the next
 slide.
 
@@ -5151,7 +5168,7 @@ evaluation costs. The proposal requires that both \(f''(\theta_{t-1})\)
 and \(f''(\theta^{\star}_{t})\) be negative since the variance is
 \(-1/f''(\theta)\): this shouldn't be problematic in the vicinity of the
 mode. Otherwise, one could use a global scaling derived from the hessian
-at the mode.
+at the mode (\citeproc{ref-Rue.Held:2005}{Rue and Held 2005}).
 
 The simpler Metropolis-adjusted Langevin algorithm is equivalent to
 using a Gaussian random walk where the proposal has mean
@@ -5324,15 +5341,15 @@ overdispersion.
 
 The Gibbs sampling algorithm builds a Markov chain by iterating through
 a sequence of conditional distributions. Consider a model with
-\(\boldsymbol{\theta} \in \boldsymbol{\Theta} \subseteq \mathbb{R}^p\).
+\(\boldsymbol{\theta} \in \boldsymbol{\Theta} \subseteq \mathbb{R}^p.\)
 We consider a single (or \(m \leq p\) blocks of parameters), say
-\(\boldsymbol{\theta}^{[j]}\), such that, conditional on the remaining
-components of the parameter vector \(\boldsymbol{\theta}^{-[j]}\), the
+\(\boldsymbol{\theta}^{[j]},\) such that, conditional on the remaining
+components of the parameter vector \(\boldsymbol{\theta}^{-[j]},\) the
 conditional posterior
 \(p(\boldsymbol{\theta}^{[j]} \mid \boldsymbol{\theta}^{-[j]}, \boldsymbol{y})\)
 is from a known distribution from which we can simulate draws
 
-At iteration \(t\), we can update each block in turn: note that the
+At iteration \(t,\) we can update each block in turn: note that the
 \(k\)th block uses the partially updated state \begin{align*}
 \boldsymbol{\theta}^{-[k]\star} = (\boldsymbol{\theta}_{t}^{[1]}, \ldots, \boldsymbol{\theta}_{t}^{[k-1]},\boldsymbol{\theta}_{t-1}^{[k+1]}, \boldsymbol{\theta}_{t-1}^{[m]})
 \end{align*} which corresponds to the current value of the parameter
@@ -5341,7 +5358,7 @@ see the methods proposed in Geweke (\citeproc{ref-Geweke:2004}{2004}).
 
 The Gibbs sampling can be viewed as a special case of
 Metropolis--Hastings where the proposal distribution \(q\) is
-\(p(\boldsymbol{\theta}^{[j]} \mid \boldsymbol{\theta}^{-[j]\star}, \boldsymbol{y})\).
+\(p(\boldsymbol{\theta}^{[j]} \mid \boldsymbol{\theta}^{-[j]\star}, \boldsymbol{y}).\)
 The particularity is that all proposals get accepted because the log
 posterior of the partial update, equals the proposal distribution, so
 \begin{align*}
@@ -5375,7 +5392,7 @@ As a toy illustration, we use Gibbs sampling to simulate data from a
 \(\mathbf{\Sigma} = (1-\rho)\mathbf{I}_d + \rho\boldsymbol{1}_{d}\boldsymbol{1}^\top_d\)
 with inverse
 \[\mathbf{Q} = \boldsymbol{\Sigma}^{-1}=(1-\rho)^{-1}\left\{\mathbf{I}_d - \rho \mathbf{1}_d\mathbf{1}_d/(1+(d-1)\rho)\right\},\]
-for known correlation coefficient \(\rho\). While we can easily sample
+for known correlation coefficient \(\rho.\) While we can easily sample
 independent observations, the exercise is insightful to see how well the
 methods works as the dimension increases, and when the correlation
 between pairs becomes stronger.
@@ -5421,7 +5438,7 @@ As the dimension of the parameter space increases, and as the
 correlation between components becomes larger, the efficiency of the
 Gibbs sampler degrades: Figure~\ref{fig-gibbs-normal} shows the first
 component for updating one-parameter at a time for a multivariate
-Gaussian target in dimensions \(d=20\) and \(d=3\), started at four
+Gaussian target in dimensions \(d=20\) and \(d=3,\) started at four
 deviation away from the mode. The chain makes smaller steps when there
 is strong correlation, resulting in an inefficient sampler.
 
@@ -5450,7 +5467,7 @@ conditionals may only depend on a handful of parameters.
 Consider a Gaussian model \(Y_i \sim \mathsf{Gauss}(\mu, \tau)\)
 (\(i=1, \ldots, n\)) are independent, and where we assign priors
 \(\mu \sim \mathsf{Gauss}(\nu, \omega)\) and
-\(\tau \sim \mathsf{InvGamma}(\alpha, \beta)\).
+\(\tau \sim \mathsf{inv. gamma}(\alpha, \beta).\)
 
 The joint posterior is not available in closed form, but the independent
 priors for the mean and variance of the observations are conditionally
@@ -5458,7 +5475,7 @@ conjugate, since the joint posterior \begin{align*}
 p(\mu, \tau \mid \boldsymbol{y}) \propto& \tau^{-n/2}\exp\left\{-\frac{1}{2\tau}\left(\sum_{i=1}^n y_i^2 - 2\mu \sum_{i=1}^n y_i+n\mu^2 \right)\right\}\\& \times \exp\left\{-\frac{(\mu-\nu)^2}{2\omega}\right\} \times \tau^{-\alpha-1}\exp(-\beta/\tau)
 \end{align*} gives us \begin{align*}
 p(\mu \mid \tau, \boldsymbol{y}) &\propto \exp\left\{-\frac{1}{2} \left( \frac{\mu^2-2\mu\overline{y}}{\tau/n} + \frac{\mu^2-2\nu \mu}{\omega}\right)\right\}\\
-p(\tau \mid \mu, \boldsymbol{y}) & \propto \tau^{-n/2-\alpha-1}\exp\left[-\left\{\frac{\sum_{i=1}^n (y_i-\mu)^2}{2} + \beta \right\}/\tau\right]
+p(\tau \mid \mu, \boldsymbol{y}) & \propto \tau^{-n/2-\alpha-1}\exp\left[-\frac{1}{\tau}\left\{\frac{\sum_{i=1}^n (y_i-\mu)^2}{2} + \beta \right\}\right]
 \end{align*} so we can simulate in turn \begin{align*}
 \mu_t \mid \tau_{t-1}, \boldsymbol{y} &\sim \mathsf{Gauss}\left(\frac{n\overline{y}\omega+\tau \nu}{\tau + n\omega}, \frac{\omega \tau}{\tau + n\omega}\right)\\
 \tau_t \mid \mu_t, \boldsymbol{y} &\sim \mathsf{inv. gamma}\left\{\frac{n}{2}+\alpha, \frac{\sum_{i=1}^n (y_i-\mu)^2}{2} + \beta\right\}.
@@ -5478,39 +5495,40 @@ model]\protect\hypertarget{prp-conjugate-bayesian-linmod}{}\label{prp-conjugate-
 Consider a linear regression model with observation-specific mean
 \(\mu_i = \mathbf{x}_i\boldsymbol{\beta}\) \((i=1,\ldots, n)\) with
 \(\mathbf{x}_i\) the \(i\)th row of the \(n \times p\) model matrix
-\(\mathbf{X}\).
+\(\mathbf{X}.\)
 
 Concatenating records,
-\(\boldsymbol{Y} \sim \mathsf{No}_n(\mathbf{X}\boldsymbol{\beta}, \sigma^2 \mathbf{Q}_y^{-1})\),
-for a known precision matrix \(\mathbf{Q}_y\), typically
-\(\mathbf{I}_n\). To construct a conjugate joint prior for
-\(p(\boldsymbol{\beta}, \sigma^2)\), we consider the sequential
+\(\boldsymbol{Y} \sim \mathsf{No}_n(\mathbf{X}\boldsymbol{\beta}, \sigma^2 \mathbf{Q}_y^{-1}),\)
+for a known precision matrix \(\mathbf{Q}_y,\) typically
+\(\mathbf{I}_n.\) To construct a conjugate joint prior for
+\(p(\boldsymbol{\beta}, \sigma^2),\) we consider the sequential
 formulation \begin{align*}
-\boldsymbol{\beta} \mid \sigma^2 \sim \mathsf{Gauss}_p(\boldsymbol{\nu}_\beta, \sigma^2 \mathbf{Q}^{-1}_\beta), \qquad \sigma^2 \sim \mathsf{InvGamma}(\alpha,\beta)
-\end{align*} where \(\mathsf{InvGamma}\) denotes the inverse gamma
+\boldsymbol{\beta} \mid \sigma^2 \sim \mathsf{Gauss}_p(\boldsymbol{\nu}_\beta, \sigma^2 \mathbf{Q}^{-1}_\beta), \qquad \sigma^2 \sim \mathsf{inv. gamma}(\alpha,\beta)
+\end{align*} where \(\mathsf{inv. gamma}\) denotes the inverse gamma
 distribution\footnote{This simply means that the precision
-  \(\sigma^{-2}\), the reciprocal of the variance, has a gamma
-  distribution with shape \(\alpha\) and rate \(\beta\).}
+  \(\sigma^{-2},\) the reciprocal of the variance, has a gamma
+  distribution with shape \(\alpha\) and rate \(\beta.\)}
 
 The joint posterior is Gaussian-inverse gamma and can be factorized
 \begin{align*}
 p(\boldsymbol{\beta}, \sigma^2 \mid y) = p(\sigma^2 \mid y) p(\boldsymbol{\beta} \mid \sigma^2, y)
 \end{align*} where
-\(p(\sigma^2 \mid y) \sim \mathsf{InvGamma}(\alpha^*, \beta^*)\) and
-\(p(\boldsymbol{\beta} \mid \sigma^2, y) \sim \mathsf{No}_p(\mathbf{M}\boldsymbol{m}, \sigma^2\mathbf{M})\)
-with \(\alpha^* = \alpha + n/2\),
-\(\beta^*=\beta + 0.5 \boldsymbol{\nu}_\beta^\top \mathbf{Q}_\beta\boldsymbol{\nu}_\beta + \boldsymbol{y}^\top\boldsymbol{y} - \boldsymbol{m}^\top\mathbf{M}\boldsymbol{m}\),
-\(\boldsymbol{m} = \mathbf{Q}_\beta \boldsymbol{\nu}_\beta + \mathbf{X}^\top \mathbf{Q}_y\boldsymbol{y}\)
-and
-\(\mathbf{M} = (\mathbf{Q}_\beta + \mathbf{X}^\top\mathbf{Q}_y\mathbf{X})^{-1};\)
-the latter can be evaluated efficiently using
+\(p(\sigma^2 \mid y) \sim \mathsf{inv. gamma}(\alpha^*, \beta^*)\) and
+\begin{align*}
+\boldsymbol{\beta} \mid \sigma^2, y & \sim \mathsf{Gauss}_p(\mathbf{M}\boldsymbol{m}, \sigma^2\mathbf{M})
+\\
+\alpha^* &= \alpha + n/2,\\ 
+\beta^* &=\beta + 0.5 \boldsymbol{\nu}_\beta^\top \mathbf{Q}_\beta\boldsymbol{\nu}_\beta + \boldsymbol{y}^\top\boldsymbol{y} - \boldsymbol{m}^\top\mathbf{M}\boldsymbol{m}, \\
+\boldsymbol{m} &= \mathbf{Q}_\beta \boldsymbol{\nu}_\beta + \mathbf{X}^\top \mathbf{Q}_y\boldsymbol{y}\\
+\mathbf{M} &= (\mathbf{Q}_\beta + \mathbf{X}^\top\mathbf{Q}_y\mathbf{X})^{-1};
+\end{align*} the latter can be evaluated efficiently using
 Shermann--Morrisson--Woodbury identity. Given the conditionally
 conjugate priors, we can easily sample from the posterior using Gibbs
 sampling.
 
 \end{proposition}
 
-\subsection{Data augmentation and auxiliary
+\section{Data augmentation and auxiliary
 variables}\label{data-augmentation-and-auxiliary-variables}
 
 In many problems, the likelihood
@@ -5522,11 +5540,11 @@ Wong 1987}), which we present succinctly: let
 \(\boldsymbol{\theta} \in \Theta\) be a vector of parameters and
 consider auxiliary variables \(\boldsymbol{u} \in \mathbb{R}^k\) such
 that
-\(\int_{\mathbb{R}^k} p(\boldsymbol{u}, \boldsymbol{\theta}; \boldsymbol{y}) \mathrm{d} \boldsymbol{u} = p(\boldsymbol{\theta}; \boldsymbol{y})\),
+\(\int_{\mathbb{R}^k} p(\boldsymbol{u}, \boldsymbol{\theta}; \boldsymbol{y}) \mathrm{d} \boldsymbol{u} = p(\boldsymbol{\theta}; \boldsymbol{y}),\)
 i.e., the marginal distribution is that of interest, but evaluation of
 \(p(\boldsymbol{u}, \boldsymbol{\theta}; \boldsymbol{y})\) is cheaper.
 The data augmentation algorithm consists in running a Markov chain on
-the augmented state space \((\Theta, \mathbb{R}^k)\), simulating in turn
+the augmented state space \((\Theta, \mathbb{R}^k),\) simulating in turn
 from the conditionals
 \(p(\boldsymbol{u}; \boldsymbol{\theta}, \boldsymbol{y})\) and
 \(p(\boldsymbol{\theta}; \boldsymbol{u}, \boldsymbol{y})\) with new
@@ -5536,9 +5554,10 @@ speed up calculations or improve mixing. For more details and examples,
 see Dyk and Meng (\citeproc{ref-vanDyk.Meng:2001}{2001}) and Hobert
 (\citeproc{ref-Hobert:2011}{2011}).
 
-\begin{example}[]\protect\hypertarget{exm-probit-regression}{}\label{exm-probit-regression}
+\begin{example}[Probit
+regression]\protect\hypertarget{exm-probit-regression}{}\label{exm-probit-regression}
 
-Consider binary responses \(\boldsymbol{Y}_i\), for which we postulate a
+Consider binary responses \(\boldsymbol{Y}_i,\) for which we postulate a
 probit regression model, \begin{align*}
 p_i = \Pr(Y_i=1) = \Phi(\beta_0 + \beta_1 \mathrm{X}_{i1} + \cdots + \beta_p\mathrm{X}_{ip}),
 \end{align*} where \(\Phi\) is the distribution function of the standard
@@ -5546,20 +5565,20 @@ Gaussian distribution. The likelihood of the probit model for a sample
 of \(n\) independent observations is
 \[L(\boldsymbol{\beta}; \boldsymbol{y}) = \prod_{i=1}^n p_i^{y_i}(1-p_i)^{1-y_i},\]
 and this prevents easy simulation. We can consider a data augmentation
-scheme where \(Y_i = \mathsf{I}(Z_i > 0)\), where
-\(Z_i \sim \mathsf{Gauss}(\mathbf{x}_i\boldsymbol{\beta}, 1)\), with
+scheme where \(Y_i = \mathsf{I}(Z_i > 0),\) where
+\(Z_i \sim \mathsf{Gauss}(\mathbf{x}_i\boldsymbol{\beta}, 1),\) with
 \(\mathbf{x}_i\) denoting the \(i\)th row of the design matrix.
 
 The augmented data likelihood is \begin{align*}
 p(\boldsymbol{z}, \boldsymbol{y} \mid \boldsymbol{\beta}) \propto \exp\left\{-\frac{1}{2}(\boldsymbol{z} - \mathbf{X}\boldsymbol{\beta})^\top(\boldsymbol{z} - \mathbf{X}\boldsymbol{\beta})\right\} \times \prod_{i=1}^n \mathsf{I}(z_i > 0)^{y_i}\mathsf{I}(z_i \le 0)^{1-y_i}
-\end{align*} Given \(Z_i\), the coefficients \(\boldsymbol{\beta}\) are
+\end{align*} Given \(Z_i,\) the coefficients \(\boldsymbol{\beta}\) are
 simply the results of ordinary linear regression with unit variance, so
 \begin{align*}
 \boldsymbol{\beta} \mid \boldsymbol{z}, \boldsymbol{y} &\sim \mathsf{Gauss}\left\{\widehat{\boldsymbol{\beta}}, (\mathbf{X}^\top\mathbf{X})^{-1}\right\}
 \end{align*} with
 \(\widehat{\boldsymbol{\beta}}=(\mathbf{X}^\top\mathbf{X})^{-1}\mathbf{X}^\top\boldsymbol{z}\)
 is the ordinary least square estimator from the regression with model
-matrix \(\mathbf{X}\) and response vector \(\boldsymbol{z}\). The
+matrix \(\mathbf{X}\) and response vector \(\boldsymbol{z}.\) The
 augmented variables \(Z_i\) are conditionally independent and truncated
 Gaussian with \begin{align*}
 Z_i \mid y_i, \boldsymbol{\beta} \sim \begin{cases}
@@ -5606,31 +5625,31 @@ Example~\ref{exm-accept-reject-truncated} to simulate these.
 \begin{example}[Bayesian
 LASSO]\protect\hypertarget{exm-student-mixture-gaussian}{}\label{exm-student-mixture-gaussian}
 
-The Laplace distribution with mean \(\mu\) and scale \(\sigma\), which
+The Laplace distribution with mean \(\mu\) and scale \(\sigma,\) which
 has density \begin{align*}
 f(x; \mu, \sigma) = \frac{1}{2\sigma}\exp\left(-\frac{|x-\mu|}{\sigma}\right),
 \end{align*} can be expressed as a scale mixture of Gaussians, where
-\(Y \sim \mathsf{La}(\mu, \sigma)\) is equivalent to
+\(Y \sim \mathsf{Laplace}(\mu, \sigma)\) is equivalent to
 \(Z \mid \tau \sim \mathsf{Gauss}(\mu, \tau)\) and
-\(\tau \sim \mathsf{Exp}\{(2\sigma)^{-1}\}\). With the improper prior
+\(\tau \sim \mathsf{expo}\{(2\sigma)^{-1}\}.\) With the improper prior
 \(p(\mu, \sigma) \propto \sigma^{-1}\) and with \(n\) independent and
 identically distributed Laplace variates, the joint posterior can be
 written \begin{align*}
 p(\boldsymbol{\tau}, \mu, \sigma \mid \boldsymbol{y}) &\propto \left(\prod_{i=1}^n \tau_i\right)^{-1/2}\exp\left\{-\frac{1}{2}\sum_{i=1}^n \frac{(y_i-\mu)^2}{\tau_i}\right\} \\&\quad \times \frac{1}{\sigma^{n+1}}\exp\left(-\frac{1}{2\sigma}\sum_{i=1}^n \tau_i\right)
 \end{align*} and \(\mu \mid \cdots\) and \(\sigma \mid \cdots\) are, as
 usual, Gaussian and inverse gamma, respectively. The variances,
-\(\tau_j\), are conditionally independent of one another with
+\(\tau_j,\) are conditionally independent of one another with
 \begin{align*}
 p(\tau_j \mid \mu, \sigma, y_j) &\propto \tau_j^{-1/2}\exp\left\{-\frac{1}{2}\frac{(y_j-\mu)^2}{\tau_j} -\frac{1}{2} \frac{\tau_j}{\sigma}\right\}
-\end{align*} so with \(\xi_j=1/\tau_j\), we have \begin{align*}
+\end{align*} so with \(\xi_j=1/\tau_j,\) we have \begin{align*}
 p(\xi_j \mid \mu, \sigma, y_j) &\propto \xi_j^{-3/2}\exp\left\{-\frac{1}{2\sigma}\frac{\xi_j(y_j-\mu)^2}{\sigma} -\frac{1}{2} \frac{1}{\xi_j}\right\}\\
 \end{align*} and we recognize the latter as a Wald (or inverse Gaussian)
 distribution, whose density function is \begin{align*}
 f(y; \nu, \lambda) &= \left(\frac{\lambda}{2\pi y^{3}}\right)^{1/2} \exp\left\{ - \frac{\lambda (y-\nu)^2}{2\nu^2y}\right\}, \quad y > 0
 \\ &\stackrel{y}{\propto} y^{-3/2}\exp\left\{-\frac{\lambda}{2} \left(\frac{y}{\nu} + \frac{1}{y}\right)\right\}
-\end{align*} for location \(\nu >0\) and shape \(\lambda>0\), where
+\end{align*} for location \(\nu >0\) and shape \(\lambda>0,\) where
 \(\xi_i \sim \mathsf{Wald}(\nu_i, \lambda)\) with
-\(\nu_i=\{\sigma/(y_i-\mu)^2\}^{1/2}\) and \(\lambda=\sigma^{-1}\).
+\(\nu_i=\{\sigma/(y_i-\mu)^2\}^{1/2}\) and \(\lambda=\sigma^{-1}.\)
 
 Park and Casella (\citeproc{ref-Park.Casella:2008}{2008}) use this
 hierarchical construction to defined the Bayesian LASSO. With a model
@@ -5638,9 +5657,9 @@ matrix \(\mathbf{X}\) whose columns are standardized to have mean zero
 and unit standard deviation, we may write \begin{align*}
 \boldsymbol{Y} \mid \mu, \boldsymbol{\beta}, \sigma^2 &\sim  \mathsf{Gauss}_n(\mu \boldsymbol{1}_n + \mathbf{X}\boldsymbol{\beta}, \sigma \mathbf{I}_n)\\
 \beta_j \mid \sigma, \tau &\sim \mathsf{Gauss}(0, \sigma\tau)\\
-\tau &\sim \mathsf{Exp}(\lambda/2)
+\tau &\sim \mathsf{expo}(\lambda/2)
 \end{align*} If we set an improper prior
-\(p(\mu, \sigma) \propto \sigma^{-1}\), the resulting conditional
+\(p(\mu, \sigma) \propto \sigma^{-1},\) the resulting conditional
 distributions are all available and thus the model is amenable to Gibbs
 sampling.
 
@@ -5662,7 +5681,7 @@ none of the posterior draws of \(\boldsymbol{\beta}\) are exactly zero.
 \caption{\label{fig-lasso-traceplot}Traceplot of \(\beta\) coefficients
 (penalized maximum likelihood estimates and median aposteriori as a
 function of the \(l_1\) norm of the coefficients, with lower values of
-the latter corresponding to higher values of the penalty \(\lambda\).}
+the latter corresponding to higher values of the penalty \(\lambda.\)}
 
 \end{figure}%
 
@@ -5683,24 +5702,300 @@ and their location and scale.
 
 A \(K\)-mixture model is a weighted combination of models frequently
 used in clustering or to model subpopulations with respective densities
-\(f_k\), with density
+\(f_k,\) with density
 \[f(x; \boldsymbol{\theta}, \boldsymbol{\omega}) = \sum_{k=1}^K \omega_kf_k(x; \boldsymbol{\theta}_k), \qquad \omega_1 + \cdots \omega_K=1.\]
 Since the density involves a sum, numerical optimization is challenging.
 Let \(C_i\) denote the cluster index for observation \(i\): if we knew
-the value of \(C_i =j\), the density would involve only \(f_j\). We can
+the value of \(C_i =j,\) the density would involve only \(f_j.\) We can
 thus use latent variables representing the group allocation to simplify
 the problem and run an EM algorithm or use the data augmentation. In an
 iterative framework, we can consider the complete data as the tuples
-\((X_i, Z_i)\), where \(Z_i = \mathsf{I}(C_i=k)\).
+\((X_i, Z_i),\) where \(Z_i = \mathsf{I}(C_i=k).\)
 
 With the augmented data, the conditional distribution of
 \(Z_i \mid X_i, \boldsymbol{\omega}, \boldsymbol{\theta} \sim \mathsf{multinom}(1, \boldsymbol{\gamma}_{ik})\)
 where
 \[\gamma_{ik} = \frac{\omega_k f_k(X_i\boldsymbol{\theta}_k)}{\sum_{j=1}^K f_j(X_i\boldsymbol{\theta}_k)}.\]
 Given suitable priors for the probabilities \(\boldsymbol{\omega}\) and
-\(\boldsymbol{\theta} \equiv \{\boldsymbol{\theta}_1, \ldots, \boldsymbol{\theta}_k\}\),
-we can use Gibbs sampling updating \(\boldsymbol{Z}\),
-\(\boldsymbol{\omega}\) and \(\boldsymbol{\theta}\) in turn.
+\(\boldsymbol{\theta} \equiv \{\boldsymbol{\theta}_1, \ldots, \boldsymbol{\theta}_k\},\)
+we can use Gibbs sampling updating \(\boldsymbol{Z},\)
+\(\boldsymbol{\omega}\) and \(\boldsymbol{\theta}\) in turn, assigning a
+conjugate Dirichlet prior for \(\boldsymbol{\omega}.\)
+
+\end{example}
+
+\begin{example}[Mixture model for
+geyser]\protect\hypertarget{exm-mixture-model}{}\label{exm-mixture-model}
+
+We consider a Gaussian mixture model for waiting time between two
+eruptions of the Old Faithful geyser in Yellowstone. The distribution is
+of the form \begin{align*}
+f_i(x) = p_i \phi_{1}(x_i; \mu_1, \tau_1^{-1}) + (1-p_i)\phi_{2}(x_i; \mu_2, \tau_2^{-1}).
+\end{align*} where \(\phi(\cdot; \mu, \tau^{-1})\) is the density
+function of a Gaussian with mean \(\mu\) and precision \(\tau.\) We
+assign conjugate priors with \(p_i \sim \mathsf{beta}(a_1, a_2),\)
+\(\mu_j \sim \mathsf{Gauss}\{c, (\tau_jd)^{-1}\}\) and
+\(\tau_j \sim \mathsf{gamma}(b_1, b_2).\) For the hyperpriors, we use
+\(a_1=a_2=1,\) \(b_1=1, b_2 = 0.1,\) \(c = 60,\) and \(d = 1/40.\)
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{data}\NormalTok{(faithful)}
+\NormalTok{n }\OtherTok{\textless{}{-}} \FunctionTok{nrow}\NormalTok{(faithful)}
+\NormalTok{y }\OtherTok{\textless{}{-}}\NormalTok{ faithful}\SpecialCharTok{$}\NormalTok{waiting}
+\CommentTok{\# Fix hyperpriors}
+\NormalTok{a1 }\OtherTok{\textless{}{-}} \DecValTok{2}\NormalTok{; a2 }\OtherTok{\textless{}{-}} \DecValTok{2}\NormalTok{; c }\OtherTok{\textless{}{-}} \DecValTok{60}\NormalTok{; d }\OtherTok{\textless{}{-}} \DecValTok{1}\SpecialCharTok{/}\DecValTok{40}\NormalTok{; b1 }\OtherTok{\textless{}{-}} \DecValTok{1}\NormalTok{; b2 }\OtherTok{\textless{}{-}} \FloatTok{0.01}
+\CommentTok{\# Assign observations at random to groups}
+\FunctionTok{set.seed}\NormalTok{(}\DecValTok{80601}\NormalTok{)}
+\NormalTok{cut }\OtherTok{\textless{}{-}} \FunctionTok{runif}\NormalTok{(}\DecValTok{1}\NormalTok{, }\FloatTok{0.1}\NormalTok{, }\FloatTok{0.9}\NormalTok{)}\SpecialCharTok{*}\FunctionTok{diff}\NormalTok{(}\FunctionTok{range}\NormalTok{(y)) }\SpecialCharTok{+} \FunctionTok{min}\NormalTok{(y)}
+\NormalTok{group }\OtherTok{\textless{}{-}} \FunctionTok{as.integer}\NormalTok{(y }\SpecialCharTok{\textgreater{}}\NormalTok{ cut)}
+\NormalTok{p }\OtherTok{\textless{}{-}} \FunctionTok{sum}\NormalTok{(group }\SpecialCharTok{==} \DecValTok{0}\NormalTok{L)}\SpecialCharTok{/}\NormalTok{n}
+\NormalTok{mu }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(}\FunctionTok{mean}\NormalTok{(y[group }\SpecialCharTok{==} \DecValTok{0}\NormalTok{]), }\FunctionTok{mean}\NormalTok{(y[group }\SpecialCharTok{==} \DecValTok{1}\NormalTok{]))}
+\NormalTok{prec }\OtherTok{\textless{}{-}} \DecValTok{1}\SpecialCharTok{/}\FunctionTok{c}\NormalTok{(}\FunctionTok{var}\NormalTok{(y[group }\SpecialCharTok{==} \DecValTok{0}\NormalTok{]), }\FunctionTok{var}\NormalTok{(y[group }\SpecialCharTok{==} \DecValTok{1}\NormalTok{]))}
+\CommentTok{\# Storage and number of replications}
+\NormalTok{B }\OtherTok{\textless{}{-}} \FloatTok{1e4}\NormalTok{L}
+\NormalTok{theta }\OtherTok{\textless{}{-}} \FunctionTok{matrix}\NormalTok{(}\AttributeTok{nrow =}\NormalTok{ B, }\AttributeTok{ncol =} \DecValTok{5}\NormalTok{L)}
+\CommentTok{\# Step 1: assign variables to clusters}
+\ControlFlowTok{for}\NormalTok{(b }\ControlFlowTok{in} \DecValTok{1}\SpecialCharTok{:}\NormalTok{B)\{}
+\NormalTok{  d1 }\OtherTok{\textless{}{-}} \FunctionTok{dnorm}\NormalTok{(y, }\AttributeTok{mean =}\NormalTok{ mu[}\DecValTok{1}\NormalTok{], }\AttributeTok{sd =} \DecValTok{1}\SpecialCharTok{/}\FunctionTok{sqrt}\NormalTok{(prec[}\DecValTok{1}\NormalTok{])) }\CommentTok{\# group 0 }
+\NormalTok{  d2 }\OtherTok{\textless{}{-}} \FunctionTok{dnorm}\NormalTok{(y, }\AttributeTok{mean =}\NormalTok{ mu[}\DecValTok{2}\NormalTok{], }\AttributeTok{sd =} \DecValTok{1}\SpecialCharTok{/}\FunctionTok{sqrt}\NormalTok{(prec[}\DecValTok{2}\NormalTok{])) }\CommentTok{\# group 1}
+  \CommentTok{\# Data augmentation: group labels}
+\NormalTok{  group }\OtherTok{\textless{}{-}} \FunctionTok{rbinom}\NormalTok{(}\AttributeTok{n =}\NormalTok{ n, }\AttributeTok{size =} \FunctionTok{rep}\NormalTok{(}\DecValTok{1}\NormalTok{, n), }\AttributeTok{prob =}\NormalTok{ (}\DecValTok{1}\SpecialCharTok{{-}}\NormalTok{p)}\SpecialCharTok{*}\NormalTok{d2}\SpecialCharTok{/}\NormalTok{(p}\SpecialCharTok{*}\NormalTok{d1 }\SpecialCharTok{+}\NormalTok{ (}\DecValTok{1}\SpecialCharTok{{-}}\NormalTok{p)}\SpecialCharTok{*}\NormalTok{d2))}
+  \CommentTok{\# Step 2: update probability of cluster}
+\NormalTok{  p }\OtherTok{\textless{}{-}} \FunctionTok{rbeta}\NormalTok{(}\AttributeTok{n =} \DecValTok{1}\NormalTok{, }\AttributeTok{shape1 =}\NormalTok{ n }\SpecialCharTok{{-}} \FunctionTok{sum}\NormalTok{(group) }\SpecialCharTok{+}\NormalTok{ a1, }\FunctionTok{sum}\NormalTok{(group) }\SpecialCharTok{+}\NormalTok{ a2)}
+  \ControlFlowTok{for}\NormalTok{(j }\ControlFlowTok{in} \DecValTok{1}\SpecialCharTok{:}\DecValTok{2}\NormalTok{)\{}
+\NormalTok{    yg }\OtherTok{\textless{}{-}}\NormalTok{ y[group }\SpecialCharTok{==}\NormalTok{ (j}\DecValTok{{-}1}\NormalTok{L)]}
+\NormalTok{    ng }\OtherTok{\textless{}{-}} \FunctionTok{length}\NormalTok{(yg)}
+\NormalTok{    prec\_mu }\OtherTok{\textless{}{-}}\NormalTok{ ng}\SpecialCharTok{*}\NormalTok{prec[j] }\SpecialCharTok{+}\NormalTok{ d}
+\NormalTok{    mean\_mu }\OtherTok{\textless{}{-}}\NormalTok{ (}\FunctionTok{sum}\NormalTok{(yg)}\SpecialCharTok{*}\NormalTok{prec[j] }\SpecialCharTok{+}\NormalTok{ c}\SpecialCharTok{*}\NormalTok{d)}\SpecialCharTok{/}\NormalTok{prec\_mu}
+\NormalTok{    mu[j] }\OtherTok{\textless{}{-}} \FunctionTok{rnorm}\NormalTok{(}\AttributeTok{n =} \DecValTok{1}\NormalTok{, }\AttributeTok{mean =}\NormalTok{ mean\_mu, }\AttributeTok{sd =} \DecValTok{1}\SpecialCharTok{/}\FunctionTok{sqrt}\NormalTok{(prec\_mu))}
+\NormalTok{    prec[j] }\OtherTok{\textless{}{-}} \FunctionTok{rgamma}\NormalTok{(}\AttributeTok{n =} \DecValTok{1}\NormalTok{, }
+                      \AttributeTok{shape =}\NormalTok{ b1 }\SpecialCharTok{+}\NormalTok{ ng}\SpecialCharTok{/}\DecValTok{2}\NormalTok{, }
+                      \AttributeTok{rate =}\NormalTok{ b2 }\SpecialCharTok{+} \FloatTok{0.5}\SpecialCharTok{*}\FunctionTok{sum}\NormalTok{((yg}\SpecialCharTok{{-}}\NormalTok{mu[j])}\SpecialCharTok{\^{}}\DecValTok{2}\NormalTok{))}
+\NormalTok{  \}}
+\NormalTok{  theta[b, ] }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(p, mu, prec)}
+\NormalTok{\}}
+\CommentTok{\# Discard initial observations (burn in)}
+\NormalTok{theta }\OtherTok{\textless{}{-}}\NormalTok{ theta[}\SpecialCharTok{{-}}\NormalTok{(}\DecValTok{1}\SpecialCharTok{:}\DecValTok{100}\NormalTok{),]}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{figure}[ht!]
+
+\centering{
+
+\pandocbounded{\includegraphics[keepaspectratio]{gibbs_files/figure-pdf/fig-density-mixt-1.pdf}}
+
+}
+
+\caption{\label{fig-density-mixt}One-dimensional density mixture for the
+Old Faithful data, with histogram of data (left) and line ribbon of
+posterior density draws (right).}
+
+\end{figure}%
+
+\end{example}
+
+\begin{refremark}[Label switching in mixture models]
+If we run a MCMC algorithm to sample from a mixture models, the
+likelihood is invariant to permutation of the group labels, leading to
+identifiability issues when the chain swaps modes, when running multiple
+Markov chains with symmetric priors or using tempering algorithms. Two
+chains may thus reach the same stationary distribution, with group
+labels swapped. It is sometimes necessary to impose ordering constraints
+on the mean parameters \(\boldsymbol{\mu},\) although this isn't
+necessarily easy to generalize beyond the univariate setting. See Jasra,
+Holmes, and Stephens (\citeproc{ref-Jasra.Holmes.Stephens:2005}{2005})
+and Stephens (\citeproc{ref-Stephens:2002}{2002}) for more details.
+
+\label{rem-label-switching}
+
+\end{refremark}
+
+\begin{example}[Tokyo
+rainfall]\protect\hypertarget{exm-Tokyo-rainfall}{}\label{exm-Tokyo-rainfall}
+
+We consider data from Kitagawa (\citeproc{ref-Kitagawa:1987}{1987}) that
+provide a binomial time series giving the number of days in years 1983
+and 1984 (a leap year) in which there was more than 1mm of rain in
+Tokyo. These data and the model we consider are discussed in in section
+4.3.4 of Rue and Held (\citeproc{ref-Rue.Held:2005}{2005}). We thus have
+\(T=366\) days and \(n_t \in \{1,2\}\) \((t=1, \ldots, T)\) the number
+of observations in day \(t\) and \(y_t=\{0,\ldots, n_t\}\) the number of
+days with rain. The objective is to obtain a smoothed probability of
+rain. The underlying probit model considered takes
+\(Y_t \mid n_t, p_t \sim \mathsf{binom}(n_t, p_t)\) and
+\(p_t = \Phi(\beta_t).\)
+
+We specify the random effects
+\(\boldsymbol{\beta} \sim \mathsf{Gauss}_{T}(\boldsymbol{0}, \tau^{-1}\mathbf{Q}),\)
+where \(\mathbf{Q}\) is a \(T \times T\) precision matrix that encodes
+the local dependence. A circular random walk structure of order 2 is
+used to model the smooth curves by smoothing over neighbors, and
+enforces small second derivative. This is a suitable prior because it
+enforces no constraint on the mean structure. This amounts to specifying
+the process with \begin{align*}
+\Delta^2\beta_t &= (\beta_{t+1} - \beta_t) - (\beta_t - \beta_{t-1})
+\\&=-\beta_{t-1} +2 \beta_t - \beta_{t+1} \sim \mathsf{Gauss}(0, \tau^{-1}), \qquad t= \in \mathbb{N} \mod 366.
+\end{align*} This yields an intrinsic Gaussian Markov random field with
+a circulant precision matrix \(\tau\mathbf{Q}=\tau\mathbf{GG^\top}\) of
+rank \(T-1,\) where \begin{align*}
+\mathbf{G} = 
+\begin{pmatrix} 
+2 & -1 & 0 & 0 & \cdots & -1\\
+-1 & 2 & -1 & 0 & \ddots & 0 \\
+0 & -1 & 2 & -1 & \ddots & 0 \\
+\vdots & \ddots & \ddots  & \ddots  & \ddots  & \vdots \\
+-1 & 0 & 0 & 0 & \cdots & 2
+\end{pmatrix},
+\quad 
+\mathbf{Q} = 
+\begin{pmatrix} 
+6 & -4 & 1 & 0 & \cdots & 1 & -4\\
+-4 & 6 & -4 & 1 & \ddots & 0 & 1 \\
+1 & -4 & 6 & -4 & \ddots & 0 & 0 \\
+\vdots & \ddots & \ddots  & \ddots  & \ddots  & \ddots & \vdots \\
+-4 & 1 & 0 & 0 & \cdots & -4 & 6
+\end{pmatrix}.
+\end{align*} Because of the linear dependency, the determinant of
+\(\mathbf{Q}\) as presented is zero. The contribution from the latent
+mean parameters is multivariate Gaussian and we exploit for computations
+the sparsity of the precision matrix \(\mathbf{Q}.\)
+Figure~\ref{fig-CRW2-prior} shows five draws from the prior model, which
+loops back between December 31st and January 1st, and is rather smooth.
+
+\begin{figure}[ht!]
+
+\centering{
+
+\pandocbounded{\includegraphics[keepaspectratio]{gibbs_files/figure-pdf/fig-CRW2-prior-1.pdf}}
+
+}
+
+\caption{\label{fig-CRW2-prior}Five realizations from the cyclical
+random walk Gaussian prior of order 2 with unit variance.}
+
+\end{figure}%
+
+We can perform data augmentation by imputing Gaussian variables, say
+\(x_{1,1}, x_{i,2}, \ldots, x_{366,2}\) following
+Example~\ref{exm-probit-regression} from truncated Gaussian, where
+\(x_{t,i} = \beta_t + \varepsilon_{t,i}\) and
+\(\varepsilon_{t,i} \sim \mathsf{Gauss}(0,1)\) are independent standard
+Gaussian and \begin{align*}
+z_{t,i} \mid  y_{t,i}, \beta_t \sim 
+\begin{cases}
+\mathsf{trunc. Gauss}(\beta_t, 1, -\infty, 0) & y_{t,i} = 0 \\
+\mathsf{trunc. Gauss}(\beta_t, 1,  0, \infty) & y_{t,i} =1 
+\end{cases}
+\end{align*} The posterior is proportional to \begin{align*}
+p(\boldsymbol{\beta} \mid \tau)p(\tau)\prod_{t=1}^{T}\prod_{i=1}^{n_t}p(y_{t,i} \mid z_{t,i}) p(z_{t,i} \mid \beta_t)
+\end{align*} and once we have imputed the Gaussian latent vectors, we
+can work directly with the values of \(z_t = \sum_{i=1}^{n_t} z_{i,t}.\)
+The posterior has the form \begin{align*}
+p(\boldsymbol{\beta}, \tau) \propto \tau^{(n-1)/2}\exp \left( - \frac{\tau}{2} \boldsymbol{\beta}^\top \mathbf{Q} \boldsymbol{\beta}\right)\exp\left\{ - \frac{1}{2} (\boldsymbol{z} - \boldsymbol{\beta})^\top \mathrm{diag}(\boldsymbol{n})(\boldsymbol{z} - \boldsymbol{\beta})\right\} \tau^{a-1}\exp(-\tau b)
+\end{align*} where \(\boldsymbol{z} = (z_1, \ldots, z_T).\) Completing
+the quadratic form shows that \begin{align*}
+\boldsymbol{\beta} \mid \boldsymbol{x}, \tau &\sim \mathsf{Gauss}_T\left[\left\{\tau \mathbf{Q} + \mathrm{diag}(\boldsymbol{n})\right\}^{-1} \boldsymbol{z}, \left\{\tau \mathbf{Q} + \mathrm{diag}(\boldsymbol{n})\right\}^{-1}\right]\\
+\tau \mid \boldsymbol{\beta} & \sim \mathsf{gamma}\left( \frac{n-1}{2} + a, \frac{\boldsymbol{\beta}^\top \mathbf{Q}\boldsymbol{\beta}}{2} + b \right)
+\end{align*}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{library}\NormalTok{(Matrix)}
+\FunctionTok{library}\NormalTok{(TruncatedNormal)}
+\FunctionTok{data}\NormalTok{(Tokyo, }\AttributeTok{package =} \StringTok{"INLA"}\NormalTok{)}
+\CommentTok{\# Hierarchical model}
+\CommentTok{\# data: (probit regression) y\_t \textasciitilde{} binom(n\_t, Phi(beta\_t))}
+\CommentTok{\# prior: Delta2 beta\_t \textasciitilde{} Gaussian prior(0, tau)}
+\CommentTok{\# hyperprior: tau \textasciitilde{} gamma(a, b)}
+\CommentTok{\# Encode sparse circulant precision matrix}
+\NormalTok{nt }\OtherTok{\textless{}{-}} \DecValTok{366}\NormalTok{L}
+\NormalTok{K }\OtherTok{\textless{}{-}}\NormalTok{ ngme2}\SpecialCharTok{::}\FunctionTok{rw2}\NormalTok{(}\DecValTok{1}\SpecialCharTok{:}\NormalTok{nt, }\AttributeTok{cyclic =} \ConstantTok{TRUE}\NormalTok{)}
+\NormalTok{Q }\OtherTok{\textless{}{-}} \FunctionTok{crossprod}\NormalTok{(K}\SpecialCharTok{$}\NormalTok{K)}
+\NormalTok{cholQ }\OtherTok{\textless{}{-}}\NormalTok{ Matrix}\SpecialCharTok{::}\FunctionTok{chol}\NormalTok{(Q)}
+\CommentTok{\# Reconstruct daily data}
+\NormalTok{N }\OtherTok{\textless{}{-}}\NormalTok{ Matrix}\SpecialCharTok{::}\FunctionTok{Diagonal}\NormalTok{(}\AttributeTok{n =}\NormalTok{ nt, }\AttributeTok{x =}\NormalTok{ Tokyo}\SpecialCharTok{$}\NormalTok{n)}
+\NormalTok{y }\OtherTok{\textless{}{-}} \FunctionTok{with}\NormalTok{(Tokyo, }\FunctionTok{c}\NormalTok{(}\FunctionTok{pmin}\NormalTok{(y, }\DecValTok{1}\NormalTok{), }\FunctionTok{pmax}\NormalTok{(}\DecValTok{0}\NormalTok{, y[}\SpecialCharTok{{-}}\DecValTok{60}\NormalTok{]}\SpecialCharTok{{-}}\DecValTok{1}\NormalTok{)))}
+\NormalTok{day }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(}\DecValTok{1}\SpecialCharTok{:}\DecValTok{366}\NormalTok{, }\DecValTok{1}\SpecialCharTok{:}\DecValTok{59}\NormalTok{, }\DecValTok{61}\SpecialCharTok{:}\DecValTok{366}\NormalTok{)}
+\CommentTok{\#\textquotesingle{} Simulate a Gaussian random field with precision matrix \textbackslash{}eqn\{Q\} and mean \textbackslash{}eqn\{Q\^{}\{{-}1\}b\}}
+\CommentTok{\#\textquotesingle{} Exploiting the sparsity structure as much as possible}
+\NormalTok{rGaussQ }\OtherTok{\textless{}{-}} \ControlFlowTok{function}\NormalTok{(n, b, Q)\{}
+  \FunctionTok{stopifnot}\NormalTok{(}\FunctionTok{nrow}\NormalTok{(Q) }\SpecialCharTok{==} \FunctionTok{length}\NormalTok{(b))}
+\NormalTok{  Lmat }\OtherTok{\textless{}{-}}\NormalTok{ Matrix}\SpecialCharTok{::}\FunctionTok{chol}\NormalTok{(Q) }\CommentTok{\# yields upper triangular matrix!}
+\NormalTok{  v }\OtherTok{\textless{}{-}}\NormalTok{ Matrix}\SpecialCharTok{::}\FunctionTok{solve}\NormalTok{(}\AttributeTok{a =}\NormalTok{ Matrix}\SpecialCharTok{::}\FunctionTok{t}\NormalTok{(Lmat), }\AttributeTok{b =}\NormalTok{ b)}
+\NormalTok{  nu }\OtherTok{\textless{}{-}} \FunctionTok{as.numeric}\NormalTok{(Matrix}\SpecialCharTok{::}\FunctionTok{solve}\NormalTok{(}\AttributeTok{a =}\NormalTok{ Lmat, }\AttributeTok{b =}\NormalTok{ v))}
+\NormalTok{  y }\OtherTok{\textless{}{-}}\NormalTok{ Matrix}\SpecialCharTok{::}\FunctionTok{solve}\NormalTok{(}\AttributeTok{a =}\NormalTok{ Lmat, }\FunctionTok{matrix}\NormalTok{(}\FunctionTok{rnorm}\NormalTok{(}\AttributeTok{n =}\NormalTok{ n}\SpecialCharTok{*}\FunctionTok{length}\NormalTok{(b)), }\AttributeTok{ncol =}\NormalTok{ n))}
+  \ControlFlowTok{if}\NormalTok{(n }\SpecialCharTok{==} \DecValTok{1}\NormalTok{L)\{}
+\NormalTok{    y }\OtherTok{\textless{}{-}} \FunctionTok{as.numeric}\NormalTok{(y) }
+\NormalTok{  \}}
+  \FunctionTok{t}\NormalTok{(nu }\SpecialCharTok{+}\NormalTok{ y)}
+\NormalTok{\}}
+\NormalTok{B }\OtherTok{\textless{}{-}} \FloatTok{1e4}\NormalTok{L }\CommentTok{\# number of draws}
+\CommentTok{\# Create containers}
+\NormalTok{beta\_s }\OtherTok{\textless{}{-}} \FunctionTok{matrix}\NormalTok{(}\AttributeTok{nrow =}\NormalTok{ B, }\AttributeTok{ncol =}\NormalTok{ nt)}
+\NormalTok{x\_s }\OtherTok{\textless{}{-}} \FunctionTok{matrix}\NormalTok{(}\AttributeTok{nrow =}\NormalTok{ B, }\AttributeTok{ncol =}\NormalTok{ nt)}
+\NormalTok{tau\_s }\OtherTok{\textless{}{-}} \FunctionTok{numeric}\NormalTok{(B)}
+\CommentTok{\# Initial values}
+\NormalTok{beta }\OtherTok{\textless{}{-}} \FunctionTok{rep}\NormalTok{(}\DecValTok{0}\NormalTok{, nt)}
+\NormalTok{tau }\OtherTok{\textless{}{-}} \DecValTok{1000}
+\CommentTok{\# Prior parameter values}
+\NormalTok{tau\_a }\OtherTok{\textless{}{-}} \DecValTok{1}
+\NormalTok{tau\_b }\OtherTok{\textless{}{-}} \FloatTok{0.0001}
+\CommentTok{\# Gibbs sampling}
+\ControlFlowTok{for}\NormalTok{(b }\ControlFlowTok{in} \FunctionTok{seq\_len}\NormalTok{(B))\{}
+  \CommentTok{\# if(b \%\% 100L == 0L)\{print(paste(b, \textquotesingle{}iterations completed\textquotesingle{})); \}}
+  \CommentTok{\# Step 1: data augmentation}
+\NormalTok{  x }\OtherTok{\textless{}{-}}\NormalTok{ TruncatedNormal}\SpecialCharTok{::}\FunctionTok{rtnorm}\NormalTok{(}
+    \AttributeTok{n =} \DecValTok{1}\NormalTok{,  }\AttributeTok{mu =}\NormalTok{ beta[day], }\AttributeTok{sd =} \DecValTok{1}\NormalTok{,}
+    \AttributeTok{lb =} \FunctionTok{ifelse}\NormalTok{(y }\SpecialCharTok{==} \DecValTok{0}\NormalTok{, }\SpecialCharTok{{-}}\ConstantTok{Inf}\NormalTok{, }\DecValTok{0}\NormalTok{),}
+    \AttributeTok{ub =} \FunctionTok{ifelse}\NormalTok{(y }\SpecialCharTok{==} \DecValTok{0}\NormalTok{, }\DecValTok{0}\NormalTok{, }\ConstantTok{Inf}\NormalTok{))}
+\NormalTok{  tx }\OtherTok{\textless{}{-}} \FunctionTok{aggregate}\NormalTok{(}\AttributeTok{x =}\NormalTok{ x, }\AttributeTok{by =} \FunctionTok{list}\NormalTok{(day), }\AttributeTok{FUN =}\NormalTok{ sum)}\SpecialCharTok{$}\NormalTok{x}
+\NormalTok{  x\_s[b,] }\OtherTok{\textless{}{-}}\NormalTok{ tx}
+  \CommentTok{\# Step 2: Simulate random effects in block}
+\NormalTok{  beta }\OtherTok{\textless{}{-}}\NormalTok{ beta\_s[b,] }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(}\FunctionTok{rGaussQ}\NormalTok{(}
+    \AttributeTok{n =} \DecValTok{1}\NormalTok{,}
+    \AttributeTok{b =}\NormalTok{ tx, }
+    \AttributeTok{Q =}\NormalTok{ tau }\SpecialCharTok{*}\NormalTok{ Q }\SpecialCharTok{+}\NormalTok{ N))}
+  \DocumentationTok{\#\# Step 2 b: alternative Update individually looping over indices}
+  \CommentTok{\# st \textless{}{-} sample.int(nt, 1)}
+
+  \CommentTok{\# for(i in (st + seq\_len(nt)) \%\% nt + 1L)\{}
+  \CommentTok{\#   im1 \textless{}{-} ifelse(i == 1L, 366, i{-}1)}
+  \CommentTok{\#   im2 \textless{}{-} ifelse(i \%in\% 1:2, 364+i, i{-}2)}
+  \CommentTok{\#   ip1 \textless{}{-} ifelse(i == 366L, 1, i+1)}
+  \CommentTok{\#   ip2 \textless{}{-} ifelse(i \%in\% 365:366, i{-}364, i + 2)}
+  \CommentTok{\#   prec \textless{}{-} tau * 6 + Tokyo$n[i]}
+  \CommentTok{\#   condmean \textless{}{-} x[i] {-} tau *}
+  \CommentTok{\#             ({-}4* (beta[im1] + beta[ip1] {-} x[im1] {-} x[ip1]) +}
+  \CommentTok{\#                 (beta[im2] + beta[ip2] {-} x[im2] {-} x[ip2])) / prec}
+  \CommentTok{\#   beta[i] \textless{}{-} rnorm(n = 1, mean = condmean, sd = 1/sqrt(prec))}
+  \CommentTok{\# \}}
+  \CommentTok{\# beta\_s[b,] \textless{}{-} beta}
+
+\CommentTok{\# Simulate precision}
+\NormalTok{  tau }\OtherTok{\textless{}{-}}\NormalTok{ tau\_s[b] }\OtherTok{\textless{}{-}} \FunctionTok{rgamma}\NormalTok{(}
+    \AttributeTok{n =} \DecValTok{1}\NormalTok{, }
+    \AttributeTok{shape =}\NormalTok{ (nt}\DecValTok{{-}1}\NormalTok{)}\SpecialCharTok{/}\DecValTok{2} \SpecialCharTok{+}\NormalTok{ tau\_a, }
+    \AttributeTok{rate =} \FloatTok{0.5}\SpecialCharTok{*}\FunctionTok{as.numeric}\NormalTok{(}\FunctionTok{crossprod}\NormalTok{(cholQ }\SpecialCharTok{\%*\%}\NormalTok{ beta)) }\SpecialCharTok{+}\NormalTok{ tau\_b)}
+  \CommentTok{\# if beta is VERY smooth, then precision is large}
+\NormalTok{\}}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{figure}[ht!]
+
+\centering{
+
+\pandocbounded{\includegraphics[keepaspectratio]{gibbs_files/figure-pdf/fig-rainfall-1.pdf}}
+
+}
+
+\caption{\label{fig-rainfall}Tokyo rainfall fitted median probability
+with 50\% and 89\% pointwise credible intervals as a function of time of
+the year, with the proportion of days of rain (points).}
+
+\end{figure}%
 
 \end{example}
 
@@ -6164,6 +6459,12 @@ Methodology.''} In \emph{Handbook of {M}arkov Chain {M}onte {C}arlo},
 edited by S. Brooks, A. Gelman, G. Jones, and X. L. Meng, 253--93. Boca
 Raton: CRC Press. \url{https://doi.org/10.1201/b10905-11}.
 
+\bibitem[\citeproctext]{ref-Jasra.Holmes.Stephens:2005}
+Jasra, A., C. C. Holmes, and D. A. Stephens. 2005. {``{M}arkov Chain
+{M}onte {C}arlo Methods and the Label Switching Problem in {B}ayesian
+Mixture Modeling.''} \emph{Statistical Science} 20 (1): 50--67.
+\url{https://doi.org/10.1214/088342305000000016}.
+
 \bibitem[\citeproctext]{ref-Jegerlehner:2021}
 Jegerlehner, Sabrina, Franziska Suter-Riniker, Philipp Jent, Pascal
 Bittel, and Michael Nagler. 2021. {``Diagnostic Accuracy of a
@@ -6176,6 +6477,12 @@ Kinderman, A. J., and J. F. Monahan. 1977. {``Computer Generation of
 Random Variables Using the Ratio of Uniform Deviates.''} \emph{ACM
 Transactions on Mathematical Software} 3 (3): 257--60.
 \url{https://doi.org/10.1145/355744.355750}.
+
+\bibitem[\citeproctext]{ref-Kitagawa:1987}
+Kitagawa, Genshiro. 1987. {``Non-{G}aussian State---Space Modeling of
+Nonstationary Time Series.''} \emph{Journal of the American Statistical
+Association} 82 (400): 1032--41.
+\url{https://doi.org/10.1080/01621459.1987.10478534}.
 
 \bibitem[\citeproctext]{ref-Marshall.Olkin:1985}
 Marshall, Albert W., and Ingram Olkin. 1985. {``A Family of Bivariate
@@ -6243,6 +6550,11 @@ Roberts, Gareth O., and Jeffrey S. Rosenthal. 2001. {``Optimal Scaling
 for Various {M}etropolis--{H}astings Algorithms.''} \emph{Statistical
 Science} 16 (4): 351--67. \url{https://doi.org/10.1214/ss/1015346320}.
 
+\bibitem[\citeproctext]{ref-Rue.Held:2005}
+Rue, H., and L. Held. 2005. \emph{{G}aussian {M}arkov Random Fields:
+Theory and Applications}. Chapman \& Hall/CRC Monographs on Statistics
+\& Applied Probability. Boca Raton: CRC Press.
+
 \bibitem[\citeproctext]{ref-Sherlock:2013}
 Sherlock, Chris. 2013. {``Optimal Scaling of the Random Walk
 {M}etropolis: General Criteria for the 0.234 Acceptance Rule.''}
@@ -6280,6 +6592,12 @@ Fit.''} \emph{Journal of the Royal Statistical Society: Series B
 (Statistical Methodology)} 64 (4): 583--639.
 \url{https://doi.org/10.1111/1467-9868.00353}.
 
+\bibitem[\citeproctext]{ref-Stephens:2002}
+Stephens, Matthew. 2002. {``Dealing with Label Switching in Mixture
+Models.''} \emph{Journal of the Royal Statistical Society Series B:
+Statistical Methodology} 62 (4): 795--809.
+\url{https://doi.org/10.1111/1467-9868.00265}.
+
 \bibitem[\citeproctext]{ref-Tanner.Wong:1987}
 Tanner, Martin A., and Wing Hung Wong. 1987. {``The Calculation of
 Posterior Distributions by Data Augmentation.''} \emph{Journal of the
@@ -6309,8 +6627,6 @@ Regression Analysis with \(g\)-Prior Distributions.''} In
 {B}runo de {F}inetti}, 233--43. North-Holland/Elsevier.
 
 \end{CSLReferences}
-
-\end{definition}
 
 
 \backmatter
