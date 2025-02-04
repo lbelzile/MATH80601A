@@ -650,7 +650,7 @@ theta <- theta[-(1:100),]
 #| eval: true
 #| echo: false
 #| label: fig-density-mixt
-#| fig-cap: "One-dimensional density mixture for the Old Faithful data, with histogram of data (left) and line ribbon of posterior density draws (right)."
+#| fig-cap: "One-dimensional density mixture for the Old Faithful data, with histogram of data (left) and posterior density draws (right)."
 #| cache: false
 library(ggplot2)
 library(patchwork)
@@ -705,7 +705,7 @@ We consider data from @Kitagawa:1987 that provide a binomial time series giving 
 We specify the random effects $\boldsymbol{\beta} \sim \mathsf{Gauss}_{T}(\boldsymbol{0}, \tau^{-1}\mathbf{Q}),$ where $\mathbf{Q}$ is a $T \times T$ precision matrix that encodes the local dependence. A circular random walk structure of order 2 is used to model the smooth curves by smoothing over neighbors, and enforces small second derivative. This is a suitable prior because it enforces no constraint on the mean structure. This amounts to specifying the process with 
 \begin{align*}
 \Delta^2\beta_t &= (\beta_{t+1} - \beta_t) - (\beta_t - \beta_{t-1})
-\\&=-\beta_{t-1} +2 \beta_t - \beta_{t+1} \sim \mathsf{Gauss}(0, \tau^{-1}), \qquad t= \in \mathbb{N} \mod 366.
+\\&=-\beta_{t-1} +2 \beta_t - \beta_{t+1} \sim \mathsf{Gauss}(0, \tau^{-1}), \qquad t \in \mathbb{N} \mod 366.
 \end{align*}
 This yields an intrinsic Gaussian Markov random field with a circulant precision matrix $\tau\mathbf{Q}=\tau\mathbf{GG^\top}$ of rank $T-1,$ where
 \begin{align*}
@@ -739,7 +739,7 @@ K <- ngme2::rw2(1:nt, cyclic = TRUE)
 Q <- crossprod(K$K)
 set.seed(1234)
 samps <- solve(Matrix::chol(Q), matrix(rnorm(5*366), ncol = 5))
-matplot(scale(samps, scale = FALSE), 
+matplot(scale(samps), 
         bty = "l",
         ylab = "",
  xlab = "day of year",
@@ -748,7 +748,7 @@ col = RColorBrewer::brewer.pal(n = 5, name = "Blues"),lwd = seq(2, 1, length.out
 
 ```
 
-We can perform data augmentation by imputing Gaussian variables, say $x_{1,1}, x_{i,2}, \ldots, x_{366,2}$ following @exm-probit-regression from truncated Gaussian, where $x_{t,i} = \beta_t + \varepsilon_{t,i}$ and $\varepsilon_{t,i} \sim \mathsf{Gauss}(0,1)$ are independent standard Gaussian and 
+We can perform data augmentation by imputing Gaussian variables, say $\{x_{t,i}\}$ following @exm-probit-regression from truncated Gaussian, where $x_{t,i} = \beta_t + \varepsilon_{t,i}$ and $\varepsilon_{t,i} \sim \mathsf{Gauss}(0,1)$ are independent standard Gaussian and 
 \begin{align*}
 z_{t,i} \mid  y_{t,i}, \beta_t \sim 
 \begin{cases}
@@ -767,7 +767,7 @@ p(\boldsymbol{\beta}, \tau) \propto \tau^{(n-1)/2}\exp \left( - \frac{\tau}{2} \
 where $\boldsymbol{z} = (z_1, \ldots, z_T).$
 Completing the quadratic form shows that 
 \begin{align*}
-\boldsymbol{\beta} \mid \boldsymbol{x}, \tau &\sim \mathsf{Gauss}_T\left[\left\{\tau \mathbf{Q} + \mathrm{diag}(\boldsymbol{n})\right\}^{-1} \boldsymbol{z}, \left\{\tau \mathbf{Q} + \mathrm{diag}(\boldsymbol{n})\right\}^{-1}\right]\\
+\boldsymbol{\beta} \mid \boldsymbol{z}, \tau &\sim \mathsf{Gauss}_T\left[\left\{\tau \mathbf{Q} + \mathrm{diag}(\boldsymbol{n})\right\}^{-1} \boldsymbol{z}, \left\{\tau \mathbf{Q} + \mathrm{diag}(\boldsymbol{n})\right\}^{-1}\right]\\
 \tau \mid \boldsymbol{\beta} & \sim \mathsf{gamma}\left( \frac{n-1}{2} + a, \frac{\boldsymbol{\beta}^\top \mathbf{Q}\boldsymbol{\beta}}{2} + b \right)
 \end{align*}
 

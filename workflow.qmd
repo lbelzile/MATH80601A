@@ -1,5 +1,5 @@
 
-# Bayesian workflow
+# Bayesian workflow and computational strategies
 
 
 ```{r}
@@ -14,13 +14,46 @@
 
 For a given problem, there are many different Markov chain Monte Carlo algorithms that one can implement: they will typically be distinguished based on the running time and the efficiency (with algorithms providing chains that have low autocorrelation being better). Many visual diagnostics and standard tests can be used to diagnose lack of convergence, or inefficiency. The purpose of this section is to review these in turn.
 
-The Bayesian workflow is a coherent framework for model construction, estimation and validation. It typically involves multiple iterations tuning, adapting and modifying both the models and the algorithms in the hope of achieving a model that is useful [@Gelman:2020]; see also [Michael Betancourt](https://betanalpha.github.io/assets/case_studies/principled_bayesian_workflow.html) for excellent visualizations.
+The Bayesian workflow is a coherent framework for model formulation construction, inference and validation. It typically involves trying and comparing different models, adapting and modifying these models [@Gelman:2020]; see also [Michael Betancourt](https://betanalpha.github.io/assets/case_studies/principled_bayesian_workflow.html) for excellent visualizations. In this chapter, we focus on three aspects of the workflow: model validation, evaluation and comparison.
+
+
+Simulation-based calibration  [@Talts:2020] 
+- **Generating artificial data**: Some problems and checks relate to models, which cannot adequately capture the observations or reproduce salient features of the data, or to problematic  or expensive computations that lead to erroneous or misleading output. We can for example generate an "artificial" or fake data set from the model with some fixed parameter inputs to see if we can recover the parameter values used to generate these within some credible set. The "data-averaged posterior" is obtained upon noting that [@Geweke:2004]
+\begin{align*}
+p(\boldsymbol{\theta}) = \int \int_{\boldsymbol{\Theta}} p( \boldsymbol{\theta} \mid \boldsymbol{y}) p(\boldsymbol{y} \mid \widetilde{\boldsymbol{\theta}) p(\widetilde{\boldsymbol{\theta}}) \mathrm{d} \widetilde{\boldsymbol{\theta}} \mathrm{d} \boldsymbol{y}
+\end{align*}
+by forward sampling first the prior, than data for this particular value and obtaining the posterior. 
+- **Prior to posterior**: prior sensitivity requires to rerun the algorithm with different priors, but it is sometimes feasible in simpler models to simply use a fast Gaussian approximation via the maximum a posteriori, and generate from the latter, to assess the impcat of the prior. We can compare posterior density with prior density. The general rule is that parameters far from the data layer are more impacted by the prior choice.
+
+A modular approach to model building, whichIt is a good strategy to start small, with a toy model, and to complexify until the fit is adequate. The modular approach also helps to diagnose convergence problems, bugs and identifiability problems. 
+
+
+Many sanity checks can be implemented by means of simulations. Consider prior predictive checks: for example, if the prior has a distribution from which we can generate, we can obtain prior draws from $p(\boldsymbol{\theta})$, generate data from the prior predictive $p(y \mid \boldsymbol{\theta})$ by simulating new observations from the data generating mechanism of the likelihood, and use these to obtain prior predictive by removing the likelihood component altogether: the draws from the prior predictive should then match posterior draws with only the prior. Generating For example, we can 
+
+
+## Multiple chains
+
+Many diagnostics rely on running multiple Markov chains from the same problem. This is useful 
+
+
+## Validating the output
+
+@Geweke:2004
+
+The **R** packages `coda` and `posterior`
+Tests of uniformity 
+
+Prior elicitation: what summaries should the model faithfully reproduce? 
 
 
 
-To illustrate these, we revisit the model from @exm-randomeffects with a penalized complexity prior for the individual effect $\alpha_i$ and vague normal priors. We also fit a simple Poisson model with only the fixed effect, taking $Y_{ij} \sim \mathsf{Poisson}\{\exp(\beta_j)\}$ with $\beta_j \sim \mathsf{Gauss}(0,100)$ has much too little variability relative to the observations.
 
-## Graphical diagnostics
+To illustrate these, we revisit the model from @exm-randomeffects with a penalized complexity prior for the individual effect $\alpha_i$ and vague normal priors. We also fit a simple Poisson model with only the fixed effect, taking $Y_{ij} \sim \mathsf{Poisson}\{\exp(\beta_j)\}$ with $\beta_j \sim \mathsf{Gauss}(0,100)$, which has much too little variability relative to the observations.
+
+
+## Adaptive MCMC
+
+## Graphical convergence diagnostics
 
 ### Trace plots
 
@@ -316,9 +349,7 @@ waic2 <- round(-mean(apply(loglik_pt2, 2, mean)) +
 
 ```
 
-## Goodness-of-fit criteria
-
-### Information criterion
+## Information criteria
 
 The widely applicable information criterion [@Watanabe:2010] is a measure of predictive performance that approximates the cross-validation loss.
 Consider first the log pointwise predictive density, defined as the expected value over the posterior distribution $p(\boldsymbol{\theta} \mid \boldsymbol{y}),$
@@ -443,6 +474,8 @@ mle_pareto <- function(x){
 
 ```
 
+
+-->
 
 <!--
 Examples

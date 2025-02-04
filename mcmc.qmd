@@ -201,6 +201,7 @@ bayesplot::mcmc_trace(x = coda::as.mcmc(chain),
 ```
 @fig-scatterplot-upworthy-question shows the posterior samples, which are very nearly bivariate Gaussian. The parametrization in terms of log odds ratio induces strong negative dependence, so if we were to sample $\kappa,$ then $\beta,$ we would have much larger inefficiency and slower exploration. Instead, the code used a bivariate Gaussian random walk proposal whose covariance matrix was taken as a multiple of the inverse of the negative hessian (equivalently, to the observed information matrix of the log posterior), evaluated at of the maximum a posteriori. This Gaussian approximation is called **Laplace approximation**: it is advisable to reparametrize the model so that the distribution is nearly symmetric, so that the approximation is good. In this example, because of the large sample, the Gaussian approximation implied by Bernstein--von Mises' theorem is excellent.
 
+
 ```{r}
 #| eval: true
 #| echo: false
@@ -218,6 +219,16 @@ g1 + g2
 
 
 :::
+
+:::{#rem-reparametrization}
+
+## Reparametrization
+
+A better parametrization would simply sample two parameters with $\lambda_2 = \exp(\alpha),$ where $\alpha$ is the log mean of the second group, with the same prior as for $\beta.$ Since the likelihood factorizes and the parameters are independent apriori, this would lead to zero correlation and lead to more efficient mixing of the Markov chain, should we wish to sample parameters in turn one at the time. A Markov chain for $\kappa$ can then be obtained by substracting the values of $\alpha-\beta$ from the new draws.
+
+:::
+
+
 
 The quality of the mixing of the chain (autocorrelation), depends on the proposal variance, which can obtain by trial and error. Trace plots [@fig-traceplot] show the values of the chain as a function of iteration number. If our algorithm works well, we expect the proposals to center around the posterior mode and resemble a fat hairy caterpillar. If the variance is too small, the acceptance rate will increase but most steps will be small. If the variance of the proposal is too high, the acceptance rate will decrease (as many proposal moves will have much lower posterior), so the chain will get stuck for long periods of time. This is Goldilock's principle, as illustrated in @fig-goldilock-trace.
 
