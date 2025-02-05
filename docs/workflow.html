@@ -2,12 +2,12 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.7.1">
+<meta name="generator" content="quarto-1.7.3">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>7&nbsp; Bayesian workflow – Bayesian modelling</title>
+<title>7&nbsp; Bayesian workflow and computational strategies – Bayesian modelling</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -91,10 +91,10 @@ div.csl-indent {
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="site_libs/quarto-html/anchor.min.js"></script>
 <link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-2bb0ec5e928ee8c40b12725cb7836c35.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-81b5c3e63835cfde897ecd3d35a35a41.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-a51e8ad160b68d9f8f1ac488cc0f242e.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-ad5ef081d17d57ab2b6cc5e45efb5d90.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
   "copy-button": false,
@@ -165,7 +165,7 @@ window.Quarto = {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./workflow.html"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Bayesian workflow</span></a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./workflow.html"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Bayesian workflow and computational strategies</span></a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -239,7 +239,7 @@ window.Quarto = {
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./workflow.html" class="sidebar-item-text sidebar-link active">
- <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Bayesian workflow</span></span></a>
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Bayesian workflow and computational strategies</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
@@ -258,20 +258,16 @@ window.Quarto = {
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#graphical-diagnostics" id="toc-graphical-diagnostics" class="nav-link active" data-scroll-target="#graphical-diagnostics"><span class="header-section-number">7.1</span> Graphical diagnostics</a>
+  <li><a href="#graphical-convergence-diagnostics" id="toc-graphical-convergence-diagnostics" class="nav-link active" data-scroll-target="#graphical-convergence-diagnostics"><span class="header-section-number">7.1</span> Graphical convergence diagnostics</a>
   <ul class="collapse">
-  <li><a href="#trace-plots" id="toc-trace-plots" class="nav-link" data-scroll-target="#trace-plots"><span class="header-section-number">7.1.1</span> Trace plots</a></li>
-  <li><a href="#posterior-predictive-checks" id="toc-posterior-predictive-checks" class="nav-link" data-scroll-target="#posterior-predictive-checks"><span class="header-section-number">7.1.2</span> Posterior predictive checks</a></li>
+  <li><a href="#posterior-predictive-checks" id="toc-posterior-predictive-checks" class="nav-link" data-scroll-target="#posterior-predictive-checks"><span class="header-section-number">7.1.1</span> Posterior predictive checks</a></li>
   </ul></li>
-  <li><a href="#goodness-of-fit-criteria" id="toc-goodness-of-fit-criteria" class="nav-link" data-scroll-target="#goodness-of-fit-criteria"><span class="header-section-number">7.2</span> Goodness-of-fit criteria</a>
-  <ul class="collapse">
-  <li><a href="#information-criterion" id="toc-information-criterion" class="nav-link" data-scroll-target="#information-criterion"><span class="header-section-number">7.2.1</span> Information criterion</a></li>
-  </ul></li>
+  <li><a href="#information-criteria" id="toc-information-criteria" class="nav-link" data-scroll-target="#information-criteria"><span class="header-section-number">7.2</span> Information criteria</a></li>
   </ul>
 <div class="toc-actions"><ul><li><a href="https://github.com/lbelzile/MATH80601A/edit/main/workflow.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li></ul></div></nav>
     </div>
 <!-- main -->
-<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block"><h1 class="title display-7"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Bayesian workflow</span></h1></header>
+<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block"><h1 class="title display-7"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Bayesian workflow and computational strategies</span></h1></header>
 
 <header id="title-block-header">
 
@@ -280,14 +276,45 @@ window.Quarto = {
 
 
 <p>For a given problem, there are many different Markov chain Monte Carlo algorithms that one can implement: they will typically be distinguished based on the running time and the efficiency (with algorithms providing chains that have low autocorrelation being better). Many visual diagnostics and standard tests can be used to diagnose lack of convergence, or inefficiency. The purpose of this section is to review these in turn.</p>
-<p>The Bayesian workflow is a coherent framework for model construction, estimation and validation. It typically involves multiple iterations tuning, adapting and modifying both the models and the algorithms in the hope of achieving a model that is useful <span class="citation" data-cites="Gelman:2020">(<a href="references.html#ref-Gelman:2020" role="doc-biblioref">Gelman et al. 2020</a>)</span>; see also <a href="https://betanalpha.github.io/assets/case_studies/principled_bayesian_workflow.html">Michael Betancourt</a> for excellent visualizations.</p>
-<p>To illustrate these, we revisit the model from <a href="priors.html#exm-randomeffects" class="quarto-xref">Example&nbsp;<span>3.15</span></a> with a penalized complexity prior for the individual effect <span class="math inline">\(\alpha_i\)</span> and vague normal priors. We also fit a simple Poisson model with only the fixed effect, taking <span class="math inline">\(Y_{ij} \sim \mathsf{Poisson}\{\exp(\beta_j)\}\)</span> with <span class="math inline">\(\beta_j \sim \mathsf{Gauss}(0,100)\)</span> has much too little variability relative to the observations.</p>
-<section id="graphical-diagnostics" class="level2" data-number="7.1">
-<h2 data-number="7.1" class="anchored" data-anchor-id="graphical-diagnostics"><span class="header-section-number">7.1</span> Graphical diagnostics</h2>
-<section id="trace-plots" class="level3" data-number="7.1.1">
-<h3 data-number="7.1.1" class="anchored" data-anchor-id="trace-plots"><span class="header-section-number">7.1.1</span> Trace plots</h3>
+<p>The Bayesian workflow is a coherent framework for model formulation construction, inference and validation. It typically involves trying and comparing different models, adapting and modifying these models <span class="citation" data-cites="Gelman:2020">(<a href="references.html#ref-Gelman:2020" role="doc-biblioref">Gelman et al. 2020</a>)</span>; see also <a href="https://betanalpha.github.io/assets/case_studies/principled_bayesian_workflow.html">Michael Betancourt</a> for excellent visualizations. In this chapter, we focus on three aspects of the workflow: model validation, evaluation and comparison.</p>
+<!--
+Simulation-based calibration  [@Talts:2020] 
+- **Generating artificial data**: Some problems and checks relate to models, which cannot adequately capture the observations or reproduce salient features of the data, or to problematic  or expensive computations that lead to erroneous or misleading output. We can for example generate an "artificial" or fake data set from the model with some fixed parameter inputs to see if we can recover the parameter values used to generate these within some credible set. 
+- **Prior to posterior**: prior sensitivity requires to rerun the algorithm with different priors, but it is sometimes feasible in simpler models to simply use a fast Gaussian approximation via the maximum a posteriori, and generate from the latter, to assess the impcat of the prior. We can compare posterior density with prior density. The general rule is that parameters far from the data layer are more impacted by the prior choice.
+
+
+-->
+<!-- A modular approach to model building is recommended. It is a good strategy to start small, with a toy model, and to complexify until the fit is adequate. The modular approach can also help to diagnose convergence problems, bugs and identifiability problems.  -->
+<p>Many sanity checks can be implemented by means of simulations. Consider prior predictive checks: for example, if the prior has a distribution from which we can generate, we can obtain prior draws from <span class="math inline">\(p(\boldsymbol{\theta})\)</span>, generate data from the prior predictive <span class="math inline">\(p(y \mid \boldsymbol{\theta})\)</span> by simulating new observations from the data generating mechanism of the likelihood, and use these to obtain prior predictive by removing the likelihood component altogether: the draws from the prior predictive should then match posterior draws with only the prior.</p>
+<p>The “data-averaged posterior” is obtained upon noting that <span class="citation" data-cites="Geweke:2004">(<a href="references.html#ref-Geweke:2004" role="doc-biblioref">Geweke 2004</a>)</span> <span class="math display">\[\begin{align*}
+p(\boldsymbol{\theta}) = \int \int_{\boldsymbol{\Theta}} p( \boldsymbol{\theta} \mid \boldsymbol{y}) p(\boldsymbol{y} \mid \widetilde{\boldsymbol{\theta}}) p(\widetilde{\boldsymbol{\theta}}) \mathrm{d} \widetilde{\boldsymbol{\theta}} \mathrm{d} \boldsymbol{y}
+\end{align*}\]</span> by forward sampling first the prior, than data for this particular value and obtaining the posterior.</p>
+<!--
+## Multiple chains
+
+Many diagnostics rely on running multiple Markov chains from the same problem. This is useful 
+
+
+## Validating the output
+-->
+<!-- The **R** packages `coda` and `posterior` -->
+<!-- Tests of uniformity  -->
+<!-- Prior elicitation: what summaries should the model faithfully reproduce?  -->
+<p>To illustrate these, we revisit the model from <a href="priors.html#exm-randomeffects" class="quarto-xref">Example&nbsp;<span>3.15</span></a> with a penalized complexity prior for the individual effect <span class="math inline">\(\alpha_i\)</span> and vague normal priors. We also fit a simple Poisson model with only the fixed effect, taking <span class="math inline">\(Y_{ij} \sim \mathsf{Poisson}\{\exp(\beta_j)\}\)</span> with <span class="math inline">\(\beta_j \sim \mathsf{Gauss}(0,100)\)</span>, which has much too little variability relative to the observations.</p>
+<!--
+## Adaptive MCMC
+
+-->
+<section id="graphical-convergence-diagnostics" class="level2" data-number="7.1">
+<h2 data-number="7.1" class="anchored" data-anchor-id="graphical-convergence-diagnostics"><span class="header-section-number">7.1</span> Graphical convergence diagnostics</h2>
+<div id="def-traceplots" class="theorem definition">
+<p><span class="theorem-title"><strong>Definition 7.1 (Trace plots)</strong></span> A trace plot is a line plot of the Markov chain as a function of the number of iterations. It should be stable around some values if the posterior is unimodal and the chain has reached stationarity. The ideal shape is that of a ‘fat hairy catterpilar’.</p>
+</div>
 <p>It is useful to inspect visually the Markov chain, as it may indicate several problems. If the chain drifts around without stabilizing around the posterior mode, then we can suspect that it hasn’t reached it’s stationary distribution (likely due to poor starting values). In such cases, we need to disregard the dubious draws from the chain by discarding the so-called warm up or <strong>burn in</strong> period. While there are some guarantees of convergence in the long term, silly starting values may translate into tens of thousands of iterations lost wandering around in regions with low posterior mass. Preliminary optimization and plausible starting values help alleviate these problems. <a href="#fig-badstart" class="quarto-xref">Figure&nbsp;<span>7.1</span></a> shows the effect of bad starting values on a toy problem where convergence to the mode is relatively fast. If the proposal is in a flat region of the space, it can wander around for a very long time before converging to the stationary distribution.</p>
-<p>If we run several chains, as in <a href="#fig-badstart" class="quarto-xref">Figure&nbsp;<span>7.1</span></a>, with different starting values, we can monitor convergence by checking whether these chains converge to the same target. A <strong>trace rank</strong> plots, shown on right panel of <a href="#fig-badstart" class="quarto-xref">Figure&nbsp;<span>7.1</span></a>, compares the rank of the values of the different chain at a given iteration: with good mixing, the ranks should switch frequently and be distributed uniformly across integers.</p>
+<div id="def-trankplot" class="theorem definition">
+<p><span class="theorem-title"><strong>Definition 7.2 (Trace rank plot)</strong></span> If we run several chains, as in <a href="#fig-badstart" class="quarto-xref">Figure&nbsp;<span>7.1</span></a>, with different starting values, we can monitor convergence by checking whether these chains converge to the same target. A <strong>trace rank</strong> plot compares the rank of the values of the different chain at a given iteration: with good mixing, the ranks should switch frequently and be distributed uniformly across integers.</p>
+</div>
+<p>A trace rank plot is shown on right panel of <a href="#fig-badstart" class="quarto-xref">Figure&nbsp;<span>7.1</span></a>.</p>
 <div class="cell">
 <div class="cell-output-display">
 <div id="fig-badstart" class="quarto-float quarto-figure quarto-figure-center anchored">
@@ -302,7 +329,13 @@ Figure&nbsp;7.1: Traceplots of three Markov chains for the same target with diff
 </div>
 </div>
 </div>
-<p>The first iterations of a MCMC algorithm, used during the burn in period to tune proposal variances and allow the chains to converge to the stationary distribution, are discarded. If visual inspection of the chains reveal that some of the chains for one or more parameters are not stationary until some iteration, we will discard all of these in addition.</p>
+<div id="def-burnin" class="theorem definition">
+<p><span class="theorem-title"><strong>Definition 7.3 (Burn in period)</strong></span> We term “burn in” the initial steps of the MCMC algorithm that are discarded because the chain has not reached it’s stationary distribution, due to poor starting values. , but visual inspection using a trace plot may show that it is necessary to remove additional observations.</p>
+</div>
+<p>Most software will remove the first <span class="math inline">\(N\)</span> initial values (typically one thousand). Good starting values can reduce the need for a long burn in period. If visual inspection of the chains reveal that some of the chains for one or more parameters are not stationary until some iteration, we will discard all of these in addition. <span class="citation" data-cites="Geweke:1992">Geweke (<a href="references.html#ref-Geweke:1992" role="doc-biblioref">1992</a>)</span>’s test measure whether the distribution of the resulting Markov chain is the same at the beginning and at the end through a test of equality of means.</p>
+<div id="def-warmup" class="theorem definition">
+<p><span class="theorem-title"><strong>Definition 7.4 (Warmup)</strong></span> Warmup period refers to the initial sampling phase (potentially overlapping with burn in period) during which proposals are tuned (for example, by changing the variance proposal to ensure good acceptance rate or for Hamiltonian Monte Carlo (HMC) to tune the size of the leapfrog. These initial steps should be disregarded.</p>
+</div>
 <p>The target of inference is a functional (i.e., one-dimensional summaries of the chain): we need to have convergence of the latter, but also sufficient effective sample size for our averages to be accurate (at least to two significant digits).</p>
 <p>For the Poisson example, the effective sample size for the <span class="math inline">\(\boldsymbol{\beta}\)</span> for the multilevel model is a bit higher than 1000 with <span class="math inline">\(B=5000\)</span> iterations, whereas we have for the simple naive model is <span class="math inline">\(1.028\times 10^{4}\)</span> for <span class="math inline">\(B=10000\)</span> draws, suggesting superefficient sampling. The dependency between <span class="math inline">\(\boldsymbol{\alpha}\)</span> and <span class="math inline">\(\boldsymbol{\beta}\)</span> is responsible for the drop in accuracy.</p>
 <p>The <code>coda</code> (convergence diagnosis and output analysis) <strong>R</strong> package contains many tests. For example, the Geweke <span class="math inline">\(Z\)</span>-score compares the averages for the beginning and the end of the chain: rejection of the null implies lack of convergence, or poor mixing.</p>
@@ -329,9 +362,8 @@ Figure&nbsp;7.2: Two pairs of Markov chains: the top ones seem stationary, but w
 </div>
 <p>More generally, it is preferable to run a single chain for a longer period than run multiple chains sequentially, as there is a cost to initializing multiple times with different starting values since we must discard initial draws. With parallel computations, multiple chains are more frequent nowadays.</p>
 <p>MCMC algorithms are often run thinning the chain (i.e., keeping only a fraction of the samples drawn, typically every <span class="math inline">\(k\)</span> iteration). This is wasteful as we can of course get more precise estimates by keeping all posterior draws, whether correlated or not. The only argument in favor of thinning is limited storage capacity: if we run very long chains in a model with hundreds of parameters, we may run out of memory.</p>
-</section>
-<section id="posterior-predictive-checks" class="level3" data-number="7.1.2">
-<h3 data-number="7.1.2" class="anchored" data-anchor-id="posterior-predictive-checks"><span class="header-section-number">7.1.2</span> Posterior predictive checks</h3>
+<section id="posterior-predictive-checks" class="level3" data-number="7.1.1">
+<h3 data-number="7.1.1" class="anchored" data-anchor-id="posterior-predictive-checks"><span class="header-section-number">7.1.1</span> Posterior predictive checks</h3>
 <p>Posterior predictive checks can be used to compare models of varying complexity.One of the visual diagnostics, outlined in <span class="citation" data-cites="Gabry:2019">Gabry et al. (<a href="references.html#ref-Gabry:2019" role="doc-biblioref">2019</a>)</span>, consists in computing a summary statistic of interest from the posterior predictive (whether mean, median, quantile, skewness, etc.) which is relevant for the problem at hand and which we hope our model can adequately capture.</p>
 <p>Suppose we have <span class="math inline">\(B\)</span> draws from the posterior and simulate for each <span class="math inline">\(n\)</span> observations from the posterior predictive <span class="math inline">\(p(\widetilde{\boldsymbol{y}} \mid \boldsymbol{y})\)</span>: we can benchmark summary statistics from our original data <span class="math inline">\(\boldsymbol{y}\)</span> with the posterior predictive copies <span class="math inline">\(\widetilde{\boldsymbol{y}}_b.\)</span> <a href="#fig-posterior-pred-check" class="quarto-xref">Figure&nbsp;<span>7.3</span></a> shows this for the two competing models and highlight the fact that the simpler model is not dispersed enough. Even the more complex model struggles to capture this additional heterogeneity with the additional variables. One could go back to the drawing board and consider a negative binomial model.</p>
 <div class="cell">
@@ -350,10 +382,8 @@ Figure&nbsp;7.3: Posterior predictive checks for the standard deviation (top) an
 </div>
 </section>
 </section>
-<section id="goodness-of-fit-criteria" class="level2" data-number="7.2">
-<h2 data-number="7.2" class="anchored" data-anchor-id="goodness-of-fit-criteria"><span class="header-section-number">7.2</span> Goodness-of-fit criteria</h2>
-<section id="information-criterion" class="level3" data-number="7.2.1">
-<h3 data-number="7.2.1" class="anchored" data-anchor-id="information-criterion"><span class="header-section-number">7.2.1</span> Information criterion</h3>
+<section id="information-criteria" class="level2" data-number="7.2">
+<h2 data-number="7.2" class="anchored" data-anchor-id="information-criteria"><span class="header-section-number">7.2</span> Information criteria</h2>
 <p>The widely applicable information criterion <span class="citation" data-cites="Watanabe:2010">(<a href="references.html#ref-Watanabe:2010" role="doc-biblioref">Watanabe 2010</a>)</span> is a measure of predictive performance that approximates the cross-validation loss. Consider first the log pointwise predictive density, defined as the expected value over the posterior distribution <span class="math inline">\(p(\boldsymbol{\theta} \mid \boldsymbol{y}),\)</span> <span class="math display">\[\begin{align*}
 \mathsf{LPPD}_i = \mathsf{E}_{\boldsymbol{\theta} \mid \boldsymbol{y}} \left\{ \log p(y_i \mid \boldsymbol{\theta})\right\}.
 \end{align*}\]</span> The higher the value of the predictive density <span class="math inline">\(\mathsf{LPPD}_i,\)</span> the better the fit for that observation.</p>
@@ -424,6 +454,7 @@ Consider hybrid mixture of independent MH and random walk, or mean-centered
 
 
 
+-->
 <!--
 Examples
 
@@ -445,6 +476,12 @@ Gelman, Andrew, John B. Carlin, Hal S. Stern, David B. Dunson, Aki Vehtari, and 
 <div id="ref-Gelman:2020" class="csl-entry" role="listitem">
 Gelman, Andrew, Aki Vehtari, Daniel Simpson, Charles C Margossian, Bob Carpenter, Yuling Yao, Lauren Kennedy, Jonah Gabry, Paul-Christian Bürkner, and Martin Modrák. 2020. <span>“Bayesian Workflow.”</span> <em>arXiv</em>. https://doi.org/<a href="https://doi.org/10.48550/arXiv.2011.01808">https://doi.org/10.48550/arXiv.2011.01808</a>.
 </div>
+<div id="ref-Geweke:1992" class="csl-entry" role="listitem">
+Geweke, John. 1992. <span>“Evaluating the Accuracy of Sampling-Based Approaches to the Calculation of Posterior Moments.”</span> In <em>Bayesian Statistics 4: Proceedings of the Fourth Valencia International Meeting, Dedicated to the Memory of Morris h. DeGroot, 1931–1989</em>. Oxford University Press. <a href="https://doi.org/10.1093/oso/9780198522669.003.0010">https://doi.org/10.1093/oso/9780198522669.003.0010</a>.
+</div>
+<div id="ref-Geweke:2004" class="csl-entry" role="listitem">
+———. 2004. <span>“Getting It Right: Joint Distribution Tests of Posterior Simulators.”</span> <em>Journal of the American Statistical Association</em> 99 (467): 799–804. <a href="https://doi.org/10.1198/016214504000001132">https://doi.org/10.1198/016214504000001132</a>.
+</div>
 <div id="ref-Spiegelhalter:2014" class="csl-entry" role="listitem">
 Spiegelhalter, David J., Nicola G. Best, Bradley P. Carlin, and Angelika Linde. 2014. <span>“The Deviance Information Criterion: 12 Years On.”</span> <em>Journal of the Royal Statistical Society Series B: Statistical Methodology</em> 76 (3): 485–93. <a href="https://doi.org/10.1111/rssb.12062">https://doi.org/10.1111/rssb.12062</a>.
 </div>
@@ -455,7 +492,6 @@ Spiegelhalter, David J., Nicola G. Best, Bradley P. Carlin, and Angelika Van Der
 Watanabe, Sumio. 2010. <span>“Asymptotic Equivalence of <span>B</span>ayes Cross Validation and Widely Applicable Information Criterion in Singular Learning Theory.”</span> <em>Journal of Machine Learning Research</em> 11 (116): 3571–94. <a href="http://jmlr.org/papers/v11/watanabe10a.html">http://jmlr.org/papers/v11/watanabe10a.html</a>.
 </div>
 </div>
-</section>
 </section>
 
 </main> <!-- /main -->

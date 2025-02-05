@@ -16,51 +16,71 @@ For a given problem, there are many different Markov chain Monte Carlo algorithm
 
 The Bayesian workflow is a coherent framework for model formulation construction, inference and validation. It typically involves trying and comparing different models, adapting and modifying these models [@Gelman:2020]; see also [Michael Betancourt](https://betanalpha.github.io/assets/case_studies/principled_bayesian_workflow.html) for excellent visualizations. In this chapter, we focus on three aspects of the workflow: model validation, evaluation and comparison.
 
-
+<!--
 Simulation-based calibration  [@Talts:2020] 
-- **Generating artificial data**: Some problems and checks relate to models, which cannot adequately capture the observations or reproduce salient features of the data, or to problematic  or expensive computations that lead to erroneous or misleading output. We can for example generate an "artificial" or fake data set from the model with some fixed parameter inputs to see if we can recover the parameter values used to generate these within some credible set. The "data-averaged posterior" is obtained upon noting that [@Geweke:2004]
-\begin{align*}
-p(\boldsymbol{\theta}) = \int \int_{\boldsymbol{\Theta}} p( \boldsymbol{\theta} \mid \boldsymbol{y}) p(\boldsymbol{y} \mid \widetilde{\boldsymbol{\theta}) p(\widetilde{\boldsymbol{\theta}}) \mathrm{d} \widetilde{\boldsymbol{\theta}} \mathrm{d} \boldsymbol{y}
-\end{align*}
-by forward sampling first the prior, than data for this particular value and obtaining the posterior. 
+- **Generating artificial data**: Some problems and checks relate to models, which cannot adequately capture the observations or reproduce salient features of the data, or to problematic  or expensive computations that lead to erroneous or misleading output. We can for example generate an "artificial" or fake data set from the model with some fixed parameter inputs to see if we can recover the parameter values used to generate these within some credible set. 
 - **Prior to posterior**: prior sensitivity requires to rerun the algorithm with different priors, but it is sometimes feasible in simpler models to simply use a fast Gaussian approximation via the maximum a posteriori, and generate from the latter, to assess the impcat of the prior. We can compare posterior density with prior density. The general rule is that parameters far from the data layer are more impacted by the prior choice.
 
-A modular approach to model building, whichIt is a good strategy to start small, with a toy model, and to complexify until the fit is adequate. The modular approach also helps to diagnose convergence problems, bugs and identifiability problems. 
+
+-->
+
+<!-- A modular approach to model building is recommended. It is a good strategy to start small, with a toy model, and to complexify until the fit is adequate. The modular approach can also help to diagnose convergence problems, bugs and identifiability problems.  -->
 
 
-Many sanity checks can be implemented by means of simulations. Consider prior predictive checks: for example, if the prior has a distribution from which we can generate, we can obtain prior draws from $p(\boldsymbol{\theta})$, generate data from the prior predictive $p(y \mid \boldsymbol{\theta})$ by simulating new observations from the data generating mechanism of the likelihood, and use these to obtain prior predictive by removing the likelihood component altogether: the draws from the prior predictive should then match posterior draws with only the prior. Generating For example, we can 
+Many sanity checks can be implemented by means of simulations. Consider prior predictive checks: for example, if the prior has a distribution from which we can generate, we can obtain prior draws from $p(\boldsymbol{\theta})$, generate data from the prior predictive $p(y \mid \boldsymbol{\theta})$ by simulating new observations from the data generating mechanism of the likelihood, and use these to obtain prior predictive by removing the likelihood component altogether: the draws from the prior predictive should then match posterior draws with only the prior. 
 
+The "data-averaged posterior" is obtained upon noting that [@Geweke:2004]
+\begin{align*}
+p(\boldsymbol{\theta}) = \int \int_{\boldsymbol{\Theta}} p( \boldsymbol{\theta} \mid \boldsymbol{y}) p(\boldsymbol{y} \mid \widetilde{\boldsymbol{\theta}}) p(\widetilde{\boldsymbol{\theta}}) \mathrm{d} \widetilde{\boldsymbol{\theta}} \mathrm{d} \boldsymbol{y}
+\end{align*}
+by forward sampling first the prior, than data for this particular value and obtaining the posterior. 
 
+<!--
 ## Multiple chains
 
 Many diagnostics rely on running multiple Markov chains from the same problem. This is useful 
 
 
 ## Validating the output
+-->
+<!-- The **R** packages `coda` and `posterior` -->
+<!-- Tests of uniformity  -->
 
-@Geweke:2004
-
-The **R** packages `coda` and `posterior`
-Tests of uniformity 
-
-Prior elicitation: what summaries should the model faithfully reproduce? 
+<!-- Prior elicitation: what summaries should the model faithfully reproduce?  -->
 
 
 
 
 To illustrate these, we revisit the model from @exm-randomeffects with a penalized complexity prior for the individual effect $\alpha_i$ and vague normal priors. We also fit a simple Poisson model with only the fixed effect, taking $Y_{ij} \sim \mathsf{Poisson}\{\exp(\beta_j)\}$ with $\beta_j \sim \mathsf{Gauss}(0,100)$, which has much too little variability relative to the observations.
 
-
+<!--
 ## Adaptive MCMC
+
+-->
 
 ## Graphical convergence diagnostics
 
-### Trace plots
+:::{#def-traceplots}
+
+## Trace plots
+
+A trace plot is a line plot of the Markov chain as a function of the number of iterations. It should be stable around some values if the posterior is unimodal and the chain has reached stationarity. The ideal shape is that of a 'fat hairy catterpilar'.
+
+:::
 
 It is useful to inspect visually the Markov chain, as it may indicate several problems. If the chain drifts around without stabilizing around the posterior mode, then we can suspect that it hasn't reached it's stationary distribution (likely due to poor starting values). In such cases, we need to disregard the dubious draws from the chain by discarding the so-called warm up or **burn in** period. While there are some guarantees of convergence in the long term, silly starting values may translate into tens of thousands of iterations lost wandering around in regions with low posterior mass. Preliminary optimization and plausible starting values help alleviate these problems. @fig-badstart shows the effect of bad starting values on a toy problem where convergence to the mode is relatively fast. If the proposal is in a flat region of the space, it can wander around for a very long time before converging to the stationary distribution.
 
-If we run several chains, as in @fig-badstart, with different starting values, we can monitor convergence by checking whether these chains converge to the same target. A **trace rank** plots, shown on right panel of @fig-badstart, compares the rank of the values of the different chain at a given iteration: with good mixing, the ranks should switch frequently and be distributed uniformly across integers.
 
+
+:::{#def-trankplot}
+
+## Trace rank plot
+
+If we run several chains, as in @fig-badstart, with different starting values, we can monitor convergence by checking whether these chains converge to the same target. A **trace rank** plot compares the rank of the values of the different chain at a given iteration: with good mixing, the ranks should switch frequently and be distributed uniformly across integers.
+
+:::
+
+A trace rank plot is shown on right panel of @fig-badstart.
 
 ```{r}
 #| eval: true
@@ -167,8 +187,25 @@ postpred2[b,] <- rpois(
 
 ```
 
-The first iterations of a MCMC algorithm, used during the burn in period to tune proposal variances and allow the chains to converge to the stationary distribution, are discarded.
-If visual inspection of the chains reveal that some of the chains for one or more parameters are not stationary until some iteration, we will discard all of these in addition.
+:::{#def-burnin}
+
+## Burn in period
+
+We term "burn in" the initial steps of the MCMC algorithm that are discarded because the chain has not reached it's stationary distribution, due to poor starting values. , but visual inspection using a trace plot may show that it is necessary to remove additional observations. 
+
+:::
+
+Most software will remove the first $N$ initial values (typically one thousand). Good starting values can reduce the need for a long burn in period. If visual inspection of the chains reveal that some of the chains for one or more parameters are not stationary until some iteration, we will discard all of these in addition. @Geweke:1992's test measure whether the distribution of the resulting Markov chain is the same at the beginning and at the end through a test of equality of means.
+
+:::{#def-warmup}
+
+## Warmup
+
+Warmup period refers to the initial sampling phase (potentially overlapping with burn in period) during which proposals are tuned (for example, by changing the variance proposal to ensure good acceptance rate or for Hamiltonian Monte Carlo (HMC) to tune the size of the leapfrog.
+These initial steps should be disregarded.
+
+:::
+
 
 The target of inference is a functional (i.e., one-dimensional summaries of the chain): we need to have convergence of the latter, but also sufficient effective sample size for our averages to be accurate (at least to two significant digits).
 

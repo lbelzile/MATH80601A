@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.7.1">
+<meta name="generator" content="quarto-1.7.3">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -91,10 +91,10 @@ div.csl-indent {
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="site_libs/quarto-html/anchor.min.js"></script>
 <link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-2bb0ec5e928ee8c40b12725cb7836c35.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-81b5c3e63835cfde897ecd3d35a35a41.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-a51e8ad160b68d9f8f1ac488cc0f242e.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-ad5ef081d17d57ab2b6cc5e45efb5d90.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
   "copy-button": false,
@@ -239,7 +239,7 @@ window.Quarto = {
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./workflow.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Bayesian workflow</span></span></a>
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Bayesian workflow and computational strategies</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
@@ -514,7 +514,7 @@ f_i(x) = p_i \phi_{1}(x_i; \mu_1, \tau_1^{-1}) + (1-p_i)\phi_{2}(x_i; \mu_2, \ta
 <img src="gibbs_files/figure-html/fig-density-mixt-1.png" class="img-fluid figure-img" width="672">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-density-mixt-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;6.4: One-dimensional density mixture for the Old Faithful data, with histogram of data (left) and line ribbon of posterior density draws (right).
+Figure&nbsp;6.4: One-dimensional density mixture for the Old Faithful data, with histogram of data (left) and posterior density draws (right).
 </figcaption>
 </figure>
 </div>
@@ -528,7 +528,7 @@ Figure&nbsp;6.4: One-dimensional density mixture for the Old Faithful data, with
 <p><span class="theorem-title"><strong>Example 6.6 (Tokyo rainfall)</strong></span> We consider data from <span class="citation" data-cites="Kitagawa:1987">Kitagawa (<a href="references.html#ref-Kitagawa:1987" role="doc-biblioref">1987</a>)</span> that provide a binomial time series giving the number of days in years 1983 and 1984 (a leap year) in which there was more than 1mm of rain in Tokyo. These data and the model we consider are discussed in in section 4.3.4 of <span class="citation" data-cites="Rue.Held:2005">Rue and Held (<a href="references.html#ref-Rue.Held:2005" role="doc-biblioref">2005</a>)</span>. We thus have <span class="math inline">\(T=366\)</span> days and <span class="math inline">\(n_t \in \{1,2\}\)</span> <span class="math inline">\((t=1, \ldots, T)\)</span> the number of observations in day <span class="math inline">\(t\)</span> and <span class="math inline">\(y_t=\{0,\ldots, n_t\}\)</span> the number of days with rain. The objective is to obtain a smoothed probability of rain. The underlying probit model considered takes <span class="math inline">\(Y_t \mid n_t, p_t \sim \mathsf{binom}(n_t, p_t)\)</span> and <span class="math inline">\(p_t = \Phi(\beta_t).\)</span></p>
 <p>We specify the random effects <span class="math inline">\(\boldsymbol{\beta} \sim \mathsf{Gauss}_{T}(\boldsymbol{0}, \tau^{-1}\mathbf{Q}),\)</span> where <span class="math inline">\(\mathbf{Q}\)</span> is a <span class="math inline">\(T \times T\)</span> precision matrix that encodes the local dependence. A circular random walk structure of order 2 is used to model the smooth curves by smoothing over neighbors, and enforces small second derivative. This is a suitable prior because it enforces no constraint on the mean structure. This amounts to specifying the process with <span class="math display">\[\begin{align*}
 \Delta^2\beta_t &amp;= (\beta_{t+1} - \beta_t) - (\beta_t - \beta_{t-1})
-\\&amp;=-\beta_{t-1} +2 \beta_t - \beta_{t+1} \sim \mathsf{Gauss}(0, \tau^{-1}), \qquad t= \in \mathbb{N} \mod 366.
+\\&amp;=-\beta_{t-1} +2 \beta_t - \beta_{t+1} \sim \mathsf{Gauss}(0, \tau^{-1}), \qquad t \in \mathbb{N} \mod 366.
 \end{align*}\]</span> This yields an intrinsic Gaussian Markov random field with a circulant precision matrix <span class="math inline">\(\tau\mathbf{Q}=\tau\mathbf{GG^\top}\)</span> of rank <span class="math inline">\(T-1,\)</span> where <span class="math display">\[\begin{align*}
 \mathbf{G} =
 \begin{pmatrix}
@@ -562,7 +562,7 @@ Figure&nbsp;6.5: Five realizations from the cyclical random walk Gaussian prior 
 </div>
 </div>
 </div>
-<p>We can perform data augmentation by imputing Gaussian variables, say <span class="math inline">\(x_{1,1}, x_{i,2}, \ldots, x_{366,2}\)</span> following <a href="#exm-probit-regression" class="quarto-xref">Example&nbsp;<span>6.2</span></a> from truncated Gaussian, where <span class="math inline">\(x_{t,i} = \beta_t + \varepsilon_{t,i}\)</span> and <span class="math inline">\(\varepsilon_{t,i} \sim \mathsf{Gauss}(0,1)\)</span> are independent standard Gaussian and <span class="math display">\[\begin{align*}
+<p>We can perform data augmentation by imputing Gaussian variables, say <span class="math inline">\(\{x_{t,i}\}\)</span> following <a href="#exm-probit-regression" class="quarto-xref">Example&nbsp;<span>6.2</span></a> from truncated Gaussian, where <span class="math inline">\(x_{t,i} = \beta_t + \varepsilon_{t,i}\)</span> and <span class="math inline">\(\varepsilon_{t,i} \sim \mathsf{Gauss}(0,1)\)</span> are independent standard Gaussian and <span class="math display">\[\begin{align*}
 z_{t,i} \mid  y_{t,i}, \beta_t \sim
 \begin{cases}
 \mathsf{trunc. Gauss}(\beta_t, 1, -\infty, 0) &amp; y_{t,i} = 0 \\
@@ -573,7 +573,7 @@ p(\boldsymbol{\beta} \mid \tau)p(\tau)\prod_{t=1}^{T}\prod_{i=1}^{n_t}p(y_{t,i} 
 \end{align*}\]</span> and once we have imputed the Gaussian latent vectors, we can work directly with the values of <span class="math inline">\(z_t = \sum_{i=1}^{n_t} z_{i,t}.\)</span> The posterior has the form <span class="math display">\[\begin{align*}
 p(\boldsymbol{\beta}, \tau) \propto \tau^{(n-1)/2}\exp \left( - \frac{\tau}{2} \boldsymbol{\beta}^\top \mathbf{Q} \boldsymbol{\beta}\right)\exp\left\{ - \frac{1}{2} (\boldsymbol{z} - \boldsymbol{\beta})^\top \mathrm{diag}(\boldsymbol{n})(\boldsymbol{z} - \boldsymbol{\beta})\right\} \tau^{a-1}\exp(-\tau b)
 \end{align*}\]</span> where <span class="math inline">\(\boldsymbol{z} = (z_1, \ldots, z_T).\)</span> Completing the quadratic form shows that <span class="math display">\[\begin{align*}
-\boldsymbol{\beta} \mid \boldsymbol{x}, \tau &amp;\sim \mathsf{Gauss}_T\left[\left\{\tau \mathbf{Q} + \mathrm{diag}(\boldsymbol{n})\right\}^{-1} \boldsymbol{z}, \left\{\tau \mathbf{Q} + \mathrm{diag}(\boldsymbol{n})\right\}^{-1}\right]\\
+\boldsymbol{\beta} \mid \boldsymbol{z}, \tau &amp;\sim \mathsf{Gauss}_T\left[\left\{\tau \mathbf{Q} + \mathrm{diag}(\boldsymbol{n})\right\}^{-1} \boldsymbol{z}, \left\{\tau \mathbf{Q} + \mathrm{diag}(\boldsymbol{n})\right\}^{-1}\right]\\
 \tau \mid \boldsymbol{\beta} &amp; \sim \mathsf{gamma}\left( \frac{n-1}{2} + a, \frac{\boldsymbol{\beta}^\top \mathbf{Q}\boldsymbol{\beta}}{2} + b \right)
 \end{align*}\]</span></p>
 <div class="cell">
@@ -1138,8 +1138,8 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="./workflow.html" class="pagination-link" aria-label="Bayesian workflow">
-        <span class="nav-page-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Bayesian workflow</span></span> <i class="bi bi-arrow-right-short"></i>
+      <a href="./workflow.html" class="pagination-link" aria-label="Bayesian workflow and computational strategies">
+        <span class="nav-page-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Bayesian workflow and computational strategies</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>

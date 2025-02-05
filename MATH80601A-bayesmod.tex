@@ -266,20 +266,6 @@
 \DeclareMathAlphabet{\mathcrl}{U}{rsfs}{m}{n}
 \usepackage{utopia}
 \DeclareMathAlphabet{\mathcal}{OMS}{cmsy}{m}{n}
-\usepackage{booktabs}
-\usepackage{longtable}
-\usepackage{array}
-\usepackage{multirow}
-\usepackage{wrapfig}
-\usepackage{float}
-\usepackage{colortbl}
-\usepackage{pdflscape}
-\usepackage{tabu}
-\usepackage{threeparttable}
-\usepackage{threeparttablex}
-\usepackage[normalem]{ulem}
-\usepackage{makecell}
-\usepackage{xcolor}
 \makeatletter
 \@ifpackageloaded{bookmark}{}{\usepackage{bookmark}}
 \makeatother
@@ -320,14 +306,14 @@
 \usepackage{amsthm}
 \theoremstyle{definition}
 \newtheorem{exercise}{Exercise}[chapter]
-\theoremstyle{plain}
-\newtheorem{theorem}{Theorem}[chapter]
-\theoremstyle{definition}
-\newtheorem{definition}{Definition}[chapter]
 \theoremstyle{definition}
 \newtheorem{example}{Example}[chapter]
 \theoremstyle{plain}
 \newtheorem{proposition}{Proposition}[chapter]
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}[chapter]
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}[chapter]
 \theoremstyle{remark}
 \AtBeginDocument{\renewcommand*{\proofname}{Proof}}
 \newtheorem*{remark}{Remark}
@@ -383,7 +369,7 @@ details.
 These notes are licensed under a
 \href{http://creativecommons.org/licenses/by-nc-sa/4.0/}{Creative
 Commons Attribution-NonCommercial-ShareAlike 4.0 International License}
-and were last compiled on lundi, février 03 2025.
+and were last compiled on Tuesday, February 04 2025.
 
 The objective of the course is to provide a hands on introduction to
 Bayesian data analysis. The course will cover the formulation,
@@ -3849,7 +3835,7 @@ points from the Gaussian and accept any that falls within the bounds.
 \end{Shaded}
 
 \begin{verbatim}
-[1] 0.34174
+[1] 0.34002
 \end{verbatim}
 
 \begin{Shaded}
@@ -4162,7 +4148,7 @@ more than 9\% for the same Monte Carlo sample size.
 
 \begin{verbatim}
                true         monte carlo importance sampling 
-             0.0625              0.0620              0.0623 
+             0.0625              0.0622              0.0627 
 \end{verbatim}
 
 \begin{Shaded}
@@ -4173,7 +4159,7 @@ more than 9\% for the same Monte Carlo sample size.
 \end{Shaded}
 
 \begin{verbatim}
-[1] 1.080627
+[1] 1.087118
 \end{verbatim}
 
 \begin{figure}[ht!]
@@ -4956,6 +4942,20 @@ posterior draws (left) and marginal density plot of log odds rate
 \end{figure}%
 
 \end{example}
+
+\begin{refremark}[Reparametrization]
+A better parametrization would simply sample two parameters with
+\(\lambda_2 = \exp(\alpha),\) where \(\alpha\) is the log mean of the
+second group, with the same prior as for \(\beta.\) Since the likelihood
+factorizes and the parameters are independent apriori, this would lead
+to zero correlation and lead to more efficient mixing of the Markov
+chain, should we wish to sample parameters in turn one at the time. A
+Markov chain for \(\kappa\) can then be obtained by substracting the
+values of \(\alpha-\beta\) from the new draws.
+
+\label{rem-reparametrization}
+
+\end{refremark}
 
 The quality of the mixing of the chain (autocorrelation), depends on the
 proposal variance, which can obtain by trial and error. Trace plots
@@ -5789,8 +5789,8 @@ assign conjugate priors with \(p_i \sim \mathsf{beta}(a_1, a_2),\)
 }
 
 \caption{\label{fig-density-mixt}One-dimensional density mixture for the
-Old Faithful data, with histogram of data (left) and line ribbon of
-posterior density draws (right).}
+Old Faithful data, with histogram of data (left) and posterior density
+draws (right).}
 
 \end{figure}%
 
@@ -5836,7 +5836,7 @@ enforces small second derivative. This is a suitable prior because it
 enforces no constraint on the mean structure. This amounts to specifying
 the process with \begin{align*}
 \Delta^2\beta_t &= (\beta_{t+1} - \beta_t) - (\beta_t - \beta_{t-1})
-\\&=-\beta_{t-1} +2 \beta_t - \beta_{t+1} \sim \mathsf{Gauss}(0, \tau^{-1}), \qquad t= \in \mathbb{N} \mod 366.
+\\&=-\beta_{t-1} +2 \beta_t - \beta_{t+1} \sim \mathsf{Gauss}(0, \tau^{-1}), \qquad t \in \mathbb{N} \mod 366.
 \end{align*} This yields an intrinsic Gaussian Markov random field with
 a circulant precision matrix \(\tau\mathbf{Q}=\tau\mathbf{GG^\top}\) of
 rank \(T-1,\) where \begin{align*}
@@ -5878,9 +5878,8 @@ random walk Gaussian prior of order 2 with unit variance.}
 \end{figure}%
 
 We can perform data augmentation by imputing Gaussian variables, say
-\(x_{1,1}, x_{i,2}, \ldots, x_{366,2}\) following
-Example~\ref{exm-probit-regression} from truncated Gaussian, where
-\(x_{t,i} = \beta_t + \varepsilon_{t,i}\) and
+\(\{x_{t,i}\}\) following Example~\ref{exm-probit-regression} from
+truncated Gaussian, where \(x_{t,i} = \beta_t + \varepsilon_{t,i}\) and
 \(\varepsilon_{t,i} \sim \mathsf{Gauss}(0,1)\) are independent standard
 Gaussian and \begin{align*}
 z_{t,i} \mid  y_{t,i}, \beta_t \sim 
@@ -5896,7 +5895,7 @@ The posterior has the form \begin{align*}
 p(\boldsymbol{\beta}, \tau) \propto \tau^{(n-1)/2}\exp \left( - \frac{\tau}{2} \boldsymbol{\beta}^\top \mathbf{Q} \boldsymbol{\beta}\right)\exp\left\{ - \frac{1}{2} (\boldsymbol{z} - \boldsymbol{\beta})^\top \mathrm{diag}(\boldsymbol{n})(\boldsymbol{z} - \boldsymbol{\beta})\right\} \tau^{a-1}\exp(-\tau b)
 \end{align*} where \(\boldsymbol{z} = (z_1, \ldots, z_T).\) Completing
 the quadratic form shows that \begin{align*}
-\boldsymbol{\beta} \mid \boldsymbol{x}, \tau &\sim \mathsf{Gauss}_T\left[\left\{\tau \mathbf{Q} + \mathrm{diag}(\boldsymbol{n})\right\}^{-1} \boldsymbol{z}, \left\{\tau \mathbf{Q} + \mathrm{diag}(\boldsymbol{n})\right\}^{-1}\right]\\
+\boldsymbol{\beta} \mid \boldsymbol{z}, \tau &\sim \mathsf{Gauss}_T\left[\left\{\tau \mathbf{Q} + \mathrm{diag}(\boldsymbol{n})\right\}^{-1} \boldsymbol{z}, \left\{\tau \mathbf{Q} + \mathrm{diag}(\boldsymbol{n})\right\}^{-1}\right]\\
 \tau \mid \boldsymbol{\beta} & \sim \mathsf{gamma}\left( \frac{n-1}{2} + a, \frac{\boldsymbol{\beta}^\top \mathbf{Q}\boldsymbol{\beta}}{2} + b \right)
 \end{align*}
 
@@ -6001,7 +6000,8 @@ the year, with the proportion of days of rain (points).}
 
 \bookmarksetup{startatroot}
 
-\chapter{Bayesian workflow}\label{bayesian-workflow}
+\chapter{Bayesian workflow and computational
+strategies}\label{bayesian-workflow-and-computational-strategies}
 
 For a given problem, there are many different Markov chain Monte Carlo
 algorithms that one can implement: they will typically be distinguished
@@ -6011,25 +6011,51 @@ diagnostics and standard tests can be used to diagnose lack of
 convergence, or inefficiency. The purpose of this section is to review
 these in turn.
 
-The Bayesian workflow is a coherent framework for model construction,
-estimation and validation. It typically involves multiple iterations
-tuning, adapting and modifying both the models and the algorithms in the
-hope of achieving a model that is useful
+The Bayesian workflow is a coherent framework for model formulation
+construction, inference and validation. It typically involves trying and
+comparing different models, adapting and modifying these models
 (\citeproc{ref-Gelman:2020}{Gelman et al. 2020}); see also
 \href{https://betanalpha.github.io/assets/case_studies/principled_bayesian_workflow.html}{Michael
-Betancourt} for excellent visualizations.
+Betancourt} for excellent visualizations. In this chapter, we focus on
+three aspects of the workflow: model validation, evaluation and
+comparison.
+
+Many sanity checks can be implemented by means of simulations. Consider
+prior predictive checks: for example, if the prior has a distribution
+from which we can generate, we can obtain prior draws from
+\(p(\boldsymbol{\theta})\), generate data from the prior predictive
+\(p(y \mid \boldsymbol{\theta})\) by simulating new observations from
+the data generating mechanism of the likelihood, and use these to obtain
+prior predictive by removing the likelihood component altogether: the
+draws from the prior predictive should then match posterior draws with
+only the prior.
+
+The ``data-averaged posterior'' is obtained upon noting that
+(\citeproc{ref-Geweke:2004}{Geweke 2004}) \begin{align*}
+p(\boldsymbol{\theta}) = \int \int_{\boldsymbol{\Theta}} p( \boldsymbol{\theta} \mid \boldsymbol{y}) p(\boldsymbol{y} \mid \widetilde{\boldsymbol{\theta}}) p(\widetilde{\boldsymbol{\theta}}) \mathrm{d} \widetilde{\boldsymbol{\theta}} \mathrm{d} \boldsymbol{y}
+\end{align*} by forward sampling first the prior, than data for this
+particular value and obtaining the posterior.
 
 To illustrate these, we revisit the model from
 Example~\ref{exm-randomeffects} with a penalized complexity prior for
 the individual effect \(\alpha_i\) and vague normal priors. We also fit
 a simple Poisson model with only the fixed effect, taking
 \(Y_{ij} \sim \mathsf{Poisson}\{\exp(\beta_j)\}\) with
-\(\beta_j \sim \mathsf{Gauss}(0,100)\) has much too little variability
-relative to the observations.
+\(\beta_j \sim \mathsf{Gauss}(0,100)\), which has much too little
+variability relative to the observations.
 
-\section{Graphical diagnostics}\label{graphical-diagnostics}
+\section{Graphical convergence
+diagnostics}\label{graphical-convergence-diagnostics}
 
-\subsection{Trace plots}\label{trace-plots}
+\begin{definition}[Trace
+plots]\protect\hypertarget{def-traceplots}{}\label{def-traceplots}
+
+A trace plot is a line plot of the Markov chain as a function of the
+number of iterations. It should be stable around some values if the
+posterior is unimodal and the chain has reached stationarity. The ideal
+shape is that of a `fat hairy catterpilar'.
+
+\end{definition}
 
 It is useful to inspect visually the Markov chain, as it may indicate
 several problems. If the chain drifts around without stabilizing around
@@ -6046,13 +6072,19 @@ toy problem where convergence to the mode is relatively fast. If the
 proposal is in a flat region of the space, it can wander around for a
 very long time before converging to the stationary distribution.
 
+\begin{definition}[Trace rank
+plot]\protect\hypertarget{def-trankplot}{}\label{def-trankplot}
+
 If we run several chains, as in Figure~\ref{fig-badstart}, with
 different starting values, we can monitor convergence by checking
 whether these chains converge to the same target. A \textbf{trace rank}
-plots, shown on right panel of Figure~\ref{fig-badstart}, compares the
-rank of the values of the different chain at a given iteration: with
-good mixing, the ranks should switch frequently and be distributed
-uniformly across integers.
+plot compares the rank of the values of the different chain at a given
+iteration: with good mixing, the ranks should switch frequently and be
+distributed uniformly across integers.
+
+\end{definition}
+
+A trace rank plot is shown on right panel of Figure~\ref{fig-badstart}.
 
 \begin{figure}[ht!]
 
@@ -6068,12 +6100,35 @@ same target with different initial values for the first 500 iterations
 
 \end{figure}%
 
-The first iterations of a MCMC algorithm, used during the burn in period
-to tune proposal variances and allow the chains to converge to the
-stationary distribution, are discarded. If visual inspection of the
-chains reveal that some of the chains for one or more parameters are not
-stationary until some iteration, we will discard all of these in
-addition.
+\begin{definition}[Burn in
+period]\protect\hypertarget{def-burnin}{}\label{def-burnin}
+
+We term ``burn in'' the initial steps of the MCMC algorithm that are
+discarded because the chain has not reached it's stationary
+distribution, due to poor starting values. , but visual inspection using
+a trace plot may show that it is necessary to remove additional
+observations.
+
+\end{definition}
+
+Most software will remove the first \(N\) initial values (typically one
+thousand). Good starting values can reduce the need for a long burn in
+period. If visual inspection of the chains reveal that some of the
+chains for one or more parameters are not stationary until some
+iteration, we will discard all of these in addition. Geweke
+(\citeproc{ref-Geweke:1992}{1992})'s test measure whether the
+distribution of the resulting Markov chain is the same at the beginning
+and at the end through a test of equality of means.
+
+\begin{definition}[Warmup]\protect\hypertarget{def-warmup}{}\label{def-warmup}
+
+Warmup period refers to the initial sampling phase (potentially
+overlapping with burn in period) during which proposals are tuned (for
+example, by changing the variance proposal to ensure good acceptance
+rate or for Hamiltonian Monte Carlo (HMC) to tune the size of the
+leapfrog. These initial steps should be disregarded.
+
+\end{definition}
 
 The target of inference is a functional (i.e., one-dimensional summaries
 of the chain): we need to have convergence of the latter, but also
@@ -6183,9 +6238,7 @@ model with only conditions (right).}
 
 \end{figure}%
 
-\section{Goodness-of-fit criteria}\label{goodness-of-fit-criteria}
-
-\subsection{Information criterion}\label{information-criterion}
+\section{Information criteria}\label{information-criteria}
 
 The widely applicable information criterion
 (\citeproc{ref-Watanabe:2010}{Watanabe 2010}) is a measure of predictive
@@ -6416,8 +6469,16 @@ Distributions, and the {B}ayesian Restoration of Images.''} \emph{IEEE
 Transactions on Pattern Analysis and Machine Intelligence} Pami-6 (6):
 721--41. \url{https://doi.org/10.1109/tpami.1984.4767596}.
 
+\bibitem[\citeproctext]{ref-Geweke:1992}
+Geweke, John. 1992. {``Evaluating the Accuracy of Sampling-Based
+Approaches to the Calculation of Posterior Moments.''} In \emph{Bayesian
+Statistics 4: Proceedings of the Fourth Valencia International Meeting,
+Dedicated to the Memory of Morris h. DeGroot, 1931--1989}. Oxford
+University Press.
+\url{https://doi.org/10.1093/oso/9780198522669.003.0010}.
+
 \bibitem[\citeproctext]{ref-Geweke:2004}
-Geweke, John. 2004. {``Getting It Right: Joint Distribution Tests of
+---------. 2004. {``Getting It Right: Joint Distribution Tests of
 Posterior Simulators.''} \emph{Journal of the American Statistical
 Association} 99 (467): 799--804.
 \url{https://doi.org/10.1198/016214504000001132}.
