@@ -48,7 +48,7 @@ Many diagnostics rely on running multiple Markov chains from the same problem. T
 
 <!-- Prior elicitation: what summaries should the model faithfully reproduce?  -->
 
-
+In practice, it is more efficient to run a single long chain than multiple chains, because of the additional computational overhead related to burn in and warmup period. Running multiple chains however has the benefit of allowing one to compute diagnostics of convergence (by comparing chains) such as $\widehat{R},$ and to detect local modes.
 
 
 To illustrate these, we revisit the model from @exm-randomeffects with a penalized complexity prior for the individual effect $\alpha_i$ and vague normal priors. We also fit a simple Poisson model with only the fixed effect, taking $Y_{ij} \sim \mathsf{Poisson}\{\exp(\beta_j)\}$ with $\beta_j \sim \mathsf{Gauss}(0,100)$, which has much too little variability relative to the observations.
