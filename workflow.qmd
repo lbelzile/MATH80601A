@@ -1,5 +1,5 @@
 
-# Bayesian workflow and computational strategies
+# Computational strategies and diagnostics
 
 
 ```{r}
@@ -11,10 +11,12 @@
 #| echo: false
 ```
 
-
-For a given problem, there are many different Markov chain Monte Carlo algorithms that one can implement: they will typically be distinguished based on the running time and the efficiency (with algorithms providing chains that have low autocorrelation being better). Many visual diagnostics and standard tests can be used to diagnose lack of convergence, or inefficiency. The purpose of this section is to review these in turn.
-
 The Bayesian workflow is a coherent framework for model formulation construction, inference and validation. It typically involves trying and comparing different models, adapting and modifying these models [@Gelman:2020]; see also [Michael Betancourt](https://betanalpha.github.io/assets/case_studies/principled_bayesian_workflow.html) for excellent visualizations. In this chapter, we focus on three aspects of the workflow: model validation, evaluation and comparison.
+
+
+For a given problem, there are many different Markov chain Monte Carlo algorithms that one can implement: they will typically be distinguished based on the running time per iteration and the efficiency of the samplers, with algorithms providing realizations of Markov chains with lower autocorrelation being preferred. Many visual diagnostics and standard tests can be used to diagnose lack of convergence, or inefficiency. The purpose of this section is to review these in turn, and to go over tricks that can improve mixing.
+
+
 
 <!--
 Simulation-based calibration  [@Talts:2020] 
@@ -35,6 +37,8 @@ p(\boldsymbol{\theta}) = \int \int_{\boldsymbol{\Theta}} p( \boldsymbol{\theta} 
 \end{align*}
 by forward sampling first the prior, than data for this particular value and obtaining the posterior. 
 
+
+
 <!--
 ## Multiple chains
 
@@ -50,15 +54,9 @@ Many diagnostics rely on running multiple Markov chains from the same problem. T
 
 
 
+## Convergence diagnostics and model validation
 
-To illustrate these, we revisit the model from @exm-randomeffects with a penalized complexity prior for the individual effect $\alpha_i$ and vague normal priors. We also fit a simple Poisson model with only the fixed effect, taking $Y_{ij} \sim \mathsf{Poisson}\{\exp(\beta_j)\}$ with $\beta_j \sim \mathsf{Gauss}(0,100)$, which has much too little variability relative to the observations.
 
-<!--
-## Adaptive MCMC
-
--->
-
-## Graphical convergence diagnostics
 
 :::{#def-traceplots}
 
@@ -219,13 +217,18 @@ ess1 <- floor(coda::effectiveSize(coda::as.mcmc(output1[,1,-1])))
 ess2 <- floor(coda::effectiveSize(coda::as.mcmc(output2[,1,-1])))
 ```
 
+
+
+To illustrate these, we revisit the model from @exm-randomeffects with a penalized complexity prior for the individual effect $\alpha_i$ and vague normal priors. We also fit a simple Poisson model with only the fixed effect, taking $Y_{ij} \sim \mathsf{Poisson}\{\exp(\beta_j)\}$ with $\beta_j \sim \mathsf{Gauss}(0,100)$. This model has too little variability relative to the observations and fits poorly as is.
+
+
 For the Poisson example, the effective sample size for the $\boldsymbol{\beta}$ for the multilevel model is a bit higher than 1000 with $B=5000$ iterations, whereas we have for the simple naive model is $`r round(min(ess2),digits = 0)`$ for $B=10000$ draws, suggesting superefficient sampling. The dependency between $\boldsymbol{\alpha}$ and $\boldsymbol{\beta}$ is responsible for the drop in accuracy.
 
-The `coda` (convergence diagnosis and output analysis) **R** package contains many tests. For example, the Geweke $Z$-score compares the averages for the beginning and the end of the chain: rejection of the null implies lack of convergence, or poor mixing.
+The `coda` (convergence diagnosis and output analysis) **R** package [@coda] contains many tests. For example, the Geweke $Z$-score compares the averages for the beginning and the end of the chain: rejection of the null implies lack of convergence, or poor mixing.
 
 <!-- The Gelman--Rubin $\widehat{R}$ diagnostic, which is advocated in STAN, is a multi-chain diagnostic that compares the within-chain variability to the between-chain variability. The value should be  -->
 
-Running multiple Markov chains can be useful for diagnostics. The Gelman--Rubin diagnostic $\widehat{R},$ also called potential scale reduction statistic, is obtained by considering the difference between within-chains and between-chains variance. Suppose we run $M$ chains for $B$ iterations, post burn in. Denoting by $\theta_{bm}$ the $b$th draw of the $m$th chain, we compute the global average $\overline{\theta} = B^{-1}M^{-1}\sum_{b=1}^B \sum_{m=1}^m \theta_{bm}$ and similarly the chain sample average and variances, respectively $\overline{\theta}_m$ and $\widehat{\sigma}^2_m$ ($m=1, \ldots, M$). The between-chain variance and within-chain variance estimator are
+Running multiple Markov chains can be useful for diagnostics. The Gelman--Rubin diagnostic $\widehat{R},$ introduced in @Gelman.Rubin:1992 and also called potential scale reduction statistic, is obtained by considering the difference between within-chains and between-chains variance. Suppose we run $M$ chains for $B$ iterations, post burn in. Denoting by $\theta_{bm}$ the $b$th draw of the $m$th chain, we compute the global average $\overline{\theta} = B^{-1}M^{-1}\sum_{b=1}^B \sum_{m=1}^m \theta_{bm}$ and similarly the chain sample average and variances, respectively $\overline{\theta}_m$ and $\widehat{\sigma}^2_m$ ($m=1, \ldots, M$). The between-chain variance and within-chain variance estimator are
 \begin{align*}
 \mathsf{Va}_{\text{between}} &= \frac{B}{M-1}\sum_{m=1}^M (\overline{\theta}_m - \overline{\theta})^2\\
 \mathsf{Va}_{\text{within}} &= \frac{1}{M}\sum_{m=1}^m \widehat{\sigma}^2_m
