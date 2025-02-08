@@ -52,7 +52,7 @@ Many diagnostics rely on running multiple Markov chains from the same problem. T
 
 <!-- Prior elicitation: what summaries should the model faithfully reproduce?  -->
 
-
+In practice, it is more efficient to run a single long chain than multiple chains, because of the additional computational overhead related to burn in and warmup period. Running multiple chains however has the benefit of allowing one to compute diagnostics of convergence (by comparing chains) such as $\widehat{R},$ and to detect local modes.
 
 ## Convergence diagnostics and model validation
 
