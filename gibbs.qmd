@@ -1,4 +1,5 @@
-# Gibbs sampling
+# Gibbs sampling {#sec-Gibbs}
+
 
 
 ```{r}
@@ -23,7 +24,10 @@ which corresponds to the current value of the parameter vector after the updates
 
 The Gibbs sampling can be viewed as a special case of Metropolis--Hastings where the proposal distribution $q$ is $p(\boldsymbol{\theta}^{[j]} \mid \boldsymbol{\theta}^{-[j]\star}, \boldsymbol{y}).$ The particularity is that all proposals get accepted because the log posterior of the partial update, equals the proposal distribution, so
 \begin{align*}
-R = \frac{p(\boldsymbol{\theta}_t^{[j]\star} \mid \boldsymbol{\theta}^{-[j]\star}, \boldsymbol{y})}{p(\boldsymbol{\theta}_{t-1}^{[j]\star} \mid \boldsymbol{\theta}^{-[j]\star}, \boldsymbol{y})}\frac{p(\boldsymbol{\theta}_{t-1}^{[j]\star} \mid \boldsymbol{\theta}^{-[j]\star}, \boldsymbol{y})}{p(\boldsymbol{\theta}_t^{[j]\star} \mid \boldsymbol{\theta}^{-[j]\star}, \boldsymbol{y})}=1.
+R &= \frac{p(\boldsymbol{\theta}_t^{\star} \mid \boldsymbol{y})}{p(\boldsymbol{\theta}_{t-1}\mid \boldsymbol{y})}\frac{p(\boldsymbol{\theta}_{t-1}^{[j]\star} \mid \boldsymbol{\theta}^{-[j]\star}, \boldsymbol{y})}{p(\boldsymbol{\theta}_t^{[j]\star} \mid \boldsymbol{\theta}^{-[j]\star}, \boldsymbol{y})}
+\\
+&=
+\frac{p(\boldsymbol{\theta}_t^{[j]\star} \mid \boldsymbol{\theta}^{-[j]\star}, \boldsymbol{y})p(\boldsymbol{\theta}^{-[j]\star} \mid \boldsymbol{y})}{p(\boldsymbol{\theta}_{t-1}^{[j]\star} \mid \boldsymbol{\theta}^{-[j]\star}, \boldsymbol{y})p(\mid \boldsymbol{\theta}^{-[j]\star} \mid  \boldsymbol{y})}\frac{p(\boldsymbol{\theta}_{t-1}^{[j]\star} \mid \boldsymbol{\theta}^{-[j]\star}, \boldsymbol{y})}{p(\boldsymbol{\theta}_t^{[j]\star} \mid \boldsymbol{\theta}^{-[j]\star}, \boldsymbol{y})} =1.
 \end{align*}
 Regardless of the order (systematic scan or random scan), the procedure remains valid. The Gibbs sampling is thus an automatic algorithm: we only need to derive the conditional posterior distributions of the parameters and run the sampler, and there are no tuning parameter involved. If the parameters are strongly correlated, the changes for each parameter will be incremental and this will lead to slow mixing and large autocorrelation, even if the values drawn are all different. @fig-Gibbs-steps shows 25 steps from a Gibbs algorithm for a bivariate target.
 
@@ -262,7 +266,7 @@ the latter can be evaluated efficiently using Shermann--Morrisson--Woodbury iden
 
 :::
 
-## Data augmentation and auxiliary variables
+## Data augmentation and auxiliary variables {#sec-gibbs-da}
 
 
 In many problems, the likelihood $p(\boldsymbol{y}; \boldsymbol{\theta})$ is intractable or costly to evaluate and auxiliary variables are introduced to simplify calculations, as in the expectation-maximization algorithm. The Bayesian analog is  data augmentation [@Tanner.Wong:1987], which we present succinctly: let $\boldsymbol{\theta} \in \Theta$ be a vector of parameters and consider auxiliary variables $\boldsymbol{u} \in \mathbb{R}^k$ such that $\int_{\mathbb{R}^k} p(\boldsymbol{u}, \boldsymbol{\theta}; \boldsymbol{y}) \mathrm{d} \boldsymbol{u} = p(\boldsymbol{\theta}; \boldsymbol{y}),$ i.e., the marginal distribution is that of interest, but evaluation of $p(\boldsymbol{u}, \boldsymbol{\theta}; \boldsymbol{y})$ is cheaper. The data augmentation algorithm consists in running a Markov chain on the augmented state space $(\Theta, \mathbb{R}^k),$ simulating in turn from the conditionals $p(\boldsymbol{u}; \boldsymbol{\theta}, \boldsymbol{y})$ and $p(\boldsymbol{\theta}; \boldsymbol{u}, \boldsymbol{y})$ with new variables chosen to simplify the likelihood. If simulation from the conditionals is straightforward, we can also use data augmentation to speed up calculations or improve mixing. For more details and examples, see @vanDyk.Meng:2001 and @Hobert:2011.
@@ -693,210 +697,5 @@ g1 + g2
 ## Label switching in mixture models
 
 If we run a MCMC algorithm to sample from a mixture models, the likelihood is invariant to permutation of the group labels, leading to identifiability issues when the chain swaps modes, when running multiple Markov chains with symmetric priors or using tempering algorithms. Two chains may thus reach the same stationary distribution, with group labels swapped. It is sometimes necessary to impose ordering constraints on the mean parameters $\boldsymbol{\mu},$ although this isn't necessarily easy to generalize beyond the univariate setting. See @Jasra.Holmes.Stephens:2005 and @Stephens:2002 for more details.
-
-:::
-
-:::{#exm-Tokyo-rainfall}
-
-## Tokyo rainfall
-
-We consider data from @Kitagawa:1987 that provide a binomial time series giving the number of days in years 1983 and 1984 (a leap year) in which there was more than 1mm of rain in Tokyo. These data and the model we consider are discussed in in section 4.3.4 of @Rue.Held:2005. We thus have $T=366$ days and $n_t \in \{1,2\}$ $(t=1, \ldots, T)$ the number of observations in day $t$ and $y_t=\{0,\ldots, n_t\}$ the number of days with rain. The objective is to obtain a smoothed probability of rain. The underlying probit model considered takes $Y_t \mid n_t, p_t \sim \mathsf{binom}(n_t, p_t)$ and $p_t = \Phi(\beta_t).$
-
-We specify the random effects $\boldsymbol{\beta} \sim \mathsf{Gauss}_{T}(\boldsymbol{0}, \tau^{-1}\mathbf{Q}),$ where $\mathbf{Q}$ is a $T \times T$ precision matrix that encodes the local dependence. A circular random walk structure of order 2 is used to model the smooth curves by smoothing over neighbors, and enforces small second derivative. This is a suitable prior because it enforces no constraint on the mean structure. This amounts to specifying the process with 
-\begin{align*}
-\Delta^2\beta_t &= (\beta_{t+1} - \beta_t) - (\beta_t - \beta_{t-1})
-\\&=-\beta_{t-1} +2 \beta_t - \beta_{t+1} \sim \mathsf{Gauss}(0, \tau^{-1}), \qquad t \in \mathbb{N} \mod 366.
-\end{align*}
-This yields an intrinsic Gaussian Markov random field with a circulant precision matrix $\tau\mathbf{Q}=\tau\mathbf{GG^\top}$ of rank $T-1,$ where
-\begin{align*}
-\mathbf{G} = 
-\begin{pmatrix} 
-2 & -1 & 0 & 0 & \cdots & -1\\
--1 & 2 & -1 & 0 & \ddots & 0 \\
-0 & -1 & 2 & -1 & \ddots & 0 \\
-\vdots & \ddots & \ddots  & \ddots  & \ddots  & \vdots \\
--1 & 0 & 0 & 0 & \cdots & 2
-\end{pmatrix},
-\quad 
-\mathbf{Q} = 
-\begin{pmatrix} 
-6 & -4 & 1 & 0 & \cdots & 1 & -4\\
--4 & 6 & -4 & 1 & \ddots & 0 & 1 \\
-1 & -4 & 6 & -4 & \ddots & 0 & 0 \\
-\vdots & \ddots & \ddots  & \ddots  & \ddots  & \ddots & \vdots \\
--4 & 1 & 0 & 0 & \cdots & -4 & 6
-\end{pmatrix}.
-\end{align*}
-Because of the linear dependency, the determinant of $\mathbf{Q}$ as presented is zero. The contribution from the latent mean parameters is multivariate Gaussian and we exploit for computations the sparsity of the precision matrix $\mathbf{Q}.$ @fig-CRW2-prior shows five draws from the prior model, which loops back between December 31st and January 1st, and is rather smooth.
-
-```{r}
-#| eval: true
-#| echo: false
-#| fig-cap: "Five realizations from the cyclical random walk Gaussian prior of order 2 with unit variance."
-#| label: fig-CRW2-prior
-nt <- 366
-K <- ngme2::rw2(1:nt, cyclic = TRUE)
-Q <- crossprod(K$K)
-set.seed(1234)
-samps <- solve(Matrix::chol(Q), matrix(rnorm(5*366), ncol = 5))
-matplot(scale(samps), 
-        bty = "l",
-        ylab = "",
- xlab = "day of year",
-type = "l", 
-col = RColorBrewer::brewer.pal(n = 5, name = "Blues"),lwd = seq(2, 1, length.out = 5))
-
-```
-
-We can perform data augmentation by imputing Gaussian variables, say $\{x_{t,i}\}$ following @exm-probit-regression from truncated Gaussian, where $x_{t,i} = \beta_t + \varepsilon_{t,i}$ and $\varepsilon_{t,i} \sim \mathsf{Gauss}(0,1)$ are independent standard Gaussian and 
-\begin{align*}
-z_{t,i} \mid  y_{t,i}, \beta_t \sim 
-\begin{cases}
-\mathsf{trunc. Gauss}(\beta_t, 1, -\infty, 0) & y_{t,i} = 0 \\
-\mathsf{trunc. Gauss}(\beta_t, 1,  0, \infty) & y_{t,i} =1 
-\end{cases}
-\end{align*}
-The posterior is proportional to
-\begin{align*}
-p(\boldsymbol{\beta} \mid \tau)p(\tau)\prod_{t=1}^{T}\prod_{i=1}^{n_t}p(y_{t,i} \mid z_{t,i}) p(z_{t,i} \mid \beta_t)
-\end{align*}
-and once we have imputed the Gaussian latent vectors, we can work directly with the values of $z_t = \sum_{i=1}^{n_t} z_{i,t}.$ The posterior has the form
-\begin{align*}
-p(\boldsymbol{\beta}, \tau) \propto \tau^{(n-1)/2}\exp \left( - \frac{\tau}{2} \boldsymbol{\beta}^\top \mathbf{Q} \boldsymbol{\beta}\right)\exp\left\{ - \frac{1}{2} (\boldsymbol{z} - \boldsymbol{\beta})^\top \mathrm{diag}(\boldsymbol{n})(\boldsymbol{z} - \boldsymbol{\beta})\right\} \tau^{a-1}\exp(-\tau b)
-\end{align*}
-where $\boldsymbol{z} = (z_1, \ldots, z_T).$
-Completing the quadratic form shows that 
-\begin{align*}
-\boldsymbol{\beta} \mid \boldsymbol{z}, \tau &\sim \mathsf{Gauss}_T\left[\left\{\tau \mathbf{Q} + \mathrm{diag}(\boldsymbol{n})\right\}^{-1} \boldsymbol{z}, \left\{\tau \mathbf{Q} + \mathrm{diag}(\boldsymbol{n})\right\}^{-1}\right]\\
-\tau \mid \boldsymbol{\beta} & \sim \mathsf{gamma}\left( \frac{n-1}{2} + a, \frac{\boldsymbol{\beta}^\top \mathbf{Q}\boldsymbol{\beta}}{2} + b \right)
-\end{align*}
-
-
-
-
-```{r}
-#| eval: true
-#| echo: true
-library(Matrix)
-library(TruncatedNormal)
-data(Tokyo, package = "INLA")
-# Hierarchical model
-# data: (probit regression) y_t ~ binom(n_t, Phi(beta_t))
-# prior: Delta2 beta_t ~ Gaussian prior(0, tau)
-# hyperprior: tau ~ gamma(a, b)
-# Encode sparse circulant precision matrix
-nt <- 366L
-K <- ngme2::rw2(1:nt, cyclic = TRUE)
-Q <- crossprod(K$K)
-cholQ <- Matrix::chol(Q)
-# Reconstruct daily data
-N <- Matrix::Diagonal(n = nt, x = Tokyo$n)
-y <- with(Tokyo, c(pmin(y, 1), pmax(0, y[-60]-1)))
-day <- c(1:366, 1:59, 61:366)
-#' Simulate a Gaussian random field with precision matrix \eqn{Q} and mean \eqn{Q^{-1}b}
-#' Exploiting the sparsity structure as much as possible
-rGaussQ <- function(n, b, Q){
-  stopifnot(nrow(Q) == length(b))
-  Lmat <- Matrix::chol(Q) # yields upper triangular matrix!
-  v <- Matrix::solve(a = Matrix::t(Lmat), b = b)
-  nu <- as.numeric(Matrix::solve(a = Lmat, b = v))
-  y <- Matrix::solve(a = Lmat, matrix(rnorm(n = n*length(b)), ncol = n))
-  if(n == 1L){
-    y <- as.numeric(y) 
-  }
-  t(nu + y)
-}
-B <- 1e4L # number of draws
-# Create containers
-beta_s <- matrix(nrow = B, ncol = nt)
-x_s <- matrix(nrow = B, ncol = nt)
-tau_s <- numeric(B)
-# Initial values
-beta <- rep(0, nt)
-tau <- 1000
-# Prior parameter values
-tau_a <- 1
-tau_b <- 0.0001
-# Gibbs sampling
-for(b in seq_len(B)){
-  # if(b %% 100L == 0L){print(paste(b, 'iterations completed')); }
-  # Step 1: data augmentation
-  x <- TruncatedNormal::rtnorm(
-    n = 1,  mu = beta[day], sd = 1,
-    lb = ifelse(y == 0, -Inf, 0),
-    ub = ifelse(y == 0, 0, Inf))
-  tx <- aggregate(x = x, by = list(day), FUN = sum)$x
-  x_s[b,] <- tx
-  # Step 2: Simulate random effects in block
-  beta <- beta_s[b,] <- c(rGaussQ(
-    n = 1,
-    b = tx, 
-    Q = tau * Q + N))
-  ## Step 2 b: alternative Update individually looping over indices
-  # st <- sample.int(nt, 1)
-
-  # for(i in (st + seq_len(nt)) %% nt + 1L){
-  #   im1 <- ifelse(i == 1L, 366, i-1)
-  #   im2 <- ifelse(i %in% 1:2, 364+i, i-2)
-  #   ip1 <- ifelse(i == 366L, 1, i+1)
-  #   ip2 <- ifelse(i %in% 365:366, i-364, i + 2)
-  #   prec <- tau * 6 + Tokyo$n[i]
-  #   condmean <- x[i] - tau *
-  #             (-4* (beta[im1] + beta[ip1] - x[im1] - x[ip1]) +
-  #                 (beta[im2] + beta[ip2] - x[im2] - x[ip2])) / prec
-  #   beta[i] <- rnorm(n = 1, mean = condmean, sd = 1/sqrt(prec))
-  # }
-  # beta_s[b,] <- beta
-
-# Simulate precision
-  tau <- tau_s[b] <- rgamma(
-    n = 1, 
-    shape = (nt-1)/2 + tau_a, 
-    rate = 0.5*as.numeric(crossprod(cholQ %*% beta)) + tau_b)
-  # if beta is VERY smooth, then precision is large
-}
-```
-
-```{r}
-#| eval: true
-#| echo: false
-#| label: fig-rainfall
-#| fig-cap: "Tokyo rainfall fitted median probability with 50% and 89% pointwise credible intervals as a function of time of the year, with the proportion of days of rain (points)."
-quants <- apply(pnorm(beta_s), 2, quantile, probs = c((1-0.89)/2, 0.25, 0.5, 0.75, 0.89 + (1-0.89)/2))
-matplot(x = 1:nt, 
-        y = t(quants), 
-        type = "l", 
-        lty = c(3,2,1,2,3), 
-        col = c("gray90","gray50","black","gray50","gray90"),
-        xlab = "day of year", 
-        ylab = expression(Phi(beta[t])), 
-        bty = "l",
-        ylim = c(0,1),
-        yaxs = "i")
-with(Tokyo, points(x = time, y = y/2, pch = 20,cex = 0.1)) 
-```
-
-
-```{r}
-#| eval: false
-#| echo: false
-## NOTE: this seemingly doesn't work with Q not full rank
-# Simulate from Gauss(Qinv * b, Qinv) # Rue (2001), alg. 3.1.2
-
-
-rIGMRF <- function(n, Q, rank){
-  nt <- nrow(Q)
-  if(missing(rank)){
-    rank <- as.integer(rankMatrix(Q, method = "qr"))
-  }
-  nz <- nt - rank
-  lambda <- eigen(Q, symmetric = TRUE, only.values = TRUE)$values[-((rank+1):nt)]
-  y <- diag(c(rep(0, nz), rep(1, rank))) %*% 
-    c(rep(0, nz), 
-      rnorm(n = length(lambda), 
-            sd = 1/sqrt(lambda)))
-}
-```
-
 
 :::

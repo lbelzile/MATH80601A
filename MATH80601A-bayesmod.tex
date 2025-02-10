@@ -308,12 +308,12 @@
 \newtheorem{exercise}{Exercise}[chapter]
 \theoremstyle{definition}
 \newtheorem{example}{Example}[chapter]
-\theoremstyle{plain}
-\newtheorem{proposition}{Proposition}[chapter]
-\theoremstyle{plain}
-\newtheorem{theorem}{Theorem}[chapter]
 \theoremstyle{definition}
 \newtheorem{definition}{Definition}[chapter]
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}[chapter]
+\theoremstyle{plain}
+\newtheorem{proposition}{Proposition}[chapter]
 \theoremstyle{remark}
 \AtBeginDocument{\renewcommand*{\proofname}{Proof}}
 \newtheorem*{remark}{Remark}
@@ -369,7 +369,7 @@ details.
 These notes are licensed under a
 \href{http://creativecommons.org/licenses/by-nc-sa/4.0/}{Creative
 Commons Attribution-NonCommercial-ShareAlike 4.0 International License}
-and were last compiled on Tuesday, February 04 2025.
+and were last compiled on Monday, February 10 2025.
 
 The objective of the course is to provide a hands on introduction to
 Bayesian data analysis. The course will cover the formulation,
@@ -5337,7 +5337,7 @@ overdispersion.
 
 \bookmarksetup{startatroot}
 
-\chapter{Gibbs sampling}\label{gibbs-sampling}
+\chapter{Gibbs sampling}\label{sec-Gibbs}
 
 The Gibbs sampling algorithm builds a Markov chain by iterating through
 a sequence of conditional distributions. Consider a model with
@@ -5362,7 +5362,10 @@ Metropolis--Hastings where the proposal distribution \(q\) is
 The particularity is that all proposals get accepted because the log
 posterior of the partial update, equals the proposal distribution, so
 \begin{align*}
-R = \frac{p(\boldsymbol{\theta}_t^{[j]\star} \mid \boldsymbol{\theta}^{-[j]\star}, \boldsymbol{y})}{p(\boldsymbol{\theta}_{t-1}^{[j]\star} \mid \boldsymbol{\theta}^{-[j]\star}, \boldsymbol{y})}\frac{p(\boldsymbol{\theta}_{t-1}^{[j]\star} \mid \boldsymbol{\theta}^{-[j]\star}, \boldsymbol{y})}{p(\boldsymbol{\theta}_t^{[j]\star} \mid \boldsymbol{\theta}^{-[j]\star}, \boldsymbol{y})}=1.
+R &= \frac{p(\boldsymbol{\theta}_t^{\star} \mid \boldsymbol{y})}{p(\boldsymbol{\theta}_{t-1}\mid \boldsymbol{y})}\frac{p(\boldsymbol{\theta}_{t-1}^{[j]\star} \mid \boldsymbol{\theta}^{-[j]\star}, \boldsymbol{y})}{p(\boldsymbol{\theta}_t^{[j]\star} \mid \boldsymbol{\theta}^{-[j]\star}, \boldsymbol{y})}
+\\
+&=
+\frac{p(\boldsymbol{\theta}_t^{[j]\star} \mid \boldsymbol{\theta}^{-[j]\star}, \boldsymbol{y})p(\boldsymbol{\theta}^{-[j]\star} \mid \boldsymbol{y})}{p(\boldsymbol{\theta}_{t-1}^{[j]\star} \mid \boldsymbol{\theta}^{-[j]\star}, \boldsymbol{y})p(\mid \boldsymbol{\theta}^{-[j]\star} \mid  \boldsymbol{y})}\frac{p(\boldsymbol{\theta}_{t-1}^{[j]\star} \mid \boldsymbol{\theta}^{-[j]\star}, \boldsymbol{y})}{p(\boldsymbol{\theta}_t^{[j]\star} \mid \boldsymbol{\theta}^{-[j]\star}, \boldsymbol{y})} =1.
 \end{align*} Regardless of the order (systematic scan or random scan),
 the procedure remains valid. The Gibbs sampling is thus an automatic
 algorithm: we only need to derive the conditional posterior
@@ -5528,8 +5531,7 @@ sampling.
 
 \end{proposition}
 
-\section{Data augmentation and auxiliary
-variables}\label{data-augmentation-and-auxiliary-variables}
+\section{Data augmentation and auxiliary variables}\label{sec-gibbs-da}
 
 In many problems, the likelihood
 \(p(\boldsymbol{y}; \boldsymbol{\theta})\) is intractable or costly to
@@ -5812,204 +5814,10 @@ and Stephens (\citeproc{ref-Stephens:2002}{2002}) for more details.
 
 \end{refremark}
 
-\begin{example}[Tokyo
-rainfall]\protect\hypertarget{exm-Tokyo-rainfall}{}\label{exm-Tokyo-rainfall}
-
-We consider data from Kitagawa (\citeproc{ref-Kitagawa:1987}{1987}) that
-provide a binomial time series giving the number of days in years 1983
-and 1984 (a leap year) in which there was more than 1mm of rain in
-Tokyo. These data and the model we consider are discussed in in section
-4.3.4 of Rue and Held (\citeproc{ref-Rue.Held:2005}{2005}). We thus have
-\(T=366\) days and \(n_t \in \{1,2\}\) \((t=1, \ldots, T)\) the number
-of observations in day \(t\) and \(y_t=\{0,\ldots, n_t\}\) the number of
-days with rain. The objective is to obtain a smoothed probability of
-rain. The underlying probit model considered takes
-\(Y_t \mid n_t, p_t \sim \mathsf{binom}(n_t, p_t)\) and
-\(p_t = \Phi(\beta_t).\)
-
-We specify the random effects
-\(\boldsymbol{\beta} \sim \mathsf{Gauss}_{T}(\boldsymbol{0}, \tau^{-1}\mathbf{Q}),\)
-where \(\mathbf{Q}\) is a \(T \times T\) precision matrix that encodes
-the local dependence. A circular random walk structure of order 2 is
-used to model the smooth curves by smoothing over neighbors, and
-enforces small second derivative. This is a suitable prior because it
-enforces no constraint on the mean structure. This amounts to specifying
-the process with \begin{align*}
-\Delta^2\beta_t &= (\beta_{t+1} - \beta_t) - (\beta_t - \beta_{t-1})
-\\&=-\beta_{t-1} +2 \beta_t - \beta_{t+1} \sim \mathsf{Gauss}(0, \tau^{-1}), \qquad t \in \mathbb{N} \mod 366.
-\end{align*} This yields an intrinsic Gaussian Markov random field with
-a circulant precision matrix \(\tau\mathbf{Q}=\tau\mathbf{GG^\top}\) of
-rank \(T-1,\) where \begin{align*}
-\mathbf{G} = 
-\begin{pmatrix} 
-2 & -1 & 0 & 0 & \cdots & -1\\
--1 & 2 & -1 & 0 & \ddots & 0 \\
-0 & -1 & 2 & -1 & \ddots & 0 \\
-\vdots & \ddots & \ddots  & \ddots  & \ddots  & \vdots \\
--1 & 0 & 0 & 0 & \cdots & 2
-\end{pmatrix},
-\quad 
-\mathbf{Q} = 
-\begin{pmatrix} 
-6 & -4 & 1 & 0 & \cdots & 1 & -4\\
--4 & 6 & -4 & 1 & \ddots & 0 & 1 \\
-1 & -4 & 6 & -4 & \ddots & 0 & 0 \\
-\vdots & \ddots & \ddots  & \ddots  & \ddots  & \ddots & \vdots \\
--4 & 1 & 0 & 0 & \cdots & -4 & 6
-\end{pmatrix}.
-\end{align*} Because of the linear dependency, the determinant of
-\(\mathbf{Q}\) as presented is zero. The contribution from the latent
-mean parameters is multivariate Gaussian and we exploit for computations
-the sparsity of the precision matrix \(\mathbf{Q}.\)
-Figure~\ref{fig-CRW2-prior} shows five draws from the prior model, which
-loops back between December 31st and January 1st, and is rather smooth.
-
-\begin{figure}[ht!]
-
-\centering{
-
-\pandocbounded{\includegraphics[keepaspectratio]{gibbs_files/figure-pdf/fig-CRW2-prior-1.pdf}}
-
-}
-
-\caption{\label{fig-CRW2-prior}Five realizations from the cyclical
-random walk Gaussian prior of order 2 with unit variance.}
-
-\end{figure}%
-
-We can perform data augmentation by imputing Gaussian variables, say
-\(\{x_{t,i}\}\) following Example~\ref{exm-probit-regression} from
-truncated Gaussian, where \(x_{t,i} = \beta_t + \varepsilon_{t,i}\) and
-\(\varepsilon_{t,i} \sim \mathsf{Gauss}(0,1)\) are independent standard
-Gaussian and \begin{align*}
-z_{t,i} \mid  y_{t,i}, \beta_t \sim 
-\begin{cases}
-\mathsf{trunc. Gauss}(\beta_t, 1, -\infty, 0) & y_{t,i} = 0 \\
-\mathsf{trunc. Gauss}(\beta_t, 1,  0, \infty) & y_{t,i} =1 
-\end{cases}
-\end{align*} The posterior is proportional to \begin{align*}
-p(\boldsymbol{\beta} \mid \tau)p(\tau)\prod_{t=1}^{T}\prod_{i=1}^{n_t}p(y_{t,i} \mid z_{t,i}) p(z_{t,i} \mid \beta_t)
-\end{align*} and once we have imputed the Gaussian latent vectors, we
-can work directly with the values of \(z_t = \sum_{i=1}^{n_t} z_{i,t}.\)
-The posterior has the form \begin{align*}
-p(\boldsymbol{\beta}, \tau) \propto \tau^{(n-1)/2}\exp \left( - \frac{\tau}{2} \boldsymbol{\beta}^\top \mathbf{Q} \boldsymbol{\beta}\right)\exp\left\{ - \frac{1}{2} (\boldsymbol{z} - \boldsymbol{\beta})^\top \mathrm{diag}(\boldsymbol{n})(\boldsymbol{z} - \boldsymbol{\beta})\right\} \tau^{a-1}\exp(-\tau b)
-\end{align*} where \(\boldsymbol{z} = (z_1, \ldots, z_T).\) Completing
-the quadratic form shows that \begin{align*}
-\boldsymbol{\beta} \mid \boldsymbol{z}, \tau &\sim \mathsf{Gauss}_T\left[\left\{\tau \mathbf{Q} + \mathrm{diag}(\boldsymbol{n})\right\}^{-1} \boldsymbol{z}, \left\{\tau \mathbf{Q} + \mathrm{diag}(\boldsymbol{n})\right\}^{-1}\right]\\
-\tau \mid \boldsymbol{\beta} & \sim \mathsf{gamma}\left( \frac{n-1}{2} + a, \frac{\boldsymbol{\beta}^\top \mathbf{Q}\boldsymbol{\beta}}{2} + b \right)
-\end{align*}
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\FunctionTok{library}\NormalTok{(Matrix)}
-\FunctionTok{library}\NormalTok{(TruncatedNormal)}
-\FunctionTok{data}\NormalTok{(Tokyo, }\AttributeTok{package =} \StringTok{"INLA"}\NormalTok{)}
-\CommentTok{\# Hierarchical model}
-\CommentTok{\# data: (probit regression) y\_t \textasciitilde{} binom(n\_t, Phi(beta\_t))}
-\CommentTok{\# prior: Delta2 beta\_t \textasciitilde{} Gaussian prior(0, tau)}
-\CommentTok{\# hyperprior: tau \textasciitilde{} gamma(a, b)}
-\CommentTok{\# Encode sparse circulant precision matrix}
-\NormalTok{nt }\OtherTok{\textless{}{-}} \DecValTok{366}\NormalTok{L}
-\NormalTok{K }\OtherTok{\textless{}{-}}\NormalTok{ ngme2}\SpecialCharTok{::}\FunctionTok{rw2}\NormalTok{(}\DecValTok{1}\SpecialCharTok{:}\NormalTok{nt, }\AttributeTok{cyclic =} \ConstantTok{TRUE}\NormalTok{)}
-\NormalTok{Q }\OtherTok{\textless{}{-}} \FunctionTok{crossprod}\NormalTok{(K}\SpecialCharTok{$}\NormalTok{K)}
-\NormalTok{cholQ }\OtherTok{\textless{}{-}}\NormalTok{ Matrix}\SpecialCharTok{::}\FunctionTok{chol}\NormalTok{(Q)}
-\CommentTok{\# Reconstruct daily data}
-\NormalTok{N }\OtherTok{\textless{}{-}}\NormalTok{ Matrix}\SpecialCharTok{::}\FunctionTok{Diagonal}\NormalTok{(}\AttributeTok{n =}\NormalTok{ nt, }\AttributeTok{x =}\NormalTok{ Tokyo}\SpecialCharTok{$}\NormalTok{n)}
-\NormalTok{y }\OtherTok{\textless{}{-}} \FunctionTok{with}\NormalTok{(Tokyo, }\FunctionTok{c}\NormalTok{(}\FunctionTok{pmin}\NormalTok{(y, }\DecValTok{1}\NormalTok{), }\FunctionTok{pmax}\NormalTok{(}\DecValTok{0}\NormalTok{, y[}\SpecialCharTok{{-}}\DecValTok{60}\NormalTok{]}\SpecialCharTok{{-}}\DecValTok{1}\NormalTok{)))}
-\NormalTok{day }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(}\DecValTok{1}\SpecialCharTok{:}\DecValTok{366}\NormalTok{, }\DecValTok{1}\SpecialCharTok{:}\DecValTok{59}\NormalTok{, }\DecValTok{61}\SpecialCharTok{:}\DecValTok{366}\NormalTok{)}
-\CommentTok{\#\textquotesingle{} Simulate a Gaussian random field with precision matrix \textbackslash{}eqn\{Q\} and mean \textbackslash{}eqn\{Q\^{}\{{-}1\}b\}}
-\CommentTok{\#\textquotesingle{} Exploiting the sparsity structure as much as possible}
-\NormalTok{rGaussQ }\OtherTok{\textless{}{-}} \ControlFlowTok{function}\NormalTok{(n, b, Q)\{}
-  \FunctionTok{stopifnot}\NormalTok{(}\FunctionTok{nrow}\NormalTok{(Q) }\SpecialCharTok{==} \FunctionTok{length}\NormalTok{(b))}
-\NormalTok{  Lmat }\OtherTok{\textless{}{-}}\NormalTok{ Matrix}\SpecialCharTok{::}\FunctionTok{chol}\NormalTok{(Q) }\CommentTok{\# yields upper triangular matrix!}
-\NormalTok{  v }\OtherTok{\textless{}{-}}\NormalTok{ Matrix}\SpecialCharTok{::}\FunctionTok{solve}\NormalTok{(}\AttributeTok{a =}\NormalTok{ Matrix}\SpecialCharTok{::}\FunctionTok{t}\NormalTok{(Lmat), }\AttributeTok{b =}\NormalTok{ b)}
-\NormalTok{  nu }\OtherTok{\textless{}{-}} \FunctionTok{as.numeric}\NormalTok{(Matrix}\SpecialCharTok{::}\FunctionTok{solve}\NormalTok{(}\AttributeTok{a =}\NormalTok{ Lmat, }\AttributeTok{b =}\NormalTok{ v))}
-\NormalTok{  y }\OtherTok{\textless{}{-}}\NormalTok{ Matrix}\SpecialCharTok{::}\FunctionTok{solve}\NormalTok{(}\AttributeTok{a =}\NormalTok{ Lmat, }\FunctionTok{matrix}\NormalTok{(}\FunctionTok{rnorm}\NormalTok{(}\AttributeTok{n =}\NormalTok{ n}\SpecialCharTok{*}\FunctionTok{length}\NormalTok{(b)), }\AttributeTok{ncol =}\NormalTok{ n))}
-  \ControlFlowTok{if}\NormalTok{(n }\SpecialCharTok{==} \DecValTok{1}\NormalTok{L)\{}
-\NormalTok{    y }\OtherTok{\textless{}{-}} \FunctionTok{as.numeric}\NormalTok{(y) }
-\NormalTok{  \}}
-  \FunctionTok{t}\NormalTok{(nu }\SpecialCharTok{+}\NormalTok{ y)}
-\NormalTok{\}}
-\NormalTok{B }\OtherTok{\textless{}{-}} \FloatTok{1e4}\NormalTok{L }\CommentTok{\# number of draws}
-\CommentTok{\# Create containers}
-\NormalTok{beta\_s }\OtherTok{\textless{}{-}} \FunctionTok{matrix}\NormalTok{(}\AttributeTok{nrow =}\NormalTok{ B, }\AttributeTok{ncol =}\NormalTok{ nt)}
-\NormalTok{x\_s }\OtherTok{\textless{}{-}} \FunctionTok{matrix}\NormalTok{(}\AttributeTok{nrow =}\NormalTok{ B, }\AttributeTok{ncol =}\NormalTok{ nt)}
-\NormalTok{tau\_s }\OtherTok{\textless{}{-}} \FunctionTok{numeric}\NormalTok{(B)}
-\CommentTok{\# Initial values}
-\NormalTok{beta }\OtherTok{\textless{}{-}} \FunctionTok{rep}\NormalTok{(}\DecValTok{0}\NormalTok{, nt)}
-\NormalTok{tau }\OtherTok{\textless{}{-}} \DecValTok{1000}
-\CommentTok{\# Prior parameter values}
-\NormalTok{tau\_a }\OtherTok{\textless{}{-}} \DecValTok{1}
-\NormalTok{tau\_b }\OtherTok{\textless{}{-}} \FloatTok{0.0001}
-\CommentTok{\# Gibbs sampling}
-\ControlFlowTok{for}\NormalTok{(b }\ControlFlowTok{in} \FunctionTok{seq\_len}\NormalTok{(B))\{}
-  \CommentTok{\# if(b \%\% 100L == 0L)\{print(paste(b, \textquotesingle{}iterations completed\textquotesingle{})); \}}
-  \CommentTok{\# Step 1: data augmentation}
-\NormalTok{  x }\OtherTok{\textless{}{-}}\NormalTok{ TruncatedNormal}\SpecialCharTok{::}\FunctionTok{rtnorm}\NormalTok{(}
-    \AttributeTok{n =} \DecValTok{1}\NormalTok{,  }\AttributeTok{mu =}\NormalTok{ beta[day], }\AttributeTok{sd =} \DecValTok{1}\NormalTok{,}
-    \AttributeTok{lb =} \FunctionTok{ifelse}\NormalTok{(y }\SpecialCharTok{==} \DecValTok{0}\NormalTok{, }\SpecialCharTok{{-}}\ConstantTok{Inf}\NormalTok{, }\DecValTok{0}\NormalTok{),}
-    \AttributeTok{ub =} \FunctionTok{ifelse}\NormalTok{(y }\SpecialCharTok{==} \DecValTok{0}\NormalTok{, }\DecValTok{0}\NormalTok{, }\ConstantTok{Inf}\NormalTok{))}
-\NormalTok{  tx }\OtherTok{\textless{}{-}} \FunctionTok{aggregate}\NormalTok{(}\AttributeTok{x =}\NormalTok{ x, }\AttributeTok{by =} \FunctionTok{list}\NormalTok{(day), }\AttributeTok{FUN =}\NormalTok{ sum)}\SpecialCharTok{$}\NormalTok{x}
-\NormalTok{  x\_s[b,] }\OtherTok{\textless{}{-}}\NormalTok{ tx}
-  \CommentTok{\# Step 2: Simulate random effects in block}
-\NormalTok{  beta }\OtherTok{\textless{}{-}}\NormalTok{ beta\_s[b,] }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(}\FunctionTok{rGaussQ}\NormalTok{(}
-    \AttributeTok{n =} \DecValTok{1}\NormalTok{,}
-    \AttributeTok{b =}\NormalTok{ tx, }
-    \AttributeTok{Q =}\NormalTok{ tau }\SpecialCharTok{*}\NormalTok{ Q }\SpecialCharTok{+}\NormalTok{ N))}
-  \DocumentationTok{\#\# Step 2 b: alternative Update individually looping over indices}
-  \CommentTok{\# st \textless{}{-} sample.int(nt, 1)}
-
-  \CommentTok{\# for(i in (st + seq\_len(nt)) \%\% nt + 1L)\{}
-  \CommentTok{\#   im1 \textless{}{-} ifelse(i == 1L, 366, i{-}1)}
-  \CommentTok{\#   im2 \textless{}{-} ifelse(i \%in\% 1:2, 364+i, i{-}2)}
-  \CommentTok{\#   ip1 \textless{}{-} ifelse(i == 366L, 1, i+1)}
-  \CommentTok{\#   ip2 \textless{}{-} ifelse(i \%in\% 365:366, i{-}364, i + 2)}
-  \CommentTok{\#   prec \textless{}{-} tau * 6 + Tokyo$n[i]}
-  \CommentTok{\#   condmean \textless{}{-} x[i] {-} tau *}
-  \CommentTok{\#             ({-}4* (beta[im1] + beta[ip1] {-} x[im1] {-} x[ip1]) +}
-  \CommentTok{\#                 (beta[im2] + beta[ip2] {-} x[im2] {-} x[ip2])) / prec}
-  \CommentTok{\#   beta[i] \textless{}{-} rnorm(n = 1, mean = condmean, sd = 1/sqrt(prec))}
-  \CommentTok{\# \}}
-  \CommentTok{\# beta\_s[b,] \textless{}{-} beta}
-
-\CommentTok{\# Simulate precision}
-\NormalTok{  tau }\OtherTok{\textless{}{-}}\NormalTok{ tau\_s[b] }\OtherTok{\textless{}{-}} \FunctionTok{rgamma}\NormalTok{(}
-    \AttributeTok{n =} \DecValTok{1}\NormalTok{, }
-    \AttributeTok{shape =}\NormalTok{ (nt}\DecValTok{{-}1}\NormalTok{)}\SpecialCharTok{/}\DecValTok{2} \SpecialCharTok{+}\NormalTok{ tau\_a, }
-    \AttributeTok{rate =} \FloatTok{0.5}\SpecialCharTok{*}\FunctionTok{as.numeric}\NormalTok{(}\FunctionTok{crossprod}\NormalTok{(cholQ }\SpecialCharTok{\%*\%}\NormalTok{ beta)) }\SpecialCharTok{+}\NormalTok{ tau\_b)}
-  \CommentTok{\# if beta is VERY smooth, then precision is large}
-\NormalTok{\}}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{figure}[ht!]
-
-\centering{
-
-\pandocbounded{\includegraphics[keepaspectratio]{gibbs_files/figure-pdf/fig-rainfall-1.pdf}}
-
-}
-
-\caption{\label{fig-rainfall}Tokyo rainfall fitted median probability
-with 50\% and 89\% pointwise credible intervals as a function of time of
-the year, with the proportion of days of rain (points).}
-
-\end{figure}%
-
-\end{example}
-
 \bookmarksetup{startatroot}
 
-\chapter{Bayesian workflow and computational
-strategies}\label{bayesian-workflow-and-computational-strategies}
-
-For a given problem, there are many different Markov chain Monte Carlo
-algorithms that one can implement: they will typically be distinguished
-based on the running time and the efficiency (with algorithms providing
-chains that have low autocorrelation being better). Many visual
-diagnostics and standard tests can be used to diagnose lack of
-convergence, or inefficiency. The purpose of this section is to review
-these in turn.
+\chapter{Computational strategies and
+diagnostics}\label{computational-strategies-and-diagnostics}
 
 The Bayesian workflow is a coherent framework for model formulation
 construction, inference and validation. It typically involves trying and
@@ -6020,9 +5828,27 @@ Betancourt} for excellent visualizations. In this chapter, we focus on
 three aspects of the workflow: model validation, evaluation and
 comparison.
 
-Many sanity checks can be implemented by means of simulations. Consider
-prior predictive checks: for example, if the prior has a distribution
-from which we can generate, we can obtain prior draws from
+For a given problem, there are many different Markov chain Monte Carlo
+algorithms that one can implement: they will typically be distinguished
+based on the running time per iteration and the efficiency of the
+samplers, with algorithms providing realizations of Markov chains with
+lower autocorrelation being preferred. Many visual diagnostics and
+standard tests can be used to diagnose lack of convergence, or
+inefficiency. The purpose of this section is to review these in turn,
+and to go over tricks that can improve mixing.
+
+\textbf{Generating artificial data}: Some problems and checks relate to
+models and the correct implementations (of the algorithms). Sometimes,
+the probabilistic procedure will generate draws, but it's unclear
+whether our numerical implementation is correct. We can sometimes see
+this if the output is truly misleading, but it's not always obvious. We
+can for example generate an ``artificial'' or fake data set from the
+model with some fixed parameter inputs to see if we can recover the
+parameter values used to generate these within some credible set.
+
+Many such sanity checks can be implemented by means of simulations.
+Consider prior predictive checks: if the prior has a distribution from
+which we can generate, we can obtain prior draws from
 \(p(\boldsymbol{\theta})\), generate data from the prior predictive
 \(p(y \mid \boldsymbol{\theta})\) by simulating new observations from
 the data generating mechanism of the likelihood, and use these to obtain
@@ -6034,18 +5860,54 @@ The ``data-averaged posterior'' is obtained upon noting that
 (\citeproc{ref-Geweke:2004}{Geweke 2004}) \begin{align*}
 p(\boldsymbol{\theta}) = \int \int_{\boldsymbol{\Theta}} p( \boldsymbol{\theta} \mid \boldsymbol{y}) p(\boldsymbol{y} \mid \widetilde{\boldsymbol{\theta}}) p(\widetilde{\boldsymbol{\theta}}) \mathrm{d} \widetilde{\boldsymbol{\theta}} \mathrm{d} \boldsymbol{y}
 \end{align*} by forward sampling first the prior, than data for this
-particular value and obtaining the posterior.
+particular value and obtaining the posterior associated with the latter.
 
-To illustrate these, we revisit the model from
-Example~\ref{exm-randomeffects} with a penalized complexity prior for
-the individual effect \(\alpha_i\) and vague normal priors. We also fit
-a simple Poisson model with only the fixed effect, taking
-\(Y_{ij} \sim \mathsf{Poisson}\{\exp(\beta_j)\}\) with
-\(\beta_j \sim \mathsf{Gauss}(0,100)\), which has much too little
-variability relative to the observations.
+We can test that our sampling algorithm correctly samples from the
+posterior distribution of interest by running the following procedure,
+which is however computationally intensive.
 
-\section{Graphical convergence
-diagnostics}\label{graphical-convergence-diagnostics}
+\begin{proposition}[Simulation based
+calibration]\protect\hypertarget{prp-sbc}{}\label{prp-sbc}
+
+Simulation-based calibration (\citeproc{ref-Talts:2020}{Talts et al.
+2020}) proceeds with, in order
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  \(\boldsymbol{\theta}_0 \sim p(\boldsymbol{\theta}),\)
+\item
+  \(\boldsymbol{y}_0 \sim p(\boldsymbol{y} \mid \boldsymbol{\theta}_0),\)
+\item
+  \(\boldsymbol{\theta}_1, \ldots, \boldsymbol{\theta}_B \sim p(\boldsymbol{\theta} \mid \boldsymbol{y}_0 ).\)
+\end{enumerate}
+
+Conditional on the simulated \(\boldsymbol{y}\), the distribution of
+\(\boldsymbol{\theta}_0\) is the same as that of
+\(\boldsymbol{\theta}_1, \ldots, \boldsymbol{\theta}_B.\) We do a
+dimension reduction step taking the test function \(t(\cdot)\) to get
+the rank of the prior draw among the posterior ones, breaking ties at
+random if any. In the absence of ties, \begin{align*}
+T = \sum_{b=1}^B \mathrm{I}\{t(\boldsymbol{\theta}_b, \boldsymbol{y}) < t(\boldsymbol{\theta}_0,\boldsymbol{y})\},
+\end{align*}
+
+These steps are repeated \(K\) times, yielding \(K\) test functions
+\(T_1, \ldots, T_K.\) We then test for uniformity using results from
+Säilynoja, Bürkner, and Vehtari (\citeproc{ref-Sailynoja:2022}{2022}).
+
+\end{proposition}
+
+\section{Convergence diagnostics and model
+validation}\label{convergence-diagnostics-and-model-validation}
+
+Many diagnostics rely on running multiple Markov chains for the same
+problem, with different starting values. In practice, it is more
+efficient to run a single long chain than multiple chains, because of
+the additional computational overhead related to burn in and warmup
+period. Running multiple chains however has the benefit of allowing one
+to compute diagnostics of convergence (by comparing chains) such as
+\(\widehat{R},\) and to detect local modes.
 
 \begin{definition}[Trace
 plots]\protect\hypertarget{def-traceplots}{}\label{def-traceplots}
@@ -6135,6 +5997,14 @@ of the chain): we need to have convergence of the latter, but also
 sufficient effective sample size for our averages to be accurate (at
 least to two significant digits).
 
+To illustrate these, we revisit the model from
+Example~\ref{exm-randomeffects} with a penalized complexity prior for
+the individual effect \(\alpha_i\) and vague normal priors. We also fit
+a simple Poisson model with only the fixed effect, taking
+\(Y_{ij} \sim \mathsf{Poisson}\{\exp(\beta_j)\}\) with
+\(\beta_j \sim \mathsf{Gauss}(0,100)\). This model has too little
+variability relative to the observations and fits poorly as is.
+
 For the Poisson example, the effective sample size for the
 \(\boldsymbol{\beta}\) for the multilevel model is a bit higher than
 1000 with \(B=5000\) iterations, whereas we have for the simple naive
@@ -6144,12 +6014,14 @@ suggesting superefficient sampling. The dependency between
 the drop in accuracy.
 
 The \texttt{coda} (convergence diagnosis and output analysis) \textbf{R}
-package contains many tests. For example, the Geweke \(Z\)-score
-compares the averages for the beginning and the end of the chain:
-rejection of the null implies lack of convergence, or poor mixing.
+package (\citeproc{ref-coda}{Plummer et al. 2006}) contains many tests.
+For example, the Geweke \(Z\)-score compares the averages for the
+beginning and the end of the chain: rejection of the null implies lack
+of convergence, or poor mixing.
 
 Running multiple Markov chains can be useful for diagnostics. The
-Gelman--Rubin diagnostic \(\widehat{R},\) also called potential scale
+Gelman--Rubin diagnostic \(\widehat{R},\) introduced in Gelman and Rubin
+(\citeproc{ref-Gelman.Rubin:1992}{1992}) and also called potential scale
 reduction statistic, is obtained by considering the difference between
 within-chains and between-chains variance. Suppose we run \(M\) chains
 for \(B\) iterations, post burn in. Denoting by \(\theta_{bm}\) the
@@ -6210,7 +6082,9 @@ complexity.One of the visual diagnostics, outlined in Gabry et al.
 (\citeproc{ref-Gabry:2019}{2019}), consists in computing a summary
 statistic of interest from the posterior predictive (whether mean,
 median, quantile, skewness, etc.) which is relevant for the problem at
-hand and which we hope our model can adequately capture.
+hand and which we hope our model can adequately capture. These should be
+salient features of the data, and may reveal inadequate likelihood or
+prior information.
 
 Suppose we have \(B\) draws from the posterior and simulate for each
 \(n\) observations from the posterior predictive
@@ -6362,6 +6236,359 @@ model with the individual random effects (left) and without (right).}
 
 \end{figure}%
 
+\section{Computational strategies}\label{computational-strategies}
+
+The data augmentation strategies considered in
+Section~\ref{sec-gibbs-da} helps to simplify the likelihood and thereby
+reduce the cost of each iteration. However, latent variables are imputed
+conditional on current parameter values \(\boldsymbol{\theta}_a\): the
+higher the number of variables, the more the model will concentrate
+around current values of \(\boldsymbol{\theta}_a\), which leads to slow
+mixing.
+
+There are two main strategies to deal with this problem: blocking the
+random effects together and simulating them jointly to improve mixing,
+and marginalizing out over some of the latent variables.
+
+\begin{example}[Marginalization in Gaussian
+models]\protect\hypertarget{exm-marginalization-Gauss}{}\label{exm-marginalization-Gauss}
+
+To illustrate this fact, consider a hierarchical Gaussian model of the
+form \begin{align*}
+\boldsymbol{Y} = \mathbf{X}\boldsymbol{\beta} + \mathbf{Z}\boldsymbol{B} + \boldsymbol{\varepsilon}
+\end{align*} where \(\mathbf{X}\) is an \(n \times p\) design matrix
+with centered inputs,
+\(\boldsymbol{\beta} \sim \mathsf{Gauss}(\boldsymbol{0}_p, \sigma^2\mathbf{I}_p),\)
+\(\boldsymbol{B}\sim \mathsf{Gauss}_q(\boldsymbol{0}_q, \boldsymbol{\Omega})\)
+are random effects and
+\(\boldsymbol{\varepsilon} \sim \mathsf{Gauss}_n(\boldsymbol{0}_n, \kappa^2\mathbf{I}_n)\)
+are independent white noise.
+
+We can write \begin{align*}
+\boldsymbol{Y} \mid \mathbf{\beta}, \boldsymbol{B} &\sim \mathsf{Gauss}_n(\mathbf{X}\boldsymbol{\beta} + \mathbf{Z}\boldsymbol{B},  \sigma^2\mathbf{I}_p)\\
+\boldsymbol{Y} \mid \mathbf{\beta} &\sim \mathsf{Gauss}_n(\mathbf{X}\boldsymbol{\beta}, \mathbf{Q}^{-1}),
+\end{align*} where the second line corresponds to marginalizing out the
+random effects \(\boldsymbol{B}.\) This reduces the number of parameters
+to draw, but the likelihood evaluation is more costly due to
+\(\mathbf{Q}^{-1}\). If, as is often the case,
+\(\boldsymbol{\Omega}^{-1}\) and \(\mathbf{Z}\) are sparse matrices, the
+full precision matrix can be efficiently computed using
+Shermann--Morisson--Woodbury identity as \begin{align*}
+\mathbf{Q}^{-1} &=   \mathbf{Z}\boldsymbol{\Omega}^{-1}\mathbf{Z}^\top + \kappa^2 \mathbf{I}_n,\\
+\kappa^2\mathbf{Q} & = \mathbf{I}_n - \mathbf{Z} \boldsymbol{G}^{-1} \mathbf{Z}^\top,\\
+\boldsymbol{G} &= \mathbf{Z}^\top\mathbf{Z} + \kappa^2 \boldsymbol{\Omega}^{-1}
+\end{align*} Section 3.1 of Nychka et al.
+(\citeproc{ref-Nychka:2015}{2015}) details efficient ways of calculating
+the quadratic form involving \(\mathbf{Q}\) and it's determinant.
+
+\end{example}
+
+\begin{proposition}[Pseudo
+marginal]\protect\hypertarget{prp-pseudo-marginal}{}\label{prp-pseudo-marginal}
+
+Another option proposed by Andrieu and Roberts
+(\citeproc{ref-Andrieu.Roberts:2009}{2009}) based on an original idea
+from Beaumont (\citeproc{ref-Beaumont:2003}{2003}) relies on pseudo
+marginalization, where integration is done via Monte Carlo sampling.
+Specifically, suppose that we are ultimately interested in
+\[\boldsymbol{\theta}= \int p(\boldsymbol{\theta}, \boldsymbol{z}) \mathrm{d} \boldsymbol{z},\]
+but that for this purpose we normally sample from both parameters. Given
+a proposal \(\boldsymbol{\theta}\) and \(q_1(\boldsymbol{\theta})\) and
+subsequently \(L\) draws once from
+\(q_2(\boldsymbol{z} \mid \boldsymbol{\theta})\) for the nuisance, we
+can approximate the marginal using, e.g., importance sampling as
+\begin{align*}
+\widehat{p}(\boldsymbol{\theta}; \boldsymbol{z}) = \frac{1}{L} \sum_{l=1}^L \frac{p(\boldsymbol{\theta}, \boldsymbol{z}_l)}{q_2(\boldsymbol{z}_l, \boldsymbol{\theta})}.
+\end{align*} We then run a Markov chain on an augmented state space
+\(\boldsymbol{\Theta} \times \mathcal{Z}^L\), with Metropolis--Hastings
+acceptance ratio of \begin{align*}
+\frac{\widehat{p}(\boldsymbol{\theta}^{\star}; \boldsymbol{z}_{1,t}^{\star}, \boldsymbol{z}_{L,t}^{\star})}{
+\widehat{p}(\boldsymbol{\theta}_t; \boldsymbol{z}_{1,t-1}, \ldots, \boldsymbol{z}_{L, t-1})}\frac{q_1(\boldsymbol{\theta}_{t-1} \mid \boldsymbol{\theta}^{\star}_t)}{q_1(\boldsymbol{\theta}^{\star}_t \mid \boldsymbol{\theta}_{t-1})}.
+\end{align*} Note that the terms involving
+\(\prod_{l=1}^L q_2(\boldsymbol{z}_{l}; \boldsymbol{\theta})\) do not
+appear because they cancel out, as they are also part of the augmented
+state space likelihood.
+
+The remarkable feature of the pseudo marginal approach is that even if
+our average approximation \(\widehat{p}\) to the marginal is noisy, the
+marginal posterior of this Markov chain is the same as the original
+target.
+
+Compared to regular data augmentation, we must store the full vector
+\(\boldsymbol{z}^{\star}_1, \ldots, \boldsymbol{z}^{\star}_L\) and
+perform \(L\) evaluations of the augmented likelihood. The values of
+\(\boldsymbol{z}\), if accepted, are stored for the next evaluation of
+the ratio.
+
+The idea of pseudo-marginal extends beyond the user case presented
+above, as as long as we have an unbiased non-negative estimator of the
+likelihood
+\(\mathsf{E}\{\widehat{p}(\boldsymbol{\theta})\}=p(\boldsymbol{\theta})\),
+even when the likelihood itself is intractable. This is useful for
+models where we can approximate the likelihood by simulation, like for
+particle filters. Pseudo marginal MCMC algorithms are notorious for
+yielding sticky chains.
+
+\end{proposition}
+
+\begin{proposition}[Blocking]\protect\hypertarget{prp-blocking}{}\label{prp-blocking}
+
+When parameters of the vector \(\boldsymbol{\theta}\) that we wish to
+sample are strongly correlated, it is advisable when possible to
+simulate them jointly. Because the unnormalized posterior is evaluated
+at each step conditional on all values, the Markov chain will be making
+incremental moves and mix slowly.
+
+\end{proposition}
+
+Before showcasing the effect of blocking and joint updated, we present
+another example of data augmentation using @\#exm-probit-regression.
+
+\begin{example}[Tokyo
+rainfall]\protect\hypertarget{exm-Tokyo-rainfall}{}\label{exm-Tokyo-rainfall}
+
+We consider data from Kitagawa (\citeproc{ref-Kitagawa:1987}{1987}) that
+provide a binomial time series giving the number of days in years 1983
+and 1984 (a leap year) in which there was more than 1mm of rain in
+Tokyo. These data and the model we consider are discussed in in section
+4.3.4 of Rue and Held (\citeproc{ref-Rue.Held:2005}{2005}). We thus have
+\(T=366\) days and \(n_t \in \{1,2\}\) \((t=1, \ldots, T)\) the number
+of observations in day \(t\) and \(y_t=\{0,\ldots, n_t\}\) the number of
+days with rain. The objective is to obtain a smoothed probability of
+rain. The underlying probit model considered takes
+\(Y_t \mid n_t, p_t \sim \mathsf{binom}(n_t, p_t)\) and
+\(p_t = \Phi(\beta_t).\)
+
+We specify the random effects
+\(\boldsymbol{\beta} \sim \mathsf{Gauss}_{T}(\boldsymbol{0}, \tau^{-1}\mathbf{Q}),\)
+where \(\mathbf{Q}\) is a \(T \times T\) precision matrix that encodes
+the local dependence. A circular random walk structure of order 2 is
+used to model the smooth curves by smoothing over neighbors, and
+enforces small second derivative. This is a suitable prior because it
+enforces no constraint on the mean structure. This amounts to specifying
+the process with \begin{align*}
+\Delta^2\beta_t &= (\beta_{t+1} - \beta_t) - (\beta_t - \beta_{t-1})
+\\&=-\beta_{t-1} +2 \beta_t - \beta_{t+1} \sim \mathsf{Gauss}(0, \tau^{-1}), \qquad t \in \mathbb{N} \mod 366.
+\end{align*} This yields an intrinsic Gaussian Markov random field with
+a circulant precision matrix \(\tau\mathbf{Q}=\tau\mathbf{GG^\top}\) of
+rank \(T-1,\) where \begin{align*}
+\mathbf{G} &= 
+\begin{pmatrix} 
+2 & -1 & 0 & 0 & \cdots & -1\\
+-1 & 2 & -1 & 0 & \ddots & 0 \\
+0 & -1 & 2 & -1 & \ddots & 0 \\
+\vdots & \ddots & \ddots  & \ddots  & \ddots  & \vdots \\
+-1 & 0 & 0 & 0 & \cdots & 2
+\end{pmatrix},
+\\
+\mathbf{Q} &= 
+\begin{pmatrix} 
+6 & -4 & 1 & 0 & \cdots & 1 & -4\\
+-4 & 6 & -4 & 1 & \ddots & 0 & 1 \\
+1 & -4 & 6 & -4 & \ddots & 0 & 0 \\
+\vdots & \ddots & \ddots  & \ddots  & \ddots  & \ddots & \vdots \\
+-4 & 1 & 0 & 0 & \cdots & -4 & 6
+\end{pmatrix}.
+\end{align*} Because of the linear dependency, the determinant of
+\(\mathbf{Q}\) as presented is zero. The contribution from the latent
+mean parameters is multivariate Gaussian and we exploit for computations
+the sparsity of the precision matrix \(\mathbf{Q}.\)
+Figure~\ref{fig-CRW2-prior} shows five draws from the prior model, which
+loops back between December 31st and January 1st, and is rather smooth.
+
+\begin{figure}[ht!]
+
+\centering{
+
+\pandocbounded{\includegraphics[keepaspectratio]{workflow_files/figure-pdf/fig-CRW2-prior-1.pdf}}
+
+}
+
+\caption{\label{fig-CRW2-prior}Five realizations from the cyclical
+random walk Gaussian prior of order 2.}
+
+\end{figure}%
+
+We can perform data augmentation by imputing Gaussian variables, say
+\(\{z_{t,i}\}\) following Example~\ref{exm-probit-regression} from
+truncated Gaussian, where \(z_{t,i} = \beta_t + \varepsilon_{t,i}\) and
+\(\varepsilon_{t,i} \sim \mathsf{Gauss}(0,1)\) are independent standard
+Gaussian and \begin{align*}
+z_{t,i} \mid  y_{t,i}, \beta_t \sim 
+\begin{cases}
+\mathsf{trunc. Gauss}(\beta_t, 1, -\infty, 0) & y_{t,i} = 0 \\
+\mathsf{trunc. Gauss}(\beta_t, 1,  0, \infty) & y_{t,i} =1 
+\end{cases}
+\end{align*} The posterior is proportional to \begin{align*}
+p(\boldsymbol{\beta} \mid \tau)p(\tau)\prod_{t=1}^{T}\prod_{i=1}^{n_t}p(y_{t,i} \mid z_{t,i}) p(z_{t,i} \mid \beta_t)
+\end{align*} and once we have imputed the Gaussian latent vectors, we
+can work directly with the values of \(z_t = \sum_{i=1}^{n_t} z_{i,t}.\)
+The posterior is \begin{align*}
+p(\boldsymbol{\beta}, \tau) \propto \tau^{(n-1)/2}\exp \left( - \frac{\tau}{2} \boldsymbol{\beta}^\top \mathbf{Q} \boldsymbol{\beta}\right)\exp\left\{ - \frac{1}{2} (\boldsymbol{z} - \boldsymbol{\beta})^\top \mathrm{diag}(\boldsymbol{n})(\boldsymbol{z} - \boldsymbol{\beta})\right\} \tau^{a-1}\exp(-\tau b)
+\end{align*} where \(\boldsymbol{z} = (z_1, \ldots, z_T).\) Completing
+the quadratic form shows that \begin{align*}
+\boldsymbol{\beta} \mid \boldsymbol{z}, \tau &\sim \mathsf{Gauss}_T\left[\left\{\tau \mathbf{Q} + \mathrm{diag}(\boldsymbol{n})\right\}^{-1} \boldsymbol{z}, \left\{\tau \mathbf{Q} + \mathrm{diag}(\boldsymbol{n})\right\}^{-1}\right]\\
+\tau \mid \boldsymbol{\beta} & \sim \mathsf{gamma}\left( \frac{n-1}{2} + a, \frac{\boldsymbol{\beta}^\top \mathbf{Q}\boldsymbol{\beta}}{2} + b \right)
+\end{align*}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{library}\NormalTok{(Matrix)}
+\FunctionTok{library}\NormalTok{(TruncatedNormal)}
+\FunctionTok{data}\NormalTok{(tokyorain, }\AttributeTok{package =} \StringTok{"hecbayes"}\NormalTok{)}
+\CommentTok{\# Aggregate data}
+\NormalTok{tokyo }\OtherTok{\textless{}{-}}\NormalTok{ tokyorain }\SpecialCharTok{|\textgreater{}} 
+\NormalTok{   dplyr}\SpecialCharTok{::}\FunctionTok{group\_by}\NormalTok{(day) }\SpecialCharTok{|\textgreater{}}
+\NormalTok{   dplyr}\SpecialCharTok{::}\FunctionTok{summarize}\NormalTok{(}\AttributeTok{y =} \FunctionTok{sum}\NormalTok{(y), }\AttributeTok{n =}\NormalTok{ dplyr}\SpecialCharTok{::}\FunctionTok{n}\NormalTok{())}
+\NormalTok{nt }\OtherTok{\textless{}{-}} \DecValTok{366}\NormalTok{L}
+\CommentTok{\# Circulant random walk of order two precision matrix}
+\NormalTok{Q }\OtherTok{\textless{}{-}}\NormalTok{ hecbayes}\SpecialCharTok{::}\FunctionTok{crw\_Q}\NormalTok{(}\AttributeTok{d =}\NormalTok{ nt, }\AttributeTok{type =} \StringTok{"rw2"}\NormalTok{, }\AttributeTok{sparse =} \ConstantTok{TRUE}\NormalTok{)}
+\CommentTok{\# Sparse Cholesky root}
+\NormalTok{cholQ }\OtherTok{\textless{}{-}}\NormalTok{ Matrix}\SpecialCharTok{::}\FunctionTok{chol}\NormalTok{(Q)}
+\NormalTok{N }\OtherTok{\textless{}{-}}\NormalTok{ Matrix}\SpecialCharTok{::}\FunctionTok{Diagonal}\NormalTok{(}\AttributeTok{n =}\NormalTok{ nt, }\AttributeTok{x =}\NormalTok{ tokyo}\SpecialCharTok{$}\NormalTok{n)}
+\CommentTok{\# Create containers}
+\NormalTok{B }\OtherTok{\textless{}{-}} \FloatTok{1e4}\NormalTok{L }\CommentTok{\# number of draws}
+\NormalTok{beta\_s }\OtherTok{\textless{}{-}} \FunctionTok{matrix}\NormalTok{(}\AttributeTok{nrow =}\NormalTok{ B, }\AttributeTok{ncol =}\NormalTok{ nt)}
+\NormalTok{x\_s }\OtherTok{\textless{}{-}} \FunctionTok{matrix}\NormalTok{(}\AttributeTok{nrow =}\NormalTok{ B, }\AttributeTok{ncol =}\NormalTok{ nt)}
+\NormalTok{tau\_s }\OtherTok{\textless{}{-}} \FunctionTok{numeric}\NormalTok{(B)}
+\CommentTok{\# Initial values}
+\NormalTok{beta }\OtherTok{\textless{}{-}} \FunctionTok{rep}\NormalTok{(}\DecValTok{0}\NormalTok{, nt)}
+\NormalTok{tau }\OtherTok{\textless{}{-}} \DecValTok{1000}
+\CommentTok{\# Hyperprior parameter values}
+\NormalTok{tau\_a }\OtherTok{\textless{}{-}} \DecValTok{1}
+\NormalTok{tau\_b }\OtherTok{\textless{}{-}} \FloatTok{0.0001}
+\CommentTok{\# Gibbs sampling}
+\ControlFlowTok{for}\NormalTok{(b }\ControlFlowTok{in} \FunctionTok{seq\_len}\NormalTok{(B))\{}
+  \CommentTok{\# Step 1: data augmentation}
+\NormalTok{  x }\OtherTok{\textless{}{-}}\NormalTok{ TruncatedNormal}\SpecialCharTok{::}\FunctionTok{rtnorm}\NormalTok{(}
+    \AttributeTok{n =} \DecValTok{1}\NormalTok{,  }\AttributeTok{mu =}\NormalTok{ beta[tokyorain}\SpecialCharTok{$}\NormalTok{day], }\AttributeTok{sd =} \DecValTok{1}\NormalTok{,}
+    \AttributeTok{lb =} \FunctionTok{ifelse}\NormalTok{(tokyorain}\SpecialCharTok{$}\NormalTok{y }\SpecialCharTok{==} \DecValTok{0}\NormalTok{, }\SpecialCharTok{{-}}\ConstantTok{Inf}\NormalTok{, }\DecValTok{0}\NormalTok{),}
+    \AttributeTok{ub =} \FunctionTok{ifelse}\NormalTok{(tokyorain}\SpecialCharTok{$}\NormalTok{y }\SpecialCharTok{==} \DecValTok{0}\NormalTok{, }\DecValTok{0}\NormalTok{, }\ConstantTok{Inf}\NormalTok{))}
+\NormalTok{  tx }\OtherTok{\textless{}{-}} \FunctionTok{aggregate}\NormalTok{(}\AttributeTok{x =}\NormalTok{ x, }\AttributeTok{by =} \FunctionTok{list}\NormalTok{(tokyorain}\SpecialCharTok{$}\NormalTok{day), }\AttributeTok{FUN =}\NormalTok{ sum)}\SpecialCharTok{$}\NormalTok{x}
+\NormalTok{  x\_s[b,] }\OtherTok{\textless{}{-}}\NormalTok{ tx}
+  \CommentTok{\# Step 2: Simulate random effects in block}
+\NormalTok{  beta }\OtherTok{\textless{}{-}}\NormalTok{ beta\_s[b,] }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(hecbayes}\SpecialCharTok{::}\FunctionTok{rGaussQ}\NormalTok{(}
+    \AttributeTok{n =} \DecValTok{1}\NormalTok{,}
+    \AttributeTok{b =}\NormalTok{ tx, }
+    \AttributeTok{Q =}\NormalTok{ tau }\SpecialCharTok{*}\NormalTok{ Q }\SpecialCharTok{+}\NormalTok{ N))}
+\CommentTok{\# Simulate precision}
+\NormalTok{  tau }\OtherTok{\textless{}{-}}\NormalTok{ tau\_s[b] }\OtherTok{\textless{}{-}} \FunctionTok{rgamma}\NormalTok{(}
+    \AttributeTok{n =} \DecValTok{1}\NormalTok{, }
+    \AttributeTok{shape =}\NormalTok{ (nt}\DecValTok{{-}1}\NormalTok{)}\SpecialCharTok{/}\DecValTok{2} \SpecialCharTok{+}\NormalTok{ tau\_a, }
+    \AttributeTok{rate =} \FloatTok{0.5}\SpecialCharTok{*}\FunctionTok{as.numeric}\NormalTok{(}\FunctionTok{crossprod}\NormalTok{(cholQ }\SpecialCharTok{\%*\%}\NormalTok{ beta)) }\SpecialCharTok{+}\NormalTok{ tau\_b)}
+  \CommentTok{\# if beta is VERY smooth, then precision is large}
+\NormalTok{\}}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{figure}[ht!]
+
+\centering{
+
+\pandocbounded{\includegraphics[keepaspectratio]{workflow_files/figure-pdf/fig-tokyo-post1-1.pdf}}
+
+}
+
+\caption{\label{fig-tokyo-post1}Trace plots (top) and correlograms
+(bottom) for two parameters of the Gibbs sampler for the Tokyo rainfall
+data, with block updates.}
+
+\end{figure}%
+
+\begin{figure}[ht!]
+
+\centering{
+
+\pandocbounded{\includegraphics[keepaspectratio]{workflow_files/figure-pdf/fig-rainfall-1.pdf}}
+
+}
+
+\caption{\label{fig-rainfall}Tokyo rainfall fitted median probability
+with 50\% and 89\% pointwise credible intervals as a function of time of
+the year, with the proportion of days of rain (points).}
+
+\end{figure}%
+
+\end{example}
+
+\begin{example}[Blocking]\protect\hypertarget{exm-blocking-rainfall}{}\label{exm-blocking-rainfall}
+
+We revisit Example~\ref{exm-Tokyo-rainfall} with two modifications:
+imputing one parameter \(\beta_t\) at a time using random scan Gibbs
+step, which leads to slower mixing but univariate updates, and a joint
+update that first draws \(\tau^{\star}\) from some proposal
+distribution, then sample conditional on that value generates the
+\(\boldsymbol{\beta}\) vector and proposes acceptance using a Metropolis
+step.
+
+A different (less efficient) strategy would be to simulate the
+\(\beta_t\) terms one at a time using a random scan Gibbs, i.e., picking
+\(t_0 \in \{1, \ldots, 366\}\) and looping over indices. This yields
+higher autocorrelation between components than sampling by block.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+  \CommentTok{\# Compute mean vector for betas}
+\NormalTok{  mbeta }\OtherTok{\textless{}{-}}\NormalTok{ Matrix}\SpecialCharTok{::}\FunctionTok{solve}\NormalTok{(}\AttributeTok{a =}\NormalTok{ tau}\SpecialCharTok{*}\NormalTok{Q }\SpecialCharTok{+}\NormalTok{ N, }\AttributeTok{b =}\NormalTok{ tx)}
+  \CommentTok{\# weights of precision for neighbours}
+\NormalTok{  nw }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{, }\SpecialCharTok{{-}}\DecValTok{4}\NormalTok{, }\SpecialCharTok{{-}}\DecValTok{4}\NormalTok{, }\DecValTok{1}\NormalTok{)}
+  \CommentTok{\# Sample an index at random}
+\NormalTok{  st }\OtherTok{\textless{}{-}} \FunctionTok{sample.int}\NormalTok{(nt, }\DecValTok{1}\NormalTok{)}
+  \ControlFlowTok{for}\NormalTok{(i }\ControlFlowTok{in}\NormalTok{ (st }\SpecialCharTok{+} \FunctionTok{seq\_len}\NormalTok{(nt)) }\SpecialCharTok{\%\%}\NormalTok{ nt }\SpecialCharTok{+} \DecValTok{1}\NormalTok{L)\{}
+   \CommentTok{\# Indices of the non{-}zero entries for row Q[i,]}
+\NormalTok{  nh }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(i}\DecValTok{{-}3}\NormalTok{, i}\DecValTok{{-}2}\NormalTok{, i, i}\SpecialCharTok{+}\DecValTok{1}\NormalTok{) }\SpecialCharTok{\%\%} \DecValTok{366} \SpecialCharTok{+} \DecValTok{1}
+\NormalTok{  prec }\OtherTok{\textless{}{-}}\NormalTok{ tau }\SpecialCharTok{*} \DecValTok{6} \SpecialCharTok{+}\NormalTok{ tokyo}\SpecialCharTok{$}\NormalTok{n[i]}
+\NormalTok{  condmean }\OtherTok{\textless{}{-}}\NormalTok{ mbeta[i] }\SpecialCharTok{{-}} \FunctionTok{sum}\NormalTok{(nw}\SpecialCharTok{*}\NormalTok{(beta[nh] }\SpecialCharTok{{-}}\NormalTok{ mbeta[nh])) }\SpecialCharTok{*}\NormalTok{ tau }\SpecialCharTok{/}\NormalTok{ prec}
+\NormalTok{    beta[i] }\OtherTok{\textless{}{-}} \FunctionTok{rnorm}\NormalTok{(}\AttributeTok{n =} \DecValTok{1}\NormalTok{, }\AttributeTok{mean =}\NormalTok{ condmean, }\AttributeTok{sd =} \DecValTok{1}\SpecialCharTok{/}\FunctionTok{sqrt}\NormalTok{(prec))}
+\NormalTok{  \}}
+\NormalTok{  beta\_s[b,] }\OtherTok{\textless{}{-}}\NormalTok{ beta}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{figure}[ht!]
+
+\centering{
+
+\pandocbounded{\includegraphics[keepaspectratio]{workflow_files/figure-pdf/fig-tokyo-post2-1.pdf}}
+
+}
+
+\caption{\label{fig-tokyo-post2}Trace plots (top) and correlograms
+(bottom) for two parameters of the Gibbs sampler for the Tokyo rainfall
+data, with individual updates for \(\beta_t\).}
+
+\end{figure}%
+
+Instead of making things worst, we can try to improve upon our initial
+sampler by simulating first a proposal \(\tau^{\star}\) using a random
+walk Metropolis (on the log scale), then drawing from the full
+conditional \(\boldsymbol{\beta} \mid \boldsymbol{z}, \tau^{\star}\) and
+accepting/rejecting the whole move. A second alternative is to ditch
+altogether the data augmentation step and write the unnormalized log
+posterior for \(\boldsymbol{\beta}\) as \begin{align*}
+p(\boldsymbol{\beta} \mid \boldsymbol{y}) \stackrel{\boldsymbol{\beta}}{\propto} - \frac{\tau}{2} \boldsymbol{\beta}^\top \mathbf{Q} \boldsymbol{\beta} + \sum_{t=1}^{366} y_{t} \log \Phi(\beta_t) + (n_t-y_{t}) \log\{1-\Phi(\beta_t)\}
+\end{align*} and do a quadratic approximation to the posterior by doing
+a Taylor expansion of the terms \(\log p(y_{t} \mid \beta_{t})\) around
+the current value of the draw for \(\boldsymbol{\beta}.\) Given that
+observations are conditionally independent, we have a sum of independent
+terms
+\(\ell(\boldsymbol{y}; \boldsymbol{\beta}) = \sum_{t=1}^{366}\log p(y_t \mid \beta_t)\)
+and this yields, expanding around \(\boldsymbol{\beta}^0\), the Gaussian
+Markov field proposal \begin{align*}
+q(\boldsymbol{\beta} \mid \tau, \boldsymbol{\beta}^0)  \sim \mathsf{Gauss}_{366}\left[\ell'(\boldsymbol{\beta}^0), \tau\mathbf{Q} + \mathrm{diag}\{\ell''(\boldsymbol{\beta}^0)\}\right].
+\end{align*} Indeed, because of conditional independence, the \(j\)th
+element of \(\ell'\) and \(\ell''\) are \begin{align*}
+\ell'(\boldsymbol{\beta}^0)_j  = \left. \frac{\partial \ell(y_j; \beta_j)}{\partial \beta_j}\right|_{\beta_j = \beta_j^0}, \quad \ell''(\boldsymbol{\beta}^0)_j  = \left. \frac{\partial^2 \ell(y_j; \beta_j)}{\partial \beta_j^2}\right|_{\beta_j = \beta_j^0}.
+\end{align*} We can then simulate \(\tau\) using an random walk step,
+then propose \(\boldsymbol{\beta}\) conditional on this value using the
+Gaussian approximation above and accept/reject the pair
+\((\tau, \boldsymbol{\beta})\) using a Metropolis step. As for the
+Metropolis-adjusted Langevin algorithm, we need to compute the backward
+move for the acceptance ratio. We refer to Section 4.4.1 of Rue and Held
+(\citeproc{ref-Rue.Held:2005}{2005}) for more details.
+
+\end{example}
+
 \bookmarksetup{startatroot}
 
 \chapter{References}\label{references}
@@ -6376,10 +6603,21 @@ York: Springer. \url{https://doi.org/10.1007/978-0-387-92298-0}.
 Alexander, Rohan. 2023. \emph{Telling Stories with Data: With
 Applications in {R}}. Boca Raton, FL: CRC Press.
 
+\bibitem[\citeproctext]{ref-Andrieu.Roberts:2009}
+Andrieu, Christophe, and Gareth O. Roberts. 2009. {``The Pseudo-Marginal
+Approach for Efficient {M}onte {C}arlo Computations.''} \emph{The Annals
+of Statistics} 37 (2): 697--725.
+\url{https://doi.org/10.1214/07-AOS574}.
+
 \bibitem[\citeproctext]{ref-Andrieu.Thoms:2008}
 Andrieu, Christophe, and Johannes Thoms. 2008. {``A Tutorial on Adaptive
 {MCMC}.''} \emph{Statistics and Computing} 18 (4): 343--73.
 \url{https://doi.org/10.1007/s11222-008-9110-y}.
+
+\bibitem[\citeproctext]{ref-Beaumont:2003}
+Beaumont, Mark A. 2003. {``Estimation of Population Growth or Decline in
+Genetically Monitored Populations.''} \emph{Genetics} 164 (3): 1139--60.
+\url{https://doi.org/10.1093/genetics/164.3.1139}.
 
 \bibitem[\citeproctext]{ref-Bolin:2023}
 Bolin, David, Alexandre B. Simas, and Zhen Xiong. 2023. {``{W}asserstein
@@ -6456,6 +6694,11 @@ Hierarchical Models (Comment on Article by {B}rowne and {D}raper).''}
 Gelman, Andrew, John B. Carlin, Hal S. Stern, David B. Dunson, Aki
 Vehtari, and Donald B. Rubin. 2013. \emph{Bayesian Data Analysis}. 3rd
 ed. New York: Chapman; Hall/CRC. \url{https://doi.org/10.1201/b16018}.
+
+\bibitem[\citeproctext]{ref-Gelman.Rubin:1992}
+Gelman, Andrew, and Donald B. Rubin. 1992. {``Inference from Iterative
+Simulation Using Multiple Sequences.''} \emph{Statistical Science} 7
+(4): 457--72. \url{https://doi.org/10.1214/ss/1177011136}.
 
 \bibitem[\citeproctext]{ref-Gelman:2020}
 Gelman, Andrew, Aki Vehtari, Daniel Simpson, Charles C Margossian, Bob
@@ -6596,10 +6839,22 @@ in {B}ayesian Extreme Value Analyses Using Reference Priors.''}
 \emph{Statistica Sinica} 26 (2): 721--43.
 \url{https://doi.org/10.5705/ss.2014.034}.
 
+\bibitem[\citeproctext]{ref-Nychka:2015}
+Nychka, Douglas, Soutir Bandyopadhyay, Dorit Hammerling, Finn Lindgren,
+and Stephan Sain. 2015. {``A Multiresolution {G}aussian Process Model
+for the Analysis of Large Spatial Datasets.''} \emph{Journal of
+Computational and Graphical Statistics} 24 (2): 579--99.
+
 \bibitem[\citeproctext]{ref-Park.Casella:2008}
 Park, Trevor, and George Casella. 2008. {``The {B}ayesian {L}asso.''}
 \emph{Journal of the American Statistical Association} 103 (482):
 681--86. \url{https://doi.org/10.1198/016214508000000337}.
+
+\bibitem[\citeproctext]{ref-coda}
+Plummer, Martyn, Nicky Best, Kate Cowles, and Karen Vines. 2006.
+{``{CODA}: Convergence Diagnosis and Output Analysis for {MCMC}.''}
+\emph{R News} 6 (1): 7--11.
+\url{https://doi.org/10.32614/CRAN.package.coda}.
 
 \bibitem[\citeproctext]{ref-Casella.Robert:2004}
 Robert, Christian P., and George Casella. 2004. \emph{{M}onte {C}arlo
@@ -6615,6 +6870,13 @@ Science} 16 (4): 351--67. \url{https://doi.org/10.1214/ss/1015346320}.
 Rue, H., and L. Held. 2005. \emph{{G}aussian {M}arkov Random Fields:
 Theory and Applications}. Chapman \& Hall/CRC Monographs on Statistics
 \& Applied Probability. Boca Raton: CRC Press.
+
+\bibitem[\citeproctext]{ref-Sailynoja:2022}
+Säilynoja, Teemu, Paul-Christian Bürkner, and Aki Vehtari. 2022.
+{``Graphical Test for Discrete Uniformity and Its Applications in
+Goodness-of-Fit Evaluation and Multiple Sample Comparison.''}
+\emph{Statistics and Computing} 32 (2): 32.
+\url{https://doi.org/10.1007/s11222-022-10090-6}.
 
 \bibitem[\citeproctext]{ref-Sherlock:2013}
 Sherlock, Chris. 2013. {``Optimal Scaling of the Random Walk
@@ -6658,6 +6920,12 @@ Stephens, Matthew. 2002. {``Dealing with Label Switching in Mixture
 Models.''} \emph{Journal of the Royal Statistical Society Series B:
 Statistical Methodology} 62 (4): 795--809.
 \url{https://doi.org/10.1111/1467-9868.00265}.
+
+\bibitem[\citeproctext]{ref-Talts:2020}
+Talts, Sean, Michael Betancourt, Daniel Simpson, Aki Vehtari, and Andrew
+Gelman. 2020. {``Validating {B}ayesian Inference Algorithms with
+Simulation-Based Calibration.''}
+\url{https://doi.org/10.48550/arXiv.1804.06788}.
 
 \bibitem[\citeproctext]{ref-Tanner.Wong:1987}
 Tanner, Martin A., and Wing Hung Wong. 1987. {``The Calculation of

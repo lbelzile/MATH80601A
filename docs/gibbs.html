@@ -239,7 +239,7 @@ window.Quarto = {
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./workflow.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Bayesian workflow and computational strategies</span></span></a>
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Computational strategies and diagnostics</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
@@ -258,12 +258,12 @@ window.Quarto = {
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#data-augmentation-and-auxiliary-variables" id="toc-data-augmentation-and-auxiliary-variables" class="nav-link active" data-scroll-target="#data-augmentation-and-auxiliary-variables"><span class="header-section-number">6.1</span> Data augmentation and auxiliary variables</a></li>
+  <li><a href="#sec-gibbs-da" id="toc-sec-gibbs-da" class="nav-link active" data-scroll-target="#sec-gibbs-da"><span class="header-section-number">6.1</span> Data augmentation and auxiliary variables</a></li>
   </ul>
 <div class="toc-actions"><ul><li><a href="https://github.com/lbelzile/MATH80601A/edit/main/gibbs.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li></ul></div></nav>
     </div>
 <!-- main -->
-<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block"><h1 class="title display-7"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Gibbs sampling</span></h1></header>
+<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block"><h1 class="title display-7"><span id="sec-Gibbs" class="quarto-section-identifier"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Gibbs sampling</span></span></h1></header>
 
 <header id="title-block-header">
 
@@ -276,7 +276,10 @@ window.Quarto = {
 \boldsymbol{\theta}^{-[k]\star} = (\boldsymbol{\theta}_{t}^{[1]}, \ldots, \boldsymbol{\theta}_{t}^{[k-1]},\boldsymbol{\theta}_{t-1}^{[k+1]}, \boldsymbol{\theta}_{t-1}^{[m]})
 \end{align*}\]</span> which corresponds to the current value of the parameter vector after the updates. To check the validity of the Gibbs sampler, see the methods proposed in <span class="citation" data-cites="Geweke:2004">Geweke (<a href="references.html#ref-Geweke:2004" role="doc-biblioref">2004</a>)</span>.</p>
 <p>The Gibbs sampling can be viewed as a special case of Metropolis–Hastings where the proposal distribution <span class="math inline">\(q\)</span> is <span class="math inline">\(p(\boldsymbol{\theta}^{[j]} \mid \boldsymbol{\theta}^{-[j]\star}, \boldsymbol{y}).\)</span> The particularity is that all proposals get accepted because the log posterior of the partial update, equals the proposal distribution, so <span class="math display">\[\begin{align*}
-R = \frac{p(\boldsymbol{\theta}_t^{[j]\star} \mid \boldsymbol{\theta}^{-[j]\star}, \boldsymbol{y})}{p(\boldsymbol{\theta}_{t-1}^{[j]\star} \mid \boldsymbol{\theta}^{-[j]\star}, \boldsymbol{y})}\frac{p(\boldsymbol{\theta}_{t-1}^{[j]\star} \mid \boldsymbol{\theta}^{-[j]\star}, \boldsymbol{y})}{p(\boldsymbol{\theta}_t^{[j]\star} \mid \boldsymbol{\theta}^{-[j]\star}, \boldsymbol{y})}=1.
+R &amp;= \frac{p(\boldsymbol{\theta}_t^{\star} \mid \boldsymbol{y})}{p(\boldsymbol{\theta}_{t-1}\mid \boldsymbol{y})}\frac{p(\boldsymbol{\theta}_{t-1}^{[j]\star} \mid \boldsymbol{\theta}^{-[j]\star}, \boldsymbol{y})}{p(\boldsymbol{\theta}_t^{[j]\star} \mid \boldsymbol{\theta}^{-[j]\star}, \boldsymbol{y})}
+\\
+&amp;=
+\frac{p(\boldsymbol{\theta}_t^{[j]\star} \mid \boldsymbol{\theta}^{-[j]\star}, \boldsymbol{y})p(\boldsymbol{\theta}^{-[j]\star} \mid \boldsymbol{y})}{p(\boldsymbol{\theta}_{t-1}^{[j]\star} \mid \boldsymbol{\theta}^{-[j]\star}, \boldsymbol{y})p(\mid \boldsymbol{\theta}^{-[j]\star} \mid  \boldsymbol{y})}\frac{p(\boldsymbol{\theta}_{t-1}^{[j]\star} \mid \boldsymbol{\theta}^{-[j]\star}, \boldsymbol{y})}{p(\boldsymbol{\theta}_t^{[j]\star} \mid \boldsymbol{\theta}^{-[j]\star}, \boldsymbol{y})} =1.
 \end{align*}\]</span> Regardless of the order (systematic scan or random scan), the procedure remains valid. The Gibbs sampling is thus an automatic algorithm: we only need to derive the conditional posterior distributions of the parameters and run the sampler, and there are no tuning parameter involved. If the parameters are strongly correlated, the changes for each parameter will be incremental and this will lead to slow mixing and large autocorrelation, even if the values drawn are all different. <a href="#fig-Gibbs-steps" class="quarto-xref">Figure&nbsp;<span>6.1</span></a> shows 25 steps from a Gibbs algorithm for a bivariate target.</p>
 <div class="cell">
 <div class="cell-output-display">
@@ -376,8 +379,8 @@ p(\boldsymbol{\beta}, \sigma^2 \mid y) = p(\sigma^2 \mid y) p(\boldsymbol{\beta}
 \mathbf{M} &amp;= (\mathbf{Q}_\beta + \mathbf{X}^\top\mathbf{Q}_y\mathbf{X})^{-1};
 \end{align*}\]</span> the latter can be evaluated efficiently using Shermann–Morrisson–Woodbury identity. Given the conditionally conjugate priors, we can easily sample from the posterior using Gibbs sampling.</p>
 </div>
-<section id="data-augmentation-and-auxiliary-variables" class="level2" data-number="6.1">
-<h2 data-number="6.1" class="anchored" data-anchor-id="data-augmentation-and-auxiliary-variables"><span class="header-section-number">6.1</span> Data augmentation and auxiliary variables</h2>
+<section id="sec-gibbs-da" class="level2" data-number="6.1">
+<h2 data-number="6.1" class="anchored" data-anchor-id="sec-gibbs-da"><span class="header-section-number">6.1</span> Data augmentation and auxiliary variables</h2>
 <p>In many problems, the likelihood <span class="math inline">\(p(\boldsymbol{y}; \boldsymbol{\theta})\)</span> is intractable or costly to evaluate and auxiliary variables are introduced to simplify calculations, as in the expectation-maximization algorithm. The Bayesian analog is data augmentation <span class="citation" data-cites="Tanner.Wong:1987">(<a href="references.html#ref-Tanner.Wong:1987" role="doc-biblioref">Tanner and Wong 1987</a>)</span>, which we present succinctly: let <span class="math inline">\(\boldsymbol{\theta} \in \Theta\)</span> be a vector of parameters and consider auxiliary variables <span class="math inline">\(\boldsymbol{u} \in \mathbb{R}^k\)</span> such that <span class="math inline">\(\int_{\mathbb{R}^k} p(\boldsymbol{u}, \boldsymbol{\theta}; \boldsymbol{y}) \mathrm{d} \boldsymbol{u} = p(\boldsymbol{\theta}; \boldsymbol{y}),\)</span> i.e., the marginal distribution is that of interest, but evaluation of <span class="math inline">\(p(\boldsymbol{u}, \boldsymbol{\theta}; \boldsymbol{y})\)</span> is cheaper. The data augmentation algorithm consists in running a Markov chain on the augmented state space <span class="math inline">\((\Theta, \mathbb{R}^k),\)</span> simulating in turn from the conditionals <span class="math inline">\(p(\boldsymbol{u}; \boldsymbol{\theta}, \boldsymbol{y})\)</span> and <span class="math inline">\(p(\boldsymbol{\theta}; \boldsymbol{u}, \boldsymbol{y})\)</span> with new variables chosen to simplify the likelihood. If simulation from the conditionals is straightforward, we can also use data augmentation to speed up calculations or improve mixing. For more details and examples, see <span class="citation" data-cites="vanDyk.Meng:2001">Dyk and Meng (<a href="references.html#ref-vanDyk.Meng:2001" role="doc-biblioref">2001</a>)</span> and <span class="citation" data-cites="Hobert:2011">Hobert (<a href="references.html#ref-Hobert:2011" role="doc-biblioref">2011</a>)</span>.</p>
 <div id="exm-probit-regression" class="theorem example">
 <p><span class="theorem-title"><strong>Example 6.2 (Probit regression)</strong></span> Consider binary responses <span class="math inline">\(\boldsymbol{Y}_i,\)</span> for which we postulate a probit regression model, <span class="math display">\[\begin{align*}
@@ -524,153 +527,6 @@ Figure&nbsp;6.4: One-dimensional density mixture for the Old Faithful data, with
 <div id="rem-label-switching" class="proof remark">
 <p><span class="proof-title"><em>Remark 6.1</em> (Label switching in mixture models). </span>If we run a MCMC algorithm to sample from a mixture models, the likelihood is invariant to permutation of the group labels, leading to identifiability issues when the chain swaps modes, when running multiple Markov chains with symmetric priors or using tempering algorithms. Two chains may thus reach the same stationary distribution, with group labels swapped. It is sometimes necessary to impose ordering constraints on the mean parameters <span class="math inline">\(\boldsymbol{\mu},\)</span> although this isn’t necessarily easy to generalize beyond the univariate setting. See <span class="citation" data-cites="Jasra.Holmes.Stephens:2005">Jasra, Holmes, and Stephens (<a href="references.html#ref-Jasra.Holmes.Stephens:2005" role="doc-biblioref">2005</a>)</span> and <span class="citation" data-cites="Stephens:2002">Stephens (<a href="references.html#ref-Stephens:2002" role="doc-biblioref">2002</a>)</span> for more details.</p>
 </div>
-<div id="exm-Tokyo-rainfall" class="theorem example">
-<p><span class="theorem-title"><strong>Example 6.6 (Tokyo rainfall)</strong></span> We consider data from <span class="citation" data-cites="Kitagawa:1987">Kitagawa (<a href="references.html#ref-Kitagawa:1987" role="doc-biblioref">1987</a>)</span> that provide a binomial time series giving the number of days in years 1983 and 1984 (a leap year) in which there was more than 1mm of rain in Tokyo. These data and the model we consider are discussed in in section 4.3.4 of <span class="citation" data-cites="Rue.Held:2005">Rue and Held (<a href="references.html#ref-Rue.Held:2005" role="doc-biblioref">2005</a>)</span>. We thus have <span class="math inline">\(T=366\)</span> days and <span class="math inline">\(n_t \in \{1,2\}\)</span> <span class="math inline">\((t=1, \ldots, T)\)</span> the number of observations in day <span class="math inline">\(t\)</span> and <span class="math inline">\(y_t=\{0,\ldots, n_t\}\)</span> the number of days with rain. The objective is to obtain a smoothed probability of rain. The underlying probit model considered takes <span class="math inline">\(Y_t \mid n_t, p_t \sim \mathsf{binom}(n_t, p_t)\)</span> and <span class="math inline">\(p_t = \Phi(\beta_t).\)</span></p>
-<p>We specify the random effects <span class="math inline">\(\boldsymbol{\beta} \sim \mathsf{Gauss}_{T}(\boldsymbol{0}, \tau^{-1}\mathbf{Q}),\)</span> where <span class="math inline">\(\mathbf{Q}\)</span> is a <span class="math inline">\(T \times T\)</span> precision matrix that encodes the local dependence. A circular random walk structure of order 2 is used to model the smooth curves by smoothing over neighbors, and enforces small second derivative. This is a suitable prior because it enforces no constraint on the mean structure. This amounts to specifying the process with <span class="math display">\[\begin{align*}
-\Delta^2\beta_t &amp;= (\beta_{t+1} - \beta_t) - (\beta_t - \beta_{t-1})
-\\&amp;=-\beta_{t-1} +2 \beta_t - \beta_{t+1} \sim \mathsf{Gauss}(0, \tau^{-1}), \qquad t \in \mathbb{N} \mod 366.
-\end{align*}\]</span> This yields an intrinsic Gaussian Markov random field with a circulant precision matrix <span class="math inline">\(\tau\mathbf{Q}=\tau\mathbf{GG^\top}\)</span> of rank <span class="math inline">\(T-1,\)</span> where <span class="math display">\[\begin{align*}
-\mathbf{G} =
-\begin{pmatrix}
-2 &amp; -1 &amp; 0 &amp; 0 &amp; \cdots &amp; -1\\
--1 &amp; 2 &amp; -1 &amp; 0 &amp; \ddots &amp; 0 \\
-0 &amp; -1 &amp; 2 &amp; -1 &amp; \ddots &amp; 0 \\
-\vdots &amp; \ddots &amp; \ddots  &amp; \ddots  &amp; \ddots  &amp; \vdots \\
--1 &amp; 0 &amp; 0 &amp; 0 &amp; \cdots &amp; 2
-\end{pmatrix},
-\quad
-\mathbf{Q} =
-\begin{pmatrix}
-6 &amp; -4 &amp; 1 &amp; 0 &amp; \cdots &amp; 1 &amp; -4\\
--4 &amp; 6 &amp; -4 &amp; 1 &amp; \ddots &amp; 0 &amp; 1 \\
-1 &amp; -4 &amp; 6 &amp; -4 &amp; \ddots &amp; 0 &amp; 0 \\
-\vdots &amp; \ddots &amp; \ddots  &amp; \ddots  &amp; \ddots  &amp; \ddots &amp; \vdots \\
--4 &amp; 1 &amp; 0 &amp; 0 &amp; \cdots &amp; -4 &amp; 6
-\end{pmatrix}.
-\end{align*}\]</span> Because of the linear dependency, the determinant of <span class="math inline">\(\mathbf{Q}\)</span> as presented is zero. The contribution from the latent mean parameters is multivariate Gaussian and we exploit for computations the sparsity of the precision matrix <span class="math inline">\(\mathbf{Q}.\)</span> <a href="#fig-CRW2-prior" class="quarto-xref">Figure&nbsp;<span>6.5</span></a> shows five draws from the prior model, which loops back between December 31st and January 1st, and is rather smooth.</p>
-<div class="cell">
-<div class="cell-output-display">
-<div id="fig-CRW2-prior" class="quarto-float quarto-figure quarto-figure-center anchored">
-<figure class="quarto-float quarto-float-fig figure">
-<div aria-describedby="fig-CRW2-prior-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="gibbs_files/figure-html/fig-CRW2-prior-1.png" class="img-fluid figure-img" width="672">
-</div>
-<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-CRW2-prior-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;6.5: Five realizations from the cyclical random walk Gaussian prior of order 2 with unit variance.
-</figcaption>
-</figure>
-</div>
-</div>
-</div>
-<p>We can perform data augmentation by imputing Gaussian variables, say <span class="math inline">\(\{x_{t,i}\}\)</span> following <a href="#exm-probit-regression" class="quarto-xref">Example&nbsp;<span>6.2</span></a> from truncated Gaussian, where <span class="math inline">\(x_{t,i} = \beta_t + \varepsilon_{t,i}\)</span> and <span class="math inline">\(\varepsilon_{t,i} \sim \mathsf{Gauss}(0,1)\)</span> are independent standard Gaussian and <span class="math display">\[\begin{align*}
-z_{t,i} \mid  y_{t,i}, \beta_t \sim
-\begin{cases}
-\mathsf{trunc. Gauss}(\beta_t, 1, -\infty, 0) &amp; y_{t,i} = 0 \\
-\mathsf{trunc. Gauss}(\beta_t, 1,  0, \infty) &amp; y_{t,i} =1
-\end{cases}
-\end{align*}\]</span> The posterior is proportional to <span class="math display">\[\begin{align*}
-p(\boldsymbol{\beta} \mid \tau)p(\tau)\prod_{t=1}^{T}\prod_{i=1}^{n_t}p(y_{t,i} \mid z_{t,i}) p(z_{t,i} \mid \beta_t)
-\end{align*}\]</span> and once we have imputed the Gaussian latent vectors, we can work directly with the values of <span class="math inline">\(z_t = \sum_{i=1}^{n_t} z_{i,t}.\)</span> The posterior has the form <span class="math display">\[\begin{align*}
-p(\boldsymbol{\beta}, \tau) \propto \tau^{(n-1)/2}\exp \left( - \frac{\tau}{2} \boldsymbol{\beta}^\top \mathbf{Q} \boldsymbol{\beta}\right)\exp\left\{ - \frac{1}{2} (\boldsymbol{z} - \boldsymbol{\beta})^\top \mathrm{diag}(\boldsymbol{n})(\boldsymbol{z} - \boldsymbol{\beta})\right\} \tau^{a-1}\exp(-\tau b)
-\end{align*}\]</span> where <span class="math inline">\(\boldsymbol{z} = (z_1, \ldots, z_T).\)</span> Completing the quadratic form shows that <span class="math display">\[\begin{align*}
-\boldsymbol{\beta} \mid \boldsymbol{z}, \tau &amp;\sim \mathsf{Gauss}_T\left[\left\{\tau \mathbf{Q} + \mathrm{diag}(\boldsymbol{n})\right\}^{-1} \boldsymbol{z}, \left\{\tau \mathbf{Q} + \mathrm{diag}(\boldsymbol{n})\right\}^{-1}\right]\\
-\tau \mid \boldsymbol{\beta} &amp; \sim \mathsf{gamma}\left( \frac{n-1}{2} + a, \frac{\boldsymbol{\beta}^\top \mathbf{Q}\boldsymbol{\beta}}{2} + b \right)
-\end{align*}\]</span></p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(Matrix)</span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(TruncatedNormal)</span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(Tokyo, <span class="at">package =</span> <span class="st">"INLA"</span>)</span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Hierarchical model</span></span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="co"># data: (probit regression) y_t ~ binom(n_t, Phi(beta_t))</span></span>
-<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a><span class="co"># prior: Delta2 beta_t ~ Gaussian prior(0, tau)</span></span>
-<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a><span class="co"># hyperprior: tau ~ gamma(a, b)</span></span>
-<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Encode sparse circulant precision matrix</span></span>
-<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>nt <span class="ot">&lt;-</span> <span class="dv">366</span>L</span>
-<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>K <span class="ot">&lt;-</span> ngme2<span class="sc">::</span><span class="fu">rw2</span>(<span class="dv">1</span><span class="sc">:</span>nt, <span class="at">cyclic =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>Q <span class="ot">&lt;-</span> <span class="fu">crossprod</span>(K<span class="sc">$</span>K)</span>
-<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>cholQ <span class="ot">&lt;-</span> Matrix<span class="sc">::</span><span class="fu">chol</span>(Q)</span>
-<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a><span class="co"># Reconstruct daily data</span></span>
-<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>N <span class="ot">&lt;-</span> Matrix<span class="sc">::</span><span class="fu">Diagonal</span>(<span class="at">n =</span> nt, <span class="at">x =</span> Tokyo<span class="sc">$</span>n)</span>
-<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>y <span class="ot">&lt;-</span> <span class="fu">with</span>(Tokyo, <span class="fu">c</span>(<span class="fu">pmin</span>(y, <span class="dv">1</span>), <span class="fu">pmax</span>(<span class="dv">0</span>, y[<span class="sc">-</span><span class="dv">60</span>]<span class="sc">-</span><span class="dv">1</span>)))</span>
-<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>day <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">366</span>, <span class="dv">1</span><span class="sc">:</span><span class="dv">59</span>, <span class="dv">61</span><span class="sc">:</span><span class="dv">366</span>)</span>
-<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a><span class="co">#' Simulate a Gaussian random field with precision matrix \eqn{Q} and mean \eqn{Q^{-1}b}</span></span>
-<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a><span class="co">#' Exploiting the sparsity structure as much as possible</span></span>
-<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a>rGaussQ <span class="ot">&lt;-</span> <span class="cf">function</span>(n, b, Q){</span>
-<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stopifnot</span>(<span class="fu">nrow</span>(Q) <span class="sc">==</span> <span class="fu">length</span>(b))</span>
-<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a>  Lmat <span class="ot">&lt;-</span> Matrix<span class="sc">::</span><span class="fu">chol</span>(Q) <span class="co"># yields upper triangular matrix!</span></span>
-<span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a>  v <span class="ot">&lt;-</span> Matrix<span class="sc">::</span><span class="fu">solve</span>(<span class="at">a =</span> Matrix<span class="sc">::</span><span class="fu">t</span>(Lmat), <span class="at">b =</span> b)</span>
-<span id="cb4-23"><a href="#cb4-23" aria-hidden="true" tabindex="-1"></a>  nu <span class="ot">&lt;-</span> <span class="fu">as.numeric</span>(Matrix<span class="sc">::</span><span class="fu">solve</span>(<span class="at">a =</span> Lmat, <span class="at">b =</span> v))</span>
-<span id="cb4-24"><a href="#cb4-24" aria-hidden="true" tabindex="-1"></a>  y <span class="ot">&lt;-</span> Matrix<span class="sc">::</span><span class="fu">solve</span>(<span class="at">a =</span> Lmat, <span class="fu">matrix</span>(<span class="fu">rnorm</span>(<span class="at">n =</span> n<span class="sc">*</span><span class="fu">length</span>(b)), <span class="at">ncol =</span> n))</span>
-<span id="cb4-25"><a href="#cb4-25" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span>(n <span class="sc">==</span> <span class="dv">1</span>L){</span>
-<span id="cb4-26"><a href="#cb4-26" aria-hidden="true" tabindex="-1"></a>    y <span class="ot">&lt;-</span> <span class="fu">as.numeric</span>(y) </span>
-<span id="cb4-27"><a href="#cb4-27" aria-hidden="true" tabindex="-1"></a>  }</span>
-<span id="cb4-28"><a href="#cb4-28" aria-hidden="true" tabindex="-1"></a>  <span class="fu">t</span>(nu <span class="sc">+</span> y)</span>
-<span id="cb4-29"><a href="#cb4-29" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb4-30"><a href="#cb4-30" aria-hidden="true" tabindex="-1"></a>B <span class="ot">&lt;-</span> <span class="fl">1e4</span>L <span class="co"># number of draws</span></span>
-<span id="cb4-31"><a href="#cb4-31" aria-hidden="true" tabindex="-1"></a><span class="co"># Create containers</span></span>
-<span id="cb4-32"><a href="#cb4-32" aria-hidden="true" tabindex="-1"></a>beta_s <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="at">nrow =</span> B, <span class="at">ncol =</span> nt)</span>
-<span id="cb4-33"><a href="#cb4-33" aria-hidden="true" tabindex="-1"></a>x_s <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="at">nrow =</span> B, <span class="at">ncol =</span> nt)</span>
-<span id="cb4-34"><a href="#cb4-34" aria-hidden="true" tabindex="-1"></a>tau_s <span class="ot">&lt;-</span> <span class="fu">numeric</span>(B)</span>
-<span id="cb4-35"><a href="#cb4-35" aria-hidden="true" tabindex="-1"></a><span class="co"># Initial values</span></span>
-<span id="cb4-36"><a href="#cb4-36" aria-hidden="true" tabindex="-1"></a>beta <span class="ot">&lt;-</span> <span class="fu">rep</span>(<span class="dv">0</span>, nt)</span>
-<span id="cb4-37"><a href="#cb4-37" aria-hidden="true" tabindex="-1"></a>tau <span class="ot">&lt;-</span> <span class="dv">1000</span></span>
-<span id="cb4-38"><a href="#cb4-38" aria-hidden="true" tabindex="-1"></a><span class="co"># Prior parameter values</span></span>
-<span id="cb4-39"><a href="#cb4-39" aria-hidden="true" tabindex="-1"></a>tau_a <span class="ot">&lt;-</span> <span class="dv">1</span></span>
-<span id="cb4-40"><a href="#cb4-40" aria-hidden="true" tabindex="-1"></a>tau_b <span class="ot">&lt;-</span> <span class="fl">0.0001</span></span>
-<span id="cb4-41"><a href="#cb4-41" aria-hidden="true" tabindex="-1"></a><span class="co"># Gibbs sampling</span></span>
-<span id="cb4-42"><a href="#cb4-42" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span>(b <span class="cf">in</span> <span class="fu">seq_len</span>(B)){</span>
-<span id="cb4-43"><a href="#cb4-43" aria-hidden="true" tabindex="-1"></a>  <span class="co"># if(b %% 100L == 0L){print(paste(b, 'iterations completed')); }</span></span>
-<span id="cb4-44"><a href="#cb4-44" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Step 1: data augmentation</span></span>
-<span id="cb4-45"><a href="#cb4-45" aria-hidden="true" tabindex="-1"></a>  x <span class="ot">&lt;-</span> TruncatedNormal<span class="sc">::</span><span class="fu">rtnorm</span>(</span>
-<span id="cb4-46"><a href="#cb4-46" aria-hidden="true" tabindex="-1"></a>    <span class="at">n =</span> <span class="dv">1</span>,  <span class="at">mu =</span> beta[day], <span class="at">sd =</span> <span class="dv">1</span>,</span>
-<span id="cb4-47"><a href="#cb4-47" aria-hidden="true" tabindex="-1"></a>    <span class="at">lb =</span> <span class="fu">ifelse</span>(y <span class="sc">==</span> <span class="dv">0</span>, <span class="sc">-</span><span class="cn">Inf</span>, <span class="dv">0</span>),</span>
-<span id="cb4-48"><a href="#cb4-48" aria-hidden="true" tabindex="-1"></a>    <span class="at">ub =</span> <span class="fu">ifelse</span>(y <span class="sc">==</span> <span class="dv">0</span>, <span class="dv">0</span>, <span class="cn">Inf</span>))</span>
-<span id="cb4-49"><a href="#cb4-49" aria-hidden="true" tabindex="-1"></a>  tx <span class="ot">&lt;-</span> <span class="fu">aggregate</span>(<span class="at">x =</span> x, <span class="at">by =</span> <span class="fu">list</span>(day), <span class="at">FUN =</span> sum)<span class="sc">$</span>x</span>
-<span id="cb4-50"><a href="#cb4-50" aria-hidden="true" tabindex="-1"></a>  x_s[b,] <span class="ot">&lt;-</span> tx</span>
-<span id="cb4-51"><a href="#cb4-51" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Step 2: Simulate random effects in block</span></span>
-<span id="cb4-52"><a href="#cb4-52" aria-hidden="true" tabindex="-1"></a>  beta <span class="ot">&lt;-</span> beta_s[b,] <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fu">rGaussQ</span>(</span>
-<span id="cb4-53"><a href="#cb4-53" aria-hidden="true" tabindex="-1"></a>    <span class="at">n =</span> <span class="dv">1</span>,</span>
-<span id="cb4-54"><a href="#cb4-54" aria-hidden="true" tabindex="-1"></a>    <span class="at">b =</span> tx, </span>
-<span id="cb4-55"><a href="#cb4-55" aria-hidden="true" tabindex="-1"></a>    <span class="at">Q =</span> tau <span class="sc">*</span> Q <span class="sc">+</span> N))</span>
-<span id="cb4-56"><a href="#cb4-56" aria-hidden="true" tabindex="-1"></a>  <span class="do">## Step 2 b: alternative Update individually looping over indices</span></span>
-<span id="cb4-57"><a href="#cb4-57" aria-hidden="true" tabindex="-1"></a>  <span class="co"># st &lt;- sample.int(nt, 1)</span></span>
-<span id="cb4-58"><a href="#cb4-58" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-59"><a href="#cb4-59" aria-hidden="true" tabindex="-1"></a>  <span class="co"># for(i in (st + seq_len(nt)) %% nt + 1L){</span></span>
-<span id="cb4-60"><a href="#cb4-60" aria-hidden="true" tabindex="-1"></a>  <span class="co">#   im1 &lt;- ifelse(i == 1L, 366, i-1)</span></span>
-<span id="cb4-61"><a href="#cb4-61" aria-hidden="true" tabindex="-1"></a>  <span class="co">#   im2 &lt;- ifelse(i %in% 1:2, 364+i, i-2)</span></span>
-<span id="cb4-62"><a href="#cb4-62" aria-hidden="true" tabindex="-1"></a>  <span class="co">#   ip1 &lt;- ifelse(i == 366L, 1, i+1)</span></span>
-<span id="cb4-63"><a href="#cb4-63" aria-hidden="true" tabindex="-1"></a>  <span class="co">#   ip2 &lt;- ifelse(i %in% 365:366, i-364, i + 2)</span></span>
-<span id="cb4-64"><a href="#cb4-64" aria-hidden="true" tabindex="-1"></a>  <span class="co">#   prec &lt;- tau * 6 + Tokyo$n[i]</span></span>
-<span id="cb4-65"><a href="#cb4-65" aria-hidden="true" tabindex="-1"></a>  <span class="co">#   condmean &lt;- x[i] - tau *</span></span>
-<span id="cb4-66"><a href="#cb4-66" aria-hidden="true" tabindex="-1"></a>  <span class="co">#             (-4* (beta[im1] + beta[ip1] - x[im1] - x[ip1]) +</span></span>
-<span id="cb4-67"><a href="#cb4-67" aria-hidden="true" tabindex="-1"></a>  <span class="co">#                 (beta[im2] + beta[ip2] - x[im2] - x[ip2])) / prec</span></span>
-<span id="cb4-68"><a href="#cb4-68" aria-hidden="true" tabindex="-1"></a>  <span class="co">#   beta[i] &lt;- rnorm(n = 1, mean = condmean, sd = 1/sqrt(prec))</span></span>
-<span id="cb4-69"><a href="#cb4-69" aria-hidden="true" tabindex="-1"></a>  <span class="co"># }</span></span>
-<span id="cb4-70"><a href="#cb4-70" aria-hidden="true" tabindex="-1"></a>  <span class="co"># beta_s[b,] &lt;- beta</span></span>
-<span id="cb4-71"><a href="#cb4-71" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-72"><a href="#cb4-72" aria-hidden="true" tabindex="-1"></a><span class="co"># Simulate precision</span></span>
-<span id="cb4-73"><a href="#cb4-73" aria-hidden="true" tabindex="-1"></a>  tau <span class="ot">&lt;-</span> tau_s[b] <span class="ot">&lt;-</span> <span class="fu">rgamma</span>(</span>
-<span id="cb4-74"><a href="#cb4-74" aria-hidden="true" tabindex="-1"></a>    <span class="at">n =</span> <span class="dv">1</span>, </span>
-<span id="cb4-75"><a href="#cb4-75" aria-hidden="true" tabindex="-1"></a>    <span class="at">shape =</span> (nt<span class="dv">-1</span>)<span class="sc">/</span><span class="dv">2</span> <span class="sc">+</span> tau_a, </span>
-<span id="cb4-76"><a href="#cb4-76" aria-hidden="true" tabindex="-1"></a>    <span class="at">rate =</span> <span class="fl">0.5</span><span class="sc">*</span><span class="fu">as.numeric</span>(<span class="fu">crossprod</span>(cholQ <span class="sc">%*%</span> beta)) <span class="sc">+</span> tau_b)</span>
-<span id="cb4-77"><a href="#cb4-77" aria-hidden="true" tabindex="-1"></a>  <span class="co"># if beta is VERY smooth, then precision is large</span></span>
-<span id="cb4-78"><a href="#cb4-78" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<div class="cell">
-<div class="cell-output-display">
-<div id="fig-rainfall" class="quarto-float quarto-figure quarto-figure-center anchored">
-<figure class="quarto-float quarto-float-fig figure">
-<div aria-describedby="fig-rainfall-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="gibbs_files/figure-html/fig-rainfall-1.png" class="img-fluid figure-img" width="672">
-</div>
-<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-rainfall-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;6.6: Tokyo rainfall fitted median probability with 50% and 89% pointwise credible intervals as a function of time of the year, with the proportion of days of rain (points).
-</figcaption>
-</figure>
-</div>
-</div>
-</div>
-</div>
 
 
 <div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list" style="display: none">
@@ -689,14 +545,8 @@ Hobert, James. 2011. <span>“The Data Augmentation Algorithm: Theory and Method
 <div id="ref-Jasra.Holmes.Stephens:2005" class="csl-entry" role="listitem">
 Jasra, A., C. C. Holmes, and D. A. Stephens. 2005. <span>“<span>M</span>arkov Chain <span>M</span>onte <span>C</span>arlo Methods and the Label Switching Problem in <span>B</span>ayesian Mixture Modeling.”</span> <em>Statistical Science</em> 20 (1): 50–67. <a href="https://doi.org/10.1214/088342305000000016">https://doi.org/10.1214/088342305000000016</a>.
 </div>
-<div id="ref-Kitagawa:1987" class="csl-entry" role="listitem">
-Kitagawa, Genshiro. 1987. <span>“Non-<span>G</span>aussian State—Space Modeling of Nonstationary Time Series.”</span> <em>Journal of the American Statistical Association</em> 82 (400): 1032–41. <a href="https://doi.org/10.1080/01621459.1987.10478534">https://doi.org/10.1080/01621459.1987.10478534</a>.
-</div>
 <div id="ref-Park.Casella:2008" class="csl-entry" role="listitem">
 Park, Trevor, and George Casella. 2008. <span>“The <span>B</span>ayesian <span>L</span>asso.”</span> <em>Journal of the American Statistical Association</em> 103 (482): 681–86. <a href="https://doi.org/10.1198/016214508000000337">https://doi.org/10.1198/016214508000000337</a>.
-</div>
-<div id="ref-Rue.Held:2005" class="csl-entry" role="listitem">
-Rue, H., and L. Held. 2005. <em><span>G</span>aussian <span>M</span>arkov Random Fields: Theory and Applications</em>. Chapman &amp; Hall/CRC Monographs on Statistics &amp; Applied Probability. Boca Raton: CRC Press.
 </div>
 <div id="ref-Stephens:2002" class="csl-entry" role="listitem">
 Stephens, Matthew. 2002. <span>“Dealing with Label Switching in Mixture Models.”</span> <em>Journal of the Royal Statistical Society Series B: Statistical Methodology</em> 62 (4): 795–809. <a href="https://doi.org/10.1111/1467-9868.00265">https://doi.org/10.1111/1467-9868.00265</a>.
@@ -1138,8 +988,8 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="./workflow.html" class="pagination-link" aria-label="Bayesian workflow and computational strategies">
-        <span class="nav-page-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Bayesian workflow and computational strategies</span></span> <i class="bi bi-arrow-right-short"></i>
+      <a href="./workflow.html" class="pagination-link" aria-label="Computational strategies and diagnostics">
+        <span class="nav-page-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Computational strategies and diagnostics</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>

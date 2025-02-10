@@ -19,8 +19,8 @@ For a given problem, there are many different Markov chain Monte Carlo algorithm
 
 
 <!--
-Simulation-based calibration  [@Talts:2020] 
-- **Generating artificial data**: Some problems and checks relate to models, which cannot adequately capture the observations or reproduce salient features of the data, or to problematic  or expensive computations that lead to erroneous or misleading output. We can for example generate an "artificial" or fake data set from the model with some fixed parameter inputs to see if we can recover the parameter values used to generate these within some credible set. 
+
+- 
 - **Prior to posterior**: prior sensitivity requires to rerun the algorithm with different priors, but it is sometimes feasible in simpler models to simply use a fast Gaussian approximation via the maximum a posteriori, and generate from the latter, to assess the impcat of the prior. We can compare posterior density with prior density. The general rule is that parameters far from the data layer are more impacted by the prior choice.
 
 
@@ -28,21 +28,42 @@ Simulation-based calibration  [@Talts:2020]
 
 <!-- A modular approach to model building is recommended. It is a good strategy to start small, with a toy model, and to complexify until the fit is adequate. The modular approach can also help to diagnose convergence problems, bugs and identifiability problems.  -->
 
+**Generating artificial data**: Some problems and checks relate to models and the correct implementations (of the algorithms). Sometimes, the probabilistic procedure will generate draws, but it's unclear whether our numerical implementation is correct. We can sometimes see this if the output is truly misleading, but it's not always obvious. We can for example generate an "artificial" or fake data set from the model with some fixed parameter inputs to see if we can recover the parameter values used to generate these within some credible set. 
 
-Many sanity checks can be implemented by means of simulations. Consider prior predictive checks: for example, if the prior has a distribution from which we can generate, we can obtain prior draws from $p(\boldsymbol{\theta})$, generate data from the prior predictive $p(y \mid \boldsymbol{\theta})$ by simulating new observations from the data generating mechanism of the likelihood, and use these to obtain prior predictive by removing the likelihood component altogether: the draws from the prior predictive should then match posterior draws with only the prior. 
+Many such sanity checks can be implemented by means of simulations. Consider prior predictive checks: if the prior has a distribution from which we can generate, we can obtain prior draws from $p(\boldsymbol{\theta})$, generate data from the prior predictive $p(y \mid \boldsymbol{\theta})$ by simulating new observations from the data generating mechanism of the likelihood, and use these to obtain prior predictive by removing the likelihood component altogether: the draws from the prior predictive should then match posterior draws with only the prior. 
 
 The "data-averaged posterior" is obtained upon noting that [@Geweke:2004]
 \begin{align*}
 p(\boldsymbol{\theta}) = \int \int_{\boldsymbol{\Theta}} p( \boldsymbol{\theta} \mid \boldsymbol{y}) p(\boldsymbol{y} \mid \widetilde{\boldsymbol{\theta}}) p(\widetilde{\boldsymbol{\theta}}) \mathrm{d} \widetilde{\boldsymbol{\theta}} \mathrm{d} \boldsymbol{y}
 \end{align*}
-by forward sampling first the prior, than data for this particular value and obtaining the posterior. 
+by forward sampling first the prior, than data for this particular value and obtaining the posterior associated with the latter. 
+
+We can test that our sampling algorithm correctly samples from the posterior distribution of interest by running the following procedure, which is however computationally intensive.
+
+:::{#prp-sbc}
+
+## Simulation based calibration
+
+Simulation-based calibration  [@Talts:2020] proceeds with, in order 
+
+1. $\boldsymbol{\theta}_0 \sim p(\boldsymbol{\theta}),$
+2. $\boldsymbol{y}_0 \sim p(\boldsymbol{y} \mid \boldsymbol{\theta}_0),$
+3. $\boldsymbol{\theta}_1, \ldots, \boldsymbol{\theta}_B \sim p(\boldsymbol{\theta} \mid \boldsymbol{y}_0 ).$
 
 
+Conditional on the simulated $\boldsymbol{y}$, the distribution of $\boldsymbol{\theta}_0$ is the same as that of $\boldsymbol{\theta}_1, \ldots, \boldsymbol{\theta}_B.$ We do a dimension reduction step taking the test function $t(\cdot)$ to get the rank of the prior draw among the posterior ones, breaking ties at random if any. In the absence of ties,
+\begin{align*}
+T = \sum_{b=1}^B \mathrm{I}\{t(\boldsymbol{\theta}_b, \boldsymbol{y}) < t(\boldsymbol{\theta}_0,\boldsymbol{y})\},
+\end{align*}
+
+These steps are repeated $K$ times, yielding $K$ test functions $T_1, \ldots, T_K.$ We then test for uniformity using results from @Sailynoja:2022.
+
+:::
 
 <!--
 ## Multiple chains
 
-Many diagnostics rely on running multiple Markov chains from the same problem. This is useful 
+
 
 
 ## Validating the output
@@ -52,10 +73,12 @@ Many diagnostics rely on running multiple Markov chains from the same problem. T
 
 <!-- Prior elicitation: what summaries should the model faithfully reproduce?  -->
 
-In practice, it is more efficient to run a single long chain than multiple chains, because of the additional computational overhead related to burn in and warmup period. Running multiple chains however has the benefit of allowing one to compute diagnostics of convergence (by comparing chains) such as $\widehat{R},$ and to detect local modes.
+
 
 ## Convergence diagnostics and model validation
 
+Many diagnostics rely on running multiple Markov chains for the same problem, with different starting values. 
+In practice, it is more efficient to run a single long chain than multiple chains, because of the additional computational overhead related to burn in and warmup period. Running multiple chains however has the benefit of allowing one to compute diagnostics of convergence (by comparing chains) such as $\widehat{R},$ and to detect local modes.
 
 
 :::{#def-traceplots}
@@ -208,6 +231,7 @@ These initial steps should be disregarded.
 The target of inference is a functional (i.e., one-dimensional summaries of the chain): we need to have convergence of the latter, but also sufficient effective sample size for our averages to be accurate (at least to two significant digits).
 
 ```{r}
+#| label: get-results
 #| eval: true
 #| echo: false
 #| message: false
@@ -304,7 +328,8 @@ The only argument in favor of thinning is limited storage capacity: if we run ve
 
 ### Posterior predictive checks
 
-Posterior predictive checks can be used to compare models of varying complexity.One of the visual diagnostics, outlined in @Gabry:2019, consists in computing a summary statistic of interest from the posterior predictive (whether mean, median, quantile, skewness, etc.) which is relevant for the problem at hand and which we hope our model can adequately capture.
+Posterior predictive checks can be used to compare models of varying complexity.One of the visual diagnostics, outlined in @Gabry:2019, consists in computing a summary statistic of interest from the posterior predictive (whether mean, median, quantile, skewness, etc.) which is relevant for the problem at hand and which we hope our model can adequately capture. These should be salient features of the data, and may reveal inadequate likelihood or prior information.
+
 
 Suppose we have $B$ draws from the posterior and simulate for each $n$ observations from the posterior predictive $p(\widetilde{\boldsymbol{y}} \mid \boldsymbol{y})$: we can benchmark summary statistics from our original data $\boldsymbol{y}$ with the posterior predictive copies $\widetilde{\boldsymbol{y}}_b.$ @fig-posterior-pred-check shows this for the two competing models and highlight the fact that the simpler model is not dispersed enough. Even the more complex model struggles to capture this additional heterogeneity with the additional variables. One could go back to the drawing board and consider a negative binomial model.
 
@@ -423,6 +448,7 @@ For the smartwatch model, we get a value of `r round(waic1,2)` for the complex m
 ```{r}
 #| eval: false
 #| echo: true
+#| label: fn-waic
 #' WAIC
 #' @param loglik_pt B by n matrix of pointwise log likelihood
 WAIC <- function(loglik_pt){
@@ -435,6 +461,7 @@ We can also look at the predictive performance. For the `diabetes` data applicat
 ```{r}
 #| eval: true
 #| echo: false
+#| label: load-blasso
 load("models/bayesian_lasso.RData")
 data(diabetes, package = "lars")
 lambdaseq <- exp(seq(-2,3, length.out = 21))
@@ -527,3 +554,379 @@ A meta-analysis is a combination of the results of different studies (of the sam
 A simple model, following @Gelman:2006, is to assume the effect size is Gaussian and treat the mean and variance as constant if each study is based on sufficient sample so that mean and variance are reliably estimated. We can then model data as a mixed model with a study-specific random effect.
 -->
 
+## Computational strategies
+
+
+The data augmentation strategies considered in @sec-gibbs-da helps to simplify the likelihood and thereby reduce the cost of each iteration. However, latent variables are imputed conditional on current parameter values $\boldsymbol{\theta}_a$: the higher the number of variables, the more the model will concentrate around current values of $\boldsymbol{\theta}_a$, which leads to slow mixing.
+
+There are two main strategies to deal with this problem: blocking the random effects together and simulating them jointly to improve mixing, and marginalizing out over some of the latent variables.
+
+:::{#exm-marginalization-Gauss}
+
+# Marginalization in Gaussian models
+
+
+To illustrate this fact, consider a hierarchical Gaussian model of the form
+\begin{align*}
+\boldsymbol{Y} = \mathbf{X}\boldsymbol{\beta} + \mathbf{Z}\boldsymbol{B} + \boldsymbol{\varepsilon}
+\end{align*}
+where $\mathbf{X}$ is an $n \times p$ design matrix with centered inputs, $\boldsymbol{\beta} \sim \mathsf{Gauss}(\boldsymbol{0}_p, \sigma^2\mathbf{I}_p),$ $\boldsymbol{B}\sim \mathsf{Gauss}_q(\boldsymbol{0}_q, \boldsymbol{\Omega})$ are random effects and $\boldsymbol{\varepsilon} \sim \mathsf{Gauss}_n(\boldsymbol{0}_n, \kappa^2\mathbf{I}_n)$ are independent white noise.
+
+We can write
+\begin{align*}
+\boldsymbol{Y} \mid \mathbf{\beta}, \boldsymbol{B} &\sim \mathsf{Gauss}_n(\mathbf{X}\boldsymbol{\beta} + \mathbf{Z}\boldsymbol{B},  \sigma^2\mathbf{I}_p)\\
+\boldsymbol{Y} \mid \mathbf{\beta} &\sim \mathsf{Gauss}_n(\mathbf{X}\boldsymbol{\beta}, \mathbf{Q}^{-1}),
+\end{align*}
+where the second line corresponds to marginalizing out the random effects $\boldsymbol{B}.$ This reduces the number of parameters to draw, but the likelihood evaluation is more costly due to $\mathbf{Q}^{-1}$.
+If, as is often the case, $\boldsymbol{\Omega}^{-1}$ and $\mathbf{Z}$ are sparse matrices, the full precision matrix can be efficiently computed using Shermann--Morisson--Woodbury identity as
+\begin{align*}
+\mathbf{Q}^{-1} &=   \mathbf{Z}\boldsymbol{\Omega}^{-1}\mathbf{Z}^\top + \kappa^2 \mathbf{I}_n,\\
+\kappa^2\mathbf{Q} & = \mathbf{I}_n - \mathbf{Z} \boldsymbol{G}^{-1} \mathbf{Z}^\top,\\
+\boldsymbol{G} &= \mathbf{Z}^\top\mathbf{Z} + \kappa^2 \boldsymbol{\Omega}^{-1}
+\end{align*}
+Section 3.1 of @Nychka:2015 details efficient ways of calculating the quadratic form involving $\mathbf{Q}$ and it's determinant.
+
+:::
+
+
+:::{#prp-pseudo-marginal}
+
+## Pseudo marginal
+
+Another option proposed by @Andrieu.Roberts:2009 based on an original idea from @Beaumont:2003 relies on pseudo marginalization, where integration is done via Monte Carlo sampling. Specifically, suppose that we are ultimately interested in $$\boldsymbol{\theta}= \int p(\boldsymbol{\theta}, \boldsymbol{z}) \mathrm{d} \boldsymbol{z},$$ but that for this purpose we normally sample from both parameters. Given a proposal $\boldsymbol{\theta}$ and $q_1(\boldsymbol{\theta})$ and subsequently $L$ draws once from $q_2(\boldsymbol{z} \mid \boldsymbol{\theta})$ for the nuisance, we can approximate the marginal using, e.g.,  importance sampling as
+\begin{align*}
+\widehat{p}(\boldsymbol{\theta}; \boldsymbol{z}) = \frac{1}{L} \sum_{l=1}^L \frac{p(\boldsymbol{\theta}, \boldsymbol{z}_l)}{q_2(\boldsymbol{z}_l, \boldsymbol{\theta})}.
+\end{align*}
+We then run a Markov chain on an augmented state space $\boldsymbol{\Theta} \times \mathcal{Z}^L$, with Metropolis--Hastings acceptance ratio of 
+\begin{align*}
+\frac{\widehat{p}(\boldsymbol{\theta}^{\star}; \boldsymbol{z}_{1,t}^{\star}, \boldsymbol{z}_{L,t}^{\star})}{
+\widehat{p}(\boldsymbol{\theta}_t; \boldsymbol{z}_{1,t-1}, \ldots, \boldsymbol{z}_{L, t-1})}\frac{q_1(\boldsymbol{\theta}_{t-1} \mid \boldsymbol{\theta}^{\star}_t)}{q_1(\boldsymbol{\theta}^{\star}_t \mid \boldsymbol{\theta}_{t-1})}.
+\end{align*}
+Note that the terms involving $\prod_{l=1}^L q_2(\boldsymbol{z}_{l}; \boldsymbol{\theta})$ do not appear because they cancel out, as they are also part of the augmented state space likelihood.
+
+
+The remarkable feature of the pseudo marginal approach is that even if our average approximation $\widehat{p}$ to the marginal is noisy, the marginal posterior of this Markov chain is the same as the original target.
+
+Compared to regular data augmentation, we must store the full vector $\boldsymbol{z}^{\star}_1, \ldots, \boldsymbol{z}^{\star}_L$  and perform $L$ evaluations of the augmented likelihood. The values of $\boldsymbol{z}$, if accepted, are stored for the next evaluation of the ratio.
+
+The idea of pseudo-marginal extends beyond the user case presented above, as as long as we have an unbiased non-negative estimator of the likelihood $\mathsf{E}\{\widehat{p}(\boldsymbol{\theta})\}=p(\boldsymbol{\theta})$, even when the likelihood itself is intractable. This is useful for models where we can approximate the likelihood by simulation, like for particle filters. Pseudo marginal MCMC algorithms are notorious for yielding sticky chains.
+
+:::
+
+:::{#prp-blocking}
+
+## Blocking
+
+When parameters of the vector $\boldsymbol{\theta}$ that we wish to sample are strongly correlated, it is advisable when possible to simulate them jointly. Because the unnormalized posterior is evaluated at each step conditional on all values, the Markov chain will be making incremental moves and mix slowly. 
+
+:::
+
+Before showcasing the effect of blocking and joint updated, we present another example of data augmentation using @#exm-probit-regression.
+
+:::{#exm-Tokyo-rainfall}
+
+## Tokyo rainfall
+
+We consider data from @Kitagawa:1987 that provide a binomial time series giving the number of days in years 1983 and 1984 (a leap year) in which there was more than 1mm of rain in Tokyo. These data and the model we consider are discussed in in section 4.3.4 of @Rue.Held:2005. We thus have $T=366$ days and $n_t \in \{1,2\}$ $(t=1, \ldots, T)$ the number of observations in day $t$ and $y_t=\{0,\ldots, n_t\}$ the number of days with rain. The objective is to obtain a smoothed probability of rain. The underlying probit model considered takes $Y_t \mid n_t, p_t \sim \mathsf{binom}(n_t, p_t)$ and $p_t = \Phi(\beta_t).$
+
+We specify the random effects $\boldsymbol{\beta} \sim \mathsf{Gauss}_{T}(\boldsymbol{0}, \tau^{-1}\mathbf{Q}),$ where $\mathbf{Q}$ is a $T \times T$ precision matrix that encodes the local dependence. A circular random walk structure of order 2 is used to model the smooth curves by smoothing over neighbors, and enforces small second derivative. This is a suitable prior because it enforces no constraint on the mean structure. This amounts to specifying the process with 
+\begin{align*}
+\Delta^2\beta_t &= (\beta_{t+1} - \beta_t) - (\beta_t - \beta_{t-1})
+\\&=-\beta_{t-1} +2 \beta_t - \beta_{t+1} \sim \mathsf{Gauss}(0, \tau^{-1}), \qquad t \in \mathbb{N} \mod 366.
+\end{align*}
+This yields an intrinsic Gaussian Markov random field with a circulant precision matrix $\tau\mathbf{Q}=\tau\mathbf{GG^\top}$ of rank $T-1,$ where
+\begin{align*}
+\mathbf{G} &= 
+\begin{pmatrix} 
+2 & -1 & 0 & 0 & \cdots & -1\\
+-1 & 2 & -1 & 0 & \ddots & 0 \\
+0 & -1 & 2 & -1 & \ddots & 0 \\
+\vdots & \ddots & \ddots  & \ddots  & \ddots  & \vdots \\
+-1 & 0 & 0 & 0 & \cdots & 2
+\end{pmatrix},
+\\
+\mathbf{Q} &= 
+\begin{pmatrix} 
+6 & -4 & 1 & 0 & \cdots & 1 & -4\\
+-4 & 6 & -4 & 1 & \ddots & 0 & 1 \\
+1 & -4 & 6 & -4 & \ddots & 0 & 0 \\
+\vdots & \ddots & \ddots  & \ddots  & \ddots  & \ddots & \vdots \\
+-4 & 1 & 0 & 0 & \cdots & -4 & 6
+\end{pmatrix}.
+\end{align*}
+Because of the linear dependency, the determinant of $\mathbf{Q}$ as presented is zero. The contribution from the latent mean parameters is multivariate Gaussian and we exploit for computations the sparsity of the precision matrix $\mathbf{Q}.$ @fig-CRW2-prior shows five draws from the prior model, which loops back between December 31st and January 1st, and is rather smooth.
+
+```{r}
+#| eval: true
+#| echo: false
+#| fig-cap: "Five realizations from the cyclical random walk Gaussian prior of order 2."
+#| label: fig-CRW2-prior
+nt <- 366
+Q <- hecbayes::crw_Q(d = 366, type = "rw2", sparse = TRUE)
+set.seed(1234)
+samps <- solve(Matrix::chol(Q), matrix(rnorm(5*366), ncol = 5))
+matplot(scale(samps, scale = FALSE), 
+        bty = "l",
+        ylab = "",
+ xlab = "day of year",
+type = "l", 
+col = RColorBrewer::brewer.pal(n = 5, name = "Blues"),lwd = seq(2, 1, length.out = 5))
+
+```
+
+We can perform data augmentation by imputing Gaussian variables, say $\{z_{t,i}\}$ following @exm-probit-regression from truncated Gaussian, where $z_{t,i} = \beta_t + \varepsilon_{t,i}$ and $\varepsilon_{t,i} \sim \mathsf{Gauss}(0,1)$ are independent standard Gaussian and 
+\begin{align*}
+z_{t,i} \mid  y_{t,i}, \beta_t \sim 
+\begin{cases}
+\mathsf{trunc. Gauss}(\beta_t, 1, -\infty, 0) & y_{t,i} = 0 \\
+\mathsf{trunc. Gauss}(\beta_t, 1,  0, \infty) & y_{t,i} =1 
+\end{cases}
+\end{align*}
+The posterior is proportional to
+\begin{align*}
+p(\boldsymbol{\beta} \mid \tau)p(\tau)\prod_{t=1}^{T}\prod_{i=1}^{n_t}p(y_{t,i} \mid z_{t,i}) p(z_{t,i} \mid \beta_t)
+\end{align*}
+and once we have imputed the Gaussian latent vectors, we can work directly with the values of $z_t = \sum_{i=1}^{n_t} z_{i,t}.$ The posterior is
+\begin{align*}
+p(\boldsymbol{\beta}, \tau) \propto \tau^{(n-1)/2}\exp \left( - \frac{\tau}{2} \boldsymbol{\beta}^\top \mathbf{Q} \boldsymbol{\beta}\right)\exp\left\{ - \frac{1}{2} (\boldsymbol{z} - \boldsymbol{\beta})^\top \mathrm{diag}(\boldsymbol{n})(\boldsymbol{z} - \boldsymbol{\beta})\right\} \tau^{a-1}\exp(-\tau b)
+\end{align*}
+where $\boldsymbol{z} = (z_1, \ldots, z_T).$
+Completing the quadratic form shows that 
+\begin{align*}
+\boldsymbol{\beta} \mid \boldsymbol{z}, \tau &\sim \mathsf{Gauss}_T\left[\left\{\tau \mathbf{Q} + \mathrm{diag}(\boldsymbol{n})\right\}^{-1} \boldsymbol{z}, \left\{\tau \mathbf{Q} + \mathrm{diag}(\boldsymbol{n})\right\}^{-1}\right]\\
+\tau \mid \boldsymbol{\beta} & \sim \mathsf{gamma}\left( \frac{n-1}{2} + a, \frac{\boldsymbol{\beta}^\top \mathbf{Q}\boldsymbol{\beta}}{2} + b \right)
+\end{align*}
+
+
+
+
+```{r}
+#| eval: true
+#| echo: true
+library(Matrix)
+library(TruncatedNormal)
+data(tokyorain, package = "hecbayes")
+# Aggregate data
+tokyo <- tokyorain |> 
+   dplyr::group_by(day) |>
+   dplyr::summarize(y = sum(y), n = dplyr::n())
+nt <- 366L
+# Circulant random walk of order two precision matrix
+Q <- hecbayes::crw_Q(d = nt, type = "rw2", sparse = TRUE)
+# Sparse Cholesky root
+cholQ <- Matrix::chol(Q)
+N <- Matrix::Diagonal(n = nt, x = tokyo$n)
+# Create containers
+B <- 1e4L # number of draws
+beta_s <- matrix(nrow = B, ncol = nt)
+x_s <- matrix(nrow = B, ncol = nt)
+tau_s <- numeric(B)
+# Initial values
+beta <- rep(0, nt)
+tau <- 1000
+# Hyperprior parameter values
+tau_a <- 1
+tau_b <- 0.0001
+# Gibbs sampling
+for(b in seq_len(B)){
+  # Step 1: data augmentation
+  x <- TruncatedNormal::rtnorm(
+    n = 1,  mu = beta[tokyorain$day], sd = 1,
+    lb = ifelse(tokyorain$y == 0, -Inf, 0),
+    ub = ifelse(tokyorain$y == 0, 0, Inf))
+  tx <- aggregate(x = x, by = list(tokyorain$day), FUN = sum)$x
+  x_s[b,] <- tx
+  # Step 2: Simulate random effects in block
+  beta <- beta_s[b,] <- c(hecbayes::rGaussQ(
+    n = 1,
+    b = tx, 
+    Q = tau * Q + N))
+# Simulate precision
+  tau <- tau_s[b] <- rgamma(
+    n = 1, 
+    shape = (nt-1)/2 + tau_a, 
+    rate = 0.5*as.numeric(crossprod(cholQ %*% beta)) + tau_b)
+  # if beta is VERY smooth, then precision is large
+}
+```
+
+```{r}
+#| eval: true
+#| echo: false
+#| label: fig-tokyo-post1
+#| fig-cap: "Trace plots (top) and correlograms (bottom) for two parameters of the Gibbs sampler for the Tokyo rainfall data, with block updates."
+colnames(beta_s) <- paste0("beta", 1:nt)                
+post_tokyo1 <- data.frame(cbind(tau = tau_s, beta_s))
+write.csv(
+    post_tokyo1,
+    file = "data/tokyo_mcmc1.csv", 
+    row.names = FALSE)
+bayesplot::color_scheme_set("gray")
+post1 <- posterior::as_draws(post_tokyo1[-(1:100),1:2])
+bayesplot::mcmc_trace(post1, 
+   pars = c("beta1", "tau"), 
+   transformations = list("tau" = "log")
+) /
+bayesplot::mcmc_acf(post1, 
+   pars = c("beta1","tau"))
+```
+
+```{r}
+#| eval: true
+#| echo: false
+#| label: fig-rainfall
+#| fig-cap: "Tokyo rainfall fitted median probability with 50% and 89% pointwise credible intervals as a function of time of the year, with the proportion of days of rain (points)."
+quants <- apply(pnorm(beta_s), 2, quantile, 
+                probs = c((1-0.89)/2, 0.25, 0.5, 0.75, 0.89 + (1-0.89)/2))
+matplot(x = 1:nt, 
+        y = t(quants), 
+        type = "l", 
+        lty = c(3,2,1,2,3), 
+        col = c("gray90","gray50","black","gray50","gray90"),
+        xlab = "day of year", 
+        ylab = expression(Phi(beta[t])), 
+        bty = "l",
+        ylim = c(0,1),
+        yaxs = "i")
+with(tokyo, points(x = day, y = y/2, pch = 20,cex = 0.1)) 
+```
+
+
+```{r}
+#| eval: false
+#| echo: false
+## NOTE: this seemingly doesn't work with Q not full rank
+# Simulate from Gauss(Qinv * b, Qinv) # Rue (2001), alg. 3.1.2
+rIGMRF <- function(n, Q, rank){
+  nt <- nrow(Q)
+  if(missing(rank)){
+    rank <- as.integer(rankMatrix(Q, method = "qr"))
+  }
+  nz <- nt - rank
+  lambda <- eigen(Q, symmetric = TRUE, only.values = TRUE)$values[-((rank+1):nt)]
+  y <- diag(c(rep(0, nz), rep(1, rank))) %*% 
+    c(rep(0, nz), 
+      rnorm(n = length(lambda), 
+            sd = 1/sqrt(lambda)))
+}
+```
+
+:::
+
+:::{#exm-blocking-rainfall}
+
+## Blocking 
+
+
+We revisit @exm-Tokyo-rainfall with two modifications: imputing one parameter $\beta_t$ at a time using random scan Gibbs step, which leads to slower mixing but univariate updates, and a joint update that first draws $\tau^{\star}$ from some proposal distribution, then sample conditional on that value generates the $\boldsymbol{\beta}$ vector and proposes acceptance using a Metropolis step.
+
+A different (less efficient) strategy would be to simulate the $\beta_t$ terms one at a time using a random scan Gibbs, i.e., picking $t_0 \in \{1, \ldots, 366\}$ and looping over indices. This yields higher autocorrelation between components than sampling by block.
+
+```{r}
+#| label: code-block
+#| eval: false
+#| echo: true
+  # Compute mean vector for betas
+  mbeta <- Matrix::solve(a = tau*Q + N, b = tx)
+  # weights of precision for neighbours
+  nw <- c(1, -4, -4, 1)
+  # Sample an index at random
+  st <- sample.int(nt, 1)
+  for(i in (st + seq_len(nt)) %% nt + 1L){
+   # Indices of the non-zero entries for row Q[i,]
+  nh <- c(i-3, i-2, i, i+1) %% 366 + 1
+  prec <- tau * 6 + tokyo$n[i]
+  condmean <- mbeta[i] - sum(nw*(beta[nh] - mbeta[nh])) * tau / prec
+    beta[i] <- rnorm(n = 1, mean = condmean, sd = 1/sqrt(prec))
+  }
+  beta_s[b,] <- beta
+```
+
+
+
+```{r}
+#| eval: true
+#| echo: false
+#| cache: true
+# Initial values
+beta <- rep(0, nt)
+tau <- 1000
+# Gibbs sampling
+for(b in seq_len(B)){
+  # if(b %% 100L == 0L){print(paste(b, 'iterations completed')); }
+  # Step 1: data augmentation
+  x <- TruncatedNormal::rtnorm(
+    n = 1,  mu = beta[tokyorain$day], sd = 1,
+    lb = ifelse(tokyorain$y == 0, -Inf, 0),
+    ub = ifelse(tokyorain$y == 0, 0, Inf))
+  tx <- aggregate(x = x, by = list(tokyorain$day), FUN = sum)$x
+  x_s[b,] <- tx
+  ## Step 2 b: alternative 
+  ## Update individually looping over indices
+  st <- sample.int(nt, 1)
+  # Compute mean vector for betas
+  mbeta <- Matrix::solve(a = tau*Q + N, b = tx)
+  nw <- c(1, -4, -4, 1)
+  for(i in (st + seq_len(nt)) %% nt + 1L){
+  # Sample an index at random
+  st <- sample.int(nt, 1)
+   # Indices of the non-zero entries for row Q[i,]
+  nh <- c(i-3, i-2, i, i+1) %% 366 + 1
+  prec <- tau * 6 + tokyo$n[i]
+  condmean <- mbeta[i] - tau * sum(nw*(beta[nh] - mbeta[nh])) / prec
+    beta[i] <- rnorm(n = 1, mean = condmean, sd = 1/sqrt(prec))
+    # beta[i] <- hecbayes::rcondmvnorm(
+    #   n = 1, 
+    #   value = beta,
+    #   ind = i, 
+    #   mean = mbeta,  
+    #   precision = tau* Q + N)
+    
+  }
+  beta_s[b,] <- beta
+
+# Simulate precision
+  tau <- tau_s[b] <- rgamma(
+    n = 1, 
+    shape = (nt-1)/2 + tau_a, 
+    rate = 0.5*as.numeric(crossprod(cholQ %*% beta)) + tau_b)
+}
+post_tokyo2 <- data.frame(cbind(tau_s, beta_s))
+colnames(post_tokyo2) <- c("tau", paste0("beta", 1:366))
+write.csv(
+    post_tokyo2,
+    file = "data/tokyo_mcmc2.csv", 
+    row.names = FALSE)
+```
+
+
+```{r}
+#| eval: true
+#| echo: false
+#| label: fig-tokyo-post2
+#| fig-cap: "Trace plots (top) and correlograms (bottom) for two parameters of the Gibbs sampler for the Tokyo rainfall data, with individual updates for $\\beta_t$."
+post_tokyo2 <- read.csv("data/tokyo_mcmc2.csv", header = TRUE)
+post2 <- posterior::as_draws(post_tokyo2[-(1:100),1:2])
+bayesplot::mcmc_trace(post2, 
+   pars = c("beta1", "tau"), 
+   transformations = list("tau" = "log")
+) /
+bayesplot::mcmc_acf(post2, 
+   pars = c("beta1","tau"), lags = 500)
+```
+
+Instead of making things worst, we can try to improve upon our initial sampler by simulating first a proposal $\tau^{\star}$ using a random walk Metropolis (on the log scale), then drawing from the full conditional $\boldsymbol{\beta} \mid \boldsymbol{z}, \tau^{\star}$ and accepting/rejecting the whole move. A second alternative is to ditch altogether the data augmentation step and write the unnormalized log posterior for $\boldsymbol{\beta}$ as
+\begin{align*}
+p(\boldsymbol{\beta} \mid \boldsymbol{y}) \stackrel{\boldsymbol{\beta}}{\propto} - \frac{\tau}{2} \boldsymbol{\beta}^\top \mathbf{Q} \boldsymbol{\beta} + \sum_{t=1}^{366} y_{t} \log \Phi(\beta_t) + (n_t-y_{t}) \log\{1-\Phi(\beta_t)\}
+\end{align*}
+and do a quadratic approximation to the posterior by doing a Taylor expansion of the terms $\log p(y_{t} \mid \beta_{t})$ around the current value of the draw for $\boldsymbol{\beta}.$ Given that observations are conditionally independent, we have a sum of independent terms $\ell(\boldsymbol{y}; \boldsymbol{\beta}) = \sum_{t=1}^{366}\log p(y_t \mid \beta_t)$ and this yields, expanding around $\boldsymbol{\beta}^0$, the Gaussian Markov field proposal
+\begin{align*}
+q(\boldsymbol{\beta} \mid \tau, \boldsymbol{\beta}^0)  \sim \mathsf{Gauss}_{366}\left[\ell'(\boldsymbol{\beta}^0), \tau\mathbf{Q} + \mathrm{diag}\{\ell''(\boldsymbol{\beta}^0)\}\right].
+\end{align*}
+Indeed, because of conditional independence, the $j$th element of $\ell'$ and $\ell''$ are
+\begin{align*}
+\ell'(\boldsymbol{\beta}^0)_j  = \left. \frac{\partial \ell(y_j; \beta_j)}{\partial \beta_j}\right|_{\beta_j = \beta_j^0}, \quad \ell''(\boldsymbol{\beta}^0)_j  = \left. \frac{\partial^2 \ell(y_j; \beta_j)}{\partial \beta_j^2}\right|_{\beta_j = \beta_j^0}.
+\end{align*}
+We can then simulate $\tau$ using an random walk step, then propose $\boldsymbol{\beta}$ conditional on this value using the Gaussian approximation above and accept/reject the pair $(\tau, \boldsymbol{\beta})$ using a Metropolis step. As for the Metropolis-adjusted Langevin algorithm, we need to compute the backward move for the acceptance ratio. We refer to Section 4.4.1 of @Rue.Held:2005 for more details.
+
+:::
