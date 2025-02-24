@@ -371,8 +371,8 @@ for location $\nu >0$ and shape $\lambda>0,$ where $\xi_i \sim \mathsf{Wald}(\nu
 @Park.Casella:2008 use this hierarchical construction to defined the Bayesian LASSO. With a model matrix $\mathbf{X}$ whose columns are standardized to have mean zero and unit standard deviation, we may write
 \begin{align*}
 \boldsymbol{Y} \mid \mu, \boldsymbol{\beta}, \sigma^2 &\sim  \mathsf{Gauss}_n(\mu \boldsymbol{1}_n + \mathbf{X}\boldsymbol{\beta}, \sigma \mathbf{I}_n)\\
-\beta_j \mid \sigma, \tau &\sim \mathsf{Gauss}(0, \sigma\tau)\\
-\tau &\sim \mathsf{expo}(\lambda/2)
+\beta_j \mid \sigma, \tau_j &\sim \mathsf{Gauss}(0, \sigma\tau_j)\\
+\tau_j &\sim \mathsf{expo}(\lambda/2)
 \end{align*}
 If we set an improper prior $p(\mu, \sigma) \propto \sigma^{-1},$ the resulting conditional distributions are all available and thus the model is amenable to Gibbs sampling.
 

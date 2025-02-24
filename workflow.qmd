@@ -21,7 +21,7 @@ For a given problem, there are many different Markov chain Monte Carlo algorithm
 <!--
 
 - 
-- **Prior to posterior**: prior sensitivity requires to rerun the algorithm with different priors, but it is sometimes feasible in simpler models to simply use a fast Gaussian approximation via the maximum a posteriori, and generate from the latter, to assess the impcat of the prior. We can compare posterior density with prior density. The general rule is that parameters far from the data layer are more impacted by the prior choice.
+- **Prior to posterior**: prior sensitivity requires to rerun the algorithm with different priors, but it is sometimes feasible in simpler models to simply use a fast Gaussian approximation via the maximum a posteriori, and generate from the latter, to assess the impact of the prior. We can compare posterior density with prior density. The general rule is that parameters far from the data layer are more impacted by the prior choice.
 
 
 -->
@@ -252,7 +252,13 @@ The `coda` (convergence diagnosis and output analysis) **R** package [@coda] con
 
 <!-- The Gelman--Rubin $\widehat{R}$ diagnostic, which is advocated in STAN, is a multi-chain diagnostic that compares the within-chain variability to the between-chain variability. The value should be  -->
 
-Running multiple Markov chains can be useful for diagnostics. The Gelman--Rubin diagnostic $\widehat{R},$ introduced in @Gelman.Rubin:1992 and also called potential scale reduction statistic, is obtained by considering the difference between within-chains and between-chains variance. Suppose we run $M$ chains for $B$ iterations, post burn in. Denoting by $\theta_{bm}$ the $b$th draw of the $m$th chain, we compute the global average $\overline{\theta} = B^{-1}M^{-1}\sum_{b=1}^B \sum_{m=1}^m \theta_{bm}$ and similarly the chain sample average and variances, respectively $\overline{\theta}_m$ and $\widehat{\sigma}^2_m$ ($m=1, \ldots, M$). The between-chain variance and within-chain variance estimator are
+Running multiple Markov chains can be useful for diagnostics.
+
+:::{#prp-rhat}
+
+## Gelman--Rubin diagnostic
+
+The Gelman--Rubin diagnostic $\widehat{R},$ introduced in @Gelman.Rubin:1992 and also called potential scale reduction statistic, is obtained by considering the difference between within-chains and between-chains variance. Suppose we run $M$ chains for $B$ iterations, post burn in. Denoting by $\theta_{bm}$ the $b$th draw of the $m$th chain, we compute the global average $\overline{\theta} = B^{-1}M^{-1}\sum_{b=1}^B \sum_{m=1}^m \theta_{bm}$ and similarly the chain sample average and variances, respectively $\overline{\theta}_m$ and $\widehat{\sigma}^2_m$ ($m=1, \ldots, M$). The between-chain variance and within-chain variance estimator are
 \begin{align*}
 \mathsf{Va}_{\text{between}} &= \frac{B}{M-1}\sum_{m=1}^M (\overline{\theta}_m - \overline{\theta})^2\\
 \mathsf{Va}_{\text{within}} &= \frac{1}{M}\sum_{m=1}^m \widehat{\sigma}^2_m
@@ -262,6 +268,7 @@ and we can compute
 \widehat{R} = \left(\frac{\mathsf{Va}_{\text{within}}(B-1) + \mathsf{Va}_{\text{between}}}{B\mathsf{Va}_{\text{within}}}\right)^{1/2}
 \end{align*}
 The potential scale reduction statistic must be, by construction, larger than 1 in large sample. Any value larger than this is indicative of problems of convergence. While the Gelman--Rubin diagnostic is frequently reported, and any value larger than 1 deemed problematic, it is not enough to have approximately $\widehat{R}=1$ to guarantee convergence, but large values are usually indication of something being amiss. @fig-rhat shows two instances where the chains are visually very far from having the same average and this is reflected by the large values of $\widehat{R}.$
+:::
 
 ```{r}
 #| eval: true
@@ -318,12 +325,16 @@ g2 <- ggplot(data = data.frame(
 g1 + g2
 ```
 
-More generally, it is preferable to run a single chain for a longer period than run multiple chains sequentially, as there is a cost to initializing multiple times with different starting values since we must discard initial draws. With parallel computations, multiple chains are more frequent nowadays.
+Generally, it is preferable to run a single chain for a longer period than run multiple chains sequentially, as there is a cost to initializing multiple times with different starting values since we must discard initial draws. With parallel computations, multiple chains are more frequent nowadays.
 
 
+:::{#def-thinning}
 
-MCMC algorithms are often run thinning the chain (i.e., keeping only a fraction of the samples drawn, typically every $k$ iteration). This is wasteful as we can of course get more precise estimates by keeping all posterior draws, whether correlated or not.
-The only argument in favor of thinning is limited storage capacity: if we run very long chains in a model with hundreds of parameters, we may run out of memory.
+## Thinning
+
+MCMC algorithms are often run thinning the chain (i.e., keeping only a fraction of the samples drawn, typically every $k$ iteration). This is wasteful as we can of course get more precise estimates by keeping all posterior draws, whether correlated or not. The only argument in favor of thinning is limited storage capacity: if we run very long chains in a model with hundreds of  parameters, we may run out of memory.
+
+:::
 
 
 ### Posterior predictive checks
@@ -593,7 +604,7 @@ Section 3.1 of @Nychka:2015 details efficient ways of calculating the quadratic 
 
 ## Pseudo marginal
 
-Another option proposed by @Andrieu.Roberts:2009 based on an original idea from @Beaumont:2003 relies on pseudo marginalization, where integration is done via Monte Carlo sampling. Specifically, suppose that we are ultimately interested in $$\boldsymbol{\theta}= \int p(\boldsymbol{\theta}, \boldsymbol{z}) \mathrm{d} \boldsymbol{z},$$ but that for this purpose we normally sample from both parameters. Given a proposal $\boldsymbol{\theta}$ and $q_1(\boldsymbol{\theta})$ and subsequently $L$ draws once from $q_2(\boldsymbol{z} \mid \boldsymbol{\theta})$ for the nuisance, we can approximate the marginal using, e.g.,  importance sampling as
+Another option proposed by @Andrieu.Roberts:2009 based on an original idea from @Beaumont:2003 relies on pseudo marginalization, where integration is done via Monte Carlo sampling. Specifically, suppose that we are ultimately interested in $$p(\boldsymbol{\theta})= \int p(\boldsymbol{\theta}, \boldsymbol{z}) \mathrm{d} \boldsymbol{z},$$ but that for this purpose we normally sample from both parameters. Given a proposal $\boldsymbol{\theta}$ and $q_1(\boldsymbol{\theta})$ and subsequently $L$ draws once from $q_2(\boldsymbol{z} \mid \boldsymbol{\theta})$ for the nuisance, we can approximate the marginal using, e.g.,  importance sampling as
 \begin{align*}
 \widehat{p}(\boldsymbol{\theta}; \boldsymbol{z}) = \frac{1}{L} \sum_{l=1}^L \frac{p(\boldsymbol{\theta}, \boldsymbol{z}_l)}{q_2(\boldsymbol{z}_l, \boldsymbol{\theta})}.
 \end{align*}
@@ -617,11 +628,11 @@ The idea of pseudo-marginal extends beyond the user case presented above, as as 
 
 ## Blocking
 
-When parameters of the vector $\boldsymbol{\theta}$ that we wish to sample are strongly correlated, it is advisable when possible to simulate them jointly. Because the unnormalized posterior is evaluated at each step conditional on all values, the Markov chain will be making incremental moves and mix slowly. 
+When parameters of the vector $\boldsymbol{\theta}$ that we wish to sample are strongly correlated, it is advisable when possible to simulate them jointly. Because the unnormalized posterior is evaluated at each step conditional on all values, the Markov chain will be making incremental moves and mix slowly if we sample them one step at a time.
 
 :::
 
-Before showcasing the effect of blocking and joint updated, we present another example of data augmentation using @#exm-probit-regression.
+Before showcasing the effect of blocking and joint updates, we present another example of data augmentation using @exm-probit-regression.
 
 :::{#exm-Tokyo-rainfall}
 
@@ -629,15 +640,15 @@ Before showcasing the effect of blocking and joint updated, we present another e
 
 We consider data from @Kitagawa:1987 that provide a binomial time series giving the number of days in years 1983 and 1984 (a leap year) in which there was more than 1mm of rain in Tokyo. These data and the model we consider are discussed in in section 4.3.4 of @Rue.Held:2005. We thus have $T=366$ days and $n_t \in \{1,2\}$ $(t=1, \ldots, T)$ the number of observations in day $t$ and $y_t=\{0,\ldots, n_t\}$ the number of days with rain. The objective is to obtain a smoothed probability of rain. The underlying probit model considered takes $Y_t \mid n_t, p_t \sim \mathsf{binom}(n_t, p_t)$ and $p_t = \Phi(\beta_t).$
 
-We specify the random effects $\boldsymbol{\beta} \sim \mathsf{Gauss}_{T}(\boldsymbol{0}, \tau^{-1}\mathbf{Q}),$ where $\mathbf{Q}$ is a $T \times T$ precision matrix that encodes the local dependence. A circular random walk structure of order 2 is used to model the smooth curves by smoothing over neighbors, and enforces small second derivative. This is a suitable prior because it enforces no constraint on the mean structure. This amounts to specifying the process with 
+We specify the random effects $\boldsymbol{\beta} \sim \mathsf{Gauss}_{T}(\boldsymbol{0}, \tau^{-1}\mathbf{Q}^{-1}),$ where $\mathbf{Q}$ is a $T \times T$ precision matrix that encodes the local dependence. A circular random walk structure of order 2 is used to model the smooth curves by smoothing over neighbors, and enforces small second derivative. This is a suitable prior because it enforces no constraint on the mean structure. This amounts to specifying the process with
 \begin{align*}
 \Delta^2\beta_t &= (\beta_{t+1} - \beta_t) - (\beta_t - \beta_{t-1})
 \\&=-\beta_{t-1} +2 \beta_t - \beta_{t+1} \sim \mathsf{Gauss}(0, \tau^{-1}), \qquad t \in \mathbb{N} \mod 366.
 \end{align*}
 This yields an intrinsic Gaussian Markov random field with a circulant precision matrix $\tau\mathbf{Q}=\tau\mathbf{GG^\top}$ of rank $T-1,$ where
 \begin{align*}
-\mathbf{G} &= 
-\begin{pmatrix} 
+\mathbf{G} &=
+\begin{pmatrix}
 2 & -1 & 0 & 0 & \cdots & -1\\
 -1 & 2 & -1 & 0 & \ddots & 0 \\
 0 & -1 & 2 & -1 & \ddots & 0 \\
@@ -645,8 +656,8 @@ This yields an intrinsic Gaussian Markov random field with a circulant precision
 -1 & 0 & 0 & 0 & \cdots & 2
 \end{pmatrix},
 \\
-\mathbf{Q} &= 
-\begin{pmatrix} 
+\mathbf{Q} &=
+\begin{pmatrix}
 6 & -4 & 1 & 0 & \cdots & 1 & -4\\
 -4 & 6 & -4 & 1 & \ddots & 0 & 1 \\
 1 & -4 & 6 & -4 & \ddots & 0 & 0 \\
@@ -654,7 +665,7 @@ This yields an intrinsic Gaussian Markov random field with a circulant precision
 -4 & 1 & 0 & 0 & \cdots & -4 & 6
 \end{pmatrix}.
 \end{align*}
-Because of the linear dependency, the determinant of $\mathbf{Q}$ as presented is zero. The contribution from the latent mean parameters is multivariate Gaussian and we exploit for computations the sparsity of the precision matrix $\mathbf{Q}.$ @fig-CRW2-prior shows five draws from the prior model, which loops back between December 31st and January 1st, and is rather smooth.
+Because of the linear dependency, the determinant of $\mathbf{Q}$ is zero. The contribution from the latent mean parameters is multivariate Gaussian and we exploit for computations the sparsity of the precision matrix $\mathbf{Q}.$ @fig-CRW2-prior shows five draws from the prior model, which loops back between December 31st and January 1st, and is rather smooth.
 
 ```{r}
 #| eval: true
@@ -688,7 +699,7 @@ p(\boldsymbol{\beta} \mid \tau)p(\tau)\prod_{t=1}^{T}\prod_{i=1}^{n_t}p(y_{t,i} 
 \end{align*}
 and once we have imputed the Gaussian latent vectors, we can work directly with the values of $z_t = \sum_{i=1}^{n_t} z_{i,t}.$ The posterior is
 \begin{align*}
-p(\boldsymbol{\beta}, \tau) \propto \tau^{(n-1)/2}\exp \left( - \frac{\tau}{2} \boldsymbol{\beta}^\top \mathbf{Q} \boldsymbol{\beta}\right)\exp\left\{ - \frac{1}{2} (\boldsymbol{z} - \boldsymbol{\beta})^\top \mathrm{diag}(\boldsymbol{n})(\boldsymbol{z} - \boldsymbol{\beta})\right\} \tau^{a-1}\exp(-\tau b)
+p(\boldsymbol{\beta}, \tau) \propto \tau^{(n-1)/2}\exp \left( - \frac{\tau}{2} \boldsymbol{\beta}^\top \mathbf{Q} \boldsymbol{\beta}\right)\exp\left\{ - \frac{1}{2} (\boldsymbol{z}/\boldsymbol{n} - \boldsymbol{\beta})^\top \mathrm{diag}(\boldsymbol{n})(\boldsymbol{z}/\boldsymbol{n} - \boldsymbol{\beta})\right\} \tau^{a-1}\exp(-\tau b)
 \end{align*}
 where $\boldsymbol{z} = (z_1, \ldots, z_T).$
 Completing the quadratic form shows that 
@@ -917,7 +928,7 @@ bayesplot::mcmc_acf(post2,
 
 Instead of making things worst, we can try to improve upon our initial sampler by simulating first a proposal $\tau^{\star}$ using a random walk Metropolis (on the log scale), then drawing from the full conditional $\boldsymbol{\beta} \mid \boldsymbol{z}, \tau^{\star}$ and accepting/rejecting the whole move. A second alternative is to ditch altogether the data augmentation step and write the unnormalized log posterior for $\boldsymbol{\beta}$ as
 \begin{align*}
-p(\boldsymbol{\beta} \mid \boldsymbol{y}) \stackrel{\boldsymbol{\beta}}{\propto} - \frac{\tau}{2} \boldsymbol{\beta}^\top \mathbf{Q} \boldsymbol{\beta} + \sum_{t=1}^{366} y_{t} \log \Phi(\beta_t) + (n_t-y_{t}) \log\{1-\Phi(\beta_t)\}
+ \log p(\boldsymbol{\beta} \mid \boldsymbol{y}) \stackrel{\boldsymbol{\beta}}{\propto} - \frac{\tau}{2} \boldsymbol{\beta}^\top \mathbf{Q} \boldsymbol{\beta} + \sum_{t=1}^{366} y_{t} \log \Phi(\beta_t) + (n_t-y_{t}) \log\{1-\Phi(\beta_t)\}
 \end{align*}
 and do a quadratic approximation to the posterior by doing a Taylor expansion of the terms $\log p(y_{t} \mid \beta_{t})$ around the current value of the draw for $\boldsymbol{\beta}.$ Given that observations are conditionally independent, we have a sum of independent terms $\ell(\boldsymbol{y}; \boldsymbol{\beta}) = \sum_{t=1}^{366}\log p(y_t \mid \beta_t)$ and this yields, expanding around $\boldsymbol{\beta}^0$, the Gaussian Markov field proposal
 \begin{align*}

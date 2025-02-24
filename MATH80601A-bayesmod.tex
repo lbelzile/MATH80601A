@@ -306,14 +306,14 @@
 \usepackage{amsthm}
 \theoremstyle{definition}
 \newtheorem{exercise}{Exercise}[chapter]
-\theoremstyle{definition}
-\newtheorem{example}{Example}[chapter]
-\theoremstyle{definition}
-\newtheorem{definition}{Definition}[chapter]
 \theoremstyle{plain}
 \newtheorem{theorem}{Theorem}[chapter]
 \theoremstyle{plain}
 \newtheorem{proposition}{Proposition}[chapter]
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}[chapter]
+\theoremstyle{definition}
+\newtheorem{example}{Example}[chapter]
 \theoremstyle{remark}
 \AtBeginDocument{\renewcommand*{\proofname}{Proof}}
 \newtheorem*{remark}{Remark}
@@ -369,7 +369,7 @@ details.
 These notes are licensed under a
 \href{http://creativecommons.org/licenses/by-nc-sa/4.0/}{Creative
 Commons Attribution-NonCommercial-ShareAlike 4.0 International License}
-and were last compiled on Monday, February 10 2025.
+and were last compiled on lundi, février 24 2025.
 
 The objective of the course is to provide a hands on introduction to
 Bayesian data analysis. The course will cover the formulation,
@@ -3835,7 +3835,7 @@ points from the Gaussian and accept any that falls within the bounds.
 \end{Shaded}
 
 \begin{verbatim}
-[1] 0.34002
+[1] 0.34174
 \end{verbatim}
 
 \begin{Shaded}
@@ -4148,7 +4148,7 @@ more than 9\% for the same Monte Carlo sample size.
 
 \begin{verbatim}
                true         monte carlo importance sampling 
-             0.0625              0.0622              0.0627 
+             0.0625              0.0620              0.0623 
 \end{verbatim}
 
 \begin{Shaded}
@@ -4159,7 +4159,7 @@ more than 9\% for the same Monte Carlo sample size.
 \end{Shaded}
 
 \begin{verbatim}
-[1] 1.087118
+[1] 1.080627
 \end{verbatim}
 
 \begin{figure}[ht!]
@@ -5658,8 +5658,8 @@ hierarchical construction to defined the Bayesian LASSO. With a model
 matrix \(\mathbf{X}\) whose columns are standardized to have mean zero
 and unit standard deviation, we may write \begin{align*}
 \boldsymbol{Y} \mid \mu, \boldsymbol{\beta}, \sigma^2 &\sim  \mathsf{Gauss}_n(\mu \boldsymbol{1}_n + \mathbf{X}\boldsymbol{\beta}, \sigma \mathbf{I}_n)\\
-\beta_j \mid \sigma, \tau &\sim \mathsf{Gauss}(0, \sigma\tau)\\
-\tau &\sim \mathsf{expo}(\lambda/2)
+\beta_j \mid \sigma, \tau_j &\sim \mathsf{Gauss}(0, \sigma\tau_j)\\
+\tau_j &\sim \mathsf{expo}(\lambda/2)
 \end{align*} If we set an improper prior
 \(p(\mu, \sigma) \propto \sigma^{-1},\) the resulting conditional
 distributions are all available and thus the model is amenable to Gibbs
@@ -6019,13 +6019,17 @@ For example, the Geweke \(Z\)-score compares the averages for the
 beginning and the end of the chain: rejection of the null implies lack
 of convergence, or poor mixing.
 
-Running multiple Markov chains can be useful for diagnostics. The
-Gelman--Rubin diagnostic \(\widehat{R},\) introduced in Gelman and Rubin
-(\citeproc{ref-Gelman.Rubin:1992}{1992}) and also called potential scale
-reduction statistic, is obtained by considering the difference between
-within-chains and between-chains variance. Suppose we run \(M\) chains
-for \(B\) iterations, post burn in. Denoting by \(\theta_{bm}\) the
-\(b\)th draw of the \(m\)th chain, we compute the global average
+Running multiple Markov chains can be useful for diagnostics.
+
+\begin{proposition}[Gelman--Rubin
+diagnostic]\protect\hypertarget{prp-rhat}{}\label{prp-rhat}
+
+The Gelman--Rubin diagnostic \(\widehat{R},\) introduced in Gelman and
+Rubin (\citeproc{ref-Gelman.Rubin:1992}{1992}) and also called potential
+scale reduction statistic, is obtained by considering the difference
+between within-chains and between-chains variance. Suppose we run \(M\)
+chains for \(B\) iterations, post burn in. Denoting by \(\theta_{bm}\)
+the \(b\)th draw of the \(m\)th chain, we compute the global average
 \(\overline{\theta} = B^{-1}M^{-1}\sum_{b=1}^B \sum_{m=1}^m \theta_{bm}\)
 and similarly the chain sample average and variances, respectively
 \(\overline{\theta}_m\) and \(\widehat{\sigma}^2_m\)
@@ -6045,6 +6049,8 @@ something being amiss. Figure~\ref{fig-rhat} shows two instances where
 the chains are visually very far from having the same average and this
 is reflected by the large values of \(\widehat{R}.\)
 
+\end{proposition}
+
 \begin{figure}[ht!]
 
 \centering{
@@ -6061,11 +6067,13 @@ but do not appear stable with \(\widehat{R} \approx 1.6.\)}
 
 \end{figure}%
 
-More generally, it is preferable to run a single chain for a longer
-period than run multiple chains sequentially, as there is a cost to
+Generally, it is preferable to run a single chain for a longer period
+than run multiple chains sequentially, as there is a cost to
 initializing multiple times with different starting values since we must
 discard initial draws. With parallel computations, multiple chains are
 more frequent nowadays.
+
+\begin{definition}[Thinning]\protect\hypertarget{def-thinning}{}\label{def-thinning}
 
 MCMC algorithms are often run thinning the chain (i.e., keeping only a
 fraction of the samples drawn, typically every \(k\) iteration). This is
@@ -6073,6 +6081,8 @@ wasteful as we can of course get more precise estimates by keeping all
 posterior draws, whether correlated or not. The only argument in favor
 of thinning is limited storage capacity: if we run very long chains in a
 model with hundreds of parameters, we may run out of memory.
+
+\end{definition}
 
 \subsection{Posterior predictive
 checks}\label{posterior-predictive-checks}
@@ -6291,7 +6301,7 @@ Another option proposed by Andrieu and Roberts
 from Beaumont (\citeproc{ref-Beaumont:2003}{2003}) relies on pseudo
 marginalization, where integration is done via Monte Carlo sampling.
 Specifically, suppose that we are ultimately interested in
-\[\boldsymbol{\theta}= \int p(\boldsymbol{\theta}, \boldsymbol{z}) \mathrm{d} \boldsymbol{z},\]
+\[p(\boldsymbol{\theta})= \int p(\boldsymbol{\theta}, \boldsymbol{z}) \mathrm{d} \boldsymbol{z},\]
 but that for this purpose we normally sample from both parameters. Given
 a proposal \(\boldsymbol{\theta}\) and \(q_1(\boldsymbol{\theta})\) and
 subsequently \(L\) draws once from
@@ -6337,12 +6347,13 @@ When parameters of the vector \(\boldsymbol{\theta}\) that we wish to
 sample are strongly correlated, it is advisable when possible to
 simulate them jointly. Because the unnormalized posterior is evaluated
 at each step conditional on all values, the Markov chain will be making
-incremental moves and mix slowly.
+incremental moves and mix slowly if we sample them one step at a time.
 
 \end{proposition}
 
-Before showcasing the effect of blocking and joint updated, we present
-another example of data augmentation using @\#exm-probit-regression.
+Before showcasing the effect of blocking and joint updates, we present
+another example of data augmentation using
+Example~\ref{exm-probit-regression}.
 
 \begin{example}[Tokyo
 rainfall]\protect\hypertarget{exm-Tokyo-rainfall}{}\label{exm-Tokyo-rainfall}
@@ -6360,7 +6371,7 @@ rain. The underlying probit model considered takes
 \(p_t = \Phi(\beta_t).\)
 
 We specify the random effects
-\(\boldsymbol{\beta} \sim \mathsf{Gauss}_{T}(\boldsymbol{0}, \tau^{-1}\mathbf{Q}),\)
+\(\boldsymbol{\beta} \sim \mathsf{Gauss}_{T}(\boldsymbol{0}, \tau^{-1}\mathbf{Q}^{-1}),\)
 where \(\mathbf{Q}\) is a \(T \times T\) precision matrix that encodes
 the local dependence. A circular random walk structure of order 2 is
 used to model the smooth curves by smoothing over neighbors, and
@@ -6372,8 +6383,8 @@ the process with \begin{align*}
 \end{align*} This yields an intrinsic Gaussian Markov random field with
 a circulant precision matrix \(\tau\mathbf{Q}=\tau\mathbf{GG^\top}\) of
 rank \(T-1,\) where \begin{align*}
-\mathbf{G} &= 
-\begin{pmatrix} 
+\mathbf{G} &=
+\begin{pmatrix}
 2 & -1 & 0 & 0 & \cdots & -1\\
 -1 & 2 & -1 & 0 & \ddots & 0 \\
 0 & -1 & 2 & -1 & \ddots & 0 \\
@@ -6381,8 +6392,8 @@ rank \(T-1,\) where \begin{align*}
 -1 & 0 & 0 & 0 & \cdots & 2
 \end{pmatrix},
 \\
-\mathbf{Q} &= 
-\begin{pmatrix} 
+\mathbf{Q} &=
+\begin{pmatrix}
 6 & -4 & 1 & 0 & \cdots & 1 & -4\\
 -4 & 6 & -4 & 1 & \ddots & 0 & 1 \\
 1 & -4 & 6 & -4 & \ddots & 0 & 0 \\
@@ -6390,11 +6401,11 @@ rank \(T-1,\) where \begin{align*}
 -4 & 1 & 0 & 0 & \cdots & -4 & 6
 \end{pmatrix}.
 \end{align*} Because of the linear dependency, the determinant of
-\(\mathbf{Q}\) as presented is zero. The contribution from the latent
-mean parameters is multivariate Gaussian and we exploit for computations
-the sparsity of the precision matrix \(\mathbf{Q}.\)
-Figure~\ref{fig-CRW2-prior} shows five draws from the prior model, which
-loops back between December 31st and January 1st, and is rather smooth.
+\(\mathbf{Q}\) is zero. The contribution from the latent mean parameters
+is multivariate Gaussian and we exploit for computations the sparsity of
+the precision matrix \(\mathbf{Q}.\) Figure~\ref{fig-CRW2-prior} shows
+five draws from the prior model, which loops back between December 31st
+and January 1st, and is rather smooth.
 
 \begin{figure}[ht!]
 
@@ -6424,7 +6435,7 @@ p(\boldsymbol{\beta} \mid \tau)p(\tau)\prod_{t=1}^{T}\prod_{i=1}^{n_t}p(y_{t,i} 
 \end{align*} and once we have imputed the Gaussian latent vectors, we
 can work directly with the values of \(z_t = \sum_{i=1}^{n_t} z_{i,t}.\)
 The posterior is \begin{align*}
-p(\boldsymbol{\beta}, \tau) \propto \tau^{(n-1)/2}\exp \left( - \frac{\tau}{2} \boldsymbol{\beta}^\top \mathbf{Q} \boldsymbol{\beta}\right)\exp\left\{ - \frac{1}{2} (\boldsymbol{z} - \boldsymbol{\beta})^\top \mathrm{diag}(\boldsymbol{n})(\boldsymbol{z} - \boldsymbol{\beta})\right\} \tau^{a-1}\exp(-\tau b)
+p(\boldsymbol{\beta}, \tau) \propto \tau^{(n-1)/2}\exp \left( - \frac{\tau}{2} \boldsymbol{\beta}^\top \mathbf{Q} \boldsymbol{\beta}\right)\exp\left\{ - \frac{1}{2} (\boldsymbol{z}/\boldsymbol{n} - \boldsymbol{\beta})^\top \mathrm{diag}(\boldsymbol{n})(\boldsymbol{z}/\boldsymbol{n} - \boldsymbol{\beta})\right\} \tau^{a-1}\exp(-\tau b)
 \end{align*} where \(\boldsymbol{z} = (z_1, \ldots, z_T).\) Completing
 the quadratic form shows that \begin{align*}
 \boldsymbol{\beta} \mid \boldsymbol{z}, \tau &\sim \mathsf{Gauss}_T\left[\left\{\tau \mathbf{Q} + \mathrm{diag}(\boldsymbol{n})\right\}^{-1} \boldsymbol{z}, \left\{\tau \mathbf{Q} + \mathrm{diag}(\boldsymbol{n})\right\}^{-1}\right]\\
@@ -6566,7 +6577,7 @@ conditional \(\boldsymbol{\beta} \mid \boldsymbol{z}, \tau^{\star}\) and
 accepting/rejecting the whole move. A second alternative is to ditch
 altogether the data augmentation step and write the unnormalized log
 posterior for \(\boldsymbol{\beta}\) as \begin{align*}
-p(\boldsymbol{\beta} \mid \boldsymbol{y}) \stackrel{\boldsymbol{\beta}}{\propto} - \frac{\tau}{2} \boldsymbol{\beta}^\top \mathbf{Q} \boldsymbol{\beta} + \sum_{t=1}^{366} y_{t} \log \Phi(\beta_t) + (n_t-y_{t}) \log\{1-\Phi(\beta_t)\}
+ \log p(\boldsymbol{\beta} \mid \boldsymbol{y}) \stackrel{\boldsymbol{\beta}}{\propto} - \frac{\tau}{2} \boldsymbol{\beta}^\top \mathbf{Q} \boldsymbol{\beta} + \sum_{t=1}^{366} y_{t} \log \Phi(\beta_t) + (n_t-y_{t}) \log\{1-\Phi(\beta_t)\}
 \end{align*} and do a quadratic approximation to the posterior by doing
 a Taylor expansion of the terms \(\log p(y_{t} \mid \beta_{t})\) around
 the current value of the draw for \(\boldsymbol{\beta}.\) Given that
