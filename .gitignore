@@ -39,3 +39,6 @@ vignettes/*.pdf
 .Renviron
 
 /.quarto/
+
+/data/tokyo_mcmc1.csv
+/data/tokyo_mcmc2.csv

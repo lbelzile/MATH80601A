@@ -1,13 +1,15 @@
 # Regression models
 
-This chapter is dedicated to the case of generalized linear regression models. Starting with Gaussian data, we investigate the link between frequentist approaches to regularization and shrinkage priors. We also look at hierarchical models with mixed effects.
+This chapter is dedicated to the study of generalized linear regression models from a Bayesian standpoint. Starting with Gaussian data, we investigate the link between frequentist approaches to regularization and shrinkage priors. We also look at hierarchical models with mixed effects and variable selection using reversible jump MCMC and conditional Bayes factor.
 
-
-We consider regression models with model or design matrix $\mathbf{X}$ and an associated vector of regression coefficients $\boldsymbol{\beta} = (\beta_1, \ldots, \beta_p)^\top$ which describe the mean and act as weights for each covariate vector. In the ordinary linear regression model
+Throughout, we consider regression models with model (or design) matrix $\mathbf{X} \in \mathbb{R}^{n \times p}$ with centered inputs, so $\mathbf{1}_n^\top\mathbf{X}=\mathbf{0}_p.$ We are interested in the associated vector of regression coefficients $\boldsymbol{\beta} = (\beta_1, \ldots, \beta_p)^\top$ which describe the mean and act as weights for each covariate vector. In the ordinary linear regression model
 \begin{align*}
 \boldsymbol{Y} \mid \mathbf{X}, \boldsymbol{\beta}, \omega \sim \mathsf{Gauss}_n(\beta_0\mathbf{1}_n + \mathbf{X}\boldsymbol{\beta}, \omega^{-1}\mathbf{I}_n),
 \end{align*}
-so that observations are independent and homoscedastic. Inference is performed conditional on the observed covariate vectors $\mathbf{X}_i$; we omit this dependence hereafter, but note that this can be generalized. The intercept $\beta_0$, which is added to capture the mean response and make it mean-zero, receives special treatment. We largely follow the exposition of @Villani:2023.
+so that observations are independent and homoscedastic. Inference is performed conditional on the observed covariate vectors $\mathbf{X}_i$; we omit this dependence hereafter, but note that this can be relaxed. The intercept $\beta_0$, which is added to capture the mean response and make it mean-zero, receives special treatment and is typically assigned an improper prior. We largely follow the exposition of @Villani:2023.
+
+
+
 
 
 :::{#prp-gaussian-ols}
@@ -17,7 +19,7 @@ so that observations are independent and homoscedastic. Inference is performed c
 
 
 
-The conjugate prior for the Gaussian regression model for the mean and precision parameters is a Gaussian-gamma and is defined hierarchically as
+The conjugate prior for the Gaussian regression model for the mean and precision parameters $\boldsymbol{\beta}$ and $\omega$, respectively, is a Gaussian-gamma and is defined hierarchically as
 \begin{align*}
 \boldsymbol{\beta} \mid \omega &\sim \mathsf{Gauss}\left\{\boldsymbol{\mu}_0, (
 \omega\boldsymbol{\Omega}_0)^{-1}\right\} \\
@@ -60,7 +62,7 @@ where $\mathbf{C} = \mathbf{A} + \mathbf{B}$ and $\boldsymbol{c}= \mathbf{C}^{-1
 
 :::{.proof}
 
-The improper prior $p(\boldsymbol{\beta}, \sigma^2) \propto \sigma^{-2}$ can be viewed as a special case of the above when
+The improper prior $p(\boldsymbol{\beta}, \sigma^2) \propto \sigma^{-2}$ can be viewed as a special case of the conjugate prior when the variance of the Gaussian is infinite and the $\mathsf{gamma}(a,b)$ when both $a, b \to 0.$
 
 Write the posterior as
 \begin{align*}
@@ -83,7 +85,7 @@ and using @prp-quadratic-forms for the terms in the exponent with $\boldsymbol{a
    \omega^{(n+\nu_0)/2 -1} \exp\left(-\frac{\omega\tau_n}{2}\right)
    \\& \times \omega^{p/2}\exp\left\{-\frac{1}{2}(\boldsymbol{\beta} - \boldsymbol{\mu}_n)^\top(\omega\mathbf{\Omega}_n)(\boldsymbol{\beta} - \boldsymbol{\mu}_n)\right\}
 \end{align*}
-whence the decomposition of the posterior as a Gaussian conditional on the precision, and a gamma for the latter. The marginal of $\boldsymbol{\beta}$ is obtained by regrouping all terms that depend on $\omega$ and integrating over the latter, recognizing the integral as an unnormalized gamma density, where $\int_0^\infty x^{a-1}\exp(-bx)\mathrm{d} x \stackrel{b}{\propto} b^{-a}$ and thus
+whence the decomposition of the posterior as a Gaussian conditional on the precision, and a gamma for the latter. The marginal of $\boldsymbol{\beta}$ is obtained by regrouping all terms that depend on $\omega$ and integrating over the latter, recognizing the integral as an unnormalized gamma density, and thus
 \begin{align*}
  p(\boldsymbol{\beta}, \mid \boldsymbol{y}) & \stackrel{\boldsymbol{\beta}}{\propto} \int_0^\infty \omega^{(\nu_0 + n + p)/2 -1}\exp\left\{- \omega \frac{\tau_n +(\boldsymbol{\beta} - \boldsymbol{\mu}_n)^\top\mathbf{\Omega}_n(\boldsymbol{\beta} - \boldsymbol{\mu}_n)}{2}\right\} \mathrm{d} \omega
  \\&\stackrel{\boldsymbol{\beta}}{\propto} \left\{\frac{\tau_n +(\boldsymbol{\beta} - \boldsymbol{\mu}_n)^\top\mathbf{\Omega}_n(\boldsymbol{\beta} - \boldsymbol{\mu}_n)}{2}\right\}^{-(\nu_0 + n + p)/2}
@@ -97,9 +99,74 @@ so must be a Student-$t$ distribution with location $\boldsymbol{\mu}_n$, scale 
 The choice of prior precision $\boldsymbol{\Omega}_0$ is left to the user, but typically the components of the vector $\boldsymbol{\beta}$ are left apriori independent, with $\boldsymbol{\Omega}_0 \propto \lambda\mathbf{I}_n$.
 
 
+In multivariate regression, it sometimes is useful to specify correlated coefficients (e.g., for random effects). This leads to the necessity to set a prior on a covariance matrix.
+
+
+:::{#prp-Wishart-distribution}
+
+## Wishart distribution
+
+Let $\boldsymbol{Q}$ by a random $p \times p$ symmetric positive definite  matrix with Wishart distribution, denoted $\mathbf{Q} \sim \mathsf{Wishart}_p(\nu, \mathbf{S})$ for $\nu>0$ degrees of freedom and scale $\mathbf{S}$. It's density is proportional to
+\begin{align*}
+ f(\boldsymbol{Q}) \stackrel{\boldsymbol{Q}}{\propto} |\boldsymbol{Q}|^{(\nu-p-1)/2}\exp\{-\mathrm{tr}(\mathbf{S}^{-1}\boldsymbol{Q})/2\}, \qquad \nu > p-1.
+\end{align*}
+where $|\cdot|$ denotes the determinant of the matrix and $\mathrm{tr}$ the trace operator. The Wishart also arises from considering $n \geq p$ independent and identically distributed mean zero Gaussian vectors $\boldsymbol{Y}_i \sim \mathsf{Gauss}_p(\boldsymbol{0}_p, \mathbf{S})$, where
+\begin{align*}
+ \sum_{i=1}^{\nu} \boldsymbol{Y}_i\boldsymbol{Y}_i^\top \sim \mathsf{Wishart}_p(\nu, \mathbf{S}).
+\end{align*}
+For prior elicitation, $\nu$ is thus a prior sample size, whereas we can specify $\mathbf{S}$ using the fact that the mean of the Wishart is $\nu \mathbf{S}$; taking an identity matrix is standard. For more mathematical properties, consult Chapter 8 of @Eaton:2007.
+
+:::
+
+:::{#def-inverse-wishart}
+
+## Inverse Wishart
+
+
+Analogous to the relationship between gamma prior for the precision and inverse gamma for the variance, we can also similarly consider a prior for the covariance matrix $\boldsymbol{\Sigma} = \boldsymbol{Q}^{-1}$. Applying the change of variable formula, we get Jacobian $|\boldsymbol{\Sigma}|^{p+1}$, and so $\boldsymbol{\Sigma}$ is inverse Wishart $\mathsf{inv. Wishart}(\nu, \mathbf{S}^{-1}),$ with density proportional to
+\begin{align*}
+ p(\boldsymbol{\Sigma}) \propto |\boldsymbol{\Sigma}|^{-(\nu+p+1)/2} \exp\left\{-\frac{1}{2} \mathrm{tr}\left(\boldsymbol{S}^{-1}\boldsymbol{\Sigma}^{-1}\right)\right\}
+\end{align*}
+with expectation $\mathbf{S}^{-1}(\nu-p-1)$ for $\nu > p+1.$
+
+
+:::
+
+:::{#prp-conjugate-prior}
+
+## Wishart as conjugate prior in Gaussian model
+
+Consider $\boldsymbol{\mu} \sim \mathsf{Gauss}_p(\boldsymbol{\mu}_0, \boldsymbol{Q}^{-1})$ and $\boldsymbol{Q} \sim \mathsf{Wishart}_p(\nu, \mathbf{S})$ for $\nu \geq p$. Then, the conditional density of $\boldsymbol{Q} \mid \boldsymbol{\mu}, \boldsymbol{\mu}_0$ is proportional to
+\begin{align*}
+ |\boldsymbol{Q}|^{1/2} \exp \left\{ -\frac{1}{2} (\boldsymbol{\mu}-\boldsymbol{\mu}_0)^\top\boldsymbol{Q}(\boldsymbol{\mu}-\boldsymbol{\mu}_0)\right\} |\boldsymbol{Q}|^{(\nu-p-1)/2}\exp\{-\mathrm{tr}(\mathbf{S}^{-1}\boldsymbol{Q})/2\}
+\end{align*}
+and thus $\mathsf{Wishart}_p\{\nu + 1/2, \boldsymbol{S} + (\boldsymbol{\mu}-\boldsymbol{\mu}_0)(\boldsymbol{\mu}-\boldsymbol{\mu}_0)^\top\}.$ To see this, note that a $1 \times 1$ matrix is equal to it's trace, and the trace operator is invariant to cyclic of it's argument, meaning that
+\begin{align*}
+ (\boldsymbol{\mu}-\boldsymbol{\mu}_0)^\top\boldsymbol{Q}(\boldsymbol{\mu}-\boldsymbol{\mu}_0) = \mathrm{tr}\left\{ \boldsymbol{Q}(\boldsymbol{\mu}-\boldsymbol{\mu}_0)(\boldsymbol{\mu}-\boldsymbol{\mu}_0)^\top\right\}.
+\end{align*}
+We then combine elements to get the parameters. This extends naturally to the case of $n$ independent observations, for example linear regression model.
+
+:::
+
+
+:::{#prp-prior-variance}
+
+## Priors for variance matrices
+
+The marginal precision for the Wishart variate are gamma distributed with the same degrees of freedom $\nu$. The problem with using this prior is that it has a single parameter governing all scale parameters (i.e., the marginal variance) and the absolute value of the correlation and marginal variance parameters are negatively related [@Gelman:2013]. Large variance thus correspond to small correlations shrunk towards zero. There exists alternative distributions, such as the scaled-inverse Wishart adds redundant scale parameters to decouple $\mathrm{diag}(\boldsymbol{\xi}) \boldsymbol{\Sigma}\mathrm{diag}(\boldsymbol{\xi})$, but we refrain from pursuing this here.
+
+A better alternative is to specify different prior for each marginal scale $\sigma_j$ and a prior on the correlation matrix $\mathbf{R}.$ For the latter, the onion peelor LKJ prior, named after the authors of @Lewandowski:2009, is $p(\mathbf{R}) \propto |\mathbf{R}|^{\eta-1}$ for a scale $\eta>0.$ The case $\eta=1$ leads to uniform over the space of correlation matrices, and $\eta>1$ favours the identity matrix.
+
+
+:::
+
+
 ## Shrinkage priors
 
-In contexts where the number of regressors $p$ is considerable relative to the sample size $n$, it may be useful to constrain the parameter vector if we assume that the spignal is sparse, with a large proportion of coefficients that should be zero. Shrinkage priors can regularize and typically consist of distributions that have a mode at zero, and another that allows for larger signals.
+In contexts where the number of regressors $p$ is considerable relative to the sample size $n$, it may be useful to constrain the parameter vector if we assume that the signal is sparse, with a large proportion of coefficients that should be zero. This is notably important when the ratio $p/n \to c$ for $c > 0,$ meaning that the number of coefficients and covariates increases proportional to the sample size. Shrinkage priors can regularize and typically consist of distributions that have a mode at zero, and another that allows for larger signals.
+
+The scale parameters and hyperparameters can be estimated jointly with the model, and uncertainty diagnostics follow naturally. We assume that coefficients $\beta_j$ are independent apriori, although it is possible to specify group structures (e.g., for handling coefficients associated to a common categorical covariate with $K$ levels, represented by $K-1$ columns of dummy group indicators).
+
 
 :::{#prp-spike-slab}
 
@@ -109,7 +176,7 @@ In contexts where the number of regressors $p$ is considerable relative to the s
 The spike-and-slab prior is a two-component mixture that assigns a positive probability to zero via a point mass or a vary narrow distribution centered at the origin (the spike) and the balance to the slab, a diffuse distribution.
 
 
-Originally proposed by @Mitchell.Beauchamp:1988 with a uniform on a large interval, the term was also used in @George.McCulloch:1993, which replace both components,  to enable conjugacy, by Gaussians. The first one of these is diffuse and the other has near infinite precision at the origin. Letting $\gamma_j \in [0,1]$ denote the probability of the slab or inclusion of the variable, the independent priors for the regression coefficients are
+The spike-and-slab prior was originally proposed by @Mitchell.Beauchamp:1988 with a uniform on a large interval and a point mass at zero. The term was also used in @George.McCulloch:1993, which replaced the prior by a mixture of Gaussians, one of which diffuse and the other with near infinite precision and centered at the origin. The latter is known under the vocable stochastic search variable selection prior. Letting $\gamma_j \in [0,1]$ denote the probability of the slab or inclusion of the variable, the independent priors for the regression coefficients are
 \begin{align*}
  \beta_j \mid \gamma_j, c_j^2,\phi^2_j \sim (1-\gamma_j) \mathsf{Gauss}(0, \phi^2_j) + \gamma_j \mathsf{Gauss}(0, \sigma_j^2\phi^2)
 \end{align*}
@@ -124,6 +191,103 @@ where $\sigma^2_j$ is very nearly zero. We set a Jeffrey's prior for $\gamma_j \
 ## Horseshoe prior
 
 
-The horseshoe prior of @Carvalho.Polson.Scott:2010
+The horseshoe prior of @Carvalho.Polson.Scott:2010 is a hierarchical prior of the form 
+\begin{align*}
+\beta_j \mid \sigma^2_j \sim \mathsf{Gauss}(0, \sigma^2_j), \quad \sigma^2_j \mid \lambda \sim \mathsf{Student}_{+}(0, \sigma, 1), \quad \lambda \sim \mathsf{Student}_{+}(0, \kappa, 1)
+\end{align*}
+where $\mathsf{Student}_{+}(0, a, 1)$ denotes a half-Cauchy distribution with scale $a>0,$ truncated on $\mathbb{R}_{+}.$
+
+This prior has no explicit density, but is continuous and can be simulated. It's name comes from the shrinkage factor behaviour $\kappa_j = (1+\sigma^2_j)^{-1},$ which is equivalent to a $\mathsf{beta}(1/2, 1/2)$.
 
 :::
+
+
+In the Bayesian paradigm, regularization is achieved via priors that have mass at or towards zero, pushing coefficients of the regression model towards zero unless there is strong evidence from the likelihood against this. We however want to allow non-zero coefficients, typically by setting coefficient-specific parameters with a heavy tailed distribution to prevent overshrinking. Most if not all parameter can be viewed as scale mixtures of Gaussian.
+
+We make a distinction between **global** shrinkage priors those that consider a common shrinkage parameter for all regression coefficients, to be compared with **local** scale mixtures that have coefficient-specific parameters.
+
+
+```{r}
+#| eval: true
+#| echo: false
+#| cache: true
+#| label: fig-shrinkage
+#| fig-cap: "Marginal density for a regression coefficient $\\beta$ with horseshoe prior (full), Laplace (dashed) and a Student-$t$ (thick dotted). The plot on the right shows the tail behaviour. The density of the horseshoe is unbounded at the origin. Inspired from Figure 1 of @Carvalho.Polson.Scott:2010."
+# Plot density of betas for various shrinkage
+
+
+plam <- function(lambda, log = FALSE){
+  dens <- 4*log(lambda) /(pi^2*(lambda^2-1))
+  dens[lambda == 0] <- 0
+  dens[lambda == 1] <- 2/(pi^2)
+  if(isTRUE(log)){
+    log(dens)
+  } else{
+   dens
+  }
+}
+
+dhorseshoe <- function(pars, log = TRUE){
+  logdens <- dnorm(pars[1], 0, sd = pars[2], log = TRUE) +
+    plam(pars[2], log = TRUE)
+  if(isTRUE(log)){
+    logdens
+  } else{
+    exp(logdens)
+  }
+}
+
+dhorseshoe_v <- function(lambda, beta, log = TRUE){
+  if(length(lambda) > 1){
+  stopifnot(length(beta) %in% c(1L, length(lambda)))
+  }
+  logdens <- dnorm(beta, 0, sd = lambda, log = TRUE) +
+    plam(lambda, log = TRUE)
+  if(isTRUE(log)){
+    logdens
+  } else{
+    exp(logdens)
+  }
+}
+
+B <- 1001L
+beta_s <- seq(0.01, 6, length.out = B)
+dbeta_hs1 <- dbeta_hs2 <- numeric(B)
+for(i in seq_along(beta_s)){
+  integ <- integrate(f = function(lam){
+                 dhorseshoe_v(beta = beta_s[i], lambda = lam, log = FALSE)},
+            lower = 0,
+            upper = Inf)
+  dbeta_hs1[i] <- integ$value
+}
+xs <- seq(-4,4, length.out = 101)
+dl <- extraDistr::dlaplace(x = xs, mu = 0, sigma = 1)
+par(mfrow = c(1,2), mar = c(5,5,1,1))
+plot(x = c(-rev(beta_s), beta_s),
+     y = c(rev(dbeta_hs1), dbeta_hs1),
+     type = "l",
+     ylab = "density",
+     bty = "l",
+     ylim = c(0,2),
+     xlim = c(-4,4),
+     yaxs = "i",
+     xlab = expression(beta))
+lines(xs, dl, lty = 2)
+lines(xs, dt(xs, df = 1), lty = 3, lwd = 1.5)
+
+xs2 <- seq(4, 6, length.out = 101)
+plot(x = beta_s[beta_s>=4],
+     y = dbeta_hs1[beta_s>=4],
+     type = "l",
+     ylab = "density",
+     bty = "l",
+     ylim = c(0,0.02),
+     xlim = c(4,6),
+     yaxs = "i",
+     xlab = expression(beta))
+lines(xs2, extraDistr::dlaplace(x = xs2, mu = 0, sigma = 1), lty = 2)
+lines(xs2, dt(xs2, df = 1), lty = 3, lwd = 1.5)
+```
+
+
+The amount of shrinkage is governed by an hyperparameter $\lambda>0.$

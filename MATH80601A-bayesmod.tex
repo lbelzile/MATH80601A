@@ -305,15 +305,15 @@
 \newcommand*\listoflistings{\listof{codelisting}{List of Listings}}
 \usepackage{amsthm}
 \theoremstyle{definition}
+\newtheorem{definition}{Definition}[chapter]
+\theoremstyle{plain}
+\newtheorem{proposition}{Proposition}[chapter]
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}[chapter]
+\theoremstyle{definition}
 \newtheorem{exercise}{Exercise}[chapter]
 \theoremstyle{definition}
 \newtheorem{example}{Example}[chapter]
-\theoremstyle{definition}
-\newtheorem{definition}{Definition}[chapter]
-\theoremstyle{plain}
-\newtheorem{theorem}{Theorem}[chapter]
-\theoremstyle{plain}
-\newtheorem{proposition}{Proposition}[chapter]
 \theoremstyle{remark}
 \AtBeginDocument{\renewcommand*{\proofname}{Proof}}
 \newtheorem*{remark}{Remark}
@@ -369,7 +369,7 @@ details.
 These notes are licensed under a
 \href{http://creativecommons.org/licenses/by-nc-sa/4.0/}{Creative
 Commons Attribution-NonCommercial-ShareAlike 4.0 International License}
-and were last compiled on Monday, February 10 2025.
+and were last compiled on Wednesday, February 26 2025.
 
 The objective of the course is to provide a hands on introduction to
 Bayesian data analysis. The course will cover the formulation,
@@ -5658,8 +5658,8 @@ hierarchical construction to defined the Bayesian LASSO. With a model
 matrix \(\mathbf{X}\) whose columns are standardized to have mean zero
 and unit standard deviation, we may write \begin{align*}
 \boldsymbol{Y} \mid \mu, \boldsymbol{\beta}, \sigma^2 &\sim  \mathsf{Gauss}_n(\mu \boldsymbol{1}_n + \mathbf{X}\boldsymbol{\beta}, \sigma \mathbf{I}_n)\\
-\beta_j \mid \sigma, \tau &\sim \mathsf{Gauss}(0, \sigma\tau)\\
-\tau &\sim \mathsf{expo}(\lambda/2)
+\beta_j \mid \sigma, \tau_j &\sim \mathsf{Gauss}(0, \sigma\tau_j)\\
+\tau_j &\sim \mathsf{expo}(\lambda/2)
 \end{align*} If we set an improper prior
 \(p(\mu, \sigma) \propto \sigma^{-1},\) the resulting conditional
 distributions are all available and thus the model is amenable to Gibbs
@@ -6019,13 +6019,17 @@ For example, the Geweke \(Z\)-score compares the averages for the
 beginning and the end of the chain: rejection of the null implies lack
 of convergence, or poor mixing.
 
-Running multiple Markov chains can be useful for diagnostics. The
-Gelman--Rubin diagnostic \(\widehat{R},\) introduced in Gelman and Rubin
-(\citeproc{ref-Gelman.Rubin:1992}{1992}) and also called potential scale
-reduction statistic, is obtained by considering the difference between
-within-chains and between-chains variance. Suppose we run \(M\) chains
-for \(B\) iterations, post burn in. Denoting by \(\theta_{bm}\) the
-\(b\)th draw of the \(m\)th chain, we compute the global average
+Running multiple Markov chains can be useful for diagnostics.
+
+\begin{proposition}[Gelman--Rubin
+diagnostic]\protect\hypertarget{prp-rhat}{}\label{prp-rhat}
+
+The Gelman--Rubin diagnostic \(\widehat{R},\) introduced in Gelman and
+Rubin (\citeproc{ref-Gelman.Rubin:1992}{1992}) and also called potential
+scale reduction statistic, is obtained by considering the difference
+between within-chains and between-chains variance. Suppose we run \(M\)
+chains for \(B\) iterations, post burn in. Denoting by \(\theta_{bm}\)
+the \(b\)th draw of the \(m\)th chain, we compute the global average
 \(\overline{\theta} = B^{-1}M^{-1}\sum_{b=1}^B \sum_{m=1}^m \theta_{bm}\)
 and similarly the chain sample average and variances, respectively
 \(\overline{\theta}_m\) and \(\widehat{\sigma}^2_m\)
@@ -6045,6 +6049,8 @@ something being amiss. Figure~\ref{fig-rhat} shows two instances where
 the chains are visually very far from having the same average and this
 is reflected by the large values of \(\widehat{R}.\)
 
+\end{proposition}
+
 \begin{figure}[ht!]
 
 \centering{
@@ -6061,11 +6067,13 @@ but do not appear stable with \(\widehat{R} \approx 1.6.\)}
 
 \end{figure}%
 
-More generally, it is preferable to run a single chain for a longer
-period than run multiple chains sequentially, as there is a cost to
+Generally, it is preferable to run a single chain for a longer period
+than run multiple chains sequentially, as there is a cost to
 initializing multiple times with different starting values since we must
 discard initial draws. With parallel computations, multiple chains are
 more frequent nowadays.
+
+\begin{definition}[Thinning]\protect\hypertarget{def-thinning}{}\label{def-thinning}
 
 MCMC algorithms are often run thinning the chain (i.e., keeping only a
 fraction of the samples drawn, typically every \(k\) iteration). This is
@@ -6073,6 +6081,8 @@ wasteful as we can of course get more precise estimates by keeping all
 posterior draws, whether correlated or not. The only argument in favor
 of thinning is limited storage capacity: if we run very long chains in a
 model with hundreds of parameters, we may run out of memory.
+
+\end{definition}
 
 \subsection{Posterior predictive
 checks}\label{posterior-predictive-checks}
@@ -6151,7 +6161,7 @@ An older criterion which has somewhat fallen out of fashion is the
 relative to the point estimator of the parameter
 \(\widetilde{\boldsymbol{\theta}}\) (e.g., the maximum a posteriori or
 the posterior mean) \begin{align*}
-p_D = \mathsf{E}\{D(\boldsymbol{\theta}, \widetilde{\boldsymbol{\theta}}) \mid \boldsymbol{y}\}= \int 2 \{ \ell(\widetilde{\boldsymbol{\theta}}) - \ell(\boldsymbol{\theta})\} f(\boldsymbol{\theta} \mid \boldsymbol{y} \mathrm{d} \boldsymbol{\theta}
+p_D = \mathsf{E}\{D(\boldsymbol{\theta}, \widetilde{\boldsymbol{\theta}}) \mid \boldsymbol{y}\}= \int 2 \{ \ell(\widetilde{\boldsymbol{\theta}}) - \ell(\boldsymbol{\theta})\} f(\boldsymbol{\theta} \mid \boldsymbol{y}) \mathrm{d} \boldsymbol{\theta}
 \end{align*} The DIC can be easily evaluated by keeping track of the log
 likelihood evaluated at each posterior draw from a Markov chain Monte
 Carlo algorithm. The penalty term \(p_D\) is however not invariant to
@@ -6291,7 +6301,7 @@ Another option proposed by Andrieu and Roberts
 from Beaumont (\citeproc{ref-Beaumont:2003}{2003}) relies on pseudo
 marginalization, where integration is done via Monte Carlo sampling.
 Specifically, suppose that we are ultimately interested in
-\[\boldsymbol{\theta}= \int p(\boldsymbol{\theta}, \boldsymbol{z}) \mathrm{d} \boldsymbol{z},\]
+\[p(\boldsymbol{\theta})= \int p(\boldsymbol{\theta}, \boldsymbol{z}) \mathrm{d} \boldsymbol{z},\]
 but that for this purpose we normally sample from both parameters. Given
 a proposal \(\boldsymbol{\theta}\) and \(q_1(\boldsymbol{\theta})\) and
 subsequently \(L\) draws once from
@@ -6337,12 +6347,13 @@ When parameters of the vector \(\boldsymbol{\theta}\) that we wish to
 sample are strongly correlated, it is advisable when possible to
 simulate them jointly. Because the unnormalized posterior is evaluated
 at each step conditional on all values, the Markov chain will be making
-incremental moves and mix slowly.
+incremental moves and mix slowly if we sample them one step at a time.
 
 \end{proposition}
 
-Before showcasing the effect of blocking and joint updated, we present
-another example of data augmentation using @\#exm-probit-regression.
+Before showcasing the effect of blocking and joint updates, we present
+another example of data augmentation using
+Example~\ref{exm-probit-regression}.
 
 \begin{example}[Tokyo
 rainfall]\protect\hypertarget{exm-Tokyo-rainfall}{}\label{exm-Tokyo-rainfall}
@@ -6360,7 +6371,7 @@ rain. The underlying probit model considered takes
 \(p_t = \Phi(\beta_t).\)
 
 We specify the random effects
-\(\boldsymbol{\beta} \sim \mathsf{Gauss}_{T}(\boldsymbol{0}, \tau^{-1}\mathbf{Q}),\)
+\(\boldsymbol{\beta} \sim \mathsf{Gauss}_{T}(\boldsymbol{0}, \tau^{-1}\mathbf{Q}^{-1}),\)
 where \(\mathbf{Q}\) is a \(T \times T\) precision matrix that encodes
 the local dependence. A circular random walk structure of order 2 is
 used to model the smooth curves by smoothing over neighbors, and
@@ -6372,8 +6383,8 @@ the process with \begin{align*}
 \end{align*} This yields an intrinsic Gaussian Markov random field with
 a circulant precision matrix \(\tau\mathbf{Q}=\tau\mathbf{GG^\top}\) of
 rank \(T-1,\) where \begin{align*}
-\mathbf{G} &= 
-\begin{pmatrix} 
+\mathbf{G} &=
+\begin{pmatrix}
 2 & -1 & 0 & 0 & \cdots & -1\\
 -1 & 2 & -1 & 0 & \ddots & 0 \\
 0 & -1 & 2 & -1 & \ddots & 0 \\
@@ -6381,8 +6392,8 @@ rank \(T-1,\) where \begin{align*}
 -1 & 0 & 0 & 0 & \cdots & 2
 \end{pmatrix},
 \\
-\mathbf{Q} &= 
-\begin{pmatrix} 
+\mathbf{Q} &=
+\begin{pmatrix}
 6 & -4 & 1 & 0 & \cdots & 1 & -4\\
 -4 & 6 & -4 & 1 & \ddots & 0 & 1 \\
 1 & -4 & 6 & -4 & \ddots & 0 & 0 \\
@@ -6390,11 +6401,11 @@ rank \(T-1,\) where \begin{align*}
 -4 & 1 & 0 & 0 & \cdots & -4 & 6
 \end{pmatrix}.
 \end{align*} Because of the linear dependency, the determinant of
-\(\mathbf{Q}\) as presented is zero. The contribution from the latent
-mean parameters is multivariate Gaussian and we exploit for computations
-the sparsity of the precision matrix \(\mathbf{Q}.\)
-Figure~\ref{fig-CRW2-prior} shows five draws from the prior model, which
-loops back between December 31st and January 1st, and is rather smooth.
+\(\mathbf{Q}\) is zero. The contribution from the latent mean parameters
+is multivariate Gaussian and we exploit for computations the sparsity of
+the precision matrix \(\mathbf{Q}.\) Figure~\ref{fig-CRW2-prior} shows
+five draws from the prior model, which loops back between December 31st
+and January 1st, and is rather smooth.
 
 \begin{figure}[ht!]
 
@@ -6424,7 +6435,7 @@ p(\boldsymbol{\beta} \mid \tau)p(\tau)\prod_{t=1}^{T}\prod_{i=1}^{n_t}p(y_{t,i} 
 \end{align*} and once we have imputed the Gaussian latent vectors, we
 can work directly with the values of \(z_t = \sum_{i=1}^{n_t} z_{i,t}.\)
 The posterior is \begin{align*}
-p(\boldsymbol{\beta}, \tau) \propto \tau^{(n-1)/2}\exp \left( - \frac{\tau}{2} \boldsymbol{\beta}^\top \mathbf{Q} \boldsymbol{\beta}\right)\exp\left\{ - \frac{1}{2} (\boldsymbol{z} - \boldsymbol{\beta})^\top \mathrm{diag}(\boldsymbol{n})(\boldsymbol{z} - \boldsymbol{\beta})\right\} \tau^{a-1}\exp(-\tau b)
+p(\boldsymbol{\beta}, \tau) \propto \tau^{(n-1)/2}\exp \left( - \frac{\tau}{2} \boldsymbol{\beta}^\top \mathbf{Q} \boldsymbol{\beta}\right)\exp\left\{ - \frac{1}{2} (\boldsymbol{z}/\boldsymbol{n} - \boldsymbol{\beta})^\top \mathrm{diag}(\boldsymbol{n})(\boldsymbol{z}/\boldsymbol{n} - \boldsymbol{\beta})\right\} \tau^{a-1}\exp(-\tau b)
 \end{align*} where \(\boldsymbol{z} = (z_1, \ldots, z_T).\) Completing
 the quadratic form shows that \begin{align*}
 \boldsymbol{\beta} \mid \boldsymbol{z}, \tau &\sim \mathsf{Gauss}_T\left[\left\{\tau \mathbf{Q} + \mathrm{diag}(\boldsymbol{n})\right\}^{-1} \boldsymbol{z}, \left\{\tau \mathbf{Q} + \mathrm{diag}(\boldsymbol{n})\right\}^{-1}\right]\\
@@ -6566,7 +6577,7 @@ conditional \(\boldsymbol{\beta} \mid \boldsymbol{z}, \tau^{\star}\) and
 accepting/rejecting the whole move. A second alternative is to ditch
 altogether the data augmentation step and write the unnormalized log
 posterior for \(\boldsymbol{\beta}\) as \begin{align*}
-p(\boldsymbol{\beta} \mid \boldsymbol{y}) \stackrel{\boldsymbol{\beta}}{\propto} - \frac{\tau}{2} \boldsymbol{\beta}^\top \mathbf{Q} \boldsymbol{\beta} + \sum_{t=1}^{366} y_{t} \log \Phi(\beta_t) + (n_t-y_{t}) \log\{1-\Phi(\beta_t)\}
+ \log p(\boldsymbol{\beta} \mid \boldsymbol{y}) \stackrel{\boldsymbol{\beta}}{\propto} - \frac{\tau}{2} \boldsymbol{\beta}^\top \mathbf{Q} \boldsymbol{\beta} + \sum_{t=1}^{366} y_{t} \log \Phi(\beta_t) + (n_t-y_{t}) \log\{1-\Phi(\beta_t)\}
 \end{align*} and do a quadratic approximation to the posterior by doing
 a Taylor expansion of the terms \(\log p(y_{t} \mid \beta_{t})\) around
 the current value of the draw for \(\boldsymbol{\beta}.\) Given that
@@ -6588,6 +6599,389 @@ move for the acceptance ratio. We refer to Section 4.4.1 of Rue and Held
 (\citeproc{ref-Rue.Held:2005}{2005}) for more details.
 
 \end{example}
+
+\bookmarksetup{startatroot}
+
+\chapter{Regression models}\label{regression-models}
+
+This chapter is dedicated to the study of generalized linear regression
+models from a Bayesian standpoint. Starting with Gaussian data, we
+investigate the link between frequentist approaches to regularization
+and shrinkage priors. We also look at hierarchical models with mixed
+effects and variable selection using reversible jump MCMC and
+conditional Bayes factor.
+
+Throughout, we consider regression models with model (or design) matrix
+\(\mathbf{X} \in \mathbb{R}^{n \times p}\) with centered inputs, so
+\(\mathbf{1}_n^\top\mathbf{X}=\mathbf{0}_p.\) We are interested in the
+associated vector of regression coefficients
+\(\boldsymbol{\beta} = (\beta_1, \ldots, \beta_p)^\top\) which describe
+the mean and act as weights for each covariate vector. In the ordinary
+linear regression model \begin{align*}
+\boldsymbol{Y} \mid \mathbf{X}, \boldsymbol{\beta}, \omega \sim \mathsf{Gauss}_n(\beta_0\mathbf{1}_n + \mathbf{X}\boldsymbol{\beta}, \omega^{-1}\mathbf{I}_n),
+\end{align*} so that observations are independent and homoscedastic.
+Inference is performed conditional on the observed covariate vectors
+\(\mathbf{X}_i\); we omit this dependence hereafter, but note that this
+can be relaxed. The intercept \(\beta_0\), which is added to capture the
+mean response and make it mean-zero, receives special treatment and is
+typically assigned an improper prior. We largely follow the exposition
+of Villani (\citeproc{ref-Villani:2023}{2023}).
+
+\begin{proposition}[Gaussian ordinary linear regression with conjugate
+priors]\protect\hypertarget{prp-gaussian-ols}{}\label{prp-gaussian-ols}
+
+The conjugate prior for the Gaussian regression model for the mean and
+precision parameters \(\boldsymbol{\beta}\) and \(\omega\),
+respectively, is a Gaussian-gamma and is defined hierarchically as
+\begin{align*}
+\boldsymbol{\beta} \mid \omega &\sim \mathsf{Gauss}\left\{\boldsymbol{\mu}_0, (
+\omega\boldsymbol{\Omega}_0)^{-1}\right\} \\
+\omega &\sim \mathsf{gamma}(\nu_0/2,\tau_0/2).
+\end{align*} Using properties of the Gaussian distribution, the sampling
+distribution of the ordinary least squares estimator is
+\(\widehat{\boldsymbol{\beta}} \sim \mathsf{Gauss}_p\{\boldsymbol{\beta}, (\omega\mathbf{X}^\top\mathbf{X})^{-1}\}\).
+
+Then the conditional and marginal posterior distributions \begin{align*}
+\boldsymbol{\beta} \mid \sigma^2, \boldsymbol{y} &\sim \mathsf{Gauss}_p\left\{\boldsymbol{\mu}_n, (\omega\boldsymbol{\Omega}_n)^{-1}\right\}  \\
+\omega \mid  \boldsymbol{y} &\sim \mathsf{gamma}\left\{(\nu_0 + n)/2,  \tau^2_n/2\right\}, \\
+\boldsymbol{\beta} \mid  \boldsymbol{y} &\sim \mathsf{Student}(\boldsymbol{\mu}_n,  \tau_n/(\nu_0+n) \times \mathbf{\Omega}_n^{-1}, \nu_0 + n)
+\end{align*} where \begin{align*}
+\boldsymbol{\Omega}_n &= \mathbf{X}^\top\mathbf{X} + \boldsymbol{\Omega}_0\\
+\boldsymbol{\mu}_n &= \boldsymbol{\Omega}_n^{-1}(\mathbf{X}^\top\mathbf{X}\widehat{\boldsymbol{\beta}} + \boldsymbol{\Omega}_0\boldsymbol{\mu}_0) = \boldsymbol{\Omega}_n^{-1}(\mathbf{X}^\top\boldsymbol{y} + \boldsymbol{\Omega}_0\boldsymbol{\mu}_0)\\
+\tau_n &= \tau_0 + (\boldsymbol{y} - \mathbf{X}\widehat{\boldsymbol{\beta}})^\top(\boldsymbol{y} - \mathbf{X}\widehat{\boldsymbol{\beta}}) + (\boldsymbol{\mu}_n - \widehat{\boldsymbol{\beta}})^\top \mathbf{X}^\top\mathbf{X}(\boldsymbol{\mu}_n - \widehat{\boldsymbol{\beta}}) \\& \quad + (\boldsymbol{\mu}_n-\boldsymbol{\mu}_0)^\top\boldsymbol{\Omega}_0(\boldsymbol{\mu}_n-\boldsymbol{\mu}_0)
+\end{align*}
+
+\end{proposition}
+
+\begin{proposition}[Decomposition of quadratic
+forms]\protect\hypertarget{prp-quadratic-forms}{}\label{prp-quadratic-forms}
+
+For quadratic forms (in \(\boldsymbol{x}\)) with \begin{align*}
+& (\boldsymbol{x} - \boldsymbol{a})^\top \mathbf{A}(\boldsymbol{x} - \boldsymbol{a}) + (\boldsymbol{x} - \boldsymbol{b})^\top \mathbf{B}(\boldsymbol{x} - \boldsymbol{b}) \\\quad &=
+ (\boldsymbol{x} - \boldsymbol{c})^\top \mathbf{C}(\boldsymbol{x} - \boldsymbol{c}) + (\boldsymbol{c}-\boldsymbol{a})^\top\mathbf{A}(\boldsymbol{c}-\boldsymbol{a}) + (\boldsymbol{c}-\boldsymbol{b})^\top\mathbf{B}(\boldsymbol{c}-\boldsymbol{b})\\
+&\stackrel{\boldsymbol{x}}{\propto} (\boldsymbol{x} - \boldsymbol{c})^\top \mathbf{C}(\boldsymbol{x} - \boldsymbol{c})
+\end{align*} where \(\mathbf{C} = \mathbf{A} + \mathbf{B}\) and
+\(\boldsymbol{c}= \mathbf{C}^{-1}(\mathbf{A}\boldsymbol{a} + \mathbf{B}\boldsymbol{b})\).
+
+\end{proposition}
+
+\begin{proof}
+The improper prior
+\(p(\boldsymbol{\beta}, \sigma^2) \propto \sigma^{-2}\) can be viewed as
+a special case of the conjugate prior when the variance of the Gaussian
+is infinite and the \(\mathsf{gamma}(a,b)\) when both \(a, b \to 0.\)
+
+Write the posterior as \begin{align*}
+ p(\boldsymbol{\beta}, \omega \mid \boldsymbol{y}) &\propto p(\boldsymbol{y} \mid \boldsymbol{\beta}, \omega) p(\omega)
+ \\& \propto  \omega^{n/2} \exp\left\{-\frac{\omega}{2}(\boldsymbol{y}-\mathbf{X}\boldsymbol{\beta})^\top(\boldsymbol{y}-\mathbf{X}\boldsymbol{\beta})\right\}\\& \times |\omega\boldsymbol{\Omega}_0|^{1/2}\exp \left\{ -\frac{\omega}{2} (\boldsymbol{\beta}-\boldsymbol{\mu}_0)^\top\boldsymbol{\Omega}_0(\boldsymbol{\beta}-\boldsymbol{\mu}_0)\right\} \\& \times \omega^{\nu_0/2-1}\exp\left(-\tau_0\omega/2\right).
+\end{align*} We rewrite the first quadratic form in
+\(\boldsymbol{y}-\mathbf{X}\boldsymbol{\beta}\) using the orthogonal
+decomposition \begin{align*}
+ (\boldsymbol{y}-\mathbf{X}\widehat{\boldsymbol{\beta}}) + (\mathbf{X}\widehat{\boldsymbol{\beta}} - \mathbf{X}\boldsymbol{\beta})
+\end{align*} since
+\((\boldsymbol{y}-\mathbf{X}\widehat{\boldsymbol{\beta}})^\top (\mathbf{X}\widehat{\boldsymbol{\beta}} - \mathbf{X}\boldsymbol{\beta}) = 0.\)
+We can pull together terms and separate the conditional posterior
+\(p(\boldsymbol{\beta} \mid \boldsymbol{y}, \omega)\) and
+\(p(\omega \mid \boldsymbol{y})\) as \begin{align*}
+ p(\boldsymbol{\beta}, \omega \mid \boldsymbol{y}) &\propto \omega^{(n+p+\nu_0)/2 -1} \exp\left[-\frac{\omega}{2}\left\{\tau_0 + (\boldsymbol{y}-\mathbf{X}\widehat{\boldsymbol{\beta}})^\top(\boldsymbol{y}-\mathbf{X}\widehat{\boldsymbol{\beta}})\right\}\right]
+ \\& \times \exp \left[-\frac{\omega}{2}\left\{(\widehat{\boldsymbol{\beta}} - \boldsymbol{\beta})^\top\mathbf{X}^\top\mathbf{X}(\widehat{\boldsymbol{\beta}} - \boldsymbol{\beta})+ (\boldsymbol{\beta}-\boldsymbol{\mu}_0)^\top\boldsymbol{\Omega}_0(\boldsymbol{\beta}-\boldsymbol{\mu}_0)\right\}\right]
+\end{align*} and using Proposition~\ref{prp-quadratic-forms} for the
+terms in the exponent with
+\(\boldsymbol{a} = \widehat{\boldsymbol{\beta}}\),
+\(\mathbf{A}=\mathbf{X}^\top\mathbf{X}\),
+\(\boldsymbol{b} = \boldsymbol{\mu}_0\) and
+\(\mathbf{B}=\boldsymbol{\Omega}_0\), we find \begin{align*}
+  p(\boldsymbol{\beta}, \omega \mid \boldsymbol{y}) & \propto
+   \omega^{(n+\nu_0)/2 -1} \exp\left(-\frac{\omega\tau_n}{2}\right)
+   \\& \times \omega^{p/2}\exp\left\{-\frac{1}{2}(\boldsymbol{\beta} - \boldsymbol{\mu}_n)^\top(\omega\mathbf{\Omega}_n)(\boldsymbol{\beta} - \boldsymbol{\mu}_n)\right\}
+\end{align*} whence the decomposition of the posterior as a Gaussian
+conditional on the precision, and a gamma for the latter. The marginal
+of \(\boldsymbol{\beta}\) is obtained by regrouping all terms that
+depend on \(\omega\) and integrating over the latter, recognizing the
+integral as an unnormalized gamma density, and thus \begin{align*}
+ p(\boldsymbol{\beta}, \mid \boldsymbol{y}) & \stackrel{\boldsymbol{\beta}}{\propto} \int_0^\infty \omega^{(\nu_0 + n + p)/2 -1}\exp\left\{- \omega \frac{\tau_n +(\boldsymbol{\beta} - \boldsymbol{\mu}_n)^\top\mathbf{\Omega}_n(\boldsymbol{\beta} - \boldsymbol{\mu}_n)}{2}\right\} \mathrm{d} \omega
+ \\&\stackrel{\boldsymbol{\beta}}{\propto} \left\{\frac{\tau_n +(\boldsymbol{\beta} - \boldsymbol{\mu}_n)^\top\mathbf{\Omega}_n(\boldsymbol{\beta} - \boldsymbol{\mu}_n)}{2}\right\}^{-(\nu_0 + n + p)/2}
+ \\& \stackrel{\boldsymbol{\beta}}{\propto} \left\{1 + \frac{(\boldsymbol{\beta} - \boldsymbol{\mu}_n)^\top\frac{\nu_0 + n}{\tau_n}\mathbf{\Omega}_n(\boldsymbol{\beta} - \boldsymbol{\mu}_n)}{\nu_0 + n}\right\}^{-(\nu_0 + n + p)/2}
+\end{align*} so must be a Student-\(t\) distribution with location
+\(\boldsymbol{\mu}_n\), scale matrix
+\(\tau_n/(\nu_0+n) \times \mathbf{\Omega}_n^{-1}\) and \(\nu_0+n\)
+degrees of freedom.
+\end{proof}
+
+The choice of prior precision \(\boldsymbol{\Omega}_0\) is left to the
+user, but typically the components of the vector \(\boldsymbol{\beta}\)
+are left apriori independent, with
+\(\boldsymbol{\Omega}_0 \propto \lambda\mathbf{I}_n\).
+
+In multivariate regression, it sometimes is useful to specify correlated
+coefficients (e.g., for random effects). This leads to the necessity to
+set a prior on a covariance matrix.
+
+\begin{proposition}[Wishart
+distribution]\protect\hypertarget{prp-Wishart-distribution}{}\label{prp-Wishart-distribution}
+
+Let \(\boldsymbol{Q}\) by a random \(p \times p\) symmetric positive
+definite matrix with Wishart distribution, denoted
+\(\mathbf{Q} \sim \mathsf{Wishart}_p(\nu, \mathbf{S})\) for \(\nu>0\)
+degrees of freedom and scale \(\mathbf{S}\). It's density is
+proportional to \begin{align*}
+ f(\boldsymbol{Q}) \stackrel{\boldsymbol{Q}}{\propto} |\boldsymbol{Q}|^{(\nu-p-1)/2}\exp\{-\mathrm{tr}(\mathbf{S}^{-1}\boldsymbol{Q})/2\}, \qquad \nu > p-1.
+\end{align*} where \(|\cdot|\) denotes the determinant of the matrix and
+\(\mathrm{tr}\) the trace operator. The Wishart also arises from
+considering \(n \geq p\) independent and identically distributed mean
+zero Gaussian vectors
+\(\boldsymbol{Y}_i \sim \mathsf{Gauss}_p(\boldsymbol{0}_p, \mathbf{S})\),
+where \begin{align*}
+ \sum_{i=1}^{\nu} \boldsymbol{Y}_i\boldsymbol{Y}_i^\top \sim \mathsf{Wishart}_p(\nu, \mathbf{S}).
+\end{align*} For prior elicitation, \(\nu\) is thus a prior sample size,
+whereas we can specify \(\mathbf{S}\) using the fact that the mean of
+the Wishart is \(\nu \mathbf{S}\); taking an identity matrix is
+standard. For more mathematical properties, consult Chapter 8 of Eaton
+(\citeproc{ref-Eaton:2007}{2007}).
+
+\end{proposition}
+
+\begin{definition}[Inverse
+Wishart]\protect\hypertarget{def-inverse-wishart}{}\label{def-inverse-wishart}
+
+Analogous to the relationship between gamma prior for the precision and
+inverse gamma for the variance, we can also similarly consider a prior
+for the covariance matrix \(\boldsymbol{\Sigma} = \boldsymbol{Q}^{-1}\).
+Applying the change of variable formula, we get Jacobian
+\(|\boldsymbol{\Sigma}|^{p+1}\), and so \(\boldsymbol{\Sigma}\) is
+inverse Wishart \(\mathsf{inv. Wishart}(\nu, \mathbf{S}^{-1}),\) with
+density proportional to \begin{align*}
+ p(\boldsymbol{\Sigma}) \propto |\boldsymbol{\Sigma}|^{-(\nu+p+1)/2} \exp\left\{-\frac{1}{2} \mathrm{tr}\left(\boldsymbol{S}^{-1}\boldsymbol{\Sigma}^{-1}\right)\right\}
+\end{align*} with expectation \(\mathbf{S}^{-1}(\nu-p-1)\) for
+\(\nu > p+1.\)
+
+\end{definition}
+
+\begin{proposition}[Wishart as conjugate prior in Gaussian
+model]\protect\hypertarget{prp-conjugate-prior}{}\label{prp-conjugate-prior}
+
+Consider
+\(\boldsymbol{\mu} \sim \mathsf{Gauss}_p(\boldsymbol{\mu}_0, \boldsymbol{Q}^{-1})\)
+and \(\boldsymbol{Q} \sim \mathsf{Wishart}_p(\nu, \mathbf{S})\) for
+\(\nu \geq p\). Then, the conditional density of
+\(\boldsymbol{Q} \mid \boldsymbol{\mu}, \boldsymbol{\mu}_0\) is
+proportional to \begin{align*}
+ |\boldsymbol{Q}|^{1/2} \exp \left\{ -\frac{1}{2} (\boldsymbol{\mu}-\boldsymbol{\mu}_0)^\top\boldsymbol{Q}(\boldsymbol{\mu}-\boldsymbol{\mu}_0)\right\} |\boldsymbol{Q}|^{(\nu-p-1)/2}\exp\{-\mathrm{tr}(\mathbf{S}^{-1}\boldsymbol{Q})/2\}
+\end{align*} and thus
+\(\mathsf{Wishart}_p\{\nu + 1/2, \boldsymbol{S} + (\boldsymbol{\mu}-\boldsymbol{\mu}_0)(\boldsymbol{\mu}-\boldsymbol{\mu}_0)^\top\}.\)
+To see this, note that a \(1 \times 1\) matrix is equal to it's trace,
+and the trace operator is invariant to cyclic of it's argument, meaning
+that \begin{align*}
+ (\boldsymbol{\mu}-\boldsymbol{\mu}_0)^\top\boldsymbol{Q}(\boldsymbol{\mu}-\boldsymbol{\mu}_0) = \mathrm{tr}\left\{ \boldsymbol{Q}(\boldsymbol{\mu}-\boldsymbol{\mu}_0)(\boldsymbol{\mu}-\boldsymbol{\mu}_0)^\top\right\}.
+\end{align*} We then combine elements to get the parameters. This
+extends naturally to the case of \(n\) independent observations, for
+example linear regression model.
+
+\end{proposition}
+
+\begin{proposition}[Priors for variance
+matrices]\protect\hypertarget{prp-prior-variance}{}\label{prp-prior-variance}
+
+The marginal precision for the Wishart variate are gamma distributed
+with the same degrees of freedom \(\nu\). The problem with using this
+prior is that it has a single parameter governing all scale parameters
+(i.e., the marginal variance) and the absolute value of the correlation
+and marginal variance parameters are negatively related
+(\citeproc{ref-Gelman:2013}{Gelman et al. 2013}). Large variance thus
+correspond to small correlations shrunk towards zero. There exists
+alternative distributions, such as the scaled-inverse Wishart adds
+redundant scale parameters to decouple
+\(\mathrm{diag}(\boldsymbol{\xi}) \boldsymbol{\Sigma}\mathrm{diag}(\boldsymbol{\xi})\),
+but we refrain from pursuing this here.
+
+A better alternative is to specify different prior for each marginal
+scale \(\sigma_j\) and a prior on the correlation matrix \(\mathbf{R}.\)
+For the latter, the onion peelor LKJ prior, named after the authors of
+Lewandowski, Kurowicka, and Joe (\citeproc{ref-Lewandowski:2009}{2009}),
+is \(p(\mathbf{R}) \propto |\mathbf{R}|^{\eta-1}\) for a scale
+\(\eta>0.\) The case \(\eta=1\) leads to uniform over the space of
+correlation matrices, and \(\eta>1\) favours the identity matrix.
+
+\end{proposition}
+
+\section{Shrinkage priors}\label{shrinkage-priors}
+
+In contexts where the number of regressors \(p\) is considerable
+relative to the sample size \(n\), it may be useful to constrain the
+parameter vector if we assume that the signal is sparse, with a large
+proportion of coefficients that should be zero. This is notably
+important when the ratio \(p/n \to c\) for \(c > 0,\) meaning that the
+number of coefficients and covariates increases proportional to the
+sample size. Shrinkage priors can regularize and typically consist of
+distributions that have a mode at zero, and another that allows for
+larger signals.
+
+The scale parameters and hyperparameters can be estimated jointly with
+the model, and uncertainty diagnostics follow naturally. We assume that
+coefficients \(\beta_j\) are independent apriori, although it is
+possible to specify group structures (e.g., for handling coefficients
+associated to a common categorical covariate with \(K\) levels,
+represented by \(K-1\) columns of dummy group indicators).
+
+\begin{proposition}[Spike-and-slab
+prior]\protect\hypertarget{prp-spike-slab}{}\label{prp-spike-slab}
+
+The spike-and-slab prior is a two-component mixture that assigns a
+positive probability to zero via a point mass or a vary narrow
+distribution centered at the origin (the spike) and the balance to the
+slab, a diffuse distribution.
+
+The spike-and-slab prior was originally proposed by Mitchell and
+Beauchamp (\citeproc{ref-Mitchell.Beauchamp:1988}{1988}) with a uniform
+on a large interval and a point mass at zero. The term was also used in
+George and McCulloch (\citeproc{ref-George.McCulloch:1993}{1993}), which
+replaced the prior by a mixture of Gaussians, one of which diffuse and
+the other with near infinite precision and centered at the origin. The
+latter is known under the vocable stochastic search variable selection
+prior. Letting \(\gamma_j \in [0,1]\) denote the probability of the slab
+or inclusion of the variable, the independent priors for the regression
+coefficients are \begin{align*}
+ \beta_j \mid \gamma_j, c_j^2,\phi^2_j \sim (1-\gamma_j) \mathsf{Gauss}(0, \phi^2_j) + \gamma_j \mathsf{Gauss}(0, \sigma_j^2\phi^2)
+\end{align*} where \(\sigma^2_j\) is very nearly zero. We set a
+Jeffrey's prior for \(\gamma_j \sim \mathsf{beta}(0.5, 0.5)\) and
+typically \(\phi_j^2=0.001\) or a small number if using a Gaussian. The
+construction allows for variable augmentation with mixture indicators
+and Gibbs sampling, although convergence isn't trivial.
+
+\end{proposition}
+
+\begin{proposition}[Horseshoe
+prior]\protect\hypertarget{prp-horseshoe}{}\label{prp-horseshoe}
+
+The horseshoe prior of Carvalho, Polson, and Scott
+(\citeproc{ref-Carvalho.Polson.Scott:2010}{2010}) is a hierarchical
+prior of the form \begin{align*}
+\beta_j \mid \sigma^2_j \sim \mathsf{Gauss}(0, \sigma^2_j), \quad \sigma^2_j \mid \lambda \sim \mathsf{Student}_{+}(0, \sigma, 1), \quad \lambda \sim \mathsf{Student}_{+}(0, \kappa, 1)
+\end{align*} where \(\mathsf{Student}_{+}(0, a, 1)\) denotes a
+half-Cauchy distribution with scale \(a>0,\) truncated on
+\(\mathbb{R}_{+}.\)
+
+This prior has no explicit density, but is continuous and can be
+simulated. It's name comes from the shrinkage factor behaviour
+\(\kappa_j = (1+\sigma^2_j)^{-1},\) which is equivalent to a
+\(\mathsf{beta}(1/2, 1/2)\).
+
+\end{proposition}
+
+In the Bayesian paradigm, regularization is achieved via priors that
+have mass at or towards zero, pushing coefficients of the regression
+model towards zero unless there is strong evidence from the likelihood
+against this. We however want to allow non-zero coefficients, typically
+by setting coefficient-specific parameters with a heavy tailed
+distribution to prevent overshrinking. Most if not all parameter can be
+viewed as scale mixtures of Gaussian.
+
+We make a distinction between \textbf{global} shrinkage priors those
+that consider a common shrinkage parameter for all regression
+coefficients, to be compared with \textbf{local} scale mixtures that
+have coefficient-specific parameters.
+
+\begin{figure}[ht!]
+
+\centering{
+
+\pandocbounded{\includegraphics[keepaspectratio]{regression_files/figure-pdf/fig-shrinkage-1.pdf}}
+
+}
+
+\caption{\label{fig-shrinkage}Marginal density for a regression
+coefficient \(\beta\) with horseshoe prior (full), Laplace (dashed) and
+a Student-\(t\) (thick dotted). The plot on the right shows the tail
+behaviour. The density of the horseshoe is unbounded at the origin.
+Inspired from Figure 1 of Carvalho, Polson, and Scott
+(\citeproc{ref-Carvalho.Polson.Scott:2010}{2010}).}
+
+\end{figure}%
+
+The amount of shrinkage is governed by an hyperparameter \(\lambda>0.\)
+
+\bookmarksetup{startatroot}
+
+\chapter{Deterministic
+approximations}\label{deterministic-approximations}
+
+So far, we have focused on stochastic approximations of integral. In
+very large models, Markov chain Monte Carlo suffer from the curse of
+dimensionality and it is sometimes useful to resort to cheaper
+approximations. We begin this review by looking at Laplace
+approximations for integrals.
+
+This material borrows from Section 8.2 and appendix C.2.2 of Held and
+Bové (\citeproc{ref-Held.Bove:2020}{2020}). The Laplace approximation
+uses a Gaussian approximation to evaluate integrals of the form
+\begin{align*}
+I_n= \int_a^b g(x) \mathrm{d} x = \exp\{nh(x)\}\mathrm{d} x.           \end{align*}
+Assuming that \(g(x)\) is concave and thus \(h(x)\), with a maximum at
+\(x_0 \in [a,b]\) and twice differentiable, we can Taylor expand
+\(h(x)\) to get, \begin{align*}
+h(x) = h(x_0) + h'(x_0)(x-x_0) + h''(x_0)(x-x_0)^2/2 + R
+\end{align*} where the remainder \(R=\mathrm{O}\{(x-x_0)^3\}\). If we
+optimize, we find \(x_0\) solves \(h'(x_0)=0\) and letting
+\(\tau=-nh''(x_0)\), we can write ignoring the remainder term the
+approximation \begin{align*}
+ I_n &\approx \exp\{nh(x_0)\} \int_{a}^b \exp \left\{-\frac{1}{2}(x-x_0)^2\right\}
+  \\&= \exp\{nh(x_0)\} \left(\frac{2\pi}{\tau}\right)^{1/2} \left[\Phi\left\{ \tau(b-x_0)\right\} - \Phi\left\{\tau(a-x_0)\right\}\right]
+\end{align*} upon recovering the unnormalized kernel of a Gaussian
+random variable centered at \(x_0\) with precision \(\tau\). The
+approximation error is \(\mathrm{O}(n^{-1})\).
+
+The multivariate analog is similar, where now for an integral of the
+form \(\exp\{nh(\boldsymbol{x})\}\) over \(\mathbb{R}^d\), we obtain the
+approximation \begin{align*}
+ I_n \approx \left(\frac{2\pi}{n}\right)^{p/2} | -\mathbf{H}(\boldsymbol{x}_0)|^{-1/2}\exp\{-nh(\boldsymbol{x}_0)\}.
+\end{align*} where \(| -\mathbf{H}|\) is the determinant of the Hessian
+matrix of \(h(\boldsymbol{x})\) evaluated at the mode of the integrand.
+
+Compare to sampling-based methods, the Laplace approximation requires
+optimization to find the maximum of the function.
+
+\begin{proposition}[BIC and Laplace approximation to the marginal
+likelihood]\protect\hypertarget{prp-Laplace-marginal}{}\label{prp-Laplace-marginal}
+
+Consider a simple random sample \(\boldsymbol{Y}\) of size \(n\) from a
+distribution with parameter vector
+\(\boldsymbol{\theta} \in \mathbb{R}^p\). We can consider a Laplace
+approximation of the marginal likelihood, where following Section 7.2.2
+of Held and Bové (\citeproc{ref-Held.Bove:2020}{2020}) \begin{align*}
+p(\boldsymbol{y}) &= \int p(\boldsymbol{y} \mid \boldsymbol{\theta}) p(\boldsymbol{\theta} \mathrm{d} \boldsymbol{\theta}
+\\&= \int \exp\{-n k(\boldsymbol{\theta})\}\mathrm{d} \boldsymbol{\theta}
+\end{align*} where
+\(k(\boldsymbol{\theta}) = - \{\log p(\boldsymbol{y} \mid \boldsymbol{\theta}) + \log p(\boldsymbol{\theta}\}/n\).
+We can maximize \(k(\boldsymbol{\theta})\) and use the maximum a
+posteriori and the Hessian matrix evaluated at the latter, say
+\(\mathbf{H}\). This yields the approximation \begin{align*}
+2\log p(\boldsymbol{y}) &= p\log(2\pi) -p\log n + \log |\mathbf{H}^{-1}| \\ & \quad + 2\log p(\boldsymbol{y} \mid \boldsymbol{\theta}) + 2\log p(\boldsymbol{\theta}.
+\end{align*} As the sample size \(n \to \infty\), the term
+\(|\mathbf{H}^{-1}|\) converges to the determinant of the unit Fisher
+information matrix, so is bounded. The only terms that grow with \(n\)
+assuming the prior is \(\mathrm{O}(1)\) are the log likelihood and
+\(p \log n\), whence \begin{align*}
+-2\log p(\boldsymbol{y}) \approx \mathsf{BIC} = -2\log p(\boldsymbol{y} \mid \boldsymbol{\theta}) + p\log n
+\end{align*} If the likelihood contribution dominates the posterior, the
+\(\mathsf{BIC}\) approximation will improve with increasing sample size,
+so \(\exp(-\mathsf{BIC}/2)\) is an approximation fo the marginal
+likelihood sometimes used for model comparison in Bayes factor, although
+this derivation shows that the latter neglects the impact of the prior.
+
+\end{proposition}
+
+\begin{proposition}[Posterior expectation using Laplace
+method]\protect\hypertarget{prp-expectation-Laplace}{}\label{prp-expectation-Laplace}
+
+If we are interested in computing the posterior expectation of a
+positive real-valued functional
+\(g(\boldsymbol{\theta}): \mathbb{R}^d \to \mathbb{R}_{+}\), we may
+write \begin{align*}
+ \mathsf{E}_{\boldsymbol{\Theta} \mid \boldsymbol{Y}}(g(\boldsymbol{\theta}) \mid \boldsymbol{y}) &=  \frac{\int g(\boldsymbol{\theta}) p(\boldsymbol{y} \mid \boldsymbol{\theta}) p( \boldsymbol{\theta}) \mathrm{d} \boldsymbol{\theta}}{\int p(\boldsymbol{y} \mid \boldsymbol{\theta})p( \boldsymbol{\theta}) \mathrm{d} \boldsymbol{\theta}}
+\end{align*} We can apply Laplace's method to both numerator and
+denominator.
+
+\end{proposition}
 
 \bookmarksetup{startatroot}
 
@@ -6646,6 +7040,11 @@ While Driving: Results from an Experimental Study.''} \emph{Accident
 Analysis \& Prevention} 149: 105846.
 \url{https://doi.org/10.1016/j.aap.2020.105846}.
 
+\bibitem[\citeproctext]{ref-Carvalho.Polson.Scott:2010}
+Carvalho, Carlos M., Nicholas G. Polson, and James G. Scott. 2010.
+{``The Horseshoe Estimator for Sparse Signals.''} \emph{Biometrika} 97
+(2): 465--80. \url{https://doi.org/10.1093/biomet/asq017}.
+
 \bibitem[\citeproctext]{ref-Coles.Tawn:1996}
 Coles, Stuart G., and Jonathan A. Tawn. 1996. {``A {B}ayesian Analysis
 of Extreme Rainfall Data.''} \emph{Journal of the Royal Statistical
@@ -6667,6 +7066,11 @@ Dyk, David A van, and Xiao-Li Meng. 2001. {``The Art of Data
 Augmentation.''} \emph{Journal of Computational and Graphical
 Statistics} 10 (1): 1--50.
 \url{https://doi.org/10.1198/10618600152418584}.
+
+\bibitem[\citeproctext]{ref-Eaton:2007}
+Eaton, Morris L. 2007. \emph{Multivariate Statistics: A Vector Space
+Approach}. Institute for Mathematical Statistics.
+\url{https://doi.org/10.1214/lnms/1196285102}.
 
 \bibitem[\citeproctext]{ref-deFinetti:1974}
 Finetti, Bruno de. 1974. \emph{Theory of Probability: A Critical
@@ -6711,6 +7115,12 @@ Geman, Stuart, and Donald Geman. 1984. {``Stochastic Relaxation, {G}ibbs
 Distributions, and the {B}ayesian Restoration of Images.''} \emph{IEEE
 Transactions on Pattern Analysis and Machine Intelligence} Pami-6 (6):
 721--41. \url{https://doi.org/10.1109/tpami.1984.4767596}.
+
+\bibitem[\citeproctext]{ref-George.McCulloch:1993}
+George, Edward I., and Robert E. McCulloch. 1993. {``Variable Selection
+via {G}ibbs Sampling.''} \emph{Journal of the American Statistical
+Association} 88 (423): 881--89.
+\url{https://doi.org/10.1080/01621459.1993.10476353}.
 
 \bibitem[\citeproctext]{ref-Geweke:1992}
 Geweke, John. 1992. {``Evaluating the Accuracy of Sampling-Based
@@ -6773,20 +7183,25 @@ Mixture Modeling.''} \emph{Statistical Science} 20 (1): 50--67.
 Jegerlehner, Sabrina, Franziska Suter-Riniker, Philipp Jent, Pascal
 Bittel, and Michael Nagler. 2021. {``Diagnostic Accuracy of a
 {SARS-CoV-2} Rapid Antigen Test in Real-Life Clinical Settings.''}
-\emph{International Journal of Infectious Diseases} 109 (August):
-118--22. \url{https://doi.org/10.1016/j.ijid.2021.07.010}.
+\emph{International Journal of Infectious Diseases} 109: 118--22.
+\url{https://doi.org/10.1016/j.ijid.2021.07.010}.
 
 \bibitem[\citeproctext]{ref-Kinderman.Monahan:1977}
-Kinderman, A. J., and J. F. Monahan. 1977. {``Computer Generation of
+Kinderman, Albert J, and John F Monahan. 1977. {``Computer Generation of
 Random Variables Using the Ratio of Uniform Deviates.''} \emph{ACM
-Transactions on Mathematical Software} 3 (3): 257--60.
-\url{https://doi.org/10.1145/355744.355750}.
+Transactions on Mathematical Software (TOMS)} 3 (3): 257--60.
 
 \bibitem[\citeproctext]{ref-Kitagawa:1987}
 Kitagawa, Genshiro. 1987. {``Non-{G}aussian State---Space Modeling of
 Nonstationary Time Series.''} \emph{Journal of the American Statistical
 Association} 82 (400): 1032--41.
 \url{https://doi.org/10.1080/01621459.1987.10478534}.
+
+\bibitem[\citeproctext]{ref-Lewandowski:2009}
+Lewandowski, Daniel, Dorota Kurowicka, and Harry Joe. 2009.
+{``Generating Random Correlation Matrices Based on Vines and Extended
+Onion Method.''} \emph{Journal of Multivariate Analysis} 100 (9):
+1989--2001. \url{https://doi.org/10.1016/j.jmva.2009.04.008}.
 
 \bibitem[\citeproctext]{ref-Marshall.Olkin:1985}
 Marshall, Albert W., and Ingram Olkin. 1985. {``A Family of Bivariate
@@ -6822,6 +7237,12 @@ Augusta H. Teller, and Edward Teller. 1953. {``Equation of State
 Calculations by Fast Computing Machines.''} \emph{The Journal of
 Chemical Physics} 21 (6): 1087--92.
 \url{https://doi.org/10.1063/1.1699114}.
+
+\bibitem[\citeproctext]{ref-Mitchell.Beauchamp:1988}
+Mitchell, T. J., and J. J. Beauchamp. 1988. {``Bayesian Variable
+Selection in Linear Regression.''} \emph{Journal of the American
+Statistical Association} 83 (404): 1023--32.
+\url{https://doi.org/10.1080/01621459.1988.10478694}.
 
 \bibitem[\citeproctext]{ref-Nadarajah:2008}
 Nadarajah, Saralees. 2008. {``{M}arshall and {O}lkin's Distributions.''}
@@ -6932,6 +7353,10 @@ Tanner, Martin A., and Wing Hung Wong. 1987. {``The Calculation of
 Posterior Distributions by Data Augmentation.''} \emph{Journal of the
 American Statistical Association} 82 (398): 528--40.
 \url{https://doi.org/10.1080/01621459.1987.10478458}.
+
+\bibitem[\citeproctext]{ref-Villani:2023}
+Villani, Mattias. 2023. {``Bayesian Learning: A Gentle Introduction.''}
+\url{https://mattiasvillani.com/BayesianLearningBook/}.
 
 \bibitem[\citeproctext]{ref-Wakefield.Gelfand.Smith:1991}
 Wakefield, J. C., A. E. Gelfand, and A. F. M. Smith. 1991. {``Efficient

@@ -84,7 +84,7 @@ div.csl-indent {
 <script src="site_libs/quarto-search/fuse.min.js"></script>
 <script src="site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="./">
-<link href="./references.html" rel="next">
+<link href="./regression.html" rel="next">
 <link href="./gibbs.html" rel="prev">
 <script src="site_libs/quarto-html/quarto.js"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
@@ -244,8 +244,20 @@ window.Quarto = {
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
+  <a href="./regression.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Regression models</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./laplace.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Deterministic approximations</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
   <a href="./references.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">References</span></span></a>
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">References</span></span></a>
   </div>
 </li>
     </ul>
@@ -281,7 +293,7 @@ window.Quarto = {
 <!--
 
 - 
-- **Prior to posterior**: prior sensitivity requires to rerun the algorithm with different priors, but it is sometimes feasible in simpler models to simply use a fast Gaussian approximation via the maximum a posteriori, and generate from the latter, to assess the impcat of the prior. We can compare posterior density with prior density. The general rule is that parameters far from the data layer are more impacted by the prior choice.
+- **Prior to posterior**: prior sensitivity requires to rerun the algorithm with different priors, but it is sometimes feasible in simpler models to simply use a fast Gaussian approximation via the maximum a posteriori, and generate from the latter, to assess the impact of the prior. We can compare posterior density with prior density. The general rule is that parameters far from the data layer are more impacted by the prior choice.
 
 
 -->
@@ -352,12 +364,15 @@ Figure&nbsp;7.1: Traceplots of three Markov chains for the same target with diff
 <p>For the Poisson example, the effective sample size for the <span class="math inline">\(\boldsymbol{\beta}\)</span> for the multilevel model is a bit higher than 1000 with <span class="math inline">\(B=5000\)</span> iterations, whereas we have for the simple naive model is <span class="math inline">\(1.028\times 10^{4}\)</span> for <span class="math inline">\(B=10000\)</span> draws, suggesting superefficient sampling. The dependency between <span class="math inline">\(\boldsymbol{\alpha}\)</span> and <span class="math inline">\(\boldsymbol{\beta}\)</span> is responsible for the drop in accuracy.</p>
 <p>The <code>coda</code> (convergence diagnosis and output analysis) <strong>R</strong> package <span class="citation" data-cites="coda">(<a href="references.html#ref-coda" role="doc-biblioref">Plummer et al. 2006</a>)</span> contains many tests. For example, the Geweke <span class="math inline">\(Z\)</span>-score compares the averages for the beginning and the end of the chain: rejection of the null implies lack of convergence, or poor mixing.</p>
 <!-- The Gelman--Rubin $\widehat{R}$ diagnostic, which is advocated in STAN, is a multi-chain diagnostic that compares the within-chain variability to the between-chain variability. The value should be  -->
-<p>Running multiple Markov chains can be useful for diagnostics. The Gelman–Rubin diagnostic <span class="math inline">\(\widehat{R},\)</span> introduced in <span class="citation" data-cites="Gelman.Rubin:1992">Gelman and Rubin (<a href="references.html#ref-Gelman.Rubin:1992" role="doc-biblioref">1992</a>)</span> and also called potential scale reduction statistic, is obtained by considering the difference between within-chains and between-chains variance. Suppose we run <span class="math inline">\(M\)</span> chains for <span class="math inline">\(B\)</span> iterations, post burn in. Denoting by <span class="math inline">\(\theta_{bm}\)</span> the <span class="math inline">\(b\)</span>th draw of the <span class="math inline">\(m\)</span>th chain, we compute the global average <span class="math inline">\(\overline{\theta} = B^{-1}M^{-1}\sum_{b=1}^B \sum_{m=1}^m \theta_{bm}\)</span> and similarly the chain sample average and variances, respectively <span class="math inline">\(\overline{\theta}_m\)</span> and <span class="math inline">\(\widehat{\sigma}^2_m\)</span> (<span class="math inline">\(m=1, \ldots, M\)</span>). The between-chain variance and within-chain variance estimator are <span class="math display">\[\begin{align*}
+<p>Running multiple Markov chains can be useful for diagnostics.</p>
+<div id="prp-rhat" class="theorem proposition">
+<p><span class="theorem-title"><strong>Proposition 7.2 (Gelman–Rubin diagnostic)</strong></span> The Gelman–Rubin diagnostic <span class="math inline">\(\widehat{R},\)</span> introduced in <span class="citation" data-cites="Gelman.Rubin:1992">Gelman and Rubin (<a href="references.html#ref-Gelman.Rubin:1992" role="doc-biblioref">1992</a>)</span> and also called potential scale reduction statistic, is obtained by considering the difference between within-chains and between-chains variance. Suppose we run <span class="math inline">\(M\)</span> chains for <span class="math inline">\(B\)</span> iterations, post burn in. Denoting by <span class="math inline">\(\theta_{bm}\)</span> the <span class="math inline">\(b\)</span>th draw of the <span class="math inline">\(m\)</span>th chain, we compute the global average <span class="math inline">\(\overline{\theta} = B^{-1}M^{-1}\sum_{b=1}^B \sum_{m=1}^m \theta_{bm}\)</span> and similarly the chain sample average and variances, respectively <span class="math inline">\(\overline{\theta}_m\)</span> and <span class="math inline">\(\widehat{\sigma}^2_m\)</span> (<span class="math inline">\(m=1, \ldots, M\)</span>). The between-chain variance and within-chain variance estimator are <span class="math display">\[\begin{align*}
 \mathsf{Va}_{\text{between}} &amp;= \frac{B}{M-1}\sum_{m=1}^M (\overline{\theta}_m - \overline{\theta})^2\\
 \mathsf{Va}_{\text{within}} &amp;= \frac{1}{M}\sum_{m=1}^m \widehat{\sigma}^2_m
 \end{align*}\]</span> and we can compute <span class="math display">\[\begin{align*}
 \widehat{R} = \left(\frac{\mathsf{Va}_{\text{within}}(B-1) + \mathsf{Va}_{\text{between}}}{B\mathsf{Va}_{\text{within}}}\right)^{1/2}
 \end{align*}\]</span> The potential scale reduction statistic must be, by construction, larger than 1 in large sample. Any value larger than this is indicative of problems of convergence. While the Gelman–Rubin diagnostic is frequently reported, and any value larger than 1 deemed problematic, it is not enough to have approximately <span class="math inline">\(\widehat{R}=1\)</span> to guarantee convergence, but large values are usually indication of something being amiss. <a href="#fig-rhat" class="quarto-xref">Figure&nbsp;<span>7.2</span></a> shows two instances where the chains are visually very far from having the same average and this is reflected by the large values of <span class="math inline">\(\widehat{R}.\)</span></p>
+</div>
 <div class="cell">
 <div class="cell-output-display">
 <div id="fig-rhat" class="quarto-float quarto-figure quarto-figure-center anchored">
@@ -372,8 +387,10 @@ Figure&nbsp;7.2: Two pairs of Markov chains: the top ones seem stationary, but w
 </div>
 </div>
 </div>
-<p>More generally, it is preferable to run a single chain for a longer period than run multiple chains sequentially, as there is a cost to initializing multiple times with different starting values since we must discard initial draws. With parallel computations, multiple chains are more frequent nowadays.</p>
-<p>MCMC algorithms are often run thinning the chain (i.e., keeping only a fraction of the samples drawn, typically every <span class="math inline">\(k\)</span> iteration). This is wasteful as we can of course get more precise estimates by keeping all posterior draws, whether correlated or not. The only argument in favor of thinning is limited storage capacity: if we run very long chains in a model with hundreds of parameters, we may run out of memory.</p>
+<p>Generally, it is preferable to run a single chain for a longer period than run multiple chains sequentially, as there is a cost to initializing multiple times with different starting values since we must discard initial draws. With parallel computations, multiple chains are more frequent nowadays.</p>
+<div id="def-thinning" class="theorem definition">
+<p><span class="theorem-title"><strong>Definition 7.5 (Thinning)</strong></span> MCMC algorithms are often run thinning the chain (i.e., keeping only a fraction of the samples drawn, typically every <span class="math inline">\(k\)</span> iteration). This is wasteful as we can of course get more precise estimates by keeping all posterior draws, whether correlated or not. The only argument in favor of thinning is limited storage capacity: if we run very long chains in a model with hundreds of parameters, we may run out of memory.</p>
+</div>
 <section id="posterior-predictive-checks" class="level3" data-number="7.1.1">
 <h3 data-number="7.1.1" class="anchored" data-anchor-id="posterior-predictive-checks"><span class="header-section-number">7.1.1</span> Posterior predictive checks</h3>
 <p>Posterior predictive checks can be used to compare models of varying complexity.One of the visual diagnostics, outlined in <span class="citation" data-cites="Gabry:2019">Gabry et al. (<a href="references.html#ref-Gabry:2019" role="doc-biblioref">2019</a>)</span>, consists in computing a summary statistic of interest from the posterior predictive (whether mean, median, quantile, skewness, etc.) which is relevant for the problem at hand and which we hope our model can adequately capture. These should be salient features of the data, and may reveal inadequate likelihood or prior information.</p>
@@ -405,7 +422,7 @@ n\mathsf{WAIC} = -\sum_{i=1}^n \mathsf{LPPD}_i + \sum_{i=1}^n \mathsf{Va}_{\bold
 <p>An older criterion which has somewhat fallen out of fashion is the <strong>deviance</strong> information criterion of <span class="citation" data-cites="Spiegelhalter:2002">Spiegelhalter et al. (<a href="references.html#ref-Spiegelhalter:2002" role="doc-biblioref">2002</a>)</span>. It is defined as <span class="math display">\[\begin{align*}
 \mathsf{DIC} = -2 \ell(\widetilde{\boldsymbol{\theta}}) + 2 p_D
 \end{align*}\]</span> where <span class="math inline">\(p_D\)</span> is the posterior expectation of the deviance relative to the point estimator of the parameter <span class="math inline">\(\widetilde{\boldsymbol{\theta}}\)</span> (e.g., the maximum a posteriori or the posterior mean) <span class="math display">\[\begin{align*}
-p_D = \mathsf{E}\{D(\boldsymbol{\theta}, \widetilde{\boldsymbol{\theta}}) \mid \boldsymbol{y}\}= \int 2 \{ \ell(\widetilde{\boldsymbol{\theta}}) - \ell(\boldsymbol{\theta})\} f(\boldsymbol{\theta} \mid \boldsymbol{y} \mathrm{d} \boldsymbol{\theta}
+p_D = \mathsf{E}\{D(\boldsymbol{\theta}, \widetilde{\boldsymbol{\theta}}) \mid \boldsymbol{y}\}= \int 2 \{ \ell(\widetilde{\boldsymbol{\theta}}) - \ell(\boldsymbol{\theta})\} f(\boldsymbol{\theta} \mid \boldsymbol{y}) \mathrm{d} \boldsymbol{\theta}
 \end{align*}\]</span> The DIC can be easily evaluated by keeping track of the log likelihood evaluated at each posterior draw from a Markov chain Monte Carlo algorithm. The penalty term <span class="math inline">\(p_D\)</span> is however not invariant to reparametrizations. Assuming we can derive a multivariate Gaussian approximation to the MLE under suitable regularity conditions, the <span class="math inline">\(\mathsf{DIC}\)</span> is equivalent in large samples to <span class="math inline">\(\mathsf{AIC}.\)</span> The <span class="math inline">\(\mathsf{DIC}\)</span> is considered by many authors as not being a Bayesian procedure; see <span class="citation" data-cites="Spiegelhalter:2014">Spiegelhalter et al. (<a href="references.html#ref-Spiegelhalter:2014" role="doc-biblioref">2014</a>)</span> and the discussion therein.</p>
 <div id="exm-smartwatch-infocriteria" class="theorem example">
 <p><span class="theorem-title"><strong>Example 7.1 (Information criteria for smartwatch and Bayesian LASSO)</strong></span> For the smartwatch model, we get a value of 3.07 for the complex model and 4.5: this suggests an improvement in using individual-specific effects.</p>
@@ -495,7 +512,7 @@ A simple model, following @Gelman:2006, is to assume the effect size is Gaussian
 \end{align*}\]</span> Section 3.1 of <span class="citation" data-cites="Nychka:2015">Nychka et al. (<a href="references.html#ref-Nychka:2015" role="doc-biblioref">2015</a>)</span> details efficient ways of calculating the quadratic form involving <span class="math inline">\(\mathbf{Q}\)</span> and it’s determinant.</p>
 </div>
 <div id="prp-pseudo-marginal" class="theorem proposition">
-<p><span class="theorem-title"><strong>Proposition 7.2 (Pseudo marginal)</strong></span> Another option proposed by <span class="citation" data-cites="Andrieu.Roberts:2009">Andrieu and Roberts (<a href="references.html#ref-Andrieu.Roberts:2009" role="doc-biblioref">2009</a>)</span> based on an original idea from <span class="citation" data-cites="Beaumont:2003">Beaumont (<a href="references.html#ref-Beaumont:2003" role="doc-biblioref">2003</a>)</span> relies on pseudo marginalization, where integration is done via Monte Carlo sampling. Specifically, suppose that we are ultimately interested in <span class="math display">\[\boldsymbol{\theta}= \int p(\boldsymbol{\theta}, \boldsymbol{z}) \mathrm{d} \boldsymbol{z},\]</span> but that for this purpose we normally sample from both parameters. Given a proposal <span class="math inline">\(\boldsymbol{\theta}\)</span> and <span class="math inline">\(q_1(\boldsymbol{\theta})\)</span> and subsequently <span class="math inline">\(L\)</span> draws once from <span class="math inline">\(q_2(\boldsymbol{z} \mid \boldsymbol{\theta})\)</span> for the nuisance, we can approximate the marginal using, e.g., importance sampling as <span class="math display">\[\begin{align*}
+<p><span class="theorem-title"><strong>Proposition 7.3 (Pseudo marginal)</strong></span> Another option proposed by <span class="citation" data-cites="Andrieu.Roberts:2009">Andrieu and Roberts (<a href="references.html#ref-Andrieu.Roberts:2009" role="doc-biblioref">2009</a>)</span> based on an original idea from <span class="citation" data-cites="Beaumont:2003">Beaumont (<a href="references.html#ref-Beaumont:2003" role="doc-biblioref">2003</a>)</span> relies on pseudo marginalization, where integration is done via Monte Carlo sampling. Specifically, suppose that we are ultimately interested in <span class="math display">\[p(\boldsymbol{\theta})= \int p(\boldsymbol{\theta}, \boldsymbol{z}) \mathrm{d} \boldsymbol{z},\]</span> but that for this purpose we normally sample from both parameters. Given a proposal <span class="math inline">\(\boldsymbol{\theta}\)</span> and <span class="math inline">\(q_1(\boldsymbol{\theta})\)</span> and subsequently <span class="math inline">\(L\)</span> draws once from <span class="math inline">\(q_2(\boldsymbol{z} \mid \boldsymbol{\theta})\)</span> for the nuisance, we can approximate the marginal using, e.g., importance sampling as <span class="math display">\[\begin{align*}
 \widehat{p}(\boldsymbol{\theta}; \boldsymbol{z}) = \frac{1}{L} \sum_{l=1}^L \frac{p(\boldsymbol{\theta}, \boldsymbol{z}_l)}{q_2(\boldsymbol{z}_l, \boldsymbol{\theta})}.
 \end{align*}\]</span> We then run a Markov chain on an augmented state space <span class="math inline">\(\boldsymbol{\Theta} \times \mathcal{Z}^L\)</span>, with Metropolis–Hastings acceptance ratio of <span class="math display">\[\begin{align*}
 \frac{\widehat{p}(\boldsymbol{\theta}^{\star}; \boldsymbol{z}_{1,t}^{\star}, \boldsymbol{z}_{L,t}^{\star})}{
@@ -506,12 +523,12 @@ A simple model, following @Gelman:2006, is to assume the effect size is Gaussian
 <p>The idea of pseudo-marginal extends beyond the user case presented above, as as long as we have an unbiased non-negative estimator of the likelihood <span class="math inline">\(\mathsf{E}\{\widehat{p}(\boldsymbol{\theta})\}=p(\boldsymbol{\theta})\)</span>, even when the likelihood itself is intractable. This is useful for models where we can approximate the likelihood by simulation, like for particle filters. Pseudo marginal MCMC algorithms are notorious for yielding sticky chains.</p>
 </div>
 <div id="prp-blocking" class="theorem proposition">
-<p><span class="theorem-title"><strong>Proposition 7.3 (Blocking)</strong></span> When parameters of the vector <span class="math inline">\(\boldsymbol{\theta}\)</span> that we wish to sample are strongly correlated, it is advisable when possible to simulate them jointly. Because the unnormalized posterior is evaluated at each step conditional on all values, the Markov chain will be making incremental moves and mix slowly.</p>
+<p><span class="theorem-title"><strong>Proposition 7.4 (Blocking)</strong></span> When parameters of the vector <span class="math inline">\(\boldsymbol{\theta}\)</span> that we wish to sample are strongly correlated, it is advisable when possible to simulate them jointly. Because the unnormalized posterior is evaluated at each step conditional on all values, the Markov chain will be making incremental moves and mix slowly if we sample them one step at a time.</p>
 </div>
-<p>Before showcasing the effect of blocking and joint updated, we present another example of data augmentation using @#exm-probit-regression.</p>
+<p>Before showcasing the effect of blocking and joint updates, we present another example of data augmentation using <a href="gibbs.html#exm-probit-regression" class="quarto-xref">Example&nbsp;<span>6.2</span></a>.</p>
 <div id="exm-Tokyo-rainfall" class="theorem example">
 <p><span class="theorem-title"><strong>Example 7.3 (Tokyo rainfall)</strong></span> We consider data from <span class="citation" data-cites="Kitagawa:1987">Kitagawa (<a href="references.html#ref-Kitagawa:1987" role="doc-biblioref">1987</a>)</span> that provide a binomial time series giving the number of days in years 1983 and 1984 (a leap year) in which there was more than 1mm of rain in Tokyo. These data and the model we consider are discussed in in section 4.3.4 of <span class="citation" data-cites="Rue.Held:2005">Rue and Held (<a href="references.html#ref-Rue.Held:2005" role="doc-biblioref">2005</a>)</span>. We thus have <span class="math inline">\(T=366\)</span> days and <span class="math inline">\(n_t \in \{1,2\}\)</span> <span class="math inline">\((t=1, \ldots, T)\)</span> the number of observations in day <span class="math inline">\(t\)</span> and <span class="math inline">\(y_t=\{0,\ldots, n_t\}\)</span> the number of days with rain. The objective is to obtain a smoothed probability of rain. The underlying probit model considered takes <span class="math inline">\(Y_t \mid n_t, p_t \sim \mathsf{binom}(n_t, p_t)\)</span> and <span class="math inline">\(p_t = \Phi(\beta_t).\)</span></p>
-<p>We specify the random effects <span class="math inline">\(\boldsymbol{\beta} \sim \mathsf{Gauss}_{T}(\boldsymbol{0}, \tau^{-1}\mathbf{Q}),\)</span> where <span class="math inline">\(\mathbf{Q}\)</span> is a <span class="math inline">\(T \times T\)</span> precision matrix that encodes the local dependence. A circular random walk structure of order 2 is used to model the smooth curves by smoothing over neighbors, and enforces small second derivative. This is a suitable prior because it enforces no constraint on the mean structure. This amounts to specifying the process with <span class="math display">\[\begin{align*}
+<p>We specify the random effects <span class="math inline">\(\boldsymbol{\beta} \sim \mathsf{Gauss}_{T}(\boldsymbol{0}, \tau^{-1}\mathbf{Q}^{-1}),\)</span> where <span class="math inline">\(\mathbf{Q}\)</span> is a <span class="math inline">\(T \times T\)</span> precision matrix that encodes the local dependence. A circular random walk structure of order 2 is used to model the smooth curves by smoothing over neighbors, and enforces small second derivative. This is a suitable prior because it enforces no constraint on the mean structure. This amounts to specifying the process with <span class="math display">\[\begin{align*}
 \Delta^2\beta_t &amp;= (\beta_{t+1} - \beta_t) - (\beta_t - \beta_{t-1})
 \\&amp;=-\beta_{t-1} +2 \beta_t - \beta_{t+1} \sim \mathsf{Gauss}(0, \tau^{-1}), \qquad t \in \mathbb{N} \mod 366.
 \end{align*}\]</span> This yields an intrinsic Gaussian Markov random field with a circulant precision matrix <span class="math inline">\(\tau\mathbf{Q}=\tau\mathbf{GG^\top}\)</span> of rank <span class="math inline">\(T-1,\)</span> where <span class="math display">\[\begin{align*}
@@ -532,7 +549,7 @@ A simple model, following @Gelman:2006, is to assume the effect size is Gaussian
 \vdots &amp; \ddots &amp; \ddots  &amp; \ddots  &amp; \ddots  &amp; \ddots &amp; \vdots \\
 -4 &amp; 1 &amp; 0 &amp; 0 &amp; \cdots &amp; -4 &amp; 6
 \end{pmatrix}.
-\end{align*}\]</span> Because of the linear dependency, the determinant of <span class="math inline">\(\mathbf{Q}\)</span> as presented is zero. The contribution from the latent mean parameters is multivariate Gaussian and we exploit for computations the sparsity of the precision matrix <span class="math inline">\(\mathbf{Q}.\)</span> <a href="#fig-CRW2-prior" class="quarto-xref">Figure&nbsp;<span>7.6</span></a> shows five draws from the prior model, which loops back between December 31st and January 1st, and is rather smooth.</p>
+\end{align*}\]</span> Because of the linear dependency, the determinant of <span class="math inline">\(\mathbf{Q}\)</span> is zero. The contribution from the latent mean parameters is multivariate Gaussian and we exploit for computations the sparsity of the precision matrix <span class="math inline">\(\mathbf{Q}.\)</span> <a href="#fig-CRW2-prior" class="quarto-xref">Figure&nbsp;<span>7.6</span></a> shows five draws from the prior model, which loops back between December 31st and January 1st, and is rather smooth.</p>
 <div class="cell">
 <div class="cell-output-display">
 <div id="fig-CRW2-prior" class="quarto-float quarto-figure quarto-figure-center anchored">
@@ -556,7 +573,7 @@ z_{t,i} \mid  y_{t,i}, \beta_t \sim
 \end{align*}\]</span> The posterior is proportional to <span class="math display">\[\begin{align*}
 p(\boldsymbol{\beta} \mid \tau)p(\tau)\prod_{t=1}^{T}\prod_{i=1}^{n_t}p(y_{t,i} \mid z_{t,i}) p(z_{t,i} \mid \beta_t)
 \end{align*}\]</span> and once we have imputed the Gaussian latent vectors, we can work directly with the values of <span class="math inline">\(z_t = \sum_{i=1}^{n_t} z_{i,t}.\)</span> The posterior is <span class="math display">\[\begin{align*}
-p(\boldsymbol{\beta}, \tau) \propto \tau^{(n-1)/2}\exp \left( - \frac{\tau}{2} \boldsymbol{\beta}^\top \mathbf{Q} \boldsymbol{\beta}\right)\exp\left\{ - \frac{1}{2} (\boldsymbol{z} - \boldsymbol{\beta})^\top \mathrm{diag}(\boldsymbol{n})(\boldsymbol{z} - \boldsymbol{\beta})\right\} \tau^{a-1}\exp(-\tau b)
+p(\boldsymbol{\beta}, \tau) \propto \tau^{(n-1)/2}\exp \left( - \frac{\tau}{2} \boldsymbol{\beta}^\top \mathbf{Q} \boldsymbol{\beta}\right)\exp\left\{ - \frac{1}{2} (\boldsymbol{z}/\boldsymbol{n} - \boldsymbol{\beta})^\top \mathrm{diag}(\boldsymbol{n})(\boldsymbol{z}/\boldsymbol{n} - \boldsymbol{\beta})\right\} \tau^{a-1}\exp(-\tau b)
 \end{align*}\]</span> where <span class="math inline">\(\boldsymbol{z} = (z_1, \ldots, z_T).\)</span> Completing the quadratic form shows that <span class="math display">\[\begin{align*}
 \boldsymbol{\beta} \mid \boldsymbol{z}, \tau &amp;\sim \mathsf{Gauss}_T\left[\left\{\tau \mathbf{Q} + \mathrm{diag}(\boldsymbol{n})\right\}^{-1} \boldsymbol{z}, \left\{\tau \mathbf{Q} + \mathrm{diag}(\boldsymbol{n})\right\}^{-1}\right]\\
 \tau \mid \boldsymbol{\beta} &amp; \sim \mathsf{gamma}\left( \frac{n-1}{2} + a, \frac{\boldsymbol{\beta}^\top \mathbf{Q}\boldsymbol{\beta}}{2} + b \right)
@@ -671,7 +688,7 @@ Figure&nbsp;7.9: Trace plots (top) and correlograms (bottom) for two parameters 
 </div>
 </div>
 <p>Instead of making things worst, we can try to improve upon our initial sampler by simulating first a proposal <span class="math inline">\(\tau^{\star}\)</span> using a random walk Metropolis (on the log scale), then drawing from the full conditional <span class="math inline">\(\boldsymbol{\beta} \mid \boldsymbol{z}, \tau^{\star}\)</span> and accepting/rejecting the whole move. A second alternative is to ditch altogether the data augmentation step and write the unnormalized log posterior for <span class="math inline">\(\boldsymbol{\beta}\)</span> as <span class="math display">\[\begin{align*}
-p(\boldsymbol{\beta} \mid \boldsymbol{y}) \stackrel{\boldsymbol{\beta}}{\propto} - \frac{\tau}{2} \boldsymbol{\beta}^\top \mathbf{Q} \boldsymbol{\beta} + \sum_{t=1}^{366} y_{t} \log \Phi(\beta_t) + (n_t-y_{t}) \log\{1-\Phi(\beta_t)\}
+\log p(\boldsymbol{\beta} \mid \boldsymbol{y}) \stackrel{\boldsymbol{\beta}}{\propto} - \frac{\tau}{2} \boldsymbol{\beta}^\top \mathbf{Q} \boldsymbol{\beta} + \sum_{t=1}^{366} y_{t} \log \Phi(\beta_t) + (n_t-y_{t}) \log\{1-\Phi(\beta_t)\}
 \end{align*}\]</span> and do a quadratic approximation to the posterior by doing a Taylor expansion of the terms <span class="math inline">\(\log p(y_{t} \mid \beta_{t})\)</span> around the current value of the draw for <span class="math inline">\(\boldsymbol{\beta}.\)</span> Given that observations are conditionally independent, we have a sum of independent terms <span class="math inline">\(\ell(\boldsymbol{y}; \boldsymbol{\beta}) = \sum_{t=1}^{366}\log p(y_t \mid \beta_t)\)</span> and this yields, expanding around <span class="math inline">\(\boldsymbol{\beta}^0\)</span>, the Gaussian Markov field proposal <span class="math display">\[\begin{align*}
 q(\boldsymbol{\beta} \mid \tau, \boldsymbol{\beta}^0)  \sim \mathsf{Gauss}_{366}\left[\ell'(\boldsymbol{\beta}^0), \tau\mathbf{Q} + \mathrm{diag}\{\ell''(\boldsymbol{\beta}^0)\}\right].
 \end{align*}\]</span> Indeed, because of conditional independence, the <span class="math inline">\(j\)</span>th element of <span class="math inline">\(\ell'\)</span> and <span class="math inline">\(\ell''\)</span> are <span class="math display">\[\begin{align*}
@@ -1160,8 +1177,8 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="./references.html" class="pagination-link" aria-label="References">
-        <span class="nav-page-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">References</span></span> <i class="bi bi-arrow-right-short"></i>
+      <a href="./regression.html" class="pagination-link" aria-label="Regression models">
+        <span class="nav-page-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Regression models</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>

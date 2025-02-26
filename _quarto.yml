@@ -29,8 +29,8 @@ book:
   - mcmc.qmd
   - gibbs.qmd
   - workflow.qmd
- # - regression.qmd
- # - laplace.qmd
+  - regression.qmd
+  - laplace.qmd
   - references.qmd
   site-url: https://lbelzile.github.io/MATH80601A/
   repo-url: https://github.com/lbelzile/MATH80601A
