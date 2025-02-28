@@ -20,6 +20,40 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
 /* CSS for citations */
 div.csl-bib-body { }
 div.csl-entry {
@@ -249,7 +283,7 @@ window.Quarto = {
 </header>
 
 
-<p>This chapter is dedicated to the study of generalized linear regression models from a Bayesian standpoint. Starting with Gaussian data, we investigate the link between frequentist approaches to regularization and shrinkage priors. We also look at hierarchical models with mixed effects and variable selection using reversible jump MCMC and conditional Bayes factor.</p>
+<p>This chapter is dedicated to the study of regression models from a Bayesian standpoint. Starting with Gaussian data, we investigate the link between frequentist approaches to regularization and shrinkage priors. We also look at hierarchical models with mixed effects and variable selection using reversible jump MCMC and conditional Bayes factor.</p>
 <p>Throughout, we consider regression models with model (or design) matrix <span class="math inline">\(\mathbf{X} \in \mathbb{R}^{n \times p}\)</span> with centered inputs, so <span class="math inline">\(\mathbf{1}_n^\top\mathbf{X}=\mathbf{0}_p.\)</span> We are interested in the associated vector of regression coefficients <span class="math inline">\(\boldsymbol{\beta} = (\beta_1, \ldots, \beta_p)^\top\)</span> which describe the mean and act as weights for each covariate vector. In the ordinary linear regression model <span class="math display">\[\begin{align*}
 \boldsymbol{Y} \mid \mathbf{X}, \boldsymbol{\beta}, \omega \sim \mathsf{Gauss}_n(\beta_0\mathbf{1}_n + \mathbf{X}\boldsymbol{\beta}, \omega^{-1}\mathbf{I}_n),
 \end{align*}\]</span> so that observations are independent and homoscedastic. Inference is performed conditional on the observed covariate vectors <span class="math inline">\(\mathbf{X}_i\)</span>; we omit this dependence hereafter, but note that this can be relaxed. The intercept <span class="math inline">\(\beta_0\)</span>, which is added to capture the mean response and make it mean-zero, receives special treatment and is typically assigned an improper prior. We largely follow the exposition of <span class="citation" data-cites="Villani:2023">Villani (<a href="references.html#ref-Villani:2023" role="doc-biblioref">2023</a>)</span>.</p>
@@ -259,8 +293,8 @@ window.Quarto = {
 \omega\boldsymbol{\Omega}_0)^{-1}\right\} \\
 \omega &amp;\sim \mathsf{gamma}(\nu_0/2,\tau_0/2).
 \end{align*}\]</span> Using properties of the Gaussian distribution, the sampling distribution of the ordinary least squares estimator is <span class="math inline">\(\widehat{\boldsymbol{\beta}} \sim \mathsf{Gauss}_p\{\boldsymbol{\beta}, (\omega\mathbf{X}^\top\mathbf{X})^{-1}\}\)</span>.</p>
-<p>Then the conditional and marginal posterior distributions <span class="math display">\[\begin{align*}
-\boldsymbol{\beta} \mid \sigma^2, \boldsymbol{y} &amp;\sim \mathsf{Gauss}_p\left\{\boldsymbol{\mu}_n, (\omega\boldsymbol{\Omega}_n)^{-1}\right\}  \\
+<p>The conditional and marginal posterior distributions for the mean coefficients <span class="math inline">\(\boldsymbol{\beta}\)</span> and for the precision <span class="math inline">\(\omega\)</span> are <span class="math display">\[\begin{align*}
+\boldsymbol{\beta} \mid \omega, \boldsymbol{y} &amp;\sim \mathsf{Gauss}_p\left\{\boldsymbol{\mu}_n, (\omega\boldsymbol{\Omega}_n)^{-1}\right\}  \\
 \omega \mid  \boldsymbol{y} &amp;\sim \mathsf{gamma}\left\{(\nu_0 + n)/2,  \tau^2_n/2\right\}, \\
 \boldsymbol{\beta} \mid  \boldsymbol{y} &amp;\sim \mathsf{Student}(\boldsymbol{\mu}_n,  \tau_n/(\nu_0+n) \times \mathbf{\Omega}_n^{-1}, \nu_0 + n)
 \end{align*}\]</span> where <span class="math display">\[\begin{align*}
@@ -297,6 +331,98 @@ p(\boldsymbol{\beta}, \mid \boldsymbol{y}) &amp; \stackrel{\boldsymbol{\beta}}{\
 \end{align*}\]</span> so must be a Student-<span class="math inline">\(t\)</span> distribution with location <span class="math inline">\(\boldsymbol{\mu}_n\)</span>, scale matrix <span class="math inline">\(\tau_n/(\nu_0+n) \times \mathbf{\Omega}_n^{-1}\)</span> and <span class="math inline">\(\nu_0+n\)</span> degrees of freedom.</p>
 </div>
 <p>The choice of prior precision <span class="math inline">\(\boldsymbol{\Omega}_0\)</span> is left to the user, but typically the components of the vector <span class="math inline">\(\boldsymbol{\beta}\)</span> are left apriori independent, with <span class="math inline">\(\boldsymbol{\Omega}_0 \propto \lambda\mathbf{I}_n\)</span>.</p>
+<div id="exm-regression" class="theorem example">
+<p><span class="theorem-title"><strong>Example 8.1</strong></span> Study 4 of <span class="citation" data-cites="Lin:2024">Lin et al. (<a href="references.html#ref-Lin:2024" role="doc-biblioref">2024</a>)</span> focuses on cultural appropriation using a fictional scenario focusing on soul food recipe cookbook from Chef Dax. The chef who was either African-American or not, and the authors manipulated the description of the way he obtained the recipes (either by peeking without permission in kitchens, by asking permission or without them mentioning altogether for the control category). Authors postulated that the perception of appropriation would vary by political ideology (liberal or conservative). The study results in a 3 by 2 by 2 three-way between-subject ANOVA.</p>
+<p>We use the multivariate regression model to draw samples from <span class="math inline">\(\boldsymbol{\beta}\)</span> and use these to reconstruct the subgroup sample means for each of the 12 categories. Then, we consider the difference in perception of cultural appropriation for participants when Chef Dax is black (no cultural appropriation) versus when he is not, separately for liberals and conservatives, by pooling data across all different descriptions. <a href="#fig-contrasts" class="quarto-xref">Figure&nbsp;<span>8.1</span></a> shows the posterior distribution of those contrasts, which indicate that on average liberal perceive cultural appropriation more strongly (with nearly 2 points more), than conservatives (0.7 points on average).</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(LKUK24_S4, <span class="at">package =</span> <span class="st">"hecedsm"</span>)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">options</span>(<span class="at">contrasts =</span> <span class="fu">c</span>(<span class="st">"contr.sum"</span>, <span class="st">"contr.poly"</span>))</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>model <span class="ot">&lt;-</span> <span class="fu">lm</span>(appropriation <span class="sc">~</span> politideo <span class="sc">*</span> chefdax <span class="sc">*</span> brandaction,</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>          <span class="at">data =</span> LKUK24_S4)</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Model matrix, response and dimensions</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>y <span class="ot">&lt;-</span> LKUK24_S4<span class="sc">$</span>appropriation</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>X <span class="ot">&lt;-</span> <span class="fu">model.matrix</span>(model)</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="fu">nrow</span>(X)</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>p <span class="ot">&lt;-</span> <span class="fu">ncol</span>(X)</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Priors</span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="co"># We set zero for contrasts and a small value</span></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="co"># for the global mean (since response is on [1,7] Likert scale)</span></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="co"># with lower values indicating more cultural appropriation)</span></span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>mu_0 <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fl">2.5</span>, <span class="fu">rep</span>(<span class="dv">0</span>, p<span class="dv">-1</span>))</span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>Omega_0 <span class="ot">&lt;-</span> <span class="fu">diag</span>(p)</span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a><span class="co"># Prior precision of 0.25 (variance of 4)</span></span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>nu_0 <span class="ot">&lt;-</span> <span class="fl">0.25</span></span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>tau_0 <span class="ot">&lt;-</span> <span class="dv">1</span></span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>Omega_n_inv <span class="ot">&lt;-</span> <span class="fu">solve</span>(<span class="fu">crossprod</span>(X) <span class="sc">+</span> Omega_0)</span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>mu_n <span class="ot">&lt;-</span> Omega_n_inv <span class="sc">%*%</span> (<span class="fu">crossprod</span>(X, y) <span class="sc">+</span> <span class="fu">crossprod</span>(Omega_0, mu_0))</span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>tau_n <span class="ot">&lt;-</span> tau_0 <span class="sc">+</span> <span class="fu">sum</span>(<span class="fu">resid</span>(model)<span class="sc">^</span><span class="dv">2</span>) <span class="sc">+</span> <span class="fu">c</span>(<span class="fu">crossprod</span>(X <span class="sc">%*%</span> (mu_n<span class="sc">-</span><span class="fu">coef</span>(model)))) <span class="sc">+</span> <span class="fu">sum</span>((mu_n<span class="sc">-</span>mu_0)<span class="sc">^</span><span class="dv">2</span>)</span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a><span class="co"># Posterior draws from the model</span></span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a>omega <span class="ot">&lt;-</span> <span class="fu">rgamma</span>(<span class="at">n =</span> <span class="fl">1e3</span>L, </span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a>                <span class="at">shape =</span> (nu_0 <span class="sc">+</span> n)<span class="sc">/</span><span class="dv">2</span>, </span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a>                tau_n<span class="sc">^</span><span class="dv">2</span><span class="sc">/</span><span class="dv">2</span>)</span>
+<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a>beta <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="fu">rnorm</span>(<span class="at">n =</span> <span class="fl">1e3</span>L<span class="sc">*</span>p), <span class="at">ncol =</span> p) <span class="sc">%*%</span> </span>
+<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a>  <span class="fu">chol</span>(Omega_n_inv)</span>
+<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a>beta <span class="ot">&lt;-</span> <span class="fu">sweep</span>(beta, <span class="dv">1</span>, <span class="fu">sqrt</span>(omega), <span class="st">"/"</span>)</span>
+<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a>beta <span class="ot">&lt;-</span> <span class="fu">sweep</span>(beta, <span class="dv">2</span>, mu_n, <span class="st">"+"</span>)</span>
+<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a><span class="fu">t</span>(<span class="fu">apply</span>(beta, <span class="dv">2</span>, quantile, <span class="at">probs =</span> <span class="fu">c</span>(<span class="fl">0.25</span>,<span class="fl">0.5</span>,<span class="fl">0.75</span>)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>                                        25%         50%      75%
+(Intercept)                       0.7649377  2.41815327 4.065514
+politideo1                       -1.9007514 -0.18854221 1.496749
+chefdax1                         -1.0050513  0.61334436 2.325690
+brandaction1                     -2.0240376  0.31565364 2.572204
+brandaction2                     -2.2721815  0.05487954 2.314791
+politideo1:chefdax1              -2.0470102 -0.42015803 1.276394
+politideo1:brandaction1          -2.1256562  0.04035927 2.223829
+politideo1:brandaction2          -2.1571230 -0.03357733 2.488046
+chefdax1:brandaction1            -2.2446491  0.11029016 2.451253
+chefdax1:brandaction2            -2.6752698 -0.22818534 2.229701
+politideo1:chefdax1:brandaction1 -2.3827546  0.04043430 2.273892
+politideo1:chefdax1:brandaction2 -2.2837305  0.04530429 2.406842</code></pre>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Standard dev. for beta (from Student-t)</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>se <span class="ot">&lt;-</span> <span class="fu">sqrt</span>((nu_0 <span class="sc">+</span> n)<span class="sc">/</span>(nu_0 <span class="sc">+</span> n <span class="sc">-</span> <span class="dv">2</span>) <span class="sc">*</span><span class="fu">diag</span>(tau_n<span class="sc">/</span>(nu_0 <span class="sc">+</span> n) <span class="sc">*</span> Omega_n_inv))</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>beta <span class="ot">&lt;-</span> TruncatedNormal<span class="sc">::</span><span class="fu">rtmvt</span>(</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">n =</span> <span class="fl">1e3</span>L,</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">mu =</span> mu_n, </span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">sigma =</span> tau_n<span class="sc">/</span>(nu_0 <span class="sc">+</span> n) <span class="sc">*</span> Omega_n_inv, </span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">df =</span> nu_0 <span class="sc">+</span> n)</span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>dfg <span class="ot">&lt;-</span> <span class="fu">expand.grid</span>(<span class="at">politideo =</span><span class="fu">c</span>(<span class="st">"conservative"</span>, <span class="st">"liberal"</span>),</span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>            <span class="at">chefdax =</span> <span class="fu">c</span>(<span class="st">"not black"</span>, <span class="st">"black"</span>),</span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>            <span class="at">brandaction =</span> <span class="fu">c</span>(<span class="st">"peeking"</span>,<span class="st">"permission"</span>, <span class="st">"control"</span>))</span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>mm <span class="ot">&lt;-</span> <span class="fu">model.matrix</span>( <span class="sc">~</span> politideo <span class="sc">*</span> chefdax <span class="sc">*</span> brandaction,</span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>              <span class="at">data =</span> dfg)</span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a><span class="co"># Subgroup means for each of the 12 categories</span></span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>mu <span class="ot">&lt;-</span> <span class="fu">tcrossprod</span>(beta, mm)</span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a><span class="co"># Contrast weights, averaging over brandaction</span></span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>w1 <span class="ot">&lt;-</span> <span class="fu">rep</span>(<span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">0</span>, <span class="sc">-</span><span class="dv">1</span>, <span class="dv">0</span>), <span class="at">length.out =</span> <span class="fu">nrow</span>(dfg))<span class="sc">/</span><span class="dv">3</span></span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>w2 <span class="ot">&lt;-</span> <span class="fu">rep</span>(<span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">0</span>, <span class="sc">-</span><span class="dv">1</span>), <span class="at">length.out =</span> <span class="fu">nrow</span>(dfg))<span class="sc">/</span><span class="dv">3</span></span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a><span class="co"># Posterior distribution of contrasts</span></span>
+<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a>tc <span class="ot">&lt;-</span> mu <span class="sc">%*%</span> <span class="fu">cbind</span>(w1, w2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>The coefficients and standard errors from the linear regression are very nearly similar to the posterior mean and standard deviations for <span class="math inline">\(\boldsymbol{\beta}\)</span> from the marginal Student-<span class="math inline">\(t,\)</span> owing to the large sample size and uninformative priors.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-contrasts" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-contrasts-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="regression_files/figure-html/fig-contrasts-1.png" class="img-fluid figure-img" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-contrasts-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;8.1: Difference in appropriation rating for black vs non-black Chef Dax, average accross different levels of brand action.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</div>
 <p>In multivariate regression, it sometimes is useful to specify correlated coefficients (e.g., for random effects). This leads to the necessity to set a prior on a covariance matrix.</p>
 <div id="prp-Wishart-distribution" class="theorem proposition">
 <p><span class="theorem-title"><strong>Proposition 8.3 (Wishart distribution)</strong></span> Let <span class="math inline">\(\boldsymbol{Q}\)</span> by a random <span class="math inline">\(p \times p\)</span> symmetric positive definite matrix with Wishart distribution, denoted <span class="math inline">\(\mathbf{Q} \sim \mathsf{Wishart}_p(\nu, \mathbf{S})\)</span> for <span class="math inline">\(\nu&gt;0\)</span> degrees of freedom and scale <span class="math inline">\(\mathbf{S}\)</span>. It’s density is proportional to <span class="math display">\[\begin{align*}
@@ -318,8 +444,22 @@ p(\boldsymbol{\Sigma}) \propto |\boldsymbol{\Sigma}|^{-(\nu+p+1)/2} \exp\left\{-
 \end{align*}\]</span> We then combine elements to get the parameters. This extends naturally to the case of <span class="math inline">\(n\)</span> independent observations, for example linear regression model.</p>
 </div>
 <div id="prp-prior-variance" class="theorem proposition">
-<p><span class="theorem-title"><strong>Proposition 8.5 (Priors for variance matrices)</strong></span> The marginal precision for the Wishart variate are gamma distributed with the same degrees of freedom <span class="math inline">\(\nu\)</span>. The problem with using this prior is that it has a single parameter governing all scale parameters (i.e., the marginal variance) and the absolute value of the correlation and marginal variance parameters are negatively related <span class="citation" data-cites="Gelman:2013">(<a href="references.html#ref-Gelman:2013" role="doc-biblioref">Gelman et al. 2013</a>)</span>. Large variance thus correspond to small correlations shrunk towards zero. There exists alternative distributions, such as the scaled-inverse Wishart adds redundant scale parameters to decouple <span class="math inline">\(\mathrm{diag}(\boldsymbol{\xi}) \boldsymbol{\Sigma}\mathrm{diag}(\boldsymbol{\xi})\)</span>, but we refrain from pursuing this here.</p>
-<p>A better alternative is to specify different prior for each marginal scale <span class="math inline">\(\sigma_j\)</span> and a prior on the correlation matrix <span class="math inline">\(\mathbf{R}.\)</span> For the latter, the onion peelor LKJ prior, named after the authors of <span class="citation" data-cites="Lewandowski:2009">Lewandowski, Kurowicka, and Joe (<a href="references.html#ref-Lewandowski:2009" role="doc-biblioref">2009</a>)</span>, is <span class="math inline">\(p(\mathbf{R}) \propto |\mathbf{R}|^{\eta-1}\)</span> for a scale <span class="math inline">\(\eta&gt;0.\)</span> The case <span class="math inline">\(\eta=1\)</span> leads to uniform over the space of correlation matrices, and <span class="math inline">\(\eta&gt;1\)</span> favours the identity matrix.</p>
+<p><span class="theorem-title"><strong>Proposition 8.5 (Priors for variance matrices)</strong></span> The marginal precision for the Wishart variate are gamma distributed with the same degrees of freedom <span class="math inline">\(\nu\)</span>. The problem with using this prior is that it has a single parameter governing all scale parameters (i.e., the marginal variance) and the absolute value of the correlation and marginal variance parameters are negatively related <span class="citation" data-cites="Gelman:2013">(<a href="references.html#ref-Gelman:2013" role="doc-biblioref">Gelman et al. 2013</a>)</span>, as seen in <a href="#fig-draws-Wishart" class="quarto-xref">Figure&nbsp;<span>8.2</span></a>. Large variance thus correspond to small correlations shrunk towards zero when the degrees of freedom increase. There exists alternative distributions, such as the scaled-inverse Wishart, that add redundant scale parameters to decouple <span class="math inline">\(\mathrm{diag}(\boldsymbol{\xi}) \times \boldsymbol{\Sigma} \times \mathrm{diag}(\boldsymbol{\xi})\)</span>, but we refrain from pursuing these here.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-draws-Wishart" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-draws-Wishart-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="regression_files/figure-html/fig-draws-Wishart-1.png" class="img-fluid figure-img" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-draws-Wishart-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;8.2: Prior draws from a bivariate inverse Wishart with identity scale matrix and <span class="math inline">\(\nu \in \{3, 20\}\)</span> degrees of freedom.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>A better alternative is to specify different prior for each marginal scale <span class="math inline">\(\sigma_j\)</span> and a prior on the correlation matrix <span class="math inline">\(\mathbf{R}.\)</span> For the latter, the onion peel or LKJ prior, named after the authors of <span class="citation" data-cites="Lewandowski:2009">Lewandowski, Kurowicka, and Joe (<a href="references.html#ref-Lewandowski:2009" role="doc-biblioref">2009</a>)</span>, is <span class="math inline">\(p(\mathbf{R}) \propto |\mathbf{R}|^{\eta-1}\)</span> for a scale <span class="math inline">\(\eta&gt;0.\)</span> The case <span class="math inline">\(\eta=1\)</span> leads to uniform over the space of correlation matrices, and <span class="math inline">\(\eta&gt;1\)</span> favours the identity matrix.</p>
 </div>
 <section id="shrinkage-priors" class="level2" data-number="8.1">
 <h2 data-number="8.1" class="anchored" data-anchor-id="shrinkage-priors"><span class="header-section-number">8.1</span> Shrinkage priors</h2>
@@ -333,9 +473,28 @@ p(\boldsymbol{\Sigma}) \propto |\boldsymbol{\Sigma}|^{-(\nu+p+1)/2} \exp\left\{-
 </div>
 <div id="prp-horseshoe" class="theorem proposition">
 <p><span class="theorem-title"><strong>Proposition 8.7 (Horseshoe prior)</strong></span> The horseshoe prior of <span class="citation" data-cites="Carvalho.Polson.Scott:2010">Carvalho, Polson, and Scott (<a href="references.html#ref-Carvalho.Polson.Scott:2010" role="doc-biblioref">2010</a>)</span> is a hierarchical prior of the form <span class="math display">\[\begin{align*}
-\beta_j \mid \sigma^2_j \sim \mathsf{Gauss}(0, \sigma^2_j), \quad \sigma^2_j \mid \lambda \sim \mathsf{Student}_{+}(0, \sigma, 1), \quad \lambda \sim \mathsf{Student}_{+}(0, \kappa, 1)
+\beta_j \mid \sigma^2_j \sim \mathsf{Gauss}(0, \sigma^2_j), \quad \sigma^2_j \mid \lambda \sim \mathsf{Student}_{+}(0, \lambda, 1), \quad \lambda \sim \mathsf{Student}_{+}(0, \omega, 1)
 \end{align*}\]</span> where <span class="math inline">\(\mathsf{Student}_{+}(0, a, 1)\)</span> denotes a half-Cauchy distribution with scale <span class="math inline">\(a&gt;0,\)</span> truncated on <span class="math inline">\(\mathbb{R}_{+}.\)</span></p>
-<p>This prior has no explicit density, but is continuous and can be simulated. It’s name comes from the shrinkage factor behaviour <span class="math inline">\(\kappa_j = (1+\sigma^2_j)^{-1},\)</span> which is equivalent to a <span class="math inline">\(\mathsf{beta}(1/2, 1/2)\)</span>.</p>
+<p>This prior has no explicit density, but is continuous and can be simulated. It is useful to consider the behaviour of the random variance <span class="math inline">\(\sigma^2_j\)</span> term, which leads to an unconditional scale mixture of Gaussian for <span class="math inline">\(\beta_j\)</span>. More useful to understanding is looking at <span class="math inline">\(\kappa = 1 - 1/(1+\sigma^2)\)</span>, which gives a weight in <span class="math inline">\([0,1].\)</span> We can see what happens to the shrunk components close to zero by looking at the density of <span class="math inline">\(\kappa \to 0\)</span>, and similarly at the large signals when <span class="math inline">\(\kappa \to 1.\)</span> The Cauchy prior does not shrink towards zero, and lets large signals pass, whereas the Bayesian LASSO double exponential shrinkage leads to attenuation of strong signals. The horseshoe prior name comes from the shape of the prior, which leads to a shrinkage analog to <span class="math inline">\(\mathsf{beta}(1/2, 1/2)\)</span> and thus penalizes, forcing components to be either large or small.</p>
+<p><a href="#fig-weights-shrinkage" class="quarto-xref">Figure&nbsp;<span>8.3</span></a> shows the weighting implied by the mixture density for a Cauchy prior on the variance, the double exponential of the Laplace from Bayesian LASSO and the horseshoe.</p>
+<div class="cell">
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Removed 2 rows containing missing values or values outside the scale range
+(`geom_line()`).</code></pre>
+</div>
+<div class="cell-output-display">
+<div id="fig-weights-shrinkage" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-weights-shrinkage-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="regression_files/figure-html/fig-weights-shrinkage-1.png" class="img-fluid figure-img" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-weights-shrinkage-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;8.3: Density of penalization weights <span class="math inline">\(\kappa\)</span> of spike (near zero) and slab (near one) for three shrinkage priors.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
 </div>
 <p>In the Bayesian paradigm, regularization is achieved via priors that have mass at or towards zero, pushing coefficients of the regression model towards zero unless there is strong evidence from the likelihood against this. We however want to allow non-zero coefficients, typically by setting coefficient-specific parameters with a heavy tailed distribution to prevent overshrinking. Most if not all parameter can be viewed as scale mixtures of Gaussian.</p>
 <p>We make a distinction between <strong>global</strong> shrinkage priors those that consider a common shrinkage parameter for all regression coefficients, to be compared with <strong>local</strong> scale mixtures that have coefficient-specific parameters.</p>
@@ -347,7 +506,7 @@ p(\boldsymbol{\Sigma}) \propto |\boldsymbol{\Sigma}|^{-(\nu+p+1)/2} \exp\left\{-
 <img src="regression_files/figure-html/fig-shrinkage-1.png" class="img-fluid figure-img" width="672">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-shrinkage-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;8.1: Marginal density for a regression coefficient <span class="math inline">\(\beta\)</span> with horseshoe prior (full), Laplace (dashed) and a Student-<span class="math inline">\(t\)</span> (thick dotted). The plot on the right shows the tail behaviour. The density of the horseshoe is unbounded at the origin. Inspired from Figure 1 of <span class="citation" data-cites="Carvalho.Polson.Scott:2010">Carvalho, Polson, and Scott (<a href="references.html#ref-Carvalho.Polson.Scott:2010" role="doc-biblioref">2010</a>)</span>.
+Figure&nbsp;8.4: Marginal density for a regression coefficient <span class="math inline">\(\beta\)</span> with horseshoe prior (full), Laplace (dashed) and a Student-<span class="math inline">\(t\)</span> (thick dotted). The plot on the right shows the tail behaviour. The density of the horseshoe is unbounded at the origin. Inspired from Figure 1 of <span class="citation" data-cites="Carvalho.Polson.Scott:2010">Carvalho, Polson, and Scott (<a href="references.html#ref-Carvalho.Polson.Scott:2010" role="doc-biblioref">2010</a>)</span>.
 </figcaption>
 </figure>
 </div>
@@ -371,6 +530,9 @@ George, Edward I., and Robert E. McCulloch. 1993. <span>“Variable Selection vi
 </div>
 <div id="ref-Lewandowski:2009" class="csl-entry" role="listitem">
 Lewandowski, Daniel, Dorota Kurowicka, and Harry Joe. 2009. <span>“Generating Random Correlation Matrices Based on Vines and Extended Onion Method.”</span> <em>Journal of Multivariate Analysis</em> 100 (9): 1989–2001. <a href="https://doi.org/10.1016/j.jmva.2009.04.008">https://doi.org/10.1016/j.jmva.2009.04.008</a>.
+</div>
+<div id="ref-Lin:2024" class="csl-entry" role="listitem">
+Lin, Jason D, Nicole You Jeung Kim, Esther Uduehi, and Anat Keinan. 2024. <span>“Culture for Sale: Unpacking Consumer Perceptions of Cultural Appropriation.”</span> <em>Journal of Consumer Research</em>. <a href="https://doi.org/10.1093/jcr/ucad076">https://doi.org/10.1093/jcr/ucad076</a>.
 </div>
 <div id="ref-Mitchell.Beauchamp:1988" class="csl-entry" role="listitem">
 Mitchell, T. J., and J. J. Beauchamp. 1988. <span>“Bayesian Variable Selection in Linear Regression.”</span> <em>Journal of the American Statistical Association</em> 83 (404): 1023–32. <a href="https://doi.org/10.1080/01621459.1988.10478694">https://doi.org/10.1080/01621459.1988.10478694</a>.

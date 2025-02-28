@@ -1,6 +1,16 @@
 # Regression models
 
-This chapter is dedicated to the study of generalized linear regression models from a Bayesian standpoint. Starting with Gaussian data, we investigate the link between frequentist approaches to regularization and shrinkage priors. We also look at hierarchical models with mixed effects and variable selection using reversible jump MCMC and conditional Bayes factor.
+
+```{r}
+#| label: setup
+#| file: "_common.R"
+#| include: true
+#| message: false
+#| warning: false
+#| echo: false
+```
+
+This chapter is dedicated to the study of regression models from a Bayesian standpoint. Starting with Gaussian data, we investigate the link between frequentist approaches to regularization and shrinkage priors. We also look at hierarchical models with mixed effects and variable selection using reversible jump MCMC and conditional Bayes factor.
 
 Throughout, we consider regression models with model (or design) matrix $\mathbf{X} \in \mathbb{R}^{n \times p}$ with centered inputs, so $\mathbf{1}_n^\top\mathbf{X}=\mathbf{0}_p.$ We are interested in the associated vector of regression coefficients $\boldsymbol{\beta} = (\beta_1, \ldots, \beta_p)^\top$ which describe the mean and act as weights for each covariate vector. In the ordinary linear regression model
 \begin{align*}
@@ -28,9 +38,9 @@ The conjugate prior for the Gaussian regression model for the mean and precision
 Using properties of the Gaussian distribution, the sampling distribution of the ordinary least squares estimator is $\widehat{\boldsymbol{\beta}} \sim \mathsf{Gauss}_p\{\boldsymbol{\beta}, (\omega\mathbf{X}^\top\mathbf{X})^{-1}\}$.
 
 
-Then the conditional and marginal posterior distributions
+The conditional and marginal posterior distributions for the mean coefficients $\boldsymbol{\beta}$ and for the precision $\omega$ are
 \begin{align*}
-\boldsymbol{\beta} \mid \sigma^2, \boldsymbol{y} &\sim \mathsf{Gauss}_p\left\{\boldsymbol{\mu}_n, (\omega\boldsymbol{\Omega}_n)^{-1}\right\}  \\
+\boldsymbol{\beta} \mid \omega, \boldsymbol{y} &\sim \mathsf{Gauss}_p\left\{\boldsymbol{\mu}_n, (\omega\boldsymbol{\Omega}_n)^{-1}\right\}  \\
 \omega \mid  \boldsymbol{y} &\sim \mathsf{gamma}\left\{(\nu_0 + n)/2,  \tau^2_n/2\right\}, \\
 \boldsymbol{\beta} \mid  \boldsymbol{y} &\sim \mathsf{Student}(\boldsymbol{\mu}_n,  \tau_n/(\nu_0+n) \times \mathbf{\Omega}_n^{-1}, \nu_0 + n)
 \end{align*}
@@ -42,6 +52,8 @@ where
 \end{align*}
 
 :::
+
+
 
 
 :::{#prp-quadratic-forms}
@@ -98,6 +110,101 @@ so must be a Student-$t$ distribution with location $\boldsymbol{\mu}_n$, scale 
 
 The choice of prior precision $\boldsymbol{\Omega}_0$ is left to the user, but typically the components of the vector $\boldsymbol{\beta}$ are left apriori independent, with $\boldsymbol{\Omega}_0 \propto \lambda\mathbf{I}_n$.
 
+:::{#exm-regression}
+
+Study 4 of @Lin:2024 focuses on cultural appropriation using a fictional scenario focusing on soul food recipe cookbook from Chef Dax. The chef who was either African-American or not, and the authors manipulated the description of the way he obtained the recipes (either by peeking without permission in kitchens, by asking permission or without them mentioning altogether for the control category). Authors postulated that the perception of appropriation would vary by political ideology (liberal or conservative). The study results in a 3 by 2 by 2 three-way between-subject ANOVA.
+
+
+We use the multivariate regression model to draw samples from $\boldsymbol{\beta}$ and use these to reconstruct the subgroup sample means for each of the 12 categories. Then, we consider the difference in perception of cultural appropriation for participants when Chef Dax is black (no cultural appropriation) versus when he is not, separately for liberals and conservatives, by pooling data across all different descriptions. @fig-contrasts shows the posterior distribution of those contrasts, which indicate that on average liberal perceive cultural appropriation more strongly (with nearly 2 points more), than conservatives (0.7 points on average).
+
+
+```{r}
+#| eval: true
+#| echo: true
+#| code-fold: true
+data(LKUK24_S4, package = "hecedsm")
+options(contrasts = c("contr.sum", "contr.poly"))
+model <- lm(appropriation ~ politideo * chefdax * brandaction,
+          data = LKUK24_S4)
+# Model matrix, response and dimensions
+y <- LKUK24_S4$appropriation
+X <- model.matrix(model)
+n <- nrow(X)
+p <- ncol(X)
+# Priors
+# We set zero for contrasts and a small value
+# for the global mean (since response is on [1,7] Likert scale)
+# with lower values indicating more cultural appropriation)
+mu_0 <- c(2.5, rep(0, p-1))
+Omega_0 <- diag(p)
+# Prior precision of 0.25 (variance of 4)
+nu_0 <- 0.25
+tau_0 <- 1
+Omega_n_inv <- solve(crossprod(X) + Omega_0)
+mu_n <- Omega_n_inv %*% (crossprod(X, y) + crossprod(Omega_0, mu_0))
+tau_n <- tau_0 + sum(resid(model)^2) + c(crossprod(X %*% (mu_n-coef(model)))) + sum((mu_n-mu_0)^2)
+# Posterior draws from the model
+omega <- rgamma(n = 1e3L, 
+                shape = (nu_0 + n)/2, 
+                tau_n^2/2)
+beta <- matrix(rnorm(n = 1e3L*p), ncol = p) %*% 
+  chol(Omega_n_inv)
+beta <- sweep(beta, 1, sqrt(omega), "/")
+beta <- sweep(beta, 2, mu_n, "+")
+t(apply(beta, 2, quantile, probs = c(0.25,0.5,0.75)))
+# Standard dev. for beta (from Student-t)
+se <- sqrt((nu_0 + n)/(nu_0 + n - 2) *diag(tau_n/(nu_0 + n) * Omega_n_inv))
+
+beta <- TruncatedNormal::rtmvt(
+  n = 1e3L,
+  mu = mu_n, 
+  sigma = tau_n/(nu_0 + n) * Omega_n_inv, 
+  df = nu_0 + n)
+dfg <- expand.grid(politideo =c("conservative", "liberal"),
+            chefdax = c("not black", "black"),
+            brandaction = c("peeking","permission", "control"))
+mm <- model.matrix( ~ politideo * chefdax * brandaction,
+              data = dfg)
+# Subgroup means for each of the 12 categories
+mu <- tcrossprod(beta, mm)
+# Contrast weights, averaging over brandaction
+w1 <- rep(c(1, 0, -1, 0), length.out = nrow(dfg))/3
+w2 <- rep(c(0, 1, 0, -1), length.out = nrow(dfg))/3
+# Posterior distribution of contrasts
+tc <- mu %*% cbind(w1, w2)
+```
+
+The coefficients and standard errors from the linear regression are very nearly similar to the posterior mean and standard deviations for $\boldsymbol{\beta}$ from the marginal Student-$t,$ owing to the large sample size and uninformative priors.
+
+```{r}
+#| eval: true
+#| echo: false
+#| label: fig-contrasts
+#| fig-cap: "Difference in appropriation rating for black vs non-black Chef Dax, average accross different levels of brand action."
+dfg <- expand.grid(politideo =c("conservative", "liberal"),
+            chefdax = c("not black", "black"),
+            brandaction = c("peeking","permission", "control"))
+mm <- model.matrix( ~ politideo * chefdax * brandaction,
+              data = dfg)
+# Subgroup means for each of the 12 categories
+mu <- tcrossprod(beta, mm)
+# Contrast weights, averaging over brandaction
+w1 <- rep(c(1, 0, -1, 0), length.out = nrow(dfg))/3
+w2 <- rep(c(0, 1, 0, -1), length.out = nrow(dfg))/3
+tc <- mu %*% cbind(w1, w2)
+ggplot(data = 
+         data.frame(x = c(tc),
+                    f = factor(rep(c("liberal","conservative"), 
+                                   each = nrow(beta)))),
+       mapping = aes(x = x, y = f, group = f)) +
+  ggdist::stat_dist_halfeye(.width = 0.5) +
+  labs(y = "",
+       x = "difference in cultural appropriation score",
+       subtitle = "Comparison when Chef Dax is black (vs not)") 
+```
+
+:::
+
 
 In multivariate regression, it sometimes is useful to specify correlated coefficients (e.g., for random effects). This leads to the necessity to set a prior on a covariance matrix.
 
@@ -153,9 +260,34 @@ We then combine elements to get the parameters. This extends naturally to the ca
 
 ## Priors for variance matrices
 
-The marginal precision for the Wishart variate are gamma distributed with the same degrees of freedom $\nu$. The problem with using this prior is that it has a single parameter governing all scale parameters (i.e., the marginal variance) and the absolute value of the correlation and marginal variance parameters are negatively related [@Gelman:2013]. Large variance thus correspond to small correlations shrunk towards zero. There exists alternative distributions, such as the scaled-inverse Wishart adds redundant scale parameters to decouple $\mathrm{diag}(\boldsymbol{\xi}) \boldsymbol{\Sigma}\mathrm{diag}(\boldsymbol{\xi})$, but we refrain from pursuing this here.
+The marginal precision for the Wishart variate are gamma distributed with the same degrees of freedom $\nu$. The problem with using this prior is that it has a single parameter governing all scale parameters (i.e., the marginal variance) and the absolute value of the correlation and marginal variance parameters are negatively related [@Gelman:2013], as seen in @fig-draws-Wishart. Large variance thus correspond to small correlations shrunk towards zero when the degrees of freedom increase. There exists alternative distributions, such as the scaled-inverse Wishart, that add redundant scale parameters to decouple $\mathrm{diag}(\boldsymbol{\xi}) \times \boldsymbol{\Sigma} \times \mathrm{diag}(\boldsymbol{\xi})$, but we refrain from pursuing these here.
 
-A better alternative is to specify different prior for each marginal scale $\sigma_j$ and a prior on the correlation matrix $\mathbf{R}.$ For the latter, the onion peelor LKJ prior, named after the authors of @Lewandowski:2009, is $p(\mathbf{R}) \propto |\mathbf{R}|^{\eta-1}$ for a scale $\eta>0.$ The case $\eta=1$ leads to uniform over the space of correlation matrices, and $\eta>1$ favours the identity matrix.
+
+```{r}
+#| eval: true
+#| echo: false
+#| label: fig-draws-Wishart
+#| fig-cap: "Prior draws from a bivariate inverse Wishart with identity scale matrix and $\\nu \\in \\{3, 20\\}$ degrees of freedom."
+set.seed(80601)
+prec <- rWishart(n = 1000, df = 3, Sigma = diag(2))
+cor_a <- apply(prec, 3, function(x){cov2cor(solve(x))[1,2]})
+var_a <- apply(prec, 3, function(x){solve(x)[1,1]})
+
+prec <- rWishart(n = 1000, df = 20, Sigma = diag(2))
+cor_b <- apply(prec, 3, function(x){cov2cor(solve(x))[1,2]})
+var_b <- apply(prec, 3, function(x){solve(x)[1,1]})
+draws <- data.frame(cor = c(cor_a, cor_b),
+           logvar = log(c(var_a, var_b)),
+           df = factor(paste0("df = ",rep(c(3, 20), each = 1000))))
+ggplot(data = draws,
+       mapping = aes(x = cor, y = logvar)) +
+  geom_point() +
+  facet_wrap(facets = ~df) +
+  labs(x = expression("correlation"~rho),
+       y = expression("log of marginal variance"~sigma^2[1]))
+```
+
+A better alternative is to specify different prior for each marginal scale $\sigma_j$ and a prior on the correlation matrix $\mathbf{R}.$ For the latter, the onion peel or LKJ prior, named after the authors of @Lewandowski:2009, is $p(\mathbf{R}) \propto |\mathbf{R}|^{\eta-1}$ for a scale $\eta>0.$ The case $\eta=1$ leads to uniform over the space of correlation matrices, and $\eta>1$ favours the identity matrix.
 
 
 :::
@@ -193,11 +325,40 @@ where $\sigma^2_j$ is very nearly zero. We set a Jeffrey's prior for $\gamma_j \
 
 The horseshoe prior of @Carvalho.Polson.Scott:2010 is a hierarchical prior of the form 
 \begin{align*}
-\beta_j \mid \sigma^2_j \sim \mathsf{Gauss}(0, \sigma^2_j), \quad \sigma^2_j \mid \lambda \sim \mathsf{Student}_{+}(0, \sigma, 1), \quad \lambda \sim \mathsf{Student}_{+}(0, \kappa, 1)
+\beta_j \mid \sigma^2_j \sim \mathsf{Gauss}(0, \sigma^2_j), \quad \sigma^2_j \mid \lambda \sim \mathsf{Student}_{+}(0, \lambda, 1), \quad \lambda \sim \mathsf{Student}_{+}(0, \omega, 1)
 \end{align*}
 where $\mathsf{Student}_{+}(0, a, 1)$ denotes a half-Cauchy distribution with scale $a>0,$ truncated on $\mathbb{R}_{+}.$
 
-This prior has no explicit density, but is continuous and can be simulated. It's name comes from the shrinkage factor behaviour $\kappa_j = (1+\sigma^2_j)^{-1},$ which is equivalent to a $\mathsf{beta}(1/2, 1/2)$.
+This prior has no explicit density, but is continuous and can be simulated. It is useful to consider the behaviour of the random variance $\sigma^2_j$ term, which leads to an unconditional scale mixture of Gaussian for $\beta_j$. More useful to understanding is looking at $\kappa = 1 - 1/(1+\sigma^2)$, which gives a weight in $[0,1].$ We can see what happens to the shrunk components close to zero by looking at the density of $\kappa \to 0$, and similarly at the large signals when $\kappa \to 1.$ The Cauchy prior does not shrink towards zero, and lets large signals pass, whereas the Bayesian LASSO double exponential shrinkage leads to attenuation of strong signals.
+The horseshoe prior name comes from the shape of the prior, which leads to a shrinkage analog to $\mathsf{beta}(1/2, 1/2)$ and thus penalizes, forcing components to be either large or small.
+ 
+@fig-weights-shrinkage shows the weighting implied by the mixture density for a Cauchy prior on the variance, the double exponential of the Laplace from Bayesian LASSO and the horseshoe.
+
+```{r}
+#| eval: true
+#| echo: false
+#| label: fig-weights-shrinkage
+#| fig-cap: "Density of penalization weights $\\kappa$ of spike (near zero) and slab (near one) for three shrinkage priors."
+f1 <- function(x){exp(-0.5/x)/(x^2)}
+f2 <- function(x){x^(-0.5)*(1-x)^(-1.5)*exp(-0.5*x/(1-x))}
+x <- seq(0, 1, length.out = 1001)
+f3 <- dbeta(x, 0.5, 0.5)
+
+f1c <- integrate(f1, 0, 1)$value
+f2c <- integrate(f2, 1e-8, 1)$value
+
+prk_df <- data.frame( 
+  density = c(f1(x)/f1c, f2(x)/f2c, f3), 
+  x = rep(1-x, length.out = 3*length(x)), 
+  prior = factor(rep(c("LASSO","Cauchy","horseshoe"), 
+                     each = length(x))))
+ggplot(data = prk_df,
+       mapping = aes(x = x, y = density)) + 
+ geom_line() +
+ facet_wrap(~prior) +
+scale_x_continuous(breaks = c(0, 0.5,1), labels = c("0","0.5","1"), expand = expansion()) + 
+scale_y_continuous(limits = c(0, 5), expand = expansion())
+```
 
 :::
 
@@ -288,6 +449,8 @@ plot(x = beta_s[beta_s>=4],
 lines(xs2, extraDistr::dlaplace(x = xs2, mu = 0, sigma = 1), lty = 2)
 lines(xs2, dt(xs2, df = 1), lty = 3, lwd = 1.5)
 ```
+
+
 
 
 The amount of shrinkage is governed by an hyperparameter $\lambda>0.$

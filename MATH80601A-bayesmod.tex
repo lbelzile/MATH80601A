@@ -266,6 +266,20 @@
 \DeclareMathAlphabet{\mathcrl}{U}{rsfs}{m}{n}
 \usepackage{utopia}
 \DeclareMathAlphabet{\mathcal}{OMS}{cmsy}{m}{n}
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{wrapfig}
+\usepackage{float}
+\usepackage{colortbl}
+\usepackage{pdflscape}
+\usepackage{tabu}
+\usepackage{threeparttable}
+\usepackage{threeparttablex}
+\usepackage[normalem]{ulem}
+\usepackage{makecell}
+\usepackage{xcolor}
 \makeatletter
 \@ifpackageloaded{bookmark}{}{\usepackage{bookmark}}
 \makeatother
@@ -305,15 +319,15 @@
 \newcommand*\listoflistings{\listof{codelisting}{List of Listings}}
 \usepackage{amsthm}
 \theoremstyle{definition}
-\newtheorem{definition}{Definition}[chapter]
-\theoremstyle{plain}
-\newtheorem{proposition}{Proposition}[chapter]
-\theoremstyle{plain}
-\newtheorem{theorem}{Theorem}[chapter]
-\theoremstyle{definition}
 \newtheorem{exercise}{Exercise}[chapter]
 \theoremstyle{definition}
 \newtheorem{example}{Example}[chapter]
+\theoremstyle{plain}
+\newtheorem{proposition}{Proposition}[chapter]
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}[chapter]
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}[chapter]
 \theoremstyle{remark}
 \AtBeginDocument{\renewcommand*{\proofname}{Proof}}
 \newtheorem*{remark}{Remark}
@@ -369,7 +383,7 @@ details.
 These notes are licensed under a
 \href{http://creativecommons.org/licenses/by-nc-sa/4.0/}{Creative
 Commons Attribution-NonCommercial-ShareAlike 4.0 International License}
-and were last compiled on Wednesday, February 26 2025.
+and were last compiled on Thursday, February 27 2025.
 
 The objective of the course is to provide a hands on introduction to
 Bayesian data analysis. The course will cover the formulation,
@@ -5654,7 +5668,7 @@ f(y; \nu, \lambda) &= \left(\frac{\lambda}{2\pi y^{3}}\right)^{1/2} \exp\left\{ 
 \(\nu_i=\{\sigma/(y_i-\mu)^2\}^{1/2}\) and \(\lambda=\sigma^{-1}.\)
 
 Park and Casella (\citeproc{ref-Park.Casella:2008}{2008}) use this
-hierarchical construction to defined the Bayesian LASSO. With a model
+hierarchical construction to define the Bayesian LASSO. With a model
 matrix \(\mathbf{X}\) whose columns are standardized to have mean zero
 and unit standard deviation, we may write \begin{align*}
 \boldsymbol{Y} \mid \mu, \boldsymbol{\beta}, \sigma^2 &\sim  \mathsf{Gauss}_n(\mu \boldsymbol{1}_n + \mathbf{X}\boldsymbol{\beta}, \sigma \mathbf{I}_n)\\
@@ -5663,7 +5677,18 @@ and unit standard deviation, we may write \begin{align*}
 \end{align*} If we set an improper prior
 \(p(\mu, \sigma) \propto \sigma^{-1},\) the resulting conditional
 distributions are all available and thus the model is amenable to Gibbs
-sampling.
+sampling. With
+\(\mathbf{D}^{-1}_{\tau} = \mathrm{diag}(\tau_1^{-1}, \ldots, \tau_p^{-1})\)
+and
+\(\tilde{\boldsymbol{y}} = \boldsymbol{y} - \overline{y}\mathbf{1}_n\)
+the centered response vector, we can simulate in turn
+(\citeproc{ref-Park.Casella:2008}{Park and Casella 2008}) \begin{align*}
+\mu \mid \sigma^2, \boldsymbol{y} \sim \mathsf{Gauss}(\overline{y}, \sigma^2/n) \\
+\boldsymbol{\beta} \mid \sigma^2, \boldsymbol{\tau}, \boldsymbol{y} &\sim \mathsf{Gauss}_p\left\{\left(\boldsymbol{X}^\top\boldsymbol{X} + \mathbf{D}^{-1}_{\tau}\right)^{-1} \mathbf{X}\widetilde{\boldsymbol{y}}, \sigma^2\left(\boldsymbol{X}^\top\boldsymbol{X} + \mathbf{D}^{-1}_{\tau}\right)^{-1}\right\}\\
+\sigma^2 \mid \boldsymbol{\beta}, \boldsymbol{\tau},\boldsymbol{y} \sim \mathsf{inv. gamma}\left\{ \frac{n-1+p}{2}, \frac{(\widetilde{\boldsymbol{y}}-\mathbf{X}\boldsymbol{\beta})^\top(\widetilde{\boldsymbol{y}}-\mathbf{X}\boldsymbol{\beta}) + \boldsymbol{\beta}^\top\mathbf{D}^{-1}_{\tau} \boldsymbol{\beta}}{2}\right\},\\
+\tau_j^{-1} \mid \boldsymbol{\beta}, \sigma^2,\boldsymbol{y} &\sim \mathsf{Wald} \left( \frac{\lambda\sigma}{|\beta_j|}, \lambda^2\right)
+\end{align*} where the last three conditional follow from marginalizing
+out \(\mu.\)
 
 The Bayesian LASSO places a Laplace penalty on the regression
 coefficients, with lower values of \(\lambda\) yielding more shrinkage.
@@ -6604,12 +6629,12 @@ move for the acceptance ratio. We refer to Section 4.4.1 of Rue and Held
 
 \chapter{Regression models}\label{regression-models}
 
-This chapter is dedicated to the study of generalized linear regression
-models from a Bayesian standpoint. Starting with Gaussian data, we
-investigate the link between frequentist approaches to regularization
-and shrinkage priors. We also look at hierarchical models with mixed
-effects and variable selection using reversible jump MCMC and
-conditional Bayes factor.
+This chapter is dedicated to the study of regression models from a
+Bayesian standpoint. Starting with Gaussian data, we investigate the
+link between frequentist approaches to regularization and shrinkage
+priors. We also look at hierarchical models with mixed effects and
+variable selection using reversible jump MCMC and conditional Bayes
+factor.
 
 Throughout, we consider regression models with model (or design) matrix
 \(\mathbf{X} \in \mathbb{R}^{n \times p}\) with centered inputs, so
@@ -6641,8 +6666,10 @@ respectively, is a Gaussian-gamma and is defined hierarchically as
 distribution of the ordinary least squares estimator is
 \(\widehat{\boldsymbol{\beta}} \sim \mathsf{Gauss}_p\{\boldsymbol{\beta}, (\omega\mathbf{X}^\top\mathbf{X})^{-1}\}\).
 
-Then the conditional and marginal posterior distributions \begin{align*}
-\boldsymbol{\beta} \mid \sigma^2, \boldsymbol{y} &\sim \mathsf{Gauss}_p\left\{\boldsymbol{\mu}_n, (\omega\boldsymbol{\Omega}_n)^{-1}\right\}  \\
+The conditional and marginal posterior distributions for the mean
+coefficients \(\boldsymbol{\beta}\) and for the precision \(\omega\) are
+\begin{align*}
+\boldsymbol{\beta} \mid \omega, \boldsymbol{y} &\sim \mathsf{Gauss}_p\left\{\boldsymbol{\mu}_n, (\omega\boldsymbol{\Omega}_n)^{-1}\right\}  \\
 \omega \mid  \boldsymbol{y} &\sim \mathsf{gamma}\left\{(\nu_0 + n)/2,  \tau^2_n/2\right\}, \\
 \boldsymbol{\beta} \mid  \boldsymbol{y} &\sim \mathsf{Student}(\boldsymbol{\mu}_n,  \tau_n/(\nu_0+n) \times \mathbf{\Omega}_n^{-1}, \nu_0 + n)
 \end{align*} where \begin{align*}
@@ -6712,6 +6739,127 @@ The choice of prior precision \(\boldsymbol{\Omega}_0\) is left to the
 user, but typically the components of the vector \(\boldsymbol{\beta}\)
 are left apriori independent, with
 \(\boldsymbol{\Omega}_0 \propto \lambda\mathbf{I}_n\).
+
+\begin{example}[]\protect\hypertarget{exm-regression}{}\label{exm-regression}
+
+Study 4 of Lin et al. (\citeproc{ref-Lin:2024}{2024}) focuses on
+cultural appropriation using a fictional scenario focusing on soul food
+recipe cookbook from Chef Dax. The chef who was either African-American
+or not, and the authors manipulated the description of the way he
+obtained the recipes (either by peeking without permission in kitchens,
+by asking permission or without them mentioning altogether for the
+control category). Authors postulated that the perception of
+appropriation would vary by political ideology (liberal or
+conservative). The study results in a 3 by 2 by 2 three-way
+between-subject ANOVA.
+
+We use the multivariate regression model to draw samples from
+\(\boldsymbol{\beta}\) and use these to reconstruct the subgroup sample
+means for each of the 12 categories. Then, we consider the difference in
+perception of cultural appropriation for participants when Chef Dax is
+black (no cultural appropriation) versus when he is not, separately for
+liberals and conservatives, by pooling data across all different
+descriptions. Figure~\ref{fig-contrasts} shows the posterior
+distribution of those contrasts, which indicate that on average liberal
+perceive cultural appropriation more strongly (with nearly 2 points
+more), than conservatives (0.7 points on average).
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{data}\NormalTok{(LKUK24\_S4, }\AttributeTok{package =} \StringTok{"hecedsm"}\NormalTok{)}
+\FunctionTok{options}\NormalTok{(}\AttributeTok{contrasts =} \FunctionTok{c}\NormalTok{(}\StringTok{"contr.sum"}\NormalTok{, }\StringTok{"contr.poly"}\NormalTok{))}
+\NormalTok{model }\OtherTok{\textless{}{-}} \FunctionTok{lm}\NormalTok{(appropriation }\SpecialCharTok{\textasciitilde{}}\NormalTok{ politideo }\SpecialCharTok{*}\NormalTok{ chefdax }\SpecialCharTok{*}\NormalTok{ brandaction,}
+          \AttributeTok{data =}\NormalTok{ LKUK24\_S4)}
+\CommentTok{\# Model matrix, response and dimensions}
+\NormalTok{y }\OtherTok{\textless{}{-}}\NormalTok{ LKUK24\_S4}\SpecialCharTok{$}\NormalTok{appropriation}
+\NormalTok{X }\OtherTok{\textless{}{-}} \FunctionTok{model.matrix}\NormalTok{(model)}
+\NormalTok{n }\OtherTok{\textless{}{-}} \FunctionTok{nrow}\NormalTok{(X)}
+\NormalTok{p }\OtherTok{\textless{}{-}} \FunctionTok{ncol}\NormalTok{(X)}
+\CommentTok{\# Priors}
+\CommentTok{\# We set zero for contrasts and a small value}
+\CommentTok{\# for the global mean (since response is on [1,7] Likert scale)}
+\CommentTok{\# with lower values indicating more cultural appropriation)}
+\NormalTok{mu\_0 }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(}\FloatTok{2.5}\NormalTok{, }\FunctionTok{rep}\NormalTok{(}\DecValTok{0}\NormalTok{, p}\DecValTok{{-}1}\NormalTok{))}
+\NormalTok{Omega\_0 }\OtherTok{\textless{}{-}} \FunctionTok{diag}\NormalTok{(p)}
+\CommentTok{\# Prior precision of 0.25 (variance of 4)}
+\NormalTok{nu\_0 }\OtherTok{\textless{}{-}} \FloatTok{0.25}
+\NormalTok{tau\_0 }\OtherTok{\textless{}{-}} \DecValTok{1}
+\NormalTok{Omega\_n\_inv }\OtherTok{\textless{}{-}} \FunctionTok{solve}\NormalTok{(}\FunctionTok{crossprod}\NormalTok{(X) }\SpecialCharTok{+}\NormalTok{ Omega\_0)}
+\NormalTok{mu\_n }\OtherTok{\textless{}{-}}\NormalTok{ Omega\_n\_inv }\SpecialCharTok{\%*\%}\NormalTok{ (}\FunctionTok{crossprod}\NormalTok{(X, y) }\SpecialCharTok{+} \FunctionTok{crossprod}\NormalTok{(Omega\_0, mu\_0))}
+\NormalTok{tau\_n }\OtherTok{\textless{}{-}}\NormalTok{ tau\_0 }\SpecialCharTok{+} \FunctionTok{sum}\NormalTok{(}\FunctionTok{resid}\NormalTok{(model)}\SpecialCharTok{\^{}}\DecValTok{2}\NormalTok{) }\SpecialCharTok{+} \FunctionTok{c}\NormalTok{(}\FunctionTok{crossprod}\NormalTok{(X }\SpecialCharTok{\%*\%}\NormalTok{ (mu\_n}\SpecialCharTok{{-}}\FunctionTok{coef}\NormalTok{(model)))) }\SpecialCharTok{+} \FunctionTok{sum}\NormalTok{((mu\_n}\SpecialCharTok{{-}}\NormalTok{mu\_0)}\SpecialCharTok{\^{}}\DecValTok{2}\NormalTok{)}
+\CommentTok{\# Posterior draws from the model}
+\NormalTok{omega }\OtherTok{\textless{}{-}} \FunctionTok{rgamma}\NormalTok{(}\AttributeTok{n =} \FloatTok{1e3}\NormalTok{L, }
+                \AttributeTok{shape =}\NormalTok{ (nu\_0 }\SpecialCharTok{+}\NormalTok{ n)}\SpecialCharTok{/}\DecValTok{2}\NormalTok{, }
+\NormalTok{                tau\_n}\SpecialCharTok{\^{}}\DecValTok{2}\SpecialCharTok{/}\DecValTok{2}\NormalTok{)}
+\NormalTok{beta }\OtherTok{\textless{}{-}} \FunctionTok{matrix}\NormalTok{(}\FunctionTok{rnorm}\NormalTok{(}\AttributeTok{n =} \FloatTok{1e3}\NormalTok{L}\SpecialCharTok{*}\NormalTok{p), }\AttributeTok{ncol =}\NormalTok{ p) }\SpecialCharTok{\%*\%} 
+  \FunctionTok{chol}\NormalTok{(Omega\_n\_inv)}
+\NormalTok{beta }\OtherTok{\textless{}{-}} \FunctionTok{sweep}\NormalTok{(beta, }\DecValTok{1}\NormalTok{, }\FunctionTok{sqrt}\NormalTok{(omega), }\StringTok{"/"}\NormalTok{)}
+\NormalTok{beta }\OtherTok{\textless{}{-}} \FunctionTok{sweep}\NormalTok{(beta, }\DecValTok{2}\NormalTok{, mu\_n, }\StringTok{"+"}\NormalTok{)}
+\FunctionTok{t}\NormalTok{(}\FunctionTok{apply}\NormalTok{(beta, }\DecValTok{2}\NormalTok{, quantile, }\AttributeTok{probs =} \FunctionTok{c}\NormalTok{(}\FloatTok{0.25}\NormalTok{,}\FloatTok{0.5}\NormalTok{,}\FloatTok{0.75}\NormalTok{)))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+                                        25%         50%      75%
+(Intercept)                       0.6121975  2.36319510 3.873564
+politideo1                       -1.9892041 -0.36613522 1.214107
+chefdax1                         -0.9257785  0.68721129 2.283937
+brandaction1                     -1.8418958  0.45062649 2.614413
+brandaction2                     -2.3650410 -0.14217132 2.051471
+politideo1:chefdax1              -1.9118528 -0.42173097 1.146488
+politideo1:brandaction1          -2.1911059  0.07257575 2.098037
+politideo1:brandaction2          -2.1859102  0.13941346 2.133720
+chefdax1:brandaction1            -2.1679751 -0.15518192 2.264913
+chefdax1:brandaction2            -2.2688732  0.23541703 2.393560
+politideo1:chefdax1:brandaction1 -2.6725076  0.13564511 2.118977
+politideo1:chefdax1:brandaction2 -2.1815279  0.12941015 2.497072
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Standard dev. for beta (from Student{-}t)}
+\NormalTok{se }\OtherTok{\textless{}{-}} \FunctionTok{sqrt}\NormalTok{((nu\_0 }\SpecialCharTok{+}\NormalTok{ n)}\SpecialCharTok{/}\NormalTok{(nu\_0 }\SpecialCharTok{+}\NormalTok{ n }\SpecialCharTok{{-}} \DecValTok{2}\NormalTok{) }\SpecialCharTok{*}\FunctionTok{diag}\NormalTok{(tau\_n}\SpecialCharTok{/}\NormalTok{(nu\_0 }\SpecialCharTok{+}\NormalTok{ n) }\SpecialCharTok{*}\NormalTok{ Omega\_n\_inv))}
+
+\NormalTok{beta }\OtherTok{\textless{}{-}}\NormalTok{ TruncatedNormal}\SpecialCharTok{::}\FunctionTok{rtmvt}\NormalTok{(}
+  \AttributeTok{n =} \FloatTok{1e3}\NormalTok{L,}
+  \AttributeTok{mu =}\NormalTok{ mu\_n, }
+  \AttributeTok{sigma =}\NormalTok{ tau\_n}\SpecialCharTok{/}\NormalTok{(nu\_0 }\SpecialCharTok{+}\NormalTok{ n) }\SpecialCharTok{*}\NormalTok{ Omega\_n\_inv, }
+  \AttributeTok{df =}\NormalTok{ nu\_0 }\SpecialCharTok{+}\NormalTok{ n)}
+\NormalTok{dfg }\OtherTok{\textless{}{-}} \FunctionTok{expand.grid}\NormalTok{(}\AttributeTok{politideo =}\FunctionTok{c}\NormalTok{(}\StringTok{"conservative"}\NormalTok{, }\StringTok{"liberal"}\NormalTok{),}
+            \AttributeTok{chefdax =} \FunctionTok{c}\NormalTok{(}\StringTok{"not black"}\NormalTok{, }\StringTok{"black"}\NormalTok{),}
+            \AttributeTok{brandaction =} \FunctionTok{c}\NormalTok{(}\StringTok{"peeking"}\NormalTok{,}\StringTok{"permission"}\NormalTok{, }\StringTok{"control"}\NormalTok{))}
+\NormalTok{mm }\OtherTok{\textless{}{-}} \FunctionTok{model.matrix}\NormalTok{( }\SpecialCharTok{\textasciitilde{}}\NormalTok{ politideo }\SpecialCharTok{*}\NormalTok{ chefdax }\SpecialCharTok{*}\NormalTok{ brandaction,}
+              \AttributeTok{data =}\NormalTok{ dfg)}
+\CommentTok{\# Subgroup means for each of the 12 categories}
+\NormalTok{mu }\OtherTok{\textless{}{-}} \FunctionTok{tcrossprod}\NormalTok{(beta, mm)}
+\CommentTok{\# Contrast weights, averaging over brandaction}
+\NormalTok{w1 }\OtherTok{\textless{}{-}} \FunctionTok{rep}\NormalTok{(}\FunctionTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{, }\DecValTok{0}\NormalTok{, }\SpecialCharTok{{-}}\DecValTok{1}\NormalTok{, }\DecValTok{0}\NormalTok{), }\AttributeTok{length.out =} \FunctionTok{nrow}\NormalTok{(dfg))}\SpecialCharTok{/}\DecValTok{3}
+\NormalTok{w2 }\OtherTok{\textless{}{-}} \FunctionTok{rep}\NormalTok{(}\FunctionTok{c}\NormalTok{(}\DecValTok{0}\NormalTok{, }\DecValTok{1}\NormalTok{, }\DecValTok{0}\NormalTok{, }\SpecialCharTok{{-}}\DecValTok{1}\NormalTok{), }\AttributeTok{length.out =} \FunctionTok{nrow}\NormalTok{(dfg))}\SpecialCharTok{/}\DecValTok{3}
+\CommentTok{\# Posterior distribution of contrasts}
+\NormalTok{tc }\OtherTok{\textless{}{-}}\NormalTok{ mu }\SpecialCharTok{\%*\%} \FunctionTok{cbind}\NormalTok{(w1, w2)}
+\end{Highlighting}
+\end{Shaded}
+
+The coefficients and standard errors from the linear regression are very
+nearly similar to the posterior mean and standard deviations for
+\(\boldsymbol{\beta}\) from the marginal Student-\(t,\) owing to the
+large sample size and uninformative priors.
+
+\begin{figure}[ht!]
+
+\centering{
+
+\pandocbounded{\includegraphics[keepaspectratio]{regression_files/figure-pdf/fig-contrasts-1.pdf}}
+
+}
+
+\caption{\label{fig-contrasts}Difference in appropriation rating for
+black vs non-black Chef Dax, average accross different levels of brand
+action.}
+
+\end{figure}%
+
+\end{example}
 
 In multivariate regression, it sometimes is useful to specify correlated
 coefficients (e.g., for random effects). This leads to the necessity to
@@ -6787,16 +6935,31 @@ with the same degrees of freedom \(\nu\). The problem with using this
 prior is that it has a single parameter governing all scale parameters
 (i.e., the marginal variance) and the absolute value of the correlation
 and marginal variance parameters are negatively related
-(\citeproc{ref-Gelman:2013}{Gelman et al. 2013}). Large variance thus
-correspond to small correlations shrunk towards zero. There exists
-alternative distributions, such as the scaled-inverse Wishart adds
-redundant scale parameters to decouple
-\(\mathrm{diag}(\boldsymbol{\xi}) \boldsymbol{\Sigma}\mathrm{diag}(\boldsymbol{\xi})\),
-but we refrain from pursuing this here.
+(\citeproc{ref-Gelman:2013}{Gelman et al. 2013}), as seen in
+Figure~\ref{fig-draws-Wishart}. Large variance thus correspond to small
+correlations shrunk towards zero when the degrees of freedom increase.
+There exists alternative distributions, such as the scaled-inverse
+Wishart, that add redundant scale parameters to decouple
+\(\mathrm{diag}(\boldsymbol{\xi}) \times \boldsymbol{\Sigma} \times \mathrm{diag}(\boldsymbol{\xi})\),
+but we refrain from pursuing these here.
+
+\begin{figure}[ht!]
+
+\centering{
+
+\pandocbounded{\includegraphics[keepaspectratio]{regression_files/figure-pdf/fig-draws-Wishart-1.pdf}}
+
+}
+
+\caption{\label{fig-draws-Wishart}Prior draws from a bivariate inverse
+Wishart with identity scale matrix and \(\nu \in \{3, 20\}\) degrees of
+freedom.}
+
+\end{figure}%
 
 A better alternative is to specify different prior for each marginal
 scale \(\sigma_j\) and a prior on the correlation matrix \(\mathbf{R}.\)
-For the latter, the onion peelor LKJ prior, named after the authors of
+For the latter, the onion peel or LKJ prior, named after the authors of
 Lewandowski, Kurowicka, and Joe (\citeproc{ref-Lewandowski:2009}{2009}),
 is \(p(\mathbf{R}) \propto |\mathbf{R}|^{\eta-1}\) for a scale
 \(\eta>0.\) The case \(\eta=1\) leads to uniform over the space of
@@ -6856,15 +7019,47 @@ prior]\protect\hypertarget{prp-horseshoe}{}\label{prp-horseshoe}
 The horseshoe prior of Carvalho, Polson, and Scott
 (\citeproc{ref-Carvalho.Polson.Scott:2010}{2010}) is a hierarchical
 prior of the form \begin{align*}
-\beta_j \mid \sigma^2_j \sim \mathsf{Gauss}(0, \sigma^2_j), \quad \sigma^2_j \mid \lambda \sim \mathsf{Student}_{+}(0, \sigma, 1), \quad \lambda \sim \mathsf{Student}_{+}(0, \kappa, 1)
+\beta_j \mid \sigma^2_j \sim \mathsf{Gauss}(0, \sigma^2_j), \quad \sigma^2_j \mid \lambda \sim \mathsf{Student}_{+}(0, \lambda, 1), \quad \lambda \sim \mathsf{Student}_{+}(0, \omega, 1)
 \end{align*} where \(\mathsf{Student}_{+}(0, a, 1)\) denotes a
 half-Cauchy distribution with scale \(a>0,\) truncated on
 \(\mathbb{R}_{+}.\)
 
 This prior has no explicit density, but is continuous and can be
-simulated. It's name comes from the shrinkage factor behaviour
-\(\kappa_j = (1+\sigma^2_j)^{-1},\) which is equivalent to a
-\(\mathsf{beta}(1/2, 1/2)\).
+simulated. It is useful to consider the behaviour of the random variance
+\(\sigma^2_j\) term, which leads to an unconditional scale mixture of
+Gaussian for \(\beta_j\). More useful to understanding is looking at
+\(\kappa = 1 - 1/(1+\sigma^2)\), which gives a weight in \([0,1].\) We
+can see what happens to the shrunk components close to zero by looking
+at the density of \(\kappa \to 0\), and similarly at the large signals
+when \(\kappa \to 1.\) The Cauchy prior does not shrink towards zero,
+and lets large signals pass, whereas the Bayesian LASSO double
+exponential shrinkage leads to attenuation of strong signals. The
+horseshoe prior name comes from the shape of the prior, which leads to a
+shrinkage analog to \(\mathsf{beta}(1/2, 1/2)\) and thus penalizes,
+forcing components to be either large or small.
+
+Figure~\ref{fig-weights-shrinkage} shows the weighting implied by the
+mixture density for a Cauchy prior on the variance, the double
+exponential of the Laplace from Bayesian LASSO and the horseshoe.
+
+\begin{verbatim}
+Warning: Removed 2 rows containing missing values or values outside the scale range
+(`geom_line()`).
+\end{verbatim}
+
+\begin{figure}[ht!]
+
+\centering{
+
+\pandocbounded{\includegraphics[keepaspectratio]{regression_files/figure-pdf/fig-weights-shrinkage-1.pdf}}
+
+}
+
+\caption{\label{fig-weights-shrinkage}Density of penalization weights
+\(\kappa\) of spike (near zero) and slab (near one) for three shrinkage
+priors.}
+
+\end{figure}%
 
 \end{proposition}
 
@@ -7202,6 +7397,12 @@ Lewandowski, Daniel, Dorota Kurowicka, and Harry Joe. 2009.
 {``Generating Random Correlation Matrices Based on Vines and Extended
 Onion Method.''} \emph{Journal of Multivariate Analysis} 100 (9):
 1989--2001. \url{https://doi.org/10.1016/j.jmva.2009.04.008}.
+
+\bibitem[\citeproctext]{ref-Lin:2024}
+Lin, Jason D, Nicole You Jeung Kim, Esther Uduehi, and Anat Keinan.
+2024. {``Culture for Sale: Unpacking Consumer Perceptions of Cultural
+Appropriation.''} \emph{Journal of Consumer Research}.
+\url{https://doi.org/10.1093/jcr/ucad076}.
 
 \bibitem[\citeproctext]{ref-Marshall.Olkin:1985}
 Marshall, Albert W., and Ingram Olkin. 1985. {``A Family of Bivariate

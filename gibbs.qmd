@@ -368,13 +368,22 @@ f(y; \nu, \lambda) &= \left(\frac{\lambda}{2\pi y^{3}}\right)^{1/2} \exp\left\{ 
 \end{align*}
 for location $\nu >0$ and shape $\lambda>0,$ where $\xi_i \sim \mathsf{Wald}(\nu_i, \lambda)$ with $\nu_i=\{\sigma/(y_i-\mu)^2\}^{1/2}$ and $\lambda=\sigma^{-1}.$
 
-@Park.Casella:2008 use this hierarchical construction to defined the Bayesian LASSO. With a model matrix $\mathbf{X}$ whose columns are standardized to have mean zero and unit standard deviation, we may write
+@Park.Casella:2008 use this hierarchical construction to define the Bayesian LASSO. With a model matrix $\mathbf{X}$ whose columns are standardized to have mean zero and unit standard deviation, we may write
 \begin{align*}
 \boldsymbol{Y} \mid \mu, \boldsymbol{\beta}, \sigma^2 &\sim  \mathsf{Gauss}_n(\mu \boldsymbol{1}_n + \mathbf{X}\boldsymbol{\beta}, \sigma \mathbf{I}_n)\\
 \beta_j \mid \sigma, \tau_j &\sim \mathsf{Gauss}(0, \sigma\tau_j)\\
 \tau_j &\sim \mathsf{expo}(\lambda/2)
 \end{align*}
-If we set an improper prior $p(\mu, \sigma) \propto \sigma^{-1},$ the resulting conditional distributions are all available and thus the model is amenable to Gibbs sampling.
+If we set an improper prior $p(\mu, \sigma) \propto \sigma^{-1},$ the resulting conditional distributions are all available and thus the model is amenable to Gibbs sampling. With $\mathbf{D}^{-1}_{\tau} = \mathrm{diag}(\tau_1^{-1}, \ldots, \tau_p^{-1})$ and $\tilde{\boldsymbol{y}} = \boldsymbol{y} - \overline{y}\mathbf{1}_n$ the centered response vector, we can simulate in turn [@Park.Casella:2008]
+\begin{align*}
+\mu \mid \sigma^2, \boldsymbol{y} \sim \mathsf{Gauss}(\overline{y}, \sigma^2/n) \\
+\boldsymbol{\beta} \mid \sigma^2, \boldsymbol{\tau}, \boldsymbol{y} &\sim \mathsf{Gauss}_p\left\{\left(\boldsymbol{X}^\top\boldsymbol{X} + \mathbf{D}^{-1}_{\tau}\right)^{-1} \mathbf{X}\widetilde{\boldsymbol{y}}, \sigma^2\left(\boldsymbol{X}^\top\boldsymbol{X} + \mathbf{D}^{-1}_{\tau}\right)^{-1}\right\}\\
+\sigma^2 \mid \boldsymbol{\beta}, \boldsymbol{\tau},\boldsymbol{y} \sim \mathsf{inv. gamma}\left\{ \frac{n-1+p}{2}, \frac{(\widetilde{\boldsymbol{y}}-\mathbf{X}\boldsymbol{\beta})^\top(\widetilde{\boldsymbol{y}}-\mathbf{X}\boldsymbol{\beta}) + \boldsymbol{\beta}^\top\mathbf{D}^{-1}_{\tau} \boldsymbol{\beta}}{2}\right\},\\
+\tau_j^{-1} \mid \boldsymbol{\beta}, \sigma^2,\boldsymbol{y} &\sim \mathsf{Wald} \left( \frac{\lambda\sigma}{|\beta_j|}, \lambda^2\right)
+\end{align*}
+where the last three conditional follow from marginalizing out $\mu.$
+
+
 
 The Bayesian LASSO places a Laplace penalty on the regression coefficients, with lower values of $\lambda$ yielding more shrinkage. @fig-lasso-traceplot shows a replication of Figure 1 of @Park.Casella:2008, fitted to the `diabetes` data. Note that, contrary to the frequentist setting, none of the posterior draws of $\boldsymbol{\beta}$ are exactly zero.
 
