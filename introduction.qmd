@@ -200,11 +200,13 @@ Although the terminology "normal" is frequent, we will stick to Gaussian in thes
 ## Student-$t$ distribution
 
 The name "Student" comes from the pseudonym used by William Gosset in @Student:1908, who introduced the asymptotic distribution of the $t$-statistic.
-The density of the standard Student-$t$ univariate distribution with $\nu$ degrees of freedom is
+The density of the Student-$t$ univariate distribution with $\nu$ degrees of freedom, location $\mu$ and scale $\sigma,$ denoted $\mathsf{Student}(\mu, \sigma, \nu),$ is
 \begin{align*}
-f(y; \nu) = \frac{\Gamma \left( \frac{\nu+1}{2}\right)}{\Gamma\left(\frac{\nu}{2}\right)
-\sqrt{\nu\pi}}\left(1+\frac{y^{2}}{\nu}\right)^{-\frac{\nu+1}{2}}.
+f(y; \mu, \sigma, \nu) = \frac{\Gamma \left( \frac{\nu+1}{2}\right)}{\sigma\Gamma\left(\frac{\nu}{2}\right)
+\sqrt{\nu\pi}}\left(1+\frac{1}{\nu}\left(\frac{y-\mu}{\sigma}\right)^2\right)^{-\frac{\nu+1}{2}}.
 \end{align*}
+We also write $\mathsf{Student}_{+}$ to denote the truncated distribution on the positive half-line, $[0, \infty).$
+
 The density of the random vector $\boldsymbol{Y} \sim \mathsf{Student}_d(\boldsymbol{\mu}, \boldsymbol{Q}^{-1}, \nu),$ with location vector $\boldsymbol{\mu},$ scale matrix $\boldsymbol{Q}^{-1}$ and $\nu$ degrees of freedom is
 \begin{align*}
 f(\boldsymbol{x}) = \frac{\Gamma \left( \frac{\nu+d}{2}\right)|\boldsymbol{Q}|^{1/2}}{\Gamma\left(\frac{\nu}{2}\right)

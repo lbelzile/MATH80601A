@@ -296,7 +296,7 @@ window.Quarto = {
 <p>The conditional and marginal posterior distributions for the mean coefficients <span class="math inline">\(\boldsymbol{\beta}\)</span> and for the precision <span class="math inline">\(\omega\)</span> are <span class="math display">\[\begin{align*}
 \boldsymbol{\beta} \mid \omega, \boldsymbol{y} &amp;\sim \mathsf{Gauss}_p\left\{\boldsymbol{\mu}_n, (\omega\boldsymbol{\Omega}_n)^{-1}\right\}  \\
 \omega \mid  \boldsymbol{y} &amp;\sim \mathsf{gamma}\left\{(\nu_0 + n)/2,  \tau^2_n/2\right\}, \\
-\boldsymbol{\beta} \mid  \boldsymbol{y} &amp;\sim \mathsf{Student}(\boldsymbol{\mu}_n,  \tau_n/(\nu_0+n) \times \mathbf{\Omega}_n^{-1}, \nu_0 + n)
+\boldsymbol{\beta} \mid  \boldsymbol{y} &amp;\sim \mathsf{Student}_p(\boldsymbol{\mu}_n,  \tau_n/(\nu_0+n) \times \mathbf{\Omega}_n^{-1}, \nu_0 + n)
 \end{align*}\]</span> where <span class="math display">\[\begin{align*}
 \boldsymbol{\Omega}_n &amp;= \mathbf{X}^\top\mathbf{X} + \boldsymbol{\Omega}_0\\
 \boldsymbol{\mu}_n &amp;= \boldsymbol{\Omega}_n^{-1}(\mathbf{X}^\top\mathbf{X}\widehat{\boldsymbol{\beta}} + \boldsymbol{\Omega}_0\boldsymbol{\mu}_0) = \boldsymbol{\Omega}_n^{-1}(\mathbf{X}^\top\boldsymbol{y} + \boldsymbol{\Omega}_0\boldsymbol{\mu}_0)\\
@@ -366,45 +366,28 @@ p(\boldsymbol{\beta}, \mid \boldsymbol{y}) &amp; \stackrel{\boldsymbol{\beta}}{\
 <span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a>  <span class="fu">chol</span>(Omega_n_inv)</span>
 <span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a>beta <span class="ot">&lt;-</span> <span class="fu">sweep</span>(beta, <span class="dv">1</span>, <span class="fu">sqrt</span>(omega), <span class="st">"/"</span>)</span>
 <span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a>beta <span class="ot">&lt;-</span> <span class="fu">sweep</span>(beta, <span class="dv">2</span>, mu_n, <span class="st">"+"</span>)</span>
-<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a><span class="fu">t</span>(<span class="fu">apply</span>(beta, <span class="dv">2</span>, quantile, <span class="at">probs =</span> <span class="fu">c</span>(<span class="fl">0.25</span>,<span class="fl">0.5</span>,<span class="fl">0.75</span>)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
-<div class="cell-output cell-output-stdout">
-<pre><code>                                        25%         50%      75%
-(Intercept)                       0.7649377  2.41815327 4.065514
-politideo1                       -1.9007514 -0.18854221 1.496749
-chefdax1                         -1.0050513  0.61334436 2.325690
-brandaction1                     -2.0240376  0.31565364 2.572204
-brandaction2                     -2.2721815  0.05487954 2.314791
-politideo1:chefdax1              -2.0470102 -0.42015803 1.276394
-politideo1:brandaction1          -2.1256562  0.04035927 2.223829
-politideo1:brandaction2          -2.1571230 -0.03357733 2.488046
-chefdax1:brandaction1            -2.2446491  0.11029016 2.451253
-chefdax1:brandaction2            -2.6752698 -0.22818534 2.229701
-politideo1:chefdax1:brandaction1 -2.3827546  0.04043430 2.273892
-politideo1:chefdax1:brandaction2 -2.2837305  0.04530429 2.406842</code></pre>
-</div>
-<details class="code-fold">
-<summary>Code</summary>
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Standard dev. for beta (from Student-t)</span></span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>se <span class="ot">&lt;-</span> <span class="fu">sqrt</span>((nu_0 <span class="sc">+</span> n)<span class="sc">/</span>(nu_0 <span class="sc">+</span> n <span class="sc">-</span> <span class="dv">2</span>) <span class="sc">*</span><span class="fu">diag</span>(tau_n<span class="sc">/</span>(nu_0 <span class="sc">+</span> n) <span class="sc">*</span> Omega_n_inv))</span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>beta <span class="ot">&lt;-</span> TruncatedNormal<span class="sc">::</span><span class="fu">rtmvt</span>(</span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">n =</span> <span class="fl">1e3</span>L,</span>
-<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">mu =</span> mu_n, </span>
-<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">sigma =</span> tau_n<span class="sc">/</span>(nu_0 <span class="sc">+</span> n) <span class="sc">*</span> Omega_n_inv, </span>
-<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">df =</span> nu_0 <span class="sc">+</span> n)</span>
-<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>dfg <span class="ot">&lt;-</span> <span class="fu">expand.grid</span>(<span class="at">politideo =</span><span class="fu">c</span>(<span class="st">"conservative"</span>, <span class="st">"liberal"</span>),</span>
-<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>            <span class="at">chefdax =</span> <span class="fu">c</span>(<span class="st">"not black"</span>, <span class="st">"black"</span>),</span>
-<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>            <span class="at">brandaction =</span> <span class="fu">c</span>(<span class="st">"peeking"</span>,<span class="st">"permission"</span>, <span class="st">"control"</span>))</span>
-<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>mm <span class="ot">&lt;-</span> <span class="fu">model.matrix</span>( <span class="sc">~</span> politideo <span class="sc">*</span> chefdax <span class="sc">*</span> brandaction,</span>
-<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>              <span class="at">data =</span> dfg)</span>
-<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a><span class="co"># Subgroup means for each of the 12 categories</span></span>
-<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>mu <span class="ot">&lt;-</span> <span class="fu">tcrossprod</span>(beta, mm)</span>
-<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a><span class="co"># Contrast weights, averaging over brandaction</span></span>
-<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>w1 <span class="ot">&lt;-</span> <span class="fu">rep</span>(<span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">0</span>, <span class="sc">-</span><span class="dv">1</span>, <span class="dv">0</span>), <span class="at">length.out =</span> <span class="fu">nrow</span>(dfg))<span class="sc">/</span><span class="dv">3</span></span>
-<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>w2 <span class="ot">&lt;-</span> <span class="fu">rep</span>(<span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">0</span>, <span class="sc">-</span><span class="dv">1</span>), <span class="at">length.out =</span> <span class="fu">nrow</span>(dfg))<span class="sc">/</span><span class="dv">3</span></span>
-<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a><span class="co"># Posterior distribution of contrasts</span></span>
-<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a>tc <span class="ot">&lt;-</span> mu <span class="sc">%*%</span> <span class="fu">cbind</span>(w1, w2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a><span class="co"># Posterior quartiles for beta</span></span>
+<span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a>beta_qu <span class="ot">&lt;-</span> <span class="fu">t</span>(<span class="fu">apply</span>(beta, <span class="dv">2</span>, quantile, <span class="at">probs =</span> <span class="fu">c</span>(<span class="fl">0.25</span>,<span class="fl">0.5</span>,<span class="fl">0.75</span>)))</span>
+<span id="cb1-32"><a href="#cb1-32" aria-hidden="true" tabindex="-1"></a><span class="co"># Standard dev. for beta (from Student-t)</span></span>
+<span id="cb1-33"><a href="#cb1-33" aria-hidden="true" tabindex="-1"></a>beta_se <span class="ot">&lt;-</span> <span class="fu">sqrt</span>((nu_0 <span class="sc">+</span> n)<span class="sc">/</span>(nu_0 <span class="sc">+</span> n <span class="sc">-</span> <span class="dv">2</span>) <span class="sc">*</span><span class="fu">diag</span>(tau_n<span class="sc">/</span>(nu_0 <span class="sc">+</span> n) <span class="sc">*</span> Omega_n_inv))</span>
+<span id="cb1-34"><a href="#cb1-34" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-35"><a href="#cb1-35" aria-hidden="true" tabindex="-1"></a>beta <span class="ot">&lt;-</span> TruncatedNormal<span class="sc">::</span><span class="fu">rtmvt</span>(</span>
+<span id="cb1-36"><a href="#cb1-36" aria-hidden="true" tabindex="-1"></a>  <span class="at">n =</span> <span class="fl">1e3</span>L,</span>
+<span id="cb1-37"><a href="#cb1-37" aria-hidden="true" tabindex="-1"></a>  <span class="at">mu =</span> mu_n, </span>
+<span id="cb1-38"><a href="#cb1-38" aria-hidden="true" tabindex="-1"></a>  <span class="at">sigma =</span> tau_n<span class="sc">/</span>(nu_0 <span class="sc">+</span> n) <span class="sc">*</span> Omega_n_inv, </span>
+<span id="cb1-39"><a href="#cb1-39" aria-hidden="true" tabindex="-1"></a>  <span class="at">df =</span> nu_0 <span class="sc">+</span> n)</span>
+<span id="cb1-40"><a href="#cb1-40" aria-hidden="true" tabindex="-1"></a>dfg <span class="ot">&lt;-</span> <span class="fu">expand.grid</span>(<span class="at">politideo =</span><span class="fu">c</span>(<span class="st">"conservative"</span>, <span class="st">"liberal"</span>),</span>
+<span id="cb1-41"><a href="#cb1-41" aria-hidden="true" tabindex="-1"></a>            <span class="at">chefdax =</span> <span class="fu">c</span>(<span class="st">"not black"</span>, <span class="st">"black"</span>),</span>
+<span id="cb1-42"><a href="#cb1-42" aria-hidden="true" tabindex="-1"></a>            <span class="at">brandaction =</span> <span class="fu">c</span>(<span class="st">"peeking"</span>,<span class="st">"permission"</span>, <span class="st">"control"</span>))</span>
+<span id="cb1-43"><a href="#cb1-43" aria-hidden="true" tabindex="-1"></a>mm <span class="ot">&lt;-</span> <span class="fu">model.matrix</span>( <span class="sc">~</span> politideo <span class="sc">*</span> chefdax <span class="sc">*</span> brandaction,</span>
+<span id="cb1-44"><a href="#cb1-44" aria-hidden="true" tabindex="-1"></a>              <span class="at">data =</span> dfg)</span>
+<span id="cb1-45"><a href="#cb1-45" aria-hidden="true" tabindex="-1"></a><span class="co"># Subgroup means for each of the 12 categories</span></span>
+<span id="cb1-46"><a href="#cb1-46" aria-hidden="true" tabindex="-1"></a>mu <span class="ot">&lt;-</span> <span class="fu">tcrossprod</span>(beta, mm)</span>
+<span id="cb1-47"><a href="#cb1-47" aria-hidden="true" tabindex="-1"></a><span class="co"># Contrast weights, averaging over brandaction</span></span>
+<span id="cb1-48"><a href="#cb1-48" aria-hidden="true" tabindex="-1"></a>w1 <span class="ot">&lt;-</span> <span class="fu">rep</span>(<span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">0</span>, <span class="sc">-</span><span class="dv">1</span>, <span class="dv">0</span>), <span class="at">length.out =</span> <span class="fu">nrow</span>(dfg))<span class="sc">/</span><span class="dv">3</span></span>
+<span id="cb1-49"><a href="#cb1-49" aria-hidden="true" tabindex="-1"></a>w2 <span class="ot">&lt;-</span> <span class="fu">rep</span>(<span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">0</span>, <span class="sc">-</span><span class="dv">1</span>), <span class="at">length.out =</span> <span class="fu">nrow</span>(dfg))<span class="sc">/</span><span class="dv">3</span></span>
+<span id="cb1-50"><a href="#cb1-50" aria-hidden="true" tabindex="-1"></a><span class="co"># Posterior distribution of contrasts</span></span>
+<span id="cb1-51"><a href="#cb1-51" aria-hidden="true" tabindex="-1"></a>tc <span class="ot">&lt;-</span> mu <span class="sc">%*%</span> <span class="fu">cbind</span>(w1, w2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 <p>The coefficients and standard errors from the linear regression are very nearly similar to the posterior mean and standard deviations for <span class="math inline">\(\boldsymbol{\beta}\)</span> from the marginal Student-<span class="math inline">\(t,\)</span> owing to the large sample size and uninformative priors.</p>
@@ -512,7 +495,11 @@ Figure&nbsp;8.4: Marginal density for a regression coefficient <span class="math
 </div>
 </div>
 </div>
-<p>The amount of shrinkage is governed by an hyperparameter <span class="math inline">\(\lambda&gt;0.\)</span></p>
+<p>While the horseshoe prior guarantees that large coefficients are not regularized, this feature of the shrinkage prior is harmful in certain instances, for example separation of variables for logistic regression. Markov chain Monte Carlo simulations are hampered by these parameters whose posterior mean does not exist, leading to poor mixing. Some very weak regularization for these big components can thus help. <span class="citation" data-cites="Piironen.Vehtari:2017">Piironen and Vehtari (<a href="references.html#ref-Piironen.Vehtari:2017" role="doc-biblioref">2017</a>)</span> proposed the regularized horseshoe, nicknamed Finnish horseshoe, where <span class="math display">\[\begin{align*}
+\beta_j \mid \lambda, \tau_j, c^2 &amp;\sim \mathsf{Gauss}\left(0, \lambda\frac{c^2\tau_j^2}{c^2 + \tau^2_j\lambda^2}\right), \\
+\tau_j &amp;\sim \mathsf{Student}_{+}(0, 1, 1)\\
+c^2 \mid s^2, \nu \sim \mathsf{inv. gamma}(\nu/2, \nu s^2/2).
+\end{align*}\]</span> When <span class="math inline">\(\tau^2\lambda^2_j\)</span> is much greater than <span class="math inline">\(c^2\)</span>, this amounts to having a Student slab with <span class="math inline">\(\nu\)</span> degrees of freedom for large coefficients; taking a small value of <span class="math inline">\(\nu\)</span> allows for large, but not extreme components, and the authors use <span class="math inline">\(s^2=2, \nu=4.\)</span> The above specification does not specify the prior for the global scale <span class="math inline">\(\lambda\)</span>, for which <span class="citation" data-cites="Piironen.Vehtari:2017">Piironen and Vehtari (<a href="references.html#ref-Piironen.Vehtari:2017" role="doc-biblioref">2017</a>)</span> recommend using an empirical Bayes prior, with <span class="math display">\[\lambda \sim \mathsf{Student}_{+}\left\{0, \frac{p_0}{(p-p_0)}\frac{\sigma}{n^{1/2}}, 1\right\},\]</span> where <span class="math inline">\(p_0\)</span> is a prior guess for the number of non-zero components out of <span class="math inline">\(p,\)</span> <span class="math inline">\(n\)</span> is the sample size and <span class="math inline">\(\sigma\)</span> is some level of the noise.</p>
 
 
 <div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list" style="display: none">
@@ -536,6 +523,9 @@ Lin, Jason D, Nicole You Jeung Kim, Esther Uduehi, and Anat Keinan. 2024. <span>
 </div>
 <div id="ref-Mitchell.Beauchamp:1988" class="csl-entry" role="listitem">
 Mitchell, T. J., and J. J. Beauchamp. 1988. <span>“Bayesian Variable Selection in Linear Regression.”</span> <em>Journal of the American Statistical Association</em> 83 (404): 1023–32. <a href="https://doi.org/10.1080/01621459.1988.10478694">https://doi.org/10.1080/01621459.1988.10478694</a>.
+</div>
+<div id="ref-Piironen.Vehtari:2017" class="csl-entry" role="listitem">
+Piironen, Juho, and Aki Vehtari. 2017. <span>“Sparsity Information and Regularization in the Horseshoe and Other Shrinkage Priors.”</span> <em>Electronic Journal of Statistics</em> 11 (2): 5018–51. <a href="https://doi.org/10.1214/17-ejs1337si">https://doi.org/10.1214/17-ejs1337si</a>.
 </div>
 <div id="ref-Villani:2023" class="csl-entry" role="listitem">
 Villani, Mattias. 2023. <span>“Bayesian Learning: A Gentle Introduction.”</span> <a href="https://mattiasvillani.com/BayesianLearningBook/">https://mattiasvillani.com/BayesianLearningBook/</a>.

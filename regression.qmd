@@ -42,7 +42,7 @@ The conditional and marginal posterior distributions for the mean coefficients $
 \begin{align*}
 \boldsymbol{\beta} \mid \omega, \boldsymbol{y} &\sim \mathsf{Gauss}_p\left\{\boldsymbol{\mu}_n, (\omega\boldsymbol{\Omega}_n)^{-1}\right\}  \\
 \omega \mid  \boldsymbol{y} &\sim \mathsf{gamma}\left\{(\nu_0 + n)/2,  \tau^2_n/2\right\}, \\
-\boldsymbol{\beta} \mid  \boldsymbol{y} &\sim \mathsf{Student}(\boldsymbol{\mu}_n,  \tau_n/(\nu_0+n) \times \mathbf{\Omega}_n^{-1}, \nu_0 + n)
+\boldsymbol{\beta} \mid  \boldsymbol{y} &\sim \mathsf{Student}_p(\boldsymbol{\mu}_n,  \tau_n/(\nu_0+n) \times \mathbf{\Omega}_n^{-1}, \nu_0 + n)
 \end{align*}
 where
 \begin{align*}
@@ -151,9 +151,10 @@ beta <- matrix(rnorm(n = 1e3L*p), ncol = p) %*%
   chol(Omega_n_inv)
 beta <- sweep(beta, 1, sqrt(omega), "/")
 beta <- sweep(beta, 2, mu_n, "+")
-t(apply(beta, 2, quantile, probs = c(0.25,0.5,0.75)))
+# Posterior quartiles for beta
+beta_qu <- t(apply(beta, 2, quantile, probs = c(0.25,0.5,0.75)))
 # Standard dev. for beta (from Student-t)
-se <- sqrt((nu_0 + n)/(nu_0 + n - 2) *diag(tau_n/(nu_0 + n) * Omega_n_inv))
+beta_se <- sqrt((nu_0 + n)/(nu_0 + n - 2) *diag(tau_n/(nu_0 + n) * Omega_n_inv))
 
 beta <- TruncatedNormal::rtmvt(
   n = 1e3L,
@@ -181,17 +182,6 @@ The coefficients and standard errors from the linear regression are very nearly 
 #| echo: false
 #| label: fig-contrasts
 #| fig-cap: "Difference in appropriation rating for black vs non-black Chef Dax, average accross different levels of brand action."
-dfg <- expand.grid(politideo =c("conservative", "liberal"),
-            chefdax = c("not black", "black"),
-            brandaction = c("peeking","permission", "control"))
-mm <- model.matrix( ~ politideo * chefdax * brandaction,
-              data = dfg)
-# Subgroup means for each of the 12 categories
-mu <- tcrossprod(beta, mm)
-# Contrast weights, averaging over brandaction
-w1 <- rep(c(1, 0, -1, 0), length.out = nrow(dfg))/3
-w2 <- rep(c(0, 1, 0, -1), length.out = nrow(dfg))/3
-tc <- mu %*% cbind(w1, w2)
 ggplot(data = 
          data.frame(x = c(tc),
                     f = factor(rep(c("liberal","conservative"), 
@@ -200,7 +190,8 @@ ggplot(data =
   ggdist::stat_dist_halfeye(.width = 0.5) +
   labs(y = "",
        x = "difference in cultural appropriation score",
-       subtitle = "Comparison when Chef Dax is black (vs not)") 
+       subtitle = "Comparison when Chef Dax is black (vs not)") +
+theme_classic()
 ```
 
 :::
@@ -284,7 +275,8 @@ ggplot(data = draws,
   geom_point() +
   facet_wrap(facets = ~df) +
   labs(x = expression("correlation"~rho),
-       y = expression("log of marginal variance"~sigma^2[1]))
+       y = expression("log of marginal variance"~sigma^2[1])) +
+theme_classic()
 ```
 
 A better alternative is to specify different prior for each marginal scale $\sigma_j$ and a prior on the correlation matrix $\mathbf{R}.$ For the latter, the onion peel or LKJ prior, named after the authors of @Lewandowski:2009, is $p(\mathbf{R}) \propto |\mathbf{R}|^{\eta-1}$ for a scale $\eta>0.$ The case $\eta=1$ leads to uniform over the space of correlation matrices, and $\eta>1$ favours the identity matrix.
@@ -357,7 +349,8 @@ ggplot(data = prk_df,
  geom_line() +
  facet_wrap(~prior) +
 scale_x_continuous(breaks = c(0, 0.5,1), labels = c("0","0.5","1"), expand = expansion()) + 
-scale_y_continuous(limits = c(0, 5), expand = expansion())
+scale_y_continuous(limits = c(0, 5), expand = expansion()) +
+theme_classic()
 ```
 
 :::
@@ -451,6 +444,11 @@ lines(xs2, dt(xs2, df = 1), lty = 3, lwd = 1.5)
 ```
 
 
-
-
-The amount of shrinkage is governed by an hyperparameter $\lambda>0.$
+While the horseshoe prior guarantees that large coefficients are not regularized, this feature of the shrinkage prior is harmful in certain instances, for example separation of variables for logistic regression.
+Markov chain Monte Carlo simulations are hampered by these parameters whose posterior mean does not exist, leading to poor mixing. Some very weak regularization for these big components can thus help. @Piironen.Vehtari:2017 proposed the regularized horseshoe, nicknamed Finnish horseshoe, where
+\begin{align*}
+\beta_j \mid \lambda, \tau_j, c^2 &\sim \mathsf{Gauss}\left(0, \lambda\frac{c^2\tau_j^2}{c^2 + \tau^2_j\lambda^2}\right), \\
+\tau_j &\sim \mathsf{Student}_{+}(0, 1, 1)\\
+c^2 \mid s^2, \nu \sim \mathsf{inv. gamma}(\nu/2, \nu s^2/2).
+\end{align*}
+When $\tau^2\lambda^2_j$ is much greater than $c^2$, this amounts to having a Student slab with $\nu$ degrees of freedom for large coefficients; taking a small value of $\nu$ allows for large, but not extreme components, and the authors use $s^2=2, \nu=4.$ The above specification does not specify the prior for the global scale $\lambda$, for which @Piironen.Vehtari:2017 recommend using an empirical Bayes prior, with $$\lambda \sim \mathsf{Student}_{+}\left\{0, \frac{p_0}{(p-p_0)}\frac{\sigma}{n^{1/2}}, 1\right\},$$ where $p_0$ is a prior guess for the number of non-zero components out of $p,$ $n$ is the sample size and $\sigma$ is some level of the noise.

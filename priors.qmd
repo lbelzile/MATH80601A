@@ -626,7 +626,7 @@ We model the data using a Poisson mixed model to measure the number of violation
 Y_{ij} &\sim \mathsf{Poisson}\{\mu = \exp(\beta_{j} + \alpha_i)\},\\
 \beta_j &\sim \mathsf{Gauss}(0, 100), \\
 \alpha_i &\sim \mathsf{Gauss}(0, \kappa^2), \\
-\kappa &\sim \mathsf{Student}_{+}(3).
+\kappa &\sim \mathsf{Student}_{+}(0,1,3).
 \end{align*}
 so observations are conditionally independent given hyperparameters $\boldsymbol{\alpha}$ and $\boldsymbol{\beta}.$
 

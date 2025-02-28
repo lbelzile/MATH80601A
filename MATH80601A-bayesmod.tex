@@ -266,20 +266,6 @@
 \DeclareMathAlphabet{\mathcrl}{U}{rsfs}{m}{n}
 \usepackage{utopia}
 \DeclareMathAlphabet{\mathcal}{OMS}{cmsy}{m}{n}
-\usepackage{booktabs}
-\usepackage{longtable}
-\usepackage{array}
-\usepackage{multirow}
-\usepackage{wrapfig}
-\usepackage{float}
-\usepackage{colortbl}
-\usepackage{pdflscape}
-\usepackage{tabu}
-\usepackage{threeparttable}
-\usepackage{threeparttablex}
-\usepackage[normalem]{ulem}
-\usepackage{makecell}
-\usepackage{xcolor}
 \makeatletter
 \@ifpackageloaded{bookmark}{}{\usepackage{bookmark}}
 \makeatother
@@ -319,13 +305,13 @@
 \newcommand*\listoflistings{\listof{codelisting}{List of Listings}}
 \usepackage{amsthm}
 \theoremstyle{definition}
+\newtheorem{definition}{Definition}[chapter]
+\theoremstyle{definition}
 \newtheorem{exercise}{Exercise}[chapter]
 \theoremstyle{definition}
 \newtheorem{example}{Example}[chapter]
 \theoremstyle{plain}
 \newtheorem{proposition}{Proposition}[chapter]
-\theoremstyle{definition}
-\newtheorem{definition}{Definition}[chapter]
 \theoremstyle{plain}
 \newtheorem{theorem}{Theorem}[chapter]
 \theoremstyle{remark}
@@ -383,7 +369,7 @@ details.
 These notes are licensed under a
 \href{http://creativecommons.org/licenses/by-nc-sa/4.0/}{Creative
 Commons Attribution-NonCommercial-ShareAlike 4.0 International License}
-and were last compiled on Thursday, February 27 2025.
+and were last compiled on Friday, February 28 2025.
 
 The objective of the course is to provide a hands on introduction to
 Bayesian data analysis. The course will cover the formulation,
@@ -572,11 +558,15 @@ distribution]\protect\hypertarget{def-student-dist}{}\label{def-student-dist}
 The name ``Student'' comes from the pseudonym used by William Gosset in
 Gosset (\citeproc{ref-Student:1908}{1908}), who introduced the
 asymptotic distribution of the \(t\)-statistic. The density of the
-standard Student-\(t\) univariate distribution with \(\nu\) degrees of
-freedom is \begin{align*}
-f(y; \nu) = \frac{\Gamma \left( \frac{\nu+1}{2}\right)}{\Gamma\left(\frac{\nu}{2}\right)
-\sqrt{\nu\pi}}\left(1+\frac{y^{2}}{\nu}\right)^{-\frac{\nu+1}{2}}.
-\end{align*} The density of the random vector
+Student-\(t\) univariate distribution with \(\nu\) degrees of freedom,
+location \(\mu\) and scale \(\sigma,\) denoted
+\(\mathsf{Student}(\mu, \sigma, \nu),\) is \begin{align*}
+f(y; \mu, \sigma, \nu) = \frac{\Gamma \left( \frac{\nu+1}{2}\right)}{\sigma\Gamma\left(\frac{\nu}{2}\right)
+\sqrt{\nu\pi}}\left(1+\frac{1}{\nu}\left(\frac{y-\mu}{\sigma}\right)^2\right)^{-\frac{\nu+1}{2}}.
+\end{align*} We also write \(\mathsf{Student}_{+}\) to denote the
+truncated distribution on the positive half-line, \([0, \infty).\)
+
+The density of the random vector
 \(\boldsymbol{Y} \sim \mathsf{Student}_d(\boldsymbol{\mu}, \boldsymbol{Q}^{-1}, \nu),\)
 with location vector \(\boldsymbol{\mu},\) scale matrix
 \(\boldsymbol{Q}^{-1}\) and \(\nu\) degrees of freedom is \begin{align*}
@@ -3535,7 +3525,7 @@ participant \texttt{id}. The hierarchical model fitted for individual
 Y_{ij} &\sim \mathsf{Poisson}\{\mu = \exp(\beta_{j} + \alpha_i)\},\\
 \beta_j &\sim \mathsf{Gauss}(0, 100), \\
 \alpha_i &\sim \mathsf{Gauss}(0, \kappa^2), \\
-\kappa &\sim \mathsf{Student}_{+}(3).
+\kappa &\sim \mathsf{Student}_{+}(0,1,3).
 \end{align*} so observations are conditionally independent given
 hyperparameters \(\boldsymbol{\alpha}\) and \(\boldsymbol{\beta}.\)
 
@@ -6671,7 +6661,7 @@ coefficients \(\boldsymbol{\beta}\) and for the precision \(\omega\) are
 \begin{align*}
 \boldsymbol{\beta} \mid \omega, \boldsymbol{y} &\sim \mathsf{Gauss}_p\left\{\boldsymbol{\mu}_n, (\omega\boldsymbol{\Omega}_n)^{-1}\right\}  \\
 \omega \mid  \boldsymbol{y} &\sim \mathsf{gamma}\left\{(\nu_0 + n)/2,  \tau^2_n/2\right\}, \\
-\boldsymbol{\beta} \mid  \boldsymbol{y} &\sim \mathsf{Student}(\boldsymbol{\mu}_n,  \tau_n/(\nu_0+n) \times \mathbf{\Omega}_n^{-1}, \nu_0 + n)
+\boldsymbol{\beta} \mid  \boldsymbol{y} &\sim \mathsf{Student}_p(\boldsymbol{\mu}_n,  \tau_n/(\nu_0+n) \times \mathbf{\Omega}_n^{-1}, \nu_0 + n)
 \end{align*} where \begin{align*}
 \boldsymbol{\Omega}_n &= \mathbf{X}^\top\mathbf{X} + \boldsymbol{\Omega}_0\\
 \boldsymbol{\mu}_n &= \boldsymbol{\Omega}_n^{-1}(\mathbf{X}^\top\mathbf{X}\widehat{\boldsymbol{\beta}} + \boldsymbol{\Omega}_0\boldsymbol{\mu}_0) = \boldsymbol{\Omega}_n^{-1}(\mathbf{X}^\top\boldsymbol{y} + \boldsymbol{\Omega}_0\boldsymbol{\mu}_0)\\
@@ -6795,30 +6785,10 @@ more), than conservatives (0.7 points on average).
   \FunctionTok{chol}\NormalTok{(Omega\_n\_inv)}
 \NormalTok{beta }\OtherTok{\textless{}{-}} \FunctionTok{sweep}\NormalTok{(beta, }\DecValTok{1}\NormalTok{, }\FunctionTok{sqrt}\NormalTok{(omega), }\StringTok{"/"}\NormalTok{)}
 \NormalTok{beta }\OtherTok{\textless{}{-}} \FunctionTok{sweep}\NormalTok{(beta, }\DecValTok{2}\NormalTok{, mu\_n, }\StringTok{"+"}\NormalTok{)}
-\FunctionTok{t}\NormalTok{(}\FunctionTok{apply}\NormalTok{(beta, }\DecValTok{2}\NormalTok{, quantile, }\AttributeTok{probs =} \FunctionTok{c}\NormalTok{(}\FloatTok{0.25}\NormalTok{,}\FloatTok{0.5}\NormalTok{,}\FloatTok{0.75}\NormalTok{)))}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{verbatim}
-                                        25%         50%      75%
-(Intercept)                       0.6121975  2.36319510 3.873564
-politideo1                       -1.9892041 -0.36613522 1.214107
-chefdax1                         -0.9257785  0.68721129 2.283937
-brandaction1                     -1.8418958  0.45062649 2.614413
-brandaction2                     -2.3650410 -0.14217132 2.051471
-politideo1:chefdax1              -1.9118528 -0.42173097 1.146488
-politideo1:brandaction1          -2.1911059  0.07257575 2.098037
-politideo1:brandaction2          -2.1859102  0.13941346 2.133720
-chefdax1:brandaction1            -2.1679751 -0.15518192 2.264913
-chefdax1:brandaction2            -2.2688732  0.23541703 2.393560
-politideo1:chefdax1:brandaction1 -2.6725076  0.13564511 2.118977
-politideo1:chefdax1:brandaction2 -2.1815279  0.12941015 2.497072
-\end{verbatim}
-
-\begin{Shaded}
-\begin{Highlighting}[]
+\CommentTok{\# Posterior quartiles for beta}
+\NormalTok{beta\_qu }\OtherTok{\textless{}{-}} \FunctionTok{t}\NormalTok{(}\FunctionTok{apply}\NormalTok{(beta, }\DecValTok{2}\NormalTok{, quantile, }\AttributeTok{probs =} \FunctionTok{c}\NormalTok{(}\FloatTok{0.25}\NormalTok{,}\FloatTok{0.5}\NormalTok{,}\FloatTok{0.75}\NormalTok{)))}
 \CommentTok{\# Standard dev. for beta (from Student{-}t)}
-\NormalTok{se }\OtherTok{\textless{}{-}} \FunctionTok{sqrt}\NormalTok{((nu\_0 }\SpecialCharTok{+}\NormalTok{ n)}\SpecialCharTok{/}\NormalTok{(nu\_0 }\SpecialCharTok{+}\NormalTok{ n }\SpecialCharTok{{-}} \DecValTok{2}\NormalTok{) }\SpecialCharTok{*}\FunctionTok{diag}\NormalTok{(tau\_n}\SpecialCharTok{/}\NormalTok{(nu\_0 }\SpecialCharTok{+}\NormalTok{ n) }\SpecialCharTok{*}\NormalTok{ Omega\_n\_inv))}
+\NormalTok{beta\_se }\OtherTok{\textless{}{-}} \FunctionTok{sqrt}\NormalTok{((nu\_0 }\SpecialCharTok{+}\NormalTok{ n)}\SpecialCharTok{/}\NormalTok{(nu\_0 }\SpecialCharTok{+}\NormalTok{ n }\SpecialCharTok{{-}} \DecValTok{2}\NormalTok{) }\SpecialCharTok{*}\FunctionTok{diag}\NormalTok{(tau\_n}\SpecialCharTok{/}\NormalTok{(nu\_0 }\SpecialCharTok{+}\NormalTok{ n) }\SpecialCharTok{*}\NormalTok{ Omega\_n\_inv))}
 
 \NormalTok{beta }\OtherTok{\textless{}{-}}\NormalTok{ TruncatedNormal}\SpecialCharTok{::}\FunctionTok{rtmvt}\NormalTok{(}
   \AttributeTok{n =} \FloatTok{1e3}\NormalTok{L,}
@@ -7093,7 +7063,29 @@ Inspired from Figure 1 of Carvalho, Polson, and Scott
 
 \end{figure}%
 
-The amount of shrinkage is governed by an hyperparameter \(\lambda>0.\)
+While the horseshoe prior guarantees that large coefficients are not
+regularized, this feature of the shrinkage prior is harmful in certain
+instances, for example separation of variables for logistic regression.
+Markov chain Monte Carlo simulations are hampered by these parameters
+whose posterior mean does not exist, leading to poor mixing. Some very
+weak regularization for these big components can thus help. Piironen and
+Vehtari (\citeproc{ref-Piironen.Vehtari:2017}{2017}) proposed the
+regularized horseshoe, nicknamed Finnish horseshoe, where \begin{align*}
+\beta_j \mid \lambda, \tau_j, c^2 &\sim \mathsf{Gauss}\left(0, \lambda\frac{c^2\tau_j^2}{c^2 + \tau^2_j\lambda^2}\right), \\
+\tau_j &\sim \mathsf{Student}_{+}(0, 1, 1)\\
+c^2 \mid s^2, \nu \sim \mathsf{inv. gamma}(\nu/2, \nu s^2/2).
+\end{align*} When \(\tau^2\lambda^2_j\) is much greater than \(c^2\),
+this amounts to having a Student slab with \(\nu\) degrees of freedom
+for large coefficients; taking a small value of \(\nu\) allows for
+large, but not extreme components, and the authors use \(s^2=2, \nu=4.\)
+The above specification does not specify the prior for the global scale
+\(\lambda\), for which Piironen and Vehtari
+(\citeproc{ref-Piironen.Vehtari:2017}{2017}) recommend using an
+empirical Bayes prior, with
+\[\lambda \sim \mathsf{Student}_{+}\left\{0, \frac{p_0}{(p-p_0)}\frac{\sigma}{n^{1/2}}, 1\right\},\]
+where \(p_0\) is a prior guess for the number of non-zero components out
+of \(p,\) \(n\) is the sample size and \(\sigma\) is some level of the
+noise.
 
 \bookmarksetup{startatroot}
 
@@ -7471,6 +7463,12 @@ Computational and Graphical Statistics} 24 (2): 579--99.
 Park, Trevor, and George Casella. 2008. {``The {B}ayesian {L}asso.''}
 \emph{Journal of the American Statistical Association} 103 (482):
 681--86. \url{https://doi.org/10.1198/016214508000000337}.
+
+\bibitem[\citeproctext]{ref-Piironen.Vehtari:2017}
+Piironen, Juho, and Aki Vehtari. 2017. {``Sparsity Information and
+Regularization in the Horseshoe and Other Shrinkage Priors.''}
+\emph{Electronic Journal of Statistics} 11 (2): 5018--51.
+\url{https://doi.org/10.1214/17-ejs1337si}.
 
 \bibitem[\citeproctext]{ref-coda}
 Plummer, Martyn, Nicky Best, Kate Cowles, and Karen Vines. 2006.

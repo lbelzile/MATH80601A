@@ -638,7 +638,7 @@ Y_{ij} &amp;\sim \mathsf{Gauss}(\mu + \alpha_j, \sigma^2),\\
 Y_{ij} &amp;\sim \mathsf{Poisson}\{\mu = \exp(\beta_{j} + \alpha_i)\},\\
 \beta_j &amp;\sim \mathsf{Gauss}(0, 100), \\
 \alpha_i &amp;\sim \mathsf{Gauss}(0, \kappa^2), \\
-\kappa &amp;\sim \mathsf{Student}_{+}(3).
+\kappa &amp;\sim \mathsf{Student}_{+}(0,1,3).
 \end{align*}\]</span> so observations are conditionally independent given hyperparameters <span class="math inline">\(\boldsymbol{\alpha}\)</span> and <span class="math inline">\(\boldsymbol{\beta}.\)</span></p>
 <p>In frequentist statistics, there is a distinction made in mixed-effect models between parameters that are treated as constants, termed fixed effects and corresponding in this example to <span class="math inline">\(\boldsymbol{\beta},\)</span> and random effects, equivalent to <span class="math inline">\(\boldsymbol{\alpha}.\)</span> There is no such distinction in the Bayesian paradigm, except perhaps for the choice of prior.</p>
 <p>We can look at some of posterior distribution of the 31 random effects (here the first five individuals) and the fixed effect parameters <span class="math inline">\(\boldsymbol{\beta},\)</span> plus the variance of the random effect <span class="math inline">\(\kappa\)</span>: there is strong evidence that the latter is non-zero, suggesting strong heterogeneity between individuals. The distraction which results in the largest number of violation is texting, while the other conditions all seem equally distracting on average (note that there is no control group with no distraction to compare with, so it is hard to draw conclusions).</p>
