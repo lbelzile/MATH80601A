@@ -267,6 +267,22 @@
 \usepackage{utopia}
 \DeclareMathAlphabet{\mathcal}{OMS}{cmsy}{m}{n}
 \makeatletter
+\@ifpackageloaded{tcolorbox}{}{\usepackage[skins,breakable]{tcolorbox}}
+\@ifpackageloaded{fontawesome5}{}{\usepackage{fontawesome5}}
+\definecolor{quarto-callout-color}{HTML}{909090}
+\definecolor{quarto-callout-note-color}{HTML}{0758E5}
+\definecolor{quarto-callout-important-color}{HTML}{CC1914}
+\definecolor{quarto-callout-warning-color}{HTML}{EB9113}
+\definecolor{quarto-callout-tip-color}{HTML}{00A047}
+\definecolor{quarto-callout-caution-color}{HTML}{FC5300}
+\definecolor{quarto-callout-color-frame}{HTML}{acacac}
+\definecolor{quarto-callout-note-color-frame}{HTML}{4582ec}
+\definecolor{quarto-callout-important-color-frame}{HTML}{d9534f}
+\definecolor{quarto-callout-warning-color-frame}{HTML}{f0ad4e}
+\definecolor{quarto-callout-tip-color-frame}{HTML}{02b875}
+\definecolor{quarto-callout-caution-color-frame}{HTML}{fd7e14}
+\makeatother
+\makeatletter
 \@ifpackageloaded{bookmark}{}{\usepackage{bookmark}}
 \makeatother
 \makeatletter
@@ -305,15 +321,15 @@
 \newcommand*\listoflistings{\listof{codelisting}{List of Listings}}
 \usepackage{amsthm}
 \theoremstyle{definition}
-\newtheorem{definition}{Definition}[chapter]
-\theoremstyle{definition}
 \newtheorem{exercise}{Exercise}[chapter]
 \theoremstyle{definition}
 \newtheorem{example}{Example}[chapter]
-\theoremstyle{plain}
-\newtheorem{proposition}{Proposition}[chapter]
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}[chapter]
 \theoremstyle{plain}
 \newtheorem{theorem}{Theorem}[chapter]
+\theoremstyle{plain}
+\newtheorem{proposition}{Proposition}[chapter]
 \theoremstyle{remark}
 \AtBeginDocument{\renewcommand*{\proofname}{Proof}}
 \newtheorem*{remark}{Remark}
@@ -369,7 +385,7 @@ details.
 These notes are licensed under a
 \href{http://creativecommons.org/licenses/by-nc-sa/4.0/}{Creative
 Commons Attribution-NonCommercial-ShareAlike 4.0 International License}
-and were last compiled on Friday, February 28 2025.
+and were last compiled on Monday, March 03 2025.
 
 The objective of the course is to provide a hands on introduction to
 Bayesian data analysis. The course will cover the formulation,
@@ -384,6 +400,32 @@ This section review basic concepts in probability theory that will be
 used throughout the course. The overview begins with basic statistical
 concepts, random variables, their distribution and density, moments and
 likelihood derivations.
+
+\begin{tcolorbox}[enhanced jigsaw, left=2mm, bottomrule=.15mm, coltitle=black, colback=white, rightrule=.15mm, colbacktitle=quarto-callout-important-color!10!white, bottomtitle=1mm, leftrule=.75mm, toprule=.15mm, titlerule=0mm, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Learning objectives}:}, breakable, arc=.35mm, toptitle=1mm, colframe=quarto-callout-important-color-frame, opacityback=0, opacitybacktitle=0.6]
+
+At the end of the chapter, students should be able to
+
+\begin{itemize}
+\tightlist
+\item
+  review notions of joint, marginal and conditional distributions.
+\item
+  identify the conditional from a joint density.
+\item
+  calculate analytically the marginal distribution by completing a
+  density function.
+\item
+  calculate the density after a change of variables.
+\item
+  calculate of moments, using the definition or using the tower
+  property.
+\item
+  write down the likelihood for simple settings involving independent
+  observations and other simple scenarios (truncation, censoring,
+  non-identical, serial dependence).
+\end{itemize}
+
+\end{tcolorbox}
 
 \section{Random vectors}\label{random-vectors}
 
@@ -1652,17 +1694,60 @@ The likelihood can then be written as \begin{align*}
 
 \end{example}
 
+\begin{tcolorbox}[enhanced jigsaw, left=2mm, bottomrule=.15mm, coltitle=black, colback=white, rightrule=.15mm, colbacktitle=quarto-callout-important-color!10!white, bottomtitle=1mm, leftrule=.75mm, toprule=.15mm, titlerule=0mm, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Summary}}, breakable, arc=.35mm, toptitle=1mm, colframe=quarto-callout-important-color-frame, opacityback=0, opacitybacktitle=0.6]
+
+\begin{itemize}
+\tightlist
+\item
+  Many families of distributions are closed under conditioning and
+  marginalization (elliptical distribution such as Gaussian or Student,
+  Dirichlet or categorical).
+\item
+  Location-scale families can be standardized.
+\item
+  Distributions are characterized by their moments. Statistical models
+  typically specify a parametric form for the latter, notably regression
+  models.
+\item
+  Hierarchical models specify a joint distribution through marginal and
+  conditionals, allowing for simpler derivations and closed-form
+  expressions. The law of iterated expectation and variance (tower
+  property) can be used to retrieve them.
+\item
+  Families of distribution can be identified from their kernel (density
+  or mass function) and support, up to normalizing constants. It
+  suffices to identify the parameters of the distribution to retrieve
+  the model.
+\item
+  Marginalization from a joint density involves integration. We can
+  often rewrite the integral in terms of an unnormalized density, and
+  use knowledge of the marginalization constant.
+\item
+  The likelihood depends on the distribution of the data. It encodes the
+  information about the data.
+\item
+  The score (gradient vector of the log likelihood) can be set to zero
+  to find the maximum likelihood estimator in regular models.
+\item
+  The curvature of the log likelihood (Hessian matrix) gives an idea of
+  the information. The observed information is the sample version, the
+  expected or Fisher information obtained by replacing data observations
+  with their expectation.
+\item
+  In independent samples, the information grows linearly with the sample
+  size and is \(\mathrm{O}(n).\) For identically distributed samples, we
+  can compute the Fisher information for a single observation.
+\end{itemize}
+
+\end{tcolorbox}
+
 \bookmarksetup{startatroot}
 
 \chapter{Bayesics}\label{bayesics}
 
-The Bayesian paradigm is an inferential framework that is used
-widespread in data science. Numerical challenges that prevented it's
-widespread adoption until the 90's, when the Markov chain Monte Carlo
-revolution allowed models estimation.
-
-Bayesian inference, which builds on likelihood-based inference, offers a
-natural framework for prediction and for uncertainty quantification. The
+The Bayesian paradigm is an inferential framework that is widely used in
+data science. It builds on likelihood-based inference, offers a natural
+framework for prediction and for uncertainty quantification. The
 interpretation is more natural than that of classical (i.e.,
 frequentist) paradigm, and it is more easy to generalized models to
 complex settings, notably through hierarchical constructions. The main
@@ -1687,6 +1772,28 @@ distribution. Several notions, including sequentiality, prior
 elicitation and estimation of the marginal likelihood, are mentioned in
 passing. A brief discussion of Bayesian hypothesis testing (and
 alternatives) is presented.
+
+\begin{tcolorbox}[enhanced jigsaw, left=2mm, bottomrule=.15mm, coltitle=black, colback=white, rightrule=.15mm, colbacktitle=quarto-callout-important-color!10!white, bottomtitle=1mm, leftrule=.75mm, toprule=.15mm, titlerule=0mm, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Learning objectives}:}, breakable, arc=.35mm, toptitle=1mm, colframe=quarto-callout-important-color-frame, opacityback=0, opacitybacktitle=0.6]
+
+At the end of the chapter, students should be able to
+
+\begin{itemize}
+\tightlist
+\item
+  define key notions (prior, marginal likelihood, Bayes factor, credible
+  intervals, etc.) of Bayesian inference.
+\item
+  distinguish between questions that relate to the posterior
+  distribution versus the posterior predictive.
+\item
+  calculate and compute numerically summaries of posterior distributions
+  (point estimators and credible intervals) given a posterior sample.
+\item
+  explain some of the conceptual differences between frequentist and
+  Bayesian inference.
+\end{itemize}
+
+\end{tcolorbox}
 
 \section{Probability and frequency}\label{probability-and-frequency}
 
@@ -2603,6 +2710,51 @@ the cutoff for the HDP region.}
 
 \end{figure}%
 
+\begin{tcolorbox}[enhanced jigsaw, left=2mm, bottomrule=.15mm, coltitle=black, colback=white, rightrule=.15mm, colbacktitle=quarto-callout-important-color!10!white, bottomtitle=1mm, leftrule=.75mm, toprule=.15mm, titlerule=0mm, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Summary}:}, breakable, arc=.35mm, toptitle=1mm, colframe=quarto-callout-important-color-frame, opacityback=0, opacitybacktitle=0.6]
+
+\begin{itemize}
+\tightlist
+\item
+  Bayesians treat both parameter and observations as random, the former
+  due to uncertainty about the true value. Inference is performed
+  conditional on observed data, and summarized in the posterior.
+\item
+  Bayesians specify both a prior for the parameter, and a likelihood
+  specifying the data generating mechanism. It is thus an extension of
+  likelihood-based inference.
+\item
+  Information from the prior is updated in light of new data, which is
+  encoded by the likelihood. Sequential updating leads.
+\item
+  Under weak conditions on the prior, large-sample behaviour of Bayesian
+  and frequentist.
+\item
+  Bayesian inference is complicated by the fact that there is more often
+  than not no closed-form expression for the posterior distribution.
+  Evaluation of the normalizing constant, the so-called marginal
+  likelihood, is challenging, especially in high dimensional settings.
+\item
+  Rather than hypothesis testing, Bayesian methods rely on the posterior
+  distribution of parameters, or on Bayes factor for model comparisons.
+\item
+  The posterior predictive distribution, used for model assessment and
+  prediction, and it has a higher variance than the data generating
+  distribution from the likelihood, due to parameter uncertainty.
+\item
+  Bayesians typically will have approximations to the posterior
+  distribution, or samples drawn from it.
+\item
+  Loss functions can be used to summarize a posterior distribution into
+  a numerical summary of interest, which may vary depending on the
+  objective.
+\item
+  Uncertainty is reflected by credible sets or credible intervals, which
+  encode the posterior probability that the true value
+  \(\boldsymbol{\theta}\) belongs to the set.
+\end{itemize}
+
+\end{tcolorbox}
+
 \bookmarksetup{startatroot}
 
 \chapter{Priors}\label{priors}
@@ -2636,6 +2788,28 @@ same information. This means that different analysts get different
 inferences. Generally, we will choose the prior for convenience. Priors
 are controversial because they could be tuned aposteriori to give any
 answer an analyst might want.
+
+\begin{tcolorbox}[enhanced jigsaw, left=2mm, bottomrule=.15mm, coltitle=black, colback=white, rightrule=.15mm, colbacktitle=quarto-callout-important-color!10!white, bottomtitle=1mm, leftrule=.75mm, toprule=.15mm, titlerule=0mm, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Learning objectives}:}, breakable, arc=.35mm, toptitle=1mm, colframe=quarto-callout-important-color-frame, opacityback=0, opacitybacktitle=0.6]
+
+At the end of the chapter, students should be able to
+
+\begin{itemize}
+\tightlist
+\item
+  define and distinguish between improper, weak and informative priors.
+\item
+  propose conjugate priors for exponential families.
+\item
+  assess by using the prior predictive distribution the compatibility of
+  the prior with the model.
+\item
+  use moment matching to specify the parameters of a prior distribution.
+\item
+  perform sensitivity analysis by running a model with different priors
+  and assessing changes to the posterior distribution.
+\end{itemize}
+
+\end{tcolorbox}
 
 \section{Prior simulation}\label{prior-simulation}
 
@@ -3052,7 +3226,8 @@ prior]\protect\hypertarget{def-properprior}{}\label{def-properprior}
 
 We call a prior function \emph{proper} if it's integral is finite over
 the parameter space; such prior function automatically leads to a valid
-posterior.
+posterior. A prior over \(\boldsymbol{\Theta}\) is \textbf{improper} if
+\(\int_{\boldsymbol{\Theta}} p(\boldsymbol{\theta}) \mathrm{d} \boldsymbol{\theta} = \infty.\)
 
 \end{definition}
 
@@ -3079,7 +3254,7 @@ taxonomy for various levels of prior information:
 \tightlist
 \item
   uninformative priors are generally flat or uniform priors with
-  \(p(\beta) \propto 1,\)
+  \(p(\beta) \propto 1.\)
 \item
   vague priors are typically nearly flat even if proper, e.g.,
   \(\beta \sim \mathsf{Gauss}(0, 100),\)
@@ -3648,6 +3823,50 @@ improper priors on location and scale.}
 \end{figure}%
 
 \end{example}
+
+\begin{tcolorbox}[enhanced jigsaw, left=2mm, bottomrule=.15mm, coltitle=black, colback=white, rightrule=.15mm, colbacktitle=quarto-callout-important-color!10!white, bottomtitle=1mm, leftrule=.75mm, toprule=.15mm, titlerule=0mm, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Summary}:}, breakable, arc=.35mm, toptitle=1mm, colframe=quarto-callout-important-color-frame, opacityback=0, opacitybacktitle=0.6]
+
+\begin{itemize}
+\tightlist
+\item
+  Priors are distributions for the parameters. In multi-parameter
+  models, they can be specified through a joint distribution or assumed
+  independent apriori (which does not translate into independence a
+  posteriori).
+\item
+  Priors are not invariant to reparametrization, except when they are
+  constructed with this property (e.g., Jeffrey's prior or
+  penalized-complexity priors).
+\item
+  Improper priors may lead to improper posterior.
+\item
+  Priors that restrict the domain of \(\boldsymbol{\theta}\) will also
+  restrict the posterior. These are useful to avoid regions that are
+  implausible or impossible.
+\item
+  Physical knowledge of the system can be helpful to specify sensible
+  values of the prior through moment matching.
+\item
+  Conjugate priors facilitate derivations, but are mostly chosen for
+  convenience.
+\item
+  Generally, the prior has constant weight \(\mathrm{O}(1)\), relative
+  to \(\mathrm{O}(n)\) for the likelihood. The posterior is thus
+  dominated in most circumstances by the likelihood.
+\item
+  We can compute the prior to posterior gain by comparing their density
+  (if the prior is proper).
+\item
+  For many (conjugate) priors, we can view some function of the
+  parameter as given a prior number of observations (in Gaussian models,
+  binomial, gamma, etc.)
+\item
+  Informative priors can be used to specify expert knowledge about the
+  system. This will impact the posterior, but often in a sensible
+  manner, thereby regularizing or improving posterior inference.
+\end{itemize}
+
+\end{tcolorbox}
 
 \bookmarksetup{startatroot}
 
@@ -4664,6 +4883,21 @@ computers became more widely available. The idea is to draw correlated
 samples from a posterior via Markov chains, constructed to have the
 posterior as invariant stationary distribution.
 
+\begin{tcolorbox}[enhanced jigsaw, left=2mm, bottomrule=.15mm, coltitle=black, colback=white, rightrule=.15mm, colbacktitle=quarto-callout-important-color!10!white, bottomtitle=1mm, leftrule=.75mm, toprule=.15mm, titlerule=0mm, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Learning objectives}:}, breakable, arc=.35mm, toptitle=1mm, colframe=quarto-callout-important-color-frame, opacityback=0, opacitybacktitle=0.6]
+
+At the end of the chapter, students should be able to
+
+\begin{itemize}
+\tightlist
+\item
+  implement a Metropolis--Hastings algorithm to draw samples from the
+  posterior
+\item
+  tune proposals to obtain good mixing properties.
+\end{itemize}
+
+\end{tcolorbox}
+
 Named after Metropolis et al. (\citeproc{ref-Metropolis:1953}{1953}),
 Hastings (\citeproc{ref-Hastings:1970}{1970}), its relevance took a long
 time to gain traction in the statistical community. The idea of the
@@ -5339,9 +5573,73 @@ overdispersion.
 
 \end{example}
 
+\begin{tcolorbox}[enhanced jigsaw, left=2mm, bottomrule=.15mm, coltitle=black, colback=white, rightrule=.15mm, colbacktitle=quarto-callout-important-color!10!white, bottomtitle=1mm, leftrule=.75mm, toprule=.15mm, titlerule=0mm, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Summary}:}, breakable, arc=.35mm, toptitle=1mm, colframe=quarto-callout-important-color-frame, opacityback=0, opacitybacktitle=0.6]
+
+\begin{itemize}
+\tightlist
+\item
+  Metropolis--Hastings generalizes rejection sampling by building a
+  Markov chain and providing a mechanism for sampling.
+\item
+  Small proposal variance leads to high acceptance rate, but small step
+  sizes. Large variance proposals leads to many rejections, in which
+  case the previous value is carried forward. Both extreme scenarios
+  lead to large autocorrelation.
+\item
+  The proposal density can be anything, but must ideally account for the
+  support and allow for exploration of the state.
+\item
+  Good initial starting values can be obtained by computing maximum a
+  posteriori estimates.
+\item
+  Initializing multiple chains at different starting values can be used
+  to check convergence to the stationary distribution.
+\item
+  Mixing will improve if strongly correlated parameters are sampled
+  together.
+\item
+  The optimal acceptance rate depends on the dimension, but guidelines
+  for random walk Metropolis are to have 0.44 for a single parameter
+  model and 0.234 for multivariate targets; see Neal
+  (\citeproc{ref-Neal:2011}{2011}) for a heuristic derivation.
+\item
+  To obtain the target acceptance rate, users must tune the variance of
+  the proposal kernel. This is typically achieved by running the chain
+  for some period, computing the empirical acceptance rate and
+  increasing (respectively decreasing) the variance if the acceptance
+  rate is too high (too low).
+\item
+  Metropolis-adjusted Langevin algorithm (MALA) uses the gradient
+  information to inform the proposal; it is akin to a Newton step.
+\item
+  The detailed balance requires a function \(g\) such that
+  \(g(r) = rg(1/r).\) Taking \(g(r) = \min(1,r)\) as in
+  Metropolis--Hasting rule leads to the lowest asymptotic variance
+  (\citeproc{ref-Peskun:1973}{\textbf{Peskun:1973?}}).
+\item
+\end{itemize}
+
+\end{tcolorbox}
+
 \bookmarksetup{startatroot}
 
 \chapter{Gibbs sampling}\label{sec-Gibbs}
+
+\begin{tcolorbox}[enhanced jigsaw, left=2mm, bottomrule=.15mm, coltitle=black, colback=white, rightrule=.15mm, colbacktitle=quarto-callout-important-color!10!white, bottomtitle=1mm, leftrule=.75mm, toprule=.15mm, titlerule=0mm, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Learning objectives}:}, breakable, arc=.35mm, toptitle=1mm, colframe=quarto-callout-important-color-frame, opacityback=0, opacitybacktitle=0.6]
+
+At the end of the chapter, students should be able to
+
+\begin{itemize}
+\tightlist
+\item
+  implement Gibbs sampling.
+\item
+  derive the conditional distributions of a model for Gibbs sampling.
+\item
+  use data augmentation to emulate Gibbs sampling.
+\end{itemize}
+
+\end{tcolorbox}
 
 The Gibbs sampling algorithm builds a Markov chain by iterating through
 a sequence of conditional distributions. Consider a model with
@@ -5829,6 +6127,50 @@ and Stephens (\citeproc{ref-Stephens:2002}{2002}) for more details.
 
 \end{refremark}
 
+\begin{tcolorbox}[enhanced jigsaw, left=2mm, bottomrule=.15mm, coltitle=black, colback=white, rightrule=.15mm, colbacktitle=quarto-callout-important-color!10!white, bottomtitle=1mm, leftrule=.75mm, toprule=.15mm, titlerule=0mm, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Summary}:}, breakable, arc=.35mm, toptitle=1mm, colframe=quarto-callout-important-color-frame, opacityback=0, opacitybacktitle=0.6]
+
+\begin{itemize}
+\tightlist
+\item
+  Gibbs sampling is a special case of Metropolis--Hastings algorithm,
+  where we sample from the conditional distributions given other
+  parameters.
+\item
+  Use of (conditionally) conjugate priors enables Gibbs sampling.
+\item
+  The fact that any Gibbs step is accepted with probability one does not
+  mean the sampler is efficient: there can be significant
+  autocorrelation in the chains.
+\item
+  We can sometimes update parameters jointly, or reduce the dependence
+  by integrating out some of the conditioning variables
+  (marginalization).
+\item
+  We can use Gibbs step for some updates within a more general
+  algorithm.
+\item
+  Even if there is no closed-form expression, we can use Monte Carlo
+  methods to simulate parameters in a Gibbs sampler.
+\item
+  In many scenarios, the likelihood is costly to evaluate or not
+  amenable to Gibbs sampling. Data augmentation introduces additional
+  parameters to the model in exchange for simplifying the likelihood.
+\item
+  Data augmentation leads to a trade-off between complexity and
+  efficiency (more parameters, slower mixing).
+\item
+  Data augmentation is commonly used for expectation-maximisation (EM)
+  algorithm for maximum likelihood estimation in frequentist setting.
+\item
+  Special classes of models (Bayesian linear regression, mixtures, etc.)
+  are typically fitted using Gibbs sampling.
+\item
+  Probabilistic programming languages (Bugs, JAGS) rely on Gibbs
+  sampling.
+\end{itemize}
+
+\end{tcolorbox}
+
 \bookmarksetup{startatroot}
 
 \chapter{Computational strategies and
@@ -5842,6 +6184,30 @@ comparing different models, adapting and modifying these models
 Betancourt} for excellent visualizations. In this chapter, we focus on
 three aspects of the workflow: model validation, evaluation and
 comparison.
+
+\begin{tcolorbox}[enhanced jigsaw, left=2mm, bottomrule=.15mm, coltitle=black, colback=white, rightrule=.15mm, colbacktitle=quarto-callout-important-color!10!white, bottomtitle=1mm, leftrule=.75mm, toprule=.15mm, titlerule=0mm, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Learning objectives}:}, breakable, arc=.35mm, toptitle=1mm, colframe=quarto-callout-important-color-frame, opacityback=0, opacitybacktitle=0.6]
+
+At the end of the chapter, students should be able to
+
+\begin{itemize}
+\tightlist
+\item
+  use output of MCMC to obtain estimates and standard errors.
+\item
+  choose suitable test statistics to evaluate model adequacy.
+\item
+  assess convergence using graphical tools and effective sample size.
+\item
+  perform model comparisons using Bayes factor or predictive measures.
+\item
+  diagnose performance of MCMC algorithms (in terms of mixing and
+  effective sample size).
+\item
+  implement strategies to improve sampling performance, including block
+  updates, reparametrization and marginalization.
+\end{itemize}
+
+\end{tcolorbox}
 
 For a given problem, there are many different Markov chain Monte Carlo
 algorithms that one can implement: they will typically be distinguished
@@ -7087,6 +7453,46 @@ where \(p_0\) is a prior guess for the number of non-zero components out
 of \(p,\) \(n\) is the sample size and \(\sigma\) is some level of the
 noise.
 
+\begin{example}[Comparison of shrinkage
+priors]\protect\hypertarget{exm-case-study-shrinkage}{}\label{exm-case-study-shrinkage}
+
+We revisit the \texttt{diabetes} data from the \textbf{R} package
+\texttt{lars}, which was used in
+(\citeproc{ref-Park.Casella:2009}{\textbf{Park.Casella:2009?}}) to
+illustrate the Bayesian LASSO. We consider three methods: the default
+Gaussian prior, which gives a ridge penalty, the Bayesian LASSO and
+finally the horseshoe. Models are fitted using the \texttt{bayesreg}
+package.
+
+Figure~\ref{fig-shrinkage-dens-comparison} shows the ordered
+coefficients for each method. We can see that the ridge has the widest
+intervals of all methods, providing some shrinkage only for large values
+of \(\beta\). The horseshoe has typically narrower intervals, with more
+mass in a neighborhood of zero for smaller coefficients, and asymmetric
+intervals.
+
+\begin{figure}[ht!]
+
+\centering{
+
+\pandocbounded{\includegraphics[keepaspectratio]{regression_files/figure-pdf/fig-shrinkage-dens-comparison-1.pdf}}
+
+}
+
+\caption{\label{fig-shrinkage-dens-comparison}Density estimates for
+regression coefficients with Gaussian (ridge), double exponential
+(Laplace) and horseshoe priors for the \texttt{diabetes} data.}
+
+\end{figure}%
+
+One aspect worth mentioning is that the horseshoe prior impacts strongly
+the geometry and leads to slower mixing: the effective sample size
+fraction relative to the number of samples ranges from 14\% to 92\%,
+compared to 58\% to 97\% for the Bayesian LASSO and near-independent
+draws with the conjugate ridge.
+
+\end{example}
+
 \bookmarksetup{startatroot}
 
 \chapter{Deterministic
@@ -7441,6 +7847,12 @@ Statistical Association} 83 (404): 1023--32.
 Nadarajah, Saralees. 2008. {``{M}arshall and {O}lkin's Distributions.''}
 \emph{Acta Applicandae Mathematicae} 103 (1): 87--100.
 \url{https://doi.org/10.1007/s10440-008-9221-7}.
+
+\bibitem[\citeproctext]{ref-Neal:2011}
+Neal, Radford M. 2011. {``{MCMC} Using {H}amiltonian Dynamics.''} In
+\emph{Handbook of {M}arkov Chain {M}onte {C}arlo}, edited by S. Brooks,
+A. Gelman, G. Jones, and X. L. Meng, 113--62. Boca Raton: CRC Press.
+\url{https://doi.org/10.1201/b10905-5}.
 
 \bibitem[\citeproctext]{ref-rust}
 Northrop, Paul J. 2024. \emph{\texttt{rust}: Ratio-of-Uniforms

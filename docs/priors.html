@@ -292,6 +292,26 @@ window.Quarto = {
 <p>The posterior is a compromise prior and likelihood: the more informative the prior, the more the posterior resembles it, but in large samples, the effect of the prior is often negligible if there is enough information in the likelihood about all parameters. We can assess the robustness of the prior specification through a sensitivity analysis by comparing the outcomes of the posterior for different priors or different values of the hyperparameters.</p>
 <p>Oftentimes, we will specify independent priors in multiparameter models, but the posterior of these will not be independent.</p>
 <p>We can use moment matching to get sensible values, or tune via trial-and-error using the prior predictive draws to assess the implausibility of the prior outcomes. One challenge is that even if we have some prior information (e.g., we can obtain sensible prior values for the mean, quantiles or variance of the parameter of interest), these summary statisticss will not typically be enough to fully characterize the prior: many different functions or distributions could encode the same information. This means that different analysts get different inferences. Generally, we will choose the prior for convenience. Priors are controversial because they could be tuned aposteriori to give any answer an analyst might want.</p>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<strong>Learning objectives</strong>:
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>At the end of the chapter, students should be able to</p>
+<ul>
+<li>define and distinguish between improper, weak and informative priors.</li>
+<li>propose conjugate priors for exponential families.</li>
+<li>assess by using the prior predictive distribution the compatibility of the prior with the model.</li>
+<li>use moment matching to specify the parameters of a prior distribution.</li>
+<li>perform sensitivity analysis by running a model with different priors and assessing changes to the posterior distribution.</li>
+</ul>
+</div>
+</div>
 <section id="prior-simulation" class="level2" data-number="3.1">
 <h2 data-number="3.1" class="anchored" data-anchor-id="prior-simulation"><span class="header-section-number">3.1</span> Prior simulation</h2>
 <p>Expert elicitation is difficult and it is hard to grasp what the impacts of the hyperparameters are. One way to see if the priors are reasonable is to sample values from them and generate new observations, resulting in prior predictive draws.</p>
@@ -500,13 +520,13 @@ f(x; \mu, \sigma) \stackrel{\mu}{\propto} \exp\left(-\frac{1}{2 \sigma^2}\mu^2 +
 <section id="uninformative-priors" class="level2" data-number="3.3">
 <h2 data-number="3.3" class="anchored" data-anchor-id="uninformative-priors"><span class="header-section-number">3.3</span> Uninformative priors</h2>
 <div id="def-properprior" class="theorem definition">
-<p><span class="theorem-title"><strong>Definition 3.2 (Proper prior)</strong></span> We call a prior function <em>proper</em> if it’s integral is finite over the parameter space; such prior function automatically leads to a valid posterior.</p>
+<p><span class="theorem-title"><strong>Definition 3.2 (Proper prior)</strong></span> We call a prior function <em>proper</em> if it’s integral is finite over the parameter space; such prior function automatically leads to a valid posterior. A prior over <span class="math inline">\(\boldsymbol{\Theta}\)</span> is <strong>improper</strong> if <span class="math inline">\(\int_{\boldsymbol{\Theta}} p(\boldsymbol{\theta}) \mathrm{d} \boldsymbol{\theta} = \infty.\)</span></p>
 </div>
 <p>The best example of proper priors arise from probability density function. We can still employ this rule for improper priors: for example, taking <span class="math inline">\(\alpha, \beta \to 0\)</span> in the beta prior leads to a prior proportional to <span class="math inline">\(x^{-1}(1-x)^{-1},\)</span> the integral of which diverges on the unit interval <span class="math inline">\([0,1].\)</span> However, as long as the number of success and the number of failures is larger than 1, meaning <span class="math inline">\(k \geq 1, n-k \geq 1,\)</span> the posterior distribution would be proper, i.e., integrable. To find the posterior, normalizing constants are also superfluous.</p>
 <p>Many uninformative priors are flat, or proportional to a uniform on some subset of the real line and therefore improper. It may be superficially tempting to set a uniform prior on a large range to ensure posterior property, but the major problem is that a flat prior may be informative in a different parametrization, as the following example suggests.</p>
 <p><span class="citation" data-cites="Gelman:2013">Gelman et al. (<a href="references.html#ref-Gelman:2013" role="doc-biblioref">2013</a>)</span> uses the following taxonomy for various levels of prior information:</p>
 <ul>
-<li>uninformative priors are generally flat or uniform priors with <span class="math inline">\(p(\beta) \propto 1,\)</span></li>
+<li>uninformative priors are generally flat or uniform priors with <span class="math inline">\(p(\beta) \propto 1.\)</span></li>
 <li>vague priors are typically nearly flat even if proper, e.g., <span class="math inline">\(\beta \sim \mathsf{Gauss}(0, 100),\)</span></li>
 <li>weakly informative priors provide little constraints <span class="math inline">\(\beta \sim \mathsf{Gauss}(0, 10),\)</span> and</li>
 <li>informative prior are typically application-specific, but constrain the ranges.</li>
@@ -694,6 +714,30 @@ Figure&nbsp;3.7: Kernel density estimates of draws from the posterior distributi
 </figure>
 </div>
 </div>
+</div>
+</div>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<strong>Summary</strong>:
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ul>
+<li>Priors are distributions for the parameters. In multi-parameter models, they can be specified through a joint distribution or assumed independent apriori (which does not translate into independence a posteriori).</li>
+<li>Priors are not invariant to reparametrization, except when they are constructed with this property (e.g., Jeffrey’s prior or penalized-complexity priors).</li>
+<li>Improper priors may lead to improper posterior.</li>
+<li>Priors that restrict the domain of <span class="math inline">\(\boldsymbol{\theta}\)</span> will also restrict the posterior. These are useful to avoid regions that are implausible or impossible.</li>
+<li>Physical knowledge of the system can be helpful to specify sensible values of the prior through moment matching.</li>
+<li>Conjugate priors facilitate derivations, but are mostly chosen for convenience.</li>
+<li>Generally, the prior has constant weight <span class="math inline">\(\mathrm{O}(1)\)</span>, relative to <span class="math inline">\(\mathrm{O}(n)\)</span> for the likelihood. The posterior is thus dominated in most circumstances by the likelihood.</li>
+<li>We can compute the prior to posterior gain by comparing their density (if the prior is proper).</li>
+<li>For many (conjugate) priors, we can view some function of the parameter as given a prior number of observations (in Gaussian models, binomial, gamma, etc.)</li>
+<li>Informative priors can be used to specify expert knowledge about the system. This will impact the posterior, but often in a sensible manner, thereby regularizing or improving posterior inference.</li>
+</ul>
 </div>
 </div>
 <!--

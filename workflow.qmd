@@ -13,6 +13,25 @@
 
 The Bayesian workflow is a coherent framework for model formulation construction, inference and validation. It typically involves trying and comparing different models, adapting and modifying these models [@Gelman:2020]; see also [Michael Betancourt](https://betanalpha.github.io/assets/case_studies/principled_bayesian_workflow.html) for excellent visualizations. In this chapter, we focus on three aspects of the workflow: model validation, evaluation and comparison.
 
+::: {.callout-important}
+
+## **Learning objectives**:
+
+At the end of the chapter, students should be able to
+
+- use output of MCMC to obtain estimates and standard errors.
+- choose suitable test statistics to evaluate model adequacy.
+- assess convergence using graphical tools and effective sample size.
+- perform model comparisons using Bayes factor or predictive measures.
+- diagnose performance of MCMC algorithms (in terms of mixing and effective sample size).
+- implement strategies to improve sampling performance, including block updates, reparametrization and marginalization.
+
+
+:::
+
+    
+
+
 
 For a given problem, there are many different Markov chain Monte Carlo algorithms that one can implement: they will typically be distinguished based on the running time per iteration and the efficiency of the samplers, with algorithms providing realizations of Markov chains with lower autocorrelation being preferred. Many visual diagnostics and standard tests can be used to diagnose lack of convergence, or inefficiency. The purpose of this section is to review these in turn, and to go over tricks that can improve mixing.
 

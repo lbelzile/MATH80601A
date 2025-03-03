@@ -13,6 +13,16 @@
 
 The Markov chain Monte Carlo revolution in the 1990s made Bayesian inference mainstream by allowing inference for models when only approximations were permitted, and coincided with a time at which computers became more widely available. The idea is to draw correlated samples from a posterior via Markov chains, constructed to have the posterior as invariant stationary distribution.
 
+::: {.callout-important}
+
+## **Learning objectives**:
+
+At the end of the chapter, students should be able to
+
+- implement a Metropolis–Hastings algorithm to draw samples from the posterior
+- tune proposals to obtain good mixing properties.
+
+:::
 
 
 
@@ -513,3 +523,21 @@ The posterior mean for the standard deviation is  `r round(mean(chains[,'sigma']
 
 :::
 
+
+::: {.callout-important}
+
+## **Summary**:
+
+* Metropolis--Hastings generalizes rejection sampling by building a Markov chain and providing a mechanism for sampling.
+* Small proposal variance leads to high acceptance rate, but small step sizes. Large variance proposals leads to many rejections, in which case the previous value is carried forward. Both extreme scenarios lead to large autocorrelation.
+* The proposal density can be anything, but must ideally account for the support and allow for exploration of the state.
+* Good initial starting values can be obtained by computing maximum a posteriori estimates.
+* Initializing multiple chains at different starting values can be used to check convergence to the stationary distribution.
+* Mixing will improve if strongly correlated parameters are sampled together.
+* The optimal acceptance rate depends on the dimension, but guidelines for random walk Metropolis are to have 0.44 for a single parameter model and 0.234 for multivariate targets; see @Neal:2011 for a heuristic derivation.
+* To obtain the target acceptance rate, users must tune the variance of the proposal kernel. This is typically achieved by running the chain for some period, computing the empirical acceptance rate and increasing (respectively decreasing) the variance if the acceptance rate is too high (too low).
+* Metropolis-adjusted Langevin algorithm (MALA) uses the gradient information to inform the proposal; it is akin to a Newton step.
+* The detailed balance requires a function $g$ such that $g(r) = rg(1/r).$ Taking $g(r) = \min(1,r)$ as in Metropolis--Hasting rule leads to the lowest asymptotic variance [@Peskun:1973].
+* 
+
+:::

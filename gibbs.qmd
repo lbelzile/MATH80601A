@@ -1,5 +1,19 @@
 # Gibbs sampling {#sec-Gibbs}
 
+::: {.callout-important}
+
+## **Learning objectives**:
+
+At the end of the chapter, students should be able to
+
+- implement Gibbs sampling.
+- derive the conditional distributions of a model for Gibbs sampling.
+- use data augmentation to emulate Gibbs sampling.
+
+
+:::
+
+    
 
 
 ```{r}
@@ -706,5 +720,25 @@ g1 + g2
 ## Label switching in mixture models
 
 If we run a MCMC algorithm to sample from a mixture models, the likelihood is invariant to permutation of the group labels, leading to identifiability issues when the chain swaps modes, when running multiple Markov chains with symmetric priors or using tempering algorithms. Two chains may thus reach the same stationary distribution, with group labels swapped. It is sometimes necessary to impose ordering constraints on the mean parameters $\boldsymbol{\mu},$ although this isn't necessarily easy to generalize beyond the univariate setting. See @Jasra.Holmes.Stephens:2005 and @Stephens:2002 for more details.
+
+:::
+
+
+
+::: {.callout-important}
+
+## **Summary**:
+
+* Gibbs sampling is a special case of Metropolis--Hastings algorithm, where we sample from the conditional distributions given other parameters.
+* Use of (conditionally) conjugate priors enables Gibbs sampling.
+* The fact that any Gibbs step is accepted with probability one does not mean the sampler is efficient: there can be significant autocorrelation in the chains.
+* We can sometimes update parameters jointly, or reduce the dependence by integrating out some of the conditioning variables (marginalization).
+* We can use Gibbs step for some updates within a more general algorithm. 
+* Even if there is no closed-form expression, we can use Monte Carlo methods to simulate parameters in a Gibbs sampler.
+* In many scenarios, the likelihood is costly to evaluate or not amenable to Gibbs sampling. Data augmentation introduces additional parameters to the model in exchange for simplifying the likelihood.
+* Data augmentation leads to a trade-off between complexity and efficiency (more parameters, slower mixing). 
+* Data augmentation is commonly used for expectation-maximisation (EM) algorithm for maximum likelihood estimation in frequentist setting.
+* Special classes of models (Bayesian linear regression, mixtures, etc.) are typically fitted using Gibbs sampling.
+* Probabilistic programming languages (Bugs, JAGS) rely on Gibbs sampling.
 
 :::

@@ -452,3 +452,46 @@ Markov chain Monte Carlo simulations are hampered by these parameters whose post
 c^2 \mid s^2, \nu \sim \mathsf{inv. gamma}(\nu/2, \nu s^2/2).
 \end{align*}
 When $\tau^2\lambda^2_j$ is much greater than $c^2$, this amounts to having a Student slab with $\nu$ degrees of freedom for large coefficients; taking a small value of $\nu$ allows for large, but not extreme components, and the authors use $s^2=2, \nu=4.$ The above specification does not specify the prior for the global scale $\lambda$, for which @Piironen.Vehtari:2017 recommend using an empirical Bayes prior, with $$\lambda \sim \mathsf{Student}_{+}\left\{0, \frac{p_0}{(p-p_0)}\frac{\sigma}{n^{1/2}}, 1\right\},$$ where $p_0$ is a prior guess for the number of non-zero components out of $p,$ $n$ is the sample size and $\sigma$ is some level of the noise.
+
+
+:::{#exm-case-study-shrinkage}
+
+## Comparison of shrinkage priors
+
+We revisit the `diabetes` data from the **R** package `lars`, which was used in @Park.Casella:2009 to illustrate the Bayesian LASSO. We consider three methods: the default Gaussian prior, which gives a ridge penalty, the Bayesian LASSO and finally the horseshoe. Models are fitted using the `bayesreg` package. 
+
+
+@fig-shrinkage-dens-comparison shows the ordered coefficients for each method. We can see that the ridge has the widest intervals of all methods, providing some shrinkage only for large values of $\beta$. The horseshoe has typically narrower intervals, with more mass in a neighborhood of zero for smaller coefficients, and asymmetric intervals.
+
+```{r}
+#| eval: true
+#| echo: false
+#| label: fig-shrinkage-dens-comparison
+#| fig-cap: "Density estimates for regression coefficients with Gaussian (ridge), double exponential (Laplace) and horseshoe priors for the `diabetes` data."
+data(diabetes, package = "lars")
+set.seed(80601)
+ridge <- bayesreg::bayesreg(y ~ scale(x), data = diabetes, prior = "ridge", thin = 1, n.samples = 2500L)
+blasso <- bayesreg::bayesreg(y ~ scale(x), data = diabetes, prior = "lasso", thin = 1, n.samples = 2500L)
+horseshoe <- bayesreg::bayesreg(y ~ scale(x), data = diabetes, prior = "hs", thin = 1, n.samples = 2500L)
+
+df <- data.frame(rbind(t(ridge$beta), t(blasso$beta), t(horseshoe$beta)))
+colnames(df) <- colnames(diabetes$x)
+df$model <- factor(rep(c("ridge","lasso","horseshoe"), each = 2500L))
+dfl <- tidyr::pivot_longer(df, cols = -model, names_to = "coef", values_to = "beta")
+dfl <- dfl |>
+  dplyr::mutate(coef = forcats::fct_reorder(coef,beta,  .fun='median'))
+ggplot(data = dfl,
+       mapping = aes(x = coef, y = beta, group = model, 
+                      fill = model, color = model)) +   
+geom_hline(yintercept = 0, col = "grey") + 
+   ggdist::stat_dist_halfeye(position = "dodge", .width = c(0.5, 0.89)) +
+MetBrewer::scale_color_met_d("Hiroshige") + 
+MetBrewer::scale_fill_met_d("Hiroshige") + 
+ labs(subtitle = expression(beta), y = "") +
+  theme_classic() +
+theme(legend.position = "bottom")
+```
+
+One aspect worth mentioning is that the horseshoe prior impacts strongly the geometry and leads to slower mixing: the effective sample size fraction relative to the number of samples ranges from `r round(min(100*horseshoe$ess.frac), 0)`% to `r round(100*max(horseshoe$ess.frac), 0)`%, compared to `r round(100*min(blasso$ess.frac), 0)`% to `r round(100*max(blasso$ess.frac), 0)`% for the Bayesian LASSO and near-independent draws with the conjugate ridge.
+
+:::

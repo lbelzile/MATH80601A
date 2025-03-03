@@ -278,6 +278,23 @@ window.Quarto = {
 
 
 <p>The Markov chain Monte Carlo revolution in the 1990s made Bayesian inference mainstream by allowing inference for models when only approximations were permitted, and coincided with a time at which computers became more widely available. The idea is to draw correlated samples from a posterior via Markov chains, constructed to have the posterior as invariant stationary distribution.</p>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<strong>Learning objectives</strong>:
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>At the end of the chapter, students should be able to</p>
+<ul>
+<li>implement a Metropolis–Hastings algorithm to draw samples from the posterior</li>
+<li>tune proposals to obtain good mixing properties.</li>
+</ul>
+</div>
+</div>
 <p>Named after <span class="citation" data-cites="Metropolis:1953">Metropolis et al. (<a href="references.html#ref-Metropolis:1953" role="doc-biblioref">1953</a>)</span>, <span class="citation" data-cites="Hastings:1970">Hastings (<a href="references.html#ref-Hastings:1970" role="doc-biblioref">1970</a>)</span>, its relevance took a long time to gain traction in the statistical community. The idea of the Metropolis–Hastings algorithm is to construct a Markov chain targeting a distribution <span class="math inline">\(p(\cdot).\)</span></p>
 <div id="prp-metropolis" class="theorem proposition">
 <p><span class="theorem-title"><strong>Proposition 5.1 (Metropolis–Hastings algorithm)</strong></span> We consider from a density function <span class="math inline">\(p(\boldsymbol{\theta}),\)</span> known up to a normalizing factor not depending on <span class="math inline">\(\boldsymbol{\theta}.\)</span> We use a (conditional) proposal density <span class="math inline">\(q(\boldsymbol{\theta} \mid \boldsymbol{\theta}^*)\)</span> which has non-zero probability over the support of <span class="math inline">\(p(\cdot),\)</span> as transition kernel to generate proposals.</p>
@@ -634,6 +651,31 @@ p(\theta) \approx p(\theta_{t-1}) + p'(\theta_{t-1})(\theta - \theta_{t-1}) + \f
 <p>MALA requires critically a good mass matrix, especially if the gradient is very large at the starting values (often the case when the starting value is far from the mode). Given the precision of the original observations, we did not need to modify anything to deal with the parameter constraints <span class="math inline">\(0 \leq \mu \leq 1\)</span> and <span class="math inline">\(\sigma&gt;0,\)</span> outside of encoding them in the log posterior function.</p>
 <p>The posterior mean for the standard deviation is 0.64, which suggests overdispersion.</p>
 </div>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<strong>Summary</strong>:
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ul>
+<li>Metropolis–Hastings generalizes rejection sampling by building a Markov chain and providing a mechanism for sampling.</li>
+<li>Small proposal variance leads to high acceptance rate, but small step sizes. Large variance proposals leads to many rejections, in which case the previous value is carried forward. Both extreme scenarios lead to large autocorrelation.</li>
+<li>The proposal density can be anything, but must ideally account for the support and allow for exploration of the state.</li>
+<li>Good initial starting values can be obtained by computing maximum a posteriori estimates.</li>
+<li>Initializing multiple chains at different starting values can be used to check convergence to the stationary distribution.</li>
+<li>Mixing will improve if strongly correlated parameters are sampled together.</li>
+<li>The optimal acceptance rate depends on the dimension, but guidelines for random walk Metropolis are to have 0.44 for a single parameter model and 0.234 for multivariate targets; see <span class="citation" data-cites="Neal:2011">Neal (<a href="references.html#ref-Neal:2011" role="doc-biblioref">2011</a>)</span> for a heuristic derivation.</li>
+<li>To obtain the target acceptance rate, users must tune the variance of the proposal kernel. This is typically achieved by running the chain for some period, computing the empirical acceptance rate and increasing (respectively decreasing) the variance if the acceptance rate is too high (too low).</li>
+<li>Metropolis-adjusted Langevin algorithm (MALA) uses the gradient information to inform the proposal; it is akin to a Newton step.</li>
+<li>The detailed balance requires a function <span class="math inline">\(g\)</span> such that <span class="math inline">\(g(r) = rg(1/r).\)</span> Taking <span class="math inline">\(g(r) = \min(1,r)\)</span> as in Metropolis–Hasting rule leads to the lowest asymptotic variance <span class="citation" data-cites="Peskun:1973">(<a href="references.html#ref-Peskun:1973" role="doc-biblioref"><strong>Peskun:1973?</strong></a>)</span>.</li>
+<li></li>
+</ul>
+</div>
+</div>
 
 
 <div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list" style="display: none">
@@ -651,6 +693,9 @@ Hastings, W. K. 1970. <span>“<span class="nocase">Monte <span>C</span>arlo sam
 </div>
 <div id="ref-Metropolis:1953" class="csl-entry" role="listitem">
 Metropolis, Nicholas, Arianna W. Rosenbluth, Marshall N. Rosenbluth, Augusta H. Teller, and Edward Teller. 1953. <span>“Equation of State Calculations by Fast Computing Machines.”</span> <em>The Journal of Chemical Physics</em> 21 (6): 1087–92. <a href="https://doi.org/10.1063/1.1699114">https://doi.org/10.1063/1.1699114</a>.
+</div>
+<div id="ref-Neal:2011" class="csl-entry" role="listitem">
+Neal, Radford M. 2011. <span>“<span>MCMC</span> Using <span>H</span>amiltonian Dynamics.”</span> In <em>Handbook of <span>M</span>arkov Chain <span>M</span>onte <span>C</span>arlo</em>, edited by S. Brooks, A. Gelman, G. Jones, and X. L. Meng, 113–62. Boca Raton: CRC Press. <a href="https://doi.org/10.1201/b10905-5">https://doi.org/10.1201/b10905-5</a>.
 </div>
 <div id="ref-Casella.Robert:2004" class="csl-entry" role="listitem">
 Robert, Christian P., and George Casella. 2004. <em><span>M</span>onte <span>C</span>arlo Statistical Methods</em>. 2nd ed. New York, NY: Springer. <a href="https://doi.org/10.1007/978-1-4757-4145-2">https://doi.org/10.1007/978-1-4757-4145-2</a>.

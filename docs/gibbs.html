@@ -283,6 +283,24 @@ window.Quarto = {
 </header>
 
 
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<strong>Learning objectives</strong>:
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>At the end of the chapter, students should be able to</p>
+<ul>
+<li>implement Gibbs sampling.</li>
+<li>derive the conditional distributions of a model for Gibbs sampling.</li>
+<li>use data augmentation to emulate Gibbs sampling.</li>
+</ul>
+</div>
+</div>
 <p>The Gibbs sampling algorithm builds a Markov chain by iterating through a sequence of conditional distributions. Consider a model with <span class="math inline">\(\boldsymbol{\theta} \in \boldsymbol{\Theta} \subseteq \mathbb{R}^p.\)</span> We consider a single (or <span class="math inline">\(m \leq p\)</span> blocks of parameters), say <span class="math inline">\(\boldsymbol{\theta}^{[j]},\)</span> such that, conditional on the remaining components of the parameter vector <span class="math inline">\(\boldsymbol{\theta}^{-[j]},\)</span> the conditional posterior <span class="math inline">\(p(\boldsymbol{\theta}^{[j]} \mid \boldsymbol{\theta}^{-[j]}, \boldsymbol{y})\)</span> is from a known distribution from which we can simulate draws</p>
 <p>At iteration <span class="math inline">\(t,\)</span> we can update each block in turn: note that the <span class="math inline">\(k\)</span>th block uses the partially updated state <span class="math display">\[\begin{align*}
 \boldsymbol{\theta}^{-[k]\star} = (\boldsymbol{\theta}_{t}^{[1]}, \ldots, \boldsymbol{\theta}_{t}^{[k-1]},\boldsymbol{\theta}_{t-1}^{[k+1]}, \boldsymbol{\theta}_{t-1}^{[m]})
@@ -543,6 +561,31 @@ Figure&nbsp;6.4: One-dimensional density mixture for the Old Faithful data, with
 </div>
 <div id="rem-label-switching" class="proof remark">
 <p><span class="proof-title"><em>Remark 6.1</em> (Label switching in mixture models). </span>If we run a MCMC algorithm to sample from a mixture models, the likelihood is invariant to permutation of the group labels, leading to identifiability issues when the chain swaps modes, when running multiple Markov chains with symmetric priors or using tempering algorithms. Two chains may thus reach the same stationary distribution, with group labels swapped. It is sometimes necessary to impose ordering constraints on the mean parameters <span class="math inline">\(\boldsymbol{\mu},\)</span> although this isn’t necessarily easy to generalize beyond the univariate setting. See <span class="citation" data-cites="Jasra.Holmes.Stephens:2005">Jasra, Holmes, and Stephens (<a href="references.html#ref-Jasra.Holmes.Stephens:2005" role="doc-biblioref">2005</a>)</span> and <span class="citation" data-cites="Stephens:2002">Stephens (<a href="references.html#ref-Stephens:2002" role="doc-biblioref">2002</a>)</span> for more details.</p>
+</div>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<strong>Summary</strong>:
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ul>
+<li>Gibbs sampling is a special case of Metropolis–Hastings algorithm, where we sample from the conditional distributions given other parameters.</li>
+<li>Use of (conditionally) conjugate priors enables Gibbs sampling.</li>
+<li>The fact that any Gibbs step is accepted with probability one does not mean the sampler is efficient: there can be significant autocorrelation in the chains.</li>
+<li>We can sometimes update parameters jointly, or reduce the dependence by integrating out some of the conditioning variables (marginalization).</li>
+<li>We can use Gibbs step for some updates within a more general algorithm.</li>
+<li>Even if there is no closed-form expression, we can use Monte Carlo methods to simulate parameters in a Gibbs sampler.</li>
+<li>In many scenarios, the likelihood is costly to evaluate or not amenable to Gibbs sampling. Data augmentation introduces additional parameters to the model in exchange for simplifying the likelihood.</li>
+<li>Data augmentation leads to a trade-off between complexity and efficiency (more parameters, slower mixing).</li>
+<li>Data augmentation is commonly used for expectation-maximisation (EM) algorithm for maximum likelihood estimation in frequentist setting.</li>
+<li>Special classes of models (Bayesian linear regression, mixtures, etc.) are typically fitted using Gibbs sampling.</li>
+<li>Probabilistic programming languages (Bugs, JAGS) rely on Gibbs sampling.</li>
+</ul>
+</div>
 </div>
 
 

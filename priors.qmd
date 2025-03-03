@@ -20,6 +20,23 @@ Oftentimes, we will specify independent priors in multiparameter models, but the
 We can use moment matching to get sensible values, or tune via trial-and-error using the prior predictive draws to assess the implausibility of the prior outcomes. One challenge is that even if we have some prior information (e.g., we can obtain sensible prior values for the mean, quantiles or variance of the parameter of interest), these summary statisticss will not typically be enough to fully characterize the prior: many different functions or distributions could encode the same information. This means that different analysts get different inferences. Generally, we will choose the prior for convenience. Priors are controversial because they could be tuned aposteriori to give any answer an analyst might want.
 
 
+
+
+::: {.callout-important}
+
+## **Learning objectives**:
+
+At the end of the chapter, students should be able to
+
+- define and distinguish between improper, weak and informative priors.
+- propose conjugate priors for exponential families.
+- assess by using the prior predictive distribution the compatibility of the prior with the model.
+- use moment matching to specify the parameters of a prior distribution.
+- perform sensitivity analysis by running a model with different priors and assessing changes to the posterior distribution.
+
+:::
+
+
 ## Prior simulation
 
 Expert elicitation is difficult and it is hard to grasp what the impacts of the hyperparameters are. One way to see if the priors are reasonable is to sample values from them and generate new observations, resulting in prior predictive draws.
@@ -334,7 +351,7 @@ In general, unless the sample size is small and we want to add expert opinion, w
 
 ## Proper prior
 
-We call a prior function *proper* if it's integral is finite over the parameter space; such prior function automatically leads to a valid posterior.
+We call a prior function *proper* if it's integral is finite over the parameter space; such prior function automatically leads to a valid posterior. A prior over $\boldsymbol{\Theta}$ is **improper** if $\int_{\boldsymbol{\Theta}} p(\boldsymbol{\theta}) \mathrm{d} \boldsymbol{\theta} = \infty.$
 
 
 :::
@@ -347,7 +364,7 @@ Many uninformative priors are flat, or proportional to a uniform on some subset 
 
 @Gelman:2013 uses the following taxonomy for various levels of prior information: 
 
-- uninformative priors are generally flat or uniform priors with $p(\beta) \propto 1,$ 
+- uninformative priors are generally flat or uniform priors with $p(\beta) \propto 1.$
 - vague priors are typically nearly flat even if proper, e.g., $\beta \sim \mathsf{Gauss}(0, 100),$ 
 - weakly informative priors provide little constraints $\beta \sim \mathsf{Gauss}(0, 10),$ and 
 - informative prior are typically application-specific, but constrain the ranges.
@@ -895,6 +912,24 @@ ggplot() +
        caption = "quantile prior") +
   theme_classic()
 ```
+
+:::
+
+
+::: {.callout-important}
+
+## **Summary**:
+
+* Priors are distributions for the parameters. In multi-parameter models, they can be specified through a joint distribution or assumed independent apriori (which does not translate into independence a posteriori).
+* Priors are not invariant to reparametrization, except when they are constructed with this property (e.g.,  Jeffrey's prior or penalized-complexity priors).
+* Improper priors may lead to improper posterior.
+* Priors that restrict the domain of $\boldsymbol{\theta}$ will also restrict the posterior. These are useful to avoid regions that are implausible or impossible.
+* Physical knowledge of the system can be helpful to specify sensible values of the prior through moment matching.
+* Conjugate priors facilitate derivations, but are mostly chosen for convenience.
+* Generally, the prior has constant weight $\mathrm{O}(1)$, relative to $\mathrm{O}(n)$ for the likelihood. The posterior is thus dominated in most circumstances by the likelihood.
+* We can compute the prior to posterior gain by comparing their density (if the prior is proper). 
+* For many (conjugate) priors, we can view some function of the parameter as given a prior number of observations (in Gaussian models, binomial, gamma, etc.)
+* Informative priors can be used to specify expert knowledge about the system. This will impact the posterior, but often in a sensible manner, thereby regularizing or improving posterior inference.
 
 :::
 <!--

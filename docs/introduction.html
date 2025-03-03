@@ -290,6 +290,27 @@ window.Quarto = {
 
 
 <p>This section review basic concepts in probability theory that will be used throughout the course. The overview begins with basic statistical concepts, random variables, their distribution and density, moments and likelihood derivations.</p>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<strong>Learning objectives</strong>:
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>At the end of the chapter, students should be able to</p>
+<ul>
+<li>review notions of joint, marginal and conditional distributions.</li>
+<li>identify the conditional from a joint density.</li>
+<li>calculate analytically the marginal distribution by completing a density function.</li>
+<li>calculate the density after a change of variables.</li>
+<li>calculate of moments, using the definition or using the tower property.</li>
+<li>write down the likelihood for simple settings involving independent observations and other simple scenarios (truncation, censoring, non-identical, serial dependence).</li>
+</ul>
+</div>
+</div>
 <section id="random-vectors" class="level2" data-number="1.1">
 <h2 data-number="1.1" class="anchored" data-anchor-id="random-vectors"><span class="header-section-number">1.1</span> Random vectors</h2>
 <p>We begin with a characterization of random vectors and their marginal, conditional and joint distributions. A good reference for this material is Chapter 3 of <span class="citation" data-cites="McNeil.Frey.Embrechts:2005">McNeil, Frey, and Embrechts (<a href="references.html#ref-McNeil.Frey.Embrechts:2005" role="doc-biblioref">2005</a>)</span>, and Appendix A of <span class="citation" data-cites="Held.Bove:2020">Held and Bové (<a href="references.html#ref-Held.Bove:2020" role="doc-biblioref">2020</a>)</span>.</p>
@@ -979,6 +1000,30 @@ Y_t &amp;= \mu (1-\phi) + \varepsilon_t + \phi \{\mu + \phi(Y_{t-2}-\mu) + \vare
 <p>If innovations <span class="math inline">\(\{\varepsilon_t\}\)</span> are Gaussian, we have <span class="math display">\[Y_t \mid Y_{t-1}=y_{t-1} \sim \mathsf{Gauss}\{\mu(1-\phi)+ \phi y_{t-1}, \sigma^2\}, \qquad t&gt;1;\]</span> The likelihood can then be written as <span class="math display">\[\begin{align*}
 \ell(\mu, \phi,\sigma^2)&amp; = -\frac{n}{2}\log(2\pi) - n\log \sigma + \frac{1}{2}\log(1-\phi^2) \\&amp;\quad -\frac{(1-\phi^2)(y_1- \mu)^2}{2\sigma^2} - \sum_{i=2}^n \frac{(y_t - \mu(1-\phi)- \phi y_{t-1})^2}{2\sigma^2}
 \end{align*}\]</span></p>
+</div>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<strong>Summary</strong>
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ul>
+<li>Many families of distributions are closed under conditioning and marginalization (elliptical distribution such as Gaussian or Student, Dirichlet or categorical).</li>
+<li>Location-scale families can be standardized.</li>
+<li>Distributions are characterized by their moments. Statistical models typically specify a parametric form for the latter, notably regression models.</li>
+<li>Hierarchical models specify a joint distribution through marginal and conditionals, allowing for simpler derivations and closed-form expressions. The law of iterated expectation and variance (tower property) can be used to retrieve them.</li>
+<li>Families of distribution can be identified from their kernel (density or mass function) and support, up to normalizing constants. It suffices to identify the parameters of the distribution to retrieve the model.</li>
+<li>Marginalization from a joint density involves integration. We can often rewrite the integral in terms of an unnormalized density, and use knowledge of the marginalization constant.</li>
+<li>The likelihood depends on the distribution of the data. It encodes the information about the data.</li>
+<li>The score (gradient vector of the log likelihood) can be set to zero to find the maximum likelihood estimator in regular models.</li>
+<li>The curvature of the log likelihood (Hessian matrix) gives an idea of the information. The observed information is the sample version, the expected or Fisher information obtained by replacing data observations with their expectation.</li>
+<li>In independent samples, the information grows linearly with the sample size and is <span class="math inline">\(\mathrm{O}(n).\)</span> For identically distributed samples, we can compute the Fisher information for a single observation.</li>
+</ul>
+</div>
 </div>
 
 

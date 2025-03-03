@@ -286,9 +286,28 @@ window.Quarto = {
 </header>
 
 
-<p>The Bayesian paradigm is an inferential framework that is used widespread in data science. Numerical challenges that prevented it’s widespread adoption until the 90’s, when the Markov chain Monte Carlo revolution allowed models estimation.</p>
-<p>Bayesian inference, which builds on likelihood-based inference, offers a natural framework for prediction and for uncertainty quantification. The interpretation is more natural than that of classical (i.e., frequentist) paradigm, and it is more easy to generalized models to complex settings, notably through hierarchical constructions. The main source of controversy is the role of the prior distribution, which allows one to incorporate subject-matter expertise but leads to different inferences being drawn by different practitioners; this subjectivity is not to the taste of many and has been the subject of many controversies.</p>
+<p>The Bayesian paradigm is an inferential framework that is widely used in data science. <!--It's popularity increased dramatically thanks to the Markov chain Monte Carlo in the 1990's, which allowed for numerical estimation of models that were. 
+--> It builds on likelihood-based inference, offers a natural framework for prediction and for uncertainty quantification. The interpretation is more natural than that of classical (i.e., frequentist) paradigm, and it is more easy to generalized models to complex settings, notably through hierarchical constructions. The main source of controversy is the role of the prior distribution, which allows one to incorporate subject-matter expertise but leads to different inferences being drawn by different practitioners; this subjectivity is not to the taste of many and has been the subject of many controversies.</p>
 <p>The Bayesian paradigm includes multiples notions that are not covered in undergraduate introductory courses. The purpose of this chapter is to introduce these concepts and put them in perspective; the reader is assumed to be familiar with basics of likelihood-based inference. We begin with a discussion of the notion of probability, then define priors, posterior distributions, marginal likelihood and posterior predictive distributions. We focus on the interpretation of posterior distributions and explain how to summarize the posterior, leading leading to definitions of high posterior density region, credible intervals, posterior mode for cases where we either have a (correlated) sample from the posterior, or else have access to the whole distribution. Several notions, including sequentiality, prior elicitation and estimation of the marginal likelihood, are mentioned in passing. A brief discussion of Bayesian hypothesis testing (and alternatives) is presented.</p>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<strong>Learning objectives</strong>:
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>At the end of the chapter, students should be able to</p>
+<ul>
+<li>define key notions (prior, marginal likelihood, Bayes factor, credible intervals, etc.) of Bayesian inference.</li>
+<li>distinguish between questions that relate to the posterior distribution versus the posterior predictive.</li>
+<li>calculate and compute numerically summaries of posterior distributions (point estimators and credible intervals) given a posterior sample.</li>
+<li>explain some of the conceptual differences between frequentist and Bayesian inference.</li>
+</ul>
+</div>
+</div>
 <section id="probability-and-frequency" class="level2" data-number="2.1">
 <h2 data-number="2.1" class="anchored" data-anchor-id="probability-and-frequency"><span class="header-section-number">2.1</span> Probability and frequency</h2>
 <p>In classical (frequentist) parametric statistic, we treat observations <span class="math inline">\(\boldsymbol{Y}\)</span> as realizations of a distribution whose parameters <span class="math inline">\(\boldsymbol{\theta}\)</span> are unknown. All of the information about parameters is encoded by the likelihood function.</p>
@@ -727,6 +746,30 @@ Figure&nbsp;2.10: Density plots with 89% (top) and 50% (bottom) equitailed or ce
 </figcaption>
 </figure>
 </div>
+</div>
+</div>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<strong>Summary</strong>:
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ul>
+<li>Bayesians treat both parameter and observations as random, the former due to uncertainty about the true value. Inference is performed conditional on observed data, and summarized in the posterior.</li>
+<li>Bayesians specify both a prior for the parameter, and a likelihood specifying the data generating mechanism. It is thus an extension of likelihood-based inference.</li>
+<li>Information from the prior is updated in light of new data, which is encoded by the likelihood. Sequential updating leads.</li>
+<li>Under weak conditions on the prior, large-sample behaviour of Bayesian and frequentist.</li>
+<li>Bayesian inference is complicated by the fact that there is more often than not no closed-form expression for the posterior distribution. Evaluation of the normalizing constant, the so-called marginal likelihood, is challenging, especially in high dimensional settings.</li>
+<li>Rather than hypothesis testing, Bayesian methods rely on the posterior distribution of parameters, or on Bayes factor for model comparisons.</li>
+<li>The posterior predictive distribution, used for model assessment and prediction, and it has a higher variance than the data generating distribution from the likelihood, due to parameter uncertainty.</li>
+<li>Bayesians typically will have approximations to the posterior distribution, or samples drawn from it.</li>
+<li>Loss functions can be used to summarize a posterior distribution into a numerical summary of interest, which may vary depending on the objective.</li>
+<li>Uncertainty is reflected by credible sets or credible intervals, which encode the posterior probability that the true value <span class="math inline">\(\boldsymbol{\theta}\)</span> belongs to the set.</li>
+</ul>
 </div>
 </div>
 

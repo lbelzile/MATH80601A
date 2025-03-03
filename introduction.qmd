@@ -12,6 +12,24 @@
 
 This section review basic concepts in probability theory that will be used throughout the course. The overview begins with basic statistical concepts, random variables, their distribution and density, moments and likelihood derivations.
 
+
+
+::: {.callout-important}
+
+## **Learning objectives**:
+
+At the end of the chapter, students should be able to
+
+- review notions of joint, marginal and conditional distributions.
+- identify the conditional from a joint density.
+- calculate analytically the marginal distribution by completing a density function.
+- calculate the density after a change of variables.
+- calculate of moments, using the definition or using the tower property.
+- write down the likelihood for simple settings involving independent observations and other simple scenarios (truncation, censoring, non-identical, serial dependence).
+
+:::
+
+
 ## Random vectors
 
 We begin with a characterization of random vectors and their marginal, conditional and joint distributions. A good reference for this material is Chapter 3 of @McNeil.Frey.Embrechts:2005, and Appendix A of @Held.Bove:2020.
@@ -1301,5 +1319,24 @@ The likelihood can then be written as
 \begin{align*}
 \ell(\mu, \phi,\sigma^2)& = -\frac{n}{2}\log(2\pi) - n\log \sigma + \frac{1}{2}\log(1-\phi^2) \\&\quad -\frac{(1-\phi^2)(y_1- \mu)^2}{2\sigma^2} - \sum_{i=2}^n \frac{(y_t - \mu(1-\phi)- \phi y_{t-1})^2}{2\sigma^2}
 \end{align*}
+
+:::
+
+
+
+:::{.callout-important}
+
+## **Summary**
+
+* Many families of distributions are closed under conditioning and marginalization (elliptical distribution such as Gaussian or Student, Dirichlet or categorical).
+* Location-scale families can be standardized.
+* Distributions are characterized by their moments. Statistical models typically specify a parametric form for the latter, notably regression models.
+* Hierarchical models specify a joint distribution through marginal and conditionals, allowing for simpler derivations and closed-form expressions. The law of iterated expectation and variance (tower property) can be used to retrieve them.
+* Families of distribution can be identified from their kernel (density or mass function) and support, up to normalizing constants. It suffices to identify the parameters of the distribution to retrieve the model.
+* Marginalization from a joint density involves integration. We can often rewrite the integral in terms of an unnormalized density, and use knowledge of the marginalization constant.
+* The likelihood depends on the distribution of the data. It encodes the information about the data. 
+* The score (gradient vector of the log likelihood) can be set to zero to find the maximum likelihood estimator in regular models.
+* The curvature of the log likelihood (Hessian matrix) gives an idea of the information. The observed information is the sample version, the expected or Fisher information obtained by replacing data observations with their expectation.
+* In independent samples, the information grows linearly with the sample size and is $\mathrm{O}(n).$ For identically distributed samples, we can compute the Fisher information for a single observation.
 
 :::

@@ -500,6 +500,25 @@ Figure&nbsp;8.4: Marginal density for a regression coefficient <span class="math
 \tau_j &amp;\sim \mathsf{Student}_{+}(0, 1, 1)\\
 c^2 \mid s^2, \nu \sim \mathsf{inv. gamma}(\nu/2, \nu s^2/2).
 \end{align*}\]</span> When <span class="math inline">\(\tau^2\lambda^2_j\)</span> is much greater than <span class="math inline">\(c^2\)</span>, this amounts to having a Student slab with <span class="math inline">\(\nu\)</span> degrees of freedom for large coefficients; taking a small value of <span class="math inline">\(\nu\)</span> allows for large, but not extreme components, and the authors use <span class="math inline">\(s^2=2, \nu=4.\)</span> The above specification does not specify the prior for the global scale <span class="math inline">\(\lambda\)</span>, for which <span class="citation" data-cites="Piironen.Vehtari:2017">Piironen and Vehtari (<a href="references.html#ref-Piironen.Vehtari:2017" role="doc-biblioref">2017</a>)</span> recommend using an empirical Bayes prior, with <span class="math display">\[\lambda \sim \mathsf{Student}_{+}\left\{0, \frac{p_0}{(p-p_0)}\frac{\sigma}{n^{1/2}}, 1\right\},\]</span> where <span class="math inline">\(p_0\)</span> is a prior guess for the number of non-zero components out of <span class="math inline">\(p,\)</span> <span class="math inline">\(n\)</span> is the sample size and <span class="math inline">\(\sigma\)</span> is some level of the noise.</p>
+<div id="exm-case-study-shrinkage" class="theorem example">
+<p><span class="theorem-title"><strong>Example 8.2 (Comparison of shrinkage priors)</strong></span> We revisit the <code>diabetes</code> data from the <strong>R</strong> package <code>lars</code>, which was used in <span class="citation" data-cites="Park.Casella:2009">(<a href="references.html#ref-Park.Casella:2009" role="doc-biblioref"><strong>Park.Casella:2009?</strong></a>)</span> to illustrate the Bayesian LASSO. We consider three methods: the default Gaussian prior, which gives a ridge penalty, the Bayesian LASSO and finally the horseshoe. Models are fitted using the <code>bayesreg</code> package.</p>
+<p><a href="#fig-shrinkage-dens-comparison" class="quarto-xref">Figure&nbsp;<span>8.5</span></a> shows the ordered coefficients for each method. We can see that the ridge has the widest intervals of all methods, providing some shrinkage only for large values of <span class="math inline">\(\beta\)</span>. The horseshoe has typically narrower intervals, with more mass in a neighborhood of zero for smaller coefficients, and asymmetric intervals.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-shrinkage-dens-comparison" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-shrinkage-dens-comparison-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="regression_files/figure-html/fig-shrinkage-dens-comparison-1.png" class="img-fluid figure-img" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-shrinkage-dens-comparison-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;8.5: Density estimates for regression coefficients with Gaussian (ridge), double exponential (Laplace) and horseshoe priors for the <code>diabetes</code> data.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>One aspect worth mentioning is that the horseshoe prior impacts strongly the geometry and leads to slower mixing: the effective sample size fraction relative to the number of samples ranges from 15% to 96%, compared to 47% to 100% for the Bayesian LASSO and near-independent draws with the conjugate ridge.</p>
+</div>
 
 
 <div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list" style="display: none">

@@ -289,6 +289,27 @@ window.Quarto = {
 
 
 <p>The Bayesian workflow is a coherent framework for model formulation construction, inference and validation. It typically involves trying and comparing different models, adapting and modifying these models <span class="citation" data-cites="Gelman:2020">(<a href="references.html#ref-Gelman:2020" role="doc-biblioref">Gelman et al. 2020</a>)</span>; see also <a href="https://betanalpha.github.io/assets/case_studies/principled_bayesian_workflow.html">Michael Betancourt</a> for excellent visualizations. In this chapter, we focus on three aspects of the workflow: model validation, evaluation and comparison.</p>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<strong>Learning objectives</strong>:
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>At the end of the chapter, students should be able to</p>
+<ul>
+<li>use output of MCMC to obtain estimates and standard errors.</li>
+<li>choose suitable test statistics to evaluate model adequacy.</li>
+<li>assess convergence using graphical tools and effective sample size.</li>
+<li>perform model comparisons using Bayes factor or predictive measures.</li>
+<li>diagnose performance of MCMC algorithms (in terms of mixing and effective sample size).</li>
+<li>implement strategies to improve sampling performance, including block updates, reparametrization and marginalization.</li>
+</ul>
+</div>
+</div>
 <p>For a given problem, there are many different Markov chain Monte Carlo algorithms that one can implement: they will typically be distinguished based on the running time per iteration and the efficiency of the samplers, with algorithms providing realizations of Markov chains with lower autocorrelation being preferred. Many visual diagnostics and standard tests can be used to diagnose lack of convergence, or inefficiency. The purpose of this section is to review these in turn, and to go over tricks that can improve mixing.</p>
 <!--
 

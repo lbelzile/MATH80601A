@@ -9,13 +9,27 @@
 #| echo: false
 ```
 
-The Bayesian paradigm is an inferential framework that is used widespread in data science. Numerical challenges that prevented it's widespread adoption until the 90's, when the Markov chain Monte Carlo revolution allowed models estimation.
-
-Bayesian inference, which builds on likelihood-based inference, offers a natural framework for prediction and for uncertainty quantification. The interpretation is more natural than that of classical (i.e., frequentist) paradigm, and it is more easy to generalized models to complex settings, notably through hierarchical constructions. The main source of controversy is the role of the prior distribution, which allows one to incorporate subject-matter expertise but leads to different inferences being drawn by different practitioners; this subjectivity is not to the taste of many and has been the subject of many controversies.
+The Bayesian paradigm is an inferential framework that is widely used in data science. 
+<!--It's popularity increased dramatically thanks to the Markov chain Monte Carlo in the 1990's, which allowed for numerical estimation of models that were. 
+-->
+It builds on likelihood-based inference, offers a natural framework for prediction and for uncertainty quantification. The interpretation is more natural than that of classical (i.e., frequentist) paradigm, and it is more easy to generalized models to complex settings, notably through hierarchical constructions. The main source of controversy is the role of the prior distribution, which allows one to incorporate subject-matter expertise but leads to different inferences being drawn by different practitioners; this subjectivity is not to the taste of many and has been the subject of many controversies.
 
 The Bayesian paradigm includes multiples notions that are not covered in undergraduate introductory courses. The purpose of this chapter is to introduce these concepts and put them in perspective; the reader is assumed to be familiar with basics of likelihood-based inference. We begin with a discussion of the notion of probability, then define priors, posterior distributions, marginal likelihood and posterior predictive distributions. We focus on the interpretation of posterior distributions and explain how to summarize the posterior, leading leading to definitions of high posterior density region, credible intervals, posterior mode for cases where we either have a (correlated) sample from the posterior, or else have access to the whole distribution. Several notions, including sequentiality, prior elicitation and estimation of the marginal likelihood, are mentioned in passing. A brief discussion of Bayesian hypothesis testing (and alternatives) is presented.
 
 
+
+::: {.callout-important}
+
+## **Learning objectives**:
+
+At the end of the chapter, students should be able to
+
+- define key notions (prior, marginal likelihood, Bayes factor, credible intervals, etc.) of Bayesian inference.
+- distinguish between questions that relate to the posterior distribution versus the posterior predictive.
+- calculate and compute numerically summaries of posterior distributions (point estimators and credible intervals) given a posterior sample.
+- explain some of the conceptual differences between frequentist and Bayesian inference.
+
+:::
 
 
 ## Probability and frequency
@@ -1162,3 +1176,24 @@ g4 <- ggplot() +
   theme_classic()
 (g1 + g2) / (g4 + g3)
 ```
+
+
+
+
+
+::: {.callout-important}
+
+## **Summary**:
+
+* Bayesians treat both parameter and observations as random, the former due to uncertainty about the true value. Inference is performed conditional on observed data, and summarized in the posterior.
+* Bayesians specify both a prior for the parameter, and a likelihood specifying the data generating mechanism. It is thus an extension of likelihood-based inference.
+* Information from the prior is updated in light of new data, which is encoded by the likelihood. Sequential updating leads.
+* Under weak conditions on the prior, large-sample behaviour of Bayesian and frequentist.
+* Bayesian inference is complicated by the fact that there is more often than not no closed-form expression for the posterior distribution. Evaluation of the normalizing constant, the so-called marginal likelihood, is challenging, especially in high dimensional settings.
+* Rather than hypothesis testing, Bayesian methods rely on the posterior distribution of parameters, or on Bayes factor for model comparisons.
+* The posterior predictive distribution, used for model assessment and prediction, and it has a higher variance than the data generating distribution from the likelihood, due to parameter uncertainty.
+* Bayesians typically will have approximations to the posterior distribution, or samples drawn from it. 
+* Loss functions can be used to summarize a posterior distribution into a numerical summary of interest, which may vary depending on the objective.
+* Uncertainty is reflected by credible sets or credible intervals, which encode the posterior probability that the true value $\boldsymbol{\theta}$ belongs to the set.
+
+:::
