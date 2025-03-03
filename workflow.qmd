@@ -796,9 +796,9 @@ post1 <- posterior::as_draws(post_tokyo1[-(1:100),1:2])
 bayesplot::mcmc_trace(post1, 
    pars = c("beta1", "tau"), 
    transformations = list("tau" = "log")
-) /
+) + theme_classic() /
 bayesplot::mcmc_acf(post1, 
-   pars = c("beta1","tau"))
+   pars = c("beta1","tau")) + theme_classic()
 ```
 
 ```{r}
@@ -940,12 +940,20 @@ post2 <- posterior::as_draws(post_tokyo2[-(1:100),1:2])
 bayesplot::mcmc_trace(post2, 
    pars = c("beta1", "tau"), 
    transformations = list("tau" = "log")
-) /
+) + theme_classic() /
 bayesplot::mcmc_acf(post2, 
-   pars = c("beta1","tau"), lags = 500)
+   pars = c("beta1","tau"), lags = 500) + theme_classic()
 ```
 
-Instead of making things worst, we can try to improve upon our initial sampler by simulating first a proposal $\tau^{\star}$ using a random walk Metropolis (on the log scale), then drawing from the full conditional $\boldsymbol{\beta} \mid \boldsymbol{z}, \tau^{\star}$ and accepting/rejecting the whole move. A second alternative is to ditch altogether the data augmentation step and write the unnormalized log posterior for $\boldsymbol{\beta}$ as
+Instead of making things worst, we can try to improve upon our initial sampler by simulating first a proposal $\tau^{\star}$ using a random walk Metropolis (on the log scale) or some other proposal $q(\tau^{\star}; \tau),$ then drawing from the full conditional $\boldsymbol{\beta} \mid \boldsymbol{z}, \tau^{\star}$ and accepting/rejecting the whole move. In doing this, all terms that depend on $\boldsymbol{\beta}$ cancel out, and the term $p(\tau^{\star}, \boldsymbol{\beta}^{\star} \mid \tau)/\{q(\tau^{\star}; \tau)p(\boldsymbol{\beta}^{\star} \mid \tau^{\star})\}$ in the acceptance ratio becomes
+\begin{align*}
+\frac{\tau_t^{\star(n-1)/2} p(\tau_t^{\star})\exp \left\{-\frac{1}{2}\boldsymbol{z}^\top(\boldsymbol{z}/\boldsymbol{n})\right\}}{q(\tau^{\star}; \tau) \left| \tau^{\star}\mathbf{Q} + \mathrm{diag}(\boldsymbol{n})\right|\exp \left[-\frac{1}{2}\boldsymbol{z}^\top \left\{\tau^{\star}\mathbf{Q} + \mathrm{diag}(\boldsymbol{n})\right\}^{-1}\boldsymbol{z}\right]}
+\end{align*}
+
+
+
+
+A second alternative is to ditch altogether the data augmentation step and write the unnormalized log posterior for $\boldsymbol{\beta}$ as
 \begin{align*}
  \log p(\boldsymbol{\beta} \mid \boldsymbol{y}) \stackrel{\boldsymbol{\beta}}{\propto} - \frac{\tau}{2} \boldsymbol{\beta}^\top \mathbf{Q} \boldsymbol{\beta} + \sum_{t=1}^{366} y_{t} \log \Phi(\beta_t) + (n_t-y_{t}) \log\{1-\Phi(\beta_t)\}
 \end{align*}

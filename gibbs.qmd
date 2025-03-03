@@ -243,43 +243,6 @@ Gibbs sampling cannot be used to determine if the posterior is improper. If the 
 :::
 
 
-:::{#prp-conjugate-bayesian-linmod}
-
-## Bayesian linear model
-
-Consider a linear regression model with observation-specific mean $\mu_i = \mathbf{x}_i\boldsymbol{\beta}$ $(i=1,\ldots, n)$ with $\mathbf{x}_i$ the $i$th row of the $n \times p$ model matrix $\mathbf{X}.$
-
-Concatenating records, $\boldsymbol{Y} \sim \mathsf{No}_n(\mathbf{X}\boldsymbol{\beta}, \sigma^2 \mathbf{Q}_y^{-1}),$ for a known precision matrix $\mathbf{Q}_y,$ typically $\mathbf{I}_n.$ To construct a conjugate joint prior for $p(\boldsymbol{\beta}, \sigma^2),$ we consider the sequential formulation
-\begin{align*}
-\boldsymbol{\beta} \mid \sigma^2 \sim \mathsf{Gauss}_p(\boldsymbol{\nu}_\beta, \sigma^2 \mathbf{Q}^{-1}_\beta), \qquad \sigma^2 \sim \mathsf{inv. gamma}(\alpha,\beta)
-\end{align*}
-where $\mathsf{inv. gamma}$ denotes the inverse gamma distribution^[This simply means that the precision $\sigma^{-2},$ the reciprocal of the variance, has a gamma distribution with shape $\alpha$ and rate $\beta.$]
-
-<!--
-Writing the log likelihood in exponential family form,
-\begin{align*}
-\ell(\mu, \sigma^2; \boldsymbol{y}) \propto -n \log(\sigma) - \frac{\boldsymbol{y}^\top\boldsymbol{y}}{2\sigma^2} + \frac{\mu}{\sigma^2}\boldsymbol{y}^\top \boldsymbol{1}_n - \frac{n}{2}\frac{\mu^2}{\sigma^2}
-\end{align*}
-
--->
-
-The joint posterior is Gaussian-inverse gamma and can be factorized
-\begin{align*}
-p(\boldsymbol{\beta}, \sigma^2 \mid y) = p(\sigma^2 \mid y) p(\boldsymbol{\beta} \mid \sigma^2, y)
-\end{align*}
-where $p(\sigma^2 \mid y) \sim \mathsf{inv. gamma}(\alpha^*, \beta^*)$ and 
-\begin{align*}
-\boldsymbol{\beta} \mid \sigma^2, y & \sim \mathsf{Gauss}_p(\mathbf{M}\boldsymbol{m}, \sigma^2\mathbf{M})
-\\
-\alpha^* &= \alpha + n/2,\\ 
-\beta^* &=\beta + 0.5 \boldsymbol{\nu}_\beta^\top \mathbf{Q}_\beta\boldsymbol{\nu}_\beta + \boldsymbol{y}^\top\boldsymbol{y} - \boldsymbol{m}^\top\mathbf{M}\boldsymbol{m}, \\
-\boldsymbol{m} &= \mathbf{Q}_\beta \boldsymbol{\nu}_\beta + \mathbf{X}^\top \mathbf{Q}_y\boldsymbol{y}\\
-\mathbf{M} &= (\mathbf{Q}_\beta + \mathbf{X}^\top\mathbf{Q}_y\mathbf{X})^{-1};
-\end{align*}
-the latter can be evaluated efficiently using Shermann--Morrisson--Woodbury identity. Given the conditionally conjugate priors, we can easily sample from the posterior using Gibbs sampling.
-
-:::
-
 ## Data augmentation and auxiliary variables {#sec-gibbs-da}
 
 
@@ -358,44 +321,42 @@ return(chains)
 
 ## Bayesian LASSO
 
-The Laplace distribution with mean $\mu$ and scale $\sigma,$ which has density
+The Laplace distribution with location $\mu$ and scale $\sigma,$ has density
 \begin{align*}
-f(x; \mu, \sigma) = \frac{1}{2\sigma}\exp\left(-\frac{|x-\mu|}{\sigma}\right),
+f(x; \mu, \sigma) = \frac{1}{2\sigma}\exp\left(-\frac{|x-\mu|}{\sigma}\right).
 \end{align*}
-can be expressed as a scale mixture of Gaussians, where $Y \sim \mathsf{Laplace}(\mu, \sigma)$ is equivalent to $Z \mid \tau \sim \mathsf{Gauss}(\mu, \tau)$ and $\tau \sim \mathsf{expo}\{(2\sigma)^{-1}\}.$
-With the improper prior $p(\mu, \sigma) \propto \sigma^{-1}$ and with $n$ independent and identically distributed Laplace variates, the joint posterior can be written
+It can be expressed as a scale mixture of Gaussians, where $Y_i \sim \mathsf{Laplace}(\mu, \sigma)$ is equivalent to $Z_i \mid \tau \sim \mathsf{Gauss}(\mu, \lambda_i)$ and $\Lambda_i \sim \mathsf{expo}\{(2\sigma^2)^{-1}\}.$ To see this, we first look at the Wald (or inverse Gaussian) distribution $\mathsf{Wald}(\nu, \omega)$ with location $\nu >0$ and shape $\omega>0,$, whose density is
 \begin{align*}
-p(\boldsymbol{\tau}, \mu, \sigma \mid \boldsymbol{y}) &\propto \left(\prod_{i=1}^n \tau_i\right)^{-1/2}\exp\left\{-\frac{1}{2}\sum_{i=1}^n \frac{(y_i-\mu)^2}{\tau_i}\right\} \\&\quad \times \frac{1}{\sigma^{n+1}}\exp\left(-\frac{1}{2\sigma}\sum_{i=1}^n \tau_i\right)
+f(y; \nu, \omega) &= \left(\frac{\omega}{2\pi y^{3}}\right)^{1/2} \exp\left\{ - \frac{\omega (y-\nu)^2}{2\nu^2y}\right\}, \quad y > 0
+\\ &\stackrel{y}{\propto} y^{-3/2}\exp\left\{-\frac{\omega}{2} \left(\frac{y}{\nu^2} + \frac{1}{y}\right)\right\}
 \end{align*}
-and $\mu \mid \cdots$ and $\sigma \mid \cdots$ are, as usual, Gaussian and inverse gamma, respectively. The variances, $\tau_j,$ are conditionally independent of one another with
+To show that the marginal (unconditionally) is Laplace, we write the joint density and integrate out the variance term $\lambda,$ make the change of variable to get the result in terms of the precision $\xi = 1/\lambda$, whence
 \begin{align*}
-p(\tau_j \mid \mu, \sigma, y_j) &\propto \tau_j^{-1/2}\exp\left\{-\frac{1}{2}\frac{(y_j-\mu)^2}{\tau_j} -\frac{1}{2} \frac{\tau_j}{\sigma}\right\}
+p(z) &= \int_{0}^{\infty} p(z \mid \lambda) p(\lambda) \mathrm{d} \lambda 
+\\&= \int_0^{\infty} \frac{1}{(2\pi\lambda)^{1/2}}\exp \left\{-\frac{1}{2\lambda}(z-\mu)^2\right\}\frac{1}{2\sigma^2}\exp\left(-\frac{\lambda}{2\sigma^2}\right)  \mathrm{d} \lambda 
+\\&= \frac{1}{2\sigma^2}\int_0^{\infty} \frac{1}{(2\pi\lambda)^{1/2}}\exp \left[-\frac{1}{2} \left\{\frac{(z-\mu)^2}{\lambda}+\frac{\lambda}{\sigma^2}\right\}\right] \mathrm{d} \lambda 
+\\&= \frac{1}{2\sigma^2}\int_0^{\infty} \frac{1}{\xi^2}\frac{\xi^{1/2}}{(2\pi)^{1/2}}\exp \left[-\frac{1}{2\sigma^2} \left\{\xi\sigma^2(z-\mu)^2+\frac{1}{\xi}\right\}\right] \mathrm{d} \xi
+\\&= \frac{1}{2\sigma^2}\int_0^{\infty} \frac{1}{(2\pi\xi^3)^{1/2}}\exp \left[-\frac{\omega}{2} \left\{\frac{\xi}{\nu^2}+\frac{1}{\xi}\right\}\right] \mathrm{d} \xi
+\\&= \frac{1}{2\sigma^2\omega^{1/2}}\exp\left(-\frac{\omega}{\nu}\right) 
+\\& = \frac{1}{2\sigma}\exp\left(-\frac{|z-\mu|}{\sigma}\right).
 \end{align*}
-so with $\xi_j=1/\tau_j,$ we have
-\begin{align*}
-p(\xi_j \mid \mu, \sigma, y_j) &\propto \xi_j^{-3/2}\exp\left\{-\frac{1}{2\sigma}\frac{\xi_j(y_j-\mu)^2}{\sigma} -\frac{1}{2} \frac{1}{\xi_j}\right\}\\
-\end{align*}
-and we recognize the latter as a Wald (or inverse Gaussian) distribution, whose density function is
-\begin{align*}
-f(y; \nu, \lambda) &= \left(\frac{\lambda}{2\pi y^{3}}\right)^{1/2} \exp\left\{ - \frac{\lambda (y-\nu)^2}{2\nu^2y}\right\}, \quad y > 0
-\\ &\stackrel{y}{\propto} y^{-3/2}\exp\left\{-\frac{\lambda}{2} \left(\frac{y}{\nu} + \frac{1}{y}\right)\right\}
-\end{align*}
-for location $\nu >0$ and shape $\lambda>0,$ where $\xi_i \sim \mathsf{Wald}(\nu_i, \lambda)$ with $\nu_i=\{\sigma/(y_i-\mu)^2\}^{1/2}$ and $\lambda=\sigma^{-1}.$
+upon recovering the conditional density of $\Xi \mid Z \sim \mathsf{Wald}(\nu, \omega)$ with parameters $\nu=(\sigma|z-\mu|)^{-1}$ and $\omega=\sigma^{-2}$. 
+
 
 @Park.Casella:2008 use this hierarchical construction to define the Bayesian LASSO. With a model matrix $\mathbf{X}$ whose columns are standardized to have mean zero and unit standard deviation, we may write
 \begin{align*}
-\boldsymbol{Y} \mid \mu, \boldsymbol{\beta}, \sigma^2 &\sim  \mathsf{Gauss}_n(\mu \boldsymbol{1}_n + \mathbf{X}\boldsymbol{\beta}, \sigma \mathbf{I}_n)\\
-\beta_j \mid \sigma, \tau_j &\sim \mathsf{Gauss}(0, \sigma\tau_j)\\
+\boldsymbol{Y} \mid \mu, \boldsymbol{\beta}, \sigma^2 &\sim  \mathsf{Gauss}_n(\mu \boldsymbol{1}_n + \mathbf{X}\boldsymbol{\beta}, \sigma^2 \mathbf{I}_n)\\
+\beta_j \mid \sigma^2, \tau_j &\sim \mathsf{Gauss}(0, \sigma^2\tau_j)\\
 \tau_j &\sim \mathsf{expo}(\lambda/2)
 \end{align*}
-If we set an improper prior $p(\mu, \sigma) \propto \sigma^{-1},$ the resulting conditional distributions are all available and thus the model is amenable to Gibbs sampling. With $\mathbf{D}^{-1}_{\tau} = \mathrm{diag}(\tau_1^{-1}, \ldots, \tau_p^{-1})$ and $\tilde{\boldsymbol{y}} = \boldsymbol{y} - \overline{y}\mathbf{1}_n$ the centered response vector, we can simulate in turn [@Park.Casella:2008]
+With the improper prior $p(\mu, \sigma^2) \propto 1/\sigma^2$ and with $n$ independent and identically distributed Laplace variates, written as a scale mixture, the model is amenable to Gibbs sampling. With $\mathbf{D}^{-1}_{\tau} = \mathrm{diag}(\tau_1^{-1}, \ldots, \tau_p^{-1})$ and $\tilde{\boldsymbol{y}} = \boldsymbol{y} - \overline{y}\mathbf{1}_n$ the centered response vector, we can simulate in turn [@Park.Casella:2008]
 \begin{align*}
-\mu \mid \sigma^2, \boldsymbol{y} \sim \mathsf{Gauss}(\overline{y}, \sigma^2/n) \\
-\boldsymbol{\beta} \mid \sigma^2, \boldsymbol{\tau}, \boldsymbol{y} &\sim \mathsf{Gauss}_p\left\{\left(\boldsymbol{X}^\top\boldsymbol{X} + \mathbf{D}^{-1}_{\tau}\right)^{-1} \mathbf{X}\widetilde{\boldsymbol{y}}, \sigma^2\left(\boldsymbol{X}^\top\boldsymbol{X} + \mathbf{D}^{-1}_{\tau}\right)^{-1}\right\}\\
-\sigma^2 \mid \boldsymbol{\beta}, \boldsymbol{\tau},\boldsymbol{y} \sim \mathsf{inv. gamma}\left\{ \frac{n-1+p}{2}, \frac{(\widetilde{\boldsymbol{y}}-\mathbf{X}\boldsymbol{\beta})^\top(\widetilde{\boldsymbol{y}}-\mathbf{X}\boldsymbol{\beta}) + \boldsymbol{\beta}^\top\mathbf{D}^{-1}_{\tau} \boldsymbol{\beta}}{2}\right\},\\
-\tau_j^{-1} \mid \boldsymbol{\beta}, \sigma^2,\boldsymbol{y} &\sim \mathsf{Wald} \left( \frac{\lambda\sigma}{|\beta_j|}, \lambda^2\right)
+\mu \mid \sigma^2, \boldsymbol{y} &\sim \mathsf{Gauss}(\overline{y}, \sigma^2/n) \\
+\boldsymbol{\beta} \mid \sigma^2, \boldsymbol{\tau}, \boldsymbol{y} &\sim \mathsf{Gauss}_p\left\{\left(\mathbf{X}^\top\mathbf{X} + \mathbf{D}^{-1}_{\tau}\right)^{-1} \mathbf{X}\widetilde{\boldsymbol{y}}, \sigma^2\left(\mathbf{X}^\top\mathbf{X} + \mathbf{D}^{-1}_{\tau}\right)^{-1}\right\}\\
+\sigma^2 \mid \boldsymbol{\beta}, \boldsymbol{\tau},\boldsymbol{y} &\sim \mathsf{inv. gamma}\left\{ \frac{n-1+p}{2}, \frac{(\widetilde{\boldsymbol{y}}-\mathbf{X}\boldsymbol{\beta})^\top(\widetilde{\boldsymbol{y}}-\mathbf{X}\boldsymbol{\beta}) + \boldsymbol{\beta}^\top\mathbf{D}^{-1}_{\tau} \boldsymbol{\beta}}{2}\right\},\\
+\tau_j^{-1} \mid \boldsymbol{\beta}, \sigma^2 &\sim \mathsf{Wald} \left( \frac{\lambda^{1/2}\sigma}{|\beta_j|}, \lambda\right)
 \end{align*}
-where the last three conditional follow from marginalizing out $\mu.$
+where the last three conditional distributions follow from marginalizing out $\mu.$
 
 
 
@@ -610,7 +571,11 @@ A $K$-mixture model is a weighted combination of models frequently used in clust
 $$f(x; \boldsymbol{\theta}, \boldsymbol{\omega}) = \sum_{k=1}^K \omega_kf_k(x; \boldsymbol{\theta}_k), \qquad \omega_1 + \cdots \omega_K=1.$$
 Since the density involves a sum, numerical optimization is challenging. Let $C_i$ denote the cluster index for observation $i$: if we knew the value of $C_i =j,$ the density would involve only $f_j.$ We can thus use latent variables representing the group allocation to simplify the problem and run an EM algorithm or use the data augmentation. In an iterative framework, we can consider the complete data as the tuples $(X_i, Z_i),$ where $Z_i = \mathsf{I}(C_i=k).$
 
-With the augmented data, the conditional distribution of $Z_i \mid X_i, \boldsymbol{\omega}, \boldsymbol{\theta} \sim \mathsf{multinom}(1, \boldsymbol{\gamma}_{ik})$ where $$\gamma_{ik} = \frac{\omega_k f_k(X_i\boldsymbol{\theta}_k)}{\sum_{j=1}^K \omega_jf_j(X_i\boldsymbol{\theta}_k)}.$$
+With the augmented data, the likelihood becomes
+\begin{align*}
+\prod_{i=1}^n \prod_{k=1}^K \{\omega_kf_k(x; \boldsymbol{\theta}_k)\}^{Z_i},
+\end{align*}
+so the conditional distribution of $Z_i \mid X_i, \boldsymbol{\omega}, \boldsymbol{\theta} \sim \mathsf{multinom}(1, \boldsymbol{\gamma}_{ik})$ where $$\gamma_{ik} = \frac{\omega_k f_k(X_i\boldsymbol{\theta}_k)}{\sum_{j=1}^K \omega_jf_j(X_i\boldsymbol{\theta}_k)}.$$
 Given suitable priors for the probabilities $\boldsymbol{\omega}$ and $\boldsymbol{\theta} \equiv \{\boldsymbol{\theta}_1, \ldots, \boldsymbol{\theta}_k\},$ we can use Gibbs sampling updating $\boldsymbol{Z},$ $\boldsymbol{\omega}$ and $\boldsymbol{\theta}$ in turn, assigning a conjugate Dirichlet prior for $\boldsymbol{\omega}.$
 
 :::
@@ -626,7 +591,7 @@ We consider a Gaussian mixture model for waiting time between two eruptions of t
 f_i(x) = p_i \phi_{1}(x_i; \mu_1, \tau_1^{-1}) + (1-p_i)\phi_{2}(x_i; \mu_2, \tau_2^{-1}).
 \end{align*}
 where $\phi(\cdot; \mu, \tau^{-1})$ is the density function of a Gaussian with mean $\mu$ and precision $\tau.$ 
-We assign conjugate priors with $p_i \sim \mathsf{beta}(a_1, a_2),$  $\mu_j \sim \mathsf{Gauss}\{c, (\tau_jd)^{-1}\}$ and $\tau_j \sim \mathsf{gamma}(b_1, b_2).$ For the hyperpriors, we use $a_1=a_2=1,$ $b_1=1, b_2 = 0.1,$ $c = 60,$ and $d = 1/40.$
+We assign conjugate priors with $p_i \sim \mathsf{beta}(a_1, a_2),$  $\mu_j \sim \mathsf{Gauss}(c, d^{-1})$ and $\tau_j \sim \mathsf{gamma}(b_1, b_2).$ For the hyperpriors, we use $a_1=a_2=1,$ $b_1=1, b_2 = 0.1,$ $c = 60,$ and $d = 1/40.$
 
 
 
@@ -660,7 +625,7 @@ for(b in 1:B){
   for(j in 1:2){
     yg <- y[group == (j-1L)]
     ng <- length(yg)
-    prec_mu <- ng*prec[j] + d
+    prec_mu <- prec[j] * ng + d
     mean_mu <- (sum(yg)*prec[j] + c*d)/prec_mu
     mu[j] <- rnorm(n = 1, mean = mean_mu, sd = 1/sqrt(prec_mu))
     prec[j] <- rgamma(n = 1, 

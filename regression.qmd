@@ -19,7 +19,46 @@ Throughout, we consider regression models with model (or design) matrix $\mathbf
 so that observations are independent and homoscedastic. Inference is performed conditional on the observed covariate vectors $\mathbf{X}_i$; we omit this dependence hereafter, but note that this can be relaxed. The intercept $\beta_0$, which is added to capture the mean response and make it mean-zero, receives special treatment and is typically assigned an improper prior. We largely follow the exposition of @Villani:2023.
 
 
+<!--
 
+:::{#prp-conjugate-bayesian-linmod}
+
+## Bayesian linear model
+
+Consider a linear regression model with observation-specific mean $\mu_i = \mathbf{x}_i\boldsymbol{\beta}$ $(i=1,\ldots, n)$ with $\mathbf{x}_i$ the $i$th row of the $n \times p$ model matrix $\mathbf{X}.$
+
+Concatenating records, $\boldsymbol{Y} \sim \mathsf{Gauss}_n(\mathbf{X}\boldsymbol{\beta}, \sigma^2 \mathbf{Q}_y^{-1}),$ for a known precision matrix $\mathbf{Q}_y,$ typically $\mathbf{I}_n.$ To construct a conjugate joint prior for $p(\boldsymbol{\beta}, \sigma^2),$ we consider the sequential formulation
+\begin{align*}
+\boldsymbol{\beta} \mid \sigma^2 \sim \mathsf{Gauss}_p(\boldsymbol{\nu}_\beta, \sigma^2 \mathbf{Q}^{-1}_\beta), \qquad \sigma^2 \sim \mathsf{inv. gamma}(\alpha,\beta)
+\end{align*}
+where $\mathsf{inv. gamma}$ denotes the inverse gamma distribution^[This simply means that the precision $\sigma^{-2},$ the reciprocal of the variance, has a gamma distribution with shape $\alpha$ and rate $\beta.$]
+
+<!--
+Writing the log likelihood in exponential family form,
+\begin{align*}
+\ell(\mu, \sigma^2; \boldsymbol{y}) \propto -n \log(\sigma) - \frac{\boldsymbol{y}^\top\boldsymbol{y}}{2\sigma^2} + \frac{\mu}{\sigma^2}\boldsymbol{y}^\top \boldsymbol{1}_n - \frac{n}{2}\frac{\mu^2}{\sigma^2}
+\end{align*}
+
+-->
+
+The joint posterior is Gaussian-inverse gamma and can be factorized
+\begin{align*}
+p(\boldsymbol{\beta}, \sigma^2 \mid y) = p(\sigma^2 \mid y) p(\boldsymbol{\beta} \mid \sigma^2, y)
+\end{align*}
+where $p(\sigma^2 \mid y) \sim \mathsf{inv. gamma}(\alpha^*, \beta^*)$ and 
+\begin{align*}
+\boldsymbol{\beta} \mid \sigma^2, y & \sim \mathsf{Gauss}_p(\mathbf{M}\boldsymbol{m}, \sigma^2\mathbf{M})
+\\
+\alpha^* &= \alpha + n/2,\\ 
+\beta^* &=\beta + 0.5 \boldsymbol{\nu}_\beta^\top \mathbf{Q}_\beta\boldsymbol{\nu}_\beta + \boldsymbol{y}^\top\boldsymbol{y} - \boldsymbol{m}^\top\mathbf{M}\boldsymbol{m}, \\
+\boldsymbol{m} &= \mathbf{Q}_\beta \boldsymbol{\nu}_\beta + \mathbf{X}^\top \mathbf{Q}_y\boldsymbol{y}\\
+\mathbf{M} &= (\mathbf{Q}_\beta + \mathbf{X}^\top\mathbf{Q}_y\mathbf{X})^{-1};
+\end{align*}
+the latter can be evaluated efficiently using Shermann--Morrisson--Woodbury identity. Given the conditionally conjugate priors, we can easily sample from the posterior using Gibbs sampling.
+
+:::
+
+-->
 
 
 :::{#prp-gaussian-ols}
@@ -329,6 +368,8 @@ The horseshoe prior name comes from the shape of the prior, which leads to a shr
 ```{r}
 #| eval: true
 #| echo: false
+#| message: false
+#| warning: false
 #| label: fig-weights-shrinkage
 #| fig-cap: "Density of penalization weights $\\kappa$ of spike (near zero) and slab (near one) for three shrinkage priors."
 f1 <- function(x){exp(-0.5/x)/(x^2)}
@@ -449,7 +490,7 @@ Markov chain Monte Carlo simulations are hampered by these parameters whose post
 \begin{align*}
 \beta_j \mid \lambda, \tau_j, c^2 &\sim \mathsf{Gauss}\left(0, \lambda\frac{c^2\tau_j^2}{c^2 + \tau^2_j\lambda^2}\right), \\
 \tau_j &\sim \mathsf{Student}_{+}(0, 1, 1)\\
-c^2 \mid s^2, \nu \sim \mathsf{inv. gamma}(\nu/2, \nu s^2/2).
+c^2 \mid s^2, \nu &\sim \mathsf{inv. gamma}(\nu/2, \nu s^2/2).
 \end{align*}
 When $\tau^2\lambda^2_j$ is much greater than $c^2$, this amounts to having a Student slab with $\nu$ degrees of freedom for large coefficients; taking a small value of $\nu$ allows for large, but not extreme components, and the authors use $s^2=2, \nu=4.$ The above specification does not specify the prior for the global scale $\lambda$, for which @Piironen.Vehtari:2017 recommend using an empirical Bayes prior, with $$\lambda \sim \mathsf{Student}_{+}\left\{0, \frac{p_0}{(p-p_0)}\frac{\sigma}{n^{1/2}}, 1\right\},$$ where $p_0$ is a prior guess for the number of non-zero components out of $p,$ $n$ is the sample size and $\sigma$ is some level of the noise.
 
@@ -487,7 +528,7 @@ geom_hline(yintercept = 0, col = "grey") +
    ggdist::stat_dist_halfeye(position = "dodge", .width = c(0.5, 0.89)) +
 MetBrewer::scale_color_met_d("Hiroshige") + 
 MetBrewer::scale_fill_met_d("Hiroshige") + 
- labs(subtitle = expression(beta), y = "") +
+ labs(subtitle = expression(beta), y = "", x = "coefficient") +
   theme_classic() +
 theme(legend.position = "bottom")
 ```

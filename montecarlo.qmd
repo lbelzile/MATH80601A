@@ -752,7 +752,7 @@ $$
 
 ```{dot}
 //| label: fig-P1
-//| fig-cap: "Graphical representation of the transition matrix $\mathbf{P}_1$."
+//| fig-cap: "Graphical representation of the transition matrix $\\mathbf{P}_1$."
 //| fig-align: 'center'
 digraph G {
  A [label="State 1"];
@@ -802,7 +802,7 @@ While the existence of a stationary distribution require aperiodicity, the latte
 #| label: fig-discrete-markov-chain
 #| eval: true
 #| echo: false
-#| fig-cap: "Discrete Markov chain on integers from 1 to 5, with transition matrix $\mathbf{P}_3,$ with traceplot of 1000 first iterations (left) and running mean plots of sample proportion of each state visited per 100 iterations (right)."
+#| fig-cap: "Discrete Markov chain on integers from 1 to 5, with transition matrix $\\mathbf{P}_3,$ with traceplot of 1000 first iterations (left) and running mean plots of sample proportion of each state visited per 100 iterations (right)."
 g1 <- ggplot(data = data.frame(iteration = 1:1000,
                                state = chain[1:1000]),
              mapping = aes(x = iteration, y = state)) +

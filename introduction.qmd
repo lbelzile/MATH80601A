@@ -713,7 +713,7 @@ so marginally $Y$ follows an exponential distribution with rate $\lambda.$ The m
 f(x) &= \int_{0}^{\infty} \frac{\lambda y^{1/2}}{(2\pi)^{1/2}}\exp\left\{ - y(x^2 + \lambda)\right\} \mathrm{d} y\\&=
 \frac{\lambda \Gamma(3/2)}{(2\pi)^{1/2}(x^2+\lambda)^{3/2}} \int_0^\infty f_{Y \mid X}(y \mid x) \mathrm{d} y \\ &= \frac{\lambda}{2^{3/2}(x^2+\lambda)^{3/2}}
 \end{align*}
-since $\Gamma(a+1) = a\Gamma(a)$ for $a>0$ and $\Gamma(1/2) = \sqrt{\pi}.$ We conclude that marginally $X \sim \mathsf{Student}(0, \lambda, 2),$ a Student distribution with scale $\lambda$ and two degrees of freedom.
+since $\Gamma(a+1) = a\Gamma(a)$ for $a>0$ and $\Gamma(1/2) = \sqrt{\pi}.$ We conclude that marginally $X \sim \mathsf{Student}(0, \lambda, 2),$ a Student distribution with scale $\lambda$ and two degrees of freedom. The Student-$t$ can be viewed as a scale mixture of Gaussian, where the variance is inverse gamma distributed.
 
 :::
 
