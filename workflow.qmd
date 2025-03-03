@@ -280,7 +280,7 @@ Running multiple Markov chains can be useful for diagnostics.
 The Gelman--Rubin diagnostic $\widehat{R},$ introduced in @Gelman.Rubin:1992 and also called potential scale reduction statistic, is obtained by considering the difference between within-chains and between-chains variance. Suppose we run $M$ chains for $B$ iterations, post burn in. Denoting by $\theta_{bm}$ the $b$th draw of the $m$th chain, we compute the global average $\overline{\theta} = B^{-1}M^{-1}\sum_{b=1}^B \sum_{m=1}^m \theta_{bm}$ and similarly the chain sample average and variances, respectively $\overline{\theta}_m$ and $\widehat{\sigma}^2_m$ ($m=1, \ldots, M$). The between-chain variance and within-chain variance estimator are
 \begin{align*}
 \mathsf{Va}_{\text{between}} &= \frac{B}{M-1}\sum_{m=1}^M (\overline{\theta}_m - \overline{\theta})^2\\
-\mathsf{Va}_{\text{within}} &= \frac{1}{M}\sum_{m=1}^m \widehat{\sigma}^2_m
+\mathsf{Va}_{\text{within}} &= \frac{1}{M}\sum_{m=1}^M \widehat{\sigma}^2_m
 \end{align*}
 and we can compute
 \begin{align*}
