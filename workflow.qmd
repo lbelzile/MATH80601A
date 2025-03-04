@@ -38,11 +38,7 @@ For a given problem, there are many different Markov chain Monte Carlo algorithm
 
 
 <!--
-
-- 
-- **Prior to posterior**: prior sensitivity requires to rerun the algorithm with different priors, but it is sometimes feasible in simpler models to simply use a fast Gaussian approximation via the maximum a posteriori, and generate from the latter, to assess the impact of the prior. We can compare posterior density with prior density. The general rule is that parameters far from the data layer are more impacted by the prior choice.
-
-
+**Prior to posterior**: prior sensitivity requires to rerun the algorithm with different priors, but it is sometimes feasible in simpler models to simply use a fast Gaussian approximation via the maximum a posteriori, and generate from the latter, to assess the impact of the prior. We can compare posterior density with prior density. The general rule is that parameters far from the data layer are more impacted by the prior choice.
 -->
 
 <!-- A modular approach to model building is recommended. It is a good strategy to start small, with a toy model, and to complexify until the fit is adequate. The modular approach can also help to diagnose convergence problems, bugs and identifiability problems.  -->
@@ -78,19 +74,6 @@ T = \sum_{b=1}^B \mathrm{I}\{t(\boldsymbol{\theta}_b, \boldsymbol{y}) < t(\bolds
 These steps are repeated $K$ times, yielding $K$ test functions $T_1, \ldots, T_K.$ We then test for uniformity using results from @Sailynoja:2022.
 
 :::
-
-<!--
-## Multiple chains
-
-
-
-
-## Validating the output
--->
-<!-- The **R** packages `coda` and `posterior` -->
-<!-- Tests of uniformity  -->
-
-<!-- Prior elicitation: what summaries should the model faithfully reproduce?  -->
 
 
 
@@ -269,7 +252,6 @@ For the Poisson example, the effective sample size for the $\boldsymbol{\beta}$ 
 
 The `coda` (convergence diagnosis and output analysis) **R** package [@coda] contains many tests. For example, the Geweke $Z$-score compares the averages for the beginning and the end of the chain: rejection of the null implies lack of convergence, or poor mixing.
 
-<!-- The Gelman--Rubin $\widehat{R}$ diagnostic, which is advocated in STAN, is a multi-chain diagnostic that compares the within-chain variability to the between-chain variability. The value should be  -->
 
 Running multiple Markov chains can be useful for diagnostics.
 
@@ -467,7 +449,10 @@ where $p_D$ is the posterior expectation of the deviance relative to the point e
 \begin{align*}
 p_D = \mathsf{E}\{D(\boldsymbol{\theta}, \widetilde{\boldsymbol{\theta}}) \mid \boldsymbol{y}\}= \int 2 \{ \ell(\widetilde{\boldsymbol{\theta}}) - \ell(\boldsymbol{\theta})\} f(\boldsymbol{\theta} \mid \boldsymbol{y}) \mathrm{d} \boldsymbol{\theta}
 \end{align*}
-The DIC can be easily evaluated by keeping track of the log likelihood evaluated at each posterior draw from a Markov chain Monte Carlo algorithm. The penalty term $p_D$ is however not invariant to reparametrizations. Assuming we can derive a multivariate Gaussian approximation to the MLE under suitable regularity conditions, the $\mathsf{DIC}$ is equivalent in large samples to $\mathsf{AIC}.$ The $\mathsf{DIC}$ is considered by many authors as not being a Bayesian procedure; see @Spiegelhalter:2014 and the discussion therein.
+The DIC can be easily evaluated by keeping track of the log likelihood evaluated at each posterior draw from a Markov chain Monte Carlo algorithm. The penalty term $p_D$ is however not invariant to reparametrizations. Assuming we can derive a multivariate Gaussian approximation to the MLE under suitable regularity conditions, the $\mathsf{DIC}$ is equivalent in large samples to $\mathsf{AIC}.$ The $\mathsf{DIC}$ is considered by many authors as not being a Bayesian procedure; see @Spiegelhalter:2014 and the discussion therein. 
+
+
+Criteria such as $\mathsf{LPPD}$ and therefore $\mathsf{WAIC}$ require some form of exchangeability, and don't apply to cases where leave-one-out cross validation isn't adequate, for example in spatio-temporal models.
 
 :::{#exm-smartwatch-infocriteria}
 
@@ -546,33 +531,6 @@ g2 <- bayesplot::ppc_loo_pit_qq(
 g1 + g2
 ```
 
-<!--
-Consider hybrid mixture of independent MH and random walk, or mean-centered
-
-```{r}
-#| eval: false
-#| echo: false
-dpareto <- function(x, scale, shape, log = FALSE){
-  stopifnot(scale > 0, shape > 0)
-  bad <- !(is.finite(x) & x >= scale)
-  d <- numeric(length = length(x))
-  d[bad] <- -Inf
-  d[!bad] <- log(shape) + shape*log(scale) - (shape+1)*log(x[!bad]);
-  if(log){
-    return(d)
-  } else{
-    return(exp(d))
-    }
-}
-mle_pareto <- function(x){
-  c(scale = min(x), shape = length(x)/sum(log(x)- log(min(x))))
-}
-
-
-```
-
-
--->
 
 <!--
 Examples
@@ -716,9 +674,9 @@ The posterior is proportional to
 \begin{align*}
 p(\boldsymbol{\beta} \mid \tau)p(\tau)\prod_{t=1}^{T}\prod_{i=1}^{n_t}p(y_{t,i} \mid z_{t,i}) p(z_{t,i} \mid \beta_t)
 \end{align*}
-and once we have imputed the Gaussian latent vectors, we can work directly with the values of $z_t = \sum_{i=1}^{n_t} z_{i,t}.$ The posterior is
+and once we have imputed the Gaussian latent vectors, we can work directly with the values of $z_t = \sum_{i=1}^{n_t} z_{i,t}.$ The posterior then becomes
 \begin{align*}
-p(\boldsymbol{\beta}, \tau) \propto \tau^{(n-1)/2}\exp \left( - \frac{\tau}{2} \boldsymbol{\beta}^\top \mathbf{Q} \boldsymbol{\beta}\right)\exp\left\{ - \frac{1}{2} (\boldsymbol{z}/\boldsymbol{n} - \boldsymbol{\beta})^\top \mathrm{diag}(\boldsymbol{n})(\boldsymbol{z}/\boldsymbol{n} - \boldsymbol{\beta})\right\} \tau^{a-1}\exp(-\tau b)
+p(\boldsymbol{\beta}, \tau) &\propto \tau^{(n-1)/2}\exp \left( - \frac{\tau}{2} \boldsymbol{\beta}^\top \mathbf{Q} \boldsymbol{\beta}\right)\tau^{a-1}\exp(-\tau b)\\& \quad \times \exp\left\{ - \frac{1}{2} (\boldsymbol{z}/\boldsymbol{n} - \boldsymbol{\beta})^\top \mathrm{diag}(\boldsymbol{n})(\boldsymbol{z}/\boldsymbol{n} - \boldsymbol{\beta})\right\} 
 \end{align*}
 where $\boldsymbol{z} = (z_1, \ldots, z_T).$
 Completing the quadratic form shows that 
@@ -792,13 +750,14 @@ write.csv(
     file = "data/tokyo_mcmc1.csv", 
     row.names = FALSE)
 bayesplot::color_scheme_set("gray")
+bayesplot_theme_set(theme_classic())
 post1 <- posterior::as_draws(post_tokyo1[-(1:100),1:2])
-bayesplot::mcmc_trace(post1, 
+A1 <- bayesplot::mcmc_trace(post1, 
    pars = c("beta1", "tau"), 
-   transformations = list("tau" = "log")
-) + theme_classic() /
-bayesplot::mcmc_acf(post1, 
-   pars = c("beta1","tau")) + theme_classic()
+   transformations = list("tau" = "log"))
+A2 <- bayesplot::mcmc_acf(post1, 
+   pars = c("beta1","tau")) 
+A1 / A2
 ```
 
 ```{r}
@@ -937,12 +896,12 @@ write.csv(
 #| fig-cap: "Trace plots (top) and correlograms (bottom) for two parameters of the Gibbs sampler for the Tokyo rainfall data, with individual updates for $\\beta_t$."
 post_tokyo2 <- read.csv("data/tokyo_mcmc2.csv", header = TRUE)
 post2 <- posterior::as_draws(post_tokyo2[-(1:100),1:2])
-bayesplot::mcmc_trace(post2, 
+A1 <- bayesplot::mcmc_trace(post2, 
    pars = c("beta1", "tau"), 
-   transformations = list("tau" = "log")
-) + theme_classic() /
-bayesplot::mcmc_acf(post2, 
-   pars = c("beta1","tau"), lags = 500) + theme_classic()
+   transformations = list("tau" = "log"))
+A2 <- bayesplot::mcmc_acf(post2, 
+   pars = c("beta1","tau"), lags = 500) 
+A1 / A2
 ```
 
 Instead of making things worst, we can try to improve upon our initial sampler by simulating first a proposal $\tau^{\star}$ using a random walk Metropolis (on the log scale) or some other proposal $q(\tau^{\star}; \tau),$ then drawing from the full conditional $\boldsymbol{\beta} \mid \boldsymbol{z}, \tau^{\star}$ and accepting/rejecting the whole move. In doing this, all terms that depend on $\boldsymbol{\beta}$ cancel out, and the term $p(\tau^{\star}, \boldsymbol{\beta}^{\star} \mid \tau)/\{q(\tau^{\star}; \tau)p(\boldsymbol{\beta}^{\star} \mid \tau^{\star})\}$ in the acceptance ratio becomes

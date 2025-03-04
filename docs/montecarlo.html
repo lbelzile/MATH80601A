@@ -627,16 +627,16 @@ Figure&nbsp;4.5: Running mean trace plots for <span class="math inline">\(g(x)=\
 <section id="discrete-markov-chains" class="level3" data-number="4.2.1">
 <h3 data-number="4.2.1" class="anchored" data-anchor-id="discrete-markov-chains"><span class="header-section-number">4.2.1</span> Discrete Markov chains</h3>
 <p>Consider a Markov chain on integers <span class="math inline">\(\{1, 2, 3\}.\)</span> Because of the Markov property, the history of the chain does not matter: we only need to read the value <span class="math inline">\(i=X_{t-1}\)</span> of the state and pick the <span class="math inline">\(i\)</span>th row of the transition matrix <span class="math inline">\(\mathbf{P}\)</span> to know the probability of the different moves from the current state.</p>
-<p>Irreducible means that the chain can move from anywhere to anywhere, so it doesn’t get stuck in part of the space forever. A transition matrix such as <span class="math inline">\(P_1\)</span> below describes a reducible Markov chain, because once you get into state <span class="math inline">\(2\)</span> or <span class="math inline">\(3,\)</span> you won’t escape. With reducible chains, the stationary distribution need not be unique, and so the target would depend on the starting values.</p>
-<p>Cyclical chains loop around and visit periodically a state: <span class="math inline">\(P_2\)</span> is an instance of transition matrix describing a chain that cycles from <span class="math inline">\(1\)</span> to <span class="math inline">\(3,\)</span> <span class="math inline">\(3\)</span> to <span class="math inline">\(2\)</span> and <span class="math inline">\(2\)</span> to <span class="math inline">\(1\)</span> every three iteration. An acyclic chain is needed for convergence of marginals.</p>
+<p>Irreducible means that the chain can move from anywhere to anywhere, so it doesn’t get stuck in part of the space forever. A transition matrix such as <span class="math inline">\(\mathbf{P}_1\)</span> below describes a reducible Markov chain, because once you get into state <span class="math inline">\(2\)</span> or <span class="math inline">\(3,\)</span> you won’t escape. With reducible chains, the stationary distribution need not be unique, and so the target would depend on the starting values.</p>
+<p>Cyclical chains loop around and visit periodically a state: <span class="math inline">\(\mathbf{P}_2\)</span> is an instance of transition matrix describing a chain that cycles from <span class="math inline">\(1\)</span> to <span class="math inline">\(3,\)</span> <span class="math inline">\(3\)</span> to <span class="math inline">\(2\)</span> and <span class="math inline">\(2\)</span> to <span class="math inline">\(1\)</span> every three iteration. An acyclic chain is needed for convergence of marginals.</p>
 <p><span class="math display">\[
-P_1 = \begin{pmatrix}
+\mathbf{P}_1 = \begin{pmatrix}
 0.5 &amp; 0.3 &amp; 0.2 \\
 0 &amp; 0.4 &amp; 0.6 \\
 0 &amp; 0.5 &amp; 0.5
 \end{pmatrix},
 \qquad
-P_2 = \begin{pmatrix}
+\mathbf{P}_2 = \begin{pmatrix}
 0 &amp; 0 &amp; 1 \\
 1 &amp; 0 &amp; 0 \\
 0 &amp; 1 &amp; 0
@@ -724,23 +724,23 @@ P_2 = \begin{pmatrix}
 </div>
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-P1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;4.6: Graphical representation of the transition matrix <span class="math inline">\(P_1\)</span>.
+Figure&nbsp;4.6: Graphical representation of the transition matrix <span class="math inline">\(\mathbf{P}_1\)</span>.
 </figcaption>
 </figure>
 </div>
 </div>
 </div>
-<p>If a chain is irreducible and aperiodic, it has a unique stationary distribution and the limiting distribution of the Markov chain will converge there. For example, consider a transition <span class="math inline">\(P_3\)</span> on <span class="math inline">\(1, \ldots, 5\)</span> defined as <span class="math display">\[
-P_3 = \begin{pmatrix}
+<p>If a chain is irreducible and aperiodic, it has a unique stationary distribution and the limiting distribution of the Markov chain will converge there. For example, consider a transition <span class="math inline">\(\mathbf{P}_3\)</span> on <span class="math inline">\(1, \ldots, 5\)</span> defined as <span class="math display">\[
+\mathbf{P}_3 = \begin{pmatrix}
 \frac{2}{3} &amp; \frac{1}{3} &amp;  0 &amp; 0 &amp; 0 \\
 \frac{1}{6} &amp; \frac{2}{3} &amp; \frac{1}{6} &amp; 0 &amp; 0 \\
 0 &amp; \frac{1}{6} &amp; \frac{2}{3} &amp; \frac{1}{6} &amp; 0 \\
 0 &amp; 0 &amp; \frac{1}{6} &amp; \frac{2}{3} &amp; \frac{1}{6} \\
 0 &amp; 0 &amp; 0 &amp;  \frac{1}{3}  &amp; \frac{2}{3} \\
 \end{pmatrix}
-\]</span> The stationary distribution is the value of the row vector <span class="math inline">\(\boldsymbol{p},\)</span> such that <span class="math inline">\(\boldsymbol{p} = \boldsymbol{p}\mathbf{P}\)</span> for transition matrix <span class="math inline">\(\mathbf{P}\)</span>: we get <span class="math inline">\(\boldsymbol{p}_1=(0, 5/11, 6/11)\)</span> for <span class="math inline">\(P_1,\)</span> <span class="math inline">\((1/3, 1/3, 1/3)\)</span> for <span class="math inline">\(P_2\)</span> and <span class="math inline">\((1,2,2,2,1)/8\)</span> for <span class="math inline">\(P_3.\)</span></p>
+\]</span> The stationary distribution is the value of the row vector <span class="math inline">\(\boldsymbol{p},\)</span> such that <span class="math inline">\(\boldsymbol{p} = \boldsymbol{p}\mathbf{P}\)</span> for transition matrix <span class="math inline">\(\mathbf{P}\)</span>: we get <span class="math inline">\(\boldsymbol{p}_1=(0, 5/11, 6/11)\)</span> for <span class="math inline">\(\mathbf{P}_1,\)</span> <span class="math inline">\((1/3, 1/3, 1/3)\)</span> for <span class="math inline">\(\mathbf{P}_2\)</span> and <span class="math inline">\((1,2,2,2,1)/8\)</span> for <span class="math inline">\(\mathbf{P}_3.\)</span></p>
 <p>While the existence of a stationary distribution require aperiodicity, the latter is not really important from a computational perspective as ergodicity holds without it.</p>
-<p><a href="#fig-discrete-markov-chain" class="quarto-xref">Figure&nbsp;<span>4.7</span></a> shows the path of the random walk driven by <span class="math inline">\(P_3\)</span> and the empirical proportion of the time spent in each state, as time progress. Since the Markov chain has a unique stationary distribution, we expect the sample proportions to converge to the stationary distribution proportions.</p>
+<p><a href="#fig-discrete-markov-chain" class="quarto-xref">Figure&nbsp;<span>4.7</span></a> shows the path of the random walk driven by <span class="math inline">\(\mathbf{P}_3\)</span> and the empirical proportion of the time spent in each state, as time progress. Since the Markov chain has a unique stationary distribution, we expect the sample proportions to converge to the stationary distribution proportions.</p>
 <div class="cell">
 <div class="cell-output-display">
 <div id="fig-discrete-markov-chain" class="quarto-float quarto-figure quarto-figure-center anchored">
@@ -749,7 +749,7 @@ P_3 = \begin{pmatrix}
 <img src="montecarlo_files/figure-html/fig-discrete-markov-chain-1.png" class="img-fluid figure-img" width="672">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-discrete-markov-chain-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;4.7: Discrete Markov chain on integers from 1 to 5, with transition matrix <span class="math inline">\(P_3,\)</span> with traceplot of 1000 first iterations (left) and running mean plots of sample proportion of each state visited per 100 iterations (right).
+Figure&nbsp;4.7: Discrete Markov chain on integers from 1 to 5, with transition matrix <span class="math inline">\(\mathbf{P}_3,\)</span> with traceplot of 1000 first iterations (left) and running mean plots of sample proportion of each state visited per 100 iterations (right).
 </figcaption>
 </figure>
 </div>

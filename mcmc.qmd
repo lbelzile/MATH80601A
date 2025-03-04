@@ -295,16 +295,6 @@ bayesplot::mcmc_acf(x = coda::as.mcmc(chains_goldi))
 
 
 
-<!-- 
-trace plots and posterior plots
-one parameter at a time versus block update 
-reparametrization to reduce correlation and enforce parameter constraints
-choice of proposal kernel: independent, random walk, MALA
-starting values and burnin
-marginalization
-acceptance rate and proposals tuning proposals
-one chain or multiple chain
--->
 
 :::{.remark}
 

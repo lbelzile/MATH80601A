@@ -327,9 +327,9 @@
 \theoremstyle{definition}
 \newtheorem{definition}{Definition}[chapter]
 \theoremstyle{plain}
-\newtheorem{theorem}{Theorem}[chapter]
-\theoremstyle{plain}
 \newtheorem{proposition}{Proposition}[chapter]
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}[chapter]
 \theoremstyle{remark}
 \AtBeginDocument{\renewcommand*{\proofname}{Proof}}
 \newtheorem*{remark}{Remark}
@@ -401,7 +401,7 @@ used throughout the course. The overview begins with basic statistical
 concepts, random variables, their distribution and density, moments and
 likelihood derivations.
 
-\begin{tcolorbox}[enhanced jigsaw, left=2mm, bottomrule=.15mm, coltitle=black, colback=white, rightrule=.15mm, colbacktitle=quarto-callout-important-color!10!white, bottomtitle=1mm, leftrule=.75mm, toprule=.15mm, titlerule=0mm, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Learning objectives}:}, breakable, arc=.35mm, toptitle=1mm, colframe=quarto-callout-important-color-frame, opacityback=0, opacitybacktitle=0.6]
+\begin{tcolorbox}[enhanced jigsaw, bottomtitle=1mm, arc=.35mm, colback=white, opacityback=0, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Learning objectives}:}, coltitle=black, toptitle=1mm, breakable, toprule=.15mm, left=2mm, bottomrule=.15mm, colframe=quarto-callout-important-color-frame, titlerule=0mm, rightrule=.15mm, leftrule=.75mm, opacitybacktitle=0.6, colbacktitle=quarto-callout-important-color!10!white]
 
 At the end of the chapter, students should be able to
 
@@ -1100,7 +1100,9 @@ f(x) &= \int_{0}^{\infty} \frac{\lambda y^{1/2}}{(2\pi)^{1/2}}\exp\left\{ - y(x^
 \end{align*} since \(\Gamma(a+1) = a\Gamma(a)\) for \(a>0\) and
 \(\Gamma(1/2) = \sqrt{\pi}.\) We conclude that marginally
 \(X \sim \mathsf{Student}(0, \lambda, 2),\) a Student distribution with
-scale \(\lambda\) and two degrees of freedom.
+scale \(\lambda\) and two degrees of freedom. The Student-\(t\) can be
+viewed as a scale mixture of Gaussian, where the variance is inverse
+gamma distributed.
 
 \end{example}
 
@@ -1694,7 +1696,7 @@ The likelihood can then be written as \begin{align*}
 
 \end{example}
 
-\begin{tcolorbox}[enhanced jigsaw, left=2mm, bottomrule=.15mm, coltitle=black, colback=white, rightrule=.15mm, colbacktitle=quarto-callout-important-color!10!white, bottomtitle=1mm, leftrule=.75mm, toprule=.15mm, titlerule=0mm, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Summary}}, breakable, arc=.35mm, toptitle=1mm, colframe=quarto-callout-important-color-frame, opacityback=0, opacitybacktitle=0.6]
+\begin{tcolorbox}[enhanced jigsaw, bottomtitle=1mm, arc=.35mm, colback=white, opacityback=0, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Summary}}, coltitle=black, toptitle=1mm, breakable, toprule=.15mm, left=2mm, bottomrule=.15mm, colframe=quarto-callout-important-color-frame, titlerule=0mm, rightrule=.15mm, leftrule=.75mm, opacitybacktitle=0.6, colbacktitle=quarto-callout-important-color!10!white]
 
 \begin{itemize}
 \tightlist
@@ -1773,7 +1775,7 @@ elicitation and estimation of the marginal likelihood, are mentioned in
 passing. A brief discussion of Bayesian hypothesis testing (and
 alternatives) is presented.
 
-\begin{tcolorbox}[enhanced jigsaw, left=2mm, bottomrule=.15mm, coltitle=black, colback=white, rightrule=.15mm, colbacktitle=quarto-callout-important-color!10!white, bottomtitle=1mm, leftrule=.75mm, toprule=.15mm, titlerule=0mm, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Learning objectives}:}, breakable, arc=.35mm, toptitle=1mm, colframe=quarto-callout-important-color-frame, opacityback=0, opacitybacktitle=0.6]
+\begin{tcolorbox}[enhanced jigsaw, bottomtitle=1mm, arc=.35mm, colback=white, opacityback=0, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Learning objectives}:}, coltitle=black, toptitle=1mm, breakable, toprule=.15mm, left=2mm, bottomrule=.15mm, colframe=quarto-callout-important-color-frame, titlerule=0mm, rightrule=.15mm, leftrule=.75mm, opacitybacktitle=0.6, colbacktitle=quarto-callout-important-color!10!white]
 
 At the end of the chapter, students should be able to
 
@@ -2710,7 +2712,7 @@ the cutoff for the HDP region.}
 
 \end{figure}%
 
-\begin{tcolorbox}[enhanced jigsaw, left=2mm, bottomrule=.15mm, coltitle=black, colback=white, rightrule=.15mm, colbacktitle=quarto-callout-important-color!10!white, bottomtitle=1mm, leftrule=.75mm, toprule=.15mm, titlerule=0mm, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Summary}:}, breakable, arc=.35mm, toptitle=1mm, colframe=quarto-callout-important-color-frame, opacityback=0, opacitybacktitle=0.6]
+\begin{tcolorbox}[enhanced jigsaw, bottomtitle=1mm, arc=.35mm, colback=white, opacityback=0, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Summary}:}, coltitle=black, toptitle=1mm, breakable, toprule=.15mm, left=2mm, bottomrule=.15mm, colframe=quarto-callout-important-color-frame, titlerule=0mm, rightrule=.15mm, leftrule=.75mm, opacitybacktitle=0.6, colbacktitle=quarto-callout-important-color!10!white]
 
 \begin{itemize}
 \tightlist
@@ -2789,7 +2791,7 @@ inferences. Generally, we will choose the prior for convenience. Priors
 are controversial because they could be tuned aposteriori to give any
 answer an analyst might want.
 
-\begin{tcolorbox}[enhanced jigsaw, left=2mm, bottomrule=.15mm, coltitle=black, colback=white, rightrule=.15mm, colbacktitle=quarto-callout-important-color!10!white, bottomtitle=1mm, leftrule=.75mm, toprule=.15mm, titlerule=0mm, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Learning objectives}:}, breakable, arc=.35mm, toptitle=1mm, colframe=quarto-callout-important-color-frame, opacityback=0, opacitybacktitle=0.6]
+\begin{tcolorbox}[enhanced jigsaw, bottomtitle=1mm, arc=.35mm, colback=white, opacityback=0, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Learning objectives}:}, coltitle=black, toptitle=1mm, breakable, toprule=.15mm, left=2mm, bottomrule=.15mm, colframe=quarto-callout-important-color-frame, titlerule=0mm, rightrule=.15mm, leftrule=.75mm, opacitybacktitle=0.6, colbacktitle=quarto-callout-important-color!10!white]
 
 At the end of the chapter, students should be able to
 
@@ -3824,7 +3826,7 @@ improper priors on location and scale.}
 
 \end{example}
 
-\begin{tcolorbox}[enhanced jigsaw, left=2mm, bottomrule=.15mm, coltitle=black, colback=white, rightrule=.15mm, colbacktitle=quarto-callout-important-color!10!white, bottomtitle=1mm, leftrule=.75mm, toprule=.15mm, titlerule=0mm, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Summary}:}, breakable, arc=.35mm, toptitle=1mm, colframe=quarto-callout-important-color-frame, opacityback=0, opacitybacktitle=0.6]
+\begin{tcolorbox}[enhanced jigsaw, bottomtitle=1mm, arc=.35mm, colback=white, opacityback=0, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Summary}:}, coltitle=black, toptitle=1mm, breakable, toprule=.15mm, left=2mm, bottomrule=.15mm, colframe=quarto-callout-important-color-frame, titlerule=0mm, rightrule=.15mm, leftrule=.75mm, opacitybacktitle=0.6, colbacktitle=quarto-callout-important-color!10!white]
 
 \begin{itemize}
 \tightlist
@@ -4683,24 +4685,25 @@ different moves from the current state.
 
 Irreducible means that the chain can move from anywhere to anywhere, so
 it doesn't get stuck in part of the space forever. A transition matrix
-such as \(P_1\) below describes a reducible Markov chain, because once
-you get into state \(2\) or \(3,\) you won't escape. With reducible
-chains, the stationary distribution need not be unique, and so the
-target would depend on the starting values.
+such as \(\mathbf{P}_1\) below describes a reducible Markov chain,
+because once you get into state \(2\) or \(3,\) you won't escape. With
+reducible chains, the stationary distribution need not be unique, and so
+the target would depend on the starting values.
 
-Cyclical chains loop around and visit periodically a state: \(P_2\) is
-an instance of transition matrix describing a chain that cycles from
-\(1\) to \(3,\) \(3\) to \(2\) and \(2\) to \(1\) every three iteration.
-An acyclic chain is needed for convergence of marginals.
+Cyclical chains loop around and visit periodically a state:
+\(\mathbf{P}_2\) is an instance of transition matrix describing a chain
+that cycles from \(1\) to \(3,\) \(3\) to \(2\) and \(2\) to \(1\) every
+three iteration. An acyclic chain is needed for convergence of
+marginals.
 
 \[
-P_1 = \begin{pmatrix}
+\mathbf{P}_1 = \begin{pmatrix}
 0.5 & 0.3 & 0.2 \\
 0 & 0.4 & 0.6 \\
 0 & 0.5 & 0.5
 \end{pmatrix},
 \qquad
-P_2 = \begin{pmatrix}
+\mathbf{P}_2 = \begin{pmatrix}
 0 & 0 & 1 \\
 1 & 0 & 0 \\
 0 & 1 & 0
@@ -4716,15 +4719,15 @@ P_2 = \begin{pmatrix}
 }
 
 \caption{\label{fig-P1}Graphical representation of the transition matrix
-\(P_1\).}
+\(\mathbf{P}_1\).}
 
 \end{figure}%
 
 If a chain is irreducible and aperiodic, it has a unique stationary
 distribution and the limiting distribution of the Markov chain will
-converge there. For example, consider a transition \(P_3\) on
+converge there. For example, consider a transition \(\mathbf{P}_3\) on
 \(1, \ldots, 5\) defined as \[
-P_3 = \begin{pmatrix}
+\mathbf{P}_3 = \begin{pmatrix}
 \frac{2}{3} & \frac{1}{3} &  0 & 0 & 0 \\
 \frac{1}{6} & \frac{2}{3} & \frac{1}{6} & 0 & 0 \\
 0 & \frac{1}{6} & \frac{2}{3} & \frac{1}{6} & 0 \\
@@ -4734,18 +4737,19 @@ P_3 = \begin{pmatrix}
 \] The stationary distribution is the value of the row vector
 \(\boldsymbol{p},\) such that
 \(\boldsymbol{p} = \boldsymbol{p}\mathbf{P}\) for transition matrix
-\(\mathbf{P}\): we get \(\boldsymbol{p}_1=(0, 5/11, 6/11)\) for \(P_1,\)
-\((1/3, 1/3, 1/3)\) for \(P_2\) and \((1,2,2,2,1)/8\) for \(P_3.\)
+\(\mathbf{P}\): we get \(\boldsymbol{p}_1=(0, 5/11, 6/11)\) for
+\(\mathbf{P}_1,\) \((1/3, 1/3, 1/3)\) for \(\mathbf{P}_2\) and
+\((1,2,2,2,1)/8\) for \(\mathbf{P}_3.\)
 
 While the existence of a stationary distribution require aperiodicity,
 the latter is not really important from a computational perspective as
 ergodicity holds without it.
 
 Figure~\ref{fig-discrete-markov-chain} shows the path of the random walk
-driven by \(P_3\) and the empirical proportion of the time spent in each
-state, as time progress. Since the Markov chain has a unique stationary
-distribution, we expect the sample proportions to converge to the
-stationary distribution proportions.
+driven by \(\mathbf{P}_3\) and the empirical proportion of the time
+spent in each state, as time progress. Since the Markov chain has a
+unique stationary distribution, we expect the sample proportions to
+converge to the stationary distribution proportions.
 
 \begin{figure}[ht!]
 
@@ -4756,9 +4760,9 @@ stationary distribution proportions.
 }
 
 \caption{\label{fig-discrete-markov-chain}Discrete Markov chain on
-integers from 1 to 5, with transition matrix \(P_3,\) with traceplot of
-1000 first iterations (left) and running mean plots of sample proportion
-of each state visited per 100 iterations (right).}
+integers from 1 to 5, with transition matrix \(\mathbf{P}_3,\) with
+traceplot of 1000 first iterations (left) and running mean plots of
+sample proportion of each state visited per 100 iterations (right).}
 
 \end{figure}%
 
@@ -4883,7 +4887,7 @@ computers became more widely available. The idea is to draw correlated
 samples from a posterior via Markov chains, constructed to have the
 posterior as invariant stationary distribution.
 
-\begin{tcolorbox}[enhanced jigsaw, left=2mm, bottomrule=.15mm, coltitle=black, colback=white, rightrule=.15mm, colbacktitle=quarto-callout-important-color!10!white, bottomtitle=1mm, leftrule=.75mm, toprule=.15mm, titlerule=0mm, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Learning objectives}:}, breakable, arc=.35mm, toptitle=1mm, colframe=quarto-callout-important-color-frame, opacityback=0, opacitybacktitle=0.6]
+\begin{tcolorbox}[enhanced jigsaw, bottomtitle=1mm, arc=.35mm, colback=white, opacityback=0, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Learning objectives}:}, coltitle=black, toptitle=1mm, breakable, toprule=.15mm, left=2mm, bottomrule=.15mm, colframe=quarto-callout-important-color-frame, titlerule=0mm, rightrule=.15mm, leftrule=.75mm, opacitybacktitle=0.6, colbacktitle=quarto-callout-important-color!10!white]
 
 At the end of the chapter, students should be able to
 
@@ -5573,7 +5577,7 @@ overdispersion.
 
 \end{example}
 
-\begin{tcolorbox}[enhanced jigsaw, left=2mm, bottomrule=.15mm, coltitle=black, colback=white, rightrule=.15mm, colbacktitle=quarto-callout-important-color!10!white, bottomtitle=1mm, leftrule=.75mm, toprule=.15mm, titlerule=0mm, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Summary}:}, breakable, arc=.35mm, toptitle=1mm, colframe=quarto-callout-important-color-frame, opacityback=0, opacitybacktitle=0.6]
+\begin{tcolorbox}[enhanced jigsaw, bottomtitle=1mm, arc=.35mm, colback=white, opacityback=0, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Summary}:}, coltitle=black, toptitle=1mm, breakable, toprule=.15mm, left=2mm, bottomrule=.15mm, colframe=quarto-callout-important-color-frame, titlerule=0mm, rightrule=.15mm, leftrule=.75mm, opacitybacktitle=0.6, colbacktitle=quarto-callout-important-color!10!white]
 
 \begin{itemize}
 \tightlist
@@ -5625,7 +5629,7 @@ overdispersion.
 
 \chapter{Gibbs sampling}\label{sec-Gibbs}
 
-\begin{tcolorbox}[enhanced jigsaw, left=2mm, bottomrule=.15mm, coltitle=black, colback=white, rightrule=.15mm, colbacktitle=quarto-callout-important-color!10!white, bottomtitle=1mm, leftrule=.75mm, toprule=.15mm, titlerule=0mm, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Learning objectives}:}, breakable, arc=.35mm, toptitle=1mm, colframe=quarto-callout-important-color-frame, opacityback=0, opacitybacktitle=0.6]
+\begin{tcolorbox}[enhanced jigsaw, bottomtitle=1mm, arc=.35mm, colback=white, opacityback=0, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Learning objectives}:}, coltitle=black, toptitle=1mm, breakable, toprule=.15mm, left=2mm, bottomrule=.15mm, colframe=quarto-callout-important-color-frame, titlerule=0mm, rightrule=.15mm, leftrule=.75mm, opacitybacktitle=0.6, colbacktitle=quarto-callout-important-color!10!white]
 
 At the end of the chapter, students should be able to
 
@@ -5664,10 +5668,10 @@ Metropolis--Hastings where the proposal distribution \(q\) is
 The particularity is that all proposals get accepted because the log
 posterior of the partial update, equals the proposal distribution, so
 \begin{align*}
-R &= \frac{p(\boldsymbol{\theta}_t^{\star} \mid \boldsymbol{y})}{p(\boldsymbol{\theta}_{t-1}\mid \boldsymbol{y})}\frac{p(\boldsymbol{\theta}_{t-1}^{[j]\star} \mid \boldsymbol{\theta}^{-[j]\star}, \boldsymbol{y})}{p(\boldsymbol{\theta}_t^{[j]\star} \mid \boldsymbol{\theta}^{-[j]\star}, \boldsymbol{y})}
+R &= \frac{p(\boldsymbol{\theta}_t^{\star} \mid \boldsymbol{y})}{p(\boldsymbol{\theta}_{t-1}\mid \boldsymbol{y})}\frac{p(\boldsymbol{\theta}_{t-1}^{[j]} \mid \boldsymbol{\theta}^{-[j]\star}, \boldsymbol{y})}{p(\boldsymbol{\theta}_t^{[j]\star} \mid \boldsymbol{\theta}^{-[j]\star}, \boldsymbol{y})}
 \\
 &=
-\frac{p(\boldsymbol{\theta}_t^{[j]\star} \mid \boldsymbol{\theta}^{-[j]\star}, \boldsymbol{y})p(\boldsymbol{\theta}^{-[j]\star} \mid \boldsymbol{y})}{p(\boldsymbol{\theta}_{t-1}^{[j]\star} \mid \boldsymbol{\theta}^{-[j]\star}, \boldsymbol{y})p(\mid \boldsymbol{\theta}^{-[j]\star} \mid  \boldsymbol{y})}\frac{p(\boldsymbol{\theta}_{t-1}^{[j]\star} \mid \boldsymbol{\theta}^{-[j]\star}, \boldsymbol{y})}{p(\boldsymbol{\theta}_t^{[j]\star} \mid \boldsymbol{\theta}^{-[j]\star}, \boldsymbol{y})} =1.
+\frac{p(\boldsymbol{\theta}_t^{[j]\star} \mid \boldsymbol{\theta}^{-[j]\star}, \boldsymbol{y})p(\boldsymbol{\theta}^{-[j]\star} \mid \boldsymbol{y})}{p(\boldsymbol{\theta}_{t-1}^{[j]} \mid \boldsymbol{\theta}^{-[j]\star}, \boldsymbol{y})p(\mid \boldsymbol{\theta}^{-[j]\star} \mid  \boldsymbol{y})}\frac{p(\boldsymbol{\theta}_{t-1}^{[j]} \mid \boldsymbol{\theta}^{-[j]\star}, \boldsymbol{y})}{p(\boldsymbol{\theta}_t^{[j]\star} \mid \boldsymbol{\theta}^{-[j]\star}, \boldsymbol{y})} =1.
 \end{align*} Regardless of the order (systematic scan or random scan),
 the procedure remains valid. The Gibbs sampling is thus an automatic
 algorithm: we only need to derive the conditional posterior
@@ -5794,45 +5798,6 @@ If the posterior is not well defined, the Markov chains may seem to
 stabilize even though there is no proper target.
 \end{remark}
 
-\begin{proposition}[Bayesian linear
-model]\protect\hypertarget{prp-conjugate-bayesian-linmod}{}\label{prp-conjugate-bayesian-linmod}
-
-Consider a linear regression model with observation-specific mean
-\(\mu_i = \mathbf{x}_i\boldsymbol{\beta}\) \((i=1,\ldots, n)\) with
-\(\mathbf{x}_i\) the \(i\)th row of the \(n \times p\) model matrix
-\(\mathbf{X}.\)
-
-Concatenating records,
-\(\boldsymbol{Y} \sim \mathsf{No}_n(\mathbf{X}\boldsymbol{\beta}, \sigma^2 \mathbf{Q}_y^{-1}),\)
-for a known precision matrix \(\mathbf{Q}_y,\) typically
-\(\mathbf{I}_n.\) To construct a conjugate joint prior for
-\(p(\boldsymbol{\beta}, \sigma^2),\) we consider the sequential
-formulation \begin{align*}
-\boldsymbol{\beta} \mid \sigma^2 \sim \mathsf{Gauss}_p(\boldsymbol{\nu}_\beta, \sigma^2 \mathbf{Q}^{-1}_\beta), \qquad \sigma^2 \sim \mathsf{inv. gamma}(\alpha,\beta)
-\end{align*} where \(\mathsf{inv. gamma}\) denotes the inverse gamma
-distribution\footnote{This simply means that the precision
-  \(\sigma^{-2},\) the reciprocal of the variance, has a gamma
-  distribution with shape \(\alpha\) and rate \(\beta.\)}
-
-The joint posterior is Gaussian-inverse gamma and can be factorized
-\begin{align*}
-p(\boldsymbol{\beta}, \sigma^2 \mid y) = p(\sigma^2 \mid y) p(\boldsymbol{\beta} \mid \sigma^2, y)
-\end{align*} where
-\(p(\sigma^2 \mid y) \sim \mathsf{inv. gamma}(\alpha^*, \beta^*)\) and
-\begin{align*}
-\boldsymbol{\beta} \mid \sigma^2, y & \sim \mathsf{Gauss}_p(\mathbf{M}\boldsymbol{m}, \sigma^2\mathbf{M})
-\\
-\alpha^* &= \alpha + n/2,\\ 
-\beta^* &=\beta + 0.5 \boldsymbol{\nu}_\beta^\top \mathbf{Q}_\beta\boldsymbol{\nu}_\beta + \boldsymbol{y}^\top\boldsymbol{y} - \boldsymbol{m}^\top\mathbf{M}\boldsymbol{m}, \\
-\boldsymbol{m} &= \mathbf{Q}_\beta \boldsymbol{\nu}_\beta + \mathbf{X}^\top \mathbf{Q}_y\boldsymbol{y}\\
-\mathbf{M} &= (\mathbf{Q}_\beta + \mathbf{X}^\top\mathbf{Q}_y\mathbf{X})^{-1};
-\end{align*} the latter can be evaluated efficiently using
-Shermann--Morrisson--Woodbury identity. Given the conditionally
-conjugate priors, we can easily sample from the posterior using Gibbs
-sampling.
-
-\end{proposition}
-
 \section{Data augmentation and auxiliary variables}\label{sec-gibbs-da}
 
 In many problems, the likelihood
@@ -5929,54 +5894,55 @@ Example~\ref{exm-accept-reject-truncated} to simulate these.
 \begin{example}[Bayesian
 LASSO]\protect\hypertarget{exm-student-mixture-gaussian}{}\label{exm-student-mixture-gaussian}
 
-The Laplace distribution with mean \(\mu\) and scale \(\sigma,\) which
-has density \begin{align*}
-f(x; \mu, \sigma) = \frac{1}{2\sigma}\exp\left(-\frac{|x-\mu|}{\sigma}\right),
-\end{align*} can be expressed as a scale mixture of Gaussians, where
-\(Y \sim \mathsf{Laplace}(\mu, \sigma)\) is equivalent to
-\(Z \mid \tau \sim \mathsf{Gauss}(\mu, \tau)\) and
-\(\tau \sim \mathsf{expo}\{(2\sigma)^{-1}\}.\) With the improper prior
-\(p(\mu, \sigma) \propto \sigma^{-1}\) and with \(n\) independent and
-identically distributed Laplace variates, the joint posterior can be
-written \begin{align*}
-p(\boldsymbol{\tau}, \mu, \sigma \mid \boldsymbol{y}) &\propto \left(\prod_{i=1}^n \tau_i\right)^{-1/2}\exp\left\{-\frac{1}{2}\sum_{i=1}^n \frac{(y_i-\mu)^2}{\tau_i}\right\} \\&\quad \times \frac{1}{\sigma^{n+1}}\exp\left(-\frac{1}{2\sigma}\sum_{i=1}^n \tau_i\right)
-\end{align*} and \(\mu \mid \cdots\) and \(\sigma \mid \cdots\) are, as
-usual, Gaussian and inverse gamma, respectively. The variances,
-\(\tau_j,\) are conditionally independent of one another with
-\begin{align*}
-p(\tau_j \mid \mu, \sigma, y_j) &\propto \tau_j^{-1/2}\exp\left\{-\frac{1}{2}\frac{(y_j-\mu)^2}{\tau_j} -\frac{1}{2} \frac{\tau_j}{\sigma}\right\}
-\end{align*} so with \(\xi_j=1/\tau_j,\) we have \begin{align*}
-p(\xi_j \mid \mu, \sigma, y_j) &\propto \xi_j^{-3/2}\exp\left\{-\frac{1}{2\sigma}\frac{\xi_j(y_j-\mu)^2}{\sigma} -\frac{1}{2} \frac{1}{\xi_j}\right\}\\
-\end{align*} and we recognize the latter as a Wald (or inverse Gaussian)
-distribution, whose density function is \begin{align*}
-f(y; \nu, \lambda) &= \left(\frac{\lambda}{2\pi y^{3}}\right)^{1/2} \exp\left\{ - \frac{\lambda (y-\nu)^2}{2\nu^2y}\right\}, \quad y > 0
-\\ &\stackrel{y}{\propto} y^{-3/2}\exp\left\{-\frac{\lambda}{2} \left(\frac{y}{\nu} + \frac{1}{y}\right)\right\}
-\end{align*} for location \(\nu >0\) and shape \(\lambda>0,\) where
-\(\xi_i \sim \mathsf{Wald}(\nu_i, \lambda)\) with
-\(\nu_i=\{\sigma/(y_i-\mu)^2\}^{1/2}\) and \(\lambda=\sigma^{-1}.\)
+The Laplace distribution with location \(\mu\) and scale \(\sigma,\) has
+density \begin{align*}
+f(x; \mu, \sigma) = \frac{1}{2\sigma}\exp\left(-\frac{|x-\mu|}{\sigma}\right).
+\end{align*} It can be expressed as a scale mixture of Gaussians, where
+\(Y_i \sim \mathsf{Laplace}(\mu, \sigma)\) is equivalent to
+\(Z_i \mid \tau \sim \mathsf{Gauss}(\mu, \lambda_i)\) and
+\(\Lambda_i \sim \mathsf{expo}\{(2\sigma^2)^{-1}\}.\) To see this, we
+first look at the Wald (or inverse Gaussian) distribution
+\(\mathsf{Wald}(\nu, \omega)\) with location \(\nu >0\) and shape
+\(\omega>0,\), whose density is \begin{align*}
+f(y; \nu, \omega) &= \left(\frac{\omega}{2\pi y^{3}}\right)^{1/2} \exp\left\{ - \frac{\omega (y-\nu)^2}{2\nu^2y}\right\}, \quad y > 0
+\\ &\stackrel{y}{\propto} y^{-3/2}\exp\left\{-\frac{\omega}{2} \left(\frac{y}{\nu^2} + \frac{1}{y}\right)\right\}
+\end{align*} To show that the marginal (unconditionally) is Laplace, we
+write the joint density and integrate out the variance term \(\lambda,\)
+make the change of variable to get the result in terms of the precision
+\(\xi = 1/\lambda\), whence \begin{align*}
+p(z) &= \int_{0}^{\infty} p(z \mid \lambda) p(\lambda) \mathrm{d} \lambda 
+\\&= \int_0^{\infty} \frac{1}{(2\pi\lambda)^{1/2}}\exp \left\{-\frac{1}{2\lambda}(z-\mu)^2\right\}\frac{1}{2\sigma^2}\exp\left(-\frac{\lambda}{2\sigma^2}\right)  \mathrm{d} \lambda 
+\\&= \frac{1}{2\sigma^2}\int_0^{\infty} \frac{1}{(2\pi\lambda)^{1/2}}\exp \left[-\frac{1}{2} \left\{\frac{(z-\mu)^2}{\lambda}+\frac{\lambda}{\sigma^2}\right\}\right] \mathrm{d} \lambda 
+\\&= \frac{1}{2\sigma^2}\int_0^{\infty} \frac{1}{\xi^2}\frac{\xi^{1/2}}{(2\pi)^{1/2}}\exp \left[-\frac{1}{2\sigma^2} \left\{\xi\sigma^2(z-\mu)^2+\frac{1}{\xi}\right\}\right] \mathrm{d} \xi
+\\&= \frac{1}{2\sigma^2}\int_0^{\infty} \frac{1}{(2\pi\xi^3)^{1/2}}\exp \left[-\frac{\omega}{2} \left\{\frac{\xi}{\nu^2}+\frac{1}{\xi}\right\}\right] \mathrm{d} \xi
+\\&= \frac{1}{2\sigma^2\omega^{1/2}}\exp\left(-\frac{\omega}{\nu}\right) 
+\\& = \frac{1}{2\sigma}\exp\left(-\frac{|z-\mu|}{\sigma}\right).
+\end{align*} upon recovering the conditional density of
+\(\Xi \mid Z \sim \mathsf{Wald}(\nu, \omega)\) with parameters
+\(\nu=(\sigma|z-\mu|)^{-1}\) and \(\omega=\sigma^{-2}\).
 
 Park and Casella (\citeproc{ref-Park.Casella:2008}{2008}) use this
 hierarchical construction to define the Bayesian LASSO. With a model
 matrix \(\mathbf{X}\) whose columns are standardized to have mean zero
 and unit standard deviation, we may write \begin{align*}
-\boldsymbol{Y} \mid \mu, \boldsymbol{\beta}, \sigma^2 &\sim  \mathsf{Gauss}_n(\mu \boldsymbol{1}_n + \mathbf{X}\boldsymbol{\beta}, \sigma \mathbf{I}_n)\\
-\beta_j \mid \sigma, \tau_j &\sim \mathsf{Gauss}(0, \sigma\tau_j)\\
+\boldsymbol{Y} \mid \mu, \boldsymbol{\beta}, \sigma^2 &\sim  \mathsf{Gauss}_n(\mu \boldsymbol{1}_n + \mathbf{X}\boldsymbol{\beta}, \sigma^2 \mathbf{I}_n)\\
+\beta_j \mid \sigma^2, \tau_j &\sim \mathsf{Gauss}(0, \sigma^2\tau_j)\\
 \tau_j &\sim \mathsf{expo}(\lambda/2)
-\end{align*} If we set an improper prior
-\(p(\mu, \sigma) \propto \sigma^{-1},\) the resulting conditional
-distributions are all available and thus the model is amenable to Gibbs
-sampling. With
+\end{align*} With the improper prior
+\(p(\mu, \sigma^2) \propto 1/\sigma^2\) and with \(n\) independent and
+identically distributed Laplace variates, written as a scale mixture,
+the model is amenable to Gibbs sampling. With
 \(\mathbf{D}^{-1}_{\tau} = \mathrm{diag}(\tau_1^{-1}, \ldots, \tau_p^{-1})\)
 and
 \(\tilde{\boldsymbol{y}} = \boldsymbol{y} - \overline{y}\mathbf{1}_n\)
 the centered response vector, we can simulate in turn
 (\citeproc{ref-Park.Casella:2008}{Park and Casella 2008}) \begin{align*}
-\mu \mid \sigma^2, \boldsymbol{y} \sim \mathsf{Gauss}(\overline{y}, \sigma^2/n) \\
-\boldsymbol{\beta} \mid \sigma^2, \boldsymbol{\tau}, \boldsymbol{y} &\sim \mathsf{Gauss}_p\left\{\left(\boldsymbol{X}^\top\boldsymbol{X} + \mathbf{D}^{-1}_{\tau}\right)^{-1} \mathbf{X}\widetilde{\boldsymbol{y}}, \sigma^2\left(\boldsymbol{X}^\top\boldsymbol{X} + \mathbf{D}^{-1}_{\tau}\right)^{-1}\right\}\\
-\sigma^2 \mid \boldsymbol{\beta}, \boldsymbol{\tau},\boldsymbol{y} \sim \mathsf{inv. gamma}\left\{ \frac{n-1+p}{2}, \frac{(\widetilde{\boldsymbol{y}}-\mathbf{X}\boldsymbol{\beta})^\top(\widetilde{\boldsymbol{y}}-\mathbf{X}\boldsymbol{\beta}) + \boldsymbol{\beta}^\top\mathbf{D}^{-1}_{\tau} \boldsymbol{\beta}}{2}\right\},\\
-\tau_j^{-1} \mid \boldsymbol{\beta}, \sigma^2,\boldsymbol{y} &\sim \mathsf{Wald} \left( \frac{\lambda\sigma}{|\beta_j|}, \lambda^2\right)
-\end{align*} where the last three conditional follow from marginalizing
-out \(\mu.\)
+\mu \mid \sigma^2, \boldsymbol{y} &\sim \mathsf{Gauss}(\overline{y}, \sigma^2/n) \\
+\boldsymbol{\beta} \mid \sigma^2, \boldsymbol{\tau}, \boldsymbol{y} &\sim \mathsf{Gauss}_p\left\{\left(\mathbf{X}^\top\mathbf{X} + \mathbf{D}^{-1}_{\tau}\right)^{-1} \mathbf{X}\widetilde{\boldsymbol{y}}, \sigma^2\left(\mathbf{X}^\top\mathbf{X} + \mathbf{D}^{-1}_{\tau}\right)^{-1}\right\}\\
+\sigma^2 \mid \boldsymbol{\beta}, \boldsymbol{\tau},\boldsymbol{y} &\sim \mathsf{inv. gamma}\left\{ \frac{n-1+p}{2}, \frac{(\widetilde{\boldsymbol{y}}-\mathbf{X}\boldsymbol{\beta})^\top(\widetilde{\boldsymbol{y}}-\mathbf{X}\boldsymbol{\beta}) + \boldsymbol{\beta}^\top\mathbf{D}^{-1}_{\tau} \boldsymbol{\beta}}{2}\right\},\\
+\tau_j^{-1} \mid \boldsymbol{\beta}, \sigma^2 &\sim \mathsf{Wald} \left( \frac{\lambda^{1/2}\sigma}{|\beta_j|}, \lambda\right)
+\end{align*} where the last three conditional distributions follow from
+marginalizing out \(\mu.\)
 
 The Bayesian LASSO places a Laplace penalty on the regression
 coefficients, with lower values of \(\lambda\) yielding more shrinkage.
@@ -6027,10 +5993,12 @@ the problem and run an EM algorithm or use the data augmentation. In an
 iterative framework, we can consider the complete data as the tuples
 \((X_i, Z_i),\) where \(Z_i = \mathsf{I}(C_i=k).\)
 
-With the augmented data, the conditional distribution of
+With the augmented data, the likelihood becomes \begin{align*}
+\prod_{i=1}^n \prod_{k=1}^K \{\omega_kf_k(x; \boldsymbol{\theta}_k)\}^{Z_i},
+\end{align*} so the conditional distribution of
 \(Z_i \mid X_i, \boldsymbol{\omega}, \boldsymbol{\theta} \sim \mathsf{multinom}(1, \boldsymbol{\gamma}_{ik})\)
 where
-\[\gamma_{ik} = \frac{\omega_k f_k(X_i\boldsymbol{\theta}_k)}{\sum_{j=1}^K f_j(X_i\boldsymbol{\theta}_k)}.\]
+\[\gamma_{ik} = \frac{\omega_k f_k(X_i\boldsymbol{\theta}_k)}{\sum_{j=1}^K \omega_jf_j(X_i\boldsymbol{\theta}_k)}.\]
 Given suitable priors for the probabilities \(\boldsymbol{\omega}\) and
 \(\boldsymbol{\theta} \equiv \{\boldsymbol{\theta}_1, \ldots, \boldsymbol{\theta}_k\},\)
 we can use Gibbs sampling updating \(\boldsymbol{Z},\)
@@ -6049,7 +6017,7 @@ f_i(x) = p_i \phi_{1}(x_i; \mu_1, \tau_1^{-1}) + (1-p_i)\phi_{2}(x_i; \mu_2, \ta
 \end{align*} where \(\phi(\cdot; \mu, \tau^{-1})\) is the density
 function of a Gaussian with mean \(\mu\) and precision \(\tau.\) We
 assign conjugate priors with \(p_i \sim \mathsf{beta}(a_1, a_2),\)
-\(\mu_j \sim \mathsf{Gauss}\{c, (\tau_jd)^{-1}\}\) and
+\(\mu_j \sim \mathsf{Gauss}(c, d^{-1})\) and
 \(\tau_j \sim \mathsf{gamma}(b_1, b_2).\) For the hyperpriors, we use
 \(a_1=a_2=1,\) \(b_1=1, b_2 = 0.1,\) \(c = 60,\) and \(d = 1/40.\)
 
@@ -6081,7 +6049,7 @@ assign conjugate priors with \(p_i \sim \mathsf{beta}(a_1, a_2),\)
   \ControlFlowTok{for}\NormalTok{(j }\ControlFlowTok{in} \DecValTok{1}\SpecialCharTok{:}\DecValTok{2}\NormalTok{)\{}
 \NormalTok{    yg }\OtherTok{\textless{}{-}}\NormalTok{ y[group }\SpecialCharTok{==}\NormalTok{ (j}\DecValTok{{-}1}\NormalTok{L)]}
 \NormalTok{    ng }\OtherTok{\textless{}{-}} \FunctionTok{length}\NormalTok{(yg)}
-\NormalTok{    prec\_mu }\OtherTok{\textless{}{-}}\NormalTok{ ng}\SpecialCharTok{*}\NormalTok{prec[j] }\SpecialCharTok{+}\NormalTok{ d}
+\NormalTok{    prec\_mu }\OtherTok{\textless{}{-}}\NormalTok{ prec[j] }\SpecialCharTok{*}\NormalTok{ ng }\SpecialCharTok{+}\NormalTok{ d}
 \NormalTok{    mean\_mu }\OtherTok{\textless{}{-}}\NormalTok{ (}\FunctionTok{sum}\NormalTok{(yg)}\SpecialCharTok{*}\NormalTok{prec[j] }\SpecialCharTok{+}\NormalTok{ c}\SpecialCharTok{*}\NormalTok{d)}\SpecialCharTok{/}\NormalTok{prec\_mu}
 \NormalTok{    mu[j] }\OtherTok{\textless{}{-}} \FunctionTok{rnorm}\NormalTok{(}\AttributeTok{n =} \DecValTok{1}\NormalTok{, }\AttributeTok{mean =}\NormalTok{ mean\_mu, }\AttributeTok{sd =} \DecValTok{1}\SpecialCharTok{/}\FunctionTok{sqrt}\NormalTok{(prec\_mu))}
 \NormalTok{    prec[j] }\OtherTok{\textless{}{-}} \FunctionTok{rgamma}\NormalTok{(}\AttributeTok{n =} \DecValTok{1}\NormalTok{, }
@@ -6127,7 +6095,7 @@ and Stephens (\citeproc{ref-Stephens:2002}{2002}) for more details.
 
 \end{refremark}
 
-\begin{tcolorbox}[enhanced jigsaw, left=2mm, bottomrule=.15mm, coltitle=black, colback=white, rightrule=.15mm, colbacktitle=quarto-callout-important-color!10!white, bottomtitle=1mm, leftrule=.75mm, toprule=.15mm, titlerule=0mm, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Summary}:}, breakable, arc=.35mm, toptitle=1mm, colframe=quarto-callout-important-color-frame, opacityback=0, opacitybacktitle=0.6]
+\begin{tcolorbox}[enhanced jigsaw, bottomtitle=1mm, arc=.35mm, colback=white, opacityback=0, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Summary}:}, coltitle=black, toptitle=1mm, breakable, toprule=.15mm, left=2mm, bottomrule=.15mm, colframe=quarto-callout-important-color-frame, titlerule=0mm, rightrule=.15mm, leftrule=.75mm, opacitybacktitle=0.6, colbacktitle=quarto-callout-important-color!10!white]
 
 \begin{itemize}
 \tightlist
@@ -6185,7 +6153,7 @@ Betancourt} for excellent visualizations. In this chapter, we focus on
 three aspects of the workflow: model validation, evaluation and
 comparison.
 
-\begin{tcolorbox}[enhanced jigsaw, left=2mm, bottomrule=.15mm, coltitle=black, colback=white, rightrule=.15mm, colbacktitle=quarto-callout-important-color!10!white, bottomtitle=1mm, leftrule=.75mm, toprule=.15mm, titlerule=0mm, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Learning objectives}:}, breakable, arc=.35mm, toptitle=1mm, colframe=quarto-callout-important-color-frame, opacityback=0, opacitybacktitle=0.6]
+\begin{tcolorbox}[enhanced jigsaw, bottomtitle=1mm, arc=.35mm, colback=white, opacityback=0, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Learning objectives}:}, coltitle=black, toptitle=1mm, breakable, toprule=.15mm, left=2mm, bottomrule=.15mm, colframe=quarto-callout-important-color-frame, titlerule=0mm, rightrule=.15mm, leftrule=.75mm, opacitybacktitle=0.6, colbacktitle=quarto-callout-important-color!10!white]
 
 At the end of the chapter, students should be able to
 
@@ -6417,7 +6385,7 @@ and similarly the chain sample average and variances, respectively
 (\(m=1, \ldots, M\)). The between-chain variance and within-chain
 variance estimator are \begin{align*}
 \mathsf{Va}_{\text{between}} &= \frac{B}{M-1}\sum_{m=1}^M (\overline{\theta}_m - \overline{\theta})^2\\
-\mathsf{Va}_{\text{within}} &= \frac{1}{M}\sum_{m=1}^m \widehat{\sigma}^2_m
+\mathsf{Va}_{\text{within}} &= \frac{1}{M}\sum_{m=1}^M \widehat{\sigma}^2_m
 \end{align*} and we can compute \begin{align*}
 \widehat{R} = \left(\frac{\mathsf{Va}_{\text{within}}(B-1) + \mathsf{Va}_{\text{between}}}{B\mathsf{Va}_{\text{within}}}\right)^{1/2}
 \end{align*} The potential scale reduction statistic must be, by
@@ -6552,6 +6520,11 @@ approximation to the MLE under suitable regularity conditions, the
 \(\mathsf{DIC}\) is considered by many authors as not being a Bayesian
 procedure; see Spiegelhalter et al.
 (\citeproc{ref-Spiegelhalter:2014}{2014}) and the discussion therein.
+
+Criteria such as \(\mathsf{LPPD}\) and therefore \(\mathsf{WAIC}\)
+require some form of exchangeability, and don't apply to cases where
+leave-one-out cross validation isn't adequate, for example in
+spatio-temporal models.
 
 \begin{example}[Information criteria for smartwatch and Bayesian
 LASSO]\protect\hypertarget{exm-smartwatch-infocriteria}{}\label{exm-smartwatch-infocriteria}
@@ -6953,11 +6926,19 @@ data, with individual updates for \(\beta_t\).}
 
 Instead of making things worst, we can try to improve upon our initial
 sampler by simulating first a proposal \(\tau^{\star}\) using a random
-walk Metropolis (on the log scale), then drawing from the full
-conditional \(\boldsymbol{\beta} \mid \boldsymbol{z}, \tau^{\star}\) and
-accepting/rejecting the whole move. A second alternative is to ditch
-altogether the data augmentation step and write the unnormalized log
-posterior for \(\boldsymbol{\beta}\) as \begin{align*}
+walk Metropolis (on the log scale) or some other proposal
+\(q(\tau^{\star}; \tau),\) then drawing from the full conditional
+\(\boldsymbol{\beta} \mid \boldsymbol{z}, \tau^{\star}\) and
+accepting/rejecting the whole move. In doing this, all terms that depend
+on \(\boldsymbol{\beta}\) cancel out, and the term
+\(p(\tau^{\star}, \boldsymbol{\beta}^{\star} \mid \tau)/\{q(\tau^{\star}; \tau)p(\boldsymbol{\beta}^{\star} \mid \tau^{\star})\}\)
+in the acceptance ratio becomes \begin{align*}
+\frac{\tau_t^{\star(n-1)/2} p(\tau_t^{\star})\exp \left\{-\frac{1}{2}\boldsymbol{z}^\top(\boldsymbol{z}/\boldsymbol{n})\right\}}{q(\tau^{\star}; \tau) \left| \tau^{\star}\mathbf{Q} + \mathrm{diag}(\boldsymbol{n})\right|\exp \left[-\frac{1}{2}\boldsymbol{z}^\top \left\{\tau^{\star}\mathbf{Q} + \mathrm{diag}(\boldsymbol{n})\right\}^{-1}\boldsymbol{z}\right]}
+\end{align*}
+
+A second alternative is to ditch altogether the data augmentation step
+and write the unnormalized log posterior for \(\boldsymbol{\beta}\) as
+\begin{align*}
  \log p(\boldsymbol{\beta} \mid \boldsymbol{y}) \stackrel{\boldsymbol{\beta}}{\propto} - \frac{\tau}{2} \boldsymbol{\beta}^\top \mathbf{Q} \boldsymbol{\beta} + \sum_{t=1}^{366} y_{t} \log \Phi(\beta_t) + (n_t-y_{t}) \log\{1-\Phi(\beta_t)\}
 \end{align*} and do a quadratic approximation to the posterior by doing
 a Taylor expansion of the terms \(\log p(y_{t} \mid \beta_{t})\) around
@@ -7007,6 +6988,27 @@ can be relaxed. The intercept \(\beta_0\), which is added to capture the
 mean response and make it mean-zero, receives special treatment and is
 typically assigned an improper prior. We largely follow the exposition
 of Villani (\citeproc{ref-Villani:2023}{2023}).
+
+The joint posterior is Gaussian-inverse gamma and can be factorized
+\begin{align*}
+p(\boldsymbol{\beta}, \sigma^2 \mid y) = p(\sigma^2 \mid y) p(\boldsymbol{\beta} \mid \sigma^2, y)
+\end{align*} where
+\(p(\sigma^2 \mid y) \sim \mathsf{inv. gamma}(\alpha^*, \beta^*)\) and
+\begin{align*}
+\boldsymbol{\beta} \mid \sigma^2, y & \sim \mathsf{Gauss}_p(\mathbf{M}\boldsymbol{m}, \sigma^2\mathbf{M})
+\\
+\alpha^* &= \alpha + n/2,\\ 
+\beta^* &=\beta + 0.5 \boldsymbol{\nu}_\beta^\top \mathbf{Q}_\beta\boldsymbol{\nu}_\beta + \boldsymbol{y}^\top\boldsymbol{y} - \boldsymbol{m}^\top\mathbf{M}\boldsymbol{m}, \\
+\boldsymbol{m} &= \mathbf{Q}_\beta \boldsymbol{\nu}_\beta + \mathbf{X}^\top \mathbf{Q}_y\boldsymbol{y}\\
+\mathbf{M} &= (\mathbf{Q}_\beta + \mathbf{X}^\top\mathbf{Q}_y\mathbf{X})^{-1};
+\end{align*} the latter can be evaluated efficiently using
+Shermann--Morrisson--Woodbury identity. Given the conditionally
+conjugate priors, we can easily sample from the posterior using Gibbs
+sampling.
+
+:::
+
+--\textgreater{}
 
 \begin{proposition}[Gaussian ordinary linear regression with conjugate
 priors]\protect\hypertarget{prp-gaussian-ols}{}\label{prp-gaussian-ols}
@@ -7378,11 +7380,6 @@ Figure~\ref{fig-weights-shrinkage} shows the weighting implied by the
 mixture density for a Cauchy prior on the variance, the double
 exponential of the Laplace from Bayesian LASSO and the horseshoe.
 
-\begin{verbatim}
-Warning: Removed 2 rows containing missing values or values outside the scale range
-(`geom_line()`).
-\end{verbatim}
-
 \begin{figure}[ht!]
 
 \centering{
@@ -7439,7 +7436,7 @@ Vehtari (\citeproc{ref-Piironen.Vehtari:2017}{2017}) proposed the
 regularized horseshoe, nicknamed Finnish horseshoe, where \begin{align*}
 \beta_j \mid \lambda, \tau_j, c^2 &\sim \mathsf{Gauss}\left(0, \lambda\frac{c^2\tau_j^2}{c^2 + \tau^2_j\lambda^2}\right), \\
 \tau_j &\sim \mathsf{Student}_{+}(0, 1, 1)\\
-c^2 \mid s^2, \nu \sim \mathsf{inv. gamma}(\nu/2, \nu s^2/2).
+c^2 \mid s^2, \nu &\sim \mathsf{inv. gamma}(\nu/2, \nu s^2/2).
 \end{align*} When \(\tau^2\lambda^2_j\) is much greater than \(c^2\),
 this amounts to having a Student slab with \(\nu\) degrees of freedom
 for large coefficients; taking a small value of \(\nu\) allows for
@@ -7487,8 +7484,8 @@ regression coefficients with Gaussian (ridge), double exponential
 
 One aspect worth mentioning is that the horseshoe prior impacts strongly
 the geometry and leads to slower mixing: the effective sample size
-fraction relative to the number of samples ranges from 14\% to 92\%,
-compared to 58\% to 97\% for the Bayesian LASSO and near-independent
+fraction relative to the number of samples ranges from 15\% to 100\%,
+compared to 50\% to 96\% for the Bayesian LASSO and near-independent
 draws with the conjugate ridge.
 
 \end{example}
