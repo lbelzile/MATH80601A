@@ -33,13 +33,13 @@ Concatenating records, $\boldsymbol{Y} \sim \mathsf{Gauss}_n(\mathbf{X}\boldsymb
 \end{align*}
 where $\mathsf{inv. gamma}$ denotes the inverse gamma distribution^[This simply means that the precision $\sigma^{-2},$ the reciprocal of the variance, has a gamma distribution with shape $\alpha$ and rate $\beta.$]
 
-<!--
+
 Writing the log likelihood in exponential family form,
 \begin{align*}
 \ell(\mu, \sigma^2; \boldsymbol{y}) \propto -n \log(\sigma) - \frac{\boldsymbol{y}^\top\boldsymbol{y}}{2\sigma^2} + \frac{\mu}{\sigma^2}\boldsymbol{y}^\top \boldsymbol{1}_n - \frac{n}{2}\frac{\mu^2}{\sigma^2}
 \end{align*}
 
--->
+
 
 The joint posterior is Gaussian-inverse gamma and can be factorized
 \begin{align*}
