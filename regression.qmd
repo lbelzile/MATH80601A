@@ -499,7 +499,7 @@ When $\tau^2\lambda^2_j$ is much greater than $c^2$, this amounts to having a St
 
 ## Comparison of shrinkage priors
 
-We revisit the `diabetes` data from the **R** package `lars`, which was used in @Park.Casella:2009 to illustrate the Bayesian LASSO. We consider three methods: the default Gaussian prior, which gives a ridge penalty, the Bayesian LASSO and finally the horseshoe. Models are fitted using the `bayesreg` package. 
+We revisit the `diabetes` data from the **R** package `lars`, which was used in @Casella.Park:2009 to illustrate the Bayesian LASSO. We consider three methods: the default Gaussian prior, which gives a ridge penalty, the Bayesian LASSO and finally the horseshoe. Models are fitted using the `bayesreg` package.
 
 
 @fig-shrinkage-dens-comparison shows the ordered coefficients for each method. We can see that the ridge has the widest intervals of all methods, providing some shrinkage only for large values of $\beta$. The horseshoe has typically narrower intervals, with more mass in a neighborhood of zero for smaller coefficients, and asymmetric intervals.
@@ -533,6 +533,12 @@ MetBrewer::scale_fill_met_d("Hiroshige") +
 theme(legend.position = "bottom")
 ```
 
-One aspect worth mentioning is that the horseshoe prior impacts strongly the geometry and leads to slower mixing: the effective sample size fraction relative to the number of samples ranges from `r round(min(100*horseshoe$ess.frac), 0)`% to `r round(100*max(horseshoe$ess.frac), 0)`%, compared to `r round(100*min(blasso$ess.frac), 0)`% to `r round(100*max(blasso$ess.frac), 0)`% for the Bayesian LASSO and near-independent draws with the conjugate ridge.
+One aspect worth mentioning is that the horseshoe prior impacts strongly the geometry and leads to slower mixing than the conjugate or Student-$t$ priors: the effective sample size fraction relative to the number of samples ranges from `r round(min(100*horseshoe$ess.frac), 0)`% to `r round(100*max(horseshoe$ess.frac), 0)`%, compared to `r round(100*min(blasso$ess.frac), 0)`% to `r round(100*max(blasso$ess.frac), 0)`% for the Bayesian LASSO and near-independent draws with the conjugate ridge.
 
 :::
+
+
+
+## Bayes factor and Bayesian model averaging
+
+Variable selection refers to selection of covariates from a set of $p$ candidates from a design matrix which is orthogonal to the intercept; these could include higher order terms or interactions.  From the Bayesian perspective, all of these $2^p-1$ submodels must be assigned a prior and we can also rule out models without lower order interactions through the prior. The goal of the analysis is to account for the uncertainty associated with variable selection. The target of inference is often the weight of the combinations, and the probability that a predictor is included aposteriori

@@ -271,6 +271,7 @@ window.Quarto = {
    
   <ul>
   <li><a href="#shrinkage-priors" id="toc-shrinkage-priors" class="nav-link active" data-scroll-target="#shrinkage-priors"><span class="header-section-number">8.1</span> Shrinkage priors</a></li>
+  <li><a href="#bayes-factor-and-bayesian-model-averaging" id="toc-bayes-factor-and-bayesian-model-averaging" class="nav-link" data-scroll-target="#bayes-factor-and-bayesian-model-averaging"><span class="header-section-number">8.2</span> Bayes factor and Bayesian model averaging</a></li>
   </ul>
 <div class="toc-actions"><ul><li><a href="https://github.com/lbelzile/MATH80601A/edit/main/regression.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li></ul></div></nav>
     </div>
@@ -301,25 +302,32 @@ Concatenating records, $\boldsymbol{Y} \sim \mathsf{Gauss}_n(\mathbf{X}\boldsymb
 \end{align*}
 where $\mathsf{inv. gamma}$ denotes the inverse gamma distribution^[This simply means that the precision $\sigma^{-2},$ the reciprocal of the variance, has a gamma distribution with shape $\alpha$ and rate $\beta.$]
 
-<!--
+
 Writing the log likelihood in exponential family form,
 \begin{align*}
 \ell(\mu, \sigma^2; \boldsymbol{y}) \propto -n \log(\sigma) - \frac{\boldsymbol{y}^\top\boldsymbol{y}}{2\sigma^2} + \frac{\mu}{\sigma^2}\boldsymbol{y}^\top \boldsymbol{1}_n - \frac{n}{2}\frac{\mu^2}{\sigma^2}
 \end{align*}
 
--->
-<p>The joint posterior is Gaussian-inverse gamma and can be factorized <span class="math display">\[\begin{align*}
+
+
+The joint posterior is Gaussian-inverse gamma and can be factorized
+\begin{align*}
 p(\boldsymbol{\beta}, \sigma^2 \mid y) = p(\sigma^2 \mid y) p(\boldsymbol{\beta} \mid \sigma^2, y)
-\end{align*}\]</span> where <span class="math inline">\(p(\sigma^2 \mid y) \sim \mathsf{inv. gamma}(\alpha^*, \beta^*)\)</span> and <span class="math display">\[\begin{align*}
-\boldsymbol{\beta} \mid \sigma^2, y &amp; \sim \mathsf{Gauss}_p(\mathbf{M}\boldsymbol{m}, \sigma^2\mathbf{M})
+\end{align*}
+where $p(\sigma^2 \mid y) \sim \mathsf{inv. gamma}(\alpha^*, \beta^*)$ and 
+\begin{align*}
+\boldsymbol{\beta} \mid \sigma^2, y & \sim \mathsf{Gauss}_p(\mathbf{M}\boldsymbol{m}, \sigma^2\mathbf{M})
 \\
-\alpha^* &amp;= \alpha + n/2,\\
-\beta^* &amp;=\beta + 0.5 \boldsymbol{\nu}_\beta^\top \mathbf{Q}_\beta\boldsymbol{\nu}_\beta + \boldsymbol{y}^\top\boldsymbol{y} - \boldsymbol{m}^\top\mathbf{M}\boldsymbol{m}, \\
-\boldsymbol{m} &amp;= \mathbf{Q}_\beta \boldsymbol{\nu}_\beta + \mathbf{X}^\top \mathbf{Q}_y\boldsymbol{y}\\
-\mathbf{M} &amp;= (\mathbf{Q}_\beta + \mathbf{X}^\top\mathbf{Q}_y\mathbf{X})^{-1};
-\end{align*}\]</span> the latter can be evaluated efficiently using Shermann–Morrisson–Woodbury identity. Given the conditionally conjugate priors, we can easily sample from the posterior using Gibbs sampling.</p>
-<p>:::</p>
-<p>–&gt;</p>
+\alpha^* &= \alpha + n/2,\\ 
+\beta^* &=\beta + 0.5 \boldsymbol{\nu}_\beta^\top \mathbf{Q}_\beta\boldsymbol{\nu}_\beta + \boldsymbol{y}^\top\boldsymbol{y} - \boldsymbol{m}^\top\mathbf{M}\boldsymbol{m}, \\
+\boldsymbol{m} &= \mathbf{Q}_\beta \boldsymbol{\nu}_\beta + \mathbf{X}^\top \mathbf{Q}_y\boldsymbol{y}\\
+\mathbf{M} &= (\mathbf{Q}_\beta + \mathbf{X}^\top\mathbf{Q}_y\mathbf{X})^{-1};
+\end{align*}
+the latter can be evaluated efficiently using Shermann--Morrisson--Woodbury identity. Given the conditionally conjugate priors, we can easily sample from the posterior using Gibbs sampling.
+
+:::
+
+-->
 <div id="prp-gaussian-ols" class="theorem proposition">
 <p><span class="theorem-title"><strong>Proposition 8.1 (Gaussian ordinary linear regression with conjugate priors)</strong></span> The conjugate prior for the Gaussian regression model for the mean and precision parameters <span class="math inline">\(\boldsymbol{\beta}\)</span> and <span class="math inline">\(\omega\)</span>, respectively, is a Gaussian-gamma and is defined hierarchically as <span class="math display">\[\begin{align*}
 \boldsymbol{\beta} \mid \omega &amp;\sim \mathsf{Gauss}\left\{\boldsymbol{\mu}_0, (
@@ -546,8 +554,12 @@ Figure&nbsp;8.5: Density estimates for regression coefficients with Gaussian (ri
 </div>
 </div>
 </div>
-<p>One aspect worth mentioning is that the horseshoe prior impacts strongly the geometry and leads to slower mixing: the effective sample size fraction relative to the number of samples ranges from 15% to 79%, compared to 60% to 100% for the Bayesian LASSO and near-independent draws with the conjugate ridge.</p>
+<p>One aspect worth mentioning is that the horseshoe prior impacts strongly the geometry and leads to slower mixing than the conjugate or Student-<span class="math inline">\(t\)</span> priors: the effective sample size fraction relative to the number of samples ranges from 15% to 79%, compared to 60% to 100% for the Bayesian LASSO and near-independent draws with the conjugate ridge.</p>
 </div>
+</section>
+<section id="bayes-factor-and-bayesian-model-averaging" class="level2" data-number="8.2">
+<h2 data-number="8.2" class="anchored" data-anchor-id="bayes-factor-and-bayesian-model-averaging"><span class="header-section-number">8.2</span> Bayes factor and Bayesian model averaging</h2>
+<p>Variable selection refers to selection of covariates from a set of <span class="math inline">\(p\)</span> candidates from a design matrix which is orthogonal to the intercept; these could include higher order terms or interactions. From the Bayesian perspective, all of these <span class="math inline">\(2^p-1\)</span> submodels must be assigned a prior and we can also rule out models without lower order interactions through the prior. The goal of the analysis is to account for the uncertainty associated with variable selection. The target of inference is often the weight of the combinations, and the probability that a predictor is included aposteriori</p>
 
 
 <div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list" style="display: none">

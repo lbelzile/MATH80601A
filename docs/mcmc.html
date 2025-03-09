@@ -499,16 +499,6 @@ Figure&nbsp;5.4: Correlogram for the three Markov chains.
 </div>
 </div>
 </div>
-<!-- 
-trace plots and posterior plots
-one parameter at a time versus block update 
-reparametrization to reduce correlation and enforce parameter constraints
-choice of proposal kernel: independent, random walk, MALA
-starting values and burnin
-marginalization
-acceptance rate and proposals tuning proposals
-one chain or multiple chain
--->
 <div class="proof remark">
 <p><span class="proof-title"><em>Remark</em> (Independence Metropolis–Hastings). </span>If the proposal density <span class="math inline">\(q(\cdot)\)</span> does not depend on the current state <span class="math inline">\(\boldsymbol{\theta}_{t-1},\)</span> the algorithm is termed <em>independence</em>. To maximize acceptance, we could design a candidate distribution whose mode is at the maximum a posteriori value. To efficiently explore the state space, we need to place enough density in all regions, for example by taking a heavy-tailed distributions, so that we explore the full support. Such proposals can be however inefficient and fail when the distribution of interest is multimodal. The independence Metropolis–Hastings algorithm then resembles accept-reject. If the ratio <span class="math inline">\(p(\boldsymbol{\theta})/q(\boldsymbol{\theta})\)</span> is bounded above by <span class="math inline">\(C \geq 1,\)</span> then we can make comparisons with rejection sampling. Lemma 7.9 of <span class="citation" data-cites="Casella.Robert:2004">Robert and Casella (<a href="references.html#ref-Casella.Robert:2004" role="doc-biblioref">2004</a>)</span> shows that the probability of acceptance of a move for the Markov chain is at least <span class="math inline">\(1/C,\)</span> which is larger than the accept-reject.</p>
 </div>

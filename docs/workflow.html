@@ -312,11 +312,7 @@ window.Quarto = {
 </div>
 <p>For a given problem, there are many different Markov chain Monte Carlo algorithms that one can implement: they will typically be distinguished based on the running time per iteration and the efficiency of the samplers, with algorithms providing realizations of Markov chains with lower autocorrelation being preferred. Many visual diagnostics and standard tests can be used to diagnose lack of convergence, or inefficiency. The purpose of this section is to review these in turn, and to go over tricks that can improve mixing.</p>
 <!--
-
-- 
-- **Prior to posterior**: prior sensitivity requires to rerun the algorithm with different priors, but it is sometimes feasible in simpler models to simply use a fast Gaussian approximation via the maximum a posteriori, and generate from the latter, to assess the impact of the prior. We can compare posterior density with prior density. The general rule is that parameters far from the data layer are more impacted by the prior choice.
-
-
+**Prior to posterior**: prior sensitivity requires to rerun the algorithm with different priors, but it is sometimes feasible in simpler models to simply use a fast Gaussian approximation via the maximum a posteriori, and generate from the latter, to assess the impact of the prior. We can compare posterior density with prior density. The general rule is that parameters far from the data layer are more impacted by the prior choice.
 -->
 <!-- A modular approach to model building is recommended. It is a good strategy to start small, with a toy model, and to complexify until the fit is adequate. The modular approach can also help to diagnose convergence problems, bugs and identifiability problems.  -->
 <p><strong>Generating artificial data</strong>: Some problems and checks relate to models and the correct implementations (of the algorithms). Sometimes, the probabilistic procedure will generate draws, but it’s unclear whether our numerical implementation is correct. We can sometimes see this if the output is truly misleading, but it’s not always obvious. We can for example generate an “artificial” or fake data set from the model with some fixed parameter inputs to see if we can recover the parameter values used to generate these within some credible set.</p>
@@ -337,17 +333,6 @@ T = \sum_{b=1}^B \mathrm{I}\{t(\boldsymbol{\theta}_b, \boldsymbol{y}) &lt; t(\bo
 \end{align*}\]</span></p>
 <p>These steps are repeated <span class="math inline">\(K\)</span> times, yielding <span class="math inline">\(K\)</span> test functions <span class="math inline">\(T_1, \ldots, T_K.\)</span> We then test for uniformity using results from <span class="citation" data-cites="Sailynoja:2022">Säilynoja, Bürkner, and Vehtari (<a href="references.html#ref-Sailynoja:2022" role="doc-biblioref">2022</a>)</span>.</p>
 </div>
-<!--
-## Multiple chains
-
-
-
-
-## Validating the output
--->
-<!-- The **R** packages `coda` and `posterior` -->
-<!-- Tests of uniformity  -->
-<!-- Prior elicitation: what summaries should the model faithfully reproduce?  -->
 <section id="convergence-diagnostics-and-model-validation" class="level2" data-number="7.1">
 <h2 data-number="7.1" class="anchored" data-anchor-id="convergence-diagnostics-and-model-validation"><span class="header-section-number">7.1</span> Convergence diagnostics and model validation</h2>
 <p>Many diagnostics rely on running multiple Markov chains for the same problem, with different starting values. In practice, it is more efficient to run a single long chain than multiple chains, because of the additional computational overhead related to burn in and warmup period. Running multiple chains however has the benefit of allowing one to compute diagnostics of convergence (by comparing chains) such as <span class="math inline">\(\widehat{R},\)</span> and to detect local modes.</p>
@@ -384,7 +369,6 @@ Figure&nbsp;7.1: Traceplots of three Markov chains for the same target with diff
 <p>To illustrate these, we revisit the model from <a href="priors.html#exm-randomeffects" class="quarto-xref">Example&nbsp;<span>3.15</span></a> with a penalized complexity prior for the individual effect <span class="math inline">\(\alpha_i\)</span> and vague normal priors. We also fit a simple Poisson model with only the fixed effect, taking <span class="math inline">\(Y_{ij} \sim \mathsf{Poisson}\{\exp(\beta_j)\}\)</span> with <span class="math inline">\(\beta_j \sim \mathsf{Gauss}(0,100)\)</span>. This model has too little variability relative to the observations and fits poorly as is.</p>
 <p>For the Poisson example, the effective sample size for the <span class="math inline">\(\boldsymbol{\beta}\)</span> for the multilevel model is a bit higher than 1000 with <span class="math inline">\(B=5000\)</span> iterations, whereas we have for the simple naive model is <span class="math inline">\(1.028\times 10^{4}\)</span> for <span class="math inline">\(B=10000\)</span> draws, suggesting superefficient sampling. The dependency between <span class="math inline">\(\boldsymbol{\alpha}\)</span> and <span class="math inline">\(\boldsymbol{\beta}\)</span> is responsible for the drop in accuracy.</p>
 <p>The <code>coda</code> (convergence diagnosis and output analysis) <strong>R</strong> package <span class="citation" data-cites="coda">(<a href="references.html#ref-coda" role="doc-biblioref">Plummer et al. 2006</a>)</span> contains many tests. For example, the Geweke <span class="math inline">\(Z\)</span>-score compares the averages for the beginning and the end of the chain: rejection of the null implies lack of convergence, or poor mixing.</p>
-<!-- The Gelman--Rubin $\widehat{R}$ diagnostic, which is advocated in STAN, is a multi-chain diagnostic that compares the within-chain variability to the between-chain variability. The value should be  -->
 <p>Running multiple Markov chains can be useful for diagnostics.</p>
 <div id="prp-rhat" class="theorem proposition">
 <p><span class="theorem-title"><strong>Proposition 7.2 (Gelman–Rubin diagnostic)</strong></span> The Gelman–Rubin diagnostic <span class="math inline">\(\widehat{R},\)</span> introduced in <span class="citation" data-cites="Gelman.Rubin:1992">Gelman and Rubin (<a href="references.html#ref-Gelman.Rubin:1992" role="doc-biblioref">1992</a>)</span> and also called potential scale reduction statistic, is obtained by considering the difference between within-chains and between-chains variance. Suppose we run <span class="math inline">\(M\)</span> chains for <span class="math inline">\(B\)</span> iterations, post burn in. Denoting by <span class="math inline">\(\theta_{bm}\)</span> the <span class="math inline">\(b\)</span>th draw of the <span class="math inline">\(m\)</span>th chain, we compute the global average <span class="math inline">\(\overline{\theta} = B^{-1}M^{-1}\sum_{b=1}^B \sum_{m=1}^m \theta_{bm}\)</span> and similarly the chain sample average and variances, respectively <span class="math inline">\(\overline{\theta}_m\)</span> and <span class="math inline">\(\widehat{\sigma}^2_m\)</span> (<span class="math inline">\(m=1, \ldots, M\)</span>). The between-chain variance and within-chain variance estimator are <span class="math display">\[\begin{align*}
@@ -488,25 +472,6 @@ Figure&nbsp;7.5: Quantile-quantile plots based on leave-one-out cross validation
 </div>
 </div>
 <!--
-Consider hybrid mixture of independent MH and random walk, or mean-centered
-
-
-
-
-
-
-::: {.cell}
-
-:::
-
-
-
-
-
-
-
--->
-<!--
 Examples
 
 - Meta analysis? Table 5.4 of Gelman, check for data from researchbox
@@ -594,8 +559,8 @@ z_{t,i} \mid  y_{t,i}, \beta_t \sim
 \end{cases}
 \end{align*}\]</span> The posterior is proportional to <span class="math display">\[\begin{align*}
 p(\boldsymbol{\beta} \mid \tau)p(\tau)\prod_{t=1}^{T}\prod_{i=1}^{n_t}p(y_{t,i} \mid z_{t,i}) p(z_{t,i} \mid \beta_t)
-\end{align*}\]</span> and once we have imputed the Gaussian latent vectors, we can work directly with the values of <span class="math inline">\(z_t = \sum_{i=1}^{n_t} z_{i,t}.\)</span> The posterior is <span class="math display">\[\begin{align*}
-p(\boldsymbol{\beta}, \tau) \propto \tau^{(n-1)/2}\exp \left( - \frac{\tau}{2} \boldsymbol{\beta}^\top \mathbf{Q} \boldsymbol{\beta}\right)\exp\left\{ - \frac{1}{2} (\boldsymbol{z}/\boldsymbol{n} - \boldsymbol{\beta})^\top \mathrm{diag}(\boldsymbol{n})(\boldsymbol{z}/\boldsymbol{n} - \boldsymbol{\beta})\right\} \tau^{a-1}\exp(-\tau b)
+\end{align*}\]</span> and once we have imputed the Gaussian latent vectors, we can work directly with the values of <span class="math inline">\(z_t = \sum_{i=1}^{n_t} z_{i,t}.\)</span> The posterior then becomes <span class="math display">\[\begin{align*}
+p(\boldsymbol{\beta}, \tau) &amp;\propto \tau^{(n-1)/2}\exp \left( - \frac{\tau}{2} \boldsymbol{\beta}^\top \mathbf{Q} \boldsymbol{\beta}\right)\tau^{a-1}\exp(-\tau b)\\&amp; \quad \times \exp\left\{ - \frac{1}{2} (\boldsymbol{z}/\boldsymbol{n} - \boldsymbol{\beta})^\top \mathrm{diag}(\boldsymbol{n})(\boldsymbol{z}/\boldsymbol{n} - \boldsymbol{\beta})\right\}
 \end{align*}\]</span> where <span class="math inline">\(\boldsymbol{z} = (z_1, \ldots, z_T).\)</span> Completing the quadratic form shows that <span class="math display">\[\begin{align*}
 \boldsymbol{\beta} \mid \boldsymbol{z}, \tau &amp;\sim \mathsf{Gauss}_T\left[\left\{\tau \mathbf{Q} + \mathrm{diag}(\boldsymbol{n})\right\}^{-1} \boldsymbol{z}, \left\{\tau \mathbf{Q} + \mathrm{diag}(\boldsymbol{n})\right\}^{-1}\right]\\
 \tau \mid \boldsymbol{\beta} &amp; \sim \mathsf{gamma}\left( \frac{n-1}{2} + a, \frac{\boldsymbol{\beta}^\top \mathbf{Q}\boldsymbol{\beta}}{2} + b \right)
