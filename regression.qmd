@@ -114,8 +114,6 @@ where
 
 :::{.proof}
 
-The improper prior $p(\boldsymbol{\beta}, \sigma^2) \propto \sigma^{-2}$ can be viewed as a special case of the conjugate prior when the variance of the Gaussian is infinite and the $\mathsf{gamma}(a,b)$ when both $a, b \to 0.$
-
 Write the posterior as
 \begin{align*}
  p(\boldsymbol{\beta}, \omega \mid \boldsymbol{y}) &\propto p(\boldsymbol{y} \mid \boldsymbol{\beta}, \omega) p(\omega)
@@ -126,7 +124,7 @@ We rewrite the first quadratic form in $\boldsymbol{y}-\mathbf{X}\boldsymbol{\be
  (\boldsymbol{y}-\mathbf{X}\widehat{\boldsymbol{\beta}}) + (\mathbf{X}\widehat{\boldsymbol{\beta}} - \mathbf{X}\boldsymbol{\beta})
 \end{align*}
 since $(\boldsymbol{y}-\mathbf{X}\widehat{\boldsymbol{\beta}})^\top (\mathbf{X}\widehat{\boldsymbol{\beta}} - \mathbf{X}\boldsymbol{\beta}) = 0.$
-We can pull together terms and separate the conditional posterior $p(\boldsymbol{\beta} \mid \boldsymbol{y}, \omega)$ and $p(\omega \mid \boldsymbol{y})$ as
+We can pull terms  together and separate the conditional posterior $p(\boldsymbol{\beta} \mid \boldsymbol{y}, \omega)$ and $p(\omega \mid \boldsymbol{y})$ as
 \begin{align*}
  p(\boldsymbol{\beta}, \omega \mid \boldsymbol{y}) &\propto \omega^{(n+p+\nu_0)/2 -1} \exp\left[-\frac{\omega}{2}\left\{\tau_0 + (\boldsymbol{y}-\mathbf{X}\widehat{\boldsymbol{\beta}})^\top(\boldsymbol{y}-\mathbf{X}\widehat{\boldsymbol{\beta}})\right\}\right]
  \\& \times \exp \left[-\frac{\omega}{2}\left\{(\widehat{\boldsymbol{\beta}} - \boldsymbol{\beta})^\top\mathbf{X}^\top\mathbf{X}(\widehat{\boldsymbol{\beta}} - \boldsymbol{\beta})+ (\boldsymbol{\beta}-\boldsymbol{\mu}_0)^\top\boldsymbol{\Omega}_0(\boldsymbol{\beta}-\boldsymbol{\mu}_0)\right\}\right]
@@ -145,6 +143,9 @@ whence the decomposition of the posterior as a Gaussian conditional on the preci
 \end{align*}
 so must be a Student-$t$ distribution with location $\boldsymbol{\mu}_n$, scale matrix $\tau_n/(\nu_0+n) \times \mathbf{\Omega}_n^{-1}$ and $\nu_0+n$ degrees of freedom.
 
+
+The improper prior $p(\beta_0, \boldsymbol{\beta}, \omega) \propto \omega^{-1}$ can be viewed as a special case of the conjugate prior when the variance of the Gaussian is infinite and the $\mathsf{gamma}(a,b)$ when both $a, b \to 0.$
+
 :::
 
 
@@ -152,7 +153,7 @@ The choice of prior precision $\boldsymbol{\Omega}_0$ is left to the user, but t
 
 :::{#exm-regression}
 
-Study 4 of @Lin:2024 focuses on cultural appropriation using a fictional scenario focusing on soul food recipe cookbook from Chef Dax. The chef who was either African-American or not, and the authors manipulated the description of the way he obtained the recipes (either by peeking without permission in kitchens, by asking permission or without them mentioning altogether for the control category). Authors postulated that the perception of appropriation would vary by political ideology (liberal or conservative). The study results in a 3 by 2 by 2 three-way between-subject ANOVA.
+Study 4 of @Lin:2024 focuses on cultural appropriation using a fictional scenario focusing on soul food recipe cookbook from Chef Dax. The chef was identified as being African-American or not, and the authors manipulated the description of the way he obtained the recipes (either by peeking without permission in kitchens, by asking permission or without them mentioning altogether for the control category). Authors postulated that the perception of appropriation would vary by political ideology (liberal or conservative). The study results in a 3 by 2 by 2 three-way between-subject ANOVA.
 
 
 We use the multivariate regression model to draw samples from $\boldsymbol{\beta}$ and use these to reconstruct the subgroup sample means for each of the 12 categories. Then, we consider the difference in perception of cultural appropriation for participants when Chef Dax is black (no cultural appropriation) versus when he is not, separately for liberals and conservatives, by pooling data across all different descriptions. @fig-contrasts shows the posterior distribution of those contrasts, which indicate that on average liberal perceive cultural appropriation more strongly (with nearly 2 points more), than conservatives (0.7 points on average).
@@ -329,7 +330,14 @@ A better alternative is to specify different prior for each marginal scale $\sig
 
 In contexts where the number of regressors $p$ is considerable relative to the sample size $n$, it may be useful to constrain the parameter vector if we assume that the signal is sparse, with a large proportion of coefficients that should be zero. This is notably important when the ratio $p/n \to c$ for $c > 0,$ meaning that the number of coefficients and covariates increases proportional to the sample size. Shrinkage priors can regularize and typically consist of distributions that have a mode at zero, and another that allows for larger signals.
 
+
+
+In the Bayesian paradigm, regularization is achieved via priors that have mass at or towards zero, pushing coefficients of the regression model towards zero unless there is strong evidence from the likelihood against this. We however want to allow non-zero coefficients, typically by setting coefficient-specific parameters with a heavy tailed distribution to prevent overshrinking. Most if not all parameter can be viewed as scale mixtures of Gaussian.
+
+We make a distinction between **global** shrinkage priors those that consider a common shrinkage parameter for all regression coefficients, to be compared with **local** scale mixtures that have coefficient-specific parameters.
+
 The scale parameters and hyperparameters can be estimated jointly with the model, and uncertainty diagnostics follow naturally. We assume that coefficients $\beta_j$ are independent apriori, although it is possible to specify group structures (e.g., for handling coefficients associated to a common categorical covariate with $K$ levels, represented by $K-1$ columns of dummy group indicators).
+
 
 
 :::{#prp-spike-slab}
@@ -337,14 +345,14 @@ The scale parameters and hyperparameters can be estimated jointly with the model
 ## Spike-and-slab prior
 
 
-The spike-and-slab prior is a two-component mixture that assigns a positive probability to zero via a point mass or a vary narrow distribution centered at the origin (the spike) and the balance to the slab, a diffuse distribution.
+The spike-and-slab prior is a two-component mixture with that assigns a positive probability to zero via a point mass $\delta_0$ or a vary narrow distribution centered at the origin (the spike) and the balance to the slab, a diffuse distribution.
 
 
 The spike-and-slab prior was originally proposed by @Mitchell.Beauchamp:1988 with a uniform on a large interval and a point mass at zero. The term was also used in @George.McCulloch:1993, which replaced the prior by a mixture of Gaussians, one of which diffuse and the other with near infinite precision and centered at the origin. The latter is known under the vocable stochastic search variable selection prior. Letting $\gamma_j \in [0,1]$ denote the probability of the slab or inclusion of the variable, the independent priors for the regression coefficients are
 \begin{align*}
- \beta_j \mid \gamma_j, c_j^2,\phi^2_j \sim (1-\gamma_j) \mathsf{Gauss}(0, \phi^2_j) + \gamma_j \mathsf{Gauss}(0, \sigma_j^2\phi^2)
+ \beta_j \mid \gamma_j, \sigma_j^2,\phi^2_j \sim (1-\gamma_j) \mathsf{Gauss}(0, \sigma_j^2\phi^2_j) + \gamma_j \mathsf{Gauss}(0, \phi^2)
 \end{align*}
-where $\sigma^2_j$ is very nearly zero. We set a Jeffrey's prior for $\gamma_j \sim \mathsf{beta}(0.5, 0.5)$ and typically $\phi_j^2=0.001$ or a small number if using a Gaussian. The construction allows for variable augmentation with mixture indicators and Gibbs sampling, although convergence isn't trivial. 
+where $\phi^2_j$ is very nearly zero, e.g., $\phi_j^2=0.001.$ The construction allows for variable augmentation with mixture indicators and Gibbs sampling, although mixing tends to be poor.
 
 
 :::
@@ -398,9 +406,6 @@ theme_classic()
 :::
 
 
-In the Bayesian paradigm, regularization is achieved via priors that have mass at or towards zero, pushing coefficients of the regression model towards zero unless there is strong evidence from the likelihood against this. We however want to allow non-zero coefficients, typically by setting coefficient-specific parameters with a heavy tailed distribution to prevent overshrinking. Most if not all parameter can be viewed as scale mixtures of Gaussian.
-
-We make a distinction between **global** shrinkage priors those that consider a common shrinkage parameter for all regression coefficients, to be compared with **local** scale mixtures that have coefficient-specific parameters.
 
 
 ```{r}
@@ -551,14 +556,14 @@ There are different methods for doing this: one is through spike and slab priors
 Consider the setup of @prp-gaussian-ols, where we consider models $M_1, \ldots, M_m$ with for simplicity $p(M_i)=1$ for all models that include an intercept. We define $\mathbf{X}^{(m)}$ and $\boldsymbol{\beta}^{(m)}$ as the model matrix and the associated vector of non-zero coefficients associated with it. Let the response vector
 \begin{align*}
 \boldsymbol{Y} \mid M_m, \boldsymbol{\beta}, \sim \mathsf{Gauss}(\mathbf{X}^{(m)}\boldsymbol{\beta}^{(m)}, \boldsymbol{\Sigma})                                                                                  \end{align*}
-where $\boldsymbol{\beta}^{(m)} \mid M_m,$ is assigned a Gaussian prior $\. $\boldsymbol{\Sigma}$  are given suitable priors. We write $|M_m|$ for the cardinality of the set of non-zero coefficients $\boldsymbol{\beta}$ in model $M_m.$
+where $\boldsymbol{\beta}^{(m)} \mid M_m,$ is assigned a Gaussian prior $\. $\boldsymbol{\Sigma}$  are given suitable priors. We write $|M|$ for the cardinality of the set of non-zero coefficients $\boldsymbol{\beta}$ in model $M.$
 
-We can consider a joint update of the regression parameters $\boldsymbol{\beta}, M$ by sampling from their joint distribution via $p(\boldsymbol{\beta} \mid M, \cdots) p(M \mid \cdots).$ Write $\boldsymbol{\theta}$ for all parameters other than the response, model and vector of coefficients. The update for the coefficients is as usual, while for the model we get the conditional Bayes factor,
+Write $\boldsymbol{\theta}$ for all parameters other than the response, model and vector of coefficients. We can consider a joint update of the regression parameters $\boldsymbol{\beta}, M$ by sampling from their joint distribution via $p(\boldsymbol{\beta} \mid M, \boldsymbol{\theta}) p(M \mid \boldsymbol{\theta}).$  The update for the coefficients $p(\boldsymbol{\beta} \mid M, \boldsymbol{\theta})$ is as usual, while for $p(M \mid \boldsymbol{\theta})$, we get the conditional Bayes factor,
 \begin{align*}
  p(M \mid \boldsymbol{Y}, \boldsymbol{\theta}) &\stackrel{M}{\propto} p(M) p(\boldsymbol{Y} \mid M, \boldsymbol{\theta})
  \\&= p(M) \int_{\mathbb{R}^{\mathbb{|M|}}}p(\boldsymbol{Y} \mid M, \boldsymbol{\beta},\boldsymbol{\theta}) p(\boldsymbol{\beta} \mid M, \boldsymbol{\theta}) d \boldsymbol{\beta}
 \end{align*}
-We can marginalize thus marginalize out over $\boldsymbol{\beta}.$ We can show (demonstration omitted) that
+We can marginalize out $\boldsymbol{\beta}$ and show (demonstration omitted) that
 \begin{align*}
 p(\boldsymbol{M} \mid \boldsymbol{Y}, \boldsymbol{\theta}) \propto p(M) |\boldsymbol{Q}_{\boldsymbol{\beta}}|^{-1/2}\exp\left( \frac{1}{2} \boldsymbol{\mu}_{\boldsymbol{\beta}}^\top\boldsymbol{Q}_{\boldsymbol{\beta}} \boldsymbol{\mu}_{\boldsymbol{\beta}}\right)
 \end{align*}
