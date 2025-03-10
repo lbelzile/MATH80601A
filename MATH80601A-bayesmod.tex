@@ -266,20 +266,6 @@
 \DeclareMathAlphabet{\mathcrl}{U}{rsfs}{m}{n}
 \usepackage{utopia}
 \DeclareMathAlphabet{\mathcal}{OMS}{cmsy}{m}{n}
-\usepackage{booktabs}
-\usepackage{longtable}
-\usepackage{array}
-\usepackage{multirow}
-\usepackage{wrapfig}
-\usepackage{float}
-\usepackage{colortbl}
-\usepackage{pdflscape}
-\usepackage{tabu}
-\usepackage{threeparttable}
-\usepackage{threeparttablex}
-\usepackage[normalem]{ulem}
-\usepackage{makecell}
-\usepackage{xcolor}
 \makeatletter
 \@ifpackageloaded{tcolorbox}{}{\usepackage[skins,breakable]{tcolorbox}}
 \@ifpackageloaded{fontawesome5}{}{\usepackage{fontawesome5}}
@@ -336,14 +322,14 @@
 \usepackage{amsthm}
 \theoremstyle{definition}
 \newtheorem{exercise}{Exercise}[chapter]
-\theoremstyle{plain}
-\newtheorem{theorem}{Theorem}[chapter]
-\theoremstyle{plain}
-\newtheorem{proposition}{Proposition}[chapter]
 \theoremstyle{definition}
 \newtheorem{example}{Example}[chapter]
 \theoremstyle{definition}
 \newtheorem{definition}{Definition}[chapter]
+\theoremstyle{plain}
+\newtheorem{proposition}{Proposition}[chapter]
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}[chapter]
 \theoremstyle{remark}
 \AtBeginDocument{\renewcommand*{\proofname}{Proof}}
 \newtheorem*{remark}{Remark}
@@ -399,7 +385,7 @@ details.
 These notes are licensed under a
 \href{http://creativecommons.org/licenses/by-nc-sa/4.0/}{Creative
 Commons Attribution-NonCommercial-ShareAlike 4.0 International License}
-and were last compiled on Sunday, March 09 2025.
+and were last compiled on Monday, March 10 2025.
 
 The objective of the course is to provide a hands on introduction to
 Bayesian data analysis. The course will cover the formulation,
@@ -415,7 +401,7 @@ used throughout the course. The overview begins with basic statistical
 concepts, random variables, their distribution and density, moments and
 likelihood derivations.
 
-\begin{tcolorbox}[enhanced jigsaw, breakable, titlerule=0mm, coltitle=black, opacityback=0, bottomtitle=1mm, colframe=quarto-callout-important-color-frame, leftrule=.75mm, rightrule=.15mm, toptitle=1mm, opacitybacktitle=0.6, colbacktitle=quarto-callout-important-color!10!white, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Learning objectives}:}, left=2mm, arc=.35mm, bottomrule=.15mm, toprule=.15mm, colback=white]
+\begin{tcolorbox}[enhanced jigsaw, breakable, rightrule=.15mm, bottomtitle=1mm, coltitle=black, toprule=.15mm, colframe=quarto-callout-important-color-frame, leftrule=.75mm, opacityback=0, toptitle=1mm, arc=.35mm, titlerule=0mm, bottomrule=.15mm, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Learning objectives}:}, left=2mm, opacitybacktitle=0.6, colback=white, colbacktitle=quarto-callout-important-color!10!white]
 
 At the end of the chapter, students should be able to
 
@@ -1710,7 +1696,7 @@ The likelihood can then be written as \begin{align*}
 
 \end{example}
 
-\begin{tcolorbox}[enhanced jigsaw, breakable, titlerule=0mm, coltitle=black, opacityback=0, bottomtitle=1mm, colframe=quarto-callout-important-color-frame, leftrule=.75mm, rightrule=.15mm, toptitle=1mm, opacitybacktitle=0.6, colbacktitle=quarto-callout-important-color!10!white, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Summary}}, left=2mm, arc=.35mm, bottomrule=.15mm, toprule=.15mm, colback=white]
+\begin{tcolorbox}[enhanced jigsaw, breakable, rightrule=.15mm, bottomtitle=1mm, coltitle=black, toprule=.15mm, colframe=quarto-callout-important-color-frame, leftrule=.75mm, opacityback=0, toptitle=1mm, arc=.35mm, titlerule=0mm, bottomrule=.15mm, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Summary}}, left=2mm, opacitybacktitle=0.6, colback=white, colbacktitle=quarto-callout-important-color!10!white]
 
 \begin{itemize}
 \tightlist
@@ -1789,7 +1775,7 @@ elicitation and estimation of the marginal likelihood, are mentioned in
 passing. A brief discussion of Bayesian hypothesis testing (and
 alternatives) is presented.
 
-\begin{tcolorbox}[enhanced jigsaw, breakable, titlerule=0mm, coltitle=black, opacityback=0, bottomtitle=1mm, colframe=quarto-callout-important-color-frame, leftrule=.75mm, rightrule=.15mm, toptitle=1mm, opacitybacktitle=0.6, colbacktitle=quarto-callout-important-color!10!white, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Learning objectives}:}, left=2mm, arc=.35mm, bottomrule=.15mm, toprule=.15mm, colback=white]
+\begin{tcolorbox}[enhanced jigsaw, breakable, rightrule=.15mm, bottomtitle=1mm, coltitle=black, toprule=.15mm, colframe=quarto-callout-important-color-frame, leftrule=.75mm, opacityback=0, toptitle=1mm, arc=.35mm, titlerule=0mm, bottomrule=.15mm, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Learning objectives}:}, left=2mm, opacitybacktitle=0.6, colback=white, colbacktitle=quarto-callout-important-color!10!white]
 
 At the end of the chapter, students should be able to
 
@@ -2726,7 +2712,7 @@ the cutoff for the HDP region.}
 
 \end{figure}%
 
-\begin{tcolorbox}[enhanced jigsaw, breakable, titlerule=0mm, coltitle=black, opacityback=0, bottomtitle=1mm, colframe=quarto-callout-important-color-frame, leftrule=.75mm, rightrule=.15mm, toptitle=1mm, opacitybacktitle=0.6, colbacktitle=quarto-callout-important-color!10!white, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Summary}:}, left=2mm, arc=.35mm, bottomrule=.15mm, toprule=.15mm, colback=white]
+\begin{tcolorbox}[enhanced jigsaw, breakable, rightrule=.15mm, bottomtitle=1mm, coltitle=black, toprule=.15mm, colframe=quarto-callout-important-color-frame, leftrule=.75mm, opacityback=0, toptitle=1mm, arc=.35mm, titlerule=0mm, bottomrule=.15mm, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Summary}:}, left=2mm, opacitybacktitle=0.6, colback=white, colbacktitle=quarto-callout-important-color!10!white]
 
 \begin{itemize}
 \tightlist
@@ -2805,7 +2791,7 @@ inferences. Generally, we will choose the prior for convenience. Priors
 are controversial because they could be tuned aposteriori to give any
 answer an analyst might want.
 
-\begin{tcolorbox}[enhanced jigsaw, breakable, titlerule=0mm, coltitle=black, opacityback=0, bottomtitle=1mm, colframe=quarto-callout-important-color-frame, leftrule=.75mm, rightrule=.15mm, toptitle=1mm, opacitybacktitle=0.6, colbacktitle=quarto-callout-important-color!10!white, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Learning objectives}:}, left=2mm, arc=.35mm, bottomrule=.15mm, toprule=.15mm, colback=white]
+\begin{tcolorbox}[enhanced jigsaw, breakable, rightrule=.15mm, bottomtitle=1mm, coltitle=black, toprule=.15mm, colframe=quarto-callout-important-color-frame, leftrule=.75mm, opacityback=0, toptitle=1mm, arc=.35mm, titlerule=0mm, bottomrule=.15mm, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Learning objectives}:}, left=2mm, opacitybacktitle=0.6, colback=white, colbacktitle=quarto-callout-important-color!10!white]
 
 At the end of the chapter, students should be able to
 
@@ -3840,7 +3826,7 @@ improper priors on location and scale.}
 
 \end{example}
 
-\begin{tcolorbox}[enhanced jigsaw, breakable, titlerule=0mm, coltitle=black, opacityback=0, bottomtitle=1mm, colframe=quarto-callout-important-color-frame, leftrule=.75mm, rightrule=.15mm, toptitle=1mm, opacitybacktitle=0.6, colbacktitle=quarto-callout-important-color!10!white, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Summary}:}, left=2mm, arc=.35mm, bottomrule=.15mm, toprule=.15mm, colback=white]
+\begin{tcolorbox}[enhanced jigsaw, breakable, rightrule=.15mm, bottomtitle=1mm, coltitle=black, toprule=.15mm, colframe=quarto-callout-important-color-frame, leftrule=.75mm, opacityback=0, toptitle=1mm, arc=.35mm, titlerule=0mm, bottomrule=.15mm, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Summary}:}, left=2mm, opacitybacktitle=0.6, colback=white, colbacktitle=quarto-callout-important-color!10!white]
 
 \begin{itemize}
 \tightlist
@@ -4901,7 +4887,7 @@ computers became more widely available. The idea is to draw correlated
 samples from a posterior via Markov chains, constructed to have the
 posterior as invariant stationary distribution.
 
-\begin{tcolorbox}[enhanced jigsaw, breakable, titlerule=0mm, coltitle=black, opacityback=0, bottomtitle=1mm, colframe=quarto-callout-important-color-frame, leftrule=.75mm, rightrule=.15mm, toptitle=1mm, opacitybacktitle=0.6, colbacktitle=quarto-callout-important-color!10!white, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Learning objectives}:}, left=2mm, arc=.35mm, bottomrule=.15mm, toprule=.15mm, colback=white]
+\begin{tcolorbox}[enhanced jigsaw, breakable, rightrule=.15mm, bottomtitle=1mm, coltitle=black, toprule=.15mm, colframe=quarto-callout-important-color-frame, leftrule=.75mm, opacityback=0, toptitle=1mm, arc=.35mm, titlerule=0mm, bottomrule=.15mm, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Learning objectives}:}, left=2mm, opacitybacktitle=0.6, colback=white, colbacktitle=quarto-callout-important-color!10!white]
 
 At the end of the chapter, students should be able to
 
@@ -5019,7 +5005,7 @@ without having to compute the marginal likelihood.
 To check that the algorithm is well-defined, we can remove the log
 likelihood component and run the algorithm: if it is correct, the
 resulting draws should be drawn from the prior provided the latter is
-proper (\citeproc{ref-Green:2001}{Green 2001, 55}).
+proper (\citeproc{ref-Green:2001}{Peter J. Green 2001, 55}).
 \end{remark}
 
 \begin{remark}[Symmetric proposals]
@@ -5591,7 +5577,7 @@ overdispersion.
 
 \end{example}
 
-\begin{tcolorbox}[enhanced jigsaw, breakable, titlerule=0mm, coltitle=black, opacityback=0, bottomtitle=1mm, colframe=quarto-callout-important-color-frame, leftrule=.75mm, rightrule=.15mm, toptitle=1mm, opacitybacktitle=0.6, colbacktitle=quarto-callout-important-color!10!white, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Summary}:}, left=2mm, arc=.35mm, bottomrule=.15mm, toprule=.15mm, colback=white]
+\begin{tcolorbox}[enhanced jigsaw, breakable, rightrule=.15mm, bottomtitle=1mm, coltitle=black, toprule=.15mm, colframe=quarto-callout-important-color-frame, leftrule=.75mm, opacityback=0, toptitle=1mm, arc=.35mm, titlerule=0mm, bottomrule=.15mm, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Summary}:}, left=2mm, opacitybacktitle=0.6, colback=white, colbacktitle=quarto-callout-important-color!10!white]
 
 \begin{itemize}
 \tightlist
@@ -5643,7 +5629,7 @@ overdispersion.
 
 \chapter{Gibbs sampling}\label{sec-Gibbs}
 
-\begin{tcolorbox}[enhanced jigsaw, breakable, titlerule=0mm, coltitle=black, opacityback=0, bottomtitle=1mm, colframe=quarto-callout-important-color-frame, leftrule=.75mm, rightrule=.15mm, toptitle=1mm, opacitybacktitle=0.6, colbacktitle=quarto-callout-important-color!10!white, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Learning objectives}:}, left=2mm, arc=.35mm, bottomrule=.15mm, toprule=.15mm, colback=white]
+\begin{tcolorbox}[enhanced jigsaw, breakable, rightrule=.15mm, bottomtitle=1mm, coltitle=black, toprule=.15mm, colframe=quarto-callout-important-color-frame, leftrule=.75mm, opacityback=0, toptitle=1mm, arc=.35mm, titlerule=0mm, bottomrule=.15mm, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Learning objectives}:}, left=2mm, opacitybacktitle=0.6, colback=white, colbacktitle=quarto-callout-important-color!10!white]
 
 At the end of the chapter, students should be able to
 
@@ -6109,7 +6095,7 @@ and Stephens (\citeproc{ref-Stephens:2002}{2002}) for more details.
 
 \end{refremark}
 
-\begin{tcolorbox}[enhanced jigsaw, breakable, titlerule=0mm, coltitle=black, opacityback=0, bottomtitle=1mm, colframe=quarto-callout-important-color-frame, leftrule=.75mm, rightrule=.15mm, toptitle=1mm, opacitybacktitle=0.6, colbacktitle=quarto-callout-important-color!10!white, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Summary}:}, left=2mm, arc=.35mm, bottomrule=.15mm, toprule=.15mm, colback=white]
+\begin{tcolorbox}[enhanced jigsaw, breakable, rightrule=.15mm, bottomtitle=1mm, coltitle=black, toprule=.15mm, colframe=quarto-callout-important-color-frame, leftrule=.75mm, opacityback=0, toptitle=1mm, arc=.35mm, titlerule=0mm, bottomrule=.15mm, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Summary}:}, left=2mm, opacitybacktitle=0.6, colback=white, colbacktitle=quarto-callout-important-color!10!white]
 
 \begin{itemize}
 \tightlist
@@ -6167,7 +6153,7 @@ Betancourt} for excellent visualizations. In this chapter, we focus on
 three aspects of the workflow: model validation, evaluation and
 comparison.
 
-\begin{tcolorbox}[enhanced jigsaw, breakable, titlerule=0mm, coltitle=black, opacityback=0, bottomtitle=1mm, colframe=quarto-callout-important-color-frame, leftrule=.75mm, rightrule=.15mm, toptitle=1mm, opacitybacktitle=0.6, colbacktitle=quarto-callout-important-color!10!white, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Learning objectives}:}, left=2mm, arc=.35mm, bottomrule=.15mm, toprule=.15mm, colback=white]
+\begin{tcolorbox}[enhanced jigsaw, breakable, rightrule=.15mm, bottomtitle=1mm, coltitle=black, toprule=.15mm, colframe=quarto-callout-important-color-frame, leftrule=.75mm, opacityback=0, toptitle=1mm, arc=.35mm, titlerule=0mm, bottomrule=.15mm, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Learning objectives}:}, left=2mm, opacitybacktitle=0.6, colback=white, colbacktitle=quarto-callout-important-color!10!white]
 
 At the end of the chapter, students should be able to
 
@@ -7003,6 +6989,22 @@ mean response and make it mean-zero, receives special treatment and is
 typically assigned an improper prior. We largely follow the exposition
 of Villani (\citeproc{ref-Villani:2023}{2023}).
 
+Before we proceed with analysis of the Gaussian linear model, we derive
+a useful formula for completion of quadratic forms that arise in
+Gaussian models.
+
+\begin{proposition}[Decomposition of quadratic
+forms]\protect\hypertarget{prp-quadratic-forms}{}\label{prp-quadratic-forms}
+
+For quadratic forms (in \(\boldsymbol{x}\)) with \begin{align*}
+& (\boldsymbol{x} - \boldsymbol{a})^\top \mathbf{A}(\boldsymbol{x} - \boldsymbol{a}) + (\boldsymbol{x} - \boldsymbol{b})^\top \mathbf{B}(\boldsymbol{x} - \boldsymbol{b}) \\\quad &=
+ (\boldsymbol{x} - \boldsymbol{c})^\top \mathbf{C}(\boldsymbol{x} - \boldsymbol{c}) + (\boldsymbol{c}-\boldsymbol{a})^\top\mathbf{A}(\boldsymbol{c}-\boldsymbol{a}) + (\boldsymbol{c}-\boldsymbol{b})^\top\mathbf{B}(\boldsymbol{c}-\boldsymbol{b})\\
+&\stackrel{\boldsymbol{x}}{\propto} (\boldsymbol{x} - \boldsymbol{c})^\top \mathbf{C}(\boldsymbol{x} - \boldsymbol{c})
+\end{align*} where \(\mathbf{C} = \mathbf{A} + \mathbf{B}\) and
+\(\boldsymbol{c}= \mathbf{C}^{-1}(\mathbf{A}\boldsymbol{a} + \mathbf{B}\boldsymbol{b})\).
+
+\end{proposition}
+
 \begin{proposition}[Gaussian ordinary linear regression with conjugate
 priors]\protect\hypertarget{prp-gaussian-ols}{}\label{prp-gaussian-ols}
 
@@ -7028,18 +7030,6 @@ coefficients \(\boldsymbol{\beta}\) and for the precision \(\omega\) are
 \boldsymbol{\mu}_n &= \boldsymbol{\Omega}_n^{-1}(\mathbf{X}^\top\mathbf{X}\widehat{\boldsymbol{\beta}} + \boldsymbol{\Omega}_0\boldsymbol{\mu}_0) = \boldsymbol{\Omega}_n^{-1}(\mathbf{X}^\top\boldsymbol{y} + \boldsymbol{\Omega}_0\boldsymbol{\mu}_0)\\
 \tau_n &= \tau_0 + (\boldsymbol{y} - \mathbf{X}\widehat{\boldsymbol{\beta}})^\top(\boldsymbol{y} - \mathbf{X}\widehat{\boldsymbol{\beta}}) + (\boldsymbol{\mu}_n - \widehat{\boldsymbol{\beta}})^\top \mathbf{X}^\top\mathbf{X}(\boldsymbol{\mu}_n - \widehat{\boldsymbol{\beta}}) \\& \quad + (\boldsymbol{\mu}_n-\boldsymbol{\mu}_0)^\top\boldsymbol{\Omega}_0(\boldsymbol{\mu}_n-\boldsymbol{\mu}_0)
 \end{align*}
-
-\end{proposition}
-
-\begin{proposition}[Decomposition of quadratic
-forms]\protect\hypertarget{prp-quadratic-forms}{}\label{prp-quadratic-forms}
-
-For quadratic forms (in \(\boldsymbol{x}\)) with \begin{align*}
-& (\boldsymbol{x} - \boldsymbol{a})^\top \mathbf{A}(\boldsymbol{x} - \boldsymbol{a}) + (\boldsymbol{x} - \boldsymbol{b})^\top \mathbf{B}(\boldsymbol{x} - \boldsymbol{b}) \\\quad &=
- (\boldsymbol{x} - \boldsymbol{c})^\top \mathbf{C}(\boldsymbol{x} - \boldsymbol{c}) + (\boldsymbol{c}-\boldsymbol{a})^\top\mathbf{A}(\boldsymbol{c}-\boldsymbol{a}) + (\boldsymbol{c}-\boldsymbol{b})^\top\mathbf{B}(\boldsymbol{c}-\boldsymbol{b})\\
-&\stackrel{\boldsymbol{x}}{\propto} (\boldsymbol{x} - \boldsymbol{c})^\top \mathbf{C}(\boldsymbol{x} - \boldsymbol{c})
-\end{align*} where \(\mathbf{C} = \mathbf{A} + \mathbf{B}\) and
-\(\boldsymbol{c}= \mathbf{C}^{-1}(\mathbf{A}\boldsymbol{a} + \mathbf{B}\boldsymbol{b})\).
 
 \end{proposition}
 
@@ -7447,12 +7437,11 @@ noise.
 priors]\protect\hypertarget{exm-case-study-shrinkage}{}\label{exm-case-study-shrinkage}
 
 We revisit the \texttt{diabetes} data from the \textbf{R} package
-\texttt{lars}, which was used in
-(\citeproc{ref-Park.Casella:2009}{\textbf{Park.Casella:2009?}}) to
-illustrate the Bayesian LASSO. We consider three methods: the default
-Gaussian prior, which gives a ridge penalty, the Bayesian LASSO and
-finally the horseshoe. Models are fitted using the \texttt{bayesreg}
-package.
+\texttt{lars}, which was used in Park and Casella
+(\citeproc{ref-Park.Casella:2008}{2008}) to illustrate the Bayesian
+LASSO. We consider three methods: the default Gaussian prior, which
+gives a ridge penalty, the Bayesian LASSO and finally the horseshoe.
+Models are fitted using the \texttt{bayesreg} package.
 
 Figure~\ref{fig-shrinkage-dens-comparison} shows the ordered
 coefficients for each method. We can see that the ridge has the widest
@@ -7484,18 +7473,103 @@ ridge.
 
 \end{example}
 
-\section{Bayes factor and Bayesian model
-averaging}\label{bayes-factor-and-bayesian-model-averaging}
+\section{Bayesian model averaging via reversible
+jump}\label{bayesian-model-averaging-via-reversible-jump}
 
 Variable selection refers to selection of covariates from a set of \(p\)
 candidates from a design matrix which is orthogonal to the intercept;
 these could include higher order terms or interactions. From the
 Bayesian perspective, all of these \(2^p-1\) submodels must be assigned
-a prior and we can also rule out models without lower order interactions
-through the prior. The goal of the analysis is to account for the
-uncertainty associated with variable selection. The target of inference
-is often the weight of the combinations, and the probability that a
-predictor is included aposteriori
+a prior. We can also rule out models without lower order interactions
+through the prior, but exploring or fitting all possible models is too
+costly. The goal of the analysis is to account for the uncertainty
+associated with variable selection. The target of inference is often the
+weight of the combinations, and the probability that a predictor is
+included aposteriori.
+
+There are different methods for doing this: one is through spike and
+slab priors. Software for Hamiltonian Monte Carlo like Stan cannot
+handle discrete variables. Other methods for Bayesian model averaging
+includes use of reversible jump Markov chain Monte Carlo
+(\citeproc{ref-Green:1995}{Peter J. Green 1995}), an extension that
+allows for arbitrary measures and through this varying dimensions, which
+occurs not only with variable selection, but also changepoint analysis
+and mixture models with varying number of components
+(\citeproc{ref-Green:2001}{Peter J. Green 2001}). Reversible jump
+requires a form of data augmentation to have dimension-balancing and
+defining different types of moves for jumping between dimensions. These
+are integrated in the Metropolis--Hastings step through a Jacobian term
+added to \(R\). with different types of moves giving termed padding
+andone to pad the dimensions to match and define. In regression models,
+we will consider moves that adds or removes one parameter/regressor at a
+time.
+
+Consider the setup of Proposition~\ref{prp-gaussian-ols}, where we
+consider models \(M_1, \ldots, M_m\) with for simplicity \(p(M_i)=1\)
+for all models that include an intercept. We define \(\mathbf{X}^{(m)}\)
+and \(\boldsymbol{\beta}^{(m)}\) as the model matrix and the associated
+vector of non-zero coefficients associated with it. Let the response
+vector \begin{align*}
+\boldsymbol{Y} \mid M_m, \boldsymbol{\beta}, \sim \mathsf{Gauss}(\mathbf{X}^{(m)}\boldsymbol{\beta}^{(m)}, \boldsymbol{\Sigma})                                                                                  \end{align*}
+where \(\boldsymbol{\beta}^{(m)} \mid M_m,\) is assigned a Gaussian
+prior \$. \(\boldsymbol{\Sigma}\) are given suitable priors. We write
+\(|M_m|\) for the cardinality of the set of non-zero coefficients
+\(\boldsymbol{\beta}\) in model \(M_m.\)
+
+We can consider a joint update of the regression parameters
+\(\boldsymbol{\beta}, M\) by sampling from their joint distribution via
+\(p(\boldsymbol{\beta} \mid M, \cdots) p(M \mid \cdots).\) Write
+\(\boldsymbol{\theta}\) for all parameters other than the response,
+model and vector of coefficients. The update for the coefficients is as
+usual, while for the model we get the conditional Bayes factor,
+\begin{align*}
+ p(M \mid \boldsymbol{Y}, \boldsymbol{\theta}) &\stackrel{M}{\propto} p(M) p(\boldsymbol{Y} \mid M, \boldsymbol{\theta})
+ \\&= p(M) \int_{\mathbb{R}^{\mathbb{|M|}}}p(\boldsymbol{Y} \mid M, \boldsymbol{\beta},\boldsymbol{\theta}) p(\boldsymbol{\beta} \mid M, \boldsymbol{\theta}) d \boldsymbol{\beta}
+\end{align*} We can marginalize thus marginalize out over
+\(\boldsymbol{\beta}.\) We can show (demonstration omitted) that
+\begin{align*}
+p(\boldsymbol{M} \mid \boldsymbol{Y}, \boldsymbol{\theta}) \propto p(M) |\boldsymbol{Q}_{\boldsymbol{\beta}}|^{-1/2}\exp\left( \frac{1}{2} \boldsymbol{\mu}_{\boldsymbol{\beta}}^\top\boldsymbol{Q}_{\boldsymbol{\beta}} \boldsymbol{\mu}_{\boldsymbol{\beta}}\right)
+\end{align*} where \(\boldsymbol{\mu}_{\boldsymbol{\beta}}\) and
+\(\boldsymbol{Q}_{\boldsymbol{\beta}}\) are the mean and precision of
+\(p(\boldsymbol{\beta} \mid \boldsymbol{Y}, M, \boldsymbol{\theta}).\)
+
+We then consider different types of move for the \(k_{\max}\) potential
+covariates (including interactions, etc.)
+(\citeproc{ref-Holmes:2002}{Holmes, Denison, and Mallick 2002})
+
+\begin{itemize}
+\tightlist
+\item
+  expansion: adding an unused covariate chosen at random from the
+  remaining ones
+\item
+  shrinkage: removing one covariate at random from the current matrix
+\item
+  swapping an active covariate for an unused one.
+\end{itemize}
+
+Only the last type of move preserves the dimension, whereas the
+shrinkage and expansion moves lead to a decrease or increase of the
+model matrix dimension. The probability of rejection for Metropolis
+becomes \begin{align*}
+    R = J\frac{p(\boldsymbol{\theta}_t^{\star})}{p(\boldsymbol{\theta}_{t-1})}\frac{q(\boldsymbol{\theta}_{t-1} \mid \boldsymbol{\theta}_t^{\star} )}{q(\boldsymbol{\theta}_t^{\star} \mid \boldsymbol{\theta}_{t-1})}
+\end{align*} where for most moves \(J=1\) in this case, except in four
+cases where the dimension \(|M| \in\{1, 2, k_{\max}-1, k_{\max}\}\) and
+
+\begin{itemize}
+\tightlist
+\item
+  \(J=2/3\) if \(|M|=1\) and we try to add a covariate
+\item
+  \(J=2/3\) if \(|M|=k_{\max}\) and we try to remove a covariate
+\item
+  \(J=3/2\) if \(|M|=2\) and we try to remove a covariate
+\item
+  \(J=3/2\) if \(|M|=k_{\max}-1\) and we try to add the last covariate.
+\end{itemize}
+
+The move for \(M\) is accepted as usual if the drawn uniform
+\(U \sim \mathsf{unif}(0,1)\) satisfies \(U<R\).
 
 \bookmarksetup{startatroot}
 
@@ -7753,6 +7827,11 @@ Series, and Products}. 8th ed. Academic Press.
 Green, Peter J. 2001. {``A Primer on {M}arkov Chain {M}onte {C}arlo.''}
 \emph{Monographs on Statistics and Applied Probability} 87: 1--62.
 
+\bibitem[\citeproctext]{ref-Green:1995}
+Green, Peter J. 1995. {``{Reversible jump {M}arkov chain {M}onte {C}arlo
+computation and {B}ayesian model determination}.''} \emph{Biometrika} 82
+(4): 711--32. \url{https://doi.org/10.1093/biomet/82.4.711}.
+
 \bibitem[\citeproctext]{ref-Hastings:1970}
 Hastings, W. K. 1970. {``{Monte {C}arlo sampling methods using {M}arkov
 chains and their applications}.''} \emph{Biometrika} 57 (1): 97--109.
@@ -7769,6 +7848,12 @@ Hobert, James. 2011. {``The Data Augmentation Algorithm: Theory and
 Methodology.''} In \emph{Handbook of {M}arkov Chain {M}onte {C}arlo},
 edited by S. Brooks, A. Gelman, G. Jones, and X. L. Meng, 253--93. Boca
 Raton: CRC Press. \url{https://doi.org/10.1201/b10905-11}.
+
+\bibitem[\citeproctext]{ref-Holmes:2002}
+Holmes, C. C., D. G. T. Denison, and B. K. Mallick. 2002. {``Accounting
+for Model Uncertainty in Seemingly Unrelated Regressions.''}
+\emph{Journal of Computational and Graphical Statistics} 11 (3):
+533--51. \url{http://www.jstor.org/stable/1391112}.
 
 \bibitem[\citeproctext]{ref-Jasra.Holmes.Stephens:2005}
 Jasra, A., C. C. Holmes, and D. A. Stephens. 2005. {``{M}arkov Chain

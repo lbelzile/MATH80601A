@@ -271,7 +271,7 @@ window.Quarto = {
    
   <ul>
   <li><a href="#shrinkage-priors" id="toc-shrinkage-priors" class="nav-link active" data-scroll-target="#shrinkage-priors"><span class="header-section-number">8.1</span> Shrinkage priors</a></li>
-  <li><a href="#bayes-factor-and-bayesian-model-averaging" id="toc-bayes-factor-and-bayesian-model-averaging" class="nav-link" data-scroll-target="#bayes-factor-and-bayesian-model-averaging"><span class="header-section-number">8.2</span> Bayes factor and Bayesian model averaging</a></li>
+  <li><a href="#bayesian-model-averaging-via-reversible-jump" id="toc-bayesian-model-averaging-via-reversible-jump" class="nav-link" data-scroll-target="#bayesian-model-averaging-via-reversible-jump"><span class="header-section-number">8.2</span> Bayesian model averaging via reversible jump</a></li>
   </ul>
 <div class="toc-actions"><ul><li><a href="https://github.com/lbelzile/MATH80601A/edit/main/regression.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li></ul></div></nav>
     </div>
@@ -328,8 +328,16 @@ the latter can be evaluated efficiently using Shermann--Morrisson--Woodbury iden
 :::
 
 -->
+<p>Before we proceed with analysis of the Gaussian linear model, we derive a useful formula for completion of quadratic forms that arise in Gaussian models.</p>
+<div id="prp-quadratic-forms" class="theorem proposition">
+<p><span class="theorem-title"><strong>Proposition 8.1 (Decomposition of quadratic forms)</strong></span> For quadratic forms (in <span class="math inline">\(\boldsymbol{x}\)</span>) with <span class="math display">\[\begin{align*}
+&amp; (\boldsymbol{x} - \boldsymbol{a})^\top \mathbf{A}(\boldsymbol{x} - \boldsymbol{a}) + (\boldsymbol{x} - \boldsymbol{b})^\top \mathbf{B}(\boldsymbol{x} - \boldsymbol{b}) \\\quad &amp;=
+(\boldsymbol{x} - \boldsymbol{c})^\top \mathbf{C}(\boldsymbol{x} - \boldsymbol{c}) + (\boldsymbol{c}-\boldsymbol{a})^\top\mathbf{A}(\boldsymbol{c}-\boldsymbol{a}) + (\boldsymbol{c}-\boldsymbol{b})^\top\mathbf{B}(\boldsymbol{c}-\boldsymbol{b})\\
+&amp;\stackrel{\boldsymbol{x}}{\propto} (\boldsymbol{x} - \boldsymbol{c})^\top \mathbf{C}(\boldsymbol{x} - \boldsymbol{c})
+\end{align*}\]</span> where <span class="math inline">\(\mathbf{C} = \mathbf{A} + \mathbf{B}\)</span> and <span class="math inline">\(\boldsymbol{c}= \mathbf{C}^{-1}(\mathbf{A}\boldsymbol{a} + \mathbf{B}\boldsymbol{b})\)</span>.</p>
+</div>
 <div id="prp-gaussian-ols" class="theorem proposition">
-<p><span class="theorem-title"><strong>Proposition 8.1 (Gaussian ordinary linear regression with conjugate priors)</strong></span> The conjugate prior for the Gaussian regression model for the mean and precision parameters <span class="math inline">\(\boldsymbol{\beta}\)</span> and <span class="math inline">\(\omega\)</span>, respectively, is a Gaussian-gamma and is defined hierarchically as <span class="math display">\[\begin{align*}
+<p><span class="theorem-title"><strong>Proposition 8.2 (Gaussian ordinary linear regression with conjugate priors)</strong></span> The conjugate prior for the Gaussian regression model for the mean and precision parameters <span class="math inline">\(\boldsymbol{\beta}\)</span> and <span class="math inline">\(\omega\)</span>, respectively, is a Gaussian-gamma and is defined hierarchically as <span class="math display">\[\begin{align*}
 \boldsymbol{\beta} \mid \omega &amp;\sim \mathsf{Gauss}\left\{\boldsymbol{\mu}_0, (
 \omega\boldsymbol{\Omega}_0)^{-1}\right\} \\
 \omega &amp;\sim \mathsf{gamma}(\nu_0/2,\tau_0/2).
@@ -344,13 +352,6 @@ the latter can be evaluated efficiently using Shermann--Morrisson--Woodbury iden
 \tau_n &amp;= \tau_0 + (\boldsymbol{y} - \mathbf{X}\widehat{\boldsymbol{\beta}})^\top(\boldsymbol{y} - \mathbf{X}\widehat{\boldsymbol{\beta}}) + (\boldsymbol{\mu}_n - \widehat{\boldsymbol{\beta}})^\top \mathbf{X}^\top\mathbf{X}(\boldsymbol{\mu}_n - \widehat{\boldsymbol{\beta}}) \\&amp; \quad + (\boldsymbol{\mu}_n-\boldsymbol{\mu}_0)^\top\boldsymbol{\Omega}_0(\boldsymbol{\mu}_n-\boldsymbol{\mu}_0)
 \end{align*}\]</span></p>
 </div>
-<div id="prp-quadratic-forms" class="theorem proposition">
-<p><span class="theorem-title"><strong>Proposition 8.2 (Decomposition of quadratic forms)</strong></span> For quadratic forms (in <span class="math inline">\(\boldsymbol{x}\)</span>) with <span class="math display">\[\begin{align*}
-&amp; (\boldsymbol{x} - \boldsymbol{a})^\top \mathbf{A}(\boldsymbol{x} - \boldsymbol{a}) + (\boldsymbol{x} - \boldsymbol{b})^\top \mathbf{B}(\boldsymbol{x} - \boldsymbol{b}) \\\quad &amp;=
-(\boldsymbol{x} - \boldsymbol{c})^\top \mathbf{C}(\boldsymbol{x} - \boldsymbol{c}) + (\boldsymbol{c}-\boldsymbol{a})^\top\mathbf{A}(\boldsymbol{c}-\boldsymbol{a}) + (\boldsymbol{c}-\boldsymbol{b})^\top\mathbf{B}(\boldsymbol{c}-\boldsymbol{b})\\
-&amp;\stackrel{\boldsymbol{x}}{\propto} (\boldsymbol{x} - \boldsymbol{c})^\top \mathbf{C}(\boldsymbol{x} - \boldsymbol{c})
-\end{align*}\]</span> where <span class="math inline">\(\mathbf{C} = \mathbf{A} + \mathbf{B}\)</span> and <span class="math inline">\(\boldsymbol{c}= \mathbf{C}^{-1}(\mathbf{A}\boldsymbol{a} + \mathbf{B}\boldsymbol{b})\)</span>.</p>
-</div>
 <div class="proof">
 <p><span class="proof-title"><em>Proof</em>. </span>The improper prior <span class="math inline">\(p(\boldsymbol{\beta}, \sigma^2) \propto \sigma^{-2}\)</span> can be viewed as a special case of the conjugate prior when the variance of the Gaussian is infinite and the <span class="math inline">\(\mathsf{gamma}(a,b)\)</span> when both <span class="math inline">\(a, b \to 0.\)</span></p>
 <p>Write the posterior as <span class="math display">\[\begin{align*}
@@ -361,7 +362,7 @@ p(\boldsymbol{\beta}, \omega \mid \boldsymbol{y}) &amp;\propto p(\boldsymbol{y} 
 \end{align*}\]</span> since <span class="math inline">\((\boldsymbol{y}-\mathbf{X}\widehat{\boldsymbol{\beta}})^\top (\mathbf{X}\widehat{\boldsymbol{\beta}} - \mathbf{X}\boldsymbol{\beta}) = 0.\)</span> We can pull together terms and separate the conditional posterior <span class="math inline">\(p(\boldsymbol{\beta} \mid \boldsymbol{y}, \omega)\)</span> and <span class="math inline">\(p(\omega \mid \boldsymbol{y})\)</span> as <span class="math display">\[\begin{align*}
 p(\boldsymbol{\beta}, \omega \mid \boldsymbol{y}) &amp;\propto \omega^{(n+p+\nu_0)/2 -1} \exp\left[-\frac{\omega}{2}\left\{\tau_0 + (\boldsymbol{y}-\mathbf{X}\widehat{\boldsymbol{\beta}})^\top(\boldsymbol{y}-\mathbf{X}\widehat{\boldsymbol{\beta}})\right\}\right]
 \\&amp; \times \exp \left[-\frac{\omega}{2}\left\{(\widehat{\boldsymbol{\beta}} - \boldsymbol{\beta})^\top\mathbf{X}^\top\mathbf{X}(\widehat{\boldsymbol{\beta}} - \boldsymbol{\beta})+ (\boldsymbol{\beta}-\boldsymbol{\mu}_0)^\top\boldsymbol{\Omega}_0(\boldsymbol{\beta}-\boldsymbol{\mu}_0)\right\}\right]
-\end{align*}\]</span> and using <a href="#prp-quadratic-forms" class="quarto-xref">Proposition&nbsp;<span>8.2</span></a> for the terms in the exponent with <span class="math inline">\(\boldsymbol{a} = \widehat{\boldsymbol{\beta}}\)</span>, <span class="math inline">\(\mathbf{A}=\mathbf{X}^\top\mathbf{X}\)</span>, <span class="math inline">\(\boldsymbol{b} = \boldsymbol{\mu}_0\)</span> and <span class="math inline">\(\mathbf{B}=\boldsymbol{\Omega}_0\)</span>, we find <span class="math display">\[\begin{align*}
+\end{align*}\]</span> and using <a href="#prp-quadratic-forms" class="quarto-xref">Proposition&nbsp;<span>8.1</span></a> for the terms in the exponent with <span class="math inline">\(\boldsymbol{a} = \widehat{\boldsymbol{\beta}}\)</span>, <span class="math inline">\(\mathbf{A}=\mathbf{X}^\top\mathbf{X}\)</span>, <span class="math inline">\(\boldsymbol{b} = \boldsymbol{\mu}_0\)</span> and <span class="math inline">\(\mathbf{B}=\boldsymbol{\Omega}_0\)</span>, we find <span class="math display">\[\begin{align*}
   p(\boldsymbol{\beta}, \omega \mid \boldsymbol{y}) &amp; \propto
    \omega^{(n+\nu_0)/2 -1} \exp\left(-\frac{\omega\tau_n}{2}\right)
    \\&amp; \times \omega^{p/2}\exp\left\{-\frac{1}{2}(\boldsymbol{\beta} - \boldsymbol{\mu}_n)^\top(\omega\mathbf{\Omega}_n)(\boldsymbol{\beta} - \boldsymbol{\mu}_n)\right\}
@@ -538,7 +539,7 @@ Figure&nbsp;8.4: Marginal density for a regression coefficient <span class="math
 c^2 \mid s^2, \nu &amp;\sim \mathsf{inv. gamma}(\nu/2, \nu s^2/2).
 \end{align*}\]</span> When <span class="math inline">\(\tau^2\lambda^2_j\)</span> is much greater than <span class="math inline">\(c^2\)</span>, this amounts to having a Student slab with <span class="math inline">\(\nu\)</span> degrees of freedom for large coefficients; taking a small value of <span class="math inline">\(\nu\)</span> allows for large, but not extreme components, and the authors use <span class="math inline">\(s^2=2, \nu=4.\)</span> The above specification does not specify the prior for the global scale <span class="math inline">\(\lambda\)</span>, for which <span class="citation" data-cites="Piironen.Vehtari:2017">Piironen and Vehtari (<a href="references.html#ref-Piironen.Vehtari:2017" role="doc-biblioref">2017</a>)</span> recommend using an empirical Bayes prior, with <span class="math display">\[\lambda \sim \mathsf{Student}_{+}\left\{0, \frac{p_0}{(p-p_0)}\frac{\sigma}{n^{1/2}}, 1\right\},\]</span> where <span class="math inline">\(p_0\)</span> is a prior guess for the number of non-zero components out of <span class="math inline">\(p,\)</span> <span class="math inline">\(n\)</span> is the sample size and <span class="math inline">\(\sigma\)</span> is some level of the noise.</p>
 <div id="exm-case-study-shrinkage" class="theorem example">
-<p><span class="theorem-title"><strong>Example 8.2 (Comparison of shrinkage priors)</strong></span> We revisit the <code>diabetes</code> data from the <strong>R</strong> package <code>lars</code>, which was used in <span class="citation" data-cites="Park.Casella:2009">(<a href="references.html#ref-Park.Casella:2009" role="doc-biblioref"><strong>Park.Casella:2009?</strong></a>)</span> to illustrate the Bayesian LASSO. We consider three methods: the default Gaussian prior, which gives a ridge penalty, the Bayesian LASSO and finally the horseshoe. Models are fitted using the <code>bayesreg</code> package.</p>
+<p><span class="theorem-title"><strong>Example 8.2 (Comparison of shrinkage priors)</strong></span> We revisit the <code>diabetes</code> data from the <strong>R</strong> package <code>lars</code>, which was used in <span class="citation" data-cites="Park.Casella:2008">Park and Casella (<a href="references.html#ref-Park.Casella:2008" role="doc-biblioref">2008</a>)</span> to illustrate the Bayesian LASSO. We consider three methods: the default Gaussian prior, which gives a ridge penalty, the Bayesian LASSO and finally the horseshoe. Models are fitted using the <code>bayesreg</code> package.</p>
 <p><a href="#fig-shrinkage-dens-comparison" class="quarto-xref">Figure&nbsp;<span>8.5</span></a> shows the ordered coefficients for each method. We can see that the ridge has the widest intervals of all methods, providing some shrinkage only for large values of <span class="math inline">\(\beta\)</span>. The horseshoe has typically narrower intervals, with more mass in a neighborhood of zero for smaller coefficients, and asymmetric intervals.</p>
 <div class="cell">
 <div class="cell-output-display">
@@ -557,9 +558,34 @@ Figure&nbsp;8.5: Density estimates for regression coefficients with Gaussian (ri
 <p>One aspect worth mentioning is that the horseshoe prior impacts strongly the geometry and leads to slower mixing than the conjugate or Student-<span class="math inline">\(t\)</span> priors: the effective sample size fraction relative to the number of samples ranges from 15% to 79%, compared to 60% to 100% for the Bayesian LASSO and near-independent draws with the conjugate ridge.</p>
 </div>
 </section>
-<section id="bayes-factor-and-bayesian-model-averaging" class="level2" data-number="8.2">
-<h2 data-number="8.2" class="anchored" data-anchor-id="bayes-factor-and-bayesian-model-averaging"><span class="header-section-number">8.2</span> Bayes factor and Bayesian model averaging</h2>
-<p>Variable selection refers to selection of covariates from a set of <span class="math inline">\(p\)</span> candidates from a design matrix which is orthogonal to the intercept; these could include higher order terms or interactions. From the Bayesian perspective, all of these <span class="math inline">\(2^p-1\)</span> submodels must be assigned a prior and we can also rule out models without lower order interactions through the prior. The goal of the analysis is to account for the uncertainty associated with variable selection. The target of inference is often the weight of the combinations, and the probability that a predictor is included aposteriori</p>
+<section id="bayesian-model-averaging-via-reversible-jump" class="level2" data-number="8.2">
+<h2 data-number="8.2" class="anchored" data-anchor-id="bayesian-model-averaging-via-reversible-jump"><span class="header-section-number">8.2</span> Bayesian model averaging via reversible jump</h2>
+<p>Variable selection refers to selection of covariates from a set of <span class="math inline">\(p\)</span> candidates from a design matrix which is orthogonal to the intercept; these could include higher order terms or interactions. From the Bayesian perspective, all of these <span class="math inline">\(2^p-1\)</span> submodels must be assigned a prior. We can also rule out models without lower order interactions through the prior, but exploring or fitting all possible models is too costly. The goal of the analysis is to account for the uncertainty associated with variable selection. The target of inference is often the weight of the combinations, and the probability that a predictor is included aposteriori.</p>
+<p>There are different methods for doing this: one is through spike and slab priors. Software for Hamiltonian Monte Carlo like Stan cannot handle discrete variables. Other methods for Bayesian model averaging includes use of reversible jump Markov chain Monte Carlo <span class="citation" data-cites="Green:1995">(<a href="references.html#ref-Green:1995" role="doc-biblioref">Peter J. Green 1995</a>)</span>, an extension that allows for arbitrary measures and through this varying dimensions, which occurs not only with variable selection, but also changepoint analysis and mixture models with varying number of components <span class="citation" data-cites="Green:2001">(<a href="references.html#ref-Green:2001" role="doc-biblioref">Peter J. Green 2001</a>)</span>. Reversible jump requires a form of data augmentation to have dimension-balancing and defining different types of moves for jumping between dimensions. These are integrated in the Metropolis–Hastings step through a Jacobian term added to <span class="math inline">\(R\)</span>. with different types of moves giving termed padding andone to pad the dimensions to match and define. In regression models, we will consider moves that adds or removes one parameter/regressor at a time.</p>
+<p>Consider the setup of <a href="#prp-gaussian-ols" class="quarto-xref">Proposition&nbsp;<span>8.2</span></a>, where we consider models <span class="math inline">\(M_1, \ldots, M_m\)</span> with for simplicity <span class="math inline">\(p(M_i)=1\)</span> for all models that include an intercept. We define <span class="math inline">\(\mathbf{X}^{(m)}\)</span> and <span class="math inline">\(\boldsymbol{\beta}^{(m)}\)</span> as the model matrix and the associated vector of non-zero coefficients associated with it. Let the response vector <span class="math display">\[\begin{align*}
+\boldsymbol{Y} \mid M_m, \boldsymbol{\beta}, \sim \mathsf{Gauss}(\mathbf{X}^{(m)}\boldsymbol{\beta}^{(m)}, \boldsymbol{\Sigma})                                                                                  \end{align*}\]</span> where <span class="math inline">\(\boldsymbol{\beta}^{(m)} \mid M_m,\)</span> is assigned a Gaussian prior $. <span class="math inline">\(\boldsymbol{\Sigma}\)</span> are given suitable priors. We write <span class="math inline">\(|M_m|\)</span> for the cardinality of the set of non-zero coefficients <span class="math inline">\(\boldsymbol{\beta}\)</span> in model <span class="math inline">\(M_m.\)</span></p>
+<p>We can consider a joint update of the regression parameters <span class="math inline">\(\boldsymbol{\beta}, M\)</span> by sampling from their joint distribution via <span class="math inline">\(p(\boldsymbol{\beta} \mid M, \cdots) p(M \mid \cdots).\)</span> Write <span class="math inline">\(\boldsymbol{\theta}\)</span> for all parameters other than the response, model and vector of coefficients. The update for the coefficients is as usual, while for the model we get the conditional Bayes factor, <span class="math display">\[\begin{align*}
+p(M \mid \boldsymbol{Y}, \boldsymbol{\theta}) &amp;\stackrel{M}{\propto} p(M) p(\boldsymbol{Y} \mid M, \boldsymbol{\theta})
+\\&amp;= p(M) \int_{\mathbb{R}^{\mathbb{|M|}}}p(\boldsymbol{Y} \mid M, \boldsymbol{\beta},\boldsymbol{\theta}) p(\boldsymbol{\beta} \mid M, \boldsymbol{\theta}) d \boldsymbol{\beta}
+\end{align*}\]</span> We can marginalize thus marginalize out over <span class="math inline">\(\boldsymbol{\beta}.\)</span> We can show (demonstration omitted) that <span class="math display">\[\begin{align*}
+p(\boldsymbol{M} \mid \boldsymbol{Y}, \boldsymbol{\theta}) \propto p(M) |\boldsymbol{Q}_{\boldsymbol{\beta}}|^{-1/2}\exp\left( \frac{1}{2} \boldsymbol{\mu}_{\boldsymbol{\beta}}^\top\boldsymbol{Q}_{\boldsymbol{\beta}} \boldsymbol{\mu}_{\boldsymbol{\beta}}\right)
+\end{align*}\]</span> where <span class="math inline">\(\boldsymbol{\mu}_{\boldsymbol{\beta}}\)</span> and <span class="math inline">\(\boldsymbol{Q}_{\boldsymbol{\beta}}\)</span> are the mean and precision of <span class="math inline">\(p(\boldsymbol{\beta} \mid \boldsymbol{Y}, M, \boldsymbol{\theta}).\)</span></p>
+<p>We then consider different types of move for the <span class="math inline">\(k_{\max}\)</span> potential covariates (including interactions, etc.) <span class="citation" data-cites="Holmes:2002">(<a href="references.html#ref-Holmes:2002" role="doc-biblioref">Holmes, Denison, and Mallick 2002</a>)</span></p>
+<ul>
+<li>expansion: adding an unused covariate chosen at random from the remaining ones</li>
+<li>shrinkage: removing one covariate at random from the current matrix</li>
+<li>swapping an active covariate for an unused one.</li>
+</ul>
+<p>Only the last type of move preserves the dimension, whereas the shrinkage and expansion moves lead to a decrease or increase of the model matrix dimension. The probability of rejection for Metropolis becomes <span class="math display">\[\begin{align*}
+    R = J\frac{p(\boldsymbol{\theta}_t^{\star})}{p(\boldsymbol{\theta}_{t-1})}\frac{q(\boldsymbol{\theta}_{t-1} \mid \boldsymbol{\theta}_t^{\star} )}{q(\boldsymbol{\theta}_t^{\star} \mid \boldsymbol{\theta}_{t-1})}
+\end{align*}\]</span> where for most moves <span class="math inline">\(J=1\)</span> in this case, except in four cases where the dimension <span class="math inline">\(|M| \in\{1, 2, k_{\max}-1, k_{\max}\}\)</span> and</p>
+<ul>
+<li><span class="math inline">\(J=2/3\)</span> if <span class="math inline">\(|M|=1\)</span> and we try to add a covariate</li>
+<li><span class="math inline">\(J=2/3\)</span> if <span class="math inline">\(|M|=k_{\max}\)</span> and we try to remove a covariate</li>
+<li><span class="math inline">\(J=3/2\)</span> if <span class="math inline">\(|M|=2\)</span> and we try to remove a covariate</li>
+<li><span class="math inline">\(J=3/2\)</span> if <span class="math inline">\(|M|=k_{\max}-1\)</span> and we try to add the last covariate.</li>
+</ul>
+<p>The move for <span class="math inline">\(M\)</span> is accepted as usual if the drawn uniform <span class="math inline">\(U \sim \mathsf{unif}(0,1)\)</span> satisfies <span class="math inline">\(U&lt;R\)</span>.</p>
 
 
 <div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list" style="display: none">
@@ -575,6 +601,15 @@ Gelman, Andrew, John B. Carlin, Hal S. Stern, David B. Dunson, Aki Vehtari, and 
 <div id="ref-George.McCulloch:1993" class="csl-entry" role="listitem">
 George, Edward I., and Robert E. McCulloch. 1993. <span>“Variable Selection via <span>G</span>ibbs Sampling.”</span> <em>Journal of the American Statistical Association</em> 88 (423): 881–89. <a href="https://doi.org/10.1080/01621459.1993.10476353">https://doi.org/10.1080/01621459.1993.10476353</a>.
 </div>
+<div id="ref-Green:2001" class="csl-entry" role="listitem">
+Green, Peter J. 2001. <span>“A Primer on <span>M</span>arkov Chain <span>M</span>onte <span>C</span>arlo.”</span> <em>Monographs on Statistics and Applied Probability</em> 87: 1–62.
+</div>
+<div id="ref-Green:1995" class="csl-entry" role="listitem">
+Green, Peter J. 1995. <span>“<span class="nocase">Reversible jump <span>M</span>arkov chain <span>M</span>onte <span>C</span>arlo computation and <span>B</span>ayesian model determination</span>.”</span> <em>Biometrika</em> 82 (4): 711–32. <a href="https://doi.org/10.1093/biomet/82.4.711">https://doi.org/10.1093/biomet/82.4.711</a>.
+</div>
+<div id="ref-Holmes:2002" class="csl-entry" role="listitem">
+Holmes, C. C., D. G. T. Denison, and B. K. Mallick. 2002. <span>“Accounting for Model Uncertainty in Seemingly Unrelated Regressions.”</span> <em>Journal of Computational and Graphical Statistics</em> 11 (3): 533–51. <a href="http://www.jstor.org/stable/1391112">http://www.jstor.org/stable/1391112</a>.
+</div>
 <div id="ref-Lewandowski:2009" class="csl-entry" role="listitem">
 Lewandowski, Daniel, Dorota Kurowicka, and Harry Joe. 2009. <span>“Generating Random Correlation Matrices Based on Vines and Extended Onion Method.”</span> <em>Journal of Multivariate Analysis</em> 100 (9): 1989–2001. <a href="https://doi.org/10.1016/j.jmva.2009.04.008">https://doi.org/10.1016/j.jmva.2009.04.008</a>.
 </div>
@@ -583,6 +618,9 @@ Lin, Jason D, Nicole You Jeung Kim, Esther Uduehi, and Anat Keinan. 2024. <span>
 </div>
 <div id="ref-Mitchell.Beauchamp:1988" class="csl-entry" role="listitem">
 Mitchell, T. J., and J. J. Beauchamp. 1988. <span>“Bayesian Variable Selection in Linear Regression.”</span> <em>Journal of the American Statistical Association</em> 83 (404): 1023–32. <a href="https://doi.org/10.1080/01621459.1988.10478694">https://doi.org/10.1080/01621459.1988.10478694</a>.
+</div>
+<div id="ref-Park.Casella:2008" class="csl-entry" role="listitem">
+Park, Trevor, and George Casella. 2008. <span>“The <span>B</span>ayesian <span>L</span>asso.”</span> <em>Journal of the American Statistical Association</em> 103 (482): 681–86. <a href="https://doi.org/10.1198/016214508000000337">https://doi.org/10.1198/016214508000000337</a>.
 </div>
 <div id="ref-Piironen.Vehtari:2017" class="csl-entry" role="listitem">
 Piironen, Juho, and Aki Vehtari. 2017. <span>“Sparsity Information and Regularization in the Horseshoe and Other Shrinkage Priors.”</span> <em>Electronic Journal of Statistics</em> 11 (2): 5018–51. <a href="https://doi.org/10.1214/17-ejs1337si">https://doi.org/10.1214/17-ejs1337si</a>.
