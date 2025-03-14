@@ -555,8 +555,9 @@ There are different methods for doing this: one is through spike and slab priors
 
 Consider the setup of @prp-gaussian-ols, where we consider models $M_1, \ldots, M_m$ with for simplicity $p(M_i)=1$ for all models that include an intercept. We define $\mathbf{X}^{(m)}$ and $\boldsymbol{\beta}^{(m)}$ as the model matrix and the associated vector of non-zero coefficients associated with it. Let the response vector
 \begin{align*}
-\boldsymbol{Y} \mid M_m, \boldsymbol{\beta}, \sim \mathsf{Gauss}(\mathbf{X}^{(m)}\boldsymbol{\beta}^{(m)}, \boldsymbol{\Sigma})                                                                                  \end{align*}
-where $\boldsymbol{\beta}^{(m)} \mid M_m,$ is assigned a Gaussian prior $\. $\boldsymbol{\Sigma}$  are given suitable priors. We write $|M|$ for the cardinality of the set of non-zero coefficients $\boldsymbol{\beta}$ in model $M.$
+\boldsymbol{Y} \mid M_m, \boldsymbol{\beta}, \sim \mathsf{Gauss}(\mathbf{X}^{(m)}\boldsymbol{\beta}^{(m)}, \boldsymbol{\Sigma})    
+\end{align*}
+where $\boldsymbol{\beta}^{(m)} \mid M_m,$ is assigned a Gaussian prior, and likewise the covariance parameters  are given suitable priors. We write $|M|$ for the cardinality of the set of non-zero coefficients $\boldsymbol{\beta}$ in model $M.$
 
 Write $\boldsymbol{\theta}$ for all parameters other than the response, model and vector of coefficients. We can consider a joint update of the regression parameters $\boldsymbol{\beta}, M$ by sampling from their joint distribution via $p(\boldsymbol{\beta} \mid M, \boldsymbol{\theta}) p(M \mid \boldsymbol{\theta}).$  The update for the coefficients $p(\boldsymbol{\beta} \mid M, \boldsymbol{\theta})$ is as usual, while for $p(M \mid \boldsymbol{\theta})$, we get the conditional Bayes factor,
 \begin{align*}

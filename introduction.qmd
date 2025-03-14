@@ -514,12 +514,12 @@ The inverse transformation yields $x_j = zy_j$ for $j=1, \ldots, d-1$ and $x_d =
 \mathbf{J}_{\boldsymbol{g}^{-1}}(\boldsymbol{y}, z) = \begin{pmatrix} z \mathbf{I}_{d-1} & \boldsymbol{y} \\ \boldsymbol{0}^\top_{d-1} & y_d
 \end{pmatrix}.
 \end{align*}
-The absolute value of the determinant is then $z^{d-1}y_d.$ Using the change of variable formula,
+The absolute value of the determinant is then $z^{d-1}y_d.$ Using the change of variable formula, the joint density is
 \begin{align*}
-f_{\boldsymbol{Y}}(\boldsymbol{y}) &= \prod_{j=1}^{d}  \frac{(zy_j)^{\alpha_j-1}\exp(-zy_j)}{\Gamma(\alpha_j)} \times z^{d-1}y_d
+f_{\boldsymbol{Y}, Z}(\boldsymbol{y}, z) &= \prod_{j=1}^{d}  \frac{(zy_j)^{\alpha_j-1}\exp(-zy_j)}{\Gamma(\alpha_j)} \times z^{d-1}y_d
 \\&= z^{\alpha_1 + \cdots + \alpha_d - 1}\exp(-z) \prod_{j=1}^d \frac{y_j^{\alpha_j-1}}{\Gamma(\alpha_j)}.
 \end{align*}
-Since the density factorizes, we find the result upon multiplying and dividing by the normalizing constant $\Gamma(\alpha_1 + \cdots + \alpha_d),$ which yields both the Dirichlet for $\boldsymbol{Y}$ and the gamma  for $Z.$
+Since the density factorizes, we find the result upon multiplying and dividing by the normalizing constant $\Gamma(\alpha_1 + \cdots + \alpha_d),$ which yields both the Dirichlet for $\boldsymbol{Y}$ and a gamma for $Z.$
 
 :::
 

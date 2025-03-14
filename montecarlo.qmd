@@ -106,7 +106,7 @@ Rejection sampling (also termed accept-reject algorithm) samples from a random v
 #| eval: true
 #| echo: false
 #| label: fig-acceptreject
-#| fig-cap: "Target density (full) and scaled proposal density (dashed): the vertical segment at $\theta=1$ shows the percentage of acceptance for a uniform slice under the scaled proposal, giving an acceptance ratio of 0.58."
+#| fig-cap: "Target density (full) and scaled proposal density (dashed): the vertical segment at $\\theta=1$ shows the percentage of acceptance for a uniform slice under the scaled proposal, giving an acceptance ratio of 0.58."
 ptarget <- function(x){
   0.3*TruncatedNormal::dtmvnorm(x = cbind(x), mu = 2, sigma = matrix(0.25),lb = 0) +
     0.4*TruncatedNormal::dtmvnorm(x = cbind(x), mu = 0, sigma = matrix(0.5),lb = 0, ub = 3) + 0.3*TruncatedNormal::dtmvnorm(x = cbind(x), mu = 0, sigma = matrix(4),lb = 0, ub = 5)
