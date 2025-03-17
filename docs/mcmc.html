@@ -661,7 +661,7 @@ p(\theta) \approx p(\theta_{t-1}) + p'(\theta_{t-1})(\theta - \theta_{t-1}) + \f
 <li>The optimal acceptance rate depends on the dimension, but guidelines for random walk Metropolis are to have 0.44 for a single parameter model and 0.234 for multivariate targets; see <span class="citation" data-cites="Neal:2011">Neal (<a href="references.html#ref-Neal:2011" role="doc-biblioref">2011</a>)</span> for a heuristic derivation.</li>
 <li>To obtain the target acceptance rate, users must tune the variance of the proposal kernel. This is typically achieved by running the chain for some period, computing the empirical acceptance rate and increasing (respectively decreasing) the variance if the acceptance rate is too high (too low).</li>
 <li>Metropolis-adjusted Langevin algorithm (MALA) uses the gradient information to inform the proposal; it is akin to a Newton step.</li>
-<li>The detailed balance requires a function <span class="math inline">\(g\)</span> such that <span class="math inline">\(g(r) = rg(1/r).\)</span> Taking <span class="math inline">\(g(r) = \min(1,r)\)</span> as in Metropolis–Hasting rule leads to the lowest asymptotic variance <span class="citation" data-cites="Peskun:1973">(<a href="references.html#ref-Peskun:1973" role="doc-biblioref"><strong>Peskun:1973?</strong></a>)</span>.</li>
+<li>The detailed balance requires a function <span class="math inline">\(g\)</span> such that <span class="math inline">\(g(r) = rg(1/r).\)</span> Taking <span class="math inline">\(g(r) = \min(1,r)\)</span> as in Metropolis–Hasting rule leads to the lowest asymptotic variance <span class="citation" data-cites="Peskun:1973">(<a href="references.html#ref-Peskun:1973" role="doc-biblioref">Peskun 1973</a>)</span>.</li>
 <li></li>
 </ul>
 </div>
@@ -686,6 +686,9 @@ Metropolis, Nicholas, Arianna W. Rosenbluth, Marshall N. Rosenbluth, Augusta H. 
 </div>
 <div id="ref-Neal:2011" class="csl-entry" role="listitem">
 Neal, Radford M. 2011. <span>“<span>MCMC</span> Using <span>H</span>amiltonian Dynamics.”</span> In <em>Handbook of <span>M</span>arkov Chain <span>M</span>onte <span>C</span>arlo</em>, edited by S. Brooks, A. Gelman, G. Jones, and X. L. Meng, 113–62. Boca Raton: CRC Press. <a href="https://doi.org/10.1201/b10905-5">https://doi.org/10.1201/b10905-5</a>.
+</div>
+<div id="ref-Peskun:1973" class="csl-entry" role="listitem">
+Peskun, P. H. 1973. <span>“Optimum <span>M</span>onte-<span>C</span>arlo Sampling Using <span>M</span>arkov Chains.”</span> <em>Biometrika</em> 60 (3): 607–12. <a href="https://doi.org/10.1093/biomet/60.3.607">https://doi.org/10.1093/biomet/60.3.607</a>.
 </div>
 <div id="ref-Casella.Robert:2004" class="csl-entry" role="listitem">
 Robert, Christian P., and George Casella. 2004. <em><span>M</span>onte <span>C</span>arlo Statistical Methods</em>. 2nd ed. New York, NY: Springer. <a href="https://doi.org/10.1007/978-1-4757-4145-2">https://doi.org/10.1007/978-1-4757-4145-2</a>.

@@ -266,6 +266,20 @@
 \DeclareMathAlphabet{\mathcrl}{U}{rsfs}{m}{n}
 \usepackage{utopia}
 \DeclareMathAlphabet{\mathcal}{OMS}{cmsy}{m}{n}
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{wrapfig}
+\usepackage{float}
+\usepackage{colortbl}
+\usepackage{pdflscape}
+\usepackage{tabu}
+\usepackage{threeparttable}
+\usepackage{threeparttablex}
+\usepackage[normalem]{ulem}
+\usepackage{makecell}
+\usepackage{xcolor}
 \makeatletter
 \@ifpackageloaded{tcolorbox}{}{\usepackage[skins,breakable]{tcolorbox}}
 \@ifpackageloaded{fontawesome5}{}{\usepackage{fontawesome5}}
@@ -321,17 +335,17 @@
 \newcommand*\listoflistings{\listof{codelisting}{List of Listings}}
 \usepackage{amsthm}
 \theoremstyle{plain}
-\newtheorem{corollary}{Corollary}[chapter]
-\theoremstyle{plain}
 \newtheorem{proposition}{Proposition}[chapter]
 \theoremstyle{plain}
 \newtheorem{theorem}{Theorem}[chapter]
 \theoremstyle{definition}
-\newtheorem{definition}{Definition}[chapter]
-\theoremstyle{definition}
 \newtheorem{exercise}{Exercise}[chapter]
 \theoremstyle{definition}
 \newtheorem{example}{Example}[chapter]
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}[chapter]
+\theoremstyle{plain}
+\newtheorem{corollary}{Corollary}[chapter]
 \theoremstyle{remark}
 \AtBeginDocument{\renewcommand*{\proofname}{Proof}}
 \newtheorem*{remark}{Remark}
@@ -403,7 +417,7 @@ used throughout the course. The overview begins with basic statistical
 concepts, random variables, their distribution and density, moments and
 likelihood derivations.
 
-\begin{tcolorbox}[enhanced jigsaw, colbacktitle=quarto-callout-important-color!10!white, left=2mm, opacityback=0, leftrule=.75mm, titlerule=0mm, colframe=quarto-callout-important-color-frame, bottomtitle=1mm, toptitle=1mm, rightrule=.15mm, breakable, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Learning objectives}:}, arc=.35mm, toprule=.15mm, colback=white, opacitybacktitle=0.6, bottomrule=.15mm, coltitle=black]
+\begin{tcolorbox}[enhanced jigsaw, colframe=quarto-callout-important-color-frame, colback=white, leftrule=.75mm, opacitybacktitle=0.6, toprule=.15mm, colbacktitle=quarto-callout-important-color!10!white, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Learning objectives}:}, left=2mm, breakable, titlerule=0mm, bottomrule=.15mm, opacityback=0, bottomtitle=1mm, rightrule=.15mm, arc=.35mm, toptitle=1mm, coltitle=black]
 
 At the end of the chapter, students should be able to
 
@@ -1699,7 +1713,7 @@ The likelihood can then be written as \begin{align*}
 
 \end{example}
 
-\begin{tcolorbox}[enhanced jigsaw, colbacktitle=quarto-callout-important-color!10!white, left=2mm, opacityback=0, leftrule=.75mm, titlerule=0mm, colframe=quarto-callout-important-color-frame, bottomtitle=1mm, toptitle=1mm, rightrule=.15mm, breakable, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Summary}}, arc=.35mm, toprule=.15mm, colback=white, opacitybacktitle=0.6, bottomrule=.15mm, coltitle=black]
+\begin{tcolorbox}[enhanced jigsaw, colframe=quarto-callout-important-color-frame, colback=white, leftrule=.75mm, opacitybacktitle=0.6, toprule=.15mm, colbacktitle=quarto-callout-important-color!10!white, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Summary}}, left=2mm, breakable, titlerule=0mm, bottomrule=.15mm, opacityback=0, bottomtitle=1mm, rightrule=.15mm, arc=.35mm, toptitle=1mm, coltitle=black]
 
 \begin{itemize}
 \tightlist
@@ -1779,7 +1793,7 @@ elicitation and estimation of the marginal likelihood, are mentioned in
 passing. A brief discussion of Bayesian hypothesis testing (and
 alternatives) is presented.
 
-\begin{tcolorbox}[enhanced jigsaw, colbacktitle=quarto-callout-important-color!10!white, left=2mm, opacityback=0, leftrule=.75mm, titlerule=0mm, colframe=quarto-callout-important-color-frame, bottomtitle=1mm, toptitle=1mm, rightrule=.15mm, breakable, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Learning objectives}:}, arc=.35mm, toprule=.15mm, colback=white, opacitybacktitle=0.6, bottomrule=.15mm, coltitle=black]
+\begin{tcolorbox}[enhanced jigsaw, colframe=quarto-callout-important-color-frame, colback=white, leftrule=.75mm, opacitybacktitle=0.6, toprule=.15mm, colbacktitle=quarto-callout-important-color!10!white, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Learning objectives}:}, left=2mm, breakable, titlerule=0mm, bottomrule=.15mm, opacityback=0, bottomtitle=1mm, rightrule=.15mm, arc=.35mm, toptitle=1mm, coltitle=black]
 
 At the end of the chapter, students should be able to
 
@@ -2716,7 +2730,7 @@ the cutoff for the HDP region.}
 
 \end{figure}%
 
-\begin{tcolorbox}[enhanced jigsaw, colbacktitle=quarto-callout-important-color!10!white, left=2mm, opacityback=0, leftrule=.75mm, titlerule=0mm, colframe=quarto-callout-important-color-frame, bottomtitle=1mm, toptitle=1mm, rightrule=.15mm, breakable, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Summary}:}, arc=.35mm, toprule=.15mm, colback=white, opacitybacktitle=0.6, bottomrule=.15mm, coltitle=black]
+\begin{tcolorbox}[enhanced jigsaw, colframe=quarto-callout-important-color-frame, colback=white, leftrule=.75mm, opacitybacktitle=0.6, toprule=.15mm, colbacktitle=quarto-callout-important-color!10!white, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Summary}:}, left=2mm, breakable, titlerule=0mm, bottomrule=.15mm, opacityback=0, bottomtitle=1mm, rightrule=.15mm, arc=.35mm, toptitle=1mm, coltitle=black]
 
 \begin{itemize}
 \tightlist
@@ -2795,7 +2809,7 @@ inferences. Generally, we will choose the prior for convenience. Priors
 are controversial because they could be tuned aposteriori to give any
 answer an analyst might want.
 
-\begin{tcolorbox}[enhanced jigsaw, colbacktitle=quarto-callout-important-color!10!white, left=2mm, opacityback=0, leftrule=.75mm, titlerule=0mm, colframe=quarto-callout-important-color-frame, bottomtitle=1mm, toptitle=1mm, rightrule=.15mm, breakable, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Learning objectives}:}, arc=.35mm, toprule=.15mm, colback=white, opacitybacktitle=0.6, bottomrule=.15mm, coltitle=black]
+\begin{tcolorbox}[enhanced jigsaw, colframe=quarto-callout-important-color-frame, colback=white, leftrule=.75mm, opacitybacktitle=0.6, toprule=.15mm, colbacktitle=quarto-callout-important-color!10!white, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Learning objectives}:}, left=2mm, breakable, titlerule=0mm, bottomrule=.15mm, opacityback=0, bottomtitle=1mm, rightrule=.15mm, arc=.35mm, toptitle=1mm, coltitle=black]
 
 At the end of the chapter, students should be able to
 
@@ -3830,7 +3844,7 @@ improper priors on location and scale.}
 
 \end{example}
 
-\begin{tcolorbox}[enhanced jigsaw, colbacktitle=quarto-callout-important-color!10!white, left=2mm, opacityback=0, leftrule=.75mm, titlerule=0mm, colframe=quarto-callout-important-color-frame, bottomtitle=1mm, toptitle=1mm, rightrule=.15mm, breakable, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Summary}:}, arc=.35mm, toprule=.15mm, colback=white, opacitybacktitle=0.6, bottomrule=.15mm, coltitle=black]
+\begin{tcolorbox}[enhanced jigsaw, colframe=quarto-callout-important-color-frame, colback=white, leftrule=.75mm, opacitybacktitle=0.6, toprule=.15mm, colbacktitle=quarto-callout-important-color!10!white, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Summary}:}, left=2mm, breakable, titlerule=0mm, bottomrule=.15mm, opacityback=0, bottomtitle=1mm, rightrule=.15mm, arc=.35mm, toptitle=1mm, coltitle=black]
 
 \begin{itemize}
 \tightlist
@@ -4891,7 +4905,7 @@ computers became more widely available. The idea is to draw correlated
 samples from a posterior via Markov chains, constructed to have the
 posterior as invariant stationary distribution.
 
-\begin{tcolorbox}[enhanced jigsaw, colbacktitle=quarto-callout-important-color!10!white, left=2mm, opacityback=0, leftrule=.75mm, titlerule=0mm, colframe=quarto-callout-important-color-frame, bottomtitle=1mm, toptitle=1mm, rightrule=.15mm, breakable, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Learning objectives}:}, arc=.35mm, toprule=.15mm, colback=white, opacitybacktitle=0.6, bottomrule=.15mm, coltitle=black]
+\begin{tcolorbox}[enhanced jigsaw, colframe=quarto-callout-important-color-frame, colback=white, leftrule=.75mm, opacitybacktitle=0.6, toprule=.15mm, colbacktitle=quarto-callout-important-color!10!white, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Learning objectives}:}, left=2mm, breakable, titlerule=0mm, bottomrule=.15mm, opacityback=0, bottomtitle=1mm, rightrule=.15mm, arc=.35mm, toptitle=1mm, coltitle=black]
 
 At the end of the chapter, students should be able to
 
@@ -5581,7 +5595,7 @@ overdispersion.
 
 \end{example}
 
-\begin{tcolorbox}[enhanced jigsaw, colbacktitle=quarto-callout-important-color!10!white, left=2mm, opacityback=0, leftrule=.75mm, titlerule=0mm, colframe=quarto-callout-important-color-frame, bottomtitle=1mm, toptitle=1mm, rightrule=.15mm, breakable, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Summary}:}, arc=.35mm, toprule=.15mm, colback=white, opacitybacktitle=0.6, bottomrule=.15mm, coltitle=black]
+\begin{tcolorbox}[enhanced jigsaw, colframe=quarto-callout-important-color-frame, colback=white, leftrule=.75mm, opacitybacktitle=0.6, toprule=.15mm, colbacktitle=quarto-callout-important-color!10!white, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Summary}:}, left=2mm, breakable, titlerule=0mm, bottomrule=.15mm, opacityback=0, bottomtitle=1mm, rightrule=.15mm, arc=.35mm, toptitle=1mm, coltitle=black]
 
 \begin{itemize}
 \tightlist
@@ -5623,7 +5637,7 @@ overdispersion.
   The detailed balance requires a function \(g\) such that
   \(g(r) = rg(1/r).\) Taking \(g(r) = \min(1,r)\) as in
   Metropolis--Hasting rule leads to the lowest asymptotic variance
-  (\citeproc{ref-Peskun:1973}{\textbf{Peskun:1973?}}).
+  (\citeproc{ref-Peskun:1973}{Peskun 1973}).
 \item
 \end{itemize}
 
@@ -5633,7 +5647,7 @@ overdispersion.
 
 \chapter{Gibbs sampling}\label{sec-Gibbs}
 
-\begin{tcolorbox}[enhanced jigsaw, colbacktitle=quarto-callout-important-color!10!white, left=2mm, opacityback=0, leftrule=.75mm, titlerule=0mm, colframe=quarto-callout-important-color-frame, bottomtitle=1mm, toptitle=1mm, rightrule=.15mm, breakable, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Learning objectives}:}, arc=.35mm, toprule=.15mm, colback=white, opacitybacktitle=0.6, bottomrule=.15mm, coltitle=black]
+\begin{tcolorbox}[enhanced jigsaw, colframe=quarto-callout-important-color-frame, colback=white, leftrule=.75mm, opacitybacktitle=0.6, toprule=.15mm, colbacktitle=quarto-callout-important-color!10!white, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Learning objectives}:}, left=2mm, breakable, titlerule=0mm, bottomrule=.15mm, opacityback=0, bottomtitle=1mm, rightrule=.15mm, arc=.35mm, toptitle=1mm, coltitle=black]
 
 At the end of the chapter, students should be able to
 
@@ -6099,7 +6113,7 @@ and Stephens (\citeproc{ref-Stephens:2002}{2002}) for more details.
 
 \end{refremark}
 
-\begin{tcolorbox}[enhanced jigsaw, colbacktitle=quarto-callout-important-color!10!white, left=2mm, opacityback=0, leftrule=.75mm, titlerule=0mm, colframe=quarto-callout-important-color-frame, bottomtitle=1mm, toptitle=1mm, rightrule=.15mm, breakable, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Summary}:}, arc=.35mm, toprule=.15mm, colback=white, opacitybacktitle=0.6, bottomrule=.15mm, coltitle=black]
+\begin{tcolorbox}[enhanced jigsaw, colframe=quarto-callout-important-color-frame, colback=white, leftrule=.75mm, opacitybacktitle=0.6, toprule=.15mm, colbacktitle=quarto-callout-important-color!10!white, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Summary}:}, left=2mm, breakable, titlerule=0mm, bottomrule=.15mm, opacityback=0, bottomtitle=1mm, rightrule=.15mm, arc=.35mm, toptitle=1mm, coltitle=black]
 
 \begin{itemize}
 \tightlist
@@ -6157,7 +6171,7 @@ Betancourt} for excellent visualizations. In this chapter, we focus on
 three aspects of the workflow: model validation, evaluation and
 comparison.
 
-\begin{tcolorbox}[enhanced jigsaw, colbacktitle=quarto-callout-important-color!10!white, left=2mm, opacityback=0, leftrule=.75mm, titlerule=0mm, colframe=quarto-callout-important-color-frame, bottomtitle=1mm, toptitle=1mm, rightrule=.15mm, breakable, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Learning objectives}:}, arc=.35mm, toprule=.15mm, colback=white, opacitybacktitle=0.6, bottomrule=.15mm, coltitle=black]
+\begin{tcolorbox}[enhanced jigsaw, colframe=quarto-callout-important-color-frame, colback=white, leftrule=.75mm, opacitybacktitle=0.6, toprule=.15mm, colbacktitle=quarto-callout-important-color!10!white, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Learning objectives}:}, left=2mm, breakable, titlerule=0mm, bottomrule=.15mm, opacityback=0, bottomtitle=1mm, rightrule=.15mm, arc=.35mm, toptitle=1mm, coltitle=black]
 
 At the end of the chapter, students should be able to
 
@@ -7704,7 +7718,9 @@ approximation]\protect\hypertarget{exm-bic-bma}{}\label{exm-bic-bma}
 Consider the \texttt{diabetes} model from Park and Casella
 (\citeproc{ref-Park.Casella:2008}{2008}). We fit various linear
 regression models, considering all best models of a certain type with at
-most the 10 predictors plus the intercept. The
+most the 10 predictors plus the intercept. In practice, we typically
+restrict attention to models within some distance of the lowest BIC
+value, as the weights otherwise will be negligible.
 
 \begin{figure}[ht!]
 
@@ -7824,7 +7840,7 @@ p(\boldsymbol{y}) = \frac{\Gamma(n+a)}{\Gamma(a)}\frac{b^a}{\left(b + \sum_{i=1}
 \end{align*}
 
 For the sample of size \(62,\) the exponential model marginal likelihood
-is \(276.46,\) whereas the Laplace approximation gives \(-281.9.\)
+is \(-276.5,\) whereas the Laplace approximation gives \(-281.9.\)
 
 \end{example}
 
@@ -7861,13 +7877,13 @@ approximations.
 
 Consider a model with response \(\boldsymbol{y}\) which depends on
 covariates \(\mathbf{x}\) through a latent Gaussian process; typically
-the priors on the coefficients \(\boldsymbol{\beta}.\) In applications
-with splines, or space time processes, the prior precision matrix for
-\(\boldsymbol{\beta}\) will be sparse with a Gaussian Markov random
-field structure. The dimension of \(\boldsymbol{\beta}\) can be
+the priors on the coefficients \(\boldsymbol{\beta} \in \mathbb{R}^p.\)
+In applications with splines, or space time processes, the prior
+precision matrix for \(\boldsymbol{\beta}\) will be sparse with a
+Gaussian Markov random field structure. The dimension \(p\) can be
 substantial (several thousands) with a comparably low-dimensional
-hyperparameter vector \(\boldsymbol{\theta}.\) Interest typically then
-lies in marginal parameters \begin{align*}
+hyperparameter vector \(\boldsymbol{\theta} \in \mathbb{R}^m.\) Interest
+typically then lies in marginal parameters \begin{align*}
 p(\beta_i \mid \boldsymbol{y}) &= \int p(\beta_i \mid \boldsymbol{\theta}, \boldsymbol{y}) p(\boldsymbol{\theta} \mid \boldsymbol{y}) \mathrm{d} \boldsymbol{\theta}\\
 p(\theta_i \mid \boldsymbol{y}) &= \int p(\boldsymbol{\theta} \mid \boldsymbol{y}) \mathrm{d} \boldsymbol{\theta}_{-i}
 \end{align*} where \(\boldsymbol{\theta}_{-i}\) denotes the vector of
@@ -7895,18 +7911,242 @@ only the determinant of the negative Hessian of
 namely \(\boldsymbol{H}(\widehat{\boldsymbol{\beta}}).\) Note that the
 latter is a function of \(\boldsymbol{\theta}.\)
 
+To obtain \(p(\theta_i \mid \boldsymbol{y})\), we then proceed with
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  finding the mode of
+  \(\widetilde{p}(\boldsymbol{\theta} \mid \boldsymbol{y})\) using a
+  Newton's method, approximating the gradient and Hessian via finite
+  differences.
+\item
+  Compute the negative Hessian at the mode to get an approximation to
+  the covariance of \(\boldsymbol{\theta}.\) Use an eigendecomposition
+  to get the principal directions \(\boldsymbol{z}\).
+\item
+  In each direction of \(\boldsymbol{z}\), consider drops in
+  \(\widetilde{p}(\boldsymbol{\theta} \mid \boldsymbol{y})\) as we move
+  away from the mode and define a coarse grid based on these, keeping
+  points where the difference in
+  \(\widetilde{p}(\boldsymbol{\theta} \mid \boldsymbol{y})\) relative to
+  the mode is less than some numerical tolerance \(\delta.\)
+\item
+  Retrieve the marginal by numerical integration using the central
+  composition design outline above. We can also use directly avoid the
+  integration and use the approximation at the posterior mode of
+  \(\widetilde{p}(\boldsymbol{\theta} \mid \boldsymbol{y}).\)
+\end{enumerate}
+
 Håvard Rue, Martino, and Chopin
 (\citeproc{ref-Rue.Martino.Chopin:2009}{2009}) proceed in an analogous
 fashion, but instead working with the marginal for \(\beta_i\) building
 an approximation of it based on maximizing
 \(\boldsymbol{\beta}_{-i} \mid \beta_i, \boldsymbol{\theta}, \boldsymbol{y}\)
-to yield \(\widetilde{\boldsymbol{\beta}}\) whose \(i\)th element is
-\(\beta_i.\)
+to yield \(\widehat{\boldsymbol{\beta}}_{(i)}\) whose \(i\)th element is
+\(\beta_i,\) yielding \begin{align*}
+\widetilde{p}(\beta_i \mid \boldsymbol{\theta}, \boldsymbol{y}) \propto \frac{p(\widehat{\boldsymbol{\beta}}_{(i)}, \boldsymbol{\theta} \mid \boldsymbol{y})}{\widetilde{p}(\widehat{\boldsymbol{\beta}}_{(i),-i} \mid \beta_i, \boldsymbol{\theta}, \boldsymbol{y})},
+\end{align*} with a suitable renormalization of
+\(\widetilde{p}(\widehat{\boldsymbol{\beta}}_{(i),-i} \mid \beta_i, \boldsymbol{\theta}, \boldsymbol{y}).\)
+Such approximations are reminiscent of profile likelihood.
 
-Further improvements to the methods were proposed in Wood
-(\citeproc{ref-Wood:2019}{2019}). The INLA software uses a low-rank
-variational correction to Laplace method, proposed in
-(\citeproc{ref-vanNiekerk:2024}{\textbf{vanNiekerk:2024?}}).
+While we could use the Laplace approximation
+\(p_{G}(\widehat{\boldsymbol{\beta}} \mid \boldsymbol{y}, \boldsymbol{\theta})\)
+and marginalize the latter directly, this leads to evaluation of the
+Laplace approximation to the density far from the mode, which is often
+inaccurate. One challenge is that \(p\) again is very large, so
+calculation of the Hessian \(\mathbf{H}\) is very high dimensional and
+costly to evaluate. Having to evaluate it repeatedly for each marginal
+\(\beta_i\) for \(i=1, \ldots, p\) is prohibitive since it involves
+factorizations of \(p \times p\) matrices.
+
+To reduce the computational costs, Håvard Rue, Martino, and Chopin
+(\citeproc{ref-Rue.Martino.Chopin:2009}{2009}) propose to use the
+approximate mean to avoid optimizing and consider the conditional based
+on the conditional of the Gaussian approximation with mean
+\(\widehat{\boldsymbol{\beta}}\) and covariance
+\(\boldsymbol{\Sigma} = \boldsymbol{H}^{-1}(\widehat{\boldsymbol{\beta}}),\)
+\begin{align*}
+\boldsymbol{\beta}_{-i} \mid \beta_i, \boldsymbol{\theta}, \boldsymbol{y} \approx \mathsf{Gauss}_{p-1}\left\{\widetilde{\boldsymbol{\beta}}_{(i)} = \widehat{\boldsymbol{\beta}}_{-i} + \boldsymbol{\Sigma}_{i,i}^{-1}\boldsymbol{\Sigma}_{i,-i}(\beta_i - \widehat{\beta}_i, \mathbf{M}^{-1}_{-i,-i}\right\};
+\end{align*} cf. Proposition~\ref{prp-conditional-gaussian}. This only
+requires a rank-one update. Wood (\citeproc{ref-Wood:2019}{2019})
+suggest to use a Newton step to correct
+\(\widetilde{\boldsymbol{\beta}}_{(i)},\) starting from the conditional
+mean. The second step is to exploit the local dependence on
+\(\boldsymbol{\beta}\) using the Markov structure to build an
+improvement to the Hessian. Further improvements are proposed in Håvard
+Rue, Martino, and Chopin (\citeproc{ref-Rue.Martino.Chopin:2009}{2009}),
+who used a simplified Laplace approximation to correct the Gaussian
+approximation for location and skewness, a necessary step when the
+likelihood itself is not Gaussian. This leads to a Taylor series
+approximation to correct the log determinant of the Hessian matrix. Wood
+(\citeproc{ref-Wood:2019}{2019}) consider a BFGS update to
+\(\mathbf{M}^{-1}_{-i,-i}\) directly, which works less well than the
+Taylor expansion near \(\widehat{\beta}_i\), but improves upon when we
+move far from this value. Nowadays, the INLA software uses a low-rank
+variational correction to Laplace method, proposed in van Niekerk and
+Rue (\citeproc{ref-vanNiekerk.Rue:2024}{2024}).
+
+The \texttt{INLA} \href{https://www.r-inla.org/}{\textbf{R} package}
+provides an interface to fit models with Gaussian latent random effects.
+While the software is particularly popular for spatio-temporal
+applications using the SPDE approach, we revisit two examples in the
+sequel where we can exploit the Markov structure.
+
+\begin{example}[Stochastic volatility model with
+INLA]\protect\hypertarget{exm-stochvol-inla}{}\label{exm-stochvol-inla}
+
+Financial returns \(Y_t\) typically exhibit time-varying variability.
+The \textbf{stochastic volatility} model is a parameter-driven model
+that specifies \begin{align*}
+Y_t &= \exp(h_t/2) Z_t \\
+h_t &= \gamma + \phi (h_{t-1} - \gamma) + \sigma U_t
+\end{align*} where
+\(U_t \stackrel{\mathrm{iid}}{\sim} \mathsf{Gauss}(0,1)\) and
+\(Z_t \sim  \stackrel{\mathrm{iid}}{\sim} \mathsf{Gauss}(0,1).\) The
+\href{https://inla.r-inla-download.org/r-inla.org/doc/likelihood/stochvolgaussian.pdf}{\texttt{INLA}
+documentation} provides information about which default prior and
+hyperparameters are specified. We use a \(\mathsf{gamma}(1, 0.001)\)
+prior for the precision.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{library}\NormalTok{(INLA)}
+\CommentTok{\# Stochastic volatility model}
+\FunctionTok{data}\NormalTok{(exchangerate, }\AttributeTok{package =} \StringTok{"hecbayes"}\NormalTok{)}
+\CommentTok{\# Compute response from raw spot exchange rates at noon}
+\NormalTok{y }\OtherTok{\textless{}{-}} \DecValTok{100}\SpecialCharTok{*}\FunctionTok{diff}\NormalTok{(}\FunctionTok{log}\NormalTok{(exchangerate}\SpecialCharTok{$}\NormalTok{rate))}
+\CommentTok{\# \textquotesingle{}y\textquotesingle{} is now a series of percentage of log daily differences}
+\NormalTok{time }\OtherTok{\textless{}{-}} \FunctionTok{seq\_along}\NormalTok{(y)}
+\NormalTok{data }\OtherTok{\textless{}{-}} \FunctionTok{data.frame}\NormalTok{(}\AttributeTok{y =}\NormalTok{ y, }\AttributeTok{time =}\NormalTok{ time)}
+\CommentTok{\# Stochastic volatility model}
+\CommentTok{\# https://inla.r{-}inla{-}download.org/r{-}inla.org/doc/likelihood/stochvolgaussian.pdf}
+\CommentTok{\# The model uses a log link, and a (log){-}gamma prior for the precision}
+\NormalTok{f\_stochvol }\OtherTok{\textless{}{-}} \FunctionTok{formula}\NormalTok{(y }\SpecialCharTok{\textasciitilde{}} \FunctionTok{f}\NormalTok{(time, }\AttributeTok{model =} \StringTok{"ar1"}\NormalTok{, }\AttributeTok{param =} \FunctionTok{list}\NormalTok{(}\AttributeTok{prec =} \FunctionTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{, }\FloatTok{0.001}\NormalTok{))))}
+\NormalTok{mod\_stochvol }\OtherTok{\textless{}{-}} \FunctionTok{inla}\NormalTok{(f\_stochvol, }\AttributeTok{family =} \StringTok{"stochvol"}\NormalTok{, }\AttributeTok{data =}\NormalTok{ data)}
+\CommentTok{\# Obtain summary}
+\NormalTok{summary }\OtherTok{\textless{}{-}} \FunctionTok{summary}\NormalTok{(mod\_stochvol)}
+\CommentTok{\# plot(mod\_stochvol)}
+\NormalTok{marg\_prec }\OtherTok{\textless{}{-}}\NormalTok{ mod\_stochvol}\SpecialCharTok{$}\NormalTok{marginals.hyperpar[[}\DecValTok{1}\NormalTok{]]}
+\NormalTok{marg\_phi }\OtherTok{\textless{}{-}}\NormalTok{ mod\_stochvol}\SpecialCharTok{$}\NormalTok{marginals.hyperpar[[}\DecValTok{2}\NormalTok{]]}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{figure}[ht!]
+
+\centering{
+
+\pandocbounded{\includegraphics[keepaspectratio]{laplace_files/figure-pdf/fig-stochvol-inla-1.pdf}}
+
+}
+
+\caption{\label{fig-stochvol-inla}Marginal densities of precision and
+autocorrelation parameters from the Gaussian stochastic volatility
+model.}
+
+\end{figure}%
+
+Figure~\ref{fig-stochvol-inla} shows that the correlation \(\phi\) is
+nearly one, leading to random walk behaviour and high persistence over
+time (this is also due to the frequency of observations). This strong
+serial dependence in the variance is in part responsible for the
+difficulty in fitting this model using MCMC.
+
+We can use the marginal density approximations to obtain quantiles for
+summary of interest. The software also includes utilities to transform
+the parameters using the change of variable formula.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Compute density, quantiles, etc. via inla.*marginal}
+\DocumentationTok{\#\# approximate 95\% credible interval and marginal post median}
+\NormalTok{INLA}\SpecialCharTok{::}\FunctionTok{inla.qmarginal}\NormalTok{(marg\_phi, }\AttributeTok{p =} \FunctionTok{c}\NormalTok{(}\FloatTok{0.025}\NormalTok{, }\FloatTok{0.5}\NormalTok{, }\FloatTok{0.975}\NormalTok{))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+[1] 0.9874671 0.9929791 0.9963883
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Change of variable to get variance from precision}
+\NormalTok{marg\_var }\OtherTok{\textless{}{-}}\NormalTok{ INLA}\SpecialCharTok{::}\FunctionTok{inla.tmarginal}\NormalTok{(}
+  \AttributeTok{fun =} \ControlFlowTok{function}\NormalTok{(x) \{ }\DecValTok{1} \SpecialCharTok{/}\NormalTok{ x \}, }
+  \AttributeTok{marginal =}\NormalTok{ marg\_prec)}
+\NormalTok{INLA}\SpecialCharTok{::}\FunctionTok{inla.qmarginal}\NormalTok{(marg\_var, }\AttributeTok{p =} \FunctionTok{c}\NormalTok{(}\FloatTok{0.025}\NormalTok{, }\FloatTok{0.975}\NormalTok{))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+[1] 0.1727294 0.4049277
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Posterior marginal mean and variance of phi}
+\NormalTok{mom1 }\OtherTok{\textless{}{-}}\NormalTok{ INLA}\SpecialCharTok{::}\FunctionTok{inla.emarginal}\NormalTok{(}
+    \AttributeTok{fun =} \ControlFlowTok{function}\NormalTok{(x)\{x\}, }
+    \AttributeTok{marginal =}\NormalTok{ marg\_phi)}
+\NormalTok{mom2 }\OtherTok{\textless{}{-}}\NormalTok{ INLA}\SpecialCharTok{::}\FunctionTok{inla.emarginal}\NormalTok{(}
+    \AttributeTok{fun =} \ControlFlowTok{function}\NormalTok{(x)\{x}\SpecialCharTok{\^{}}\DecValTok{2}\NormalTok{\}, }
+    \AttributeTok{marginal =}\NormalTok{ marg\_phi)}
+\FunctionTok{c}\NormalTok{(}\AttributeTok{mean =}\NormalTok{ mom1, }\AttributeTok{sd =} \FunctionTok{sqrt}\NormalTok{(mom2 }\SpecialCharTok{{-}}\NormalTok{ mom1}\SpecialCharTok{\^{}}\DecValTok{2}\NormalTok{))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+       mean          sd 
+0.992721399 0.002303185 
+\end{verbatim}
+
+\end{example}
+
+\begin{example}[Tokyo binomial time
+series]\protect\hypertarget{exm-rainfall-inla}{}\label{exm-rainfall-inla}
+
+We revisit Example~\ref{exm-Tokyo-rainfall}, but this time fit the model
+with \texttt{INLA}. We specify the mean model without intercept and fit
+a logistic regression, with a second-order cyclic random walk prior for
+the coefficients, and the default priors for the other parameters.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{data}\NormalTok{(Tokyo, }\AttributeTok{package =} \StringTok{"INLA"}\NormalTok{)}
+\CommentTok{\# Formula (removing intercept)}
+\NormalTok{formula }\OtherTok{\textless{}{-}}\NormalTok{ y }\SpecialCharTok{\textasciitilde{}} \FunctionTok{f}\NormalTok{(time, }\AttributeTok{model =} \StringTok{"rw2"}\NormalTok{, }\AttributeTok{cyclic =} \ConstantTok{TRUE}\NormalTok{) }\SpecialCharTok{{-}} \DecValTok{1}
+\NormalTok{mod }\OtherTok{\textless{}{-}}\NormalTok{ INLA}\SpecialCharTok{::}\FunctionTok{inla}\NormalTok{(}
+   \AttributeTok{formula =}\NormalTok{ formula, }
+   \AttributeTok{family =} \StringTok{"binomial"}\NormalTok{,}
+   \AttributeTok{Ntrials =}\NormalTok{ n, }
+   \AttributeTok{data =}\NormalTok{ Tokyo)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{figure}[ht!]
+
+\centering{
+
+\pandocbounded{\includegraphics[keepaspectratio]{laplace_files/figure-pdf/fig-rainfall-inla-1.pdf}}
+
+}
+
+\caption{\label{fig-rainfall-inla}Posterior probability per day of the
+year with posterior median and 95\% credible interval for the Tokyo
+rainfall binomial time series.}
+
+\end{figure}%
+
+Figure~\ref{fig-rainfall-inla} shows posterior summaries for the
+\(\boldsymbol{\beta},\) which align with the results for the probit
+model.
+
+If we wanted to obtain predictions, we need to augment the model matrix
+and set missing values for the response variable. These then get imputed
+alongside with the other parameters.
+
+\end{example}
 
 \bookmarksetup{startatroot}
 
@@ -8219,6 +8459,11 @@ Park, Trevor, and George Casella. 2008. {``The {B}ayesian {L}asso.''}
 \emph{Journal of the American Statistical Association} 103 (482):
 681--86. \url{https://doi.org/10.1198/016214508000000337}.
 
+\bibitem[\citeproctext]{ref-Peskun:1973}
+Peskun, P. H. 1973. {``Optimum {M}onte-{C}arlo Sampling Using {M}arkov
+Chains.''} \emph{Biometrika} 60 (3): 607--12.
+\url{https://doi.org/10.1093/biomet/60.3.607}.
+
 \bibitem[\citeproctext]{ref-Piironen.Vehtari:2017}
 Piironen, Juho, and Aki Vehtari. 2017. {``Sparsity Information and
 Regularization in the Horseshoe and Other Shrinkage Priors.''}
@@ -8325,6 +8570,12 @@ Tierney, Luke, and Joseph B. Kadane. 1986. {``Accurate Approximations
 for Posterior Moments and Marginal Densities.''} \emph{Journal of the
 American Statistical Association} 81 (393): 82--86.
 \url{https://doi.org/10.1080/01621459.1986.10478240}.
+
+\bibitem[\citeproctext]{ref-vanNiekerk.Rue:2024}
+van Niekerk, Janet, and Håavard Rue. 2024. {``Low-Rank Variational
+{B}ayes Correction to the {L}aplace Method.''} \emph{Journal of Machine
+Learning Research} 25 (62): 1--25.
+\url{http://jmlr.org/papers/v25/21-1405.html}.
 
 \bibitem[\citeproctext]{ref-Villani:2023}
 Villani, Mattias. 2023. {``Bayesian Learning: A Gentle Introduction.''}

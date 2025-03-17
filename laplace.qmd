@@ -1,5 +1,14 @@
 # Gaussian approximations
 
+```{r}
+#| label: setup
+#| file: "_common.R"
+#| include: true
+#| message: false
+#| warning: false
+#| echo: false
+```
+
 So far, we have focused on stochastic approximations of integral. In very large models, Markov chain Monte Carlo suffer from the curse of dimensionality and it is sometimes useful to resort to cheaper approximations. We begin this review by looking at the asymptotic Gaussian limiting distribution of the maximum aposteriori, the Laplace approximations for integrals [@Tierney.Kadane:1986], and their applications for model comparison [@Raftery:1995] and evaluation of the marginal likelihood. We also discuss integrated nested Laplace approximations [@Rue.Martino.Chopin:2009;@Wood:2019], used in hierarchical models with Gaussian components to obtain approximations to the marginal distribution. This material also borrows from Section 8.2 and appendix C.2.2 of @Held.Bove:2020. 
 
 We make use of Landau's notation to describe the growth rate of some functions: we write $x = \mathrm{O}(n)$ (big-O) to indicate that the ratio $x/n \to c \in \mathbb{R}$ and $x =\mathrm{o}(n)$ when $x/n \to 0,$ both when $n \to \infty.$
@@ -78,7 +87,7 @@ If the likelihood contribution dominates the posterior, the $\mathsf{BIC}$ appro
 
 ## Bayesian model averaging approximation
 
-Consider the `diabetes` model from @Park.Casella:2008. We fit various linear regression models, considering all best models of a certain type with at most the 10 predictors plus the intercept. The
+Consider the `diabetes` model from @Park.Casella:2008. We fit various linear regression models, considering all best models of a certain type with at most the 10 predictors plus the intercept. In practice, we typically restrict attention to models within some distance of the lowest BIC value, as the weights otherwise will be negligible.
 
 ```{r}
 library(leaps)
@@ -227,7 +236,7 @@ p(\boldsymbol{y}) = \frac{\Gamma(n+a)}{\Gamma(a)}\frac{b^a}{\left(b + \sum_{i=1}
 
 ```{r}
 n <- length(waiting); s <- sum(waiting)
-log_marg_lik <- lgamma(a) - a*log(b) + (n+a) * log(b+s) - lgamma(n+a)
+log_marg_lik <- lgamma(n+a) - lgamma(a) + a*log(b) - (n+a) * log(b+s)
 # Laplace approximation
 map <- (n + a - 1)/(s + b)
 logpost <- function(x){
@@ -239,7 +248,7 @@ H <- -numDeriv::hessian(logpost, x = map)
 log_marg_laplace <- 1/2*log(2*pi) - c(determinant(H)$modulus) + logpost(map)
 ```
 
-For the sample of size $`r length(waiting)`,$ the exponential model marginal likelihood is $`r round(log_marg_lik,2)`,$ whereas the Laplace approximation gives $`r round(log_marg_laplace,2)`.$
+For the sample of size $`r length(waiting)`,$ the exponential model marginal likelihood is $`r round(log_marg_lik,1)`,$ whereas the Laplace approximation gives $`r round(log_marg_laplace,1)`.$
 
 :::
 
@@ -269,7 +278,7 @@ While the Laplace method has an error $\mathrm{O}(n^{-1}),$ the leading order te
 
 In many high dimensional models, use of MCMC is prohibitively expensive and fast, yet accurate calculations are important. One class of models whose special structure is particularly amenable to deterministic approximations.
 
-Consider a model with response $\boldsymbol{y}$ which depends on covariates $\mathbf{x}$ through a latent Gaussian process; typically the priors on the coefficients $\boldsymbol{\beta}.$ In applications with splines, or space time processes, the prior precision matrix for $\boldsymbol{\beta}$ will be sparse with a Gaussian Markov random field structure. The dimension of $\boldsymbol{\beta}$ can be substantial (several thousands) with a comparably low-dimensional hyperparameter vector $\boldsymbol{\theta}.$ Interest typically then lies in marginal parameters
+Consider a model with response $\boldsymbol{y}$ which depends on covariates $\mathbf{x}$ through a latent Gaussian process; typically the priors on the coefficients $\boldsymbol{\beta} \in \mathbb{R}^p.$ In applications with splines, or space time processes, the prior precision matrix for $\boldsymbol{\beta}$ will be sparse with a Gaussian Markov random field structure. The dimension $p$ can be substantial (several thousands) with a comparably low-dimensional hyperparameter vector $\boldsymbol{\theta} \in \mathbb{R}^m.$ Interest typically then lies in marginal parameters
 \begin{align*}
 p(\beta_i \mid \boldsymbol{y}) &= \int p(\beta_i \mid \boldsymbol{\theta}, \boldsymbol{y}) p(\boldsymbol{\theta} \mid \boldsymbol{y}) \mathrm{d} \boldsymbol{\theta}\\
 p(\theta_i \mid \boldsymbol{y}) &= \int p(\boldsymbol{\theta} \mid \boldsymbol{y}) \mathrm{d} \boldsymbol{\theta}_{-i}
@@ -284,8 +293,157 @@ and the Laplace approximation  has kernel $$p_{G}(\boldsymbol{\beta} \mid \bolds
 since it is evaluated at $\widehat{\boldsymbol{\beta}},$ we retrieve only the determinant of the negative Hessian of 
 $p(\boldsymbol{\beta} \mid \boldsymbol{\theta}, \boldsymbol{y}),$ namely $\boldsymbol{H}(\widehat{\boldsymbol{\beta}}).$ Note that the latter is a function of $\boldsymbol{\theta}.$
 
- @Rue.Martino.Chopin:2009 proceed in an analogous fashion, but instead working with the marginal for $\beta_i$ building an approximation of it based on maximizing $\boldsymbol{\beta}_{-i} \mid \beta_i, \boldsymbol{\theta}, \boldsymbol{y}$ to yield $\widetilde{\boldsymbol{\beta}}$ whose $i$th element is $\beta_i.$ 
- 
- Further improvements to the methods were proposed in @Wood:2019. The INLA software uses a low-rank variational correction to Laplace method, proposed in @vanNiekerk:2024.
+To obtain $p(\theta_i \mid \boldsymbol{y})$, we then proceed with
 
+1. finding the mode of $\widetilde{p}(\boldsymbol{\theta} \mid \boldsymbol{y})$ using a Newton's method, approximating the gradient and Hessian via finite differences.
+2. Compute the negative Hessian at the mode to get an approximation to the covariance of $\boldsymbol{\theta}.$ Use an eigendecomposition to get the principal directions $\boldsymbol{z}$.
+3. In each direction of $\boldsymbol{z}$, consider drops in $\widetilde{p}(\boldsymbol{\theta} \mid \boldsymbol{y})$ as we move away from the mode and define a coarse grid based on these, keeping points where the difference in $\widetilde{p}(\boldsymbol{\theta} \mid \boldsymbol{y})$ relative to the mode is less than some numerical tolerance $\delta.$
+4. Retrieve the marginal by numerical integration using the central composition design outline above. We can also use directly avoid the integration and use the approximation at the posterior mode of $\widetilde{p}(\boldsymbol{\theta} \mid \boldsymbol{y}).$
+
+@Rue.Martino.Chopin:2009 proceed in an analogous fashion, but instead working with the marginal for $\beta_i$ building an approximation of it based on maximizing $\boldsymbol{\beta}_{-i} \mid \beta_i, \boldsymbol{\theta}, \boldsymbol{y}$ to yield $\widehat{\boldsymbol{\beta}}_{(i)}$ whose $i$th element is $\beta_i,$ yielding
+\begin{align*}
+\widetilde{p}(\beta_i \mid \boldsymbol{\theta}, \boldsymbol{y}) \propto \frac{p(\widehat{\boldsymbol{\beta}}_{(i)}, \boldsymbol{\theta} \mid \boldsymbol{y})}{\widetilde{p}(\widehat{\boldsymbol{\beta}}_{(i),-i} \mid \beta_i, \boldsymbol{\theta}, \boldsymbol{y})},
+\end{align*}
+with a suitable renormalization of $\widetilde{p}(\widehat{\boldsymbol{\beta}}_{(i),-i} \mid \beta_i, \boldsymbol{\theta}, \boldsymbol{y}).$ Such approximations are reminiscent of profile likelihood. 
+
+While we could use the Laplace approximation $p_{G}(\widehat{\boldsymbol{\beta}} \mid \boldsymbol{y}, \boldsymbol{\theta})$ and marginalize the latter directly, this leads to evaluation of the Laplace approximation to the density far from the mode, which is often inaccurate. One challenge is that $p$ again is very large, so calculation of the Hessian $\mathbf{H}$ is very high dimensional and costly to evaluate. Having to evaluate it repeatedly for each marginal $\beta_i$ for $i=1, \ldots, p$ is prohibitive since it involves factorizations of $p \times p$ matrices.
+
+
+To reduce the computational costs, @Rue.Martino.Chopin:2009 propose to use the approximate mean to avoid optimizing and consider the conditional based on the conditional of the Gaussian approximation with mean $\widehat{\boldsymbol{\beta}}$ and covariance $\boldsymbol{\Sigma} = \boldsymbol{H}^{-1}(\widehat{\boldsymbol{\beta}}),$ 
+\begin{align*}
+\boldsymbol{\beta}_{-i} \mid \beta_i, \boldsymbol{\theta}, \boldsymbol{y} \approx \mathsf{Gauss}_{p-1}\left\{\widetilde{\boldsymbol{\beta}}_{(i)} = \widehat{\boldsymbol{\beta}}_{-i} + \boldsymbol{\Sigma}_{i,i}^{-1}\boldsymbol{\Sigma}_{i,-i}(\beta_i - \widehat{\beta}_i, \mathbf{M}^{-1}_{-i,-i}\right\};
+\end{align*}
+cf. @prp-conditional-gaussian. This only requires a rank-one update. @Wood:2019 suggest to use a Newton step to correct $\widetilde{\boldsymbol{\beta}}_{(i)},$ starting from the conditional mean. The second step is to exploit the local dependence on $\boldsymbol{\beta}$ using the Markov structure to build an improvement to the Hessian. Further improvements are proposed in @Rue.Martino.Chopin:2009, who used a simplified Laplace approximation to correct the Gaussian approximation for location and skewness, a necessary step when the likelihood itself is not Gaussian. This leads to a Taylor series approximation to correct the log determinant of the Hessian matrix. @Wood:2019 consider a BFGS update to $\mathbf{M}^{-1}_{-i,-i}$ directly, which works less well than the Taylor expansion near $\widehat{\beta}_i$, but improves upon when we move far from this value. Nowadays, the INLA software uses a low-rank variational correction to Laplace method, proposed in @vanNiekerk.Rue:2024.
+
+
+The `INLA` [**R** package](https://www.r-inla.org/) provides an interface to fit models with Gaussian latent random effects. While the software is particularly popular for spatio-temporal applications using the SPDE approach, we revisit two examples in the sequel where we can exploit the Markov structure.
+
+:::{#exm-stochvol-inla}
+## Stochastic volatility model with INLA 
+
+Financial returns $Y_t$ typically exhibit time-varying variability. The **stochastic volatility** model is a parameter-driven model that specifies
+\begin{align*}
+Y_t &= \exp(h_t/2) Z_t \\
+h_t &= \gamma + \phi (h_{t-1} - \gamma) + \sigma U_t
+\end{align*}
+where $U_t \stackrel{\mathrm{iid}}{\sim} \mathsf{Gauss}(0,1)$ and $Z_t \sim  \stackrel{\mathrm{iid}}{\sim} \mathsf{Gauss}(0,1).$
+The [`INLA` documentation](https://inla.r-inla-download.org/r-inla.org/doc/likelihood/stochvolgaussian.pdf) provides information about which default prior and hyperparameters are specified. We use a $\mathsf{gamma}(1, 0.001)$ prior for the precision.
+
+```{r}
+#| eval: true
+#| echo: true
+#| message: false
+#| warning: false
+library(INLA)
+# Stochastic volatility model
+data(exchangerate, package = "hecbayes")
+# Compute response from raw spot exchange rates at noon
+y <- 100*diff(log(exchangerate$rate))
+# 'y' is now a series of percentage of log daily differences
+time <- seq_along(y)
+data <- data.frame(y = y, time = time)
+# Stochastic volatility model
+# https://inla.r-inla-download.org/r-inla.org/doc/likelihood/stochvolgaussian.pdf
+# The model uses a log link, and a (log)-gamma prior for the precision
+f_stochvol <- formula(y ~ f(time, model = "ar1", param = list(prec = c(1, 0.001))))
+mod_stochvol <- inla(f_stochvol, family = "stochvol", data = data)
+# Obtain summary
+summary <- summary(mod_stochvol)
+# plot(mod_stochvol)
+marg_prec <- mod_stochvol$marginals.hyperpar[[1]]
+marg_phi <- mod_stochvol$marginals.hyperpar[[2]]
+```
+ 
+```{r}
+#| eval: true
+#| echo: false
+#| label: fig-stochvol-inla
+#| fig-cap: "Marginal densities of precision and autocorrelation parameters from the Gaussian stochastic volatility model."
+g1 <- ggplot(data.frame(inla.smarginal(marg_prec))) +
+  geom_line(aes(x, y)) +
+  labs(x = expression(tau), y = "", subtitle = "posterior of precision") + 
+  scale_y_continuous(limits = c(0, NA), expand = expansion()) + 
+  theme_classic()
+
+g2 <- ggplot(data.frame(inla.smarginal(marg_phi))) +
+  geom_line(aes(x, y)) +
+  labs(x = expression(phi), y = "", subtitle = "posterior correlation") + 
+  scale_y_continuous(limits = c(0, NA), expand = expansion()) + 
+  theme_classic()
+g1 + g2
+```
+
+@fig-stochvol-inla shows that the correlation $\phi$ is nearly one, leading to random walk behaviour and high persistence over time (this is also due to the frequency of observations). This strong serial dependence in the variance is in part responsible for the difficulty in fitting this model using MCMC.
+
+
+We can use the marginal density approximations to obtain quantiles for summary of interest. The software also includes utilities to transform the parameters using the change of variable formula.
+
+```{r}
+#| eval: true
+#| echo: true
+# Compute density, quantiles, etc. via inla.*marginal
+## approximate 95% credible interval and marginal post median
+INLA::inla.qmarginal(marg_phi, p = c(0.025, 0.5, 0.975))
+# Change of variable to get variance from precision
+marg_var <- INLA::inla.tmarginal(
+  fun = function(x) { 1 / x }, 
+  marginal = marg_prec)
+INLA::inla.qmarginal(marg_var, p = c(0.025, 0.975))
+# Posterior marginal mean and variance of phi
+mom1 <- INLA::inla.emarginal(
+    fun = function(x){x}, 
+    marginal = marg_phi)
+mom2 <- INLA::inla.emarginal(
+    fun = function(x){x^2}, 
+    marginal = marg_phi)
+c(mean = mom1, sd = sqrt(mom2 - mom1^2))
+```
+
+
+:::
+
+:::{#exm-rainfall-inla}
+
+## Tokyo binomial time series
+
+We revisit @exm-Tokyo-rainfall, but this time fit the model with `INLA`. We specify the mean model without intercept and fit a logistic regression, with a second-order cyclic random walk prior for the coefficients, and the default priors for the other parameters.
+
+```{r}
+#| eval: true
+#| echo: true
+#| message: false
+#| warning: false
+data(Tokyo, package = "INLA")
+# Formula (removing intercept)
+formula <- y ~ f(time, model = "rw2", cyclic = TRUE) - 1
+mod <- INLA::inla(
+   formula = formula, 
+   family = "binomial",
+   Ntrials = n, 
+   data = Tokyo)
+```
+
+```{r}
+#| eval: true
+#| echo: false
+#| fig-cap: "Posterior probability per day of the year with posterior median and 95% credible interval for the Tokyo rainfall binomial time series."
+#| label: fig-rainfall-inla
+df_Tokyopred <- mod$summary.fitted.values
+colnames(df_Tokyopred)[3:5] <- c("lower","median","upper")
+df_Tokyopred$time <- 1:366
+ggplot(data = df_Tokyopred,
+       mapping = aes(x = time)) +
+  geom_line(aes(y = median)) +
+    geom_line(aes(y = lower), linetype = "dashed") +
+    geom_line(aes(y = upper), linetype = "dashed") +
+  labs(x = "day of year", y = "", subtitle = "posterior probability of rainfall above 1mm") +
+  theme_classic()
+```
+
+@fig-rainfall-inla shows posterior summaries for the $\boldsymbol{\beta},$ which align with the results for the probit model.
+
+
+If we wanted to obtain predictions, we need to augment the model matrix and set missing values for the response variable. These then get imputed alongside with the other parameters.
+
+:::
 <!--TODO add example with gamma -->

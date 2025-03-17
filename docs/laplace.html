@@ -20,6 +20,40 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
 /* CSS for citations */
 div.csl-bib-body { }
 div.csl-entry {
@@ -286,7 +320,7 @@ p(\boldsymbol{y}) = p(\widehat{\boldsymbol{\theta}}_{\mathrm{MAP}})p(\boldsymbol
 \end{align*}\]</span> If the likelihood contribution dominates the posterior, the <span class="math inline">\(\mathsf{BIC}\)</span> approximation will improve with increasing sample size, so <span class="math inline">\(\exp(-\mathsf{BIC}/2)\)</span> is an approximation fo the marginal likelihood sometimes used for model comparison in Bayes factor, although this derivation shows that the latter neglects the impact of the prior.</p>
 </div>
 <div id="exm-bic-bma" class="theorem example">
-<p><span class="theorem-title"><strong>Example 9.1 (Bayesian model averaging approximation)</strong></span> Consider the <code>diabetes</code> model from <span class="citation" data-cites="Park.Casella:2008">Park and Casella (<a href="references.html#ref-Park.Casella:2008" role="doc-biblioref">2008</a>)</span>. We fit various linear regression models, considering all best models of a certain type with at most the 10 predictors plus the intercept. The</p>
+<p><span class="theorem-title"><strong>Example 9.1 (Bayesian model averaging approximation)</strong></span> Consider the <code>diabetes</code> model from <span class="citation" data-cites="Park.Casella:2008">Park and Casella (<a href="references.html#ref-Park.Casella:2008" role="doc-biblioref">2008</a>)</span>. We fit various linear regression models, considering all best models of a certain type with at most the 10 predictors plus the intercept. In practice, we typically restrict attention to models within some distance of the lowest BIC value, as the weights otherwise will be negligible.</p>
 <div class="cell">
 <div class="cell-output-display">
 <div id="fig-bmaweights" class="quarto-float quarto-figure quarto-figure-center anchored">
@@ -361,7 +395,7 @@ Figure&nbsp;9.2: Gaussian approximation (dashed) to the posterior density (full 
 <p>Let us now use Laplace approximation to obtain an estimate of the marginal likelihood: the latter is <span class="math display">\[\begin{align*}
 p(\boldsymbol{y}) = \frac{\Gamma(n+a)}{\Gamma(a)}\frac{b^a}{\left(b + \sum_{i=1}^n y_i \right)^{n+a}}.
 \end{align*}\]</span></p>
-<p>For the sample of size <span class="math inline">\(62,\)</span> the exponential model marginal likelihood is <span class="math inline">\(276.46,\)</span> whereas the Laplace approximation gives <span class="math inline">\(-281.9.\)</span></p>
+<p>For the sample of size <span class="math inline">\(62,\)</span> the exponential model marginal likelihood is <span class="math inline">\(-276.5,\)</span> whereas the Laplace approximation gives <span class="math inline">\(-281.9.\)</span></p>
 </div>
 <div id="prp-expectation-Laplace" class="theorem proposition">
 <p><span class="theorem-title"><strong>Proposition 9.2 (Posterior expectation using Laplace method)</strong></span> If we are interested in computing the posterior expectation of a positive real-valued functional <span class="math inline">\(g(\boldsymbol{\theta}): \mathbb{R}^d \to \mathbb{R}_{+},\)</span> we may write <span class="math display">\[\begin{align*}
@@ -377,15 +411,127 @@ p(\boldsymbol{y}) = \frac{\Gamma(n+a)}{\Gamma(a)}\frac{b^a}{\left(b + \sum_{i=1}
 <section id="integrated-nested-laplace-approximation" class="level2" data-number="9.2">
 <h2 data-number="9.2" class="anchored" data-anchor-id="integrated-nested-laplace-approximation"><span class="header-section-number">9.2</span> Integrated nested Laplace approximation</h2>
 <p>In many high dimensional models, use of MCMC is prohibitively expensive and fast, yet accurate calculations are important. One class of models whose special structure is particularly amenable to deterministic approximations.</p>
-<p>Consider a model with response <span class="math inline">\(\boldsymbol{y}\)</span> which depends on covariates <span class="math inline">\(\mathbf{x}\)</span> through a latent Gaussian process; typically the priors on the coefficients <span class="math inline">\(\boldsymbol{\beta}.\)</span> In applications with splines, or space time processes, the prior precision matrix for <span class="math inline">\(\boldsymbol{\beta}\)</span> will be sparse with a Gaussian Markov random field structure. The dimension of <span class="math inline">\(\boldsymbol{\beta}\)</span> can be substantial (several thousands) with a comparably low-dimensional hyperparameter vector <span class="math inline">\(\boldsymbol{\theta}.\)</span> Interest typically then lies in marginal parameters <span class="math display">\[\begin{align*}
+<p>Consider a model with response <span class="math inline">\(\boldsymbol{y}\)</span> which depends on covariates <span class="math inline">\(\mathbf{x}\)</span> through a latent Gaussian process; typically the priors on the coefficients <span class="math inline">\(\boldsymbol{\beta} \in \mathbb{R}^p.\)</span> In applications with splines, or space time processes, the prior precision matrix for <span class="math inline">\(\boldsymbol{\beta}\)</span> will be sparse with a Gaussian Markov random field structure. The dimension <span class="math inline">\(p\)</span> can be substantial (several thousands) with a comparably low-dimensional hyperparameter vector <span class="math inline">\(\boldsymbol{\theta} \in \mathbb{R}^m.\)</span> Interest typically then lies in marginal parameters <span class="math display">\[\begin{align*}
 p(\beta_i \mid \boldsymbol{y}) &amp;= \int p(\beta_i \mid \boldsymbol{\theta}, \boldsymbol{y}) p(\boldsymbol{\theta} \mid \boldsymbol{y}) \mathrm{d} \boldsymbol{\theta}\\
 p(\theta_i \mid \boldsymbol{y}) &amp;= \int p(\boldsymbol{\theta} \mid \boldsymbol{y}) \mathrm{d} \boldsymbol{\theta}_{-i}
 \end{align*}\]</span> where <span class="math inline">\(\boldsymbol{\theta}_{-i}\)</span> denotes the vector of hyperparameters excluding the <span class="math inline">\(i\)</span>th element <span class="math inline">\(\theta_i.\)</span> The INLA method builds Laplace approximations to the integrands <span class="math inline">\(p(\beta_i \mid \boldsymbol{\theta}, \boldsymbol{y})\)</span> and <span class="math inline">\(p(\boldsymbol{\theta} \mid \boldsymbol{y}),\)</span> and evaluates the integral using quadrature rules over a coarse grid of values of <span class="math inline">\(\boldsymbol{\theta}.\)</span></p>
 <p>The marginal posterior <span class="math inline">\(p(\boldsymbol{\theta} \mid \boldsymbol{y})\)</span> is approximated by writing <span class="math inline">\(p(\boldsymbol{\beta}, \boldsymbol{\theta} \mid \boldsymbol{y}) \propto p(\boldsymbol{\beta} \mid \boldsymbol{\theta}, \boldsymbol{y}) p(\boldsymbol{\theta} \mid \boldsymbol{y})\)</span> and performing a Laplace approximation for fixed value of <span class="math inline">\(\boldsymbol{\theta}\)</span> for the term <span class="math inline">\(p(\boldsymbol{\beta} \mid \boldsymbol{\theta}, \boldsymbol{y}),\)</span> whose mode we denote by <span class="math inline">\(\widehat{\boldsymbol{\beta}}.\)</span> This yields <span class="math display">\[\begin{align*}
 \widetilde{p}(\boldsymbol{\theta} \mid \boldsymbol{y}) \propto \frac{p(\widehat{\boldsymbol{\beta}}, \boldsymbol{\theta} \mid \boldsymbol{y})}{ p_{G}(\widehat{\boldsymbol{\beta}} \mid \boldsymbol{y}, \boldsymbol{\theta})} = \frac{p(\widehat{\boldsymbol{\beta}}, \boldsymbol{\theta} \mid \boldsymbol{y})}{ |\boldsymbol{H}(\widehat{\boldsymbol{\beta}})|^{1/2}}
 \end{align*}\]</span> and the Laplace approximation has kernel <span class="math display">\[p_{G}(\boldsymbol{\beta} \mid \boldsymbol{y}, \boldsymbol{\theta}) \propto |\mathbf{H}|^{1/2}\exp\{-(\boldsymbol{\beta}- \widehat{\boldsymbol{\beta}})^\top \mathbf{H}(\boldsymbol{\beta}- \widehat{\boldsymbol{\beta}})/2\};\]</span> since it is evaluated at <span class="math inline">\(\widehat{\boldsymbol{\beta}},\)</span> we retrieve only the determinant of the negative Hessian of <span class="math inline">\(p(\boldsymbol{\beta} \mid \boldsymbol{\theta}, \boldsymbol{y}),\)</span> namely <span class="math inline">\(\boldsymbol{H}(\widehat{\boldsymbol{\beta}}).\)</span> Note that the latter is a function of <span class="math inline">\(\boldsymbol{\theta}.\)</span></p>
-<p><span class="citation" data-cites="Rue.Martino.Chopin:2009">Rue, Martino, and Chopin (<a href="references.html#ref-Rue.Martino.Chopin:2009" role="doc-biblioref">2009</a>)</span> proceed in an analogous fashion, but instead working with the marginal for <span class="math inline">\(\beta_i\)</span> building an approximation of it based on maximizing <span class="math inline">\(\boldsymbol{\beta}_{-i} \mid \beta_i, \boldsymbol{\theta}, \boldsymbol{y}\)</span> to yield <span class="math inline">\(\widetilde{\boldsymbol{\beta}}\)</span> whose <span class="math inline">\(i\)</span>th element is <span class="math inline">\(\beta_i.\)</span></p>
-<p>Further improvements to the methods were proposed in <span class="citation" data-cites="Wood:2019">Wood (<a href="references.html#ref-Wood:2019" role="doc-biblioref">2019</a>)</span>. The INLA software uses a low-rank variational correction to Laplace method, proposed in <span class="citation" data-cites="vanNiekerk:2024">(<a href="references.html#ref-vanNiekerk:2024" role="doc-biblioref"><strong>vanNiekerk:2024?</strong></a>)</span>.</p>
+<p>To obtain <span class="math inline">\(p(\theta_i \mid \boldsymbol{y})\)</span>, we then proceed with</p>
+<ol type="1">
+<li>finding the mode of <span class="math inline">\(\widetilde{p}(\boldsymbol{\theta} \mid \boldsymbol{y})\)</span> using a Newton’s method, approximating the gradient and Hessian via finite differences.</li>
+<li>Compute the negative Hessian at the mode to get an approximation to the covariance of <span class="math inline">\(\boldsymbol{\theta}.\)</span> Use an eigendecomposition to get the principal directions <span class="math inline">\(\boldsymbol{z}\)</span>.</li>
+<li>In each direction of <span class="math inline">\(\boldsymbol{z}\)</span>, consider drops in <span class="math inline">\(\widetilde{p}(\boldsymbol{\theta} \mid \boldsymbol{y})\)</span> as we move away from the mode and define a coarse grid based on these, keeping points where the difference in <span class="math inline">\(\widetilde{p}(\boldsymbol{\theta} \mid \boldsymbol{y})\)</span> relative to the mode is less than some numerical tolerance <span class="math inline">\(\delta.\)</span></li>
+<li>Retrieve the marginal by numerical integration using the central composition design outline above. We can also use directly avoid the integration and use the approximation at the posterior mode of <span class="math inline">\(\widetilde{p}(\boldsymbol{\theta} \mid \boldsymbol{y}).\)</span></li>
+</ol>
+<p><span class="citation" data-cites="Rue.Martino.Chopin:2009">Rue, Martino, and Chopin (<a href="references.html#ref-Rue.Martino.Chopin:2009" role="doc-biblioref">2009</a>)</span> proceed in an analogous fashion, but instead working with the marginal for <span class="math inline">\(\beta_i\)</span> building an approximation of it based on maximizing <span class="math inline">\(\boldsymbol{\beta}_{-i} \mid \beta_i, \boldsymbol{\theta}, \boldsymbol{y}\)</span> to yield <span class="math inline">\(\widehat{\boldsymbol{\beta}}_{(i)}\)</span> whose <span class="math inline">\(i\)</span>th element is <span class="math inline">\(\beta_i,\)</span> yielding <span class="math display">\[\begin{align*}
+\widetilde{p}(\beta_i \mid \boldsymbol{\theta}, \boldsymbol{y}) \propto \frac{p(\widehat{\boldsymbol{\beta}}_{(i)}, \boldsymbol{\theta} \mid \boldsymbol{y})}{\widetilde{p}(\widehat{\boldsymbol{\beta}}_{(i),-i} \mid \beta_i, \boldsymbol{\theta}, \boldsymbol{y})},
+\end{align*}\]</span> with a suitable renormalization of <span class="math inline">\(\widetilde{p}(\widehat{\boldsymbol{\beta}}_{(i),-i} \mid \beta_i, \boldsymbol{\theta}, \boldsymbol{y}).\)</span> Such approximations are reminiscent of profile likelihood.</p>
+<p>While we could use the Laplace approximation <span class="math inline">\(p_{G}(\widehat{\boldsymbol{\beta}} \mid \boldsymbol{y}, \boldsymbol{\theta})\)</span> and marginalize the latter directly, this leads to evaluation of the Laplace approximation to the density far from the mode, which is often inaccurate. One challenge is that <span class="math inline">\(p\)</span> again is very large, so calculation of the Hessian <span class="math inline">\(\mathbf{H}\)</span> is very high dimensional and costly to evaluate. Having to evaluate it repeatedly for each marginal <span class="math inline">\(\beta_i\)</span> for <span class="math inline">\(i=1, \ldots, p\)</span> is prohibitive since it involves factorizations of <span class="math inline">\(p \times p\)</span> matrices.</p>
+<p>To reduce the computational costs, <span class="citation" data-cites="Rue.Martino.Chopin:2009">Rue, Martino, and Chopin (<a href="references.html#ref-Rue.Martino.Chopin:2009" role="doc-biblioref">2009</a>)</span> propose to use the approximate mean to avoid optimizing and consider the conditional based on the conditional of the Gaussian approximation with mean <span class="math inline">\(\widehat{\boldsymbol{\beta}}\)</span> and covariance <span class="math inline">\(\boldsymbol{\Sigma} = \boldsymbol{H}^{-1}(\widehat{\boldsymbol{\beta}}),\)</span> <span class="math display">\[\begin{align*}
+\boldsymbol{\beta}_{-i} \mid \beta_i, \boldsymbol{\theta}, \boldsymbol{y} \approx \mathsf{Gauss}_{p-1}\left\{\widetilde{\boldsymbol{\beta}}_{(i)} = \widehat{\boldsymbol{\beta}}_{-i} + \boldsymbol{\Sigma}_{i,i}^{-1}\boldsymbol{\Sigma}_{i,-i}(\beta_i - \widehat{\beta}_i, \mathbf{M}^{-1}_{-i,-i}\right\};
+\end{align*}\]</span> cf. <a href="introduction.html#prp-conditional-gaussian" class="quarto-xref">Proposition&nbsp;<span>1.6</span></a>. This only requires a rank-one update. <span class="citation" data-cites="Wood:2019">Wood (<a href="references.html#ref-Wood:2019" role="doc-biblioref">2019</a>)</span> suggest to use a Newton step to correct <span class="math inline">\(\widetilde{\boldsymbol{\beta}}_{(i)},\)</span> starting from the conditional mean. The second step is to exploit the local dependence on <span class="math inline">\(\boldsymbol{\beta}\)</span> using the Markov structure to build an improvement to the Hessian. Further improvements are proposed in <span class="citation" data-cites="Rue.Martino.Chopin:2009">Rue, Martino, and Chopin (<a href="references.html#ref-Rue.Martino.Chopin:2009" role="doc-biblioref">2009</a>)</span>, who used a simplified Laplace approximation to correct the Gaussian approximation for location and skewness, a necessary step when the likelihood itself is not Gaussian. This leads to a Taylor series approximation to correct the log determinant of the Hessian matrix. <span class="citation" data-cites="Wood:2019">Wood (<a href="references.html#ref-Wood:2019" role="doc-biblioref">2019</a>)</span> consider a BFGS update to <span class="math inline">\(\mathbf{M}^{-1}_{-i,-i}\)</span> directly, which works less well than the Taylor expansion near <span class="math inline">\(\widehat{\beta}_i\)</span>, but improves upon when we move far from this value. Nowadays, the INLA software uses a low-rank variational correction to Laplace method, proposed in <span class="citation" data-cites="vanNiekerk.Rue:2024">van Niekerk and Rue (<a href="references.html#ref-vanNiekerk.Rue:2024" role="doc-biblioref">2024</a>)</span>.</p>
+<p>The <code>INLA</code> <a href="https://www.r-inla.org/"><strong>R</strong> package</a> provides an interface to fit models with Gaussian latent random effects. While the software is particularly popular for spatio-temporal applications using the SPDE approach, we revisit two examples in the sequel where we can exploit the Markov structure.</p>
+<div id="exm-stochvol-inla" class="theorem example">
+<p><span class="theorem-title"><strong>Example 9.3 (Stochastic volatility model with INLA)</strong></span> Financial returns <span class="math inline">\(Y_t\)</span> typically exhibit time-varying variability. The <strong>stochastic volatility</strong> model is a parameter-driven model that specifies <span class="math display">\[\begin{align*}
+Y_t &amp;= \exp(h_t/2) Z_t \\
+h_t &amp;= \gamma + \phi (h_{t-1} - \gamma) + \sigma U_t
+\end{align*}\]</span> where <span class="math inline">\(U_t \stackrel{\mathrm{iid}}{\sim} \mathsf{Gauss}(0,1)\)</span> and <span class="math inline">\(Z_t \sim  \stackrel{\mathrm{iid}}{\sim} \mathsf{Gauss}(0,1).\)</span> The <a href="https://inla.r-inla-download.org/r-inla.org/doc/likelihood/stochvolgaussian.pdf"><code>INLA</code> documentation</a> provides information about which default prior and hyperparameters are specified. We use a <span class="math inline">\(\mathsf{gamma}(1, 0.001)\)</span> prior for the precision.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(INLA)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Stochastic volatility model</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(exchangerate, <span class="at">package =</span> <span class="st">"hecbayes"</span>)</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Compute response from raw spot exchange rates at noon</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>y <span class="ot">&lt;-</span> <span class="dv">100</span><span class="sc">*</span><span class="fu">diff</span>(<span class="fu">log</span>(exchangerate<span class="sc">$</span>rate))</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="co"># 'y' is now a series of percentage of log daily differences</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>time <span class="ot">&lt;-</span> <span class="fu">seq_along</span>(y)</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>data <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">y =</span> y, <span class="at">time =</span> time)</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Stochastic volatility model</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="co"># https://inla.r-inla-download.org/r-inla.org/doc/likelihood/stochvolgaussian.pdf</span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="co"># The model uses a log link, and a (log)-gamma prior for the precision</span></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>f_stochvol <span class="ot">&lt;-</span> <span class="fu">formula</span>(y <span class="sc">~</span> <span class="fu">f</span>(time, <span class="at">model =</span> <span class="st">"ar1"</span>, <span class="at">param =</span> <span class="fu">list</span>(<span class="at">prec =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="fl">0.001</span>))))</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>mod_stochvol <span class="ot">&lt;-</span> <span class="fu">inla</span>(f_stochvol, <span class="at">family =</span> <span class="st">"stochvol"</span>, <span class="at">data =</span> data)</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a><span class="co"># Obtain summary</span></span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>summary <span class="ot">&lt;-</span> <span class="fu">summary</span>(mod_stochvol)</span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a><span class="co"># plot(mod_stochvol)</span></span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>marg_prec <span class="ot">&lt;-</span> mod_stochvol<span class="sc">$</span>marginals.hyperpar[[<span class="dv">1</span>]]</span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>marg_phi <span class="ot">&lt;-</span> mod_stochvol<span class="sc">$</span>marginals.hyperpar[[<span class="dv">2</span>]]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-stochvol-inla" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-stochvol-inla-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="laplace_files/figure-html/fig-stochvol-inla-1.png" class="img-fluid figure-img" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-stochvol-inla-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;9.3: Marginal densities of precision and autocorrelation parameters from the Gaussian stochastic volatility model.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p><a href="#fig-stochvol-inla" class="quarto-xref">Figure&nbsp;<span>9.3</span></a> shows that the correlation <span class="math inline">\(\phi\)</span> is nearly one, leading to random walk behaviour and high persistence over time (this is also due to the frequency of observations). This strong serial dependence in the variance is in part responsible for the difficulty in fitting this model using MCMC.</p>
+<p>We can use the marginal density approximations to obtain quantiles for summary of interest. The software also includes utilities to transform the parameters using the change of variable formula.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Compute density, quantiles, etc. via inla.*marginal</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="do">## approximate 95% credible interval and marginal post median</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>INLA<span class="sc">::</span><span class="fu">inla.qmarginal</span>(marg_phi, <span class="at">p =</span> <span class="fu">c</span>(<span class="fl">0.025</span>, <span class="fl">0.5</span>, <span class="fl">0.975</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.9874671 0.9929791 0.9963883</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Change of variable to get variance from precision</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>marg_var <span class="ot">&lt;-</span> INLA<span class="sc">::</span><span class="fu">inla.tmarginal</span>(</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">fun =</span> <span class="cf">function</span>(x) { <span class="dv">1</span> <span class="sc">/</span> x }, </span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">marginal =</span> marg_prec)</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>INLA<span class="sc">::</span><span class="fu">inla.qmarginal</span>(marg_var, <span class="at">p =</span> <span class="fu">c</span>(<span class="fl">0.025</span>, <span class="fl">0.975</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.1727293 0.4049277</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Posterior marginal mean and variance of phi</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>mom1 <span class="ot">&lt;-</span> INLA<span class="sc">::</span><span class="fu">inla.emarginal</span>(</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">fun =</span> <span class="cf">function</span>(x){x}, </span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">marginal =</span> marg_phi)</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>mom2 <span class="ot">&lt;-</span> INLA<span class="sc">::</span><span class="fu">inla.emarginal</span>(</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">fun =</span> <span class="cf">function</span>(x){x<span class="sc">^</span><span class="dv">2</span>}, </span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">marginal =</span> marg_phi)</span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a><span class="fu">c</span>(<span class="at">mean =</span> mom1, <span class="at">sd =</span> <span class="fu">sqrt</span>(mom2 <span class="sc">-</span> mom1<span class="sc">^</span><span class="dv">2</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>       mean          sd 
+0.992721400 0.002303183 </code></pre>
+</div>
+</div>
+</div>
+<div id="exm-rainfall-inla" class="theorem example">
+<p><span class="theorem-title"><strong>Example 9.4 (Tokyo binomial time series)</strong></span> We revisit <a href="workflow.html#exm-Tokyo-rainfall" class="quarto-xref">Example&nbsp;<span>7.3</span></a>, but this time fit the model with <code>INLA</code>. We specify the mean model without intercept and fit a logistic regression, with a second-order cyclic random walk prior for the coefficients, and the default priors for the other parameters.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(Tokyo, <span class="at">package =</span> <span class="st">"INLA"</span>)</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Formula (removing intercept)</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>formula <span class="ot">&lt;-</span> y <span class="sc">~</span> <span class="fu">f</span>(time, <span class="at">model =</span> <span class="st">"rw2"</span>, <span class="at">cyclic =</span> <span class="cn">TRUE</span>) <span class="sc">-</span> <span class="dv">1</span></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>mod <span class="ot">&lt;-</span> INLA<span class="sc">::</span><span class="fu">inla</span>(</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>   <span class="at">formula =</span> formula, </span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>   <span class="at">family =</span> <span class="st">"binomial"</span>,</span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>   <span class="at">Ntrials =</span> n, </span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>   <span class="at">data =</span> Tokyo)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-rainfall-inla" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-rainfall-inla-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="laplace_files/figure-html/fig-rainfall-inla-1.png" class="img-fluid figure-img" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-rainfall-inla-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;9.4: Posterior probability per day of the year with posterior median and 95% credible interval for the Tokyo rainfall binomial time series.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p><a href="#fig-rainfall-inla" class="quarto-xref">Figure&nbsp;<span>9.4</span></a> shows posterior summaries for the <span class="math inline">\(\boldsymbol{\beta},\)</span> which align with the results for the probit model.</p>
+<p>If we wanted to obtain predictions, we need to augment the model matrix and set missing values for the response variable. These then get imputed alongside with the other parameters.</p>
+</div>
 <!--TODO add example with gamma -->
 
 
@@ -404,6 +550,9 @@ Rue, Håvard, Sara Martino, and Nicolas Chopin. 2009. <span>“Approximate Bayes
 </div>
 <div id="ref-Tierney.Kadane:1986" class="csl-entry" role="listitem">
 Tierney, Luke, and Joseph B. Kadane. 1986. <span>“Accurate Approximations for Posterior Moments and Marginal Densities.”</span> <em>Journal of the American Statistical Association</em> 81 (393): 82–86. <a href="https://doi.org/10.1080/01621459.1986.10478240">https://doi.org/10.1080/01621459.1986.10478240</a>.
+</div>
+<div id="ref-vanNiekerk.Rue:2024" class="csl-entry" role="listitem">
+van Niekerk, Janet, and Håavard Rue. 2024. <span>“Low-Rank Variational <span>B</span>ayes Correction to the <span>L</span>aplace Method.”</span> <em>Journal of Machine Learning Research</em> 25 (62): 1–25. <a href="http://jmlr.org/papers/v25/21-1405.html">http://jmlr.org/papers/v25/21-1405.html</a>.
 </div>
 <div id="ref-Wood:2019" class="csl-entry" role="listitem">
 Wood, Simon N. 2019. <span>“Simplified Integrated Nested <span>L</span>aplace Approximation.”</span> <em>Biometrika</em> 107 (1): 223–30. <a href="https://doi.org/10.1093/biomet/asz044">https://doi.org/10.1093/biomet/asz044</a>.
