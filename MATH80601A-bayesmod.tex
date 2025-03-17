@@ -266,20 +266,6 @@
 \DeclareMathAlphabet{\mathcrl}{U}{rsfs}{m}{n}
 \usepackage{utopia}
 \DeclareMathAlphabet{\mathcal}{OMS}{cmsy}{m}{n}
-\usepackage{booktabs}
-\usepackage{longtable}
-\usepackage{array}
-\usepackage{multirow}
-\usepackage{wrapfig}
-\usepackage{float}
-\usepackage{colortbl}
-\usepackage{pdflscape}
-\usepackage{tabu}
-\usepackage{threeparttable}
-\usepackage{threeparttablex}
-\usepackage[normalem]{ulem}
-\usepackage{makecell}
-\usepackage{xcolor}
 \makeatletter
 \@ifpackageloaded{tcolorbox}{}{\usepackage[skins,breakable]{tcolorbox}}
 \@ifpackageloaded{fontawesome5}{}{\usepackage{fontawesome5}}
@@ -334,18 +320,18 @@
 \floatname{codelisting}{Listing}
 \newcommand*\listoflistings{\listof{codelisting}{List of Listings}}
 \usepackage{amsthm}
-\theoremstyle{plain}
-\newtheorem{proposition}{Proposition}[chapter]
-\theoremstyle{plain}
-\newtheorem{theorem}{Theorem}[chapter]
-\theoremstyle{definition}
-\newtheorem{exercise}{Exercise}[chapter]
 \theoremstyle{definition}
 \newtheorem{example}{Example}[chapter]
-\theoremstyle{definition}
-\newtheorem{definition}{Definition}[chapter]
 \theoremstyle{plain}
 \newtheorem{corollary}{Corollary}[chapter]
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}[chapter]
+\theoremstyle{definition}
+\newtheorem{exercise}{Exercise}[chapter]
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}[chapter]
+\theoremstyle{plain}
+\newtheorem{proposition}{Proposition}[chapter]
 \theoremstyle{remark}
 \AtBeginDocument{\renewcommand*{\proofname}{Proof}}
 \newtheorem*{remark}{Remark}
@@ -417,7 +403,7 @@ used throughout the course. The overview begins with basic statistical
 concepts, random variables, their distribution and density, moments and
 likelihood derivations.
 
-\begin{tcolorbox}[enhanced jigsaw, colframe=quarto-callout-important-color-frame, colback=white, leftrule=.75mm, opacitybacktitle=0.6, toprule=.15mm, colbacktitle=quarto-callout-important-color!10!white, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Learning objectives}:}, left=2mm, breakable, titlerule=0mm, bottomrule=.15mm, opacityback=0, bottomtitle=1mm, rightrule=.15mm, arc=.35mm, toptitle=1mm, coltitle=black]
+\begin{tcolorbox}[enhanced jigsaw, breakable, colframe=quarto-callout-important-color-frame, colbacktitle=quarto-callout-important-color!10!white, bottomtitle=1mm, bottomrule=.15mm, toprule=.15mm, coltitle=black, opacitybacktitle=0.6, opacityback=0, leftrule=.75mm, rightrule=.15mm, colback=white, toptitle=1mm, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Learning objectives}:}, titlerule=0mm, arc=.35mm, left=2mm]
 
 At the end of the chapter, students should be able to
 
@@ -1713,7 +1699,7 @@ The likelihood can then be written as \begin{align*}
 
 \end{example}
 
-\begin{tcolorbox}[enhanced jigsaw, colframe=quarto-callout-important-color-frame, colback=white, leftrule=.75mm, opacitybacktitle=0.6, toprule=.15mm, colbacktitle=quarto-callout-important-color!10!white, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Summary}}, left=2mm, breakable, titlerule=0mm, bottomrule=.15mm, opacityback=0, bottomtitle=1mm, rightrule=.15mm, arc=.35mm, toptitle=1mm, coltitle=black]
+\begin{tcolorbox}[enhanced jigsaw, breakable, colframe=quarto-callout-important-color-frame, colbacktitle=quarto-callout-important-color!10!white, bottomtitle=1mm, bottomrule=.15mm, toprule=.15mm, coltitle=black, opacitybacktitle=0.6, opacityback=0, leftrule=.75mm, rightrule=.15mm, colback=white, toptitle=1mm, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Summary}}, titlerule=0mm, arc=.35mm, left=2mm]
 
 \begin{itemize}
 \tightlist
@@ -1793,7 +1779,7 @@ elicitation and estimation of the marginal likelihood, are mentioned in
 passing. A brief discussion of Bayesian hypothesis testing (and
 alternatives) is presented.
 
-\begin{tcolorbox}[enhanced jigsaw, colframe=quarto-callout-important-color-frame, colback=white, leftrule=.75mm, opacitybacktitle=0.6, toprule=.15mm, colbacktitle=quarto-callout-important-color!10!white, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Learning objectives}:}, left=2mm, breakable, titlerule=0mm, bottomrule=.15mm, opacityback=0, bottomtitle=1mm, rightrule=.15mm, arc=.35mm, toptitle=1mm, coltitle=black]
+\begin{tcolorbox}[enhanced jigsaw, breakable, colframe=quarto-callout-important-color-frame, colbacktitle=quarto-callout-important-color!10!white, bottomtitle=1mm, bottomrule=.15mm, toprule=.15mm, coltitle=black, opacitybacktitle=0.6, opacityback=0, leftrule=.75mm, rightrule=.15mm, colback=white, toptitle=1mm, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Learning objectives}:}, titlerule=0mm, arc=.35mm, left=2mm]
 
 At the end of the chapter, students should be able to
 
@@ -2730,7 +2716,7 @@ the cutoff for the HDP region.}
 
 \end{figure}%
 
-\begin{tcolorbox}[enhanced jigsaw, colframe=quarto-callout-important-color-frame, colback=white, leftrule=.75mm, opacitybacktitle=0.6, toprule=.15mm, colbacktitle=quarto-callout-important-color!10!white, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Summary}:}, left=2mm, breakable, titlerule=0mm, bottomrule=.15mm, opacityback=0, bottomtitle=1mm, rightrule=.15mm, arc=.35mm, toptitle=1mm, coltitle=black]
+\begin{tcolorbox}[enhanced jigsaw, breakable, colframe=quarto-callout-important-color-frame, colbacktitle=quarto-callout-important-color!10!white, bottomtitle=1mm, bottomrule=.15mm, toprule=.15mm, coltitle=black, opacitybacktitle=0.6, opacityback=0, leftrule=.75mm, rightrule=.15mm, colback=white, toptitle=1mm, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Summary}:}, titlerule=0mm, arc=.35mm, left=2mm]
 
 \begin{itemize}
 \tightlist
@@ -2809,7 +2795,7 @@ inferences. Generally, we will choose the prior for convenience. Priors
 are controversial because they could be tuned aposteriori to give any
 answer an analyst might want.
 
-\begin{tcolorbox}[enhanced jigsaw, colframe=quarto-callout-important-color-frame, colback=white, leftrule=.75mm, opacitybacktitle=0.6, toprule=.15mm, colbacktitle=quarto-callout-important-color!10!white, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Learning objectives}:}, left=2mm, breakable, titlerule=0mm, bottomrule=.15mm, opacityback=0, bottomtitle=1mm, rightrule=.15mm, arc=.35mm, toptitle=1mm, coltitle=black]
+\begin{tcolorbox}[enhanced jigsaw, breakable, colframe=quarto-callout-important-color-frame, colbacktitle=quarto-callout-important-color!10!white, bottomtitle=1mm, bottomrule=.15mm, toprule=.15mm, coltitle=black, opacitybacktitle=0.6, opacityback=0, leftrule=.75mm, rightrule=.15mm, colback=white, toptitle=1mm, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Learning objectives}:}, titlerule=0mm, arc=.35mm, left=2mm]
 
 At the end of the chapter, students should be able to
 
@@ -3844,7 +3830,7 @@ improper priors on location and scale.}
 
 \end{example}
 
-\begin{tcolorbox}[enhanced jigsaw, colframe=quarto-callout-important-color-frame, colback=white, leftrule=.75mm, opacitybacktitle=0.6, toprule=.15mm, colbacktitle=quarto-callout-important-color!10!white, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Summary}:}, left=2mm, breakable, titlerule=0mm, bottomrule=.15mm, opacityback=0, bottomtitle=1mm, rightrule=.15mm, arc=.35mm, toptitle=1mm, coltitle=black]
+\begin{tcolorbox}[enhanced jigsaw, breakable, colframe=quarto-callout-important-color-frame, colbacktitle=quarto-callout-important-color!10!white, bottomtitle=1mm, bottomrule=.15mm, toprule=.15mm, coltitle=black, opacitybacktitle=0.6, opacityback=0, leftrule=.75mm, rightrule=.15mm, colback=white, toptitle=1mm, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Summary}:}, titlerule=0mm, arc=.35mm, left=2mm]
 
 \begin{itemize}
 \tightlist
@@ -4905,7 +4891,7 @@ computers became more widely available. The idea is to draw correlated
 samples from a posterior via Markov chains, constructed to have the
 posterior as invariant stationary distribution.
 
-\begin{tcolorbox}[enhanced jigsaw, colframe=quarto-callout-important-color-frame, colback=white, leftrule=.75mm, opacitybacktitle=0.6, toprule=.15mm, colbacktitle=quarto-callout-important-color!10!white, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Learning objectives}:}, left=2mm, breakable, titlerule=0mm, bottomrule=.15mm, opacityback=0, bottomtitle=1mm, rightrule=.15mm, arc=.35mm, toptitle=1mm, coltitle=black]
+\begin{tcolorbox}[enhanced jigsaw, breakable, colframe=quarto-callout-important-color-frame, colbacktitle=quarto-callout-important-color!10!white, bottomtitle=1mm, bottomrule=.15mm, toprule=.15mm, coltitle=black, opacitybacktitle=0.6, opacityback=0, leftrule=.75mm, rightrule=.15mm, colback=white, toptitle=1mm, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Learning objectives}:}, titlerule=0mm, arc=.35mm, left=2mm]
 
 At the end of the chapter, students should be able to
 
@@ -5595,7 +5581,7 @@ overdispersion.
 
 \end{example}
 
-\begin{tcolorbox}[enhanced jigsaw, colframe=quarto-callout-important-color-frame, colback=white, leftrule=.75mm, opacitybacktitle=0.6, toprule=.15mm, colbacktitle=quarto-callout-important-color!10!white, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Summary}:}, left=2mm, breakable, titlerule=0mm, bottomrule=.15mm, opacityback=0, bottomtitle=1mm, rightrule=.15mm, arc=.35mm, toptitle=1mm, coltitle=black]
+\begin{tcolorbox}[enhanced jigsaw, breakable, colframe=quarto-callout-important-color-frame, colbacktitle=quarto-callout-important-color!10!white, bottomtitle=1mm, bottomrule=.15mm, toprule=.15mm, coltitle=black, opacitybacktitle=0.6, opacityback=0, leftrule=.75mm, rightrule=.15mm, colback=white, toptitle=1mm, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Summary}:}, titlerule=0mm, arc=.35mm, left=2mm]
 
 \begin{itemize}
 \tightlist
@@ -5647,7 +5633,7 @@ overdispersion.
 
 \chapter{Gibbs sampling}\label{sec-Gibbs}
 
-\begin{tcolorbox}[enhanced jigsaw, colframe=quarto-callout-important-color-frame, colback=white, leftrule=.75mm, opacitybacktitle=0.6, toprule=.15mm, colbacktitle=quarto-callout-important-color!10!white, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Learning objectives}:}, left=2mm, breakable, titlerule=0mm, bottomrule=.15mm, opacityback=0, bottomtitle=1mm, rightrule=.15mm, arc=.35mm, toptitle=1mm, coltitle=black]
+\begin{tcolorbox}[enhanced jigsaw, breakable, colframe=quarto-callout-important-color-frame, colbacktitle=quarto-callout-important-color!10!white, bottomtitle=1mm, bottomrule=.15mm, toprule=.15mm, coltitle=black, opacitybacktitle=0.6, opacityback=0, leftrule=.75mm, rightrule=.15mm, colback=white, toptitle=1mm, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Learning objectives}:}, titlerule=0mm, arc=.35mm, left=2mm]
 
 At the end of the chapter, students should be able to
 
@@ -6113,7 +6099,7 @@ and Stephens (\citeproc{ref-Stephens:2002}{2002}) for more details.
 
 \end{refremark}
 
-\begin{tcolorbox}[enhanced jigsaw, colframe=quarto-callout-important-color-frame, colback=white, leftrule=.75mm, opacitybacktitle=0.6, toprule=.15mm, colbacktitle=quarto-callout-important-color!10!white, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Summary}:}, left=2mm, breakable, titlerule=0mm, bottomrule=.15mm, opacityback=0, bottomtitle=1mm, rightrule=.15mm, arc=.35mm, toptitle=1mm, coltitle=black]
+\begin{tcolorbox}[enhanced jigsaw, breakable, colframe=quarto-callout-important-color-frame, colbacktitle=quarto-callout-important-color!10!white, bottomtitle=1mm, bottomrule=.15mm, toprule=.15mm, coltitle=black, opacitybacktitle=0.6, opacityback=0, leftrule=.75mm, rightrule=.15mm, colback=white, toptitle=1mm, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Summary}:}, titlerule=0mm, arc=.35mm, left=2mm]
 
 \begin{itemize}
 \tightlist
@@ -6171,7 +6157,7 @@ Betancourt} for excellent visualizations. In this chapter, we focus on
 three aspects of the workflow: model validation, evaluation and
 comparison.
 
-\begin{tcolorbox}[enhanced jigsaw, colframe=quarto-callout-important-color-frame, colback=white, leftrule=.75mm, opacitybacktitle=0.6, toprule=.15mm, colbacktitle=quarto-callout-important-color!10!white, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Learning objectives}:}, left=2mm, breakable, titlerule=0mm, bottomrule=.15mm, opacityback=0, bottomtitle=1mm, rightrule=.15mm, arc=.35mm, toptitle=1mm, coltitle=black]
+\begin{tcolorbox}[enhanced jigsaw, breakable, colframe=quarto-callout-important-color-frame, colbacktitle=quarto-callout-important-color!10!white, bottomtitle=1mm, bottomrule=.15mm, toprule=.15mm, coltitle=black, opacitybacktitle=0.6, opacityback=0, leftrule=.75mm, rightrule=.15mm, colback=white, toptitle=1mm, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Learning objectives}:}, titlerule=0mm, arc=.35mm, left=2mm]
 
 At the end of the chapter, students should be able to
 
@@ -7591,7 +7577,8 @@ The move for \(M\) is accepted as usual if the drawn uniform
 
 \bookmarksetup{startatroot}
 
-\chapter{Gaussian approximations}\label{gaussian-approximations}
+\chapter{Deterministic
+approximations}\label{deterministic-approximations}
 
 So far, we have focused on stochastic approximations of integral. In
 very large models, Markov chain Monte Carlo suffer from the curse of
@@ -7766,7 +7753,7 @@ negative of the corresponding Hessian matrices evaluated at their mode,
 meaning the observed information matrix for the likelihood component.
 Together, these yield \begin{align*}
 \log p(\boldsymbol{\theta}) &\approx \log p(\widehat{\boldsymbol{\theta}}_0) - \frac{1}{2}(\boldsymbol{\theta} - \widehat{\boldsymbol{\theta}}_0)^\top\jmath_0(\widehat{\boldsymbol{\theta}}_0)(\boldsymbol{\theta} - \widehat{\boldsymbol{\theta}}_0)\\
-\log p(\boldsymbol{y} \mid \boldsymbol{\theta}) &\approx \log p(\boldsymbol{y} \mid \boldsymbol{\theta}) - \frac{1}{2}(\boldsymbol{\theta} - \widehat{\boldsymbol{\theta}}_{\mathrm{MLE}})^\top\jmath(\widehat{\boldsymbol{\theta}}_{\mathrm{MLE}})(\boldsymbol{\theta} - \widehat{\boldsymbol{\theta}}_{\mathrm{MLE}})
+\log p(\boldsymbol{y} \mid \boldsymbol{\theta}) &\approx \log p(\boldsymbol{y} \mid  \widehat{\boldsymbol{\theta}}_{\mathrm{MLE}}) - \frac{1}{2}(\boldsymbol{\theta} - \widehat{\boldsymbol{\theta}}_{\mathrm{MLE}})^\top\jmath(\widehat{\boldsymbol{\theta}}_{\mathrm{MLE}})(\boldsymbol{\theta} - \widehat{\boldsymbol{\theta}}_{\mathrm{MLE}})
 \end{align*}
 
 In the case of flat prior, the curvature is zero and the prior
@@ -7774,8 +7761,8 @@ contribution vanishes altogether. If we apply now
 Proposition~\ref{prp-quadratic-forms} to this unnormalized kernel, we
 get that the approximate posterior must be Gaussian with precision
 \(\jmath_n^{-1}\) and mean \(\mu_n,\) where \begin{align*}
-\jmath_n = \jmath_0(\widehat{\boldsymbol{\theta}}_{0}) + \jmath(\widehat{\boldsymbol{\theta}}_{\mathrm{MLE}})
-\boldsymbol{\theta}_n = \jmath_n^{-1}\left\{ \jmath_0(\widehat{\boldsymbol{\theta}}_{0})\widehat{\boldsymbol{\theta}}_{0} + \jmath(\widehat{\boldsymbol{\theta}}_{\mathrm{MLE}})\widehat{\boldsymbol{\theta}}_{\mathrm{MLE}}\right\}
+\jmath_n &= \jmath_0(\widehat{\boldsymbol{\theta}}_{0}) + \jmath(\widehat{\boldsymbol{\theta}}_{\mathrm{MLE}})\\
+\widehat{\boldsymbol{\theta}}_n &= \jmath_n^{-1}\left\{ \jmath_0(\widehat{\boldsymbol{\theta}}_{0})\widehat{\boldsymbol{\theta}}_{0} + \jmath(\widehat{\boldsymbol{\theta}}_{\mathrm{MLE}})\widehat{\boldsymbol{\theta}}_{\mathrm{MLE}}\right\}
 \end{align*} and note that
 \(\jmath_0(\widehat{\boldsymbol{\theta}}_{0}) = \mathrm{O}(1),\) whereas
 \(\jmath_n\) is \(\mathrm{O}(n).\)
@@ -7809,13 +7796,11 @@ differences will be noticeable for small samples, but will vanish as
 posterior]\protect\hypertarget{exm-gaussian-approx-gamma}{}\label{exm-gaussian-approx-gamma}
 
 To assess the performance of Laplace approximation, we consider an
-exponential likelihood with conjugate gamma prior.
-
-The exponential model \(\mathsf{expo}(\lambda)\) has information
-\(i(\lambda)=n/\lambda^2\) and third-order cumulant
-\(\ell_3(\lambda) = 2n/\lambda^3.\) If we assign a conjugate prior with
-\(\lambda \sim \mathsf{gamma}(a,b),\) the mode of the posterior will be
-at \(\widehat{\lambda}_{\mathrm{MAP}}=(n+a-1)/(\sum_{i=1}^n y_i + b).\)
+exponential likelihood \(Y_i \mid \lambda \sim \mathsf{expo}(\lambda)\)
+with conjugate gamma prior \(\lambda \sim \mathsf{gamma}(a,b)\). The
+exponential model has information \(i(\lambda)=n/\lambda^2\) and the
+mode of the posterior is
+\[\widehat{\lambda}_{\mathrm{MAP}}=\frac{n+a-1}{\sum_{i=1}^n y_i + b}.\]
 
 \begin{figure}[ht!]
 
@@ -7867,6 +7852,25 @@ out from the ratio.
 
 \end{proposition}
 
+\begin{example}[Posterior mean for the exponential
+likelihood]\protect\hypertarget{exm-posterior-gamma}{}\label{exm-posterior-gamma}
+
+Consider the posterior mean
+\(\mathsf{E}_{\Lambda \mid \boldsymbol{Y}}(\lambda)\) for the model of
+Example~\ref{exm-gaussian-approx-gamma}. Let \(s=\sum_{i=1}^n y_i\).
+Then, \begin{align*}
+\widehat{\lambda}_g &= \frac{(n+a)}{s + b} \\
+|\jmath_g(\widehat{\lambda}_g)|^{1/2} &= \left(\frac{n+a}{\widehat{\lambda}_g^2}\right)^{1/2} =  \frac{s + b}{(n+a)^{1/2}}
+\end{align*}
+
+Simplification gives the approximation \begin{align*}
+\widehat{\mathsf{E}}_{\Lambda \mid \boldsymbol{Y}}(\Lambda) \approx \frac{\exp(-1)}{s + b} \frac{(n+a)^{n+a+1/2}}{(n+a-1)^{n+a-1/2}}
+\end{align*} which gives \(0.03457,\) whereas the true posterior mean is
+\((n+a)/(s+b) = 0.03457.\) The Laplace approximation is equal to the
+true value up to five significant digits.
+
+\end{example}
+
 \section{Integrated nested Laplace
 approximation}\label{integrated-nested-laplace-approximation}
 
@@ -7902,13 +7906,13 @@ and performing a Laplace approximation for fixed value of
 \(p(\boldsymbol{\beta} \mid \boldsymbol{\theta}, \boldsymbol{y}),\)
 whose mode we denote by \(\widehat{\boldsymbol{\beta}}.\) This yields
 \begin{align*}
-\widetilde{p}(\boldsymbol{\theta} \mid \boldsymbol{y}) \propto \frac{p(\widehat{\boldsymbol{\beta}}, \boldsymbol{\theta} \mid \boldsymbol{y})}{ p_{G}(\widehat{\boldsymbol{\beta}} \mid \boldsymbol{y}, \boldsymbol{\theta})} = \frac{p(\widehat{\boldsymbol{\beta}}, \boldsymbol{\theta} \mid \boldsymbol{y})}{ |\boldsymbol{H}(\widehat{\boldsymbol{\beta}})|^{1/2}}
+\widetilde{p}(\boldsymbol{\theta} \mid \boldsymbol{y}) \propto \frac{p(\widehat{\boldsymbol{\beta}}, \boldsymbol{\theta} \mid \boldsymbol{y})}{ p_{G}(\widehat{\boldsymbol{\beta}} \mid \boldsymbol{y}, \boldsymbol{\theta})} = \frac{p(\widehat{\boldsymbol{\beta}}, \boldsymbol{\theta} \mid \boldsymbol{y})}{ |\mathbf{H}(\widehat{\boldsymbol{\beta}})|^{1/2}}
 \end{align*} and the Laplace approximation has kernel
-\[p_{G}(\boldsymbol{\beta} \mid \boldsymbol{y}, \boldsymbol{\theta}) \propto |\mathbf{H}|^{1/2}\exp\{-(\boldsymbol{\beta}- \widehat{\boldsymbol{\beta}})^\top \mathbf{H}(\boldsymbol{\beta}- \widehat{\boldsymbol{\beta}})/2\};\]
+\[p_{G}(\boldsymbol{\beta} \mid \boldsymbol{y}, \boldsymbol{\theta}) \propto |\mathbf{H}(\widehat{\boldsymbol{\beta}})|^{1/2}\exp\{-(\boldsymbol{\beta}- \widehat{\boldsymbol{\beta}})^\top \mathbf{H}(\widehat{\boldsymbol{\beta}})(\boldsymbol{\beta}- \widehat{\boldsymbol{\beta}})/2\};\]
 since it is evaluated at \(\widehat{\boldsymbol{\beta}},\) we retrieve
 only the determinant of the negative Hessian of
 \(p(\boldsymbol{\beta} \mid \boldsymbol{\theta}, \boldsymbol{y}),\)
-namely \(\boldsymbol{H}(\widehat{\boldsymbol{\beta}}).\) Note that the
+namely \(\mathbf{H}(\widehat{\boldsymbol{\beta}}).\) Note that the
 latter is a function of \(\boldsymbol{\theta}.\)
 
 To obtain \(p(\theta_i \mid \boldsymbol{y})\), we then proceed with
@@ -7939,10 +7943,9 @@ To obtain \(p(\theta_i \mid \boldsymbol{y})\), we then proceed with
   \(\widetilde{p}(\boldsymbol{\theta} \mid \boldsymbol{y}).\)
 \end{enumerate}
 
-Håvard Rue, Martino, and Chopin
-(\citeproc{ref-Rue.Martino.Chopin:2009}{2009}) proceed in an analogous
-fashion, but instead working with the marginal for \(\beta_i\) building
-an approximation of it based on maximizing
+To approximate \(p(\beta_i \mid \boldsymbol{y})\), Håvard Rue, Martino,
+and Chopin (\citeproc{ref-Rue.Martino.Chopin:2009}{2009}) proceed
+instead by building an approximation of it based on maximizing
 \(\boldsymbol{\beta}_{-i} \mid \beta_i, \boldsymbol{\theta}, \boldsymbol{y}\)
 to yield \(\widehat{\boldsymbol{\beta}}_{(i)}\) whose \(i\)th element is
 \(\beta_i,\) yielding \begin{align*}
@@ -7955,18 +7958,18 @@ While we could use the Laplace approximation
 \(p_{G}(\widehat{\boldsymbol{\beta}} \mid \boldsymbol{y}, \boldsymbol{\theta})\)
 and marginalize the latter directly, this leads to evaluation of the
 Laplace approximation to the density far from the mode, which is often
-inaccurate. One challenge is that \(p\) again is very large, so
-calculation of the Hessian \(\mathbf{H}\) is very high dimensional and
-costly to evaluate. Having to evaluate it repeatedly for each marginal
-\(\beta_i\) for \(i=1, \ldots, p\) is prohibitive since it involves
-factorizations of \(p \times p\) matrices.
+inaccurate. One challenge is that \(p\) is often very large, so
+calculation of the Hessian \(\mathbf{H}\) is costly to evaluate. Having
+to evaluate it repeatedly for each marginal \(\beta_i\) for
+\(i=1, \ldots, p\) is prohibitive since it involves factorizations of
+\(p \times p\) matrices.
 
 To reduce the computational costs, Håvard Rue, Martino, and Chopin
 (\citeproc{ref-Rue.Martino.Chopin:2009}{2009}) propose to use the
 approximate mean to avoid optimizing and consider the conditional based
 on the conditional of the Gaussian approximation with mean
 \(\widehat{\boldsymbol{\beta}}\) and covariance
-\(\boldsymbol{\Sigma} = \boldsymbol{H}^{-1}(\widehat{\boldsymbol{\beta}}),\)
+\(\boldsymbol{\Sigma} = \mathbf{H}^{-1}(\widehat{\boldsymbol{\beta}}),\)
 \begin{align*}
 \boldsymbol{\beta}_{-i} \mid \beta_i, \boldsymbol{\theta}, \boldsymbol{y} \approx \mathsf{Gauss}_{p-1}\left\{\widetilde{\boldsymbol{\beta}}_{(i)} = \widehat{\boldsymbol{\beta}}_{-i} + \boldsymbol{\Sigma}_{i,i}^{-1}\boldsymbol{\Sigma}_{i,-i}(\beta_i - \widehat{\beta}_i, \mathbf{M}^{-1}_{-i,-i}\right\};
 \end{align*} cf. Proposition~\ref{prp-conditional-gaussian}. This only

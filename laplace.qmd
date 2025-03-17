@@ -1,4 +1,4 @@
-# Gaussian approximations
+# Deterministic approximations
 
 ```{r}
 #| label: setup
@@ -134,13 +134,13 @@ We can also use Laplace approximation to obtain a crude second-order approximati
 We can Taylor expand the log prior and log density around their respective mode, say $\widehat{\boldsymbol{\theta}}_0$ and $\widehat{\boldsymbol{\theta}}_{\mathrm{MLE}},$ with $\jmath_0(\widehat{\boldsymbol{\theta}}_0)$ and $\jmath(\widehat{\boldsymbol{\theta}}_{\mathrm{MLE}})$ denoting negative of the corresponding Hessian matrices evaluated at their mode, meaning the observed information matrix for the likelihood component. Together, these yield
 \begin{align*}
 \log p(\boldsymbol{\theta}) &\approx \log p(\widehat{\boldsymbol{\theta}}_0) - \frac{1}{2}(\boldsymbol{\theta} - \widehat{\boldsymbol{\theta}}_0)^\top\jmath_0(\widehat{\boldsymbol{\theta}}_0)(\boldsymbol{\theta} - \widehat{\boldsymbol{\theta}}_0)\\
-\log p(\boldsymbol{y} \mid \boldsymbol{\theta}) &\approx \log p(\boldsymbol{y} \mid \boldsymbol{\theta}) - \frac{1}{2}(\boldsymbol{\theta} - \widehat{\boldsymbol{\theta}}_{\mathrm{MLE}})^\top\jmath(\widehat{\boldsymbol{\theta}}_{\mathrm{MLE}})(\boldsymbol{\theta} - \widehat{\boldsymbol{\theta}}_{\mathrm{MLE}})
+\log p(\boldsymbol{y} \mid \boldsymbol{\theta}) &\approx \log p(\boldsymbol{y} \mid  \widehat{\boldsymbol{\theta}}_{\mathrm{MLE}}) - \frac{1}{2}(\boldsymbol{\theta} - \widehat{\boldsymbol{\theta}}_{\mathrm{MLE}})^\top\jmath(\widehat{\boldsymbol{\theta}}_{\mathrm{MLE}})(\boldsymbol{\theta} - \widehat{\boldsymbol{\theta}}_{\mathrm{MLE}})
 \end{align*}
 
 In the case of flat prior, the curvature is zero and the prior contribution vanishes altogether. If we apply now @prp-quadratic-forms to this unnormalized kernel, we get that the approximate posterior must be Gaussian with precision $\jmath_n^{-1}$ and mean $\mu_n,$ where
 \begin{align*}
-\jmath_n = \jmath_0(\widehat{\boldsymbol{\theta}}_{0}) + \jmath(\widehat{\boldsymbol{\theta}}_{\mathrm{MLE}})
-\boldsymbol{\theta}_n = \jmath_n^{-1}\left\{ \jmath_0(\widehat{\boldsymbol{\theta}}_{0})\widehat{\boldsymbol{\theta}}_{0} + \jmath(\widehat{\boldsymbol{\theta}}_{\mathrm{MLE}})\widehat{\boldsymbol{\theta}}_{\mathrm{MLE}}\right\}
+\jmath_n &= \jmath_0(\widehat{\boldsymbol{\theta}}_{0}) + \jmath(\widehat{\boldsymbol{\theta}}_{\mathrm{MLE}})\\
+\widehat{\boldsymbol{\theta}}_n &= \jmath_n^{-1}\left\{ \jmath_0(\widehat{\boldsymbol{\theta}}_{0})\widehat{\boldsymbol{\theta}}_{0} + \jmath(\widehat{\boldsymbol{\theta}}_{\mathrm{MLE}})\widehat{\boldsymbol{\theta}}_{\mathrm{MLE}}\right\}
 \end{align*}
 and note that $\jmath_0(\widehat{\boldsymbol{\theta}}_{0}) = \mathrm{O}(1),$ whereas $\jmath_n$ is $\mathrm{O}(n).$
 
@@ -181,10 +181,7 @@ The maximizer must be uniquely identified from the data and must not be on bound
 
 ## Gaussian approximations to the posterior
 
-To assess the performance of Laplace approximation, we consider an exponential likelihood with conjugate gamma prior.
-
-The exponential model $\mathsf{expo}(\lambda)$ has information $i(\lambda)=n/\lambda^2$ and third-order cumulant $\ell_3(\lambda) = 2n/\lambda^3.$ If we assign a conjugate prior with $\lambda \sim \mathsf{gamma}(a,b),$ the mode of the posterior will be at $\widehat{\lambda}_{\mathrm{MAP}}=(n+a-1)/(\sum_{i=1}^n y_i + b).$
-
+To assess the performance of Laplace approximation, we consider an exponential likelihood $Y_i \mid \lambda \sim \mathsf{expo}(\lambda)$ with conjugate gamma prior $\lambda \sim \mathsf{gamma}(a,b)$. The exponential model  has information $i(\lambda)=n/\lambda^2$ and the mode of the posterior is $$\widehat{\lambda}_{\mathrm{MAP}}=\frac{n+a-1}{\sum_{i=1}^n y_i + b}.$$
 
 ```{r}
 #| label: fig-post-gamma-laplace
@@ -274,6 +271,24 @@ While the Laplace method has an error $\mathrm{O}(n^{-1}),$ the leading order te
 
 :::
 
+:::{#exm-posterior-gamma}
+
+## Posterior mean for the exponential likelihood
+
+Consider the posterior mean $\mathsf{E}_{\Lambda \mid \boldsymbol{Y}}(\lambda)$ for the model of @exm-gaussian-approx-gamma. Let $s=\sum_{i=1}^n y_i$. Then, \begin{align*}
+\widehat{\lambda}_g &= \frac{(n+a)}{s + b} \\
+|\jmath_g(\widehat{\lambda}_g)|^{1/2} &= \left(\frac{n+a}{\widehat{\lambda}_g^2}\right)^{1/2} =  \frac{s + b}{(n+a)^{1/2}}
+\end{align*}
+
+
+Simplification gives the approximation
+\begin{align*}
+\widehat{\mathsf{E}}_{\Lambda \mid \boldsymbol{Y}}(\Lambda) \approx \frac{\exp(-1)}{s + b} \frac{(n+a)^{n+a+1/2}}{(n+a-1)^{n+a-1/2}}
+\end{align*}
+which gives $`r round(exp(-1)/(s+b) * exp((n+a+0.5)*log(n+a) - (n+a-0.5)*log(n+a-1)), 5)`,$ whereas the true posterior mean is $(n+a)/(s+b) = `r round((n+a)/(s+b), 5)`.$ The Laplace approximation is equal to the true value up to five significant digits.
+
+:::
+
 ## Integrated nested Laplace approximation
 
 In many high dimensional models, use of MCMC is prohibitively expensive and fast, yet accurate calculations are important. One class of models whose special structure is particularly amenable to deterministic approximations.
@@ -287,11 +302,11 @@ where $\boldsymbol{\theta}_{-i}$ denotes the vector of hyperparameters excluding
 
 The marginal posterior $p(\boldsymbol{\theta} \mid \boldsymbol{y})$ is approximated by writing $p(\boldsymbol{\beta}, \boldsymbol{\theta} \mid \boldsymbol{y}) \propto p(\boldsymbol{\beta} \mid \boldsymbol{\theta}, \boldsymbol{y}) p(\boldsymbol{\theta} \mid \boldsymbol{y})$ and performing a Laplace approximation for fixed value of $\boldsymbol{\theta}$ for the term $p(\boldsymbol{\beta} \mid \boldsymbol{\theta}, \boldsymbol{y}),$ whose mode we denote by $\widehat{\boldsymbol{\beta}}.$ This yields
 \begin{align*}
-\widetilde{p}(\boldsymbol{\theta} \mid \boldsymbol{y}) \propto \frac{p(\widehat{\boldsymbol{\beta}}, \boldsymbol{\theta} \mid \boldsymbol{y})}{ p_{G}(\widehat{\boldsymbol{\beta}} \mid \boldsymbol{y}, \boldsymbol{\theta})} = \frac{p(\widehat{\boldsymbol{\beta}}, \boldsymbol{\theta} \mid \boldsymbol{y})}{ |\boldsymbol{H}(\widehat{\boldsymbol{\beta}})|^{1/2}}
+\widetilde{p}(\boldsymbol{\theta} \mid \boldsymbol{y}) \propto \frac{p(\widehat{\boldsymbol{\beta}}, \boldsymbol{\theta} \mid \boldsymbol{y})}{ p_{G}(\widehat{\boldsymbol{\beta}} \mid \boldsymbol{y}, \boldsymbol{\theta})} = \frac{p(\widehat{\boldsymbol{\beta}}, \boldsymbol{\theta} \mid \boldsymbol{y})}{ |\mathbf{H}(\widehat{\boldsymbol{\beta}})|^{1/2}}
 \end{align*}
-and the Laplace approximation  has kernel $$p_{G}(\boldsymbol{\beta} \mid \boldsymbol{y}, \boldsymbol{\theta}) \propto |\mathbf{H}|^{1/2}\exp\{-(\boldsymbol{\beta}- \widehat{\boldsymbol{\beta}})^\top \mathbf{H}(\boldsymbol{\beta}- \widehat{\boldsymbol{\beta}})/2\};$$
+and the Laplace approximation  has kernel $$p_{G}(\boldsymbol{\beta} \mid \boldsymbol{y}, \boldsymbol{\theta}) \propto |\mathbf{H}(\widehat{\boldsymbol{\beta}})|^{1/2}\exp\{-(\boldsymbol{\beta}- \widehat{\boldsymbol{\beta}})^\top \mathbf{H}(\widehat{\boldsymbol{\beta}})(\boldsymbol{\beta}- \widehat{\boldsymbol{\beta}})/2\};$$
 since it is evaluated at $\widehat{\boldsymbol{\beta}},$ we retrieve only the determinant of the negative Hessian of 
-$p(\boldsymbol{\beta} \mid \boldsymbol{\theta}, \boldsymbol{y}),$ namely $\boldsymbol{H}(\widehat{\boldsymbol{\beta}}).$ Note that the latter is a function of $\boldsymbol{\theta}.$
+$p(\boldsymbol{\beta} \mid \boldsymbol{\theta}, \boldsymbol{y}),$ namely $\mathbf{H}(\widehat{\boldsymbol{\beta}}).$ Note that the latter is a function of $\boldsymbol{\theta}.$
 
 To obtain $p(\theta_i \mid \boldsymbol{y})$, we then proceed with
 
@@ -300,16 +315,16 @@ To obtain $p(\theta_i \mid \boldsymbol{y})$, we then proceed with
 3. In each direction of $\boldsymbol{z}$, consider drops in $\widetilde{p}(\boldsymbol{\theta} \mid \boldsymbol{y})$ as we move away from the mode and define a coarse grid based on these, keeping points where the difference in $\widetilde{p}(\boldsymbol{\theta} \mid \boldsymbol{y})$ relative to the mode is less than some numerical tolerance $\delta.$
 4. Retrieve the marginal by numerical integration using the central composition design outline above. We can also use directly avoid the integration and use the approximation at the posterior mode of $\widetilde{p}(\boldsymbol{\theta} \mid \boldsymbol{y}).$
 
-@Rue.Martino.Chopin:2009 proceed in an analogous fashion, but instead working with the marginal for $\beta_i$ building an approximation of it based on maximizing $\boldsymbol{\beta}_{-i} \mid \beta_i, \boldsymbol{\theta}, \boldsymbol{y}$ to yield $\widehat{\boldsymbol{\beta}}_{(i)}$ whose $i$th element is $\beta_i,$ yielding
+To approximate $p(\beta_i \mid \boldsymbol{y})$, @Rue.Martino.Chopin:2009 proceed instead by building an approximation of it based on maximizing $\boldsymbol{\beta}_{-i} \mid \beta_i, \boldsymbol{\theta}, \boldsymbol{y}$ to yield $\widehat{\boldsymbol{\beta}}_{(i)}$ whose $i$th element is $\beta_i,$ yielding
 \begin{align*}
 \widetilde{p}(\beta_i \mid \boldsymbol{\theta}, \boldsymbol{y}) \propto \frac{p(\widehat{\boldsymbol{\beta}}_{(i)}, \boldsymbol{\theta} \mid \boldsymbol{y})}{\widetilde{p}(\widehat{\boldsymbol{\beta}}_{(i),-i} \mid \beta_i, \boldsymbol{\theta}, \boldsymbol{y})},
 \end{align*}
 with a suitable renormalization of $\widetilde{p}(\widehat{\boldsymbol{\beta}}_{(i),-i} \mid \beta_i, \boldsymbol{\theta}, \boldsymbol{y}).$ Such approximations are reminiscent of profile likelihood. 
 
-While we could use the Laplace approximation $p_{G}(\widehat{\boldsymbol{\beta}} \mid \boldsymbol{y}, \boldsymbol{\theta})$ and marginalize the latter directly, this leads to evaluation of the Laplace approximation to the density far from the mode, which is often inaccurate. One challenge is that $p$ again is very large, so calculation of the Hessian $\mathbf{H}$ is very high dimensional and costly to evaluate. Having to evaluate it repeatedly for each marginal $\beta_i$ for $i=1, \ldots, p$ is prohibitive since it involves factorizations of $p \times p$ matrices.
+While we could use the Laplace approximation $p_{G}(\widehat{\boldsymbol{\beta}} \mid \boldsymbol{y}, \boldsymbol{\theta})$ and marginalize the latter directly, this leads to evaluation of the Laplace approximation to the density far from the mode, which is often inaccurate. One challenge is that $p$ is often very large, so calculation of the Hessian $\mathbf{H}$ is costly to evaluate. Having to evaluate it repeatedly for each marginal $\beta_i$ for $i=1, \ldots, p$ is prohibitive since it involves factorizations of $p \times p$ matrices.
 
 
-To reduce the computational costs, @Rue.Martino.Chopin:2009 propose to use the approximate mean to avoid optimizing and consider the conditional based on the conditional of the Gaussian approximation with mean $\widehat{\boldsymbol{\beta}}$ and covariance $\boldsymbol{\Sigma} = \boldsymbol{H}^{-1}(\widehat{\boldsymbol{\beta}}),$ 
+To reduce the computational costs, @Rue.Martino.Chopin:2009 propose to use the approximate mean to avoid optimizing and consider the conditional based on the conditional of the Gaussian approximation with mean $\widehat{\boldsymbol{\beta}}$ and covariance $\boldsymbol{\Sigma} = \mathbf{H}^{-1}(\widehat{\boldsymbol{\beta}}),$
 \begin{align*}
 \boldsymbol{\beta}_{-i} \mid \beta_i, \boldsymbol{\theta}, \boldsymbol{y} \approx \mathsf{Gauss}_{p-1}\left\{\widetilde{\boldsymbol{\beta}}_{(i)} = \widehat{\boldsymbol{\beta}}_{-i} + \boldsymbol{\Sigma}_{i,i}^{-1}\boldsymbol{\Sigma}_{i,-i}(\beta_i - \widehat{\beta}_i, \mathbf{M}^{-1}_{-i,-i}\right\};
 \end{align*}
