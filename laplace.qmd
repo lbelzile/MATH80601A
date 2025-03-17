@@ -1,49 +1,245 @@
-# Deterministic approximations
+# Gaussian approximations
 
-So far, we have focused on stochastic approximations of integral. In very large models, Markov chain Monte Carlo suffer from the curse of dimensionality and it is sometimes useful to resort to cheaper approximations. We begin this review by looking at Laplace approximations for integrals.
+So far, we have focused on stochastic approximations of integral. In very large models, Markov chain Monte Carlo suffer from the curse of dimensionality and it is sometimes useful to resort to cheaper approximations. We begin this review by looking at the asymptotic Gaussian limiting distribution of the maximum aposteriori, the Laplace approximations for integrals [@Tierney.Kadane:1986], and their applications for model comparison [@Raftery:1995] and evaluation of the marginal likelihood. We also discuss integrated nested Laplace approximations [@Rue.Martino.Chopin:2009;@Wood:2019], used in hierarchical models with Gaussian components to obtain approximations to the marginal distribution. This material also borrows from Section 8.2 and appendix C.2.2 of @Held.Bove:2020. 
 
+We make use of Landau's notation to describe the growth rate of some functions: we write $x = \mathrm{O}(n)$ (big-O) to indicate that the ratio $x/n \to c \in \mathbb{R}$ and $x =\mathrm{o}(n)$ when $x/n \to 0,$ both when $n \to \infty.$
 
-This material borrows from Section 8.2 and appendix C.2.2 of @Held.Bove:2020. The Laplace approximation uses a Gaussian approximation to evaluate integrals of the form
+## Laplace approximation and it's applications
+
+:::{#prp-Laplace-approximation}
+
+## Laplace approximation for integrals
+
+The Laplace approximation uses a Gaussian approximation to evaluate integrals of the form
 \begin{align*}
-I_n= \int_a^b g(x) \mathrm{d} x = \exp\{nh(x)\}\mathrm{d} x.           \end{align*}
-Assuming that $g(x)$ is concave and thus $h(x)$,  with a maximum at $x_0 \in [a,b]$ and twice differentiable, we can Taylor expand $h(x)$ to get,
+I_n= \int_a^b g(x) \mathrm{d} x =\int_a^b  \exp\{nh(x)\}\mathrm{d} x.
+\end{align*}
+Assume that $g(x)$ and thus $h(x),$ is concave and and twice differentiable, with a maximum at $x_0 \in [a,b].$ We can Taylor expand $h(x)$ to get,
 \begin{align*}
 h(x) = h(x_0) + h'(x_0)(x-x_0) + h''(x_0)(x-x_0)^2/2 + R
 \end{align*}
-where the remainder $R=\mathrm{O}\{(x-x_0)^3\}$. If we optimize, we find $x_0$ solves $h'(x_0)=0$ and letting $\tau=-nh''(x_0)$, we can write ignoring the remainder term the approximation
+where the remainder $R=\mathrm{O}\{(x-x_0)^3\}.$ If  $x_0$ is a maximizer and solves $h'(x_0)=0,$ then letting $\tau=-nh''(x_0),$ we can write ignoring the remainder term the approximation
 \begin{align*}
  I_n &\approx \exp\{nh(x_0)\} \int_{a}^b \exp \left\{-\frac{1}{2}(x-x_0)^2\right\}
   \\&= \exp\{nh(x_0)\} \left(\frac{2\pi}{\tau}\right)^{1/2} \left[\Phi\left\{ \tau(b-x_0)\right\} - \Phi\left\{\tau(a-x_0)\right\}\right]
 \end{align*}
-upon recovering the unnormalized kernel of a Gaussian random variable centered at $x_0$ with precision $\tau$. The approximation error is $\mathrm{O}(n^{-1})$.
+upon recovering the unnormalized kernel of a Gaussian random variable centered at $x_0$ with precision $\tau.$ The approximation error is $\mathrm{O}(n^{-1}).$
 
-The multivariate analog is similar, where now for an integral of the form $\exp\{nh(\boldsymbol{x})\}$ over $\mathbb{R}^d$, we obtain the approximation
+The multivariate analog is similar, where now for an integral of the form $\exp\{nh(\boldsymbol{x})\}$ over a subset of $\mathbb{R}^d,$ we consider the Taylor series expansion
 \begin{align*}
- I_n \approx \left(\frac{2\pi}{n}\right)^{p/2} | -\mathbf{H}(\boldsymbol{x}_0)|^{-1/2}\exp\{-nh(\boldsymbol{x}_0)\}.
+ h(\boldsymbol{x}) &= h(\boldsymbol{x}_0) + (\boldsymbol{x}- \boldsymbol{x}_0)^\top h'(\boldsymbol{x}_0) + \frac{1}{2}(\boldsymbol{x}- \boldsymbol{x}_0)^\top h''(\boldsymbol{x}_0)(\boldsymbol{x}- \boldsymbol{x}_0) + R.
 \end{align*}
-where $| -\mathbf{H}|$ is the determinant of the Hessian matrix of $h(\boldsymbol{x})$ evaluated at the mode of the integrand.
-
-Compare to sampling-based methods, the Laplace approximation requires optimization to find the maximum of the function.
-
-
-:::{#prp-Laplace-marginal}
-
-## BIC and Laplace approximation to the marginal likelihood
-
-Consider a simple random sample $\boldsymbol{Y}$ of size $n$ from a distribution with parameter vector $\boldsymbol{\theta} \in \mathbb{R}^p$. We can consider a Laplace approximation of the marginal likelihood, where following Section 7.2.2 of @Held.Bove:2020
+We obtain the Laplace approximation at the mode $\boldsymbol{x}_0$ satisfying $h'(\boldsymbol{x}_0)=\boldsymbol{0}_d,$ 
 \begin{align*}
-p(\boldsymbol{y}) &= \int p(\boldsymbol{y} \mid \boldsymbol{\theta}) p(\boldsymbol{\theta} \mathrm{d} \boldsymbol{\theta}
-\\&= \int \exp\{-n k(\boldsymbol{\theta})\}\mathrm{d} \boldsymbol{\theta}
+ I_n \approx \left(\frac{2\pi}{n}\right)^{p/2} | \mathbf{H}(\boldsymbol{x}_0)|^{-1/2}\exp\{nh(\boldsymbol{x}_0)\},
 \end{align*}
-where $k(\boldsymbol{\theta}) = - \{\log p(\boldsymbol{y} \mid \boldsymbol{\theta}) + \log p(\boldsymbol{\theta}\}/n$. We can maximize $k(\boldsymbol{\theta})$ and use the maximum a posteriori and the Hessian matrix evaluated at the latter, say $\mathbf{H}$. This yields the approximation
+where $|\mathbf{H}(\boldsymbol{x}_0)|$ is the determinant of the Hessian matrix of $-h(\boldsymbol{x})$ evaluated at the mode  $\boldsymbol{x}_0.$
+
+:::
+
+Laplace approximation uses a Taylor series approximation to approximate the density, but since the latter must be non-negative, it performs the approximation on the log scale and back-transform the result. It is important to understand that we can replace $nh(\boldsymbol{x})$ by any $\mathrm{O}(n)$ term.
+
+:::{#cor-laplace-loglik}
+
+## Laplace approximation for marginal likelihood
+
+
+Consider a simple random sample $\boldsymbol{Y}$ of size $n$ from a distribution with parameter vector $\boldsymbol{\theta} \in \mathbb{R}^p.$ We are interested in approximating the marginal likelihood for a parametric model with $\boldsymbol{\theta} \in \mathbb{R}^d.$ Write [@Raftery:1995]
 \begin{align*}
-2\log p(\boldsymbol{y}) &= p\log(2\pi) -p\log n + \log |\mathbf{H}^{-1}| \\ & \quad + 2\log p(\boldsymbol{y} \mid \boldsymbol{\theta}) + 2\log p(\boldsymbol{\theta}.
+ p(\boldsymbol{y}) = \int_{\mathbb{R}^d} p(\boldsymbol{y} \mid \boldsymbol{\theta}) p(\boldsymbol{\theta}) \mathrm{d} \boldsymbol{\theta}
 \end{align*}
-As the sample size $n \to \infty$, the term $|\mathbf{H}^{-1}|$ converges to the determinant of the unit Fisher information matrix, so is bounded. The only terms that grow with $n$ assuming the prior is $\mathrm{O}(1)$ are the log likelihood and $p \log n$, whence
+and take 
+\begin{align*}nh(\boldsymbol{\theta}) = \log p(\boldsymbol{y} \mid \boldsymbol{\theta}) + \log p(\boldsymbol{\theta})
+\end{align*}
+in @prp-Laplace-approximation. Then, evaluating at the maximum a posteriori $\widehat{\boldsymbol{\theta}}_{\mathrm{MAP}},$ we get
+\begin{align*}
+ p(\boldsymbol{y}) = p(\widehat{\boldsymbol{\theta}}_{\mathrm{MAP}})p(\boldsymbol{y} \mid \widehat{\boldsymbol{\theta}}_{\mathrm{MAP}}) (2\pi)^{d/2}|\mathbf{H}(\widehat{\boldsymbol{\theta}}_{\mathrm{MAP}})|^{-1/2} + \mathrm{O}(n^{-1})
+\end{align*}
+where $-\mathbf{H}$ is the Hessian matrix of second partial derivatives of the unnormalized log posterior. We get the same relationship on the log scale, whence [@Tierney.Kadane:1986]
+\begin{align*}
+ \log p(\boldsymbol{y}) = \log p(\widehat{\boldsymbol{\theta}}_{\mathrm{MAP}}) + \log p(\boldsymbol{y} \mid \widehat{\boldsymbol{\theta}}_{\mathrm{MAP}}) + \frac{d}{2} \log (2\pi) - \frac{1}{2}\log |\mathbf{H}(\widehat{\boldsymbol{\theta}}_{\mathrm{MAP}})| + \mathrm{O}(n^{-1})
+\end{align*}
+If $p(\boldsymbol{\theta}) = \mathrm{O}(1)$ and $p(\boldsymbol{y} \mid \boldsymbol{\theta}) = \mathrm{O}(n)$ and provided the prior does not impose unnecessary support constraints, we get the same limiting approximation if we replace the maximum a posteriori point estimator $\widehat{\boldsymbol{\theta}}_{\mathrm{MAP}}$ by the maximum likelihood estimator, and $-\mathbf{H}(\widehat{\boldsymbol{\theta}}_{\mathrm{MAP}})$ by $n\boldsymbol{\imath},$ where $\boldsymbol{\imath}$ denotes the Fisher information matrix for a sample of size one. We can write the determinant of the $n$-sample Fisher information as $n^{d}|\boldsymbol{\imath}|.$
+
+If we use this approximation instead, we get
+\begin{align*}
+ \log p(\boldsymbol{y}) &= \log p(\boldsymbol{y} \mid \widehat{\boldsymbol{\theta}}_{\mathrm{MLE}}) -\frac{d}{2} \log n + \\& \quad  \log p(\widehat{\boldsymbol{\theta}}_{\mathrm{MLE}}) - \frac{1}{2} \log |\boldsymbol{\imath}| + \frac{d}{2} \log(2\pi)  + \mathrm{O}(n^{-1/2})
+\end{align*}
+where the error is now $\mathrm{O}(n^{-1/2})$ due to replacing the true information by the evaluation at the MLE. The likelihood is $\mathrm{O}(n),$ the second is $\mathrm{O}(\log n)$ and the other three are $\mathrm{O}(1).$ If we take the prior to be a multivariate Gaussian with mean $\boldsymbol{\theta}_{\mathrm{MLE}}$ and with variance $\boldsymbol{\imath},$ then the approximation error is $\mathrm{O}(n^{-1/2}),$ whereas the marginal likelihood has error $\mathrm{O}(1)$ if we only keep the first two terms. This gives the approximation
 \begin{align*}
 -2\log p(\boldsymbol{y}) \approx \mathsf{BIC} = -2\log p(\boldsymbol{y} \mid \boldsymbol{\theta}) + p\log n
 \end{align*}
 If the likelihood contribution dominates the posterior, the $\mathsf{BIC}$ approximation will improve with increasing sample size, so $\exp(-\mathsf{BIC}/2)$ is an approximation fo the marginal likelihood sometimes used for model comparison in Bayes factor, although this derivation shows that the latter neglects the impact of the prior.
+
+
+:::
+
+:::{#exm-bic-bma}
+
+## Bayesian model averaging approximation
+
+Consider the `diabetes` model from @Park.Casella:2008. We fit various linear regression models, considering all best models of a certain type with at most the 10 predictors plus the intercept. The
+
+```{r}
+library(leaps)
+data(diabetes, package = "lars")
+search <- leaps::regsubsets(
+  x = diabetes$x,
+  y = diabetes$y,
+  intercept = TRUE,
+  method = "exhaustive", 
+  nvmax = 10, nbest = 99, really.big = TRUE)
+models_bic <- summary(search)$bic
+# Renormalize BIC and keep only models with some weight
+bic <- models_bic - min(models_bic)
+models <- which(bic < 7)
+bma_weights <- exp(-bic[models]/2)/sum(exp(-bic[models]/2))
+```
+
+```{r}
+#| eval: true
+#| echo: false
+#| label: fig-bmaweights
+#| fig-cap: "BIC as a function of the linear model covariates (left) and Bayesian model averaging approximate weights (in percentage) for the 10 models with the highest posterior weights according to the BIC approximation."
+par(mfrow = c(1,2))
+plot(search)
+barplot(round(100*sort(
+  bma_weights, decreasing = TRUE)[1:10], 1), ylab = "posterior probability (in %)")
+
+```
+
+Most of the weight is on a handful of complex models, where the best fitting model only has around $`r round(100*max(bma_weights),0)`$% of the posterior mass.
+
+:::
+
+:::{#rem-marginal-lik-laplace}
+
+## Parametrization for Laplace
+
+Compare to sampling-based methods, the Laplace approximation requires optimization to find the maximum of the function. The Laplace approximation is not invariant to reparametrization: in practice, it is best to perform it on a scale where the likelihood is as close to quadratic as possible in $g(\boldsymbol{\theta})$ and back-transform using a change of variable.
+
+:::
+
+We can also use Laplace approximation to obtain a crude second-order approximation to the posterior. We suppose that the prior is proper.
+
+We can Taylor expand the log prior and log density around their respective mode, say $\widehat{\boldsymbol{\theta}}_0$ and $\widehat{\boldsymbol{\theta}}_{\mathrm{MLE}},$ with $\jmath_0(\widehat{\boldsymbol{\theta}}_0)$ and $\jmath(\widehat{\boldsymbol{\theta}}_{\mathrm{MLE}})$ denoting negative of the corresponding Hessian matrices evaluated at their mode, meaning the observed information matrix for the likelihood component. Together, these yield
+\begin{align*}
+\log p(\boldsymbol{\theta}) &\approx \log p(\widehat{\boldsymbol{\theta}}_0) - \frac{1}{2}(\boldsymbol{\theta} - \widehat{\boldsymbol{\theta}}_0)^\top\jmath_0(\widehat{\boldsymbol{\theta}}_0)(\boldsymbol{\theta} - \widehat{\boldsymbol{\theta}}_0)\\
+\log p(\boldsymbol{y} \mid \boldsymbol{\theta}) &\approx \log p(\boldsymbol{y} \mid \boldsymbol{\theta}) - \frac{1}{2}(\boldsymbol{\theta} - \widehat{\boldsymbol{\theta}}_{\mathrm{MLE}})^\top\jmath(\widehat{\boldsymbol{\theta}}_{\mathrm{MLE}})(\boldsymbol{\theta} - \widehat{\boldsymbol{\theta}}_{\mathrm{MLE}})
+\end{align*}
+
+In the case of flat prior, the curvature is zero and the prior contribution vanishes altogether. If we apply now @prp-quadratic-forms to this unnormalized kernel, we get that the approximate posterior must be Gaussian with precision $\jmath_n^{-1}$ and mean $\mu_n,$ where
+\begin{align*}
+\jmath_n = \jmath_0(\widehat{\boldsymbol{\theta}}_{0}) + \jmath(\widehat{\boldsymbol{\theta}}_{\mathrm{MLE}})
+\boldsymbol{\theta}_n = \jmath_n^{-1}\left\{ \jmath_0(\widehat{\boldsymbol{\theta}}_{0})\widehat{\boldsymbol{\theta}}_{0} + \jmath(\widehat{\boldsymbol{\theta}}_{\mathrm{MLE}})\widehat{\boldsymbol{\theta}}_{\mathrm{MLE}}\right\}
+\end{align*}
+and note that $\jmath_0(\widehat{\boldsymbol{\theta}}_{0}) = \mathrm{O}(1),$ whereas $\jmath_n$ is $\mathrm{O}(n).$
+
+:::{#thm-berstein-von-mises}
+
+## Bernstein-von Mises theorem
+
+Consider any estimator asymptotically equivalent to the maximum likelihood estimator and suppose that the prior is continuous and positive in a neighborhood of the maximum. Assume further that the regularity conditions for maximum likelihood estimator holds. Then, in the limit as $n \to \infty$ 
+\begin{align*}
+\boldsymbol{\theta} \mid \boldsymbol{y} \stackrel{\cdot}{\sim} \mathsf{Gauss}\{ \widehat{\boldsymbol{\theta}}_{\mathrm{MLE}},  \jmath^{-1}(\widehat{\boldsymbol{\theta}}_{\mathrm{MLE}})\}
+\end{align*}
+:::
+
+The conclusions from this result is that, in large samples, the inference obtained from using likelihood-based inference and Bayesian methods will be equivalent: credible intervals will also have guaranteed frequentist coverage. 
+
+We can use the statement by replacing the maximum likelihood estimator and the observed information matrix with variants thereof ($\boldsymbol{\theta}_n$ and $\jmath_n,$ or the Fisher information, or any Monte Carlo estimate of the posterior mean and covariance). The differences will be noticeable for small samples, but will vanish as $n$ grows.
+
+<!--
+:::{#rmk-regularity}
+
+## Regularity conditions for maximum likelihood estimator
+
+Without getting into technical details, we essentially need the following 
+
+1. The estimator is Fisher consistent.
+2. The true value $\boldsymbol{\theta}_0$ does not lie on the boundary of the space.
+3. The likelihood is $\mathrm{O}(n)$
+4. The density are thrice continuously differentiable.
+5. The third-order derivative of the likelihood is bounded.
+
+The maximizer must be uniquely identified from the data and must not be on boundary, so that we can perform a two-sided Taylor series expansion around $\boldsymbol{\theta}_0.$ We need to be able to apply the law of large numbers to get the variance (reciprocal Fisher information) and apply a central limit theorem to the score. We can get away with weaker than the third-order condition, but the latter is easiest to check and ensures that the higher order terms of the Taylor series expansion vanish asymptotically.
+
+
+:::
+
+-->
+:::{#exm-gaussian-approx-gamma}
+
+## Gaussian approximations to the posterior
+
+To assess the performance of Laplace approximation, we consider an exponential likelihood with conjugate gamma prior.
+
+The exponential model $\mathsf{expo}(\lambda)$ has information $i(\lambda)=n/\lambda^2$ and third-order cumulant $\ell_3(\lambda) = 2n/\lambda^3.$ If we assign a conjugate prior with $\lambda \sim \mathsf{gamma}(a,b),$ the mode of the posterior will be at $\widehat{\lambda}_{\mathrm{MAP}}=(n+a-1)/(\sum_{i=1}^n y_i + b).$
+
+
+```{r}
+#| label: fig-post-gamma-laplace
+#| fig-cap: "Gaussian approximation (dashed) to the posterior density (full line) of the exponential rate $\\lambda$ for the `waiting` dataset with an exponential likelihood and a gamma prior with $a=0.01$ and $b=0.01.$ The plots are based on the first $10$ observations (left) and the whole sample of size $n=62$ (right)."
+par(mfrow = c(1,2), mar = c(4,4,1,1),bty ="n")
+data(waiting, package = "hecbayes")
+a <- 0.01; b <- 0.01; n <- 10
+post <- function(x){dgamma(x, shape = n + a, rate = sum(waiting[1:n]) + b)}
+mode <- (n+a-1)/(sum(waiting[1:n]) + b)
+ll3 <- function(x){2*n/x^3}
+hessian <- function(x){-(n+a)/x^2}
+curve(post, from = 0, to = 1/10, bty = "l", ylab = "posterior density", xlab = expression("exponential rate"~lambda), n = 1001)
+curve(dnorm(x, mean = mode, sd = sqrt(-1/hessian(mode))), add = TRUE, lty = 2, n = 1001)
+
+a <- 0.01; b <- 0.01; n <- length(waiting)
+post <- function(x){dgamma(x, shape = n + a, rate = sum(waiting) + b)}
+mode <- (n+a-1)/(sum(waiting) + b)
+hessian <- function(x){-(n+a)/x^2}
+curve(post, from = 0.01, to = 1/15, bty = "l", ylab = "posterior density", xlab = expression("exponential rate"~lambda), n = 1001)
+curve(dnorm(x, mean = mode, sd = sqrt(-1/hessian(mode))), add = TRUE, lty = 2, n = 1001)
+
+# 
+# # From p. 16 of Durante et al.
+# # Bernoulli example
+# loc <- function(x0, data, ...){
+#   (exp(-x0)*(1+exp(x0))^2*sum(data)-n*plogis(x0)+dnorm(x0, sd = 3, log = TRUE))/sqrt(length(data))
+# }
+# var <- function(x0, data, ...){
+#   n <- length(data)
+#   gx <- plogis(x0)
+#   n*(1+exp(x0)) / (gx/(1+exp(x0)) - (exp(x0)-1)*(sum(data)-n*gx+dnorm(x0, sd = 3, log.p = TRUE)))}
+# alpha <- function(x0, data, ...){
+#   n <- length(data)
+#   h <- sqrt(n)*(x-loc)
+#   sqrt(2*pi)*exp(x)*(exp(x)-1)/(12*sqrt(n)*(1+exp(x))^3)
+# }
+# set.seed(80601)
+# theta <- 
+# data <- rbinom(n = 10, size = 1, prob = 0.2)
+# loc(x0 = qlogis(0.2), data = data)
+
+```
+
+
+Let us now use Laplace approximation to obtain an estimate of the marginal likelihood: the latter is 
+\begin{align*}
+p(\boldsymbol{y}) = \frac{\Gamma(n+a)}{\Gamma(a)}\frac{b^a}{\left(b + \sum_{i=1}^n y_i \right)^{n+a}}.
+\end{align*}
+
+```{r}
+n <- length(waiting); s <- sum(waiting)
+log_marg_lik <- lgamma(a) - a*log(b) + (n+a) * log(b+s) - lgamma(n+a)
+# Laplace approximation
+map <- (n + a - 1)/(s + b)
+logpost <- function(x){
+  sum(dexp(waiting, rate = x, log = TRUE)) +
+    dgamma(x, a, b, log = TRUE)
+}
+# Hessian evaluated at MAP
+H <- -numDeriv::hessian(logpost, x = map)
+log_marg_laplace <- 1/2*log(2*pi) - c(determinant(H)$modulus) + logpost(map)
+```
+
+For the sample of size $`r length(waiting)`,$ the exponential model marginal likelihood is $`r round(log_marg_lik,2)`,$ whereas the Laplace approximation gives $`r round(log_marg_laplace,2)`.$
 
 :::
 
@@ -52,10 +248,44 @@ If the likelihood contribution dominates the posterior, the $\mathsf{BIC}$ appro
 
 ## Posterior expectation using Laplace method
 
-If we are interested in computing the posterior expectation of a positive real-valued functional $g(\boldsymbol{\theta}): \mathbb{R}^d \to \mathbb{R}_{+}$, we may write
+If we are interested in computing the posterior expectation of a positive real-valued functional $g(\boldsymbol{\theta}): \mathbb{R}^d \to \mathbb{R}_{+},$ we may write
 \begin{align*}
  \mathsf{E}_{\boldsymbol{\Theta} \mid \boldsymbol{Y}}(g(\boldsymbol{\theta}) \mid \boldsymbol{y}) &=  \frac{\int g(\boldsymbol{\theta}) p(\boldsymbol{y} \mid \boldsymbol{\theta}) p( \boldsymbol{\theta}) \mathrm{d} \boldsymbol{\theta}}{\int p(\boldsymbol{y} \mid \boldsymbol{\theta})p( \boldsymbol{\theta}) \mathrm{d} \boldsymbol{\theta}}
 \end{align*}
-We can apply Laplace's method to both numerator and denominator.
+We can apply Laplace's method to both numerator and denominator. Let $\widehat{\boldsymbol{\theta}}_g$ and $\widehat{\boldsymbol{\theta}}_{\mathrm{MAP}}$ of the integrand of the numerator and denominator, respectively, and the negative of the Hessian matrix of the log integrands
+\begin{align*}
+\jmath_g&=  -\frac{\partial^2}{\partial \boldsymbol{\theta}\partial \boldsymbol{\theta}^\top} \left\{ \log g(\boldsymbol{\theta}) + \log p(\boldsymbol{y} \mid \boldsymbol{\theta}) + \log p(\boldsymbol{\theta})\right\}, \\
+\jmath &=  -\frac{\partial^2}{\partial \boldsymbol{\theta}\partial \boldsymbol{\theta}^\top} \left\{\log p(\boldsymbol{y} \mid \boldsymbol{\theta}) + \log p(\boldsymbol{\theta})\right\}.
+\end{align*}
+Putting these together
+\begin{align*}
+\mathsf{E}_{\boldsymbol{\Theta} \mid \boldsymbol{Y}}(g(\boldsymbol{\theta}) \mid \boldsymbol{y}) = \frac{|\jmath(\widehat{\boldsymbol{\theta}}_{\mathrm{MAP}})|^{1/2}}{|\jmath_g(\widehat{\boldsymbol{\theta}}_g)|^{1/2}} \frac{g(\widehat{\boldsymbol{\theta}}_g) p(\boldsymbol{y} \mid \widehat{\boldsymbol{\theta}}_g) p( \widehat{\boldsymbol{\theta}}_g)}{p(\boldsymbol{y} \mid \widehat{\boldsymbol{\theta}}_{\mathrm{MAP}}) p(\widehat{\boldsymbol{\theta}}_{\mathrm{MAP}})} + \mathrm{O}(n^{-2})
+\end{align*}
+While the Laplace method has an error $\mathrm{O}(n^{-1}),$ the leading order term of the expansion cancel out from the ratio. 
 
 :::
+
+## Integrated nested Laplace approximation
+
+In many high dimensional models, use of MCMC is prohibitively expensive and fast, yet accurate calculations are important. One class of models whose special structure is particularly amenable to deterministic approximations.
+
+Consider a model with response $\boldsymbol{y}$ which depends on covariates $\mathbf{x}$ through a latent Gaussian process; typically the priors on the coefficients $\boldsymbol{\beta}.$ In applications with splines, or space time processes, the prior precision matrix for $\boldsymbol{\beta}$ will be sparse with a Gaussian Markov random field structure. The dimension of $\boldsymbol{\beta}$ can be substantial (several thousands) with a comparably low-dimensional hyperparameter vector $\boldsymbol{\theta}.$ Interest typically then lies in marginal parameters
+\begin{align*}
+p(\beta_i \mid \boldsymbol{y}) &= \int p(\beta_i \mid \boldsymbol{\theta}, \boldsymbol{y}) p(\boldsymbol{\theta} \mid \boldsymbol{y}) \mathrm{d} \boldsymbol{\theta}\\
+p(\theta_i \mid \boldsymbol{y}) &= \int p(\boldsymbol{\theta} \mid \boldsymbol{y}) \mathrm{d} \boldsymbol{\theta}_{-i}
+\end{align*}
+where $\boldsymbol{\theta}_{-i}$ denotes the vector of hyperparameters excluding the $i$th element $\theta_i.$ The INLA method builds Laplace approximations to the integrands $p(\beta_i \mid \boldsymbol{\theta}, \boldsymbol{y})$ and $p(\boldsymbol{\theta} \mid \boldsymbol{y}),$ and evaluates the integral using quadrature rules over a coarse grid of values of $\boldsymbol{\theta}.$
+
+The marginal posterior $p(\boldsymbol{\theta} \mid \boldsymbol{y})$ is approximated by writing $p(\boldsymbol{\beta}, \boldsymbol{\theta} \mid \boldsymbol{y}) \propto p(\boldsymbol{\beta} \mid \boldsymbol{\theta}, \boldsymbol{y}) p(\boldsymbol{\theta} \mid \boldsymbol{y})$ and performing a Laplace approximation for fixed value of $\boldsymbol{\theta}$ for the term $p(\boldsymbol{\beta} \mid \boldsymbol{\theta}, \boldsymbol{y}),$ whose mode we denote by $\widehat{\boldsymbol{\beta}}.$ This yields
+\begin{align*}
+\widetilde{p}(\boldsymbol{\theta} \mid \boldsymbol{y}) \propto \frac{p(\widehat{\boldsymbol{\beta}}, \boldsymbol{\theta} \mid \boldsymbol{y})}{ p_{G}(\widehat{\boldsymbol{\beta}} \mid \boldsymbol{y}, \boldsymbol{\theta})} = \frac{p(\widehat{\boldsymbol{\beta}}, \boldsymbol{\theta} \mid \boldsymbol{y})}{ |\boldsymbol{H}(\widehat{\boldsymbol{\beta}})|^{1/2}}
+\end{align*}
+and the Laplace approximation  has kernel $$p_{G}(\boldsymbol{\beta} \mid \boldsymbol{y}, \boldsymbol{\theta}) \propto |\mathbf{H}|^{1/2}\exp\{-(\boldsymbol{\beta}- \widehat{\boldsymbol{\beta}})^\top \mathbf{H}(\boldsymbol{\beta}- \widehat{\boldsymbol{\beta}})/2\};$$
+since it is evaluated at $\widehat{\boldsymbol{\beta}},$ we retrieve only the determinant of the negative Hessian of 
+$p(\boldsymbol{\beta} \mid \boldsymbol{\theta}, \boldsymbol{y}),$ namely $\boldsymbol{H}(\widehat{\boldsymbol{\beta}}).$ Note that the latter is a function of $\boldsymbol{\theta}.$
+
+ @Rue.Martino.Chopin:2009 proceed in an analogous fashion, but instead working with the marginal for $\beta_i$ building an approximation of it based on maximizing $\boldsymbol{\beta}_{-i} \mid \beta_i, \boldsymbol{\theta}, \boldsymbol{y}$ to yield $\widetilde{\boldsymbol{\beta}}$ whose $i$th element is $\beta_i.$ 
+ 
+ Further improvements to the methods were proposed in @Wood:2019. The INLA software uses a low-rank variational correction to Laplace method, proposed in @vanNiekerk:2024.
+
+<!--TODO add example with gamma -->

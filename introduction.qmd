@@ -1331,7 +1331,8 @@ The likelihood can then be written as
 * Many families of distributions are closed under conditioning and marginalization (elliptical distribution such as Gaussian or Student, Dirichlet or categorical).
 * Location-scale families can be standardized.
 * Distributions are characterized by their moments. Statistical models typically specify a parametric form for the latter, notably regression models.
-* Hierarchical models specify a joint distribution through marginal and conditionals, allowing for simpler derivations and closed-form expressions. The law of iterated expectation and variance (tower property) can be used to retrieve them.
+* Hierarchical models specify a joint distribution through marginal and conditionals.
+*  The law of iterated expectation and variance (tower property) can be used to retrieve the first two moments more easily.
 * Families of distribution can be identified from their kernel (density or mass function) and support, up to normalizing constants. It suffices to identify the parameters of the distribution to retrieve the model.
 * Marginalization from a joint density involves integration. We can often rewrite the integral in terms of an unnormalized density, and use knowledge of the marginalization constant.
 * The likelihood depends on the distribution of the data. It encodes the information about the data. 

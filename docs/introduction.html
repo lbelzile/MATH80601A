@@ -251,7 +251,7 @@ window.Quarto = {
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./laplace.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Deterministic approximations</span></span></a>
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Gaussian approximations</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
@@ -467,10 +467,10 @@ f_{\boldsymbol{X}}(\boldsymbol{x}) = \prod_{j=1}^d  \frac{x_j^{\alpha_j-1}\exp(-
 \end{align*}\]</span> Let <span class="math inline">\(\boldsymbol{g}(\cdot)\)</span> be a <span class="math inline">\(d\)</span> place function with <span class="math inline">\(i\)</span>th element <span class="math inline">\(g_i(\boldsymbol{x}) = x_j/(x_1 + \cdots x_d)\)</span> for <span class="math inline">\(j=1, \ldots, d-1\)</span> and <span class="math inline">\(g_d=x_1 + \cdots x_d\)</span> and write the transformation as <span class="math inline">\(g(\boldsymbol{X}) = (\boldsymbol{Y}^\top, Z)^\top\)</span> with <span class="math inline">\(\boldsymbol{y} = (y_1, \ldots, y_{d-1})^\top\)</span> and the redundant coordinate <span class="math inline">\(y_d = 1- y_1 - \cdots y_{d-1}\)</span> to simplify the notation. The inverse transformation yields <span class="math inline">\(x_j = zy_j\)</span> for <span class="math inline">\(j=1, \ldots, d-1\)</span> and <span class="math inline">\(x_d = z(1-y_1-\cdots - y_{d-1}).\)</span> The Jabobian matrix is <span class="math display">\[\begin{align*}
 \mathbf{J}_{\boldsymbol{g}^{-1}}(\boldsymbol{y}, z) = \begin{pmatrix} z \mathbf{I}_{d-1} &amp; \boldsymbol{y} \\ \boldsymbol{0}^\top_{d-1} &amp; y_d
 \end{pmatrix}.
-\end{align*}\]</span> The absolute value of the determinant is then <span class="math inline">\(z^{d-1}y_d.\)</span> Using the change of variable formula, <span class="math display">\[\begin{align*}
-f_{\boldsymbol{Y}}(\boldsymbol{y}) &amp;= \prod_{j=1}^{d}  \frac{(zy_j)^{\alpha_j-1}\exp(-zy_j)}{\Gamma(\alpha_j)} \times z^{d-1}y_d
+\end{align*}\]</span> The absolute value of the determinant is then <span class="math inline">\(z^{d-1}y_d.\)</span> Using the change of variable formula, the joint density is <span class="math display">\[\begin{align*}
+f_{\boldsymbol{Y}, Z}(\boldsymbol{y}, z) &amp;= \prod_{j=1}^{d}  \frac{(zy_j)^{\alpha_j-1}\exp(-zy_j)}{\Gamma(\alpha_j)} \times z^{d-1}y_d
 \\&amp;= z^{\alpha_1 + \cdots + \alpha_d - 1}\exp(-z) \prod_{j=1}^d \frac{y_j^{\alpha_j-1}}{\Gamma(\alpha_j)}.
-\end{align*}\]</span> Since the density factorizes, we find the result upon multiplying and dividing by the normalizing constant <span class="math inline">\(\Gamma(\alpha_1 + \cdots + \alpha_d),\)</span> which yields both the Dirichlet for <span class="math inline">\(\boldsymbol{Y}\)</span> and the gamma for <span class="math inline">\(Z.\)</span></p>
+\end{align*}\]</span> Since the density factorizes, we find the result upon multiplying and dividing by the normalizing constant <span class="math inline">\(\Gamma(\alpha_1 + \cdots + \alpha_d),\)</span> which yields both the Dirichlet for <span class="math inline">\(\boldsymbol{Y}\)</span> and a gamma for <span class="math inline">\(Z.\)</span></p>
 </div>
 </section>
 <section id="marginal-and-conditional-distributions" class="level3" data-number="1.1.2">
@@ -1015,7 +1015,8 @@ Y_t &amp;= \mu (1-\phi) + \varepsilon_t + \phi \{\mu + \phi(Y_{t-2}-\mu) + \vare
 <li>Many families of distributions are closed under conditioning and marginalization (elliptical distribution such as Gaussian or Student, Dirichlet or categorical).</li>
 <li>Location-scale families can be standardized.</li>
 <li>Distributions are characterized by their moments. Statistical models typically specify a parametric form for the latter, notably regression models.</li>
-<li>Hierarchical models specify a joint distribution through marginal and conditionals, allowing for simpler derivations and closed-form expressions. The law of iterated expectation and variance (tower property) can be used to retrieve them.</li>
+<li>Hierarchical models specify a joint distribution through marginal and conditionals.</li>
+<li>The law of iterated expectation and variance (tower property) can be used to retrieve the first two moments more easily.</li>
 <li>Families of distribution can be identified from their kernel (density or mass function) and support, up to normalizing constants. It suffices to identify the parameters of the distribution to retrieve the model.</li>
 <li>Marginalization from a joint density involves integration. We can often rewrite the integral in terms of an unnormalized density, and use knowledge of the marginalization constant.</li>
 <li>The likelihood depends on the distribution of the data. It encodes the information about the data.</li>

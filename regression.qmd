@@ -578,7 +578,7 @@ We then consider different types of move for the $k_{\max}$ potential covariates
 
 Only the last type of move preserves the dimension, whereas the shrinkage and expansion moves lead to a decrease or increase of the model matrix dimension. The probability of rejection for Metropolis becomes
 \begin{align*}
-    R = J\frac{p(\boldsymbol{\theta}_t^{\star})}{p(\boldsymbol{\theta}_{t-1})}\frac{q(\boldsymbol{\theta}_{t-1} \mid \boldsymbol{\theta}_t^{\star} )}{q(\boldsymbol{\theta}_t^{\star} \mid \boldsymbol{\theta}_{t-1})}
+R = J\frac{p(\boldsymbol{\theta}_t^{\star})}{p(\boldsymbol{\theta}_{t-1})}\frac{q(\boldsymbol{\theta}_{t-1} \mid \boldsymbol{\theta}_t^{\star} )}{q(\boldsymbol{\theta}_t^{\star} \mid \boldsymbol{\theta}_{t-1})}
 \end{align*}
 where for most moves $J=1$ in this case, except in four cases where the dimension $|M| \in\{1, 2, k_{\max}-1, k_{\max}\}$ and
 

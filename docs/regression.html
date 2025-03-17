@@ -251,7 +251,7 @@ window.Quarto = {
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./laplace.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Deterministic approximations</span></span></a>
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Gaussian approximations</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
@@ -561,9 +561,10 @@ Figure&nbsp;8.5: Density estimates for regression coefficients with Gaussian (ri
 <section id="bayesian-model-averaging-via-reversible-jump" class="level2" data-number="8.2">
 <h2 data-number="8.2" class="anchored" data-anchor-id="bayesian-model-averaging-via-reversible-jump"><span class="header-section-number">8.2</span> Bayesian model averaging via reversible jump</h2>
 <p>Variable selection refers to selection of covariates from a set of <span class="math inline">\(p\)</span> candidates from a design matrix which is orthogonal to the intercept; these could include higher order terms or interactions. From the Bayesian perspective, all of these <span class="math inline">\(2^p-1\)</span> submodels must be assigned a prior. We can also rule out models without lower order interactions through the prior, but exploring or fitting all possible models is too costly. The goal of the analysis is to account for the uncertainty associated with variable selection. The target of inference is often the weight of the combinations, and the probability that a predictor is included aposteriori.</p>
-<p>There are different methods for doing this: one is through spike and slab priors. Software for Hamiltonian Monte Carlo like Stan cannot handle discrete variables. Other methods for Bayesian model averaging includes use of reversible jump Markov chain Monte Carlo <span class="citation" data-cites="Green:1995">(<a href="references.html#ref-Green:1995" role="doc-biblioref">Peter J. Green 1995</a>)</span>, an extension that allows for arbitrary measures and through this varying dimensions, which occurs not only with variable selection, but also changepoint analysis and mixture models with varying number of components <span class="citation" data-cites="Green:2001">(<a href="references.html#ref-Green:2001" role="doc-biblioref">Peter J. Green 2001</a>)</span>. Reversible jump requires a form of data augmentation to have dimension-balancing and defining different types of moves for jumping between dimensions. These are integrated in the Metropolis–Hastings step through a Jacobian term added to <span class="math inline">\(R\)</span>. with different types of moves giving termed padding andone to pad the dimensions to match and define. In regression models, we will consider moves that adds or removes one parameter/regressor at a time.</p>
+<p>There are different methods for doing this: one is through spike and slab priors. Software for Hamiltonian Monte Carlo like Stan cannot handle discrete variables. Other methods for Bayesian model averaging includes use of reversible jump Markov chain Monte Carlo <span class="citation" data-cites="Green:1995">(<a href="references.html#ref-Green:1995" role="doc-biblioref">Green 1995</a>)</span>, an extension that allows for arbitrary measures and through this varying dimensions, which occurs not only with variable selection, but also changepoint analysis and mixture models with varying number of components <span class="citation" data-cites="Green:2001">(<a href="references.html#ref-Green:2001" role="doc-biblioref">Green 2001</a>)</span>. Reversible jump requires a form of data augmentation to have dimension-balancing and defining different types of moves for jumping between dimensions. These are integrated in the Metropolis–Hastings step through a Jacobian term added to <span class="math inline">\(R\)</span>. with different types of moves giving termed padding andone to pad the dimensions to match and define. In regression models, we will consider moves that adds or removes one parameter/regressor at a time.</p>
 <p>Consider the setup of <a href="#prp-gaussian-ols" class="quarto-xref">Proposition&nbsp;<span>8.2</span></a>, where we consider models <span class="math inline">\(M_1, \ldots, M_m\)</span> with for simplicity <span class="math inline">\(p(M_i)=1\)</span> for all models that include an intercept. We define <span class="math inline">\(\mathbf{X}^{(m)}\)</span> and <span class="math inline">\(\boldsymbol{\beta}^{(m)}\)</span> as the model matrix and the associated vector of non-zero coefficients associated with it. Let the response vector <span class="math display">\[\begin{align*}
-\boldsymbol{Y} \mid M_m, \boldsymbol{\beta}, \sim \mathsf{Gauss}(\mathbf{X}^{(m)}\boldsymbol{\beta}^{(m)}, \boldsymbol{\Sigma})                                                                                  \end{align*}\]</span> where <span class="math inline">\(\boldsymbol{\beta}^{(m)} \mid M_m,\)</span> is assigned a Gaussian prior $. <span class="math inline">\(\boldsymbol{\Sigma}\)</span> are given suitable priors. We write <span class="math inline">\(|M|\)</span> for the cardinality of the set of non-zero coefficients <span class="math inline">\(\boldsymbol{\beta}\)</span> in model <span class="math inline">\(M.\)</span></p>
+\boldsymbol{Y} \mid M_m, \boldsymbol{\beta}, \sim \mathsf{Gauss}(\mathbf{X}^{(m)}\boldsymbol{\beta}^{(m)}, \boldsymbol{\Sigma})    
+\end{align*}\]</span> where <span class="math inline">\(\boldsymbol{\beta}^{(m)} \mid M_m,\)</span> is assigned a Gaussian prior, and likewise the covariance parameters are given suitable priors. We write <span class="math inline">\(|M|\)</span> for the cardinality of the set of non-zero coefficients <span class="math inline">\(\boldsymbol{\beta}\)</span> in model <span class="math inline">\(M.\)</span></p>
 <p>Write <span class="math inline">\(\boldsymbol{\theta}\)</span> for all parameters other than the response, model and vector of coefficients. We can consider a joint update of the regression parameters <span class="math inline">\(\boldsymbol{\beta}, M\)</span> by sampling from their joint distribution via <span class="math inline">\(p(\boldsymbol{\beta} \mid M, \boldsymbol{\theta}) p(M \mid \boldsymbol{\theta}).\)</span> The update for the coefficients <span class="math inline">\(p(\boldsymbol{\beta} \mid M, \boldsymbol{\theta})\)</span> is as usual, while for <span class="math inline">\(p(M \mid \boldsymbol{\theta})\)</span>, we get the conditional Bayes factor, <span class="math display">\[\begin{align*}
 p(M \mid \boldsymbol{Y}, \boldsymbol{\theta}) &amp;\stackrel{M}{\propto} p(M) p(\boldsymbol{Y} \mid M, \boldsymbol{\theta})
 \\&amp;= p(M) \int_{\mathbb{R}^{\mathbb{|M|}}}p(\boldsymbol{Y} \mid M, \boldsymbol{\beta},\boldsymbol{\theta}) p(\boldsymbol{\beta} \mid M, \boldsymbol{\theta}) d \boldsymbol{\beta}
@@ -577,7 +578,7 @@ p(\boldsymbol{M} \mid \boldsymbol{Y}, \boldsymbol{\theta}) \propto p(M) |\boldsy
 <li>swapping an active covariate for an unused one.</li>
 </ul>
 <p>Only the last type of move preserves the dimension, whereas the shrinkage and expansion moves lead to a decrease or increase of the model matrix dimension. The probability of rejection for Metropolis becomes <span class="math display">\[\begin{align*}
-    R = J\frac{p(\boldsymbol{\theta}_t^{\star})}{p(\boldsymbol{\theta}_{t-1})}\frac{q(\boldsymbol{\theta}_{t-1} \mid \boldsymbol{\theta}_t^{\star} )}{q(\boldsymbol{\theta}_t^{\star} \mid \boldsymbol{\theta}_{t-1})}
+R = J\frac{p(\boldsymbol{\theta}_t^{\star})}{p(\boldsymbol{\theta}_{t-1})}\frac{q(\boldsymbol{\theta}_{t-1} \mid \boldsymbol{\theta}_t^{\star} )}{q(\boldsymbol{\theta}_t^{\star} \mid \boldsymbol{\theta}_{t-1})}
 \end{align*}\]</span> where for most moves <span class="math inline">\(J=1\)</span> in this case, except in four cases where the dimension <span class="math inline">\(|M| \in\{1, 2, k_{\max}-1, k_{\max}\}\)</span> and</p>
 <ul>
 <li><span class="math inline">\(J=2/3\)</span> if <span class="math inline">\(|M|=1\)</span> and we try to add a covariate</li>
@@ -601,11 +602,11 @@ Gelman, Andrew, John B. Carlin, Hal S. Stern, David B. Dunson, Aki Vehtari, and 
 <div id="ref-George.McCulloch:1993" class="csl-entry" role="listitem">
 George, Edward I., and Robert E. McCulloch. 1993. <span>“Variable Selection via <span>G</span>ibbs Sampling.”</span> <em>Journal of the American Statistical Association</em> 88 (423): 881–89. <a href="https://doi.org/10.1080/01621459.1993.10476353">https://doi.org/10.1080/01621459.1993.10476353</a>.
 </div>
-<div id="ref-Green:2001" class="csl-entry" role="listitem">
-Green, Peter J. 2001. <span>“A Primer on <span>M</span>arkov Chain <span>M</span>onte <span>C</span>arlo.”</span> <em>Monographs on Statistics and Applied Probability</em> 87: 1–62.
-</div>
 <div id="ref-Green:1995" class="csl-entry" role="listitem">
-Green, Peter J. 1995. <span>“<span class="nocase">Reversible jump <span>M</span>arkov chain <span>M</span>onte <span>C</span>arlo computation and <span>B</span>ayesian model determination</span>.”</span> <em>Biometrika</em> 82 (4): 711–32. <a href="https://doi.org/10.1093/biomet/82.4.711">https://doi.org/10.1093/biomet/82.4.711</a>.
+Green, Peter J. 1995. <span>“Reversible Jump <span>M</span>arkov Chain <span>M</span>onte <span>C</span>arlo Computation and <span>B</span>ayesian Model Determination.”</span> <em>Biometrika</em> 82 (4): 711–32. <a href="https://doi.org/10.1093/biomet/82.4.711">https://doi.org/10.1093/biomet/82.4.711</a>.
+</div>
+<div id="ref-Green:2001" class="csl-entry" role="listitem">
+———. 2001. <span>“A Primer on <span>M</span>arkov Chain <span>M</span>onte <span>C</span>arlo.”</span> <em>Monographs on Statistics and Applied Probability</em> 87: 1–62.
 </div>
 <div id="ref-Holmes:2002" class="csl-entry" role="listitem">
 Holmes, C. C., D. G. T. Denison, and B. K. Mallick. 2002. <span>“Accounting for Model Uncertainty in Seemingly Unrelated Regressions.”</span> <em>Journal of Computational and Graphical Statistics</em> 11 (3): 533–51. <a href="http://www.jstor.org/stable/1391112">http://www.jstor.org/stable/1391112</a>.
@@ -1056,8 +1057,8 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="./laplace.html" class="pagination-link" aria-label="Deterministic approximations">
-        <span class="nav-page-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Deterministic approximations</span></span> <i class="bi bi-arrow-right-short"></i>
+      <a href="./laplace.html" class="pagination-link" aria-label="Gaussian approximations">
+        <span class="nav-page-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Gaussian approximations</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>
