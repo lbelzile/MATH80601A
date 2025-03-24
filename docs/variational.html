@@ -1,0 +1,873 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.7.3">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>10&nbsp; Variational inference – Bayesian modelling</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+  margin-bottom: 0em;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./references.html" rel="next">
+<link href="./laplace.html" rel="prev">
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-81b5c3e63835cfde897ecd3d35a35a41.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-ad5ef081d17d57ab2b6cc5e45efb5d90.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+<link rel="stylesheet" href="style.css">
+</head>
+
+<body class="nav-sidebar floating">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./variational.html"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Variational inference</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">Bayesian modelling</a> 
+        <div class="sidebar-tools-main">
+    <a href="https://github.com/lbelzile/MATH80601A" title="Source Code" class="quarto-navigation-tool px-1" aria-label="Source Code"><i class="bi bi-github"></i></a>
+    <a href="./MATH80601A-bayesmod.pdf" title="Download PDF" class="quarto-navigation-tool px-1" aria-label="Download PDF"><i class="bi bi-file-pdf"></i></a>
+</div>
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Welcome</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./introduction.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Introduction</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./bayesics.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Bayesics</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./priors.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Priors</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./montecarlo.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Monte Carlo methods</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./mcmc.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Metropolis–Hastings algorithm</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./gibbs.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Gibbs sampling</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./workflow.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Computational strategies and diagnostics</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./regression.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Regression models</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./laplace.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Deterministic approximations</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./variational.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Variational inference</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./references.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">References</span></span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#model-misspecification" id="toc-model-misspecification" class="nav-link active" data-scroll-target="#model-misspecification"><span class="header-section-number">10.1</span> Model misspecification</a></li>
+  <li><a href="#optimization-of-the-evidence-lower-bound" id="toc-optimization-of-the-evidence-lower-bound" class="nav-link" data-scroll-target="#optimization-of-the-evidence-lower-bound"><span class="header-section-number">10.2</span> Optimization of the evidence lower bound</a>
+  <ul class="collapse">
+  <li><a href="#factorization" id="toc-factorization" class="nav-link" data-scroll-target="#factorization"><span class="header-section-number">10.2.1</span> Factorization</a></li>
+  <li><a href="#general-derivation" id="toc-general-derivation" class="nav-link" data-scroll-target="#general-derivation"><span class="header-section-number">10.2.2</span> General derivation</a></li>
+  </ul></li>
+  </ul>
+<div class="toc-actions"><ul><li><a href="https://github.com/lbelzile/MATH80601A/edit/main/variational.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li></ul></div></nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block"><h1 class="title display-7"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Variational inference</span></h1></header>
+
+<header id="title-block-header">
+
+
+</header>
+
+
+<p>The field of <strong>variational inference</strong>, which derives it’s name from calculus of variation, uses approximations to a parametric distribution <span class="math inline">\(p(\cdot)\)</span> by a member from a family of distributions whose density or mass function is <span class="math inline">\(g(\cdot; \boldsymbol{\psi})\)</span> with parameters <span class="math inline">\(\boldsymbol{\psi}.\)</span> The objective of inference is thus to find the parameters that minimize some metric that measure discrepancy between the true postulated posterior and the approximation: doing so leads to optimization problems. Variational inference is widespread in machine learning and in large problems where Markov chain Monte Carlo or other methods might not be feasible.</p>
+<p>This chapter is organized as follows: we first review notions of model misspecification and the Kullback–Leibler divergence. We then consider approximation schemes and some examples involving mixtures and model selection where analytical derivations are possible: these show how variational inference differs from Laplace approximation and she light on some practical aspects. Good references include Chapter 10 of <span class="citation" data-cites="Bishop:2006">Bishop (<a href="references.html#ref-Bishop:2006" role="doc-biblioref">2006</a>)</span>; most modern application use automatic differentiation variational inference (ADVI, <span class="citation" data-cites="Kucukelbir:2017">Kucukelbir et al. (<a href="references.html#ref-Kucukelbir:2017" role="doc-biblioref">2017</a>)</span>) or stochastic optimization via black-box variational inference.</p>
+<section id="model-misspecification" class="level2" data-number="10.1">
+<h2 data-number="10.1" class="anchored" data-anchor-id="model-misspecification"><span class="header-section-number">10.1</span> Model misspecification</h2>
+<p>Suppose data were generated from a model with true density <span class="math inline">\(f_t\)</span> and we consider a family of distributions <span class="math inline">\(g(\cdot; \boldsymbol{\psi})\)</span> not necessarily containing <span class="math inline">\(f_t\)</span> as special case. Intuitively, if we were to estimate the model by maximum likelihood, we expect that the model returned will be the one closest to <span class="math inline">\(f_t\)</span> among those considered in some sense.</p>
+<div id="def-kl-divergence" class="theorem definition">
+<p><span class="theorem-title"><strong>Definition 10.1 (Kullback–Leibler divergence)</strong></span> The Kullback–Leibler divergence between densities <span class="math inline">\(f_t(\cdot)\)</span> and <span class="math inline">\(g(\cdot; \boldsymbol{\psi}),\)</span> is <span class="math display">\[\begin{align*}
+\mathsf{KL}(f_t \parallel g) &amp;=\int \log \left(\frac{f_t(\boldsymbol{x})}{g(\boldsymbol{x}; \boldsymbol{\psi})}\right) f_t(\boldsymbol{x}) \mathrm{d} \boldsymbol{x}\\
+&amp;= \int \log f_t(\boldsymbol{x}) f_t(\boldsymbol{x}) \mathrm{d} \boldsymbol{x} - \int \log g(\boldsymbol{x};; \boldsymbol{\psi}) f_t(\boldsymbol{x}) \mathrm{d} \boldsymbol{x}
+\\ &amp;= \mathsf{E}_{f_t}\{\log f_t(\boldsymbol{X})\} - \mathsf{E}_{f_t}\{\log g(\boldsymbol{X}; \boldsymbol{\psi})\}
+\end{align*}\]</span> where the subscript of the expectation indicates which distribution we integrate over. The first term <span class="math inline">\(\mathsf{E}_{f_t}\{\log f_t(\boldsymbol{X})\}\)</span> is called the entropy of the distribution. The divergence is strictly positive unless <span class="math inline">\(g(\cdot; \boldsymbol{\psi}) \equiv f_t(\cdot).\)</span> Note that, by construction, it is not symmetric.</p>
+</div>
+<p>The Kullback–Leibler divergence notion is central to study of model misspecification: if we fit <span class="math inline">\(g(\cdot)\)</span> when data arise from <span class="math inline">\(f_t,\)</span> the maximum likelihood estimator of the parameters <span class="math inline">\(\widehat{\boldsymbol{\psi}}\)</span> will be the value of the parameter that minimizes the Kullback–Leibler divergence <span class="math inline">\(\mathsf{KL}(f_t \parallel g);\)</span> this value will be positive unless the model is correctly specified and <span class="math inline">\(g(\cdot; \widehat{\boldsymbol{\psi}}) = f_t(\cdot).\)</span> See <span class="citation" data-cites="Davison:2003">Davison (<a href="references.html#ref-Davison:2003" role="doc-biblioref">2003</a>)</span>, pp.122–125 for a discussion.</p>
+<div id="def-convex-function" class="theorem definition">
+<p><span class="theorem-title"><strong>Definition 10.2 (Convex function)</strong></span> A real-valued function <span class="math inline">\(h: \mathbb{R} \to \mathbb{R}\)</span> is convex if for any <span class="math inline">\(x_1,x_2 \in \mathbb{R}\)</span> if any linear combination of <span class="math inline">\(x_1\)</span> and <span class="math inline">\(x_2\)</span> satisfies <span class="math display">\[\begin{align*}
+h(tx_1 + (1-t)x_2) \leq t h(x_1) + (1-t) h(x_2), \qquad 0 \leq t \leq 1
+\end{align*}\]</span> The left panel of <a href="#fig-convex" class="quarto-xref">Figure&nbsp;<span>10.1</span></a> shows an illustration of the fact that the chord between any two points lies above the function. Examples include the exponential function, or a quadratic <span class="math inline">\(ax^2+bx + c\)</span> with <span class="math inline">\(a&gt;0.\)</span></p>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-convex" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-convex-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="variational_files/figure-html/fig-convex-1.png" class="img-fluid figure-img" width="768">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-convex-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;10.1: Left panel: the convex function <span class="math inline">\(h(x)=-\log(x),\)</span> with a straight line between any two points falls above the function. Right panel: a skewed density with the Laplace approximation (dashed orange) and variational Gaussian approximation (dotted blue).
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>Consider now the problem of approximating the marginal likelihood, sometimes called the evidence, <span class="math display">\[\begin{align*}
+p(\boldsymbol{y}) = \int_{\boldsymbol{\Theta}} p(\boldsymbol{y}, \boldsymbol{\theta}) \mathrm{d} \boldsymbol{\theta}.
+\end{align*}\]</span> where we only have the joint <span class="math inline">\(p(\boldsymbol{y}, \boldsymbol{\theta})\)</span> is the product of the likelihood times the prior. The marginal likelihood is typically intractable, or very expensive to compute, but it is necessary to calculate probability and various expectations with respect to the posterior unless we draw samples from it. Consider <span class="math inline">\(g(\boldsymbol{\theta};\boldsymbol{\psi})\)</span> with <span class="math inline">\(\boldsymbol{\psi} \in \mathbb{R}^J\)</span> an approximating density function whose integral is one over <span class="math inline">\(\boldsymbol{\Theta} \subseteq \mathbb{R}^p\)</span> and whose support includes that of <span class="math inline">\(p(\boldsymbol{y}, \boldsymbol{\theta})\)</span> over <span class="math inline">\(\boldsymbol{\Theta}:\)</span> we can then rewrite <span class="math display">\[\begin{align*}
+p(\boldsymbol{y}) = \int_{\boldsymbol{\Theta}}  \frac{p(\boldsymbol{y}, \boldsymbol{\theta})}{g(\boldsymbol{\theta};\boldsymbol{\psi})} g(\boldsymbol{\theta};\boldsymbol{\psi}) \mathrm{d} \boldsymbol{\theta}.
+\end{align*}\]</span></p>
+<p>With convex functions, <strong>Jensen’s inequality</strong> implies that <span class="math inline">\(h\{\mathsf{E}(X)\} \leq \mathsf{E}\{h(X)\},\)</span> and applying this with <span class="math inline">\(h(x)=-\log(x),\)</span> we get <span class="math display">\[\begin{align*}
+-\log p(\boldsymbol{y}) \leq - \log  \left(\frac{p(\boldsymbol{y}, \boldsymbol{\theta})}{g(\boldsymbol{\theta};\boldsymbol{\psi})}\right) g(\boldsymbol{\theta};\boldsymbol{\psi}) \mathrm{d} \boldsymbol{\theta}.
+\end{align*}\]</span> We can thus consider the model that minimizes the reverse Kullback–Leibler divergence <span class="math display">\[\begin{align*}
+g(\boldsymbol{\theta}; \widehat{\boldsymbol{\psi}}) = \mathrm{argmin}_{\boldsymbol{\psi}} \mathsf{KL}\{g(\boldsymbol{\theta};\boldsymbol{\psi}) \parallel p(\boldsymbol{\theta}, \boldsymbol{y})\}.
+\end{align*}\]</span> We can get a slightly different take if we consider the reformulation <span class="math display">\[\begin{align*}
+\mathsf{KL}\{g(\boldsymbol{\theta};\boldsymbol{\psi}) \parallel p(\boldsymbol{\theta}, \boldsymbol{y}) = \mathsf{E}_{g}\{\log g(\boldsymbol{\theta})\} - \mathsf{E}_g\{\log p(\boldsymbol{y}, \boldsymbol{\theta})\} + \log p(\boldsymbol{y}).
+\end{align*}\]</span> Instead of minimizing the Kullback–Leibler divergence, we can equivalently maximize the so-called <strong>evidence lower bound</strong> (ELBO) <span class="math display">\[\begin{align*}
+\mathsf{ELBO}(g) = \mathsf{E}_g\{\log p(\boldsymbol{y}, \boldsymbol{\theta})\} - \mathsf{E}_{g}\{\log g(\boldsymbol{\theta})\}
+\end{align*}\]</span> The ELBO as an objective function balances between two terms: the first term is the expected value of the joint posterior under the approximating density <span class="math inline">\(g,\)</span> which will be maximized by taking a distribution placing all mass at the maximum of <span class="math inline">\(p(\boldsymbol{y}, \boldsymbol{\theta}),\)</span> whereas the second term can be viewed as a penalty for the entropy of the approximating family, which rewards distributions which are diffuse. We thus try to maximize the evidence, subject to a regularization term.</p>
+<p>The ELBO is a lower bound for the marginal likelihood because the Kullback–Leibler divergence is non-negative and <span class="math display">\[\begin{align*}
+\log p(\boldsymbol{y}) = \mathsf{ELBO}(g) +  \mathsf{KL}\{g(\boldsymbol{\theta};\boldsymbol{\psi}) \parallel p(\boldsymbol{\theta}, \boldsymbol{y})\}.
+\end{align*}\]</span> If we could estimate the marginal likelihood of a (typically simpler) competing alternative and the lower bound on the evidence in favour of the more complex model was very much larger, then we could use this but generally there is no theoretical guarantee for model comparison if we compare two lower evidence lower bounds. The purpose of variational inference is that approximations to expectations, credible intervals, etc. are obtained from <span class="math inline">\(g(\cdot; \boldsymbol{\psi})\)</span> instead of <span class="math inline">\(p(\cdot).\)</span></p>
+<div id="rem-approximation-latent" class="proof remark">
+<p><span class="proof-title"><em>Remark 10.1</em> (Approximation of latent variables). </span>While we have focused on exposition with only parameters <span class="math inline">\(\boldsymbol{\theta},\)</span> this can be generalized by including latent variables <span class="math inline">\(\boldsymbol{U}\)</span> as in <a href="gibbs.html#sec-gibbs-da" class="quarto-xref"><span>Section 6.1</span></a> in addition to the model parameters <span class="math inline">\(\boldsymbol{\theta}\)</span> as part of the variational modelling.</p>
+</div>
+<div id="exm-varional-vs-laplace" class="theorem example">
+<p><span class="theorem-title"><strong>Example 10.1 (Variational inference vs Laplace approximation)</strong></span> The Laplace approximation differs from the Gaussian variational approximation; The right panel of <a href="#fig-convex" class="quarto-xref">Figure&nbsp;<span>10.1</span></a> shows a skew-Gaussian distribution with location zero, unit scale and a skewness parameter of <span class="math inline">\(\alpha=10;\)</span> it’s density is <span class="math inline">\(2\phi(x)\Phi(\alpha x).\)</span></p>
+<p>The Laplace approximation is easily obtained by numerical maximization; the mode is the mean of the resulting approximation, with a std. deviation that matches the square root of the reciprocal Hessian of the negative log density.</p>
+<p>Consider an approximation with <span class="math inline">\(g\)</span> the density of <span class="math inline">\(\mathsf{Gauss}(m, s^2);\)</span> we obtain the parameters by minimizing the ELBO. The entropy term for a Gaussian approximating density is <span class="math display">\[\begin{align*}
+-\mathsf{E}_g(\log g) = \frac{1}{2}\log(2\pi \sigma^2) + \frac{1}{2s^2}\mathsf{E}_g\left\{(X-m)^2 \right\} = \frac{1}{2} \left\{1+\log(2\pi s^2)\right\}
+\end{align*}\]</span> given <span class="math inline">\(\mathsf{E}_g\{(x-m)^2\}=s^2\)</span> by definition of the variance. Ignoring constants terms that do not depend on the parameters of <span class="math inline">\(g,\)</span> optimization of the ELBO amounts to maximization of <span class="math display">\[\begin{align*}
+&amp;\mathrm{argmax}_{m, s^2} \left[-\frac{1}{2} \mathsf{E}_g \left\{ \frac{(X-\mu)^2}{\sigma^2}\right\} + \mathsf{E}_g\left\{\log \Phi(\alpha X)\right\} + \log(s^2) \right] \\
+&amp;\quad =\mathrm{argmax}_{m, s^2} \left[ -\frac{1}{2} \mathsf{E}_g \left\{ \frac{(X-\mu)^2}{\sigma^2}\right\} + \mathsf{E}_g\left\{\log \Phi(\alpha X)\right\} + \log(s^2) \right]
+\\&amp;\quad =\mathrm{argmax}_{m, s^2} \left[ -\frac{s^2 + m^2 -2\mu m}{2\sigma^2} + \log(s^2) + \mathsf{E}_{Z}\left\{\log \Phi(\alpha sX+m)\right\} \right]
+\end{align*}\]</span> where <span class="math inline">\(Z \sim \mathsf{Gauss}(0,1).\)</span> We can approximate the last term by Monte Carlo with a single sample (recycled at every iteration) and use this to find the optimal parameters. The right panel of <a href="#fig-convex" class="quarto-xref">Figure&nbsp;<span>10.1</span></a> shows that the resulting approximation aligns with the bulk. It of course fails to capture the asymmetry, since the approximating function is symmetric.</p>
+</div>
+</section>
+<section id="optimization-of-the-evidence-lower-bound" class="level2" data-number="10.2">
+<h2 data-number="10.2" class="anchored" data-anchor-id="optimization-of-the-evidence-lower-bound"><span class="header-section-number">10.2</span> Optimization of the evidence lower bound</h2>
+<p>Variational inference in itself does not determine the choice of approximating density <span class="math inline">\(g(\cdot; \boldsymbol{\psi});\)</span> the quality of the approximation depends strongly on the latter. The user has ample choice to decide whether to use the fully correlated, factorized, or the mean-field approximation, along with the parametric family for each block. Note that the latter must be support dependent, as the Kullback–Leibler divergence will be infinite if the support of <span class="math inline">\(g\)</span> does not include that of <span class="math inline">\(p(\boldsymbol{\theta} \mid \boldsymbol{y}).\)</span></p>
+<p>There are two main approaches: the first is to start off with the model with a factorization of the density, and deduce the form of the most suitable parametric family for the approximation that will minimize the ELBO. This requires bespoke derivation of the form of the density and the conditionals for each model, and does not lead itself easily to generalizations. The second approach alternative is to rely on a generic family for the approximation, and an omnibus procedure for the optimization using a reformulation via stochastic optimization that approximates the integrals appearing in the ELBO formula.</p>
+<section id="factorization" class="level3" data-number="10.2.1">
+<h3 data-number="10.2.1" class="anchored" data-anchor-id="factorization"><span class="header-section-number">10.2.1</span> Factorization</h3>
+<p>Factorizations of <span class="math inline">\(g(;\boldsymbol{\psi})\)</span> into blocks with parameters <span class="math inline">\(\boldsymbol{\psi}_1, \ldots, \boldsymbol{\psi}_M,\)</span> where <span class="math display">\[\begin{align*}
+g(\boldsymbol{\theta}; \boldsymbol{\psi}) = \prod_{j=1}^M q_j(\boldsymbol{\theta}_j; \boldsymbol{\psi}_j)
+\end{align*}\]</span> If we assume that each of the <span class="math inline">\(J\)</span> parameters <span class="math inline">\(\theta_1, \ldots, \theta_J\)</span> are independent, then we obtain a <strong>mean-field</strong> approximation. The latter will be poor if parameters are strongly correlated, as we will demonstrate later.</p>
+<p>We use a factorization of <span class="math inline">\(g,\)</span> and denote the components <span class="math inline">\(g_j(\cdot)\)</span> for simplicity, omitting dependence on the parameters <span class="math inline">\(\boldsymbol{\psi}.\)</span> We can write the ELBO as <span class="math display">\[\begin{align*}
+\mathsf{ELBO}(g) &amp;= \int \log p(\boldsymbol{y}, \boldsymbol{\theta}) \prod_{j=1}^M g_j(\boldsymbol{\theta}_j)\mathrm{d} \boldsymbol{\theta} - \sum_{j=1}^M \int \log \{ g_j(\boldsymbol{\theta}_j) \} g_j(\boldsymbol{\theta}_j) \mathrm{d}  \boldsymbol{\theta}_j
+\\&amp; = \int \int \left\{\log p(\boldsymbol{y}, \boldsymbol{\theta}) \prod_{\substack{i \neq j \\j=1}}^M g_j(\boldsymbol{\theta}_j)\mathrm{d} \boldsymbol{\theta}_{-i}\right\} \mathrm{d} \boldsymbol{\theta}_{-i} g_i(\boldsymbol{\theta}_i) \mathrm{d} \boldsymbol{\theta}_i - \sum_{j=1}^M \int \log \{ g_j(\boldsymbol{\theta}_j) \} g_j(\boldsymbol{\theta}_j) \mathrm{d}  \boldsymbol{\theta}_j
+\\&amp; \stackrel{\boldsymbol{\theta}_i}{\propto} \int \mathsf{E}_{-i}\left\{\log p(\boldsymbol{y}, \boldsymbol{\theta})\right\} g_i(\boldsymbol{\theta}_i) \mathrm{d} \boldsymbol{\theta}_i - \int \log \{ g_i(\boldsymbol{\theta}_i) \} g_i(\boldsymbol{\theta}_i) \mathrm{d} \boldsymbol{\theta}_i
+\end{align*}\]</span> where the last line is a negative Kullback–Leibler divergence between <span class="math inline">\(q_j\)</span> and <span class="math display">\[\begin{align*}
+\mathsf{E}_{-i}\left\{\log p(\boldsymbol{y}, \boldsymbol{\theta})\right\} = \int \log p(\boldsymbol{y}, \boldsymbol{\theta}) \prod_{\substack{i \neq j \\j=1}}^M g_j(\boldsymbol{\theta}_j)\mathrm{d} \boldsymbol{\theta}_{-i}
+\end{align*}\]</span> and the subscript <span class="math inline">\(-i\)</span> indicates that we consider all but the <span class="math inline">\(i\)</span>th component of the <span class="math inline">\(J\)</span> vector. This reveals that the form of approximating density <span class="math inline">\(g_i\)</span> that maximizes the ELBO is of the form <span class="math display">\[\begin{align*}
+g^{\star}_j(\boldsymbol{\theta}_j) \propto \exp \left[ \mathsf{E}_{-i}\left\{\log p(\boldsymbol{y}, \boldsymbol{\theta})\right\}\right].
+\end{align*}\]</span> Often, we can look at the kernel of <span class="math inline">\(g^{\star}_j\)</span> and deduce the normalizing constant, which is defined as the integral of the above. The posterior approximation will have a closed form expression if we consider cases of conditionally conjugate distributions in the exponential family: we can see that the optimal <span class="math inline">\(g^{\star}_j\)</span> relates to the conditional since <span class="math inline">\(p(\boldsymbol{\theta}, \boldsymbol{y}) \stackrel{\boldsymbol{\theta}_i}{\propto} p(\boldsymbol{\theta}_i \mid \boldsymbol{\theta}_{-i}, \boldsymbol{y}).\)</span> This provides a connection to Gibbs sampling.</p>
+<p>If we consider maximization of the ELBO for <span class="math inline">\(g_i,\)</span> we can see from the law of iterated expectation that the latter is proportional to <span class="math display">\[\begin{align*}
+\mathsf{ELBO}(g_i) \propto \mathsf{E}_i \left[ \mathsf{E}_{-i} \{\log p(\boldsymbol{\theta}, \boldsymbol{y}) \}\right] - \mathsf{E}_i\{\log g_i(\boldsymbol{\theta}_i)\}
+\end{align*}\]</span> Due to the nature of this conditional expectation, we can devide an algorithm to maximize the ELBO of the factorized approximation. Each parameter update depends on the other components, but the <span class="math inline">\(\mathsf{ELBO}(q_i)\)</span> is concave. We can maximize <span class="math inline">\(g^{\star}_j\)</span> in turn for each <span class="math inline">\(j=1, \ldots, M\)</span> treating the other parameters as fixed, and iterate this scheme. The resulting approximation, termed coordinate ascent variational inference (CAVI), is guaranteed to monotonically increase the evidence lower bound until convergence to a local maximum; see Sections 3.1.5 and 3.2.4–3.2.5 of <span class="citation" data-cites="Boyd.Vandenberghe:2004">Boyd and Vandenberghe (<a href="references.html#ref-Boyd.Vandenberghe:2004" role="doc-biblioref">2004</a>)</span>. The scheme is a valid coordinate ascent algorithm. At each cycle, we compute the ELBO and stop the algorithm when the change is lower then some present numerical tolerance. Since the approximation may have multiple local optima, we can perform random initializations and keep the one with highest performance.</p>
+<div class="{exm-gaussian-variational-approx}">
+<p>We consider the example from Section 2.2.2 of <span class="citation" data-cites="Ormerod.Wand:2010">Ormerod and Wand (<a href="references.html#ref-Ormerod.Wand:2010" role="doc-biblioref">2010</a>)</span> (see also Example 10.1.3 from <span class="citation" data-cites="Bishop:2006">Bishop (<a href="references.html#ref-Bishop:2006" role="doc-biblioref">2006</a>)</span>) for approximation of a Gaussian distribution with conjugate prior parametrized in terms of precision, with <span class="math display">\[\begin{align*}
+Y_i &amp;\sim \mathsf{Gauss}(\mu, \tau^{-1}), \qquad i =1, \ldots, n;\\
+\mu &amp;\sim \mathsf{Gauss}(\mu_0, \tau_0^{-1}) \\
+\tau &amp;\sim \mathsf{gamma}(a_0, b_0).
+\end{align*}\]</span> This is an example where the full posterior is available in closed-form, so we can compare our approximation with the truth. We assume a factorization of the variational approximation <span class="math inline">\(g_\mu(\mu)g_\tau(\tau);\)</span> the factor for <span class="math inline">\(q_\mu\)</span> is proportional to <span class="math display">\[\begin{align*}
+\log g^{\star}_\mu(\mu) \propto -\frac{\mathsf{E}_{\tau}(\tau)}{2} \sum_{i=1}^n (y_i-\mu)^2-\frac{\tau_0}{2}(\mu-\mu_0)^2
+\end{align*}\]</span> which is quadratic in <span class="math inline">\(\mu\)</span> and thus must be Gaussian with precision <span class="math inline">\(\tau_n = \tau_0 + n\tau\)</span> and mean <span class="math inline">\(\tau_n^{-1}\{\tau_0\mu_0 + \mathsf{E}_{\tau}(\tau)n\overline{y})\)</span> using <a href="regression.html#prp-quadratic-forms" class="quarto-xref">Proposition&nbsp;<span>8.1</span></a>, where <span class="math inline">\(n\overline{y} = \sum_{i=1}^n y_i.\)</span> We could also note that this corresponds (up to expectation) to <span class="math inline">\(p(\mu \mid \tau, \boldsymbol{y}).\)</span> As the sample size increase, the approximation converges to a Dirac delta (point mass at the sample mean. The optimal precision factor satisfies <span class="math display">\[\begin{align*}
+\ln g^{\star}_{\tau}(\tau) \propto (a_0-1 +n/2) \log \tau - \tau \left[b_0  + \frac{1}{2} \mathsf{E}_{\mu}\left\{\sum_{i=1}^n (y_i-\mu)^2\right\}\right].
+\end{align*}\]</span> This is the form as <span class="math inline">\(p(\tau \mid \mu, \boldsymbol{y}),\)</span> namely a gamma with shape <span class="math inline">\(a_n =a_0 +n/2\)</span> and rate <span class="math inline">\(b_n\)</span> given by the term in the square brackets. It is helpful to rewrite the expected value as <span class="math display">\[\begin{align*}
+\mathsf{E}_{\mu}\left\{\sum_{i=1}^n (y_i-\mu)^2\right\} = \sum_{i=1}^n \{y_i - \mathsf{E}_{\mu}(\mu)\}^2 + n \mathsf{Var}_{\mu}(\mu),
+\end{align*}\]</span> so that it depends on the parameters of the distribution of <span class="math inline">\(\mu\)</span> directly. We can then apply the coordinate ascent algorithm. Derivation of the ELBO, even in this toy setting, is tedious: <span class="math display">\[\begin{align*}
+\mathsf{ELBO}(g) &amp; = a_0\log(b_0)-\log \Gamma(a_0) - \frac{n+1}{2} \log(2\pi) + \frac{\log(\tau_0)}{2} \\&amp;\quad+ (a_n-1)\mathsf{E}_{\tau}(\log \tau) -
+\frac{ \mathsf{E}_{\tau}(\tau)\left[b_0 +\mathsf{E}_{\mu}\left\{\sum_{i=1}^n (y_i - \mu)^2\right\}\right]}{2} - \frac{\tau_0}{2} \mathsf{E}_{\mu}\{(\mu - \mu_0)^2\}\\&amp; \quad + \frac{1+\log(2\pi)-\log\tau_n}{2} -a_n\log b_n - \log \Gamma(a_n) - (a_n-1)\mathsf{E}_{\tau}(\log \tau) -b_n \mathsf{E}_{\tau}(\tau)
+\end{align*}\]</span> The expected value of <span class="math inline">\(\mathsf{E}_{\tau}(\tau) = a_n/b_n\)</span> and the mean and variance of the Gaussian are given by it’s parameters. The terms involving <span class="math inline">\(\mathsf{E}_{\tau}(\log \tau)\)</span> cancel out; the first line involves only normalizing constants for the hyperparameters, and <span class="math inline">\(a_n\)</span> is constant. We can keep track only of <span class="math display">\[\begin{align*}
+- \frac{\tau_0}{2} \mathsf{E}_{\mu}\{(\mu - \mu_0)^2\} - \frac{\log\tau_n}{2}-a_n\log b_n
+\end{align*}\]</span> for convergence, although other normalizing constants would be necessary if we wanted to approximate the marginal likelihood.</p>
+</div>
+</section>
+<section id="general-derivation" class="level3" data-number="10.2.2">
+<h3 data-number="10.2.2" class="anchored" data-anchor-id="general-derivation"><span class="header-section-number">10.2.2</span> General derivation</h3>
+<p>We consider alternative numeric schemes which rely on stochastic optimization. The key idea behind these methods is that we can use gradient-based algorithms, and approximate the expectations with respect to <span class="math inline">\(g\)</span> by drawing samples from the approximating densities. This gives rises to a general omnibus procedure for optimization, although some schemes capitalize on the structure of the approximating family. <span class="citation" data-cites="Hoffman:2013">Hoffman et al. (<a href="references.html#ref-Hoffman:2013" role="doc-biblioref">2013</a>)</span> consider stochastic gradient for exponential families mean-field approximations, using natural gradients to device an algorithm. While efficient within this context, it is not a generic algorithm.</p>
+<p><span class="citation" data-cites="Ranganath:2014">Ranganath, Gerrish, and Blei (<a href="references.html#ref-Ranganath:2014" role="doc-biblioref">2014</a>)</span> extend this to more general distributions by noting that the gradient of the ELBO, interchanging the derivative and the integral using the dominated convergence theorem, is <span class="math display">\[\begin{align*}
+\frac{\partial}{\partial \boldsymbol{\psi}} \mathsf{ELBO}(g) &amp;= \int g(\boldsymbol{\theta}; \boldsymbol{\psi}) \frac{\partial}{\partial \boldsymbol{\psi}} \log \left( \frac{p(\boldsymbol{\theta}, \boldsymbol{y})}{g(\boldsymbol{\theta}; \boldsymbol{\psi})}\right) \mathrm{d} \boldsymbol{\theta} + \int  \frac{\partial g(\boldsymbol{\theta}; \boldsymbol{\psi})}{\partial \boldsymbol{\psi}} \times \log \left( \frac{p(\boldsymbol{\theta}, \boldsymbol{y})}{g(\boldsymbol{\theta}; \boldsymbol{\psi})}\right) \mathrm{d} \boldsymbol{\theta}
+\\&amp; = \int  \frac{\partial \log g(\boldsymbol{\theta}; \boldsymbol{\psi})}{\partial \boldsymbol{\psi}} \times \log \left( \frac{p(\boldsymbol{\theta}, \boldsymbol{y})}{g(\boldsymbol{\theta}; \boldsymbol{\psi})}\right) g(\boldsymbol{\theta}; \boldsymbol{\psi})\mathrm{d} \boldsymbol{\theta}
+\end{align*}\]</span> where <span class="math inline">\(p(\boldsymbol{\theta}, \boldsymbol{y})\)</span> does not depend on <span class="math inline">\(\boldsymbol{\psi}\)</span>, and <span class="math display">\[\begin{align*}
+\int \frac{\partial \log g(\boldsymbol{\theta}; \boldsymbol{\psi})}{\partial \boldsymbol{\psi}} g(\boldsymbol{\theta}; \boldsymbol{\psi}) \mathrm{d} \boldsymbol{\theta} &amp; = \int \frac{\partial g(\boldsymbol{\theta}; \boldsymbol{\psi})}{\partial \boldsymbol{\psi}} \mathrm{d} \boldsymbol{\theta}  \\
+\frac{\partial}{\partial \boldsymbol{\psi}}\int g(\boldsymbol{\theta}; \boldsymbol{\psi})  \mathrm{d} \boldsymbol{\theta} = 0.
+\end{align*}\]</span> This term vanishes since the integral of a density is one regardless of the value of <span class="math inline">\(\boldsymbol{\psi}\)</span>, so it’s derivative vanishes. We are left with the expected value <span class="math display">\[\begin{align*}
+\mathsf{E}_{g}\left\{\frac{\partial \log g(\boldsymbol{\theta}; \boldsymbol{\psi})}{\partial \boldsymbol{\psi}} \times \log \left( \frac{p(\boldsymbol{\theta}, \boldsymbol{y})}{g(\boldsymbol{\theta}; \boldsymbol{\psi})}\right)\right\}
+\end{align*}\]</span> which we can approximate via Monte Carlo by drawing samples from <span class="math inline">\(g\)</span>, which gives a stochastic gradient algorithm. <span class="citation" data-cites="Ranganath:2014">Ranganath, Gerrish, and Blei (<a href="references.html#ref-Ranganath:2014" role="doc-biblioref">2014</a>)</span> provide two methods to reduce the variance of this expression using control variates and Rao–Blackwellization, as excessive variance hinders the convergence and requires larger Monte Carlo sample sizes to be reliable. In the context of large samples of independent observations, we can also resort to mini-batching, by randomly selecting a subset of observations.</p>
+<p>Some families of distributions, notably location-scale (cf. <a href="introduction.html#def-location-scale" class="quarto-xref">Definition&nbsp;<span>1.12</span></a>) and exponential families (<a href="introduction.html#def-exponential-family" class="quarto-xref">Definition&nbsp;<span>1.13</span></a>) are particularly convenient, because we can get expressions for the ELBO that are simpler. For exponential families approximating distributions, we have sufficient statistics <span class="math inline">\(S_k \equiv t_k(\boldsymbol{\theta})\)</span> and the gradient of <span class="math inline">\(\log g\)</span> becomes <span class="math inline">\(S_k\)</span> under mean-field.</p>
+<p><span class="citation" data-cites="Kucukelbir:2017">Kucukelbir et al. (<a href="references.html#ref-Kucukelbir:2017" role="doc-biblioref">2017</a>)</span> proposes a stochastic gradient algorithm, but with two main innovations. The first is the general use of Gaussian approximating densities for factorized density, with parameter transformations to map from the support of <span class="math inline">\(T: \boldsymbol{\Theta} \mapsto \mathbb{R}^p\)</span> via <span class="math inline">\(T(\boldsymbol{\theta})=\boldsymbol{\zeta}.\)</span> We then consider an approximation <span class="math inline">\(g(\boldsymbol{\zeta}; \boldsymbol{\psi})\)</span> where <span class="math inline">\(\boldsymbol{\psi}\)</span> consists of mean parameters <span class="math inline">\(\boldsymbol{\mu}\)</span> and covariance <span class="math inline">\(\boldsymbol{\Sigma}\)</span>, parametrized in terms of independent components via <span class="math inline">\(\boldsymbol{\Sigma}=\mathsf{diag}\{\exp(\boldsymbol{\omega})\}\)</span> or through a Cholesky decomposition of the covariance <span class="math inline">\(\boldsymbol{\Sigma} = \mathbf{LL}^\top\)</span>, where <span class="math inline">\(\mathbf{L}\)</span> is a lower triangular matrix. The full approximation is of course more flexible when the transformed parameters <span class="math inline">\(\boldsymbol{\zeta}\)</span> are correlated, but is more expensive to compute than the mean-field approximation. The change of variable introduces a Jacobian term for the approximation to the density <span class="math inline">\(p(\boldsymbol{\theta}, \boldsymbol{y}).\)</span> Another benefit is that the entropy of the multivariate Gaussian for <span class="math inline">\(g\)</span> the density of <span class="math inline">\(\mathsf{Gauss}_p(\boldsymbol{\mu}, \boldsymbol{\Sigma})\)</span> is <span class="math display">\[\begin{align*}
+- \mathsf{E}_g(\log g) &amp;= \frac{D\log(2\pi) + \log|\boldsymbol{\Sigma}|}{2} - \frac{1}{2}\mathsf{E}_g\left\{ (\boldsymbol{X}-\boldsymbol{\mu})^\top\boldsymbol{\Sigma}^{-1}(\boldsymbol{X}-\boldsymbol{\mu})\right\} \\&amp; = \frac{D\log(2\pi) + \log|\boldsymbol{\Sigma}|}{2} - \frac{1}{2}\mathsf{E}_g\left[ \mathsf{tr}\left\{(\boldsymbol{X}-\boldsymbol{\mu})^\top\boldsymbol{\Sigma}^{-1}(\boldsymbol{X}-\boldsymbol{\mu})\right\}\right]
+\\&amp; =  \frac{D\log(2\pi) + \log|\boldsymbol{\Sigma}|}{2} - \frac{1}{2}\mathsf{tr}\left[\boldsymbol{\Sigma}^{-1}\mathsf{E}_g\left\{(\boldsymbol{X}-\boldsymbol{\mu})(\boldsymbol{X}-\boldsymbol{\mu})^\top\right\}\right]
+\\&amp; =\frac{D+D\log(2\pi) + \log |\boldsymbol{\Sigma}|}{2}.
+\end{align*}\]</span> This follows from taking the trace of a <span class="math inline">\(1\times 1\)</span> matrix, and applying a cyclic permutation to which the trace is invariant. Since the trace is a linear operator, we can interchange the trace with the expected value. Finally, we have <span class="math inline">\(\mathsf{E}_g\left\{(\boldsymbol{X}-\boldsymbol{\mu})(\boldsymbol{X}-\boldsymbol{\mu})^\top\right\}=\boldsymbol{\Sigma}\)</span>, and the trace of a <span class="math inline">\(D \times D\)</span> identity matrix is simply <span class="math inline">\(D\)</span>. The Gaussian entropy depends only on the covariance, so is not random. The transformation to <span class="math inline">\(\mathbb{R}^p\)</span> is not unique and different choices may yield to differences, but the choice of optimal transformation requires knowledge of the true posterior, which is thus intractable.</p>
+<p>We focus on the case of full transformation; the derivation for independent components is analogous. Since the Gaussian is a location-scale family, we can rewrite the model in terms of a standardized Gaussian variable <span class="math inline">\(\boldsymbol{Z}\sim \mathsf{Gauss}_p(\boldsymbol{0}_p, \mathbf{I}_p)\)</span> where <span class="math inline">\(\boldsymbol{\zeta} = \boldsymbol{\mu} + \mathbf{L}\boldsymbol{Z}\)</span> The ELBO with the transformation is of the form <span class="math display">\[\begin{align*}
+\mathsf{E}_{\boldsymbol{Z}}\left\{ \log p(\boldsymbol{y}, T^{-1}(\boldsymbol{\mu} + \mathbf{L}\boldsymbol{Z}) + \log \left|\mathbf{J}_{T^{-1}}(\boldsymbol{\mu} + \mathbf{L}\boldsymbol{\eta})\right|\right\} +\frac{D+D\log(2\pi) + \log |\mathbf{LL}^\top|}{2}.
+\end{align*}\]</span> where we have the absolute value of the determinant of the Jacobian of the transformation. If we apply the chain rule <span class="math display">\[\begin{align*}
+\frac{\partial}{\partial \boldsymbol{\psi}}\log p(\boldsymbol{y}, T^{-1}(\boldsymbol{\mu} + \mathbf{L}\boldsymbol{Z}) = \frac{\partial \log p(\boldsymbol{y}, \boldsymbol{\theta})}{\partial \boldsymbol{\theta}} \frac{\partial T^{-1}(\boldsymbol{\zeta})}{\partial \boldsymbol{\zeta}} \frac{\partial \boldsymbol{\mu} + \mathbf{L}\boldsymbol{Z}}{\partial \boldsymbol{\psi}}
+\end{align*}\]</span> and the derivative with respect to and we retrieve the gradients of the ELBO with respect to the mean and variance, which are <span class="math display">\[\begin{align*}
+\frac{\partial \mathsf{ELBO}(g)}{\partial \boldsymbol{\mu}} &amp;= \mathsf{E}_{\boldsymbol{Z}}\left\{\frac{\partial \log p(\boldsymbol{y}, \boldsymbol{\theta})}{\partial \boldsymbol{\theta}} \frac{\partial T^{-1}(\boldsymbol{\zeta})}{\partial \boldsymbol{\zeta}}  + \frac{\partial \log \left|\mathbf{J}_{T^{-1}}(\boldsymbol{\zeta})\right|}{\partial \boldsymbol{\zeta}}\right\} \\
+\frac{\partial \mathsf{ELBO}(g)}{\partial \mathbf{L}} &amp;= \mathsf{E}_{\boldsymbol{Z}}\left[\left\{\frac{\partial \log p(\boldsymbol{y}, \boldsymbol{\theta})}{\partial \boldsymbol{\theta}} \frac{\partial T^{-1}(\boldsymbol{\zeta})}{\partial \boldsymbol{\zeta}}  + \frac{\partial \log \left|\mathbf{J}_{T^{-1}}(\boldsymbol{\zeta})\right|}{\partial \boldsymbol{\zeta}}\right\}\boldsymbol{Z}^\top\right] + \mathbf{L}^{-\top}.
+\end{align*}\]</span> Compared to the black-box variational inference algorithm, this requires calculating the gradient of the log posterior with respect to <span class="math inline">\(\boldsymbol{\theta}.\)</span> This step can be done using automatic differentiation (hence the terminology ADVI), and moreover this gradient estimator is several orders less noisy than the black-box counterpart. The ELBO can be approximated via Monte Carlo integration.</p>
+<p>We can thus build a stochastic gradient algorithm with a Robins–Munroe sequence of updates. <span class="citation" data-cites="Kucukelbir:2017">Kucukelbir et al. (<a href="references.html#ref-Kucukelbir:2017" role="doc-biblioref">2017</a>)</span> use an adaptive step-size for convergence. The ADVI algorithm is implemented in <span class="citation" data-cites="Stan:2017">Carpenter et al. (<a href="references.html#ref-Stan:2017" role="doc-biblioref">2017</a>)</span>; see <a href="https://mc-stan.org/docs/reference-manual/variational.html">the manual</a> for more details.</p>
+
+
+<div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list" style="display: none">
+<div id="ref-Bishop:2006" class="csl-entry" role="listitem">
+Bishop, Christopher M. 2006. <em>Pattern Recognition and Machine Learning</em>. New York, NY: Springer. <a href="https://www.microsoft.com/en-us/research/publication/pattern-recognition-machine-learning/">https://www.microsoft.com/en-us/research/publication/pattern-recognition-machine-learning/</a>.
+</div>
+<div id="ref-Boyd.Vandenberghe:2004" class="csl-entry" role="listitem">
+Boyd, Stephen, and Lieven Vandenberghe. 2004. <em>Convex Optimization</em>. Cambridge, UK: Cambridge University Press. <a href="https://doi.org/10.1017/CBO9780511804441">https://doi.org/10.1017/CBO9780511804441</a>.
+</div>
+<div id="ref-Stan:2017" class="csl-entry" role="listitem">
+Carpenter, Bob, Andrew Gelman, Matthew D. Hoffman, Daniel Lee, Ben Goodrich, Michael Betancourt, Marcus Brubaker, Jiqiang Guo, Peter Li, and Allen Riddell. 2017. <span>“<span>Stan</span>: A Probabilistic Programming Language.”</span> <em>Journal of Statistical Software</em> 76 (1): 1–32. <a href="https://doi.org/10.18637/jss.v076.i01">https://doi.org/10.18637/jss.v076.i01</a>.
+</div>
+<div id="ref-Davison:2003" class="csl-entry" role="listitem">
+Davison, A. C. 2003. <em>Statistical Models</em>. Cambridge, UK: Cambridge University Press.
+</div>
+<div id="ref-Hoffman:2013" class="csl-entry" role="listitem">
+Hoffman, Matthew D., David M. Blei, Chong Wang, and John Paisley. 2013. <span>“Stochastic Variational Inference.”</span> <em>Journal of Machine Learning Research</em> 14 (40): 1303–47. <a href="http://jmlr.org/papers/v14/hoffman13a.html">http://jmlr.org/papers/v14/hoffman13a.html</a>.
+</div>
+<div id="ref-Kucukelbir:2017" class="csl-entry" role="listitem">
+Kucukelbir, Alp, Dustin Tran, Rajesh Ranganath, Andrew Gelman, and David M. Blei. 2017. <span>“Automatic Differentiation Variational Inference.”</span> <em>Journal of Machine Learning Research</em> 18 (14): 1–45. <a href="http://jmlr.org/papers/v18/16-107.html">http://jmlr.org/papers/v18/16-107.html</a>.
+</div>
+<div id="ref-Ormerod.Wand:2010" class="csl-entry" role="listitem">
+Ormerod, J. T., and M. P. Wand. 2010. <span>“Explaining Variational Approximations.”</span> <em>The American Statistician</em> 64 (2): 140–53. <a href="https://doi.org/10.1198/tast.2010.09058">https://doi.org/10.1198/tast.2010.09058</a>.
+</div>
+<div id="ref-Ranganath:2014" class="csl-entry" role="listitem">
+Ranganath, Rajesh, Sean Gerrish, and David Blei. 2014. <span>“<span>Black Box Variational Inference</span>.”</span> In <em>Proceedings of the Seventeenth International Conference on Artificial Intelligence and Statistics</em>, edited by Samuel Kaski and Jukka Corander, 33:814–22. Proceedings of Machine Learning Research. Reykjavik, Iceland: PMLR. <a href="https://proceedings.mlr.press/v33/ranganath14.html">https://proceedings.mlr.press/v33/ranganath14.html</a>.
+</div>
+</div>
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const onCopySuccess = function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
+  });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp("https:\/\/lbelzile\.github\.io\/MATH80601A\/");
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="./laplace.html" class="pagination-link" aria-label="Deterministic approximations">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Deterministic approximations</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./references.html" class="pagination-link" aria-label="References">
+        <span class="nav-page-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">References</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+      &nbsp;
+    </div>   
+    <div class="nav-footer-center">
+<p>Copyright 2024-2025, Léo Belzile</p>
+<div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/lbelzile/MATH80601A/edit/main/variational.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li></ul></div></div>
+    <div class="nav-footer-right">
+      &nbsp;
+    </div>
+  </div>
+</footer>
+
+
+
+
+</body></html>
