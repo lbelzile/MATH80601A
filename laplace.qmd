@@ -353,7 +353,7 @@ library(INLA)
 # Stochastic volatility model
 data(exchangerate, package = "hecbayes")
 # Compute response from raw spot exchange rates at noon
-y <- 100*diff(log(exchangerate$rate))
+y <- 100*diff(log(exchangerate$dexrate))
 # 'y' is now a series of percentage of log daily differences
 time <- seq_along(y)
 data <- data.frame(y = y, time = time)

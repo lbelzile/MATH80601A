@@ -266,6 +266,20 @@
 \DeclareMathAlphabet{\mathcrl}{U}{rsfs}{m}{n}
 \usepackage{utopia}
 \DeclareMathAlphabet{\mathcal}{OMS}{cmsy}{m}{n}
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{wrapfig}
+\usepackage{float}
+\usepackage{colortbl}
+\usepackage{pdflscape}
+\usepackage{tabu}
+\usepackage{threeparttable}
+\usepackage{threeparttablex}
+\usepackage[normalem]{ulem}
+\usepackage{makecell}
+\usepackage{xcolor}
 \makeatletter
 \@ifpackageloaded{tcolorbox}{}{\usepackage[skins,breakable]{tcolorbox}}
 \@ifpackageloaded{fontawesome5}{}{\usepackage{fontawesome5}}
@@ -321,17 +335,17 @@
 \newcommand*\listoflistings{\listof{codelisting}{List of Listings}}
 \usepackage{amsthm}
 \theoremstyle{definition}
-\newtheorem{exercise}{Exercise}[chapter]
-\theoremstyle{definition}
 \newtheorem{example}{Example}[chapter]
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}[chapter]
 \theoremstyle{definition}
-\newtheorem{definition}{Definition}[chapter]
+\newtheorem{exercise}{Exercise}[chapter]
 \theoremstyle{plain}
 \newtheorem{proposition}{Proposition}[chapter]
 \theoremstyle{plain}
-\newtheorem{theorem}{Theorem}[chapter]
-\theoremstyle{plain}
 \newtheorem{corollary}{Corollary}[chapter]
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}[chapter]
 \theoremstyle{remark}
 \AtBeginDocument{\renewcommand*{\proofname}{Proof}}
 \newtheorem*{remark}{Remark}
@@ -387,7 +401,7 @@ details.
 These notes are licensed under a
 \href{http://creativecommons.org/licenses/by-nc-sa/4.0/}{Creative
 Commons Attribution-NonCommercial-ShareAlike 4.0 International License}
-and were last compiled on Monday, March 24 2025.
+and were last compiled on mercredi, mars 26 2025.
 
 The objective of the course is to provide a hands on introduction to
 Bayesian data analysis. The course will cover the formulation,
@@ -403,7 +417,7 @@ used throughout the course. The overview begins with basic statistical
 concepts, random variables, their distribution and density, moments and
 likelihood derivations.
 
-\begin{tcolorbox}[enhanced jigsaw, opacitybacktitle=0.6, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Learning objectives}:}, colback=white, coltitle=black, colframe=quarto-callout-important-color-frame, arc=.35mm, colbacktitle=quarto-callout-important-color!10!white, opacityback=0, breakable, rightrule=.15mm, left=2mm, toptitle=1mm, titlerule=0mm, bottomrule=.15mm, toprule=.15mm, leftrule=.75mm, bottomtitle=1mm]
+\begin{tcolorbox}[enhanced jigsaw, toprule=.15mm, leftrule=.75mm, colback=white, opacitybacktitle=0.6, coltitle=black, colbacktitle=quarto-callout-important-color!10!white, colframe=quarto-callout-important-color-frame, rightrule=.15mm, bottomtitle=1mm, breakable, toptitle=1mm, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Learning objectives}:}, titlerule=0mm, left=2mm, bottomrule=.15mm, opacityback=0, arc=.35mm]
 
 At the end of the chapter, students should be able to
 
@@ -1699,7 +1713,7 @@ The likelihood can then be written as \begin{align*}
 
 \end{example}
 
-\begin{tcolorbox}[enhanced jigsaw, opacitybacktitle=0.6, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Summary}}, colback=white, coltitle=black, colframe=quarto-callout-important-color-frame, arc=.35mm, colbacktitle=quarto-callout-important-color!10!white, opacityback=0, breakable, rightrule=.15mm, left=2mm, toptitle=1mm, titlerule=0mm, bottomrule=.15mm, toprule=.15mm, leftrule=.75mm, bottomtitle=1mm]
+\begin{tcolorbox}[enhanced jigsaw, toprule=.15mm, leftrule=.75mm, colback=white, opacitybacktitle=0.6, coltitle=black, colbacktitle=quarto-callout-important-color!10!white, colframe=quarto-callout-important-color-frame, rightrule=.15mm, bottomtitle=1mm, breakable, toptitle=1mm, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Summary}}, titlerule=0mm, left=2mm, bottomrule=.15mm, opacityback=0, arc=.35mm]
 
 \begin{itemize}
 \tightlist
@@ -1779,7 +1793,7 @@ elicitation and estimation of the marginal likelihood, are mentioned in
 passing. A brief discussion of Bayesian hypothesis testing (and
 alternatives) is presented.
 
-\begin{tcolorbox}[enhanced jigsaw, opacitybacktitle=0.6, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Learning objectives}:}, colback=white, coltitle=black, colframe=quarto-callout-important-color-frame, arc=.35mm, colbacktitle=quarto-callout-important-color!10!white, opacityback=0, breakable, rightrule=.15mm, left=2mm, toptitle=1mm, titlerule=0mm, bottomrule=.15mm, toprule=.15mm, leftrule=.75mm, bottomtitle=1mm]
+\begin{tcolorbox}[enhanced jigsaw, toprule=.15mm, leftrule=.75mm, colback=white, opacitybacktitle=0.6, coltitle=black, colbacktitle=quarto-callout-important-color!10!white, colframe=quarto-callout-important-color-frame, rightrule=.15mm, bottomtitle=1mm, breakable, toptitle=1mm, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Learning objectives}:}, titlerule=0mm, left=2mm, bottomrule=.15mm, opacityback=0, arc=.35mm]
 
 At the end of the chapter, students should be able to
 
@@ -2716,7 +2730,7 @@ the cutoff for the HDP region.}
 
 \end{figure}%
 
-\begin{tcolorbox}[enhanced jigsaw, opacitybacktitle=0.6, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Summary}:}, colback=white, coltitle=black, colframe=quarto-callout-important-color-frame, arc=.35mm, colbacktitle=quarto-callout-important-color!10!white, opacityback=0, breakable, rightrule=.15mm, left=2mm, toptitle=1mm, titlerule=0mm, bottomrule=.15mm, toprule=.15mm, leftrule=.75mm, bottomtitle=1mm]
+\begin{tcolorbox}[enhanced jigsaw, toprule=.15mm, leftrule=.75mm, colback=white, opacitybacktitle=0.6, coltitle=black, colbacktitle=quarto-callout-important-color!10!white, colframe=quarto-callout-important-color-frame, rightrule=.15mm, bottomtitle=1mm, breakable, toptitle=1mm, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Summary}:}, titlerule=0mm, left=2mm, bottomrule=.15mm, opacityback=0, arc=.35mm]
 
 \begin{itemize}
 \tightlist
@@ -2795,7 +2809,7 @@ inferences. Generally, we will choose the prior for convenience. Priors
 are controversial because they could be tuned aposteriori to give any
 answer an analyst might want.
 
-\begin{tcolorbox}[enhanced jigsaw, opacitybacktitle=0.6, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Learning objectives}:}, colback=white, coltitle=black, colframe=quarto-callout-important-color-frame, arc=.35mm, colbacktitle=quarto-callout-important-color!10!white, opacityback=0, breakable, rightrule=.15mm, left=2mm, toptitle=1mm, titlerule=0mm, bottomrule=.15mm, toprule=.15mm, leftrule=.75mm, bottomtitle=1mm]
+\begin{tcolorbox}[enhanced jigsaw, toprule=.15mm, leftrule=.75mm, colback=white, opacitybacktitle=0.6, coltitle=black, colbacktitle=quarto-callout-important-color!10!white, colframe=quarto-callout-important-color-frame, rightrule=.15mm, bottomtitle=1mm, breakable, toptitle=1mm, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Learning objectives}:}, titlerule=0mm, left=2mm, bottomrule=.15mm, opacityback=0, arc=.35mm]
 
 At the end of the chapter, students should be able to
 
@@ -3830,7 +3844,7 @@ improper priors on location and scale.}
 
 \end{example}
 
-\begin{tcolorbox}[enhanced jigsaw, opacitybacktitle=0.6, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Summary}:}, colback=white, coltitle=black, colframe=quarto-callout-important-color-frame, arc=.35mm, colbacktitle=quarto-callout-important-color!10!white, opacityback=0, breakable, rightrule=.15mm, left=2mm, toptitle=1mm, titlerule=0mm, bottomrule=.15mm, toprule=.15mm, leftrule=.75mm, bottomtitle=1mm]
+\begin{tcolorbox}[enhanced jigsaw, toprule=.15mm, leftrule=.75mm, colback=white, opacitybacktitle=0.6, coltitle=black, colbacktitle=quarto-callout-important-color!10!white, colframe=quarto-callout-important-color-frame, rightrule=.15mm, bottomtitle=1mm, breakable, toptitle=1mm, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Summary}:}, titlerule=0mm, left=2mm, bottomrule=.15mm, opacityback=0, arc=.35mm]
 
 \begin{itemize}
 \tightlist
@@ -4064,7 +4078,7 @@ points from the Gaussian and accept any that falls within the bounds.
 \end{Shaded}
 
 \begin{verbatim}
-[1] 0.34002
+[1] 0.34174
 \end{verbatim}
 
 \begin{Shaded}
@@ -4377,7 +4391,7 @@ more than 9\% for the same Monte Carlo sample size.
 
 \begin{verbatim}
                true         monte carlo importance sampling 
-             0.0625              0.0622              0.0627 
+             0.0625              0.0620              0.0623 
 \end{verbatim}
 
 \begin{Shaded}
@@ -4388,7 +4402,7 @@ more than 9\% for the same Monte Carlo sample size.
 \end{Shaded}
 
 \begin{verbatim}
-[1] 1.087118
+[1] 1.080627
 \end{verbatim}
 
 \begin{figure}[ht!]
@@ -4891,7 +4905,7 @@ computers became more widely available. The idea is to draw correlated
 samples from a posterior via Markov chains, constructed to have the
 posterior as invariant stationary distribution.
 
-\begin{tcolorbox}[enhanced jigsaw, opacitybacktitle=0.6, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Learning objectives}:}, colback=white, coltitle=black, colframe=quarto-callout-important-color-frame, arc=.35mm, colbacktitle=quarto-callout-important-color!10!white, opacityback=0, breakable, rightrule=.15mm, left=2mm, toptitle=1mm, titlerule=0mm, bottomrule=.15mm, toprule=.15mm, leftrule=.75mm, bottomtitle=1mm]
+\begin{tcolorbox}[enhanced jigsaw, toprule=.15mm, leftrule=.75mm, colback=white, opacitybacktitle=0.6, coltitle=black, colbacktitle=quarto-callout-important-color!10!white, colframe=quarto-callout-important-color-frame, rightrule=.15mm, bottomtitle=1mm, breakable, toptitle=1mm, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Learning objectives}:}, titlerule=0mm, left=2mm, bottomrule=.15mm, opacityback=0, arc=.35mm]
 
 At the end of the chapter, students should be able to
 
@@ -5581,7 +5595,7 @@ overdispersion.
 
 \end{example}
 
-\begin{tcolorbox}[enhanced jigsaw, opacitybacktitle=0.6, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Summary}:}, colback=white, coltitle=black, colframe=quarto-callout-important-color-frame, arc=.35mm, colbacktitle=quarto-callout-important-color!10!white, opacityback=0, breakable, rightrule=.15mm, left=2mm, toptitle=1mm, titlerule=0mm, bottomrule=.15mm, toprule=.15mm, leftrule=.75mm, bottomtitle=1mm]
+\begin{tcolorbox}[enhanced jigsaw, toprule=.15mm, leftrule=.75mm, colback=white, opacitybacktitle=0.6, coltitle=black, colbacktitle=quarto-callout-important-color!10!white, colframe=quarto-callout-important-color-frame, rightrule=.15mm, bottomtitle=1mm, breakable, toptitle=1mm, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Summary}:}, titlerule=0mm, left=2mm, bottomrule=.15mm, opacityback=0, arc=.35mm]
 
 \begin{itemize}
 \tightlist
@@ -5633,7 +5647,7 @@ overdispersion.
 
 \chapter{Gibbs sampling}\label{sec-Gibbs}
 
-\begin{tcolorbox}[enhanced jigsaw, opacitybacktitle=0.6, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Learning objectives}:}, colback=white, coltitle=black, colframe=quarto-callout-important-color-frame, arc=.35mm, colbacktitle=quarto-callout-important-color!10!white, opacityback=0, breakable, rightrule=.15mm, left=2mm, toptitle=1mm, titlerule=0mm, bottomrule=.15mm, toprule=.15mm, leftrule=.75mm, bottomtitle=1mm]
+\begin{tcolorbox}[enhanced jigsaw, toprule=.15mm, leftrule=.75mm, colback=white, opacitybacktitle=0.6, coltitle=black, colbacktitle=quarto-callout-important-color!10!white, colframe=quarto-callout-important-color-frame, rightrule=.15mm, bottomtitle=1mm, breakable, toptitle=1mm, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Learning objectives}:}, titlerule=0mm, left=2mm, bottomrule=.15mm, opacityback=0, arc=.35mm]
 
 At the end of the chapter, students should be able to
 
@@ -6099,7 +6113,7 @@ and Stephens (\citeproc{ref-Stephens:2002}{2002}) for more details.
 
 \end{refremark}
 
-\begin{tcolorbox}[enhanced jigsaw, opacitybacktitle=0.6, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Summary}:}, colback=white, coltitle=black, colframe=quarto-callout-important-color-frame, arc=.35mm, colbacktitle=quarto-callout-important-color!10!white, opacityback=0, breakable, rightrule=.15mm, left=2mm, toptitle=1mm, titlerule=0mm, bottomrule=.15mm, toprule=.15mm, leftrule=.75mm, bottomtitle=1mm]
+\begin{tcolorbox}[enhanced jigsaw, toprule=.15mm, leftrule=.75mm, colback=white, opacitybacktitle=0.6, coltitle=black, colbacktitle=quarto-callout-important-color!10!white, colframe=quarto-callout-important-color-frame, rightrule=.15mm, bottomtitle=1mm, breakable, toptitle=1mm, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Summary}:}, titlerule=0mm, left=2mm, bottomrule=.15mm, opacityback=0, arc=.35mm]
 
 \begin{itemize}
 \tightlist
@@ -6157,7 +6171,7 @@ Betancourt} for excellent visualizations. In this chapter, we focus on
 three aspects of the workflow: model validation, evaluation and
 comparison.
 
-\begin{tcolorbox}[enhanced jigsaw, opacitybacktitle=0.6, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Learning objectives}:}, colback=white, coltitle=black, colframe=quarto-callout-important-color-frame, arc=.35mm, colbacktitle=quarto-callout-important-color!10!white, opacityback=0, breakable, rightrule=.15mm, left=2mm, toptitle=1mm, titlerule=0mm, bottomrule=.15mm, toprule=.15mm, leftrule=.75mm, bottomtitle=1mm]
+\begin{tcolorbox}[enhanced jigsaw, toprule=.15mm, leftrule=.75mm, colback=white, opacitybacktitle=0.6, coltitle=black, colbacktitle=quarto-callout-important-color!10!white, colframe=quarto-callout-important-color-frame, rightrule=.15mm, bottomtitle=1mm, breakable, toptitle=1mm, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Learning objectives}:}, titlerule=0mm, left=2mm, bottomrule=.15mm, opacityback=0, arc=.35mm]
 
 At the end of the chapter, students should be able to
 
@@ -7471,7 +7485,7 @@ regression coefficients with Gaussian (ridge), double exponential
 One aspect worth mentioning is that the horseshoe prior impacts strongly
 the geometry and leads to slower mixing than the conjugate or
 Student-\(t\) priors: the effective sample size fraction relative to the
-number of samples ranges from 15\% to 100\%, compared to 50\% to 96\%
+number of samples ranges from 20\% to 100\%, compared to 52\% to 100\%
 for the Bayesian LASSO and near-independent draws with the conjugate
 ridge.
 
@@ -8019,7 +8033,7 @@ prior for the precision.
 \CommentTok{\# Stochastic volatility model}
 \FunctionTok{data}\NormalTok{(exchangerate, }\AttributeTok{package =} \StringTok{"hecbayes"}\NormalTok{)}
 \CommentTok{\# Compute response from raw spot exchange rates at noon}
-\NormalTok{y }\OtherTok{\textless{}{-}} \DecValTok{100}\SpecialCharTok{*}\FunctionTok{diff}\NormalTok{(}\FunctionTok{log}\NormalTok{(exchangerate}\SpecialCharTok{$}\NormalTok{rate))}
+\NormalTok{y }\OtherTok{\textless{}{-}} \DecValTok{100}\SpecialCharTok{*}\FunctionTok{diff}\NormalTok{(}\FunctionTok{log}\NormalTok{(exchangerate}\SpecialCharTok{$}\NormalTok{dexrate))}
 \CommentTok{\# \textquotesingle{}y\textquotesingle{} is now a series of percentage of log daily differences}
 \NormalTok{time }\OtherTok{\textless{}{-}} \FunctionTok{seq\_along}\NormalTok{(y)}
 \NormalTok{data }\OtherTok{\textless{}{-}} \FunctionTok{data.frame}\NormalTok{(}\AttributeTok{y =}\NormalTok{ y, }\AttributeTok{time =}\NormalTok{ time)}
@@ -8069,7 +8083,7 @@ the parameters using the change of variable formula.
 \end{Shaded}
 
 \begin{verbatim}
-[1] 0.9874671 0.9929791 0.9963883
+[1] 0.9706630 0.9847944 0.9929106
 \end{verbatim}
 
 \begin{Shaded}
@@ -8083,7 +8097,7 @@ the parameters using the change of variable formula.
 \end{Shaded}
 
 \begin{verbatim}
-[1] 0.1727294 0.4049276
+[1] 0.2864909 0.7396801
 \end{verbatim}
 
 \begin{Shaded}
@@ -8101,7 +8115,7 @@ the parameters using the change of variable formula.
 
 \begin{verbatim}
        mean          sd 
-0.992721400 0.002303183 
+0.984052716 0.005762504 
 \end{verbatim}
 
 \end{example}
@@ -8179,12 +8193,17 @@ black-box variational inference.
 
 \section{Model misspecification}\label{model-misspecification}
 
-Suppose data were generated from a model with true density \(f_t\) and
-we consider a family of distributions \(g(\cdot; \boldsymbol{\psi})\)
-not necessarily containing \(f_t\) as special case. Intuitively, if we
-were to estimate the model by maximum likelihood, we expect that the
-model returned will be the one closest to \(f_t\) among those considered
-in some sense.
+Consider \(g(\boldsymbol{\theta};\boldsymbol{\psi})\) with
+\(\boldsymbol{\psi} \in \mathbb{R}^J\) an approximating density function
+whose integral is one over
+\(\boldsymbol{\Theta} \subseteq \mathbb{R}^p\) and whose support
+includes that of \(p(\boldsymbol{y}, \boldsymbol{\theta})\) over
+\(\boldsymbol{\Theta}.\) Suppose data were generated from a model with
+true density \(f_t\) and we consider instead the family of distributions
+\(g(\cdot; \boldsymbol{\psi}),\) the latter may or not contain \(f_t\)
+as special case. Intuitively, if we were to estimate the model by
+maximum likelihood, we expect that the model returned will be the one
+closest to \(f_t\) among those considered in some sense.
 
 \begin{definition}[Kullback--Leibler
 divergence]\protect\hypertarget{def-kl-divergence}{}\label{def-kl-divergence}
@@ -8192,11 +8211,11 @@ divergence]\protect\hypertarget{def-kl-divergence}{}\label{def-kl-divergence}
 The Kullback--Leibler divergence between densities \(f_t(\cdot)\) and
 \(g(\cdot; \boldsymbol{\psi}),\) is \begin{align*}
 \mathsf{KL}(f_t \parallel g) &=\int \log \left(\frac{f_t(\boldsymbol{x})}{g(\boldsymbol{x}; \boldsymbol{\psi})}\right) f_t(\boldsymbol{x}) \mathrm{d} \boldsymbol{x}\\
-&= \int \log f_t(\boldsymbol{x}) f_t(\boldsymbol{x}) \mathrm{d} \boldsymbol{x} - \int \log g(\boldsymbol{x};; \boldsymbol{\psi}) f_t(\boldsymbol{x}) \mathrm{d} \boldsymbol{x}
+&= \int \log f_t(\boldsymbol{x}) f_t(\boldsymbol{x}) \mathrm{d} \boldsymbol{x} - \int \log g(\boldsymbol{x}; \boldsymbol{\psi}) f_t(\boldsymbol{x}) \mathrm{d} \boldsymbol{x}
 \\ &= \mathsf{E}_{f_t}\{\log f_t(\boldsymbol{X})\} - \mathsf{E}_{f_t}\{\log g(\boldsymbol{X}; \boldsymbol{\psi})\}
 \end{align*} where the subscript of the expectation indicates which
-distribution we integrate over. The first term
-\(\mathsf{E}_{f_t}\{\log f_t(\boldsymbol{X})\}\) is called the entropy
+distribution we integrate over. The term
+\(-\mathsf{E}_{f_t}\{\log f_t(\boldsymbol{X})\}\) is called the entropy
 of the distribution. The divergence is strictly positive unless
 \(g(\cdot; \boldsymbol{\psi}) \equiv f_t(\cdot).\) Note that, by
 construction, it is not symmetric.
@@ -8211,7 +8230,18 @@ minimizes the Kullback--Leibler divergence
 \(\mathsf{KL}(f_t \parallel g);\) this value will be positive unless the
 model is correctly specified and
 \(g(\cdot; \widehat{\boldsymbol{\psi}}) = f_t(\cdot).\) See Davison
-(\citeproc{ref-Davison:2003}{2003}), pp.122--125 for a discussion.
+(\citeproc{ref-Davison:2003}{2003}), pp.~122--125 for a discussion.
+
+In the Bayesian setting, interest lies in approximating
+\(f_t \equiv p(\boldsymbol{\theta} \mid \boldsymbol{y}).\) The problem
+of course is that we cannot compute expectations with respect to the
+posterior since these requires knowledge of the marginal likelihood,
+which acts as a normalizing constant. What we can do instead is to
+consider the model that minimizes the reverse Kullback--Leibler
+divergence \begin{align*}
+g(\boldsymbol{\theta}; \widehat{\boldsymbol{\psi}}) = \mathrm{argmin}_{\boldsymbol{\psi}} \mathsf{KL}\{g(\boldsymbol{\theta};\boldsymbol{\psi}) \parallel p(\boldsymbol{\theta} \mid \boldsymbol{y})\}.
+\end{align*} We will show soon that this is a sensible objective
+function.
 
 \begin{definition}[Convex
 function]\protect\hypertarget{def-convex-function}{}\label{def-convex-function}
@@ -8238,8 +8268,10 @@ quadratic \(ax^2+bx + c\) with \(a>0.\)
 \caption{\label{fig-convex}Left panel: the convex function
 \(h(x)=-\log(x),\) with a straight line between any two points falls
 above the function. Right panel: a skewed density with the Laplace
-approximation (dashed orange) and variational Gaussian approximation
-(dotted blue).}
+Gaussian approximation (dashed orange), the Gaussian variational
+approximation (reverse Kullback--Leibler divergence, dotted yellow) and
+the Gaussian that minimizes the Kullback--Leibler divergence (dot-dashed
+blue).}
 
 \end{figure}%
 
@@ -8251,29 +8283,22 @@ p(\boldsymbol{y}) = \int_{\boldsymbol{\Theta}} p(\boldsymbol{y}, \boldsymbol{\th
 likelihood times the prior. The marginal likelihood is typically
 intractable, or very expensive to compute, but it is necessary to
 calculate probability and various expectations with respect to the
-posterior unless we draw samples from it. Consider
-\(g(\boldsymbol{\theta};\boldsymbol{\psi})\) with
-\(\boldsymbol{\psi} \in \mathbb{R}^J\) an approximating density function
-whose integral is one over
-\(\boldsymbol{\Theta} \subseteq \mathbb{R}^p\) and whose support
-includes that of \(p(\boldsymbol{y}, \boldsymbol{\theta})\) over
-\(\boldsymbol{\Theta}:\) we can then rewrite \begin{align*}
+posterior unless we draw samples from it.
+
+We can rewrite the marginal likelihood as \begin{align*}
 p(\boldsymbol{y}) = \int_{\boldsymbol{\Theta}}  \frac{p(\boldsymbol{y}, \boldsymbol{\theta})}{g(\boldsymbol{\theta};\boldsymbol{\psi})} g(\boldsymbol{\theta};\boldsymbol{\psi}) \mathrm{d} \boldsymbol{\theta}.
+\end{align*} With convex functions, \textbf{Jensen's inequality} implies
+that \(h\{\mathsf{E}(X)\} \leq \mathsf{E}\{h(X)\},\) and applying this
+with \(h(x)=-\log(x),\) we get \begin{align*}
+-\log p(\boldsymbol{y})  = -\log \left\{\int_{\boldsymbol{\Theta}} p(\boldsymbol{y}, \boldsymbol{\theta}) \mathrm{d} \boldsymbol{\theta}\right\} \leq - \log  \int_{\boldsymbol{\Theta}} \left(\frac{p(\boldsymbol{y}, \boldsymbol{\theta})}{g(\boldsymbol{\theta};\boldsymbol{\psi})}\right) g(\boldsymbol{\theta};\boldsymbol{\psi}) \mathrm{d} \boldsymbol{\theta}.
 \end{align*}
 
-With convex functions, \textbf{Jensen's inequality} implies that
-\(h\{\mathsf{E}(X)\} \leq \mathsf{E}\{h(X)\},\) and applying this with
-\(h(x)=-\log(x),\) we get \begin{align*}
--\log p(\boldsymbol{y}) \leq - \log  \left(\frac{p(\boldsymbol{y}, \boldsymbol{\theta})}{g(\boldsymbol{\theta};\boldsymbol{\psi})}\right) g(\boldsymbol{\theta};\boldsymbol{\psi}) \mathrm{d} \boldsymbol{\theta}.
-\end{align*} We can thus consider the model that minimizes the reverse
-Kullback--Leibler divergence \begin{align*}
-g(\boldsymbol{\theta}; \widehat{\boldsymbol{\psi}}) = \mathrm{argmin}_{\boldsymbol{\psi}} \mathsf{KL}\{g(\boldsymbol{\theta};\boldsymbol{\psi}) \parallel p(\boldsymbol{\theta}, \boldsymbol{y})\}.
-\end{align*} We can get a slightly different take if we consider the
-reformulation \begin{align*}
-\mathsf{KL}\{g(\boldsymbol{\theta};\boldsymbol{\psi}) \parallel p(\boldsymbol{\theta}, \boldsymbol{y}) = \mathsf{E}_{g}\{\log g(\boldsymbol{\theta})\} - \mathsf{E}_g\{\log p(\boldsymbol{y}, \boldsymbol{\theta})\} + \log p(\boldsymbol{y}).
+We can get a slightly different take if we consider the reformulation
+\begin{align*}
+\mathsf{KL}\{g(\boldsymbol{\theta};\boldsymbol{\psi}) \parallel p(\boldsymbol{\theta} \mid \boldsymbol{y})\} = \mathsf{E}_{g}\{\log g(\boldsymbol{\theta})\} - \mathsf{E}_g\{\log p(\boldsymbol{y}, \boldsymbol{\theta})\} + \log p(\boldsymbol{y}).
 \end{align*} Instead of minimizing the Kullback--Leibler divergence, we
-can equivalently maximize the so-called \textbf{evidence lower bound}
-(ELBO) \begin{align*}
+can thus equivalently maximize the so-called \textbf{evidence lower
+bound} (ELBO) \begin{align*}
 \mathsf{ELBO}(g) = \mathsf{E}_g\{\log p(\boldsymbol{y}, \boldsymbol{\theta})\} - \mathsf{E}_{g}\{\log g(\boldsymbol{\theta})\}
 \end{align*} The ELBO as an objective function balances between two
 terms: the first term is the expected value of the joint posterior under
@@ -8286,7 +8311,7 @@ the evidence, subject to a regularization term.
 
 The ELBO is a lower bound for the marginal likelihood because the
 Kullback--Leibler divergence is non-negative and \begin{align*}
-\log p(\boldsymbol{y}) = \mathsf{ELBO}(g) +  \mathsf{KL}\{g(\boldsymbol{\theta};\boldsymbol{\psi}) \parallel p(\boldsymbol{\theta}, \boldsymbol{y})\}.
+\log p(\boldsymbol{y}) = \mathsf{ELBO}(g) +  \mathsf{KL}\{g(\boldsymbol{\theta};\boldsymbol{\psi}) \parallel p(\boldsymbol{\theta} \mid \boldsymbol{y})\}.
 \end{align*} If we could estimate the marginal likelihood of a
 (typically simpler) competing alternative and the lower bound on the
 evidence in favour of the more complex model was very much larger, then
@@ -8351,7 +8376,8 @@ choice to decide whether to use the fully correlated, factorized, or the
 mean-field approximation, along with the parametric family for each
 block. Note that the latter must be support dependent, as the
 Kullback--Leibler divergence will be infinite if the support of \(g\)
-does not include that of \(p(\boldsymbol{\theta} \mid \boldsymbol{y}).\)
+does not include that of \(p(\boldsymbol{\theta} \mid \boldsymbol{y})\)
+(although we work with the reverse Kullback--Leibler).
 
 There are two main approaches: the first is to start off with the model
 with a factorization of the density, and deduce the form of the most
@@ -8368,7 +8394,7 @@ approximates the integrals appearing in the ELBO formula.
 Factorizations of \(g(;\boldsymbol{\psi})\) into blocks with parameters
 \(\boldsymbol{\psi}_1, \ldots, \boldsymbol{\psi}_M,\) where
 \begin{align*}
-g(\boldsymbol{\theta}; \boldsymbol{\psi}) = \prod_{j=1}^M q_j(\boldsymbol{\theta}_j; \boldsymbol{\psi}_j)
+g(\boldsymbol{\theta}; \boldsymbol{\psi}) = \prod_{j=1}^M g_j(\boldsymbol{\theta}_j; \boldsymbol{\psi}_j)
 \end{align*} If we assume that each of the \(J\) parameters
 \(\theta_1, \ldots, \theta_J\) are independent, then we obtain a
 \textbf{mean-field} approximation. The latter will be poor if parameters
@@ -8381,31 +8407,36 @@ We use a factorization of \(g,\) and denote the components
  \\& = \int \int \left\{\log p(\boldsymbol{y}, \boldsymbol{\theta}) \prod_{\substack{i \neq j \\j=1}}^M g_j(\boldsymbol{\theta}_j)\mathrm{d} \boldsymbol{\theta}_{-i}\right\} \mathrm{d} \boldsymbol{\theta}_{-i} g_i(\boldsymbol{\theta}_i) \mathrm{d} \boldsymbol{\theta}_i - \sum_{j=1}^M \int \log \{ g_j(\boldsymbol{\theta}_j) \} g_j(\boldsymbol{\theta}_j) \mathrm{d}  \boldsymbol{\theta}_j
  \\& \stackrel{\boldsymbol{\theta}_i}{\propto} \int \mathsf{E}_{-i}\left\{\log p(\boldsymbol{y}, \boldsymbol{\theta})\right\} g_i(\boldsymbol{\theta}_i) \mathrm{d} \boldsymbol{\theta}_i - \int \log \{ g_i(\boldsymbol{\theta}_i) \} g_i(\boldsymbol{\theta}_i) \mathrm{d} \boldsymbol{\theta}_i
 \end{align*} where the last line is a negative Kullback--Leibler
-divergence between \(q_j\) and \begin{align*}
+divergence between \(g_i\) and \begin{align*}
  \mathsf{E}_{-i}\left\{\log p(\boldsymbol{y}, \boldsymbol{\theta})\right\} = \int \log p(\boldsymbol{y}, \boldsymbol{\theta}) \prod_{\substack{i \neq j \\j=1}}^M g_j(\boldsymbol{\theta}_j)\mathrm{d} \boldsymbol{\theta}_{-i}
 \end{align*} and the subscript \(-i\) indicates that we consider all but
-the \(i\)th component of the \(J\) vector. This reveals that the form of
-approximating density \(g_i\) that maximizes the ELBO is of the form
-\begin{align*}
- g^{\star}_j(\boldsymbol{\theta}_j) \propto \exp \left[ \mathsf{E}_{-i}\left\{\log p(\boldsymbol{y}, \boldsymbol{\theta})\right\}\right].
-\end{align*} Often, we can look at the kernel of \(g^{\star}_j\) and
-deduce the normalizing constant, which is defined as the integral of the
-above. The posterior approximation will have a closed form expression if
-we consider cases of conditionally conjugate distributions in the
+the \(i\)th component of the \(J\) vector. Since the KL divergence is
+strictly non-negative and minimized if we take the same density, this
+reveals that the form of approximating density \(g_i\) that maximizes
+the ELBO is of the form \begin{align*}
+ g^{\star}_i(\boldsymbol{\theta}_i) \propto \exp \left[ \mathsf{E}_{-i}\left\{\log p(\boldsymbol{y}, \boldsymbol{\theta})\right\}\right].
+\end{align*} This expression is specified up to proportionality, but we
+can often look at the kernel of \(g^{\star}_i\) and deduce from it the
+normalizing constant, which is defined as the integral of the above. The
+posterior approximation will have a closed form expression if we
+consider cases of conditionally conjugate distributions in the
 exponential family: we can see that the optimal \(g^{\star}_j\) relates
 to the conditional since
 \(p(\boldsymbol{\theta}, \boldsymbol{y}) \stackrel{\boldsymbol{\theta}_i}{\propto} p(\boldsymbol{\theta}_i \mid \boldsymbol{\theta}_{-i}, \boldsymbol{y}).\)
-This provides a connection to Gibbs sampling.
+The connection to Gibbs sampling, which instead draws parameters from
+the conditional, reveals that problems that can be tackled by the latter
+method will be amenable to factorizations with approximating densities
+from known families.
 
 If we consider maximization of the ELBO for \(g_i,\) we can see from the
 law of iterated expectation that the latter is proportional to
 \begin{align*}
  \mathsf{ELBO}(g_i) \propto \mathsf{E}_i \left[ \mathsf{E}_{-i} \{\log p(\boldsymbol{\theta}, \boldsymbol{y}) \}\right] - \mathsf{E}_i\{\log g_i(\boldsymbol{\theta}_i)\}
 \end{align*} Due to the nature of this conditional expectation, we can
-devide an algorithm to maximize the ELBO of the factorized
+devise an algorithm to maximize the ELBO of the factorized
 approximation. Each parameter update depends on the other components,
-but the \(\mathsf{ELBO}(q_i)\) is concave. We can maximize
-\(g^{\star}_j\) in turn for each \(j=1, \ldots, M\) treating the other
+but the \(\mathsf{ELBO}(g_i)\) is concave. We can maximize
+\(g^{\star}_i\) in turn for each \(i=1, \ldots, M\) treating the other
 parameters as fixed, and iterate this scheme. The resulting
 approximation, termed coordinate ascent variational inference (CAVI), is
 guaranteed to monotonically increase the evidence lower bound until
@@ -8428,7 +8459,7 @@ Y_i &\sim \mathsf{Gauss}(\mu, \tau^{-1}), \qquad i =1, \ldots, n;\\
 \end{align*} This is an example where the full posterior is available in
 closed-form, so we can compare our approximation with the truth. We
 assume a factorization of the variational approximation
-\(g_\mu(\mu)g_\tau(\tau);\) the factor for \(q_\mu\) is proportional to
+\(g_\mu(\mu)g_\tau(\tau);\) the factor for \(g_\mu\) is proportional to
 \begin{align*}
  \log g^{\star}_\mu(\mu) \propto -\frac{\mathsf{E}_{\tau}(\tau)}{2} \sum_{i=1}^n (y_i-\mu)^2-\frac{\tau_0}{2}(\mu-\mu_0)^2
 \end{align*} which is quadratic in \(\mu\) and thus must be Gaussian
@@ -8482,11 +8513,11 @@ dominated convergence theorem, is \begin{align*}
 \\& = \int  \frac{\partial \log g(\boldsymbol{\theta}; \boldsymbol{\psi})}{\partial \boldsymbol{\psi}} \times \log \left( \frac{p(\boldsymbol{\theta}, \boldsymbol{y})}{g(\boldsymbol{\theta}; \boldsymbol{\psi})}\right) g(\boldsymbol{\theta}; \boldsymbol{\psi})\mathrm{d} \boldsymbol{\theta}
 \end{align*} where \(p(\boldsymbol{\theta}, \boldsymbol{y})\) does not
 depend on \(\boldsymbol{\psi}\), and \begin{align*}
-\int \frac{\partial \log g(\boldsymbol{\theta}; \boldsymbol{\psi})}{\partial \boldsymbol{\psi}} g(\boldsymbol{\theta}; \boldsymbol{\psi}) \mathrm{d} \boldsymbol{\theta} & = \int \frac{\partial g(\boldsymbol{\theta}; \boldsymbol{\psi})}{\partial \boldsymbol{\psi}} \mathrm{d} \boldsymbol{\theta}  \\
+\int \frac{\partial \log g(\boldsymbol{\theta}; \boldsymbol{\psi})}{\partial \boldsymbol{\psi}} g(\boldsymbol{\theta}; \boldsymbol{\psi}) \mathrm{d} \boldsymbol{\theta} & = \int \frac{\partial g(\boldsymbol{\theta}; \boldsymbol{\psi})}{\partial \boldsymbol{\psi}} \mathrm{d} \boldsymbol{\theta}  \\&=
 \frac{\partial}{\partial \boldsymbol{\psi}}\int g(\boldsymbol{\theta}; \boldsymbol{\psi})  \mathrm{d} \boldsymbol{\theta} = 0.
-\end{align*} This term vanishes since the integral of a density is one
-regardless of the value of \(\boldsymbol{\psi}\), so it's derivative
-vanishes. We are left with the expected value \begin{align*}
+\end{align*} The integral of a density is one regardless of the value of
+\(\boldsymbol{\psi}\), so it's derivative vanishes. We are left with the
+expected value \begin{align*}
  \mathsf{E}_{g}\left\{\frac{\partial \log g(\boldsymbol{\theta}; \boldsymbol{\psi})}{\partial \boldsymbol{\psi}} \times \log \left( \frac{p(\boldsymbol{\theta}, \boldsymbol{y})}{g(\boldsymbol{\theta}; \boldsymbol{\psi})}\right)\right\}
 \end{align*} which we can approximate via Monte Carlo by drawing samples
 from \(g\), which gives a stochastic gradient algorithm. Ranganath,
@@ -8536,10 +8567,12 @@ invariant. Since the trace is a linear operator, we can interchange the
 trace with the expected value. Finally, we have
 \(\mathsf{E}_g\left\{(\boldsymbol{X}-\boldsymbol{\mu})(\boldsymbol{X}-\boldsymbol{\mu})^\top\right\}=\boldsymbol{\Sigma}\),
 and the trace of a \(D \times D\) identity matrix is simply \(D\). The
-Gaussian entropy depends only on the covariance, so is not random. The
-transformation to \(\mathbb{R}^p\) is not unique and different choices
-may yield to differences, but the choice of optimal transformation
-requires knowledge of the true posterior, which is thus intractable.
+Gaussian entropy depends only on the covariance, so is not random.
+
+The transformation to \(\mathbb{R}^p\) is not unique and different
+choices may yield to differences, but the choice of optimal
+transformation requires knowledge of the true posterior, which is thus
+intractable.
 
 We focus on the case of full transformation; the derivation for
 independent components is analogous. Since the Gaussian is a
@@ -8549,14 +8582,13 @@ standardized Gaussian variable
 where
 \(\boldsymbol{\zeta} = \boldsymbol{\mu} + \mathbf{L}\boldsymbol{Z}\) The
 ELBO with the transformation is of the form \begin{align*}
- \mathsf{E}_{\boldsymbol{Z}}\left\{ \log p(\boldsymbol{y}, T^{-1}(\boldsymbol{\mu} + \mathbf{L}\boldsymbol{Z}) + \log \left|\mathbf{J}_{T^{-1}}(\boldsymbol{\mu} + \mathbf{L}\boldsymbol{\eta})\right|\right\} +\frac{D+D\log(2\pi) + \log |\mathbf{LL}^\top|}{2}.
+ \mathsf{E}_{\boldsymbol{Z}}\left[ \log p\{\boldsymbol{y}, T^{-1}(\boldsymbol{\mu} + \mathbf{L}\boldsymbol{Z})\} + \log \left|\mathbf{J}_{T^{-1}}(\boldsymbol{\mu} + \mathbf{L}\boldsymbol{Z})\right|\right] +\frac{D+D\log(2\pi) + \log |\mathbf{LL}^\top|}{2}.
 \end{align*} where we have the absolute value of the determinant of the
 Jacobian of the transformation. If we apply the chain rule
 \begin{align*}
  \frac{\partial}{\partial \boldsymbol{\psi}}\log p(\boldsymbol{y}, T^{-1}(\boldsymbol{\mu} + \mathbf{L}\boldsymbol{Z}) = \frac{\partial \log p(\boldsymbol{y}, \boldsymbol{\theta})}{\partial \boldsymbol{\theta}} \frac{\partial T^{-1}(\boldsymbol{\zeta})}{\partial \boldsymbol{\zeta}} \frac{\partial \boldsymbol{\mu} + \mathbf{L}\boldsymbol{Z}}{\partial \boldsymbol{\psi}}
-\end{align*} and the derivative with respect to and we retrieve the
-gradients of the ELBO with respect to the mean and variance, which are
-\begin{align*}
+\end{align*} and we retrieve the gradients of the ELBO with respect to
+the mean and variance, which are \begin{align*}
  \frac{\partial \mathsf{ELBO}(g)}{\partial \boldsymbol{\mu}} &= \mathsf{E}_{\boldsymbol{Z}}\left\{\frac{\partial \log p(\boldsymbol{y}, \boldsymbol{\theta})}{\partial \boldsymbol{\theta}} \frac{\partial T^{-1}(\boldsymbol{\zeta})}{\partial \boldsymbol{\zeta}}  + \frac{\partial \log \left|\mathbf{J}_{T^{-1}}(\boldsymbol{\zeta})\right|}{\partial \boldsymbol{\zeta}}\right\} \\
  \frac{\partial \mathsf{ELBO}(g)}{\partial \mathbf{L}} &= \mathsf{E}_{\boldsymbol{Z}}\left[\left\{\frac{\partial \log p(\boldsymbol{y}, \boldsymbol{\theta})}{\partial \boldsymbol{\theta}} \frac{\partial T^{-1}(\boldsymbol{\zeta})}{\partial \boldsymbol{\zeta}}  + \frac{\partial \log \left|\mathbf{J}_{T^{-1}}(\boldsymbol{\zeta})\right|}{\partial \boldsymbol{\zeta}}\right\}\boldsymbol{Z}^\top\right] + \mathbf{L}^{-\top}.
 \end{align*} Compared to the black-box variational inference algorithm,

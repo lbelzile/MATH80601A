@@ -19,7 +19,7 @@ This chapter is organized as follows: we first review notions of model misspecif
 
 ## Model misspecification
 
-Suppose data were generated from a model with true density $f_t$ and we consider a family of distributions $g(\cdot; \boldsymbol{\psi})$ not necessarily containing $f_t$ as special case. Intuitively, if we were to estimate the model by maximum likelihood, we expect that the model returned will be the one closest to $f_t$ among those considered in some sense.
+Consider $g(\boldsymbol{\theta};\boldsymbol{\psi})$ with $\boldsymbol{\psi} \in \mathbb{R}^J$ an approximating density function whose integral is one over $\boldsymbol{\Theta} \subseteq \mathbb{R}^p$ and whose support includes that of $p(\boldsymbol{y}, \boldsymbol{\theta})$ over $\boldsymbol{\Theta}.$ Suppose data were generated from a model with true density $f_t$ and we consider instead the family of distributions $g(\cdot; \boldsymbol{\psi}),$ the latter may or not contain $f_t$ as special case. Intuitively, if we were to estimate the model by maximum likelihood, we expect that the model returned will be the one closest to $f_t$ among those considered in some sense.
 
 :::{#def-kl-divergence}
 
@@ -28,15 +28,20 @@ Suppose data were generated from a model with true density $f_t$ and we consider
 The Kullback--Leibler divergence between densities $f_t(\cdot)$ and $g(\cdot; \boldsymbol{\psi}),$ is
 \begin{align*}
 \mathsf{KL}(f_t \parallel g) &=\int \log \left(\frac{f_t(\boldsymbol{x})}{g(\boldsymbol{x}; \boldsymbol{\psi})}\right) f_t(\boldsymbol{x}) \mathrm{d} \boldsymbol{x}\\
-&= \int \log f_t(\boldsymbol{x}) f_t(\boldsymbol{x}) \mathrm{d} \boldsymbol{x} - \int \log g(\boldsymbol{x};; \boldsymbol{\psi}) f_t(\boldsymbol{x}) \mathrm{d} \boldsymbol{x}
+&= \int \log f_t(\boldsymbol{x}) f_t(\boldsymbol{x}) \mathrm{d} \boldsymbol{x} - \int \log g(\boldsymbol{x}; \boldsymbol{\psi}) f_t(\boldsymbol{x}) \mathrm{d} \boldsymbol{x}
 \\ &= \mathsf{E}_{f_t}\{\log f_t(\boldsymbol{X})\} - \mathsf{E}_{f_t}\{\log g(\boldsymbol{X}; \boldsymbol{\psi})\}
 \end{align*}
-where the subscript of the expectation indicates which distribution we integrate over. The first term $\mathsf{E}_{f_t}\{\log f_t(\boldsymbol{X})\}$ is called the entropy of the distribution. The divergence is strictly positive unless $g(\cdot; \boldsymbol{\psi}) \equiv f_t(\cdot).$ Note that, by construction, it is not symmetric.
+where the subscript of the expectation indicates which distribution we integrate over. The term $-\mathsf{E}_{f_t}\{\log f_t(\boldsymbol{X})\}$ is called the entropy of the distribution. The divergence is strictly positive unless $g(\cdot; \boldsymbol{\psi}) \equiv f_t(\cdot).$ Note that, by construction, it is not symmetric.
 
 :::
 
-The Kullback--Leibler divergence notion is central to study of model misspecification: if we fit $g(\cdot)$ when data arise from $f_t,$ the maximum likelihood estimator of the parameters $\widehat{\boldsymbol{\psi}}$ will be the value of the parameter that minimizes the  Kullback--Leibler divergence $\mathsf{KL}(f_t \parallel g);$ this value will be positive unless the model is correctly specified and $g(\cdot; \widehat{\boldsymbol{\psi}}) = f_t(\cdot).$ See @Davison:2003, pp.122--125 for a discussion.
+The Kullback--Leibler divergence notion is central to study of model misspecification: if we fit $g(\cdot)$ when data arise from $f_t,$ the maximum likelihood estimator of the parameters $\widehat{\boldsymbol{\psi}}$ will be the value of the parameter that minimizes the  Kullback--Leibler divergence $\mathsf{KL}(f_t \parallel g);$ this value will be positive unless the model is correctly specified and $g(\cdot; \widehat{\boldsymbol{\psi}}) = f_t(\cdot).$ See @Davison:2003, pp. 122--125 for a discussion.
 
+In the Bayesian setting, interest lies in approximating $f_t \equiv p(\boldsymbol{\theta} \mid \boldsymbol{y}).$ The problem of course is that we cannot compute expectations with respect to the posterior since these requires knowledge of the marginal likelihood, which acts as a normalizing constant. What we can do instead is to consider the model that minimizes the reverse Kullback--Leibler divergence
+\begin{align*}
+g(\boldsymbol{\theta}; \widehat{\boldsymbol{\psi}}) = \mathrm{argmin}_{\boldsymbol{\psi}} \mathsf{KL}\{g(\boldsymbol{\theta};\boldsymbol{\psi}) \parallel p(\boldsymbol{\theta} \mid \boldsymbol{y})\}.
+\end{align*}
+We will show soon that this is a sensible objective function.
 
 :::{#def-convex-function}
 
@@ -56,7 +61,7 @@ The left panel of @fig-convex shows an illustration of the fact that the chord b
 #| label: fig-convex
 #| fig-height: 4
 #| fig-width: 8
-#| fig-cap: "Left panel: the convex function $h(x)=-\\log(x),$ with a straight line between any two points falls above the function. Right panel: a skewed density with the Laplace approximation (dashed orange) and variational Gaussian approximation (dotted blue)."
+#| fig-cap: "Left panel: the convex function $h(x)=-\\log(x),$ with a straight line between any two points falls above the function. Right panel: a skewed density with the Laplace Gaussian approximation (dashed orange), the Gaussian variational approximation (reverse Kullback--Leibler divergence, dotted yellow) and the Gaussian that minimizes the Kullback--Leibler divergence (dot-dashed blue)."
 par(bty = "l", mfrow = c(1,2), mar = c(4,4,1,1))
 curve(-log(x), from = 0.25, to = 2.25, ylab = "h(x)")
 segments(x0 = 0.5, x1 = 2, y0 = -log(0.5), y1 = -log(2), lty = 2)
@@ -94,11 +99,23 @@ elbo <- function(pars, mu = 0, sigma = 1, alpha = 10){
     mean(pnorm(alpha*(sqrt(s2)*X+ms), log = TRUE))
   -obj
 }
-varia_sn <- optim(par =rep(0,2), fn = elbo,  alpha = 10)
-# curve(dsn(x, alpha = 10), from = -2, to = 4)
-curve(dnorm(x, varia_sn$par[1],
-     sqrt(exp(varia_sn$par[2]))), 
-  add = TRUE, lty = 3, col = MetBrewer::met.brewer("Hiroshige", 2)[2],
+
+revKL_sn <- optim(par =rep(0,2), fn = elbo,  alpha = 10)
+
+# With a Gaussian approximation, the mean and variance are the minimizers
+loc <- 0; scale <- 1; asym <- 10
+KL_sn_mean <- loc + scale*asym/sqrt(1+asym^2)*sqrt(2/pi)
+KL_sn_var <- scale^2*(1-2*asym^2/(1+asym^2)/pi)
+# Variational approximation
+curve(dnorm(x, mean = revKL_sn$par[1], sd = sqrt(exp(revKL_sn$par[2]))),
+   lwd = 2,
+  add = TRUE, lty = 3, col = MetBrewer::met.brewer("Hiroshige", 3)[2],
+ from = -2, to = 4)
+# Model that minimizes KL divergence
+curve(dnorm(x, KL_sn_mean, sd = sqrt(KL_sn_var)),
+   # varia_sn$par[1],   sqrt(exp(varia_sn$par[2]))), 
+   lwd = 2,
+  add = TRUE, lty = 4, col = MetBrewer::met.brewer("Hiroshige", 3)[3],
  from = -2, to = 4)
 ```
 
@@ -108,24 +125,22 @@ Consider now the problem of approximating the marginal likelihood, sometimes cal
 p(\boldsymbol{y}) = \int_{\boldsymbol{\Theta}} p(\boldsymbol{y}, \boldsymbol{\theta}) \mathrm{d} \boldsymbol{\theta}.
 \end{align*}
 where we only have the joint $p(\boldsymbol{y}, \boldsymbol{\theta})$ is the product of the likelihood times the prior. The marginal likelihood is typically intractable, or very expensive to compute, but it is necessary to calculate probability and various expectations with respect to the posterior unless we draw samples from it. 
-Consider $g(\boldsymbol{\theta};\boldsymbol{\psi})$ with $\boldsymbol{\psi} \in \mathbb{R}^J$ an approximating density function whose integral is one over $\boldsymbol{\Theta} \subseteq \mathbb{R}^p$ and whose support includes that of $p(\boldsymbol{y}, \boldsymbol{\theta})$ over $\boldsymbol{\Theta}:$ we can then rewrite 
+
+
+We can rewrite the marginal likelihood as
 \begin{align*}
 p(\boldsymbol{y}) = \int_{\boldsymbol{\Theta}}  \frac{p(\boldsymbol{y}, \boldsymbol{\theta})}{g(\boldsymbol{\theta};\boldsymbol{\psi})} g(\boldsymbol{\theta};\boldsymbol{\psi}) \mathrm{d} \boldsymbol{\theta}.
 \end{align*}
-
 With convex functions, **Jensen's inequality** implies that $h\{\mathsf{E}(X)\} \leq \mathsf{E}\{h(X)\},$ and applying this with $h(x)=-\log(x),$ we get 
 \begin{align*}
--\log p(\boldsymbol{y}) \leq - \log  \left(\frac{p(\boldsymbol{y}, \boldsymbol{\theta})}{g(\boldsymbol{\theta};\boldsymbol{\psi})}\right) g(\boldsymbol{\theta};\boldsymbol{\psi}) \mathrm{d} \boldsymbol{\theta}.
+-\log p(\boldsymbol{y})  = -\log \left\{\int_{\boldsymbol{\Theta}} p(\boldsymbol{y}, \boldsymbol{\theta}) \mathrm{d} \boldsymbol{\theta}\right\} \leq - \log  \int_{\boldsymbol{\Theta}} \left(\frac{p(\boldsymbol{y}, \boldsymbol{\theta})}{g(\boldsymbol{\theta};\boldsymbol{\psi})}\right) g(\boldsymbol{\theta};\boldsymbol{\psi}) \mathrm{d} \boldsymbol{\theta}.
 \end{align*}
-We can thus consider the model that minimizes the reverse Kullback--Leibler divergence
-\begin{align*}
-g(\boldsymbol{\theta}; \widehat{\boldsymbol{\psi}}) = \mathrm{argmin}_{\boldsymbol{\psi}} \mathsf{KL}\{g(\boldsymbol{\theta};\boldsymbol{\psi}) \parallel p(\boldsymbol{\theta}, \boldsymbol{y})\}.
-\end{align*}
+
 We can get a slightly different take if we consider the reformulation
 \begin{align*}
-\mathsf{KL}\{g(\boldsymbol{\theta};\boldsymbol{\psi}) \parallel p(\boldsymbol{\theta}, \boldsymbol{y}) = \mathsf{E}_{g}\{\log g(\boldsymbol{\theta})\} - \mathsf{E}_g\{\log p(\boldsymbol{y}, \boldsymbol{\theta})\} + \log p(\boldsymbol{y}).
+\mathsf{KL}\{g(\boldsymbol{\theta};\boldsymbol{\psi}) \parallel p(\boldsymbol{\theta} \mid \boldsymbol{y})\} = \mathsf{E}_{g}\{\log g(\boldsymbol{\theta})\} - \mathsf{E}_g\{\log p(\boldsymbol{y}, \boldsymbol{\theta})\} + \log p(\boldsymbol{y}).
 \end{align*}
-Instead of minimizing the Kullback--Leibler divergence, we can equivalently maximize the so-called **evidence lower bound** (ELBO)
+Instead of minimizing the Kullback--Leibler divergence, we can thus equivalently maximize the so-called **evidence lower bound** (ELBO)
 \begin{align*}
 \mathsf{ELBO}(g) = \mathsf{E}_g\{\log p(\boldsymbol{y}, \boldsymbol{\theta})\} - \mathsf{E}_{g}\{\log g(\boldsymbol{\theta})\}
 \end{align*}
@@ -134,7 +149,7 @@ The ELBO as an objective function balances between two terms: the first term is 
 
 The ELBO is a lower bound for the marginal likelihood because the Kullback--Leibler divergence is non-negative and 
 \begin{align*}
-\log p(\boldsymbol{y}) = \mathsf{ELBO}(g) +  \mathsf{KL}\{g(\boldsymbol{\theta};\boldsymbol{\psi}) \parallel p(\boldsymbol{\theta}, \boldsymbol{y})\}.
+\log p(\boldsymbol{y}) = \mathsf{ELBO}(g) +  \mathsf{KL}\{g(\boldsymbol{\theta};\boldsymbol{\psi}) \parallel p(\boldsymbol{\theta} \mid \boldsymbol{y})\}.
 \end{align*}
 If we could estimate the marginal likelihood of a (typically simpler) competing alternative and the lower bound on the evidence in favour of the more complex model was very much larger, then we could use this but generally there is no theoretical guarantee for model comparison if we compare two lower evidence lower bounds. The purpose of variational inference is that approximations to expectations, credible intervals, etc. are obtained from $g(\cdot; \boldsymbol{\psi})$ instead of $p(\cdot).$
 
@@ -175,18 +190,19 @@ where $Z \sim \mathsf{Gauss}(0,1).$ We can approximate the last term by Monte Ca
 ## Optimization of the evidence lower bound
 
 Variational inference in itself does not determine the choice of approximating density $g(\cdot; \boldsymbol{\psi});$ the quality of the approximation depends strongly on the latter.
-The user has ample choice to decide whether to use the fully correlated, factorized, or the mean-field approximation, along with the parametric family for each block. Note that the latter must be support dependent, as the Kullback--Leibler divergence will be infinite if the support of $g$ does not include that of $p(\boldsymbol{\theta} \mid \boldsymbol{y}).$
+The user has ample choice to decide whether to use the fully correlated, factorized, or the mean-field approximation, along with the parametric family for each block. Note that the latter must be support dependent, as the Kullback--Leibler divergence will be infinite if the support of $g$ does not include that of $p(\boldsymbol{\theta} \mid \boldsymbol{y})$ (although we work with the reverse Kullback--Leibler).
 
 
 There are two main approaches: the first is to start off with the model with a factorization of the density, and deduce the form of the most suitable parametric family for the approximation that will minimize the ELBO. This requires bespoke derivation of the form of the density and the conditionals for each model, and does not lead itself easily to generalizations. The second approach alternative is to rely on a generic family for the approximation, and an omnibus procedure for the optimization using a reformulation via stochastic optimization that approximates the integrals appearing in the ELBO formula. 
 
 ### Factorization
+
 Factorizations of $g(;\boldsymbol{\psi})$ into blocks with parameters $\boldsymbol{\psi}_1, \ldots, \boldsymbol{\psi}_M,$ where
 \begin{align*}
-g(\boldsymbol{\theta}; \boldsymbol{\psi}) = \prod_{j=1}^M q_j(\boldsymbol{\theta}_j; \boldsymbol{\psi}_j)
+g(\boldsymbol{\theta}; \boldsymbol{\psi}) = \prod_{j=1}^M g_j(\boldsymbol{\theta}_j; \boldsymbol{\psi}_j)
 \end{align*}
 If we assume that each of the $J$ parameters $\theta_1, \ldots, \theta_J$ are independent, then
-we obtain a **mean-field** approximation. The latter will be poor if parameters are strongly correlated, as we will demonstrate later.
+we obtain a **mean-field** approximation. The latter will be poor if parameters are strongly correlated, as we will demonstrate later. 
 
 We use a factorization of $g,$ and denote the components $g_j(\cdot)$ for simplicity, omitting dependence on the parameters $\boldsymbol{\psi}.$ We can write the ELBO as
 \begin{align*}
@@ -194,22 +210,22 @@ We use a factorization of $g,$ and denote the components $g_j(\cdot)$ for simpli
  \\& = \int \int \left\{\log p(\boldsymbol{y}, \boldsymbol{\theta}) \prod_{\substack{i \neq j \\j=1}}^M g_j(\boldsymbol{\theta}_j)\mathrm{d} \boldsymbol{\theta}_{-i}\right\} \mathrm{d} \boldsymbol{\theta}_{-i} g_i(\boldsymbol{\theta}_i) \mathrm{d} \boldsymbol{\theta}_i - \sum_{j=1}^M \int \log \{ g_j(\boldsymbol{\theta}_j) \} g_j(\boldsymbol{\theta}_j) \mathrm{d}  \boldsymbol{\theta}_j
  \\& \stackrel{\boldsymbol{\theta}_i}{\propto} \int \mathsf{E}_{-i}\left\{\log p(\boldsymbol{y}, \boldsymbol{\theta})\right\} g_i(\boldsymbol{\theta}_i) \mathrm{d} \boldsymbol{\theta}_i - \int \log \{ g_i(\boldsymbol{\theta}_i) \} g_i(\boldsymbol{\theta}_i) \mathrm{d} \boldsymbol{\theta}_i
 \end{align*}
-where the last line is a negative Kullback--Leibler divergence between $q_j$ and
+where the last line is a negative Kullback--Leibler divergence between $g_i$ and
 \begin{align*}
  \mathsf{E}_{-i}\left\{\log p(\boldsymbol{y}, \boldsymbol{\theta})\right\} = \int \log p(\boldsymbol{y}, \boldsymbol{\theta}) \prod_{\substack{i \neq j \\j=1}}^M g_j(\boldsymbol{\theta}_j)\mathrm{d} \boldsymbol{\theta}_{-i}
 \end{align*}
-and the subscript $-i$ indicates that we consider all but the $i$th component of the $J$ vector. This reveals that the form of approximating density $g_i$ that maximizes the ELBO is of the form
+and the subscript $-i$ indicates that we consider all but the $i$th component of the $J$ vector. Since the KL divergence is strictly non-negative and minimized if we take the same density, this reveals that the form of approximating density $g_i$ that maximizes the ELBO is of the form
 \begin{align*}
- g^{\star}_j(\boldsymbol{\theta}_j) \propto \exp \left[ \mathsf{E}_{-i}\left\{\log p(\boldsymbol{y}, \boldsymbol{\theta})\right\}\right].
+ g^{\star}_i(\boldsymbol{\theta}_i) \propto \exp \left[ \mathsf{E}_{-i}\left\{\log p(\boldsymbol{y}, \boldsymbol{\theta})\right\}\right].
 \end{align*}
-Often, we can look at the kernel of $g^{\star}_j$  and deduce the normalizing constant, which is defined as the integral of the above. The posterior approximation will have a closed form expression if we consider cases of conditionally conjugate distributions in the exponential family: we can see that the optimal  $g^{\star}_j$ relates to the conditional since $p(\boldsymbol{\theta}, \boldsymbol{y}) \stackrel{\boldsymbol{\theta}_i}{\propto} p(\boldsymbol{\theta}_i \mid \boldsymbol{\theta}_{-i}, \boldsymbol{y}).$ This provides a connection to Gibbs sampling.
+This expression is specified up to proportionality, but we can often look at the kernel of $g^{\star}_i$  and deduce from it the normalizing constant, which is defined as the integral of the above. The posterior approximation will have a closed form expression if we consider cases of conditionally conjugate distributions in the exponential family: we can see that the optimal  $g^{\star}_j$ relates to the conditional since $p(\boldsymbol{\theta}, \boldsymbol{y}) \stackrel{\boldsymbol{\theta}_i}{\propto} p(\boldsymbol{\theta}_i \mid \boldsymbol{\theta}_{-i}, \boldsymbol{y}).$ The connection to Gibbs sampling, which instead draws parameters from the conditional, reveals that problems that can be tackled by the latter method will be amenable to factorizations with approximating densities from known families.
 
 
 If we consider maximization of the ELBO for $g_i,$ we can see from the law of iterated expectation that the latter is proportional to
 \begin{align*}
  \mathsf{ELBO}(g_i) \propto \mathsf{E}_i \left[ \mathsf{E}_{-i} \{\log p(\boldsymbol{\theta}, \boldsymbol{y}) \}\right] - \mathsf{E}_i\{\log g_i(\boldsymbol{\theta}_i)\}
 \end{align*}
-Due to the nature of this conditional expectation, we can devide an algorithm to maximize the ELBO of the factorized approximation. Each parameter update depends on the other components, but the $\mathsf{ELBO}(q_i)$ is concave. We can maximize $g^{\star}_j$ in turn for each $j=1, \ldots, M$ treating the other parameters as fixed, and iterate this scheme. The resulting approximation, termed coordinate ascent variational inference (CAVI), is guaranteed to monotonically increase the evidence lower bound until convergence to a local maximum; see Sections 3.1.5 and 3.2.4--3.2.5 of @Boyd.Vandenberghe:2004.  The scheme is a valid coordinate ascent algorithm. At each cycle, we compute the ELBO and stop the algorithm when the change is lower then some present numerical tolerance.  Since the approximation may have multiple local optima, we can perform random initializations and keep the one with highest performance.
+Due to the nature of this conditional expectation, we can devise an algorithm to maximize the ELBO of the factorized approximation. Each parameter update depends on the other components, but the $\mathsf{ELBO}(g_i)$ is concave. We can maximize $g^{\star}_i$ in turn for each $i=1, \ldots, M$ treating the other parameters as fixed, and iterate this scheme. The resulting approximation, termed coordinate ascent variational inference (CAVI), is guaranteed to monotonically increase the evidence lower bound until convergence to a local maximum; see Sections 3.1.5 and 3.2.4--3.2.5 of @Boyd.Vandenberghe:2004.  The scheme is a valid coordinate ascent algorithm. At each cycle, we compute the ELBO and stop the algorithm when the change is lower then some present numerical tolerance.  Since the approximation may have multiple local optima, we can perform random initializations and keep the one with highest performance.
 
 
 :::{exm-gaussian-variational-approx}
@@ -220,7 +236,7 @@ Y_i &\sim \mathsf{Gauss}(\mu, \tau^{-1}), \qquad i =1, \ldots, n;\\
 \mu &\sim \mathsf{Gauss}(\mu_0, \tau_0^{-1}) \\
 \tau &\sim \mathsf{gamma}(a_0, b_0).
 \end{align*}
-This is an example where the full posterior is available in closed-form, so we can compare our approximation with the truth. We assume a factorization of the variational approximation $g_\mu(\mu)g_\tau(\tau);$ the factor for $q_\mu$ is proportional to
+This is an example where the full posterior is available in closed-form, so we can compare our approximation with the truth. We assume a factorization of the variational approximation $g_\mu(\mu)g_\tau(\tau);$ the factor for $g_\mu$ is proportional to
 \begin{align*}
  \log g^{\star}_\mu(\mu) \propto -\frac{\mathsf{E}_{\tau}(\tau)}{2} \sum_{i=1}^n (y_i-\mu)^2-\frac{\tau_0}{2}(\mu-\mu_0)^2
 \end{align*}
@@ -295,10 +311,10 @@ We consider alternative numeric schemes which rely on stochastic optimization. T
 where $p(\boldsymbol{\theta}, \boldsymbol{y})$ does not depend on $\boldsymbol{\psi}$,
 and
 \begin{align*}
-\int \frac{\partial \log g(\boldsymbol{\theta}; \boldsymbol{\psi})}{\partial \boldsymbol{\psi}} g(\boldsymbol{\theta}; \boldsymbol{\psi}) \mathrm{d} \boldsymbol{\theta} & = \int \frac{\partial g(\boldsymbol{\theta}; \boldsymbol{\psi})}{\partial \boldsymbol{\psi}} \mathrm{d} \boldsymbol{\theta}  \\
+\int \frac{\partial \log g(\boldsymbol{\theta}; \boldsymbol{\psi})}{\partial \boldsymbol{\psi}} g(\boldsymbol{\theta}; \boldsymbol{\psi}) \mathrm{d} \boldsymbol{\theta} & = \int \frac{\partial g(\boldsymbol{\theta}; \boldsymbol{\psi})}{\partial \boldsymbol{\psi}} \mathrm{d} \boldsymbol{\theta}  \\&=
 \frac{\partial}{\partial \boldsymbol{\psi}}\int g(\boldsymbol{\theta}; \boldsymbol{\psi})  \mathrm{d} \boldsymbol{\theta} = 0.
 \end{align*}
-This term vanishes since the integral of a density is one regardless of the value of $\boldsymbol{\psi}$, so it's derivative vanishes. We are left with the expected value
+The integral of a density is one regardless of the value of $\boldsymbol{\psi}$, so it's derivative vanishes. We are left with the expected value
 \begin{align*}
  \mathsf{E}_{g}\left\{\frac{\partial \log g(\boldsymbol{\theta}; \boldsymbol{\psi})}{\partial \boldsymbol{\psi}} \times \log \left( \frac{p(\boldsymbol{\theta}, \boldsymbol{y})}{g(\boldsymbol{\theta}; \boldsymbol{\psi})}\right)\right\}
 \end{align*}
@@ -313,17 +329,19 @@ Some families of distributions, notably location-scale (cf. @def-location-scale)
  \\& =  \frac{D\log(2\pi) + \log|\boldsymbol{\Sigma}|}{2} - \frac{1}{2}\mathsf{tr}\left[\boldsymbol{\Sigma}^{-1}\mathsf{E}_g\left\{(\boldsymbol{X}-\boldsymbol{\mu})(\boldsymbol{X}-\boldsymbol{\mu})^\top\right\}\right]
  \\& =\frac{D+D\log(2\pi) + \log |\boldsymbol{\Sigma}|}{2}.
 \end{align*}
-This follows from taking the trace of a $1\times 1$ matrix, and applying a cyclic permutation to which the trace is invariant. Since the trace is a linear operator, we can interchange the trace with the expected value.  Finally, we have $\mathsf{E}_g\left\{(\boldsymbol{X}-\boldsymbol{\mu})(\boldsymbol{X}-\boldsymbol{\mu})^\top\right\}=\boldsymbol{\Sigma}$, and the trace of a $D \times D$ identity matrix is simply $D$. The Gaussian entropy depends only on the covariance, so is not random. The transformation to $\mathbb{R}^p$ is not unique and different choices may yield to differences, but the choice of optimal transformation requires knowledge of the true posterior, which is thus intractable.
+This follows from taking the trace of a $1\times 1$ matrix, and applying a cyclic permutation to which the trace is invariant. Since the trace is a linear operator, we can interchange the trace with the expected value.  Finally, we have $\mathsf{E}_g\left\{(\boldsymbol{X}-\boldsymbol{\mu})(\boldsymbol{X}-\boldsymbol{\mu})^\top\right\}=\boldsymbol{\Sigma}$, and the trace of a $D \times D$ identity matrix is simply $D$. The Gaussian entropy depends only on the covariance, so is not random. 
+
+
+The transformation to $\mathbb{R}^p$ is not unique and different choices may yield to differences, but the choice of optimal transformation requires knowledge of the true posterior, which is thus intractable.
 
 We focus on the case of full transformation; the derivation for independent components is analogous. Since the Gaussian is a location-scale family, we can rewrite the model in terms of a standardized Gaussian variable $\boldsymbol{Z}\sim \mathsf{Gauss}_p(\boldsymbol{0}_p, \mathbf{I}_p)$ where $\boldsymbol{\zeta} = \boldsymbol{\mu} + \mathbf{L}\boldsymbol{Z}$ The ELBO with the transformation is of the form
 \begin{align*}
- \mathsf{E}_{\boldsymbol{Z}}\left\{ \log p(\boldsymbol{y}, T^{-1}(\boldsymbol{\mu} + \mathbf{L}\boldsymbol{Z}) + \log \left|\mathbf{J}_{T^{-1}}(\boldsymbol{\mu} + \mathbf{L}\boldsymbol{\eta})\right|\right\} +\frac{D+D\log(2\pi) + \log |\mathbf{LL}^\top|}{2}.
+ \mathsf{E}_{\boldsymbol{Z}}\left[ \log p\{\boldsymbol{y}, T^{-1}(\boldsymbol{\mu} + \mathbf{L}\boldsymbol{Z})\} + \log \left|\mathbf{J}_{T^{-1}}(\boldsymbol{\mu} + \mathbf{L}\boldsymbol{Z})\right|\right] +\frac{D+D\log(2\pi) + \log |\mathbf{LL}^\top|}{2}.
 \end{align*}
 where we have the absolute value of the determinant of the Jacobian of the transformation. If we apply the chain rule
 \begin{align*}
  \frac{\partial}{\partial \boldsymbol{\psi}}\log p(\boldsymbol{y}, T^{-1}(\boldsymbol{\mu} + \mathbf{L}\boldsymbol{Z}) = \frac{\partial \log p(\boldsymbol{y}, \boldsymbol{\theta})}{\partial \boldsymbol{\theta}} \frac{\partial T^{-1}(\boldsymbol{\zeta})}{\partial \boldsymbol{\zeta}} \frac{\partial \boldsymbol{\mu} + \mathbf{L}\boldsymbol{Z}}{\partial \boldsymbol{\psi}}
 \end{align*}
-and the derivative with respect to
 and we retrieve the gradients of the ELBO with respect to the mean and variance, which are
 \begin{align*}
  \frac{\partial \mathsf{ELBO}(g)}{\partial \boldsymbol{\mu}} &= \mathsf{E}_{\boldsymbol{Z}}\left\{\frac{\partial \log p(\boldsymbol{y}, \boldsymbol{\theta})}{\partial \boldsymbol{\theta}} \frac{\partial T^{-1}(\boldsymbol{\zeta})}{\partial \boldsymbol{\zeta}}  + \frac{\partial \log \left|\mathbf{J}_{T^{-1}}(\boldsymbol{\zeta})\right|}{\partial \boldsymbol{\zeta}}\right\} \\
