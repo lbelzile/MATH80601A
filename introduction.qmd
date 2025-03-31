@@ -376,11 +376,11 @@ The support of $f$ must not depend on $\boldsymbol{\theta}.$ The transformed par
 
 :::
 
- If we have an independent and identically distributed sample of observations $y_1, \ldots, y_n$, the log likelihood is thus of the form
+If we have an independent and identically distributed sample of observations $y_1, \ldots, y_n$, the log likelihood is thus of the form
 \begin{align*}
-\ell(\boldsymbol{\theta}) = \sum_{k=1}^K \phi_k(\boldsymbol{\theta}) \sum_{i=1}^n t_k(y_i) + n D(\boldsymbol{\theta}),
+\ell(\boldsymbol{\theta}) = \sum_{k=1}^K Q_k(\boldsymbol{\theta}) \sum_{i=1}^n t_k(y_i) + n D(\boldsymbol{\theta}),
 \end{align*}
-where  the collection $\sum_{i=1}^n t_k(y_i)$ ($k=1, \ldots, K$) are sufficient statistics and $\phi_k(\boldsymbol{\theta})$ are the canonical parameters. 
+where  the collection $\sum_{i=1}^n t_k(y_i)$ ($k=1, \ldots, K$) are sufficient statistics. 
 
 We term **conjugate family** families of distribution on $\boldsymbol{\Theta}$ with parameters $\boldsymbol{\chi}, \gamma$ if their density is proportional to
 \begin{align*}
