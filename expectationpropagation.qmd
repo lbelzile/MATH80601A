@@ -20,22 +20,22 @@ where $\mathbf{Q}$ is the precision matrix and $\boldsymbol{r}=\mathbf{Q}\boldsy
 
 
 Let $p(\boldsymbol{\theta} \mid \boldsymbol{y})=\exp\{-\psi(\boldsymbol{\theta})\}$ denote the posterior density. Since logarithm is a monotonic transform, we can equivalent minimize $\psi(\boldsymbol{\theta})$ to find the posterior mode.
-Denote the gradient $\nabla_{\boldsymbol{\theta}} \psi(\boldsymbol{\theta}) = \partial \psi/\partial \boldsymbol{\theta}$ and the Hessian matrix $\mathbf{H}(\boldsymbol{\theta}) = \partial^2 \psi/(\partial \boldsymbol{\theta}\partial \boldsymbol{\theta}^\top).$ Starting from an initial value $\boldsymbol{\theta}_{(0)},$  we consider at step $i$, a second order Taylor series expansion of $\psi(\boldsymbol{\theta})$ around $\theta_{(i)},$ which gives
+Denote the gradient $\nabla_{\boldsymbol{\theta}} \psi(\boldsymbol{\theta}) = \partial \psi/\partial \boldsymbol{\theta}$ and the Hessian matrix $\mathbf{H}(\boldsymbol{\theta}) = \partial^2 \psi/(\partial \boldsymbol{\theta}\partial \boldsymbol{\theta}^\top).$ Starting from an initial value $\boldsymbol{\theta}_{(0)},$  we consider at step $i$, a second order Taylor series expansion of $\psi(\boldsymbol{\theta})$ around $\boldsymbol{\theta}_{(i)},$ which gives
 \begin{align*}
- \psi(\theta) \approx \psi(\theta_{((i)}) + \nabla_{\boldsymbol{\theta}} \psi(\boldsymbol{\theta}_{(i)})(\theta-\theta_{((i)}) + (\theta-\theta_{((i)})^\top\mathbf{H}(\theta_{((i)})(\theta-\theta_{((i)})
+ \psi(\boldsymbol{\theta}) \approx \psi(\boldsymbol{\theta}_{(i)}) + \nabla_{\boldsymbol{\theta}} \psi(\boldsymbol{\theta}_{(i)})(\boldsymbol{\theta}-\boldsymbol{\theta}_{(i)}) + (\boldsymbol{\theta}-\boldsymbol{\theta}_{(i)})^\top\mathbf{H}(\boldsymbol{\theta}_{(i)})(\boldsymbol{\theta}-\boldsymbol{\theta}_{(i)})
 \end{align*}
-The term $\psi(\theta_{((i)})$ is constant, so if we plug-in this inside the exponential, we obtain
+The term $\psi(\boldsymbol{\theta}_{(i)})$ is constant, so if we plug-in this inside the exponential, we obtain
 \begin{align*}
- q_{(i+1)}(\boldsymbol{\theta}) &\propto \exp \left\{ - \frac{1}{2} \boldsymbol{\theta}^\top\mathbf{H}(\theta_{(i)}) \boldsymbol{\theta} + \theta_{(i+1)}^\top\mathbf{H}(\theta_{(i)})\boldsymbol{\theta}\right\}
+ q_{(i+1)}(\boldsymbol{\theta}) &\propto \exp \left\{ - \frac{1}{2} \boldsymbol{\theta}^\top\mathbf{H}(\boldsymbol{\theta}_{(i)}) \boldsymbol{\theta} + \boldsymbol{\theta}_{(i+1)}^\top\mathbf{H}(\boldsymbol{\theta}_{(i)})\boldsymbol{\theta}\right\}
  \end{align*}
  where the mean of the approximation is
  \begin{align*}
- \theta_{(i+1)} = \theta_{(i)} - \mathbf{H}^{-1}(\theta_{(i)}) \nabla_{\boldsymbol{\theta}} \psi(\boldsymbol{\theta}_{(i)}).
+ \boldsymbol{\theta}_{(i+1)} = \boldsymbol{\theta}_{(i)} - \mathbf{H}^{-1}(\boldsymbol{\theta}_{(i)}) \nabla_{\boldsymbol{\theta}} \psi(\boldsymbol{\theta}_{(i)}).
 \end{align*}
-The iterations perform gradient descent, with a correction that ajusts for the curvature locally.
-This scheme works provided that $\mathbf{H}(\theta_{(i)})$ is positive definite (all of it's eigenvalues are positive); this may fail for non-convex targets, in which case we could perturb the scheme by adding a ridge-penalty (large diagonal matrix of positive terms) to ensure convergence until we reach a neighborhood of the mode. The new mean vector $\theta_{(i+1)}$ corresponds to a Newton update, and at the same time we have defined a sequence of Gaussian updating approximations. The fixed point to which the algorithm converges is the Laplace approximation.
+The iterations perform gradient descent, with a correction that adjusts for the curvature locally.
+This scheme works provided that $\mathbf{H}(\boldsymbol{\theta}_{(i)})$ is positive definite (all of it's eigenvalues are positive); this may fail for non-convex targets, in which case we could perturb the scheme by adding a ridge-penalty (large diagonal matrix of positive terms) to ensure convergence until we reach a neighborhood of the mode. The new mean vector $\boldsymbol{\theta}_{(i+1)}$ corresponds to a Newton update, and at the same time we have defined a sequence of Gaussian updating approximations. The fixed point to which the algorithm converges is the Laplace approximation.
 
-Suppose for simplicity that the domain $\boldsymbol{\Theta}=\mathbb{R}^p$, so that no prior transformation $T$ is necessary. For location-scale family, we have seen in the section on ADVI that the variational Bayes with a Gaussian approximation on the target $\boldsymbol{\theta} = \boldsymbol{\mu} + \mathbf{L}\boldsymbol{Z}$ with $\mathbf{LL}^\top=\boldsymbol{\Sigma}$ and $\boldsymbol{Z} \sim \mathsf{Gauss}_p(\boldsymbol{0}_p, \mathbf{I}_p)$ that the gradient satisfies
+Suppose for simplicity that the domain $\boldsymbol{\Theta}=\mathbb{R}^p$, so that no prior transformation is necessary. For location-scale family, we have seen in the section on ADVI that the variational Bayes with a Gaussian approximation on the target $\boldsymbol{\theta} = \boldsymbol{\mu} + \mathbf{L}\boldsymbol{Z}$ with $\mathbf{LL}^\top=\boldsymbol{\Sigma}$ and $\boldsymbol{Z} \sim \mathsf{Gauss}_p(\boldsymbol{0}_p, \mathbf{I}_p)$ that the gradient satisfies
 \begin{align*}
  \nabla_{\boldsymbol{\mu}}\mathsf{ELBO}(q)&= -\mathsf{E}_{\boldsymbol{Z}}\{\nabla_{\boldsymbol{\theta}}\psi(\boldsymbol{\theta})\} \\
  \nabla_{\mathbf{L}}\mathsf{ELBO}(q)&= -\mathsf{E}_{\boldsymbol{Z}}\{\nabla_{\boldsymbol{\theta}}\psi(\boldsymbol{\theta})\boldsymbol{Z}^\top\} + \mathbf{L}^{-\top}
@@ -49,7 +49,7 @@ At a critical point, both of these derivatives must be zero, whence
  \mathsf{E}_{\boldsymbol{Z}}\{\nabla_{\boldsymbol{\theta}}\psi(\boldsymbol{\theta})\} &= \boldsymbol{0}_p. \\
  \mathsf{E}_{\boldsymbol{Z}}\left\{ \frac{\partial^2 \psi(\boldsymbol{\theta})}{\partial \boldsymbol{\theta} \partial \boldsymbol{\theta}^\top}\right\} &= \boldsymbol{\Sigma}^{-1}.
 \end{align*}
-Compared to the Laplace approximation, the variational Gaussian approximation returns a vector $\boldsymbol{mu}$ around which the expected value of the gradient is zero and similarly $\boldsymbol{\Sigma}$ for which the  expected value of the curvature (Hessian) is equal to the precision. The averaging step is what distinguishes the Laplace and variational approximations.
+Compared to the Laplace approximation, the variational Gaussian approximation returns a vector $\boldsymbol{\mu}$ around which the expected value of the gradient is zero and similarly $\boldsymbol{\Sigma}$ for which the  expected value of the curvature (Hessian) is equal to the precision. The averaging step is what distinguishes the Laplace and variational approximations.
 
 
 
@@ -59,7 +59,7 @@ Compared to the Laplace approximation, the variational Gaussian approximation re
 
 Consider $h: \mathbb{R}^d \to \mathbb{R}$ a differentiable function and integration with respect to $\boldsymbol{X} \sim \mathsf{Gauss}_d(\boldsymbol{\mu}, \boldsymbol{\Sigma})$ such that the gradient is absolutely integrable, $\mathsf{E}_{\boldsymbol{X}}\{|\nabla_i h(\boldsymbol{X})|\} < \infty$ for $i=1, \ldots, d.$ Then [@Liu:1994],
 \begin{align*}
-\mathsf{E}_{\boldsymbol{X}}\left\{h(\boldsymbol{X})(\boldsymbol{X}-\boldsymbol{mu})\right\} = \boldsymbol{\Sigma}\mathsf{E}_{\boldsymbol{X}}\left\{\nabla h(\boldsymbol{X})\right\}
+\mathsf{E}_{\boldsymbol{X}}\left\{h(\boldsymbol{X})(\boldsymbol{X}-\boldsymbol{\mu})\right\} = \boldsymbol{\Sigma}\mathsf{E}_{\boldsymbol{X}}\left\{\nabla h(\boldsymbol{X})\right\}
 \end{align*}
 
 :::
@@ -90,9 +90,9 @@ and so the global approximation is also Gaussian; the last line also holds for d
 Expectation propagation works by starting with the joint approximation and removing one site to get the cavity $$q_{-j}(\boldsymbol{\theta}) = \prod_{\substack{i = 0\\i \neq j}}^n q_{i}(\boldsymbol{\theta});$$
 in practice, this is most easily done by subtracting the term from the approximation of the canonical parameters. We replace then the missing term by $L_j(\boldsymbol{\theta})$ to construct the so-called hybrid density $h_j(\boldsymbol{\theta}) = L_j(\boldsymbol{\theta})q_{-j}(\boldsymbol{\theta}).$ The resulting density is unnormalized, but closer to a sense to the target posterior than is $q(\boldsymbol{\theta}).$ We can start from this and compute a Gaussian approximation to minimize the Kullback--Leibler distance with $\mathsf{KL}(h_j \parallel q^*_j)$ by matching moments, where
 \begin{align*}
- c_j &= \int h_j(\boldsymbol{\theta}) \mathrm{d} \boldsymbol{\theta}
+ c_j &= \int h_j(\boldsymbol{\theta}) \mathrm{d} \boldsymbol{\theta} \\
  \boldsymbol{\mu}_j &= c_{j}^{-1} \int \boldsymbol{\theta} h_j(\boldsymbol{\theta}) \mathrm{d} \boldsymbol{\theta}
- \\ \boldsymbol{\Sigma}_j = c_j^{-1} (\boldsymbol{\theta} - \boldsymbol{\mu}_j)(\boldsymbol{\theta} - \boldsymbol{\mu}_j)^\top h_j(\boldsymbol{\theta}) \mathrm{d} \boldsymbol{\theta}
+ \\ \boldsymbol{\Sigma}_j &= c_j^{-1} (\boldsymbol{\theta} - \boldsymbol{\mu}_j)(\boldsymbol{\theta} - \boldsymbol{\mu}_j)^\top h_j(\boldsymbol{\theta}) \mathrm{d} \boldsymbol{\theta}
 \end{align*}
 The normalizing constant, mean and variance in the above are written in terms of $p$-dimensional integrals but could be easily obtained by Monte Carlo by drawing from the cavity prior. We then go back from moments to canonical parameters $\mathbf{Q}_j$ and $\boldsymbol{r}_j$ and update the global approximation $q.$ These updates can be performed sequentially or in parallel, which can lead to massive gains in efficiency.
 
@@ -107,12 +107,12 @@ Consider a logistic regression model where we code successes $Y=1$ and failures 
 The term on the right is the logistic function. This reparametrization makes it easier to write the likelihood contribution of observation $i$ as $$L_i(\boldsymbol{\beta}) = \mathrm{expit}(y_i \mathbf{x}_i\boldsymbol{\beta}).$$ If we have the approximation for $\boldsymbol{\beta} \sim \mathsf{Gauss}_p(\boldsymbol{\mu}, \boldsymbol{\Sigma}),$ then the integrals for the normalizing constant, etc. depend only on the linear combination $\mathbf{x}_i^\top\boldsymbol{\beta} \sim \mathsf{Gauss}(y_i \mathbf{x}_i^\top\boldsymbol{\mu}, y_i \mathbf{x}_i^\top\boldsymbol{\Sigma}\mathbf{x}_i).$ This means all integrals for the tilting problem are unidimensional and can be obtained by Gaussian quadrature or similar numerical integration schemes.
 
 
-Given the mean and variance of the cavity, denoted $\mu_{-j}$ and $\boldsymbol{\Sigma}_{-j},$ and with $s_j = \mathbf{x}_j\boldsymbol{\Sigma}_{-j}\mathbf{x}_j^\top$, the updated mean and variance are
+Given the mean and variance of the cavity, denoted $\boldsymbol{\mu}_{-j}$ and $\boldsymbol{\Sigma}_{-j},$ and with $s_j = \mathbf{x}_j\boldsymbol{\Sigma}_{-j}\mathbf{x}_j^\top$, the updated mean and variance are
 \begin{align*}
-\mu_j^* &= s_j^{-1}\boldsymbol{\Sigma}_{-j}\mathbf{x}^\top \{\mathbf{E}(Z_j) -\mathbf{x}_j\mu_{-j}\} \\
-\boldsymbol{\Sigma}_{j} &=s_j^{-2}\boldsymbol{\Sigma}_{-j}\mathbf{x}^\top_j\left\{\mathsf{Var}(Z_j) - s_j\right\}\mathbf{x}_j\boldsymbol{\Sigma}_{-j}
+\boldsymbol{\mu}_j^* &= \boldsymbol{\mu}_{-j} s_j^{-1}\boldsymbol{\Sigma}_{-j}\mathbf{x}^\top \{\mathbf{E}(Z_j) -\mathbf{x}_j\boldsymbol{\mu}_{-j}\} \\
+\boldsymbol{\Sigma}_{j} &=\boldsymbol{\Sigma}_{-j} + s_j^{-2}\boldsymbol{\Sigma}_{-j}\mathbf{x}^\top_j\left\{\mathsf{Var}(Z_j) - s_j\right\}\mathbf{x}_j\boldsymbol{\Sigma}_{-j}
 \end{align*}
-where $Z_j$ has distribution proportional to $L_j(z) \times \phi(z; \mathbf{x}_j\boldsymbol{\mu}_j, \mathbf{x}_j\boldsymbol{\Sigma}_{-j}\mathbf{x}_j^\top),$ where $\phi(\cdot; \mu, \sigma^2)$ denotes the density of a Gaussian random variable. The updates to the parameters are found in page 23 of @Cseke.Heskes:2011.
+where $Z_j$ has distribution proportional to $L_j(z) \times \phi(z; \mathbf{x}_j\boldsymbol{\mu}_j, \mathbf{x}_j\boldsymbol{\Sigma}_{-j}\mathbf{x}_j^\top),$ where $\phi(\cdot; \mu, \sigma^2)$ denotes the density of a Gaussian random variable. The updates to the parameters for more general exponential families are found in page 23 of @Cseke.Heskes:2011.
 
 
 ```{r}
@@ -128,8 +128,6 @@ ep_update <- function(mu_lc, sd_lc){
   cst <- pcubature(f = fn, lowerLimit = -Inf, upperLimit = Inf)$integral
   mu <- pcubature(f = function(x){fn(x)*x}, -Inf, Inf)$integral/cst
   va <- pcubature(f = function(x){fn(x)*(x-mu)^2}, -Inf, Inf)$integral/cst
-  # Calculate canonical parameters
-  list(Q = 1/va, r = mu/va)
 }
 ```
 

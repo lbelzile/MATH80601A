@@ -51,7 +51,7 @@ It is important to understand that the lack of symmetry of the Kullback--Leibler
 #| message: false
 #| label: fig-klvsrev
 #| fig-cap: "Illustration of an approximation of a correlated bivariate Gaussian density (dashed contour lines) with an uncorrelated Gaussian, obtained by minimizing the reverse Kullback--Leibler divergence (variational approximation, left) and the Kullback--Leibler divergence."
-library(ellipse,quietly = TRUE, warn.conflicts = FALSE)
+library(ellipse, quietly = TRUE, warn.conflicts = FALSE)
 # From Ben Bolker: https://stackoverflow.com/a/36222689
 
 ## Reverse vs KL divergence for bivariate Gaussian

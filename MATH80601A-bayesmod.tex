@@ -334,18 +334,18 @@
 \floatname{codelisting}{Listing}
 \newcommand*\listoflistings{\listof{codelisting}{List of Listings}}
 \usepackage{amsthm}
+\theoremstyle{plain}
+\newtheorem{proposition}{Proposition}[chapter]
 \theoremstyle{definition}
-\newtheorem{example}{Example}[chapter]
+\newtheorem{exercise}{Exercise}[chapter]
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}[chapter]
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}[chapter]
 \theoremstyle{plain}
 \newtheorem{corollary}{Corollary}[chapter]
 \theoremstyle{definition}
-\newtheorem{definition}{Definition}[chapter]
-\theoremstyle{definition}
-\newtheorem{exercise}{Exercise}[chapter]
-\theoremstyle{plain}
-\newtheorem{proposition}{Proposition}[chapter]
-\theoremstyle{plain}
-\newtheorem{theorem}{Theorem}[chapter]
+\newtheorem{example}{Example}[chapter]
 \theoremstyle{remark}
 \AtBeginDocument{\renewcommand*{\proofname}{Proof}}
 \newtheorem*{remark}{Remark}
@@ -417,7 +417,7 @@ used throughout the course. The overview begins with basic statistical
 concepts, random variables, their distribution and density, moments and
 likelihood derivations.
 
-\begin{tcolorbox}[enhanced jigsaw, colback=white, rightrule=.15mm, titlerule=0mm, toprule=.15mm, colbacktitle=quarto-callout-important-color!10!white, arc=.35mm, colframe=quarto-callout-important-color-frame, bottomtitle=1mm, toptitle=1mm, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Learning objectives}:}, opacitybacktitle=0.6, breakable, bottomrule=.15mm, leftrule=.75mm, left=2mm, opacityback=0, coltitle=black]
+\begin{tcolorbox}[enhanced jigsaw, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Learning objectives}:}, rightrule=.15mm, coltitle=black, leftrule=.75mm, colframe=quarto-callout-important-color-frame, breakable, bottomrule=.15mm, opacityback=0, colbacktitle=quarto-callout-important-color!10!white, left=2mm, bottomtitle=1mm, toptitle=1mm, titlerule=0mm, toprule=.15mm, arc=.35mm, opacitybacktitle=0.6, colback=white]
 
 At the end of the chapter, students should be able to
 
@@ -1712,7 +1712,7 @@ The likelihood can then be written as \begin{align*}
 
 \end{example}
 
-\begin{tcolorbox}[enhanced jigsaw, colback=white, rightrule=.15mm, titlerule=0mm, toprule=.15mm, colbacktitle=quarto-callout-important-color!10!white, arc=.35mm, colframe=quarto-callout-important-color-frame, bottomtitle=1mm, toptitle=1mm, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Summary}}, opacitybacktitle=0.6, breakable, bottomrule=.15mm, leftrule=.75mm, left=2mm, opacityback=0, coltitle=black]
+\begin{tcolorbox}[enhanced jigsaw, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Summary}}, rightrule=.15mm, coltitle=black, leftrule=.75mm, colframe=quarto-callout-important-color-frame, breakable, bottomrule=.15mm, opacityback=0, colbacktitle=quarto-callout-important-color!10!white, left=2mm, bottomtitle=1mm, toptitle=1mm, titlerule=0mm, toprule=.15mm, arc=.35mm, opacitybacktitle=0.6, colback=white]
 
 \begin{itemize}
 \tightlist
@@ -1792,7 +1792,7 @@ elicitation and estimation of the marginal likelihood, are mentioned in
 passing. A brief discussion of Bayesian hypothesis testing (and
 alternatives) is presented.
 
-\begin{tcolorbox}[enhanced jigsaw, colback=white, rightrule=.15mm, titlerule=0mm, toprule=.15mm, colbacktitle=quarto-callout-important-color!10!white, arc=.35mm, colframe=quarto-callout-important-color-frame, bottomtitle=1mm, toptitle=1mm, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Learning objectives}:}, opacitybacktitle=0.6, breakable, bottomrule=.15mm, leftrule=.75mm, left=2mm, opacityback=0, coltitle=black]
+\begin{tcolorbox}[enhanced jigsaw, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Learning objectives}:}, rightrule=.15mm, coltitle=black, leftrule=.75mm, colframe=quarto-callout-important-color-frame, breakable, bottomrule=.15mm, opacityback=0, colbacktitle=quarto-callout-important-color!10!white, left=2mm, bottomtitle=1mm, toptitle=1mm, titlerule=0mm, toprule=.15mm, arc=.35mm, opacitybacktitle=0.6, colback=white]
 
 At the end of the chapter, students should be able to
 
@@ -2729,7 +2729,7 @@ the cutoff for the HDP region.}
 
 \end{figure}%
 
-\begin{tcolorbox}[enhanced jigsaw, colback=white, rightrule=.15mm, titlerule=0mm, toprule=.15mm, colbacktitle=quarto-callout-important-color!10!white, arc=.35mm, colframe=quarto-callout-important-color-frame, bottomtitle=1mm, toptitle=1mm, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Summary}:}, opacitybacktitle=0.6, breakable, bottomrule=.15mm, leftrule=.75mm, left=2mm, opacityback=0, coltitle=black]
+\begin{tcolorbox}[enhanced jigsaw, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Summary}:}, rightrule=.15mm, coltitle=black, leftrule=.75mm, colframe=quarto-callout-important-color-frame, breakable, bottomrule=.15mm, opacityback=0, colbacktitle=quarto-callout-important-color!10!white, left=2mm, bottomtitle=1mm, toptitle=1mm, titlerule=0mm, toprule=.15mm, arc=.35mm, opacitybacktitle=0.6, colback=white]
 
 \begin{itemize}
 \tightlist
@@ -2808,7 +2808,7 @@ inferences. Generally, we will choose the prior for convenience. Priors
 are controversial because they could be tuned aposteriori to give any
 answer an analyst might want.
 
-\begin{tcolorbox}[enhanced jigsaw, colback=white, rightrule=.15mm, titlerule=0mm, toprule=.15mm, colbacktitle=quarto-callout-important-color!10!white, arc=.35mm, colframe=quarto-callout-important-color-frame, bottomtitle=1mm, toptitle=1mm, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Learning objectives}:}, opacitybacktitle=0.6, breakable, bottomrule=.15mm, leftrule=.75mm, left=2mm, opacityback=0, coltitle=black]
+\begin{tcolorbox}[enhanced jigsaw, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Learning objectives}:}, rightrule=.15mm, coltitle=black, leftrule=.75mm, colframe=quarto-callout-important-color-frame, breakable, bottomrule=.15mm, opacityback=0, colbacktitle=quarto-callout-important-color!10!white, left=2mm, bottomtitle=1mm, toptitle=1mm, titlerule=0mm, toprule=.15mm, arc=.35mm, opacitybacktitle=0.6, colback=white]
 
 At the end of the chapter, students should be able to
 
@@ -3843,7 +3843,7 @@ improper priors on location and scale.}
 
 \end{example}
 
-\begin{tcolorbox}[enhanced jigsaw, colback=white, rightrule=.15mm, titlerule=0mm, toprule=.15mm, colbacktitle=quarto-callout-important-color!10!white, arc=.35mm, colframe=quarto-callout-important-color-frame, bottomtitle=1mm, toptitle=1mm, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Summary}:}, opacitybacktitle=0.6, breakable, bottomrule=.15mm, leftrule=.75mm, left=2mm, opacityback=0, coltitle=black]
+\begin{tcolorbox}[enhanced jigsaw, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Summary}:}, rightrule=.15mm, coltitle=black, leftrule=.75mm, colframe=quarto-callout-important-color-frame, breakable, bottomrule=.15mm, opacityback=0, colbacktitle=quarto-callout-important-color!10!white, left=2mm, bottomtitle=1mm, toptitle=1mm, titlerule=0mm, toprule=.15mm, arc=.35mm, opacitybacktitle=0.6, colback=white]
 
 \begin{itemize}
 \tightlist
@@ -4904,7 +4904,7 @@ computers became more widely available. The idea is to draw correlated
 samples from a posterior via Markov chains, constructed to have the
 posterior as invariant stationary distribution.
 
-\begin{tcolorbox}[enhanced jigsaw, colback=white, rightrule=.15mm, titlerule=0mm, toprule=.15mm, colbacktitle=quarto-callout-important-color!10!white, arc=.35mm, colframe=quarto-callout-important-color-frame, bottomtitle=1mm, toptitle=1mm, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Learning objectives}:}, opacitybacktitle=0.6, breakable, bottomrule=.15mm, leftrule=.75mm, left=2mm, opacityback=0, coltitle=black]
+\begin{tcolorbox}[enhanced jigsaw, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Learning objectives}:}, rightrule=.15mm, coltitle=black, leftrule=.75mm, colframe=quarto-callout-important-color-frame, breakable, bottomrule=.15mm, opacityback=0, colbacktitle=quarto-callout-important-color!10!white, left=2mm, bottomtitle=1mm, toptitle=1mm, titlerule=0mm, toprule=.15mm, arc=.35mm, opacitybacktitle=0.6, colback=white]
 
 At the end of the chapter, students should be able to
 
@@ -5594,7 +5594,7 @@ overdispersion.
 
 \end{example}
 
-\begin{tcolorbox}[enhanced jigsaw, colback=white, rightrule=.15mm, titlerule=0mm, toprule=.15mm, colbacktitle=quarto-callout-important-color!10!white, arc=.35mm, colframe=quarto-callout-important-color-frame, bottomtitle=1mm, toptitle=1mm, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Summary}:}, opacitybacktitle=0.6, breakable, bottomrule=.15mm, leftrule=.75mm, left=2mm, opacityback=0, coltitle=black]
+\begin{tcolorbox}[enhanced jigsaw, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Summary}:}, rightrule=.15mm, coltitle=black, leftrule=.75mm, colframe=quarto-callout-important-color-frame, breakable, bottomrule=.15mm, opacityback=0, colbacktitle=quarto-callout-important-color!10!white, left=2mm, bottomtitle=1mm, toptitle=1mm, titlerule=0mm, toprule=.15mm, arc=.35mm, opacitybacktitle=0.6, colback=white]
 
 \begin{itemize}
 \tightlist
@@ -5645,7 +5645,7 @@ overdispersion.
 
 \chapter{Gibbs sampling}\label{sec-Gibbs}
 
-\begin{tcolorbox}[enhanced jigsaw, colback=white, rightrule=.15mm, titlerule=0mm, toprule=.15mm, colbacktitle=quarto-callout-important-color!10!white, arc=.35mm, colframe=quarto-callout-important-color-frame, bottomtitle=1mm, toptitle=1mm, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Learning objectives}:}, opacitybacktitle=0.6, breakable, bottomrule=.15mm, leftrule=.75mm, left=2mm, opacityback=0, coltitle=black]
+\begin{tcolorbox}[enhanced jigsaw, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Learning objectives}:}, rightrule=.15mm, coltitle=black, leftrule=.75mm, colframe=quarto-callout-important-color-frame, breakable, bottomrule=.15mm, opacityback=0, colbacktitle=quarto-callout-important-color!10!white, left=2mm, bottomtitle=1mm, toptitle=1mm, titlerule=0mm, toprule=.15mm, arc=.35mm, opacitybacktitle=0.6, colback=white]
 
 At the end of the chapter, students should be able to
 
@@ -6111,7 +6111,7 @@ and Stephens (\citeproc{ref-Stephens:2002}{2002}) for more details.
 
 \end{refremark}
 
-\begin{tcolorbox}[enhanced jigsaw, colback=white, rightrule=.15mm, titlerule=0mm, toprule=.15mm, colbacktitle=quarto-callout-important-color!10!white, arc=.35mm, colframe=quarto-callout-important-color-frame, bottomtitle=1mm, toptitle=1mm, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Summary}:}, opacitybacktitle=0.6, breakable, bottomrule=.15mm, leftrule=.75mm, left=2mm, opacityback=0, coltitle=black]
+\begin{tcolorbox}[enhanced jigsaw, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Summary}:}, rightrule=.15mm, coltitle=black, leftrule=.75mm, colframe=quarto-callout-important-color-frame, breakable, bottomrule=.15mm, opacityback=0, colbacktitle=quarto-callout-important-color!10!white, left=2mm, bottomtitle=1mm, toptitle=1mm, titlerule=0mm, toprule=.15mm, arc=.35mm, opacitybacktitle=0.6, colback=white]
 
 \begin{itemize}
 \tightlist
@@ -6169,7 +6169,7 @@ Betancourt} for excellent visualizations. In this chapter, we focus on
 three aspects of the workflow: model validation, evaluation and
 comparison.
 
-\begin{tcolorbox}[enhanced jigsaw, colback=white, rightrule=.15mm, titlerule=0mm, toprule=.15mm, colbacktitle=quarto-callout-important-color!10!white, arc=.35mm, colframe=quarto-callout-important-color-frame, bottomtitle=1mm, toptitle=1mm, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Learning objectives}:}, opacitybacktitle=0.6, breakable, bottomrule=.15mm, leftrule=.75mm, left=2mm, opacityback=0, coltitle=black]
+\begin{tcolorbox}[enhanced jigsaw, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Learning objectives}:}, rightrule=.15mm, coltitle=black, leftrule=.75mm, colframe=quarto-callout-important-color-frame, breakable, bottomrule=.15mm, opacityback=0, colbacktitle=quarto-callout-important-color!10!white, left=2mm, bottomtitle=1mm, toptitle=1mm, titlerule=0mm, toprule=.15mm, arc=.35mm, opacitybacktitle=0.6, colback=white]
 
 At the end of the chapter, students should be able to
 
@@ -8661,30 +8661,31 @@ and the Hessian matrix
 \(\mathbf{H}(\boldsymbol{\theta}) = \partial^2 \psi/(\partial \boldsymbol{\theta}\partial \boldsymbol{\theta}^\top).\)
 Starting from an initial value \(\boldsymbol{\theta}_{(0)},\) we
 consider at step \(i\), a second order Taylor series expansion of
-\(\psi(\boldsymbol{\theta})\) around \(\theta_{(i)},\) which gives
-\begin{align*}
- \psi(\theta) \approx \psi(\theta_{((i)}) + \nabla_{\boldsymbol{\theta}} \psi(\boldsymbol{\theta}_{(i)})(\theta-\theta_{((i)}) + (\theta-\theta_{((i)})^\top\mathbf{H}(\theta_{((i)})(\theta-\theta_{((i)})
-\end{align*} The term \(\psi(\theta_{((i)})\) is constant, so if we
-plug-in this inside the exponential, we obtain \begin{align*}
- q_{(i+1)}(\boldsymbol{\theta}) &\propto \exp \left\{ - \frac{1}{2} \boldsymbol{\theta}^\top\mathbf{H}(\theta_{(i)}) \boldsymbol{\theta} + \theta_{(i+1)}^\top\mathbf{H}(\theta_{(i)})\boldsymbol{\theta}\right\}
+\(\psi(\boldsymbol{\theta})\) around \(\boldsymbol{\theta}_{(i)},\)
+which gives \begin{align*}
+ \psi(\boldsymbol{\theta}) \approx \psi(\boldsymbol{\theta}_{(i)}) + \nabla_{\boldsymbol{\theta}} \psi(\boldsymbol{\theta}_{(i)})(\boldsymbol{\theta}-\boldsymbol{\theta}_{(i)}) + (\boldsymbol{\theta}-\boldsymbol{\theta}_{(i)})^\top\mathbf{H}(\boldsymbol{\theta}_{(i)})(\boldsymbol{\theta}-\boldsymbol{\theta}_{(i)})
+\end{align*} The term \(\psi(\boldsymbol{\theta}_{(i)})\) is constant,
+so if we plug-in this inside the exponential, we obtain \begin{align*}
+ q_{(i+1)}(\boldsymbol{\theta}) &\propto \exp \left\{ - \frac{1}{2} \boldsymbol{\theta}^\top\mathbf{H}(\boldsymbol{\theta}_{(i)}) \boldsymbol{\theta} + \boldsymbol{\theta}_{(i+1)}^\top\mathbf{H}(\boldsymbol{\theta}_{(i)})\boldsymbol{\theta}\right\}
  \end{align*} where the mean of the approximation is \begin{align*}
- \theta_{(i+1)} = \theta_{(i)} - \mathbf{H}^{-1}(\theta_{(i)}) \nabla_{\boldsymbol{\theta}} \psi(\boldsymbol{\theta}_{(i)}).
+ \boldsymbol{\theta}_{(i+1)} = \boldsymbol{\theta}_{(i)} - \mathbf{H}^{-1}(\boldsymbol{\theta}_{(i)}) \nabla_{\boldsymbol{\theta}} \psi(\boldsymbol{\theta}_{(i)}).
 \end{align*} The iterations perform gradient descent, with a correction
-that ajusts for the curvature locally. This scheme works provided that
-\(\mathbf{H}(\theta_{(i)})\) is positive definite (all of it's
-eigenvalues are positive); this may fail for non-convex targets, in
+that adjusts for the curvature locally. This scheme works provided that
+\(\mathbf{H}(\boldsymbol{\theta}_{(i)})\) is positive definite (all of
+it's eigenvalues are positive); this may fail for non-convex targets, in
 which case we could perturb the scheme by adding a ridge-penalty (large
 diagonal matrix of positive terms) to ensure convergence until we reach
-a neighborhood of the mode. The new mean vector \(\theta_{(i+1)}\)
-corresponds to a Newton update, and at the same time we have defined a
-sequence of Gaussian updating approximations. The fixed point to which
-the algorithm converges is the Laplace approximation.
+a neighborhood of the mode. The new mean vector
+\(\boldsymbol{\theta}_{(i+1)}\) corresponds to a Newton update, and at
+the same time we have defined a sequence of Gaussian updating
+approximations. The fixed point to which the algorithm converges is the
+Laplace approximation.
 
 Suppose for simplicity that the domain
-\(\boldsymbol{\Theta}=\mathbb{R}^p\), so that no prior transformation
-\(T\) is necessary. For location-scale family, we have seen in the
-section on ADVI that the variational Bayes with a Gaussian approximation
-on the target
+\(\boldsymbol{\Theta}=\mathbb{R}^p\), so that no prior transformation is
+necessary. For location-scale family, we have seen in the section on
+ADVI that the variational Bayes with a Gaussian approximation on the
+target
 \(\boldsymbol{\theta} = \boldsymbol{\mu} + \mathbf{L}\boldsymbol{Z}\)
 with \(\mathbf{LL}^\top=\boldsymbol{\Sigma}\) and
 \(\boldsymbol{Z} \sim \mathsf{Gauss}_p(\boldsymbol{0}_p, \mathbf{I}_p)\)
@@ -8701,8 +8702,8 @@ zero, whence \begin{align*}
  \mathsf{E}_{\boldsymbol{Z}}\{\nabla_{\boldsymbol{\theta}}\psi(\boldsymbol{\theta})\} &= \boldsymbol{0}_p. \\
  \mathsf{E}_{\boldsymbol{Z}}\left\{ \frac{\partial^2 \psi(\boldsymbol{\theta})}{\partial \boldsymbol{\theta} \partial \boldsymbol{\theta}^\top}\right\} &= \boldsymbol{\Sigma}^{-1}.
 \end{align*} Compared to the Laplace approximation, the variational
-Gaussian approximation returns a vector \(\boldsymbol{mu}\) around which
-the expected value of the gradient is zero and similarly
+Gaussian approximation returns a vector \(\boldsymbol{\mu}\) around
+which the expected value of the gradient is zero and similarly
 \(\boldsymbol{\Sigma}\) for which the expected value of the curvature
 (Hessian) is equal to the precision. The averaging step is what
 distinguishes the Laplace and variational approximations.
@@ -8717,7 +8718,7 @@ such that the gradient is absolutely integrable,
 \(\mathsf{E}_{\boldsymbol{X}}\{|\nabla_i h(\boldsymbol{X})|\} < \infty\)
 for \(i=1, \ldots, d.\) Then (\citeproc{ref-Liu:1994}{Liu 1994}),
 \begin{align*}
-\mathsf{E}_{\boldsymbol{X}}\left\{h(\boldsymbol{X})(\boldsymbol{X}-\boldsymbol{mu})\right\} = \boldsymbol{\Sigma}\mathsf{E}_{\boldsymbol{X}}\left\{\nabla h(\boldsymbol{X})\right\}
+\mathsf{E}_{\boldsymbol{X}}\left\{h(\boldsymbol{X})(\boldsymbol{X}-\boldsymbol{\mu})\right\} = \boldsymbol{\Sigma}\mathsf{E}_{\boldsymbol{X}}\left\{\nabla h(\boldsymbol{X})\right\}
 \end{align*}
 
 \end{proposition}
@@ -8788,9 +8789,9 @@ target posterior than is \(q(\boldsymbol{\theta}).\) We can start from
 this and compute a Gaussian approximation to minimize the
 Kullback--Leibler distance with \(\mathsf{KL}(h_j \parallel q^*_j)\) by
 matching moments, where \begin{align*}
- c_j &= \int h_j(\boldsymbol{\theta}) \mathrm{d} \boldsymbol{\theta}
+ c_j &= \int h_j(\boldsymbol{\theta}) \mathrm{d} \boldsymbol{\theta} \\
  \boldsymbol{\mu}_j &= c_{j}^{-1} \int \boldsymbol{\theta} h_j(\boldsymbol{\theta}) \mathrm{d} \boldsymbol{\theta}
- \\ \boldsymbol{\Sigma}_j = c_j^{-1} (\boldsymbol{\theta} - \boldsymbol{\mu}_j)(\boldsymbol{\theta} - \boldsymbol{\mu}_j)^\top h_j(\boldsymbol{\theta}) \mathrm{d} \boldsymbol{\theta}
+ \\ \boldsymbol{\Sigma}_j &= c_j^{-1} (\boldsymbol{\theta} - \boldsymbol{\mu}_j)(\boldsymbol{\theta} - \boldsymbol{\mu}_j)^\top h_j(\boldsymbol{\theta}) \mathrm{d} \boldsymbol{\theta}
 \end{align*} The normalizing constant, mean and variance in the above
 are written in terms of \(p\)-dimensional integrals but could be easily
 obtained by Monte Carlo by drawing from the cavity prior. We then go
@@ -8820,17 +8821,18 @@ This means all integrals for the tilting problem are unidimensional and
 can be obtained by Gaussian quadrature or similar numerical integration
 schemes.
 
-Given the mean and variance of the cavity, denoted \(\mu_{-j}\) and
-\(\boldsymbol{\Sigma}_{-j},\) and with
+Given the mean and variance of the cavity, denoted
+\(\boldsymbol{\mu}_{-j}\) and \(\boldsymbol{\Sigma}_{-j},\) and with
 \(s_j = \mathbf{x}_j\boldsymbol{\Sigma}_{-j}\mathbf{x}_j^\top\), the
 updated mean and variance are \begin{align*}
-\mu_j^* &= s_j^{-1}\boldsymbol{\Sigma}_{-j}\mathbf{x}^\top \{\mathbf{E}(Z_j) -\mathbf{x}_j\mu_{-j}\} \\
-\boldsymbol{\Sigma}_{j} &=s_j^{-2}\boldsymbol{\Sigma}_{-j}\mathbf{x}^\top_j\left\{\mathsf{Var}(Z_j) - s_j\right\}\mathbf{x}_j\boldsymbol{\Sigma}_{-j}
+\boldsymbol{\mu}_j^* &= \boldsymbol{\mu}_{-j} s_j^{-1}\boldsymbol{\Sigma}_{-j}\mathbf{x}^\top \{\mathbf{E}(Z_j) -\mathbf{x}_j\boldsymbol{\mu}_{-j}\} \\
+\boldsymbol{\Sigma}_{j} &=\boldsymbol{\Sigma}_{-j} + s_j^{-2}\boldsymbol{\Sigma}_{-j}\mathbf{x}^\top_j\left\{\mathsf{Var}(Z_j) - s_j\right\}\mathbf{x}_j\boldsymbol{\Sigma}_{-j}
 \end{align*} where \(Z_j\) has distribution proportional to
 \(L_j(z) \times \phi(z; \mathbf{x}_j\boldsymbol{\mu}_j, \mathbf{x}_j\boldsymbol{\Sigma}_{-j}\mathbf{x}_j^\top),\)
 where \(\phi(\cdot; \mu, \sigma^2)\) denotes the density of a Gaussian
-random variable. The updates to the parameters are found in page 23 of
-Cseke and Heskes (\citeproc{ref-Cseke.Heskes:2011}{2011}).
+random variable. The updates to the parameters for more general
+exponential families are found in page 23 of Cseke and Heskes
+(\citeproc{ref-Cseke.Heskes:2011}{2011}).
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -8844,8 +8846,6 @@ Cseke and Heskes (\citeproc{ref-Cseke.Heskes:2011}{2011}).
 \NormalTok{  cst }\OtherTok{\textless{}{-}} \FunctionTok{pcubature}\NormalTok{(}\AttributeTok{f =}\NormalTok{ fn, }\AttributeTok{lowerLimit =} \SpecialCharTok{{-}}\ConstantTok{Inf}\NormalTok{, }\AttributeTok{upperLimit =} \ConstantTok{Inf}\NormalTok{)}\SpecialCharTok{$}\NormalTok{integral}
 \NormalTok{  mu }\OtherTok{\textless{}{-}} \FunctionTok{pcubature}\NormalTok{(}\AttributeTok{f =} \ControlFlowTok{function}\NormalTok{(x)\{}\FunctionTok{fn}\NormalTok{(x)}\SpecialCharTok{*}\NormalTok{x\}, }\SpecialCharTok{{-}}\ConstantTok{Inf}\NormalTok{, }\ConstantTok{Inf}\NormalTok{)}\SpecialCharTok{$}\NormalTok{integral}\SpecialCharTok{/}\NormalTok{cst}
 \NormalTok{  va }\OtherTok{\textless{}{-}} \FunctionTok{pcubature}\NormalTok{(}\AttributeTok{f =} \ControlFlowTok{function}\NormalTok{(x)\{}\FunctionTok{fn}\NormalTok{(x)}\SpecialCharTok{*}\NormalTok{(x}\SpecialCharTok{{-}}\NormalTok{mu)}\SpecialCharTok{\^{}}\DecValTok{2}\NormalTok{\}, }\SpecialCharTok{{-}}\ConstantTok{Inf}\NormalTok{, }\ConstantTok{Inf}\NormalTok{)}\SpecialCharTok{$}\NormalTok{integral}\SpecialCharTok{/}\NormalTok{cst}
-  \CommentTok{\# Calculate canonical parameters}
-  \FunctionTok{list}\NormalTok{(}\AttributeTok{Q =} \DecValTok{1}\SpecialCharTok{/}\NormalTok{va, }\AttributeTok{r =}\NormalTok{ mu}\SpecialCharTok{/}\NormalTok{va)}
 \NormalTok{\}}
 \end{Highlighting}
 \end{Shaded}
