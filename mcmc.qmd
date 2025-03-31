@@ -528,6 +528,6 @@ The posterior mean for the standard deviation is  `r round(mean(chains[,'sigma']
 * To obtain the target acceptance rate, users must tune the variance of the proposal kernel. This is typically achieved by running the chain for some period, computing the empirical acceptance rate and increasing (respectively decreasing) the variance if the acceptance rate is too high (too low).
 * Metropolis-adjusted Langevin algorithm (MALA) uses the gradient information to inform the proposal; it is akin to a Newton step.
 * The detailed balance requires a function $g$ such that $g(r) = rg(1/r).$ Taking $g(r) = \min(1,r)$ as in Metropolis--Hasting rule leads to the lowest asymptotic variance [@Peskun:1973].
-* 
+
 
 :::

@@ -262,8 +262,14 @@ window.Quarto = {
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
+  <a href="./expectationpropagation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Expectation propagation</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
   <a href="./references.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">References</span></span></a>
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">References</span></span></a>
   </div>
 </li>
     </ul>
@@ -668,7 +674,6 @@ p(\theta) \approx p(\theta_{t-1}) + p'(\theta_{t-1})(\theta - \theta_{t-1}) + \f
 <li>To obtain the target acceptance rate, users must tune the variance of the proposal kernel. This is typically achieved by running the chain for some period, computing the empirical acceptance rate and increasing (respectively decreasing) the variance if the acceptance rate is too high (too low).</li>
 <li>Metropolis-adjusted Langevin algorithm (MALA) uses the gradient information to inform the proposal; it is akin to a Newton step.</li>
 <li>The detailed balance requires a function <span class="math inline">\(g\)</span> such that <span class="math inline">\(g(r) = rg(1/r).\)</span> Taking <span class="math inline">\(g(r) = \min(1,r)\)</span> as in Metropolis–Hasting rule leads to the lowest asymptotic variance <span class="citation" data-cites="Peskun:1973">(<a href="references.html#ref-Peskun:1973" role="doc-biblioref">Peskun 1973</a>)</span>.</li>
-<li></li>
 </ul>
 </div>
 </div>

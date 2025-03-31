@@ -50,7 +50,7 @@ div.csl-indent {
 <script src="site_libs/quarto-search/fuse.min.js"></script>
 <script src="site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="./">
-<link href="./references.html" rel="next">
+<link href="./expectationpropagation.html" rel="next">
 <link href="./laplace.html" rel="prev">
 <script src="site_libs/quarto-html/quarto.js"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
@@ -228,8 +228,14 @@ window.Quarto = {
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
+  <a href="./expectationpropagation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Expectation propagation</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
   <a href="./references.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">References</span></span></a>
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">References</span></span></a>
   </div>
 </li>
     </ul>
@@ -273,13 +279,28 @@ window.Quarto = {
 \end{align*}\]</span> where the subscript of the expectation indicates which distribution we integrate over. The term <span class="math inline">\(-\mathsf{E}_{f_t}\{\log f_t(\boldsymbol{X})\}\)</span> is called the entropy of the distribution. The divergence is strictly positive unless <span class="math inline">\(g(\cdot; \boldsymbol{\psi}) \equiv f_t(\cdot).\)</span> Note that, by construction, it is not symmetric.</p>
 </div>
 <p>The Kullback–Leibler divergence notion is central to study of model misspecification: if we fit <span class="math inline">\(g(\cdot)\)</span> when data arise from <span class="math inline">\(f_t,\)</span> the maximum likelihood estimator of the parameters <span class="math inline">\(\widehat{\boldsymbol{\psi}}\)</span> will be the value of the parameter that minimizes the Kullback–Leibler divergence <span class="math inline">\(\mathsf{KL}(f_t \parallel g);\)</span> this value will be positive unless the model is correctly specified and <span class="math inline">\(g(\cdot; \widehat{\boldsymbol{\psi}}) = f_t(\cdot).\)</span> See <span class="citation" data-cites="Davison:2003">Davison (<a href="references.html#ref-Davison:2003" role="doc-biblioref">2003</a>)</span>, pp.&nbsp;122–125 for a discussion.</p>
-<p>In the Bayesian setting, interest lies in approximating <span class="math inline">\(f_t \equiv p(\boldsymbol{\theta} \mid \boldsymbol{y}).\)</span> The problem of course is that we cannot compute expectations with respect to the posterior since these requires knowledge of the marginal likelihood, which acts as a normalizing constant. What we can do instead is to consider the model that minimizes the reverse Kullback–Leibler divergence <span class="math display">\[\begin{align*}
+<p>In the Bayesian setting, interest lies in approximating <span class="math inline">\(f_t \equiv p(\boldsymbol{\theta} \mid \boldsymbol{y}).\)</span> The problem of course is that we cannot compute expectations with respect to the posterior since these requires knowledge of the marginal likelihood, which acts as a normalizing constant, in most settings of interest. What we can do instead is to consider the model that minimizes the reverse Kullback–Leibler divergence <span class="math display">\[\begin{align*}
 g(\boldsymbol{\theta}; \widehat{\boldsymbol{\psi}}) = \mathrm{argmin}_{\boldsymbol{\psi}} \mathsf{KL}\{g(\boldsymbol{\theta};\boldsymbol{\psi}) \parallel p(\boldsymbol{\theta} \mid \boldsymbol{y})\}.
 \end{align*}\]</span> We will show soon that this is a sensible objective function.</p>
+<p>It is important to understand that the lack of symmetry of the Kullback–Leibler divergence means these yield different approximations. Consider an approximation of a bivariate Gaussian vector with correlated components <span class="math inline">\(\boldsymbol{X} \sim \mathsf{Gauss}_2(\boldsymbol{\mu}, \boldsymbol{\Sigma})\)</span>. If we approximate each margin independently with a univariate Gaussian, the Kullback–Leibler divergence will have the same marginal mean <span class="math inline">\(\boldsymbol{\mu}\)</span> and variance <span class="math inline">\(\mathrm{diag}(\boldsymbol{\Sigma})\)</span>, whereas the reverse Kullback–Leibler will have the same mean, but a variance equal to the conditional variance of one component given the other, e.g., <span class="math inline">\(\Sigma_{11} - \Sigma_{12} \Sigma_{22}^{-1}\Sigma_{21}\)</span> for component <span class="math inline">\(X_{1}.\)</span> <a href="#fig-klvsrev" class="quarto-xref">Figure&nbsp;<span>10.1</span></a> shows the two approximations: the reverse Kullback–Leibler is much too narrow and only gives mass where both variables have positive density.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-klvsrev" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-klvsrev-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="variational_files/figure-html/fig-klvsrev-1.png" class="img-fluid figure-img" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-klvsrev-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;10.1: Illustration of an approximation of a correlated bivariate Gaussian density (dashed contour lines) with an uncorrelated Gaussian, obtained by minimizing the reverse Kullback–Leibler divergence (variational approximation, left) and the Kullback–Leibler divergence.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
 <div id="def-convex-function" class="theorem definition">
 <p><span class="theorem-title"><strong>Definition 10.2 (Convex function)</strong></span> A real-valued function <span class="math inline">\(h: \mathbb{R} \to \mathbb{R}\)</span> is convex if for any <span class="math inline">\(x_1,x_2 \in \mathbb{R}\)</span> if any linear combination of <span class="math inline">\(x_1\)</span> and <span class="math inline">\(x_2\)</span> satisfies <span class="math display">\[\begin{align*}
 h(tx_1 + (1-t)x_2) \leq t h(x_1) + (1-t) h(x_2), \qquad 0 \leq t \leq 1
-\end{align*}\]</span> The left panel of <a href="#fig-convex" class="quarto-xref">Figure&nbsp;<span>10.1</span></a> shows an illustration of the fact that the chord between any two points lies above the function. Examples include the exponential function, or a quadratic <span class="math inline">\(ax^2+bx + c\)</span> with <span class="math inline">\(a&gt;0.\)</span></p>
+\end{align*}\]</span> The left panel of <a href="#fig-convex" class="quarto-xref">Figure&nbsp;<span>10.2</span></a> shows an illustration of the fact that the chord between any two points lies above the function. Examples include the exponential function, or a quadratic <span class="math inline">\(ax^2+bx + c\)</span> with <span class="math inline">\(a&gt;0.\)</span></p>
 </div>
 <div class="cell">
 <div class="cell-output-display">
@@ -289,7 +310,7 @@ h(tx_1 + (1-t)x_2) \leq t h(x_1) + (1-t) h(x_2), \qquad 0 \leq t \leq 1
 <img src="variational_files/figure-html/fig-convex-1.png" class="img-fluid figure-img" width="768">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-convex-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;10.1: Left panel: the convex function <span class="math inline">\(h(x)=-\log(x),\)</span> with a straight line between any two points falls above the function. Right panel: a skewed density with the Laplace Gaussian approximation (dashed orange), the Gaussian variational approximation (reverse Kullback–Leibler divergence, dotted yellow) and the Gaussian that minimizes the Kullback–Leibler divergence (dot-dashed blue).
+Figure&nbsp;10.2: Left panel: the convex function <span class="math inline">\(h(x)=-\log(x),\)</span> with a straight line between any two points falls above the function. Right panel: a skewed density with the Laplace Gaussian approximation (dashed orange), the Gaussian variational approximation (reverse Kullback–Leibler divergence, dotted yellow) and the Gaussian that minimizes the Kullback–Leibler divergence (dot-dashed blue).
 </figcaption>
 </figure>
 </div>
@@ -315,7 +336,7 @@ p(\boldsymbol{y}) = \int_{\boldsymbol{\Theta}}  \frac{p(\boldsymbol{y}, \boldsym
 <p><span class="proof-title"><em>Remark 10.1</em> (Approximation of latent variables). </span>While we have focused on exposition with only parameters <span class="math inline">\(\boldsymbol{\theta},\)</span> this can be generalized by including latent variables <span class="math inline">\(\boldsymbol{U}\)</span> as in <a href="gibbs.html#sec-gibbs-da" class="quarto-xref"><span>Section 6.1</span></a> in addition to the model parameters <span class="math inline">\(\boldsymbol{\theta}\)</span> as part of the variational modelling.</p>
 </div>
 <div id="exm-varional-vs-laplace" class="theorem example">
-<p><span class="theorem-title"><strong>Example 10.1 (Variational inference vs Laplace approximation)</strong></span> The Laplace approximation differs from the Gaussian variational approximation; The right panel of <a href="#fig-convex" class="quarto-xref">Figure&nbsp;<span>10.1</span></a> shows a skew-Gaussian distribution with location zero, unit scale and a skewness parameter of <span class="math inline">\(\alpha=10;\)</span> it’s density is <span class="math inline">\(2\phi(x)\Phi(\alpha x).\)</span></p>
+<p><span class="theorem-title"><strong>Example 10.1 (Variational inference vs Laplace approximation)</strong></span> The Laplace approximation differs from the Gaussian variational approximation; The right panel of <a href="#fig-convex" class="quarto-xref">Figure&nbsp;<span>10.2</span></a> shows a skew-Gaussian distribution with location zero, unit scale and a skewness parameter of <span class="math inline">\(\alpha=10;\)</span> it’s density is <span class="math inline">\(2\phi(x)\Phi(\alpha x).\)</span></p>
 <p>The Laplace approximation is easily obtained by numerical maximization; the mode is the mean of the resulting approximation, with a std. deviation that matches the square root of the reciprocal Hessian of the negative log density.</p>
 <p>Consider an approximation with <span class="math inline">\(g\)</span> the density of <span class="math inline">\(\mathsf{Gauss}(m, s^2);\)</span> we obtain the parameters by minimizing the ELBO. The entropy term for a Gaussian approximating density is <span class="math display">\[\begin{align*}
 -\mathsf{E}_g(\log g) = \frac{1}{2}\log(2\pi \sigma^2) + \frac{1}{2s^2}\mathsf{E}_g\left\{(X-m)^2 \right\} = \frac{1}{2} \left\{1+\log(2\pi s^2)\right\}
@@ -323,7 +344,7 @@ p(\boldsymbol{y}) = \int_{\boldsymbol{\Theta}}  \frac{p(\boldsymbol{y}, \boldsym
 &amp;\mathrm{argmax}_{m, s^2} \left[-\frac{1}{2} \mathsf{E}_g \left\{ \frac{(X-\mu)^2}{\sigma^2}\right\} + \mathsf{E}_g\left\{\log \Phi(\alpha X)\right\} + \log(s^2) \right] \\
 &amp;\quad =\mathrm{argmax}_{m, s^2} \left[ -\frac{1}{2} \mathsf{E}_g \left\{ \frac{(X-\mu)^2}{\sigma^2}\right\} + \mathsf{E}_g\left\{\log \Phi(\alpha X)\right\} + \log(s^2) \right]
 \\&amp;\quad =\mathrm{argmax}_{m, s^2} \left[ -\frac{s^2 + m^2 -2\mu m}{2\sigma^2} + \log(s^2) + \mathsf{E}_{Z}\left\{\log \Phi(\alpha sX+m)\right\} \right]
-\end{align*}\]</span> where <span class="math inline">\(Z \sim \mathsf{Gauss}(0,1).\)</span> We can approximate the last term by Monte Carlo with a single sample (recycled at every iteration) and use this to find the optimal parameters. The right panel of <a href="#fig-convex" class="quarto-xref">Figure&nbsp;<span>10.1</span></a> shows that the resulting approximation aligns with the bulk. It of course fails to capture the asymmetry, since the approximating function is symmetric.</p>
+\end{align*}\]</span> where <span class="math inline">\(Z \sim \mathsf{Gauss}(0,1).\)</span> We can approximate the last term by Monte Carlo with a single sample (recycled at every iteration) and use this to find the optimal parameters. The right panel of <a href="#fig-convex" class="quarto-xref">Figure&nbsp;<span>10.2</span></a> shows that the resulting approximation aligns with the bulk. It of course fails to capture the asymmetry, since the approximating function is symmetric.</p>
 </div>
 </section>
 <section id="optimization-of-the-evidence-lower-bound" class="level2" data-number="10.2">
@@ -337,7 +358,7 @@ g(\boldsymbol{\theta}; \boldsymbol{\psi}) = \prod_{j=1}^M g_j(\boldsymbol{\theta
 \end{align*}\]</span> If we assume that each of the <span class="math inline">\(J\)</span> parameters <span class="math inline">\(\theta_1, \ldots, \theta_J\)</span> are independent, then we obtain a <strong>mean-field</strong> approximation. The latter will be poor if parameters are strongly correlated, as we will demonstrate later.</p>
 <p>We use a factorization of <span class="math inline">\(g,\)</span> and denote the components <span class="math inline">\(g_j(\cdot)\)</span> for simplicity, omitting dependence on the parameters <span class="math inline">\(\boldsymbol{\psi}.\)</span> We can write the ELBO as <span class="math display">\[\begin{align*}
 \mathsf{ELBO}(g) &amp;= \int \log p(\boldsymbol{y}, \boldsymbol{\theta}) \prod_{j=1}^M g_j(\boldsymbol{\theta}_j)\mathrm{d} \boldsymbol{\theta} - \sum_{j=1}^M \int \log \{ g_j(\boldsymbol{\theta}_j) \} g_j(\boldsymbol{\theta}_j) \mathrm{d}  \boldsymbol{\theta}_j
-\\&amp; = \int \int \left\{\log p(\boldsymbol{y}, \boldsymbol{\theta}) \prod_{\substack{i \neq j \\j=1}}^M g_j(\boldsymbol{\theta}_j)\mathrm{d} \boldsymbol{\theta}_{-i}\right\} \mathrm{d} \boldsymbol{\theta}_{-i} g_i(\boldsymbol{\theta}_i) \mathrm{d} \boldsymbol{\theta}_i - \sum_{j=1}^M \int \log \{ g_j(\boldsymbol{\theta}_j) \} g_j(\boldsymbol{\theta}_j) \mathrm{d}  \boldsymbol{\theta}_j
+\\&amp; = \int \int \left\{\log p(\boldsymbol{y}, \boldsymbol{\theta}) \prod_{\substack{i \neq j \\j=1}}^M g_j(\boldsymbol{\theta}_j)\mathrm{d} \boldsymbol{\theta}_{-i}\right\} \mathrm{d} \boldsymbol{\theta}_{-i} g_i(\boldsymbol{\theta}_i) \mathrm{d} \boldsymbol{\theta}_i \\&amp; \quad - \sum_{j=1}^M \int \log \{ g_j(\boldsymbol{\theta}_j) \} g_j(\boldsymbol{\theta}_j) \mathrm{d}  \boldsymbol{\theta}_j
 \\&amp; \stackrel{\boldsymbol{\theta}_i}{\propto} \int \mathsf{E}_{-i}\left\{\log p(\boldsymbol{y}, \boldsymbol{\theta})\right\} g_i(\boldsymbol{\theta}_i) \mathrm{d} \boldsymbol{\theta}_i - \int \log \{ g_i(\boldsymbol{\theta}_i) \} g_i(\boldsymbol{\theta}_i) \mathrm{d} \boldsymbol{\theta}_i
 \end{align*}\]</span> where the last line is a negative Kullback–Leibler divergence between <span class="math inline">\(g_i\)</span> and <span class="math display">\[\begin{align*}
 \mathsf{E}_{-i}\left\{\log p(\boldsymbol{y}, \boldsymbol{\theta})\right\} = \int \log p(\boldsymbol{y}, \boldsymbol{\theta}) \prod_{\substack{i \neq j \\j=1}}^M g_j(\boldsymbol{\theta}_j)\mathrm{d} \boldsymbol{\theta}_{-i}
@@ -850,8 +871,8 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="./references.html" class="pagination-link" aria-label="References">
-        <span class="nav-page-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">References</span></span> <i class="bi bi-arrow-right-short"></i>
+      <a href="./expectationpropagation.html" class="pagination-link" aria-label="Expectation propagation">
+        <span class="nav-page-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Expectation propagation</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>

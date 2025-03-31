@@ -32,6 +32,7 @@ book:
   - regression.qmd
   - laplace.qmd
   - variational.qmd
+  - expectationpropagation.qmd
   - references.qmd
   site-url: https://lbelzile.github.io/MATH80601A/
   repo-url: https://github.com/lbelzile/MATH80601A

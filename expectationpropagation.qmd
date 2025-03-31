@@ -40,7 +40,7 @@ Suppose for simplicity that the domain $\boldsymbol{\Theta}=\mathbb{R}^p$, so th
  \nabla_{\boldsymbol{\mu}}\mathsf{ELBO}(q)&= -\mathsf{E}_{\boldsymbol{Z}}\{\nabla_{\boldsymbol{\theta}}\psi(\boldsymbol{\theta})\} \\
  \nabla_{\mathbf{L}}\mathsf{ELBO}(q)&= -\mathsf{E}_{\boldsymbol{Z}}\{\nabla_{\boldsymbol{\theta}}\psi(\boldsymbol{\theta})\boldsymbol{Z}^\top\} + \mathbf{L}^{-\top}
 \end{align*}
-If we apply integration by parts (Stein's lemma) using the fact that the integral is with respect to a standard Gaussian density $\phi_p(\boldsymbol{z}),$ we can rewrite the second term as
+If we apply integration by parts (Stein's lemma, see @prp-stein) using the fact that the integral is with respect to a standard Gaussian density $\phi_p(\boldsymbol{z}),$ we can rewrite the second term as
 \begin{align*}
   \nabla_{\mathbf{L}}\mathsf{ELBO}(q)&= -\mathsf{E}_{\boldsymbol{Z}}\left\{ \frac{\partial^2 \psi(\boldsymbol{\theta})}{\partial \boldsymbol{\theta} \partial \boldsymbol{\theta}^\top}\right\}\mathbf{L} + \mathbf{L}^{-\top}.
 \end{align*}
@@ -52,6 +52,17 @@ At a critical point, both of these derivatives must be zero, whence
 Compared to the Laplace approximation, the variational Gaussian approximation returns a vector $\boldsymbol{mu}$ around which the expected value of the gradient is zero and similarly $\boldsymbol{\Sigma}$ for which the  expected value of the curvature (Hessian) is equal to the precision. The averaging step is what distinguishes the Laplace and variational approximations.
 
 
+
+:::{#prp-stein}
+
+## Stein's lemma
+
+Consider $h: \mathbb{R}^d \to \mathbb{R}$ a differentiable function and integration with respect to $\boldsymbol{X} \sim \mathsf{Gauss}_d(\boldsymbol{\mu}, \boldsymbol{\Sigma})$ such that the gradient is absolutely integrable, $\mathsf{E}_{\boldsymbol{X}}\{|\nabla_i h(\boldsymbol{X})|\} < \infty$ for $i=1, \ldots, d.$ Then [@Liu:1994],
+\begin{align*}
+\mathsf{E}_{\boldsymbol{X}}\left\{h(\boldsymbol{X})(\boldsymbol{X}-\boldsymbol{mu})\right\} = \boldsymbol{\Sigma}\mathsf{E}_{\boldsymbol{X}}\left\{\nabla h(\boldsymbol{X})\right\}
+\end{align*}
+
+:::
 
 
 ## Expectation propagation

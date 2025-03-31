@@ -22,7 +22,7 @@
   </url>
   <url>
     <loc>https://lbelzile.github.io/MATH80601A/mcmc.html</loc>
-    <lastmod>2025-03-04T02:09:34.857Z</lastmod>
+    <lastmod>2025-03-31T12:26:50.271Z</lastmod>
   </url>
   <url>
     <loc>https://lbelzile.github.io/MATH80601A/gibbs.html</loc>
@@ -42,7 +42,11 @@
   </url>
   <url>
     <loc>https://lbelzile.github.io/MATH80601A/variational.html</loc>
-    <lastmod>2025-03-30T17:40:00.972Z</lastmod>
+    <lastmod>2025-03-31T13:23:58.129Z</lastmod>
+  </url>
+  <url>
+    <loc>https://lbelzile.github.io/MATH80601A/expectationpropagation.html</loc>
+    <lastmod>2025-03-31T13:17:20.210Z</lastmod>
   </url>
   <url>
     <loc>https://lbelzile.github.io/MATH80601A/references.html</loc>
@@ -50,6 +54,6 @@
   </url>
   <url>
     <loc>https://lbelzile.github.io/MATH80601A/MATH80601A-bayesmod.pdf</loc>
-    <lastmod>2025-03-31T03:37:27.577Z</lastmod>
+    <lastmod>2025-03-31T13:26:27.872Z</lastmod>
   </url>
 </urlset>
