@@ -266,20 +266,6 @@
 \DeclareMathAlphabet{\mathcrl}{U}{rsfs}{m}{n}
 \usepackage{utopia}
 \DeclareMathAlphabet{\mathcal}{OMS}{cmsy}{m}{n}
-\usepackage{booktabs}
-\usepackage{longtable}
-\usepackage{array}
-\usepackage{multirow}
-\usepackage{wrapfig}
-\usepackage{float}
-\usepackage{colortbl}
-\usepackage{pdflscape}
-\usepackage{tabu}
-\usepackage{threeparttable}
-\usepackage{threeparttablex}
-\usepackage[normalem]{ulem}
-\usepackage{makecell}
-\usepackage{xcolor}
 \makeatletter
 \@ifpackageloaded{tcolorbox}{}{\usepackage[skins,breakable]{tcolorbox}}
 \@ifpackageloaded{fontawesome5}{}{\usepackage{fontawesome5}}
@@ -335,17 +321,17 @@
 \newcommand*\listoflistings{\listof{codelisting}{List of Listings}}
 \usepackage{amsthm}
 \theoremstyle{plain}
-\newtheorem{proposition}{Proposition}[chapter]
+\newtheorem{corollary}{Corollary}[chapter]
 \theoremstyle{definition}
-\newtheorem{exercise}{Exercise}[chapter]
+\newtheorem{example}{Example}[chapter]
 \theoremstyle{definition}
 \newtheorem{definition}{Definition}[chapter]
 \theoremstyle{plain}
 \newtheorem{theorem}{Theorem}[chapter]
-\theoremstyle{plain}
-\newtheorem{corollary}{Corollary}[chapter]
 \theoremstyle{definition}
-\newtheorem{example}{Example}[chapter]
+\newtheorem{exercise}{Exercise}[chapter]
+\theoremstyle{plain}
+\newtheorem{proposition}{Proposition}[chapter]
 \theoremstyle{remark}
 \AtBeginDocument{\renewcommand*{\proofname}{Proof}}
 \newtheorem*{remark}{Remark}
@@ -401,7 +387,7 @@ details.
 These notes are licensed under a
 \href{http://creativecommons.org/licenses/by-nc-sa/4.0/}{Creative
 Commons Attribution-NonCommercial-ShareAlike 4.0 International License}
-and were last compiled on Monday, March 31 2025.
+and were last compiled on Friday, April 04 2025.
 
 The objective of the course is to provide a hands on introduction to
 Bayesian data analysis. The course will cover the formulation,
@@ -417,7 +403,7 @@ used throughout the course. The overview begins with basic statistical
 concepts, random variables, their distribution and density, moments and
 likelihood derivations.
 
-\begin{tcolorbox}[enhanced jigsaw, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Learning objectives}:}, rightrule=.15mm, coltitle=black, leftrule=.75mm, colframe=quarto-callout-important-color-frame, breakable, bottomrule=.15mm, opacityback=0, colbacktitle=quarto-callout-important-color!10!white, left=2mm, bottomtitle=1mm, toptitle=1mm, titlerule=0mm, toprule=.15mm, arc=.35mm, opacitybacktitle=0.6, colback=white]
+\begin{tcolorbox}[enhanced jigsaw, opacitybacktitle=0.6, coltitle=black, colback=white, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Learning objectives}:}, left=2mm, leftrule=.75mm, bottomrule=.15mm, colframe=quarto-callout-important-color-frame, breakable, toptitle=1mm, colbacktitle=quarto-callout-important-color!10!white, rightrule=.15mm, bottomtitle=1mm, toprule=.15mm, titlerule=0mm, opacityback=0, arc=.35mm]
 
 At the end of the chapter, students should be able to
 
@@ -1712,7 +1698,7 @@ The likelihood can then be written as \begin{align*}
 
 \end{example}
 
-\begin{tcolorbox}[enhanced jigsaw, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Summary}}, rightrule=.15mm, coltitle=black, leftrule=.75mm, colframe=quarto-callout-important-color-frame, breakable, bottomrule=.15mm, opacityback=0, colbacktitle=quarto-callout-important-color!10!white, left=2mm, bottomtitle=1mm, toptitle=1mm, titlerule=0mm, toprule=.15mm, arc=.35mm, opacitybacktitle=0.6, colback=white]
+\begin{tcolorbox}[enhanced jigsaw, opacitybacktitle=0.6, coltitle=black, colback=white, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Summary}}, left=2mm, leftrule=.75mm, bottomrule=.15mm, colframe=quarto-callout-important-color-frame, breakable, toptitle=1mm, colbacktitle=quarto-callout-important-color!10!white, rightrule=.15mm, bottomtitle=1mm, toprule=.15mm, titlerule=0mm, opacityback=0, arc=.35mm]
 
 \begin{itemize}
 \tightlist
@@ -1792,7 +1778,7 @@ elicitation and estimation of the marginal likelihood, are mentioned in
 passing. A brief discussion of Bayesian hypothesis testing (and
 alternatives) is presented.
 
-\begin{tcolorbox}[enhanced jigsaw, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Learning objectives}:}, rightrule=.15mm, coltitle=black, leftrule=.75mm, colframe=quarto-callout-important-color-frame, breakable, bottomrule=.15mm, opacityback=0, colbacktitle=quarto-callout-important-color!10!white, left=2mm, bottomtitle=1mm, toptitle=1mm, titlerule=0mm, toprule=.15mm, arc=.35mm, opacitybacktitle=0.6, colback=white]
+\begin{tcolorbox}[enhanced jigsaw, opacitybacktitle=0.6, coltitle=black, colback=white, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Learning objectives}:}, left=2mm, leftrule=.75mm, bottomrule=.15mm, colframe=quarto-callout-important-color-frame, breakable, toptitle=1mm, colbacktitle=quarto-callout-important-color!10!white, rightrule=.15mm, bottomtitle=1mm, toprule=.15mm, titlerule=0mm, opacityback=0, arc=.35mm]
 
 At the end of the chapter, students should be able to
 
@@ -2312,7 +2298,7 @@ new realization from the distribution appearing in the likelihood
 from the frequentist setting, which fixes the value of the parameter to
 some estimate \(\widehat{\boldsymbol{\theta}}\); by contrast, the
 posterior predictive, here a beta-binomial distribution
-\(\mathsf{BetaBin}(n, \alpha + y, n - y + \beta),\) carries over the
+\(\mathsf{beta binom}(n, \alpha + y, n - y + \beta),\) carries over the
 uncertainty so will typically be wider and overdispersed relative to the
 corresponding binomial model. This can be easily seen from the
 left-panel of Figure~\ref{fig-betabinompostpred}, which contrasts the
@@ -2343,13 +2329,13 @@ maximum likelihood estimator.}
 
 \end{figure}%
 
-Given the \(\mathsf{Be}(a, b)\) posterior with \(a=y + \alpha\) and
+Given the \(\mathsf{beta}(a, b)\) posterior with \(a=y + \alpha\) and
 \(b=n-y + \beta,\) the predictive distribution of \(Y_{\text{new}}\) for
 fixed \(n_{\text{new}}\) number of trials is beta-binomial with mass
 function \begin{align*}
 p(y_{\text{new}}\mid y) &= \int_0^1 \binom{n_{\text{new}}}{y_{\text{new}}} \frac{\theta^{a + y_{\text{new}}-1}(1-\theta)^{b + n_{\text{new}} - y_{\text{new}}-1}}{
-\mathrm{Be}(a, b)}\mathrm{d} \theta
-\\&= \binom{n_{\text{new}}}{y_{\text{new}}} \frac{\mathrm{Be}(a + y_{\text{new}}, b + n_{\text{new}} - y_{\text{new}})}{\mathrm{Be}(a, b)}
+\mathrm{beta}(a, b)}\mathrm{d} \theta
+\\&= \binom{n_{\text{new}}}{y_{\text{new}}} \frac{\mathrm{beta}(a + y_{\text{new}}, b + n_{\text{new}} - y_{\text{new}})}{\mathrm{beta}(a, b)}
 \end{align*}
 
 \begin{example}[Posterior predictive distribution of univariate Gaussian
@@ -2729,7 +2715,7 @@ the cutoff for the HDP region.}
 
 \end{figure}%
 
-\begin{tcolorbox}[enhanced jigsaw, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Summary}:}, rightrule=.15mm, coltitle=black, leftrule=.75mm, colframe=quarto-callout-important-color-frame, breakable, bottomrule=.15mm, opacityback=0, colbacktitle=quarto-callout-important-color!10!white, left=2mm, bottomtitle=1mm, toptitle=1mm, titlerule=0mm, toprule=.15mm, arc=.35mm, opacitybacktitle=0.6, colback=white]
+\begin{tcolorbox}[enhanced jigsaw, opacitybacktitle=0.6, coltitle=black, colback=white, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Summary}:}, left=2mm, leftrule=.75mm, bottomrule=.15mm, colframe=quarto-callout-important-color-frame, breakable, toptitle=1mm, colbacktitle=quarto-callout-important-color!10!white, rightrule=.15mm, bottomtitle=1mm, toprule=.15mm, titlerule=0mm, opacityback=0, arc=.35mm]
 
 \begin{itemize}
 \tightlist
@@ -2808,7 +2794,7 @@ inferences. Generally, we will choose the prior for convenience. Priors
 are controversial because they could be tuned aposteriori to give any
 answer an analyst might want.
 
-\begin{tcolorbox}[enhanced jigsaw, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Learning objectives}:}, rightrule=.15mm, coltitle=black, leftrule=.75mm, colframe=quarto-callout-important-color-frame, breakable, bottomrule=.15mm, opacityback=0, colbacktitle=quarto-callout-important-color!10!white, left=2mm, bottomtitle=1mm, toptitle=1mm, titlerule=0mm, toprule=.15mm, arc=.35mm, opacitybacktitle=0.6, colback=white]
+\begin{tcolorbox}[enhanced jigsaw, opacitybacktitle=0.6, coltitle=black, colback=white, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Learning objectives}:}, left=2mm, leftrule=.75mm, bottomrule=.15mm, colframe=quarto-callout-important-color-frame, breakable, toptitle=1mm, colbacktitle=quarto-callout-important-color!10!white, rightrule=.15mm, bottomtitle=1mm, toprule=.15mm, titlerule=0mm, opacityback=0, arc=.35mm]
 
 At the end of the chapter, students should be able to
 
@@ -3549,10 +3535,9 @@ prior density.}
 
 If we restrict the range of the MDI prior \(p(\xi)\) to \(\xi \geq -1\),
 then \(p(\xi + 1) \sim \mathsf{expo}(1)\) and the resulting posterior is
-proper (\citeproc{ref-Northrop.Attalides:2016}{Northrop and Attalides
-2016, Zhang.Shaby:2023}). While being ``objective'', it is perhaps not
-much suitable as it puts mass towards lower values of the shape, an
-undesirable feature.
+proper Zhang and Shaby (\citeproc{ref-Zhang.Shaby:2023}{2023}). While
+being ``objective'', it is perhaps not much suitable as it puts mass
+towards lower values of the shape, an undesirable feature.
 
 \end{example}
 
@@ -3843,7 +3828,7 @@ improper priors on location and scale.}
 
 \end{example}
 
-\begin{tcolorbox}[enhanced jigsaw, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Summary}:}, rightrule=.15mm, coltitle=black, leftrule=.75mm, colframe=quarto-callout-important-color-frame, breakable, bottomrule=.15mm, opacityback=0, colbacktitle=quarto-callout-important-color!10!white, left=2mm, bottomtitle=1mm, toptitle=1mm, titlerule=0mm, toprule=.15mm, arc=.35mm, opacitybacktitle=0.6, colback=white]
+\begin{tcolorbox}[enhanced jigsaw, opacitybacktitle=0.6, coltitle=black, colback=white, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Summary}:}, left=2mm, leftrule=.75mm, bottomrule=.15mm, colframe=quarto-callout-important-color-frame, breakable, toptitle=1mm, colbacktitle=quarto-callout-important-color!10!white, rightrule=.15mm, bottomtitle=1mm, toprule=.15mm, titlerule=0mm, opacityback=0, arc=.35mm]
 
 \begin{itemize}
 \tightlist
@@ -4353,7 +4338,7 @@ Rather than simulate directly from our data generating mechanism, we can
 use an importance sampling density \(q(x)\) which puts more mass away
 from \(0.5\) where the integral is zero. Consider the equiweighted
 mixture of \(\mathsf{beta}(\alpha, 3\alpha)\) and
-\(\mathsf{\beta}(3\alpha, \alpha)\), which is bimodal.
+\(\mathsf{beta}(3\alpha, \alpha)\), which is bimodal.
 Figure~\ref{fig-importance-sampling-beta} shows the function we wish to
 integrate, the density and the importance sampling density, and the
 weighting function \(p(x)/q(x)\) of the first 50 observations drawn from
@@ -4487,8 +4472,7 @@ distribution]\protect\hypertarget{exm-tail-probability}{}\label{exm-tail-probabi
 Consider estimation of the probability that a standard Gaussian random
 variable exceeds \(a=4,\) which is \(p=1-\Phi(a).\) We can use standard
 numerical approximations to the distribution function implemented in any
-software package, which shows this probability is roughly one in
-\(\ensuremath{3.1574\times 10^{4}}.\)
+software package, which shows this probability is roughly \(1/31574.\)
 
 If we consider a truncated Gaussian above \(a,\) then the integral of
 \(\mathsf{I}(x>a)\) is one (since the truncated Gaussian is a valid
@@ -4520,6 +4504,9 @@ with \(B=10^6\) is demonstrated using the following code
            mc            is 
 -2.119405e-02 -2.927613e-05 
 \end{verbatim}
+
+We can see that the relative error for importance sampling is three
+orders of magnitude smaller than that from vanilla Monte Carlo.
 
 \end{example}
 
@@ -4904,7 +4891,7 @@ computers became more widely available. The idea is to draw correlated
 samples from a posterior via Markov chains, constructed to have the
 posterior as invariant stationary distribution.
 
-\begin{tcolorbox}[enhanced jigsaw, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Learning objectives}:}, rightrule=.15mm, coltitle=black, leftrule=.75mm, colframe=quarto-callout-important-color-frame, breakable, bottomrule=.15mm, opacityback=0, colbacktitle=quarto-callout-important-color!10!white, left=2mm, bottomtitle=1mm, toptitle=1mm, titlerule=0mm, toprule=.15mm, arc=.35mm, opacitybacktitle=0.6, colback=white]
+\begin{tcolorbox}[enhanced jigsaw, opacitybacktitle=0.6, coltitle=black, colback=white, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Learning objectives}:}, left=2mm, leftrule=.75mm, bottomrule=.15mm, colframe=quarto-callout-important-color-frame, breakable, toptitle=1mm, colbacktitle=quarto-callout-important-color!10!white, rightrule=.15mm, bottomtitle=1mm, toprule=.15mm, titlerule=0mm, opacityback=0, arc=.35mm]
 
 At the end of the chapter, students should be able to
 
@@ -5429,8 +5416,8 @@ and \(f''(\theta^{\star}_{t})\) be negative since the variance is
 mode. Otherwise, one could use a global scaling derived from the hessian
 at the mode (\citeproc{ref-Rue.Held:2005}{H. Rue and Held 2005}).
 
-The simpler Metropolis-adjusted Langevin algorithm is equivalent to
-using a Gaussian random walk where the proposal has mean
+The simpler Metropolis-adjusted Langevin algorithm (MALA) is equivalent
+to using a Gaussian random walk where the proposal has mean
 \(\boldsymbol{\theta}_{t-1} + \mathbf{A}\eta \nabla \log p(\boldsymbol{\theta}_{t-1}; \boldsymbol{y})\)
 and variance \(\tau^2\mathbf{A},\) for some mass matrix \(\mathbf{A}\)
 and learning rate \(\eta < 1.\) Taking \(\mathbf{A}\) as the identity
@@ -5594,7 +5581,7 @@ overdispersion.
 
 \end{example}
 
-\begin{tcolorbox}[enhanced jigsaw, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Summary}:}, rightrule=.15mm, coltitle=black, leftrule=.75mm, colframe=quarto-callout-important-color-frame, breakable, bottomrule=.15mm, opacityback=0, colbacktitle=quarto-callout-important-color!10!white, left=2mm, bottomtitle=1mm, toptitle=1mm, titlerule=0mm, toprule=.15mm, arc=.35mm, opacitybacktitle=0.6, colback=white]
+\begin{tcolorbox}[enhanced jigsaw, opacitybacktitle=0.6, coltitle=black, colback=white, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Summary}:}, left=2mm, leftrule=.75mm, bottomrule=.15mm, colframe=quarto-callout-important-color-frame, breakable, toptitle=1mm, colbacktitle=quarto-callout-important-color!10!white, rightrule=.15mm, bottomtitle=1mm, toprule=.15mm, titlerule=0mm, opacityback=0, arc=.35mm]
 
 \begin{itemize}
 \tightlist
@@ -5645,7 +5632,7 @@ overdispersion.
 
 \chapter{Gibbs sampling}\label{sec-Gibbs}
 
-\begin{tcolorbox}[enhanced jigsaw, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Learning objectives}:}, rightrule=.15mm, coltitle=black, leftrule=.75mm, colframe=quarto-callout-important-color-frame, breakable, bottomrule=.15mm, opacityback=0, colbacktitle=quarto-callout-important-color!10!white, left=2mm, bottomtitle=1mm, toptitle=1mm, titlerule=0mm, toprule=.15mm, arc=.35mm, opacitybacktitle=0.6, colback=white]
+\begin{tcolorbox}[enhanced jigsaw, opacitybacktitle=0.6, coltitle=black, colback=white, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Learning objectives}:}, left=2mm, leftrule=.75mm, bottomrule=.15mm, colframe=quarto-callout-important-color-frame, breakable, toptitle=1mm, colbacktitle=quarto-callout-important-color!10!white, rightrule=.15mm, bottomtitle=1mm, toprule=.15mm, titlerule=0mm, opacityback=0, arc=.35mm]
 
 At the end of the chapter, students should be able to
 
@@ -6111,7 +6098,7 @@ and Stephens (\citeproc{ref-Stephens:2002}{2002}) for more details.
 
 \end{refremark}
 
-\begin{tcolorbox}[enhanced jigsaw, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Summary}:}, rightrule=.15mm, coltitle=black, leftrule=.75mm, colframe=quarto-callout-important-color-frame, breakable, bottomrule=.15mm, opacityback=0, colbacktitle=quarto-callout-important-color!10!white, left=2mm, bottomtitle=1mm, toptitle=1mm, titlerule=0mm, toprule=.15mm, arc=.35mm, opacitybacktitle=0.6, colback=white]
+\begin{tcolorbox}[enhanced jigsaw, opacitybacktitle=0.6, coltitle=black, colback=white, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Summary}:}, left=2mm, leftrule=.75mm, bottomrule=.15mm, colframe=quarto-callout-important-color-frame, breakable, toptitle=1mm, colbacktitle=quarto-callout-important-color!10!white, rightrule=.15mm, bottomtitle=1mm, toprule=.15mm, titlerule=0mm, opacityback=0, arc=.35mm]
 
 \begin{itemize}
 \tightlist
@@ -6169,7 +6156,7 @@ Betancourt} for excellent visualizations. In this chapter, we focus on
 three aspects of the workflow: model validation, evaluation and
 comparison.
 
-\begin{tcolorbox}[enhanced jigsaw, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Learning objectives}:}, rightrule=.15mm, coltitle=black, leftrule=.75mm, colframe=quarto-callout-important-color-frame, breakable, bottomrule=.15mm, opacityback=0, colbacktitle=quarto-callout-important-color!10!white, left=2mm, bottomtitle=1mm, toptitle=1mm, titlerule=0mm, toprule=.15mm, arc=.35mm, opacitybacktitle=0.6, colback=white]
+\begin{tcolorbox}[enhanced jigsaw, opacitybacktitle=0.6, coltitle=black, colback=white, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Learning objectives}:}, left=2mm, leftrule=.75mm, bottomrule=.15mm, colframe=quarto-callout-important-color-frame, breakable, toptitle=1mm, colbacktitle=quarto-callout-important-color!10!white, rightrule=.15mm, bottomtitle=1mm, toprule=.15mm, titlerule=0mm, opacityback=0, arc=.35mm]
 
 At the end of the chapter, students should be able to
 
@@ -9418,6 +9405,11 @@ Econometrics}. Wiley.
 Regression Analysis with \(g\)-Prior Distributions.''} In
 \emph{{B}ayesian Inference and Decision Techniques: Essays in Honor of
 {B}runo de {F}inetti}, 233--43. North-Holland/Elsevier.
+
+\bibitem[\citeproctext]{ref-Zhang.Shaby:2023}
+Zhang, Likun, and Benjamin A. Shaby. 2023. {``Reference Priors for the
+Generalized Extreme Value Distribution.''} \emph{Statistica Sinica} 33:
+2185--2208. \url{https://doi.org/10.5705/ss.202021.0258}.
 
 \end{CSLReferences}
 

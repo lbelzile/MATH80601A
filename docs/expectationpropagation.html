@@ -349,7 +349,7 @@ c_j &amp;= \int h_j(\boldsymbol{\theta}) \mathrm{d} \boldsymbol{\theta} \\
 \boldsymbol{\mu}_j^* &amp;= \boldsymbol{\mu}_{-j} s_j^{-1}\boldsymbol{\Sigma}_{-j}\mathbf{x}^\top \{\mathbf{E}(Z_j) -\mathbf{x}_j\boldsymbol{\mu}_{-j}\} \\
 \boldsymbol{\Sigma}_{j} &amp;=\boldsymbol{\Sigma}_{-j} + s_j^{-2}\boldsymbol{\Sigma}_{-j}\mathbf{x}^\top_j\left\{\mathsf{Var}(Z_j) - s_j\right\}\mathbf{x}_j\boldsymbol{\Sigma}_{-j}
 \end{align*}\]</span> where <span class="math inline">\(Z_j\)</span> has distribution proportional to <span class="math inline">\(L_j(z) \times \phi(z; \mathbf{x}_j\boldsymbol{\mu}_j, \mathbf{x}_j\boldsymbol{\Sigma}_{-j}\mathbf{x}_j^\top),\)</span> where <span class="math inline">\(\phi(\cdot; \mu, \sigma^2)\)</span> denotes the density of a Gaussian random variable. The updates to the parameters for more general exponential families are found in page 23 of <span class="citation" data-cites="Cseke.Heskes:2011">Cseke and Heskes (<a href="references.html#ref-Cseke.Heskes:2011" role="doc-biblioref">2011</a>)</span>.</p>
-<div class="cell" data-layout-align="center">
+<div class="cell">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co">#' @param mu_lc mean of the linear combination</span></span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="co">#' @param sd_lc std. dev of the linear combination</span></span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(cubature)</span>

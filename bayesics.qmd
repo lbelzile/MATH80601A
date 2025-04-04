@@ -625,7 +625,7 @@ p(y_{\text{new}} \mid \boldsymbol{y}) =
 \int_{\Theta} p(y_{\text{new}}  \mid \boldsymbol{\theta}) p(\boldsymbol{\theta} \mid  \boldsymbol{y}) \mathrm{d} \boldsymbol{\theta}
 \end{align*}
 
-Given draws from the posterior distribution, say $\boldsymbol{\theta}_b$ $(b=1, \ldots, B),$ we sample from each a new realization from the distribution appearing in the likelihood $p(y_{\text{new}}  \mid \boldsymbol{\theta}_b).$ This is different from the frequentist setting, which fixes the value of the parameter to some estimate $\widehat{\boldsymbol{\theta}}$; by contrast, the posterior predictive, here a beta-binomial distribution $\mathsf{BetaBin}(n, \alpha + y, n - y + \beta),$ carries over the uncertainty so will typically be wider and overdispersed relative to the corresponding binomial model. This can be easily seen from the left-panel of @fig-betabinompostpred, which contrasts the binomial mass function evaluated at the maximum likelihood estimator $\widehat{\theta}=6/14$ with the posterior predictive.
+Given draws from the posterior distribution, say $\boldsymbol{\theta}_b$ $(b=1, \ldots, B),$ we sample from each a new realization from the distribution appearing in the likelihood $p(y_{\text{new}}  \mid \boldsymbol{\theta}_b).$ This is different from the frequentist setting, which fixes the value of the parameter to some estimate $\widehat{\boldsymbol{\theta}}$; by contrast, the posterior predictive, here a beta-binomial distribution $\mathsf{beta binom}(n, \alpha + y, n - y + \beta),$ carries over the uncertainty so will typically be wider and overdispersed relative to the corresponding binomial model. This can be easily seen from the left-panel of @fig-betabinompostpred, which contrasts the binomial mass function evaluated at the maximum likelihood estimator $\widehat{\theta}=6/14$ with the posterior predictive.
 
 :::{.exm-betabinompred}
 
@@ -701,11 +701,11 @@ g1
 # g1 + g2
 ```
 
-Given the $\mathsf{Be}(a, b)$  posterior with  $a=y + \alpha$ and $b=n-y + \beta,$ the predictive distribution of $Y_{\text{new}}$ for fixed $n_{\text{new}}$ number of trials is beta-binomial with mass function
+Given the $\mathsf{beta}(a, b)$  posterior with  $a=y + \alpha$ and $b=n-y + \beta,$ the predictive distribution of $Y_{\text{new}}$ for fixed $n_{\text{new}}$ number of trials is beta-binomial with mass function
 \begin{align*}
 p(y_{\text{new}}\mid y) &= \int_0^1 \binom{n_{\text{new}}}{y_{\text{new}}} \frac{\theta^{a + y_{\text{new}}-1}(1-\theta)^{b + n_{\text{new}} - y_{\text{new}}-1}}{
-\mathrm{Be}(a, b)}\mathrm{d} \theta
-\\&= \binom{n_{\text{new}}}{y_{\text{new}}} \frac{\mathrm{Be}(a + y_{\text{new}}, b + n_{\text{new}} - y_{\text{new}})}{\mathrm{Be}(a, b)}
+\mathrm{beta}(a, b)}\mathrm{d} \theta
+\\&= \binom{n_{\text{new}}}{y_{\text{new}}} \frac{\mathrm{beta}(a + y_{\text{new}}, b + n_{\text{new}} - y_{\text{new}})}{\mathrm{beta}(a, b)}
 \end{align*}
 
 :::

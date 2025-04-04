@@ -556,7 +556,7 @@ Figure&nbsp;2.5: Posterior curves per group (left) and odds ratio (right)
 p(y_{\text{new}} \mid \boldsymbol{y}) =
 \int_{\Theta} p(y_{\text{new}}  \mid \boldsymbol{\theta}) p(\boldsymbol{\theta} \mid  \boldsymbol{y}) \mathrm{d} \boldsymbol{\theta}
 \end{align*}\]</span></p>
-<p>Given draws from the posterior distribution, say <span class="math inline">\(\boldsymbol{\theta}_b\)</span> <span class="math inline">\((b=1, \ldots, B),\)</span> we sample from each a new realization from the distribution appearing in the likelihood <span class="math inline">\(p(y_{\text{new}}  \mid \boldsymbol{\theta}_b).\)</span> This is different from the frequentist setting, which fixes the value of the parameter to some estimate <span class="math inline">\(\widehat{\boldsymbol{\theta}}\)</span>; by contrast, the posterior predictive, here a beta-binomial distribution <span class="math inline">\(\mathsf{BetaBin}(n, \alpha + y, n - y + \beta),\)</span> carries over the uncertainty so will typically be wider and overdispersed relative to the corresponding binomial model. This can be easily seen from the left-panel of <a href="#fig-betabinompostpred" class="quarto-xref">Figure&nbsp;<span>2.6</span></a>, which contrasts the binomial mass function evaluated at the maximum likelihood estimator <span class="math inline">\(\widehat{\theta}=6/14\)</span> with the posterior predictive.</p>
+<p>Given draws from the posterior distribution, say <span class="math inline">\(\boldsymbol{\theta}_b\)</span> <span class="math inline">\((b=1, \ldots, B),\)</span> we sample from each a new realization from the distribution appearing in the likelihood <span class="math inline">\(p(y_{\text{new}}  \mid \boldsymbol{\theta}_b).\)</span> This is different from the frequentist setting, which fixes the value of the parameter to some estimate <span class="math inline">\(\widehat{\boldsymbol{\theta}}\)</span>; by contrast, the posterior predictive, here a beta-binomial distribution <span class="math inline">\(\mathsf{beta binom}(n, \alpha + y, n - y + \beta),\)</span> carries over the uncertainty so will typically be wider and overdispersed relative to the corresponding binomial model. This can be easily seen from the left-panel of <a href="#fig-betabinompostpred" class="quarto-xref">Figure&nbsp;<span>2.6</span></a>, which contrasts the binomial mass function evaluated at the maximum likelihood estimator <span class="math inline">\(\widehat{\theta}=6/14\)</span> with the posterior predictive.</p>
 <div class="exm-betabinompred">
 <div class="cell">
 <div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>npost <span class="ot">&lt;-</span> <span class="fl">1e4</span>L</span>
@@ -579,10 +579,10 @@ Figure&nbsp;2.6: Beta-binomial posterior predictive distribution with correspond
 </div>
 </div>
 </div>
-<p>Given the <span class="math inline">\(\mathsf{Be}(a, b)\)</span> posterior with <span class="math inline">\(a=y + \alpha\)</span> and <span class="math inline">\(b=n-y + \beta,\)</span> the predictive distribution of <span class="math inline">\(Y_{\text{new}}\)</span> for fixed <span class="math inline">\(n_{\text{new}}\)</span> number of trials is beta-binomial with mass function <span class="math display">\[\begin{align*}
+<p>Given the <span class="math inline">\(\mathsf{beta}(a, b)\)</span> posterior with <span class="math inline">\(a=y + \alpha\)</span> and <span class="math inline">\(b=n-y + \beta,\)</span> the predictive distribution of <span class="math inline">\(Y_{\text{new}}\)</span> for fixed <span class="math inline">\(n_{\text{new}}\)</span> number of trials is beta-binomial with mass function <span class="math display">\[\begin{align*}
 p(y_{\text{new}}\mid y) &amp;= \int_0^1 \binom{n_{\text{new}}}{y_{\text{new}}} \frac{\theta^{a + y_{\text{new}}-1}(1-\theta)^{b + n_{\text{new}} - y_{\text{new}}-1}}{
-\mathrm{Be}(a, b)}\mathrm{d} \theta
-\\&amp;= \binom{n_{\text{new}}}{y_{\text{new}}} \frac{\mathrm{Be}(a + y_{\text{new}}, b + n_{\text{new}} - y_{\text{new}})}{\mathrm{Be}(a, b)}
+\mathrm{beta}(a, b)}\mathrm{d} \theta
+\\&amp;= \binom{n_{\text{new}}}{y_{\text{new}}} \frac{\mathrm{beta}(a + y_{\text{new}}, b + n_{\text{new}} - y_{\text{new}})}{\mathrm{beta}(a, b)}
 \end{align*}\]</span></p>
 </div>
 <div id="exm-normal-post-pred" class="theorem example">

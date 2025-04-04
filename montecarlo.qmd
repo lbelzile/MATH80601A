@@ -365,7 +365,7 @@ Consider $X \sim \mathsf{beta}(\alpha, \alpha)$ for $\alpha > 1$ with $\mathsf{E
 
 
 Rather than simulate directly from our data generating mechanism, we can use an importance sampling density $q(x)$ which puts more mass away from $0.5$ where the integral is zero.
-Consider the equiweighted mixture of $\mathsf{beta}(\alpha, 3\alpha)$ and $\mathsf{\beta}(3\alpha, \alpha)$, which is bimodal. @fig-importance-sampling-beta shows the function we wish to integrate, the density and the importance sampling density, and the weighting function $p(x)/q(x)$ of the first 50 observations drawn from $q(x)$ with $\alpha=1.5.$
+Consider the equiweighted mixture of $\mathsf{beta}(\alpha, 3\alpha)$ and $\mathsf{beta}(3\alpha, \alpha)$, which is bimodal. @fig-importance-sampling-beta shows the function we wish to integrate, the density and the importance sampling density, and the weighting function $p(x)/q(x)$ of the first 50 observations drawn from $q(x)$ with $\alpha=1.5.$
 The variance ratio shows an improvement of more than 9% for the same Monte Carlo sample size.
 
 ```{r}
@@ -573,7 +573,7 @@ g1 + g2 + g3 & theme_classic()
 
 ## Tail probability of a Gaussian distribution
 
-Consider estimation of the probability that a standard Gaussian random variable exceeds $a=4,$ which is $p=1-\Phi(a).$ We can use standard numerical approximations to the distribution function implemented in any software package, which shows this probability is roughly one in $`r round(1/pnorm(4, lower.tail = FALSE),0)`.$ 
+Consider estimation of the probability that a standard Gaussian random variable exceeds $a=4,$ which is $p=1-\Phi(a).$ We can use standard numerical approximations to the distribution function implemented in any software package, which shows this probability is roughly $1/`r as.integer(round(1/pnorm(4, lower.tail = FALSE),0))`.$ 
 
 If we consider a truncated Gaussian above $a,$ then the integral of $\mathsf{I}(x>a)$ is one (since the truncated Gaussian is a valid density). Thus, we can estimate rather the normalizing constant by simulating standard Gaussian and comparing this with the importance sampling estimator, using the knowledge of the value of the integral to derive rather the normalizing constant. Monte Carlo integration from with $B=10^6$ is demonstrated using the following code
 
@@ -595,6 +595,7 @@ is <- mean(dnorm(Y)/drayleigh(Y, a = a))
 c(mc = (mc - exact)/exact, is = (is - exact)/exact)
 ```
 
+We can see that the relative error for importance sampling is three orders of magnitude smaller than that from vanilla Monte Carlo.
 
 :::
 

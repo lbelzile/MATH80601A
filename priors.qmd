@@ -546,7 +546,7 @@ ggplot() +
        subtitle = "unscaled prior density")
 ```
 
-If we restrict the range of the MDI prior $p(\xi)$ to $\xi \geq -1$, then $p(\xi + 1) \sim \mathsf{expo}(1)$ and the resulting posterior is proper [@Northrop.Attalides:2016,Zhang.Shaby:2023]. While being "objective", it is perhaps not much suitable as it puts mass towards lower values of the shape, an undesirable feature.
+If we restrict the range of the MDI prior $p(\xi)$ to $\xi \geq -1$, then $p(\xi + 1) \sim \mathsf{expo}(1)$ and the resulting posterior is proper [@Northrop.Attalides:2016,@Zhang.Shaby:2023]. While being "objective", it is perhaps not much suitable as it puts mass towards lower values of the shape, an undesirable feature.
 
 
 :::

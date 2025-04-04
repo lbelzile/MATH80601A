@@ -588,4 +588,5 @@ where for most moves $J=1$ in this case, except in four cases where the dimensio
 - $J=3/2$ if $|M|=k_{\max}-1$ and we try to add the last covariate.
 
 
-The move for $M$ is accepted as usual if the drawn uniform $U \sim \mathsf{unif}(0,1)$ satisfies $U<R$.
+The move for $M$ is accepted as usual if the drawn uniform $U \sim \mathsf{unif}(0,1)$ satisfies $U<R$. 
+
