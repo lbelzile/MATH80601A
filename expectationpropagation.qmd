@@ -143,10 +143,12 @@ The EP algorithm iterates the steps until convergence:
 
 1. Initialize the site-specific parameters
 2. Loop over each observation of the likelihood factorization:
-  2.1 form the cavity and the hybrid distribution
-  2.2 compute the moments of the hybrid $\boldsymbol{\mu}$ and $\boldsymbol{\Sigma}$
-  2.3 transform back to canonical parameters $\mathbf{Q}$ and $\boldsymbol{r}$
-  2.3 update the global approximation
+    2.1 form the cavity and the hybrid distribution
+    2.2 compute the moments of the hybrid $\boldsymbol{\mu}$ and $\boldsymbol{\Sigma}$
+    2.3 transform back to canonical parameters $\mathbf{Q}$ and $\boldsymbol{r}$
+    2.3 update the global approximation
+3. Declare convergence when change in parameters is less than tolerance.
+
 
 We can monitor convergence of EP by looking at changes in the parameters: it is a fixed point algorithm. However, the EP does not have guarantees of convergence and may diverge; @Dehaene.Barthelme:2018 explain some heuristics for these by making analogies with Newton's method, which only converges in the neighbourhood of fixed points and can diverge. The idea is to update the global approximation with a damping term for the canonical parameters. It is also useful to perform updates using suitable numerical linear algebra routines, for example by competing the Cholesky root of the covariance and back-solving to get the precision.
 

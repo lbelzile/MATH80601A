@@ -50,7 +50,7 @@ It is important to understand that the lack of symmetry of the Kullback--Leibler
 #| echo: false
 #| message: false
 #| label: fig-klvsrev
-#| fig-cap: "Illustration of an approximation of a correlated bivariate Gaussian density (dashed contour lines) with an uncorrelated Gaussian, obtained by minimizing the reverse Kullback--Leibler divergence (variational approximation, left) and the Kullback--Leibler divergence."
+#| fig-cap: "Illustration of an approximation of a correlated bivariate Gaussian density (dashed contour lines) with an uncorrelated Gaussian, obtained by minimizing the reverse Kullback--Leibler divergence (variational approximation, left) and the Kullback--Leibler divergence (right)."
 library(ellipse, quietly = TRUE, warn.conflicts = FALSE)
 # From Ben Bolker: https://stackoverflow.com/a/36222689
 
@@ -93,7 +93,7 @@ g2 <- ggplot() +
   geom_path(data = contour_data_KL,
             mapping = aes(x = x, y = y, group = .id)) +
   labs(x = expression(x[1]), y = expression(x[2]),
-       subtitle = "Kullback-Leibler (EP)") +
+       subtitle = "Kullback-Leibler") +
   theme_classic()
 
 g1 + g2
@@ -140,7 +140,7 @@ curve(sn::dsn(x, xi = 0, alpha = 10),
      bty = "n", ylab = "density",
      ylim = c(0,1))
 curve(dnorm(x, 
-  mean = mode_laplace$value, 
+  mean = mode_laplace$par, 
   sd = sqrt(1/mode_laplace$hessian[1])),
 from = -2, to = 4, add = TRUE, lty = 2, col = MetBrewer::met.brewer("Hiroshige", 2)[1])
 

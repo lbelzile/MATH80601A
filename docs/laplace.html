@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.7.3">
+<meta name="generator" content="quarto-1.7.1">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -91,10 +91,10 @@ div.csl-indent {
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="site_libs/quarto-html/anchor.min.js"></script>
 <link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-81b5c3e63835cfde897ecd3d35a35a41.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-2bb0ec5e928ee8c40b12725cb7836c35.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-ad5ef081d17d57ab2b6cc5e45efb5d90.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-a51e8ad160b68d9f8f1ac488cc0f242e.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
   "copy-button": false,
@@ -312,7 +312,7 @@ I_n &amp;\approx \exp\{nh(x_0)\} \int_{a}^b \exp \left\{-\frac{1}{2}(x-x_0)^2\ri
 <p>The multivariate analog is similar, where now for an integral of the form <span class="math inline">\(\exp\{nh(\boldsymbol{x})\}\)</span> over a subset of <span class="math inline">\(\mathbb{R}^d,\)</span> we consider the Taylor series expansion <span class="math display">\[\begin{align*}
 h(\boldsymbol{x}) &amp;= h(\boldsymbol{x}_0) + (\boldsymbol{x}- \boldsymbol{x}_0)^\top h'(\boldsymbol{x}_0) + \frac{1}{2}(\boldsymbol{x}- \boldsymbol{x}_0)^\top h''(\boldsymbol{x}_0)(\boldsymbol{x}- \boldsymbol{x}_0) + R.
 \end{align*}\]</span> We obtain the Laplace approximation at the mode <span class="math inline">\(\boldsymbol{x}_0\)</span> satisfying <span class="math inline">\(h'(\boldsymbol{x}_0)=\boldsymbol{0}_d,\)</span> <span class="math display">\[\begin{align*}
-I_n \approx \left(\frac{2\pi}{n}\right)^{p/2} | \mathbf{H}(\boldsymbol{x}_0)|^{-1/2}\exp\{nh(\boldsymbol{x}_0)\},
+I_n \approx \left(\frac{2\pi}{n}\right)^{d/2} | \mathbf{H}(\boldsymbol{x}_0)|^{-1/2}\exp\{nh(\boldsymbol{x}_0)\},
 \end{align*}\]</span> where <span class="math inline">\(|\mathbf{H}(\boldsymbol{x}_0)|\)</span> is the determinant of the Hessian matrix of <span class="math inline">\(-h(\boldsymbol{x})\)</span> evaluated at the mode <span class="math inline">\(\boldsymbol{x}_0.\)</span></p>
 </div>
 <p>Laplace approximation uses a Taylor series approximation to approximate the density, but since the latter must be non-negative, it performs the approximation on the log scale and back-transform the result. It is important to understand that we can replace <span class="math inline">\(nh(\boldsymbol{x})\)</span> by any <span class="math inline">\(\mathrm{O}(n)\)</span> term.</p>
@@ -357,7 +357,7 @@ Figure&nbsp;9.1: BIC as a function of the linear model covariates (left) and Bay
 \log p(\boldsymbol{\theta}) &amp;\approx \log p(\widehat{\boldsymbol{\theta}}_0) - \frac{1}{2}(\boldsymbol{\theta} - \widehat{\boldsymbol{\theta}}_0)^\top\jmath_0(\widehat{\boldsymbol{\theta}}_0)(\boldsymbol{\theta} - \widehat{\boldsymbol{\theta}}_0)\\
 \log p(\boldsymbol{y} \mid \boldsymbol{\theta}) &amp;\approx \log p(\boldsymbol{y} \mid  \widehat{\boldsymbol{\theta}}_{\mathrm{MLE}}) - \frac{1}{2}(\boldsymbol{\theta} - \widehat{\boldsymbol{\theta}}_{\mathrm{MLE}})^\top\jmath(\widehat{\boldsymbol{\theta}}_{\mathrm{MLE}})(\boldsymbol{\theta} - \widehat{\boldsymbol{\theta}}_{\mathrm{MLE}})
 \end{align*}\]</span></p>
-<p>In the case of flat prior, the curvature is zero and the prior contribution vanishes altogether. If we apply now <a href="regression.html#prp-quadratic-forms" class="quarto-xref">Proposition&nbsp;<span>8.1</span></a> to this unnormalized kernel, we get that the approximate posterior must be Gaussian with precision <span class="math inline">\(\jmath_n^{-1}\)</span> and mean <span class="math inline">\(\mu_n,\)</span> where <span class="math display">\[\begin{align*}
+<p>In the case of flat prior, the curvature is zero and the prior contribution vanishes altogether. If we apply now <a href="regression.html#prp-quadratic-forms" class="quarto-xref">Proposition&nbsp;<span>8.1</span></a> to this unnormalized kernel, we get that the approximate posterior must be Gaussian with precision <span class="math inline">\(\jmath_n^{-1}\)</span> and mean <span class="math inline">\(\widehat{\boldsymbol{\theta}}_n,\)</span> where <span class="math display">\[\begin{align*}
 \jmath_n &amp;= \jmath_0(\widehat{\boldsymbol{\theta}}_{0}) + \jmath(\widehat{\boldsymbol{\theta}}_{\mathrm{MLE}})\\
 \widehat{\boldsymbol{\theta}}_n &amp;= \jmath_n^{-1}\left\{ \jmath_0(\widehat{\boldsymbol{\theta}}_{0})\widehat{\boldsymbol{\theta}}_{0} + \jmath(\widehat{\boldsymbol{\theta}}_{\mathrm{MLE}})\widehat{\boldsymbol{\theta}}_{\mathrm{MLE}}\right\}
 \end{align*}\]</span> and note that <span class="math inline">\(\jmath_0(\widehat{\boldsymbol{\theta}}_{0}) = \mathrm{O}(1),\)</span> whereas <span class="math inline">\(\jmath_n\)</span> is <span class="math inline">\(\mathrm{O}(n).\)</span></p>
@@ -403,9 +403,22 @@ Figure&nbsp;9.2: Gaussian approximation (dashed) to the posterior density (full 
 </div>
 </div>
 </div>
-<p>Let us now use Laplace approximation to obtain an estimate of the marginal likelihood: the latter is <span class="math display">\[\begin{align*}
+<p>Let us now use Laplace approximation to obtain an estimate of the marginal likelihood: because the model is conjugate, the true marginal likelihood equals <span class="math display">\[\begin{align*}
 p(\boldsymbol{y}) = \frac{\Gamma(n+a)}{\Gamma(a)}\frac{b^a}{\left(b + \sum_{i=1}^n y_i \right)^{n+a}}.
 \end{align*}\]</span></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="fu">length</span>(waiting); s <span class="ot">&lt;-</span> <span class="fu">sum</span>(waiting)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>log_marg_lik <span class="ot">&lt;-</span> <span class="fu">lgamma</span>(n<span class="sc">+</span>a) <span class="sc">-</span> <span class="fu">lgamma</span>(a) <span class="sc">+</span> a<span class="sc">*</span><span class="fu">log</span>(b) <span class="sc">-</span> (n<span class="sc">+</span>a) <span class="sc">*</span> <span class="fu">log</span>(b<span class="sc">+</span>s)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Laplace approximation</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>map <span class="ot">&lt;-</span> (n <span class="sc">+</span> a <span class="sc">-</span> <span class="dv">1</span>)<span class="sc">/</span>(s <span class="sc">+</span> b)</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>logpost <span class="ot">&lt;-</span> <span class="cf">function</span>(x){</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">sum</span>(<span class="fu">dexp</span>(waiting, <span class="at">rate =</span> x, <span class="at">log =</span> <span class="cn">TRUE</span>)) <span class="sc">+</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>    <span class="fu">dgamma</span>(x, a, b, <span class="at">log =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Hessian evaluated at MAP</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>H <span class="ot">&lt;-</span> <span class="sc">-</span>numDeriv<span class="sc">::</span><span class="fu">hessian</span>(logpost, <span class="at">x =</span> map)</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>log_marg_laplace <span class="ot">&lt;-</span> <span class="dv">1</span><span class="sc">/</span><span class="dv">2</span><span class="sc">*</span><span class="fu">log</span>(<span class="dv">2</span><span class="sc">*</span>pi) <span class="sc">-</span> <span class="fu">c</span>(<span class="fu">determinant</span>(H)<span class="sc">$</span>modulus) <span class="sc">+</span> <span class="fu">logpost</span>(map)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
 <p>For the sample of size <span class="math inline">\(62,\)</span> the exponential model marginal likelihood is <span class="math inline">\(-276.5,\)</span> whereas the Laplace approximation gives <span class="math inline">\(-281.9.\)</span></p>
 </div>
 <div id="prp-expectation-Laplace" class="theorem proposition">
@@ -435,7 +448,7 @@ p(\boldsymbol{y}) = \frac{\Gamma(n+a)}{\Gamma(a)}\frac{b^a}{\left(b + \sum_{i=1}
 p(\beta_i \mid \boldsymbol{y}) &amp;= \int p(\beta_i \mid \boldsymbol{\theta}, \boldsymbol{y}) p(\boldsymbol{\theta} \mid \boldsymbol{y}) \mathrm{d} \boldsymbol{\theta}\\
 p(\theta_i \mid \boldsymbol{y}) &amp;= \int p(\boldsymbol{\theta} \mid \boldsymbol{y}) \mathrm{d} \boldsymbol{\theta}_{-i}
 \end{align*}\]</span> where <span class="math inline">\(\boldsymbol{\theta}_{-i}\)</span> denotes the vector of hyperparameters excluding the <span class="math inline">\(i\)</span>th element <span class="math inline">\(\theta_i.\)</span> The INLA method builds Laplace approximations to the integrands <span class="math inline">\(p(\beta_i \mid \boldsymbol{\theta}, \boldsymbol{y})\)</span> and <span class="math inline">\(p(\boldsymbol{\theta} \mid \boldsymbol{y}),\)</span> and evaluates the integral using quadrature rules over a coarse grid of values of <span class="math inline">\(\boldsymbol{\theta}.\)</span></p>
-<p>The marginal posterior <span class="math inline">\(p(\boldsymbol{\theta} \mid \boldsymbol{y})\)</span> is approximated by writing <span class="math inline">\(p(\boldsymbol{\beta}, \boldsymbol{\theta} \mid \boldsymbol{y}) \propto p(\boldsymbol{\beta} \mid \boldsymbol{\theta}, \boldsymbol{y}) p(\boldsymbol{\theta} \mid \boldsymbol{y})\)</span> and performing a Laplace approximation for fixed value of <span class="math inline">\(\boldsymbol{\theta}\)</span> for the term <span class="math inline">\(p(\boldsymbol{\beta} \mid \boldsymbol{\theta}, \boldsymbol{y}),\)</span> whose mode we denote by <span class="math inline">\(\widehat{\boldsymbol{\beta}}.\)</span> This yields <span class="math display">\[\begin{align*}
+<p>Write the marginal posterior <span class="math inline">\(p(\boldsymbol{\theta} \mid \boldsymbol{y})\)</span> as <span class="math inline">\(p(\boldsymbol{\beta}, \boldsymbol{\theta} \mid \boldsymbol{y}) = p(\boldsymbol{\beta} \mid \boldsymbol{\theta}, \boldsymbol{y}) p(\boldsymbol{\theta} \mid \boldsymbol{y})\)</span> and perform a Laplace approximation for fixed value of <span class="math inline">\(\boldsymbol{\theta}\)</span> for the term <span class="math inline">\(p(\boldsymbol{\beta} \mid \boldsymbol{\theta}, \boldsymbol{y}),\)</span> whose mode we denote by <span class="math inline">\(\widehat{\boldsymbol{\beta}}.\)</span> This yields <span class="math display">\[\begin{align*}
 \widetilde{p}(\boldsymbol{\theta} \mid \boldsymbol{y}) \propto \frac{p(\widehat{\boldsymbol{\beta}}, \boldsymbol{\theta} \mid \boldsymbol{y})}{ p_{G}(\widehat{\boldsymbol{\beta}} \mid \boldsymbol{y}, \boldsymbol{\theta})} = \frac{p(\widehat{\boldsymbol{\beta}}, \boldsymbol{\theta} \mid \boldsymbol{y})}{ |\mathbf{H}(\widehat{\boldsymbol{\beta}})|^{1/2}}
 \end{align*}\]</span> and the Laplace approximation has kernel <span class="math display">\[p_{G}(\boldsymbol{\beta} \mid \boldsymbol{y}, \boldsymbol{\theta}) \propto |\mathbf{H}(\widehat{\boldsymbol{\beta}})|^{1/2}\exp\{-(\boldsymbol{\beta}- \widehat{\boldsymbol{\beta}})^\top \mathbf{H}(\widehat{\boldsymbol{\beta}})(\boldsymbol{\beta}- \widehat{\boldsymbol{\beta}})/2\};\]</span> since it is evaluated at <span class="math inline">\(\widehat{\boldsymbol{\beta}},\)</span> we retrieve only the determinant of the negative Hessian of <span class="math inline">\(p(\boldsymbol{\beta} \mid \boldsymbol{\theta}, \boldsymbol{y}),\)</span> namely <span class="math inline">\(\mathbf{H}(\widehat{\boldsymbol{\beta}}).\)</span> Note that the latter is a function of <span class="math inline">\(\boldsymbol{\theta}.\)</span></p>
 <p>To obtain <span class="math inline">\(p(\theta_i \mid \boldsymbol{y})\)</span>, we then proceed with</p>
@@ -459,24 +472,24 @@ Y_t &amp;= \exp(h_t/2) Z_t \\
 h_t &amp;= \gamma + \phi (h_{t-1} - \gamma) + \sigma U_t
 \end{align*}\]</span> where <span class="math inline">\(U_t \stackrel{\mathrm{iid}}{\sim} \mathsf{Gauss}(0,1)\)</span> and <span class="math inline">\(Z_t \sim  \stackrel{\mathrm{iid}}{\sim} \mathsf{Gauss}(0,1).\)</span> The <a href="https://inla.r-inla-download.org/r-inla.org/doc/likelihood/stochvolgaussian.pdf"><code>INLA</code> documentation</a> provides information about which default prior and hyperparameters are specified. We use a <span class="math inline">\(\mathsf{gamma}(1, 0.001)\)</span> prior for the precision.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(INLA)</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Stochastic volatility model</span></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(exchangerate, <span class="at">package =</span> <span class="st">"hecbayes"</span>)</span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Compute response from raw spot exchange rates at noon</span></span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>y <span class="ot">&lt;-</span> <span class="dv">100</span><span class="sc">*</span><span class="fu">diff</span>(<span class="fu">log</span>(exchangerate<span class="sc">$</span>dexrate))</span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="co"># 'y' is now a series of percentage of log daily differences</span></span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>time <span class="ot">&lt;-</span> <span class="fu">seq_along</span>(y)</span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>data <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">y =</span> y, <span class="at">time =</span> time)</span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Stochastic volatility model</span></span>
-<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="co"># https://inla.r-inla-download.org/r-inla.org/doc/likelihood/stochvolgaussian.pdf</span></span>
-<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="co"># The model uses a log link, and a (log)-gamma prior for the precision</span></span>
-<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>f_stochvol <span class="ot">&lt;-</span> <span class="fu">formula</span>(y <span class="sc">~</span> <span class="fu">f</span>(time, <span class="at">model =</span> <span class="st">"ar1"</span>, <span class="at">param =</span> <span class="fu">list</span>(<span class="at">prec =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="fl">0.001</span>))))</span>
-<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>mod_stochvol <span class="ot">&lt;-</span> <span class="fu">inla</span>(f_stochvol, <span class="at">family =</span> <span class="st">"stochvol"</span>, <span class="at">data =</span> data)</span>
-<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a><span class="co"># Obtain summary</span></span>
-<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>summary <span class="ot">&lt;-</span> <span class="fu">summary</span>(mod_stochvol)</span>
-<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a><span class="co"># plot(mod_stochvol)</span></span>
-<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>marg_prec <span class="ot">&lt;-</span> mod_stochvol<span class="sc">$</span>marginals.hyperpar[[<span class="dv">1</span>]]</span>
-<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>marg_phi <span class="ot">&lt;-</span> mod_stochvol<span class="sc">$</span>marginals.hyperpar[[<span class="dv">2</span>]]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(INLA)</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Stochastic volatility model</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(exchangerate, <span class="at">package =</span> <span class="st">"hecbayes"</span>)</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Compute response from raw spot exchange rates at noon</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>y <span class="ot">&lt;-</span> <span class="dv">100</span><span class="sc">*</span><span class="fu">diff</span>(<span class="fu">log</span>(exchangerate<span class="sc">$</span>dexrate))</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="co"># 'y' is now a series of percentage of log daily differences</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>time <span class="ot">&lt;-</span> <span class="fu">seq_along</span>(y)</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>data <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">y =</span> y, <span class="at">time =</span> time)</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Stochastic volatility model</span></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a><span class="co"># https://inla.r-inla-download.org/r-inla.org/doc/likelihood/stochvolgaussian.pdf</span></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a><span class="co"># The model uses a log link, and a (log)-gamma prior for the precision</span></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>f_stochvol <span class="ot">&lt;-</span> <span class="fu">formula</span>(y <span class="sc">~</span> <span class="fu">f</span>(time, <span class="at">model =</span> <span class="st">"ar1"</span>, <span class="at">param =</span> <span class="fu">list</span>(<span class="at">prec =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="fl">0.001</span>))))</span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>mod_stochvol <span class="ot">&lt;-</span> <span class="fu">inla</span>(f_stochvol, <span class="at">family =</span> <span class="st">"stochvol"</span>, <span class="at">data =</span> data)</span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a><span class="co"># Obtain summary</span></span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>summary <span class="ot">&lt;-</span> <span class="fu">summary</span>(mod_stochvol)</span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a><span class="co"># plot(mod_stochvol)</span></span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>marg_prec <span class="ot">&lt;-</span> mod_stochvol<span class="sc">$</span>marginals.hyperpar[[<span class="dv">1</span>]]</span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>marg_phi <span class="ot">&lt;-</span> mod_stochvol<span class="sc">$</span>marginals.hyperpar[[<span class="dv">2</span>]]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
 <div class="cell-output-display">
@@ -495,45 +508,45 @@ Figure&nbsp;9.3: Marginal densities of precision and autocorrelation parameters 
 <p><a href="#fig-stochvol-inla" class="quarto-xref">Figure&nbsp;<span>9.3</span></a> shows that the correlation <span class="math inline">\(\phi\)</span> is nearly one, leading to random walk behaviour and high persistence over time (this is also due to the frequency of observations). This strong serial dependence in the variance is in part responsible for the difficulty in fitting this model using MCMC.</p>
 <p>We can use the marginal density approximations to obtain quantiles for summary of interest. The software also includes utilities to transform the parameters using the change of variable formula.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Compute density, quantiles, etc. via inla.*marginal</span></span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="do">## approximate 95% credible interval and marginal post median</span></span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>INLA<span class="sc">::</span><span class="fu">inla.qmarginal</span>(marg_phi, <span class="at">p =</span> <span class="fu">c</span>(<span class="fl">0.025</span>, <span class="fl">0.5</span>, <span class="fl">0.975</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Compute density, quantiles, etc. via inla.*marginal</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="do">## approximate 95% credible interval and marginal post median</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>INLA<span class="sc">::</span><span class="fu">inla.qmarginal</span>(marg_phi, <span class="at">p =</span> <span class="fu">c</span>(<span class="fl">0.025</span>, <span class="fl">0.5</span>, <span class="fl">0.975</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 0.9874672 0.9929791 0.9963883</code></pre>
+<pre><code>[1] 0.9706630 0.9847944 0.9929106</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Change of variable to get variance from precision</span></span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>marg_var <span class="ot">&lt;-</span> INLA<span class="sc">::</span><span class="fu">inla.tmarginal</span>(</span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">fun =</span> <span class="cf">function</span>(x) { <span class="dv">1</span> <span class="sc">/</span> x }, </span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">marginal =</span> marg_prec)</span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>INLA<span class="sc">::</span><span class="fu">inla.qmarginal</span>(marg_var, <span class="at">p =</span> <span class="fu">c</span>(<span class="fl">0.025</span>, <span class="fl">0.975</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Change of variable to get variance from precision</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>marg_var <span class="ot">&lt;-</span> INLA<span class="sc">::</span><span class="fu">inla.tmarginal</span>(</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">fun =</span> <span class="cf">function</span>(x) { <span class="dv">1</span> <span class="sc">/</span> x }, </span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">marginal =</span> marg_prec)</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>INLA<span class="sc">::</span><span class="fu">inla.qmarginal</span>(marg_var, <span class="at">p =</span> <span class="fu">c</span>(<span class="fl">0.025</span>, <span class="fl">0.975</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 0.1727294 0.4049273</code></pre>
+<pre><code>[1] 0.2864908 0.7396801</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Posterior marginal mean and variance of phi</span></span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>mom1 <span class="ot">&lt;-</span> INLA<span class="sc">::</span><span class="fu">inla.emarginal</span>(</span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">fun =</span> <span class="cf">function</span>(x){x}, </span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">marginal =</span> marg_phi)</span>
-<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>mom2 <span class="ot">&lt;-</span> INLA<span class="sc">::</span><span class="fu">inla.emarginal</span>(</span>
-<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">fun =</span> <span class="cf">function</span>(x){x<span class="sc">^</span><span class="dv">2</span>}, </span>
-<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">marginal =</span> marg_phi)</span>
-<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a><span class="fu">c</span>(<span class="at">mean =</span> mom1, <span class="at">sd =</span> <span class="fu">sqrt</span>(mom2 <span class="sc">-</span> mom1<span class="sc">^</span><span class="dv">2</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Posterior marginal mean and variance of phi</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>mom1 <span class="ot">&lt;-</span> INLA<span class="sc">::</span><span class="fu">inla.emarginal</span>(</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">fun =</span> <span class="cf">function</span>(x){x}, </span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">marginal =</span> marg_phi)</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>mom2 <span class="ot">&lt;-</span> INLA<span class="sc">::</span><span class="fu">inla.emarginal</span>(</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">fun =</span> <span class="cf">function</span>(x){x<span class="sc">^</span><span class="dv">2</span>}, </span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">marginal =</span> marg_phi)</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a><span class="fu">c</span>(<span class="at">mean =</span> mom1, <span class="at">sd =</span> <span class="fu">sqrt</span>(mom2 <span class="sc">-</span> mom1<span class="sc">^</span><span class="dv">2</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>       mean          sd 
-0.992721399 0.002303182 </code></pre>
+<pre><code>      mean         sd 
+0.98405272 0.00576251 </code></pre>
 </div>
 </div>
 </div>
 <div id="exm-rainfall-inla" class="theorem example">
 <p><span class="theorem-title"><strong>Example 9.5 (Tokyo binomial time series)</strong></span> We revisit <a href="workflow.html#exm-Tokyo-rainfall" class="quarto-xref">Example&nbsp;<span>7.3</span></a>, but this time fit the model with <code>INLA</code>. We specify the mean model without intercept and fit a logistic regression, with a second-order cyclic random walk prior for the coefficients, and the default priors for the other parameters.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(Tokyo, <span class="at">package =</span> <span class="st">"INLA"</span>)</span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Formula (removing intercept)</span></span>
-<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>formula <span class="ot">&lt;-</span> y <span class="sc">~</span> <span class="fu">f</span>(time, <span class="at">model =</span> <span class="st">"rw2"</span>, <span class="at">cyclic =</span> <span class="cn">TRUE</span>) <span class="sc">-</span> <span class="dv">1</span></span>
-<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>mod <span class="ot">&lt;-</span> INLA<span class="sc">::</span><span class="fu">inla</span>(</span>
-<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>   <span class="at">formula =</span> formula, </span>
-<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>   <span class="at">family =</span> <span class="st">"binomial"</span>,</span>
-<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>   <span class="at">Ntrials =</span> n, </span>
-<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>   <span class="at">data =</span> Tokyo)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(Tokyo, <span class="at">package =</span> <span class="st">"INLA"</span>)</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Formula (removing intercept)</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>formula <span class="ot">&lt;-</span> y <span class="sc">~</span> <span class="fu">f</span>(time, <span class="at">model =</span> <span class="st">"rw2"</span>, <span class="at">cyclic =</span> <span class="cn">TRUE</span>) <span class="sc">-</span> <span class="dv">1</span></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>mod <span class="ot">&lt;-</span> INLA<span class="sc">::</span><span class="fu">inla</span>(</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>   <span class="at">formula =</span> formula, </span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>   <span class="at">family =</span> <span class="st">"binomial"</span>,</span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>   <span class="at">Ntrials =</span> n, </span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>   <span class="at">data =</span> Tokyo)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
 <div class="cell-output-display">

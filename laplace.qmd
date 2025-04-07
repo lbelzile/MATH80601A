@@ -40,7 +40,7 @@ The multivariate analog is similar, where now for an integral of the form $\exp\
 \end{align*}
 We obtain the Laplace approximation at the mode $\boldsymbol{x}_0$ satisfying $h'(\boldsymbol{x}_0)=\boldsymbol{0}_d,$ 
 \begin{align*}
- I_n \approx \left(\frac{2\pi}{n}\right)^{p/2} | \mathbf{H}(\boldsymbol{x}_0)|^{-1/2}\exp\{nh(\boldsymbol{x}_0)\},
+ I_n \approx \left(\frac{2\pi}{n}\right)^{d/2} | \mathbf{H}(\boldsymbol{x}_0)|^{-1/2}\exp\{nh(\boldsymbol{x}_0)\},
 \end{align*}
 where $|\mathbf{H}(\boldsymbol{x}_0)|$ is the determinant of the Hessian matrix of $-h(\boldsymbol{x})$ evaluated at the mode  $\boldsymbol{x}_0.$
 
@@ -137,7 +137,7 @@ We can Taylor expand the log prior and log density around their respective mode,
 \log p(\boldsymbol{y} \mid \boldsymbol{\theta}) &\approx \log p(\boldsymbol{y} \mid  \widehat{\boldsymbol{\theta}}_{\mathrm{MLE}}) - \frac{1}{2}(\boldsymbol{\theta} - \widehat{\boldsymbol{\theta}}_{\mathrm{MLE}})^\top\jmath(\widehat{\boldsymbol{\theta}}_{\mathrm{MLE}})(\boldsymbol{\theta} - \widehat{\boldsymbol{\theta}}_{\mathrm{MLE}})
 \end{align*}
 
-In the case of flat prior, the curvature is zero and the prior contribution vanishes altogether. If we apply now @prp-quadratic-forms to this unnormalized kernel, we get that the approximate posterior must be Gaussian with precision $\jmath_n^{-1}$ and mean $\mu_n,$ where
+In the case of flat prior, the curvature is zero and the prior contribution vanishes altogether. If we apply now @prp-quadratic-forms to this unnormalized kernel, we get that the approximate posterior must be Gaussian with precision $\jmath_n^{-1}$ and mean $\widehat{\boldsymbol{\theta}}_n,$ where
 \begin{align*}
 \jmath_n &= \jmath_0(\widehat{\boldsymbol{\theta}}_{0}) + \jmath(\widehat{\boldsymbol{\theta}}_{\mathrm{MLE}})\\
 \widehat{\boldsymbol{\theta}}_n &= \jmath_n^{-1}\left\{ \jmath_0(\widehat{\boldsymbol{\theta}}_{0})\widehat{\boldsymbol{\theta}}_{0} + \jmath(\widehat{\boldsymbol{\theta}}_{\mathrm{MLE}})\widehat{\boldsymbol{\theta}}_{\mathrm{MLE}}\right\}
@@ -181,7 +181,7 @@ The maximizer must be uniquely identified from the data and must not be on bound
 
 ## Gaussian approximations to the posterior
 
-To assess the performance of Laplace approximation, we consider an exponential likelihood $Y_i \mid \lambda \sim \mathsf{expo}(\lambda)$ with conjugate gamma prior $\lambda \sim \mathsf{gamma}(a,b)$. The exponential model  has information $i(\lambda)=n/\lambda^2$ and the mode of the posterior is $$\widehat{\lambda}_{\mathrm{MAP}}=\frac{n+a-1}{\sum_{i=1}^n y_i + b}.$$
+To assess the performance of Laplace approximation, we consider an exponential likelihood $Y_i \mid \lambda \sim \mathsf{expo}(\lambda)$ with conjugate gamma prior $\lambda \sim \mathsf{gamma}(a,b)$. The exponential model  has information $i(\lambda)=n/\lambda^2$ and the mode of the posterior is $$\widehat{\lambda}_{\mathrm{MAP}}=\frac{n+a-1}{\sum_{i=1}^n y_i + b}.$$ 
 
 ```{r}
 #| label: fig-post-gamma-laplace
@@ -226,12 +226,14 @@ curve(dnorm(x, mean = mode, sd = sqrt(-1/hessian(mode))), add = TRUE, lty = 2, n
 ```
 
 
-Let us now use Laplace approximation to obtain an estimate of the marginal likelihood: the latter is 
+Let us now use Laplace approximation to obtain an estimate of the marginal likelihood: because the model is conjugate, the true marginal likelihood equals
 \begin{align*}
 p(\boldsymbol{y}) = \frac{\Gamma(n+a)}{\Gamma(a)}\frac{b^a}{\left(b + \sum_{i=1}^n y_i \right)^{n+a}}.
 \end{align*}
 
 ```{r}
+#| eval: true
+#| echo: true
 n <- length(waiting); s <- sum(waiting)
 log_marg_lik <- lgamma(n+a) - lgamma(a) + a*log(b) - (n+a) * log(b+s)
 # Laplace approximation
@@ -300,7 +302,7 @@ p(\theta_i \mid \boldsymbol{y}) &= \int p(\boldsymbol{\theta} \mid \boldsymbol{y
 \end{align*}
 where $\boldsymbol{\theta}_{-i}$ denotes the vector of hyperparameters excluding the $i$th element $\theta_i.$ The INLA method builds Laplace approximations to the integrands $p(\beta_i \mid \boldsymbol{\theta}, \boldsymbol{y})$ and $p(\boldsymbol{\theta} \mid \boldsymbol{y}),$ and evaluates the integral using quadrature rules over a coarse grid of values of $\boldsymbol{\theta}.$
 
-The marginal posterior $p(\boldsymbol{\theta} \mid \boldsymbol{y})$ is approximated by writing $p(\boldsymbol{\beta}, \boldsymbol{\theta} \mid \boldsymbol{y}) \propto p(\boldsymbol{\beta} \mid \boldsymbol{\theta}, \boldsymbol{y}) p(\boldsymbol{\theta} \mid \boldsymbol{y})$ and performing a Laplace approximation for fixed value of $\boldsymbol{\theta}$ for the term $p(\boldsymbol{\beta} \mid \boldsymbol{\theta}, \boldsymbol{y}),$ whose mode we denote by $\widehat{\boldsymbol{\beta}}.$ This yields
+Write the marginal posterior $p(\boldsymbol{\theta} \mid \boldsymbol{y})$ as $p(\boldsymbol{\beta}, \boldsymbol{\theta} \mid \boldsymbol{y}) = p(\boldsymbol{\beta} \mid \boldsymbol{\theta}, \boldsymbol{y}) p(\boldsymbol{\theta} \mid \boldsymbol{y})$ and perform a Laplace approximation for fixed value of $\boldsymbol{\theta}$ for the term $p(\boldsymbol{\beta} \mid \boldsymbol{\theta}, \boldsymbol{y}),$ whose mode we denote by $\widehat{\boldsymbol{\beta}}.$ This yields
 \begin{align*}
 \widetilde{p}(\boldsymbol{\theta} \mid \boldsymbol{y}) \propto \frac{p(\widehat{\boldsymbol{\beta}}, \boldsymbol{\theta} \mid \boldsymbol{y})}{ p_{G}(\widehat{\boldsymbol{\beta}} \mid \boldsymbol{y}, \boldsymbol{\theta})} = \frac{p(\widehat{\boldsymbol{\beta}}, \boldsymbol{\theta} \mid \boldsymbol{y})}{ |\mathbf{H}(\widehat{\boldsymbol{\beta}})|^{1/2}}
 \end{align*}

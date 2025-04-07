@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.7.3">
+<meta name="generator" content="quarto-1.7.1">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -91,10 +91,10 @@ div.csl-indent {
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="site_libs/quarto-html/anchor.min.js"></script>
 <link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-81b5c3e63835cfde897ecd3d35a35a41.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-2bb0ec5e928ee8c40b12725cb7836c35.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-ad5ef081d17d57ab2b6cc5e45efb5d90.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-a51e8ad160b68d9f8f1ac488cc0f242e.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
   "copy-button": false,
@@ -349,7 +349,7 @@ c_j &amp;= \int h_j(\boldsymbol{\theta}) \mathrm{d} \boldsymbol{\theta} \\
 \boldsymbol{\mu}_j^* &amp;= \boldsymbol{\mu}_{-j} s_j^{-1}\boldsymbol{\Sigma}_{-j}\mathbf{x}^\top \{\mathbf{E}(Z_j) -\mathbf{x}_j\boldsymbol{\mu}_{-j}\} \\
 \boldsymbol{\Sigma}_{j} &amp;=\boldsymbol{\Sigma}_{-j} + s_j^{-2}\boldsymbol{\Sigma}_{-j}\mathbf{x}^\top_j\left\{\mathsf{Var}(Z_j) - s_j\right\}\mathbf{x}_j\boldsymbol{\Sigma}_{-j}
 \end{align*}\]</span> where <span class="math inline">\(Z_j\)</span> has distribution proportional to <span class="math inline">\(L_j(z) \times \phi(z; \mathbf{x}_j\boldsymbol{\mu}_j, \mathbf{x}_j\boldsymbol{\Sigma}_{-j}\mathbf{x}_j^\top),\)</span> where <span class="math inline">\(\phi(\cdot; \mu, \sigma^2)\)</span> denotes the density of a Gaussian random variable. The updates to the parameters for more general exponential families are found in page 23 of <span class="citation" data-cites="Cseke.Heskes:2011">Cseke and Heskes (<a href="references.html#ref-Cseke.Heskes:2011" role="doc-biblioref">2011</a>)</span>.</p>
-<div class="cell">
+<div class="cell" data-layout-align="center">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co">#' @param mu_lc mean of the linear combination</span></span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="co">#' @param sd_lc std. dev of the linear combination</span></span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(cubature)</span>
@@ -369,6 +369,7 @@ c_j &amp;= \int h_j(\boldsymbol{\theta}) \mathrm{d} \boldsymbol{\theta} \\
 <ol type="1">
 <li>Initialize the site-specific parameters</li>
 <li>Loop over each observation of the likelihood factorization: 2.1 form the cavity and the hybrid distribution 2.2 compute the moments of the hybrid <span class="math inline">\(\boldsymbol{\mu}\)</span> and <span class="math inline">\(\boldsymbol{\Sigma}\)</span> 2.3 transform back to canonical parameters <span class="math inline">\(\mathbf{Q}\)</span> and <span class="math inline">\(\boldsymbol{r}\)</span> 2.3 update the global approximation</li>
+<li>Declare convergence when change in parameters is less than tolerance.</li>
 </ol>
 <p>We can monitor convergence of EP by looking at changes in the parameters: it is a fixed point algorithm. However, the EP does not have guarantees of convergence and may diverge; <span class="citation" data-cites="Dehaene.Barthelme:2018">Dehaene and Barthelmé (<a href="references.html#ref-Dehaene.Barthelme:2018" role="doc-biblioref">2018</a>)</span> explain some heuristics for these by making analogies with Newton’s method, which only converges in the neighbourhood of fixed points and can diverge. The idea is to update the global approximation with a damping term for the canonical parameters. It is also useful to perform updates using suitable numerical linear algebra routines, for example by competing the Cholesky root of the covariance and back-solving to get the precision.</p>
 <p>The expensive steps are related to the inversion of the moments to get the canonical parameters from the moments; the matrix inversion has complexity <span class="math inline">\(\mathrm{O}(np^3)\)</span> for a single pass, but the algorithm typically converges quicky. The other bottleneck is calculation of the moments.</p>
