@@ -16,8 +16,9 @@ Throughout, we consider regression models with model (or design) matrix $\mathbf
 \begin{align*}
 \boldsymbol{Y} \mid \mathbf{X}, \boldsymbol{\beta}, \omega \sim \mathsf{Gauss}_n(\beta_0\mathbf{1}_n + \mathbf{X}\boldsymbol{\beta}, \omega^{-1}\mathbf{I}_n),
 \end{align*}
-so that observations are independent and homoscedastic. Inference is performed conditional on the observed covariate vectors $\mathbf{X}_i$; we omit this dependence hereafter, but note that this can be relaxed. The intercept $\beta_0$, which is added to capture the mean response and make it mean-zero, receives special treatment and is typically assigned an improper prior. We largely follow the exposition of @Villani:2023.
+so that observations are independent and homoscedastic. Inference is performed conditional on the observed covariate vectors $\mathbf{X}_i$; we omit this dependence hereafter, but note that this can be relaxed. The intercept $\beta_0,$ which is added to capture the mean response and make it mean-zero, receives special treatment and is typically assigned an improper prior. We largely follow the exposition of @Villani:2023.
 
+## Gaussian linear model
 
 <!--
 
@@ -71,7 +72,7 @@ For quadratic forms (in $\boldsymbol{x}$) with
  (\boldsymbol{x} - \boldsymbol{c})^\top \mathbf{C}(\boldsymbol{x} - \boldsymbol{c}) + (\boldsymbol{c}-\boldsymbol{a})^\top\mathbf{A}(\boldsymbol{c}-\boldsymbol{a}) + (\boldsymbol{c}-\boldsymbol{b})^\top\mathbf{B}(\boldsymbol{c}-\boldsymbol{b})\\
 &\stackrel{\boldsymbol{x}}{\propto} (\boldsymbol{x} - \boldsymbol{c})^\top \mathbf{C}(\boldsymbol{x} - \boldsymbol{c})
 \end{align*}
-where $\mathbf{C} = \mathbf{A} + \mathbf{B}$ and $\boldsymbol{c}= \mathbf{C}^{-1}(\mathbf{A}\boldsymbol{a} + \mathbf{B}\boldsymbol{b})$.
+where $\mathbf{C} = \mathbf{A} + \mathbf{B}$ and $\boldsymbol{c}= \mathbf{C}^{-1}(\mathbf{A}\boldsymbol{a} + \mathbf{B}\boldsymbol{b}).$
 
 
 :::
@@ -84,13 +85,13 @@ where $\mathbf{C} = \mathbf{A} + \mathbf{B}$ and $\boldsymbol{c}= \mathbf{C}^{-1
 
 
 
-The conjugate prior for the Gaussian regression model for the mean and precision parameters $\boldsymbol{\beta}$ and $\omega$, respectively, is a Gaussian-gamma and is defined hierarchically as
+The conjugate prior for the Gaussian regression model for the mean and precision parameters $\boldsymbol{\beta}$ and $\omega,$ respectively, is a Gaussian-gamma and is defined hierarchically as
 \begin{align*}
 \boldsymbol{\beta} \mid \omega &\sim \mathsf{Gauss}\left\{\boldsymbol{\mu}_0, (
 \omega\boldsymbol{\Omega}_0)^{-1}\right\} \\
 \omega &\sim \mathsf{gamma}(\nu_0/2,\tau_0/2).
 \end{align*}
-Using properties of the Gaussian distribution, the sampling distribution of the ordinary least squares estimator is $\widehat{\boldsymbol{\beta}} \sim \mathsf{Gauss}_p\{\boldsymbol{\beta}, (\omega\mathbf{X}^\top\mathbf{X})^{-1}\}$.
+Using properties of the Gaussian distribution, the sampling distribution of the ordinary least squares estimator is $\widehat{\boldsymbol{\beta}} \sim \mathsf{Gauss}_p\{\boldsymbol{\beta}, (\omega\mathbf{X}^\top\mathbf{X})^{-1}\}.$
 
 
 The conditional and marginal posterior distributions for the mean coefficients $\boldsymbol{\beta}$ and for the precision $\omega$ are
@@ -129,7 +130,7 @@ We can pull terms  together and separate the conditional posterior $p(\boldsymbo
  p(\boldsymbol{\beta}, \omega \mid \boldsymbol{y}) &\propto \omega^{(n+p+\nu_0)/2 -1} \exp\left[-\frac{\omega}{2}\left\{\tau_0 + (\boldsymbol{y}-\mathbf{X}\widehat{\boldsymbol{\beta}})^\top(\boldsymbol{y}-\mathbf{X}\widehat{\boldsymbol{\beta}})\right\}\right]
  \\& \times \exp \left[-\frac{\omega}{2}\left\{(\widehat{\boldsymbol{\beta}} - \boldsymbol{\beta})^\top\mathbf{X}^\top\mathbf{X}(\widehat{\boldsymbol{\beta}} - \boldsymbol{\beta})+ (\boldsymbol{\beta}-\boldsymbol{\mu}_0)^\top\boldsymbol{\Omega}_0(\boldsymbol{\beta}-\boldsymbol{\mu}_0)\right\}\right]
 \end{align*}
-and using @prp-quadratic-forms for the terms in the exponent with $\boldsymbol{a} = \widehat{\boldsymbol{\beta}}$, $\mathbf{A}=\mathbf{X}^\top\mathbf{X}$, $\boldsymbol{b} = \boldsymbol{\mu}_0$ and $\mathbf{B}=\boldsymbol{\Omega}_0$, we find
+and using @prp-quadratic-forms for the terms in the exponent with $\boldsymbol{a} = \widehat{\boldsymbol{\beta}},$ $\mathbf{A}=\mathbf{X}^\top\mathbf{X},$ $\boldsymbol{b} = \boldsymbol{\mu}_0$ and $\mathbf{B}=\boldsymbol{\Omega}_0,$ we find
 \begin{align*}
   p(\boldsymbol{\beta}, \omega \mid \boldsymbol{y}) & \propto
    \omega^{(n+\nu_0)/2 -1} \exp\left(-\frac{\omega\tau_n}{2}\right)
@@ -141,7 +142,7 @@ whence the decomposition of the posterior as a Gaussian conditional on the preci
  \\&\stackrel{\boldsymbol{\beta}}{\propto} \left\{\frac{\tau_n +(\boldsymbol{\beta} - \boldsymbol{\mu}_n)^\top\mathbf{\Omega}_n(\boldsymbol{\beta} - \boldsymbol{\mu}_n)}{2}\right\}^{-(\nu_0 + n + p)/2}
  \\& \stackrel{\boldsymbol{\beta}}{\propto} \left\{1 + \frac{(\boldsymbol{\beta} - \boldsymbol{\mu}_n)^\top\frac{\nu_0 + n}{\tau_n}\mathbf{\Omega}_n(\boldsymbol{\beta} - \boldsymbol{\mu}_n)}{\nu_0 + n}\right\}^{-(\nu_0 + n + p)/2}
 \end{align*}
-so must be a Student-$t$ distribution with location $\boldsymbol{\mu}_n$, scale matrix $\tau_n/(\nu_0+n) \times \mathbf{\Omega}_n^{-1}$ and $\nu_0+n$ degrees of freedom.
+so must be a Student-$t$ distribution with location $\boldsymbol{\mu}_n,$ scale matrix $\tau_n/(\nu_0+n) \times \mathbf{\Omega}_n^{-1}$ and $\nu_0+n$ degrees of freedom.
 
 
 The improper prior $p(\beta_0, \boldsymbol{\beta}, \omega) \propto \omega^{-1}$ can be viewed as a special case of the conjugate prior when the variance of the Gaussian is infinite and the $\mathsf{gamma}(a,b)$ when both $a, b \to 0.$
@@ -149,7 +150,7 @@ The improper prior $p(\beta_0, \boldsymbol{\beta}, \omega) \propto \omega^{-1}$ 
 :::
 
 
-The choice of prior precision $\boldsymbol{\Omega}_0$ is left to the user, but typically the components of the vector $\boldsymbol{\beta}$ are left apriori independent, with $\boldsymbol{\Omega}_0 \propto \lambda\mathbf{I}_n$.
+The choice of prior precision $\boldsymbol{\Omega}_0$ is left to the user, but typically the components of the vector $\boldsymbol{\beta}$ are left apriori independent, with $\boldsymbol{\Omega}_0 \propto \lambda\mathbf{I}_n.$
 
 :::{#exm-regression}
 
@@ -245,11 +246,11 @@ In multivariate regression, it sometimes is useful to specify correlated coeffic
 
 ## Wishart distribution
 
-Let $\boldsymbol{Q}$ by a random $p \times p$ symmetric positive definite  matrix with Wishart distribution, denoted $\mathbf{Q} \sim \mathsf{Wishart}_p(\nu, \mathbf{S})$ for $\nu>0$ degrees of freedom and scale $\mathbf{S}$. It's density is proportional to
+Let $\boldsymbol{Q}$ by a random $p \times p$ symmetric positive definite  matrix with Wishart distribution, denoted $\mathbf{Q} \sim \mathsf{Wishart}_p(\nu, \mathbf{S})$ for $\nu>0$ degrees of freedom and scale $\mathbf{S}.$ It's density is proportional to
 \begin{align*}
  f(\boldsymbol{Q}) \stackrel{\boldsymbol{Q}}{\propto} |\boldsymbol{Q}|^{(\nu-p-1)/2}\exp\{-\mathrm{tr}(\mathbf{S}^{-1}\boldsymbol{Q})/2\}, \qquad \nu > p-1.
 \end{align*}
-where $|\cdot|$ denotes the determinant of the matrix and $\mathrm{tr}$ the trace operator. The Wishart also arises from considering $n \geq p$ independent and identically distributed mean zero Gaussian vectors $\boldsymbol{Y}_i \sim \mathsf{Gauss}_p(\boldsymbol{0}_p, \mathbf{S})$, where
+where $|\cdot|$ denotes the determinant of the matrix and $\mathrm{tr}$ the trace operator. The Wishart also arises from considering $n \geq p$ independent and identically distributed mean zero Gaussian vectors $\boldsymbol{Y}_i \sim \mathsf{Gauss}_p(\boldsymbol{0}_p, \mathbf{S}),$ where
 \begin{align*}
  \sum_{i=1}^{\nu} \boldsymbol{Y}_i\boldsymbol{Y}_i^\top \sim \mathsf{Wishart}_p(\nu, \mathbf{S}).
 \end{align*}
@@ -262,7 +263,7 @@ For prior elicitation, $\nu$ is thus a prior sample size, whereas we can specify
 ## Inverse Wishart
 
 
-Analogous to the relationship between gamma prior for the precision and inverse gamma for the variance, we can also similarly consider a prior for the covariance matrix $\boldsymbol{\Sigma} = \boldsymbol{Q}^{-1}$. Applying the change of variable formula, we get Jacobian $|\boldsymbol{\Sigma}|^{p+1}$, and so $\boldsymbol{\Sigma}$ is inverse Wishart $\mathsf{inv. Wishart}(\nu, \mathbf{S}^{-1}),$ with density proportional to
+Analogous to the relationship between gamma prior for the precision and inverse gamma for the variance, we can also similarly consider a prior for the covariance matrix $\boldsymbol{\Sigma} = \boldsymbol{Q}^{-1}.$ Applying the change of variable formula, we get Jacobian $|\boldsymbol{\Sigma}|^{p+1},$ and so $\boldsymbol{\Sigma}$ is inverse Wishart $\mathsf{inv. Wishart}(\nu, \mathbf{S}^{-1}),$ with density proportional to
 \begin{align*}
  p(\boldsymbol{\Sigma}) \propto |\boldsymbol{\Sigma}|^{-(\nu+p+1)/2} \exp\left\{-\frac{1}{2} \mathrm{tr}\left(\boldsymbol{S}^{-1}\boldsymbol{\Sigma}^{-1}\right)\right\}
 \end{align*}
@@ -275,7 +276,7 @@ with expectation $\mathbf{S}^{-1}(\nu-p-1)$ for $\nu > p+1.$
 
 ## Wishart as conjugate prior in Gaussian model
 
-Consider $\boldsymbol{\mu} \sim \mathsf{Gauss}_p(\boldsymbol{\mu}_0, \boldsymbol{Q}^{-1})$ and $\boldsymbol{Q} \sim \mathsf{Wishart}_p(\nu, \mathbf{S})$ for $\nu \geq p$. Then, the conditional density of $\boldsymbol{Q} \mid \boldsymbol{\mu}, \boldsymbol{\mu}_0$ is proportional to
+Consider $\boldsymbol{\mu} \sim \mathsf{Gauss}_p(\boldsymbol{\mu}_0, \boldsymbol{Q}^{-1})$ and $\boldsymbol{Q} \sim \mathsf{Wishart}_p(\nu, \mathbf{S})$ for $\nu \geq p.$ Then, the conditional density of $\boldsymbol{Q} \mid \boldsymbol{\mu}, \boldsymbol{\mu}_0$ is proportional to
 \begin{align*}
  |\boldsymbol{Q}|^{1/2} \exp \left\{ -\frac{1}{2} (\boldsymbol{\mu}-\boldsymbol{\mu}_0)^\top\boldsymbol{Q}(\boldsymbol{\mu}-\boldsymbol{\mu}_0)\right\} |\boldsymbol{Q}|^{(\nu-p-1)/2}\exp\{-\mathrm{tr}(\mathbf{S}^{-1}\boldsymbol{Q})/2\}
 \end{align*}
@@ -292,7 +293,7 @@ We then combine elements to get the parameters. This extends naturally to the ca
 
 ## Priors for variance matrices
 
-The marginal precision for the Wishart variate are gamma distributed with the same degrees of freedom $\nu$. The problem with using this prior is that it has a single parameter governing all scale parameters (i.e., the marginal variance) and the absolute value of the correlation and marginal variance parameters are negatively related [@Gelman:2013], as seen in @fig-draws-Wishart. Large variance thus correspond to small correlations shrunk towards zero when the degrees of freedom increase. There exists alternative distributions, such as the scaled-inverse Wishart, that add redundant scale parameters to decouple $\mathrm{diag}(\boldsymbol{\xi}) \times \boldsymbol{\Sigma} \times \mathrm{diag}(\boldsymbol{\xi})$, but we refrain from pursuing these here.
+The marginal precision for the Wishart variate are gamma distributed with the same degrees of freedom $\nu.$ The problem with using this prior is that it has a single parameter governing all scale parameters (i.e., the marginal variance) and the absolute value of the correlation and marginal variance parameters are negatively related [@Gelman:2013], as seen in @fig-draws-Wishart. Large variance thus correspond to small correlations shrunk towards zero when the degrees of freedom increase. There exists alternative distributions, such as the scaled-inverse Wishart, that add redundant scale parameters to decouple $\mathrm{diag}(\boldsymbol{\xi}) \times \boldsymbol{\Sigma} \times \mathrm{diag}(\boldsymbol{\xi}),$ but we refrain from pursuing these here.
 
 
 ```{r}
@@ -328,7 +329,7 @@ A better alternative is to specify different prior for each marginal scale $\sig
 
 ## Shrinkage priors
 
-In contexts where the number of regressors $p$ is considerable relative to the sample size $n$, it may be useful to constrain the parameter vector if we assume that the signal is sparse, with a large proportion of coefficients that should be zero. This is notably important when the ratio $p/n \to c$ for $c > 0,$ meaning that the number of coefficients and covariates increases proportional to the sample size. Shrinkage priors can regularize and typically consist of distributions that have a mode at zero, and another that allows for larger signals.
+In contexts where the number of regressors $p$ is considerable relative to the sample size $n,$ it may be useful to constrain the parameter vector if we assume that the signal is sparse, with a large proportion of coefficients that should be zero. This is notably important when the ratio $p/n \to c$ for $c > 0,$ meaning that the number of coefficients and covariates increases proportional to the sample size. Shrinkage priors can regularize and typically consist of distributions that have a mode at zero, and another that allows for larger signals.
 
 
 
@@ -352,7 +353,7 @@ The spike-and-slab prior was originally proposed by @Mitchell.Beauchamp:1988 wit
 \begin{align*}
  \beta_j \mid \gamma_j, \sigma_j^2,\phi^2_j \sim (1-\gamma_j) \mathsf{Gauss}(0, \sigma_j^2\phi^2_j) + \gamma_j \mathsf{Gauss}(0, \phi^2)
 \end{align*}
-where $\phi^2_j$ is very nearly zero, e.g., $\phi_j^2=0.001.$ The construction allows for variable augmentation with mixture indicators and Gibbs sampling, although mixing tends to be poor.
+where $\phi^2_j$ is very nearly zero, e.g., $\phi_j^2=0.001.$ The construction allows for variable augmentation with mixture indicators and Gibbs sampling, analogous to the Gaussian mixture models but with the variance and mean of one of the cluster for the spike fixed.  However, mixing of the Gibbs sampler Markov chain tends to be poor.
 
 
 :::
@@ -365,11 +366,11 @@ where $\phi^2_j$ is very nearly zero, e.g., $\phi_j^2=0.001.$ The construction a
 
 The horseshoe prior of @Carvalho.Polson.Scott:2010 is a hierarchical prior of the form 
 \begin{align*}
-\beta_j \mid \sigma^2_j \sim \mathsf{Gauss}(0, \sigma^2_j), \quad \sigma^2_j \mid \lambda \sim \mathsf{Student}_{+}(0, \lambda, 1), \quad \lambda \sim \mathsf{Student}_{+}(0, \omega, 1)
+\beta_j \mid \sigma^2_j \sim \mathsf{Gauss}(0, \sigma^2_j), \quad \sigma_j \mid \lambda \sim \mathsf{Student}_{+}(0, \lambda, 1), \quad \lambda \sim \mathsf{Student}_{+}(0, \omega, 1)
 \end{align*}
-where $\mathsf{Student}_{+}(0, a, 1)$ denotes a half-Cauchy distribution with scale $a>0,$ truncated on $\mathbb{R}_{+}.$
+where $\mathsf{Student}_{+}(0, a, 1)$ denotes a half-Cauchy distribution with scale $a>0,$ truncated on $\mathbb{R}_{+}$ @Carvalho.Polson.Scott:2010 use an improper prior for the scale $p(\omega^2) \propto 1/\omega^2.$
 
-This prior has no explicit density, but is continuous and can be simulated. It is useful to consider the behaviour of the random variance $\sigma^2_j$ term, which leads to an unconditional scale mixture of Gaussian for $\beta_j$. More useful to understanding is looking at $\kappa = 1 - 1/(1+\sigma^2)$, which gives a weight in $[0,1].$ We can see what happens to the shrunk components close to zero by looking at the density of $\kappa \to 0$, and similarly at the large signals when $\kappa \to 1.$ The Cauchy prior does not shrink towards zero, and lets large signals pass, whereas the Bayesian LASSO double exponential shrinkage leads to attenuation of strong signals.
+This prior has no explicit density, but is continuous and can be simulated. It is useful to consider the behaviour of the random variance $\sigma^2_j$ term, which leads to an unconditional scale mixture of Gaussian for $\beta_j.$ More useful to understanding is looking at $\kappa = 1 - 1/(1+\sigma^2),$ which gives a weight in $[0,1].$ We can see what happens to the shrunk components close to zero by looking at the density of $\kappa \to 0,$ and similarly at the large signals when $\kappa \to 1.$ The Cauchy prior does not shrink towards zero, and lets large signals pass, whereas the Bayesian LASSO double exponential shrinkage leads to attenuation of strong signals.
 The horseshoe prior name comes from the shape of the prior, which leads to a shrinkage analog to $\mathsf{beta}(1/2, 1/2)$ and thus penalizes, forcing components to be either large or small.
  
 @fig-weights-shrinkage shows the weighting implied by the mixture density for a Cauchy prior on the variance, the double exponential of the Laplace from Bayesian LASSO and the horseshoe.
@@ -498,7 +499,7 @@ Markov chain Monte Carlo simulations are hampered by these parameters whose post
 \tau_j &\sim \mathsf{Student}_{+}(0, 1, 1)\\
 c^2 \mid s^2, \nu &\sim \mathsf{inv. gamma}(\nu/2, \nu s^2/2).
 \end{align*}
-When $\tau^2\lambda^2_j$ is much greater than $c^2$, this amounts to having a Student slab with $\nu$ degrees of freedom for large coefficients; taking a small value of $\nu$ allows for large, but not extreme components, and the authors use $s^2=2, \nu=4.$ The above specification does not specify the prior for the global scale $\lambda$, for which @Piironen.Vehtari:2017 recommend using an empirical Bayes prior, with $$\lambda \sim \mathsf{Student}_{+}\left\{0, \frac{p_0}{(p-p_0)}\frac{\sigma}{n^{1/2}}, 1\right\},$$ where $p_0$ is a prior guess for the number of non-zero components out of $p,$ $n$ is the sample size and $\sigma$ is some level of the noise.
+When $\tau^2\lambda^2_j$ is much greater than $c^2,$ this amounts to having a Student slab with $\nu$ degrees of freedom for large coefficients; taking a small value of $\nu$ allows for large, but not extreme components, and the authors use $s^2=2, \nu=4.$ The above specification does not specify the prior for the global scale $\lambda,$ for which @Piironen.Vehtari:2017 recommend using an empirical Bayes prior, with $$\lambda \sim \mathsf{Student}_{+}\left\{0, \frac{p_0}{(p-p_0)}\frac{\sigma}{n^{1/2}}, 1\right\},$$ where $p_0$ is a prior guess for the number of non-zero components out of $p,$ $n$ is the sample size and $\sigma$ is some level of the noise.
 
 
 :::{#exm-case-study-shrinkage}
@@ -508,7 +509,7 @@ When $\tau^2\lambda^2_j$ is much greater than $c^2$, this amounts to having a St
 We revisit the `diabetes` data from the **R** package `lars`, which was used in @Park.Casella:2008 to illustrate the Bayesian LASSO. We consider three methods: the default Gaussian prior, which gives a ridge penalty, the Bayesian LASSO and finally the horseshoe. Models are fitted using the `bayesreg` package.
 
 
-@fig-shrinkage-dens-comparison shows the ordered coefficients for each method. We can see that the ridge has the widest intervals of all methods, providing some shrinkage only for large values of $\beta$. The horseshoe has typically narrower intervals, with more mass in a neighborhood of zero for smaller coefficients, and asymmetric intervals.
+@fig-shrinkage-dens-comparison shows the ordered coefficients for each method. We can see that the ridge has the widest intervals of all methods, providing some shrinkage only for large values of $\beta.$ The horseshoe has typically narrower intervals, with more mass in a neighborhood of zero for smaller coefficients, and asymmetric intervals.
 
 ```{r}
 #| eval: true
@@ -545,21 +546,21 @@ One aspect worth mentioning is that the horseshoe prior impacts strongly the geo
 
 
 
-## Bayesian model averaging via reversible jump
+## Bayesian model averaging
 
 Variable selection refers to selection of covariates from a set of $p$ candidates from a design matrix which is orthogonal to the intercept; these could include higher order terms or interactions.  From the Bayesian perspective, all of these $2^p-1$ submodels must be assigned a prior. We can also rule out models without lower order interactions through the prior, but exploring or fitting all possible models is too costly. The goal of the analysis is to account for the uncertainty associated with variable selection. The target of inference is often the weight of the combinations, and the probability that a predictor is included aposteriori.
 
 
-There are different methods for doing this: one is through spike and slab priors. Software for Hamiltonian Monte Carlo like Stan cannot handle discrete variables. Other methods for Bayesian model averaging includes use of reversible jump Markov chain Monte Carlo [@Green:1995], an extension that allows for arbitrary measures and through this varying dimensions, which occurs not only with variable selection, but also changepoint analysis and mixture models with varying number of components [@Green:2001]. Reversible jump requires a form of data augmentation to have dimension-balancing and defining different types of moves for jumping between dimensions. These are integrated in the Metropolis--Hastings step through a Jacobian term added to $R$. with different types of moves giving termed padding andone to pad the dimensions to match and define. In regression models, we will consider moves that adds or removes one parameter/regressor at a time.
+There are different methods for doing this: one is through spike and slab priors. Software for Hamiltonian Monte Carlo like Stan cannot handle discrete variables. Other methods for Bayesian model averaging includes use of reversible jump Markov chain Monte Carlo [@Green:1995], an extension that allows for arbitrary measures and through this varying dimensions, which occurs not only with variable selection, but also changepoint analysis and mixture models with varying number of components [@Green:2001]. Reversible jump requires a form of data augmentation to have dimension-balancing and defining different types of moves for jumping between dimensions. These are integrated in the Metropolis--Hastings step through a Jacobian term added to $R.$ with different types of moves giving termed padding andone to pad the dimensions to match and define. In regression models, we will consider moves that adds or removes one parameter/regressor at a time.
 
 
-Consider the setup of @prp-gaussian-ols, where we consider models $M_1, \ldots, M_m$ with for simplicity $p(M_i)=1$ for all models that include an intercept. We define $\mathbf{X}^{(m)}$ and $\boldsymbol{\beta}^{(m)}$ as the model matrix and the associated vector of non-zero coefficients associated with it. Let the response vector
+Consider the setup of @prp-gaussian-ols, where we consider models $M_1, \ldots, M_m$ with for simplicity $p(M_i)\propto 1$ for all models that include an intercept, so all models are apriori equally likely with probability $1/m.$ We define $\mathbf{X}^{(m)}$ and $\boldsymbol{\beta}^{(m)}$ as the model matrix and the associated vector of non-zero coefficients associated with it. Let the response vector
 \begin{align*}
 \boldsymbol{Y} \mid M_m, \boldsymbol{\beta}, \sim \mathsf{Gauss}(\mathbf{X}^{(m)}\boldsymbol{\beta}^{(m)}, \boldsymbol{\Sigma})    
 \end{align*}
 where $\boldsymbol{\beta}^{(m)} \mid M_m,$ is assigned a Gaussian prior, and likewise the covariance parameters  are given suitable priors. We write $|M|$ for the cardinality of the set of non-zero coefficients $\boldsymbol{\beta}$ in model $M.$
 
-Write $\boldsymbol{\theta}$ for all parameters other than the response, model and vector of coefficients. We can consider a joint update of the regression parameters $\boldsymbol{\beta}, M$ by sampling from their joint distribution via $p(\boldsymbol{\beta} \mid M, \boldsymbol{\theta}) p(M \mid \boldsymbol{\theta}).$  The update for the coefficients $p(\boldsymbol{\beta} \mid M, \boldsymbol{\theta})$ is as usual, while for $p(M \mid \boldsymbol{\theta})$, we get the conditional Bayes factor,
+Write $\boldsymbol{\theta}$ for all parameters other than the response, model and vector of coefficients. We can consider a joint update of the regression parameters $\boldsymbol{\beta}, M$ by sampling from their joint distribution via $p(\boldsymbol{\beta} \mid M, \boldsymbol{\theta}) p(M \mid \boldsymbol{\theta}).$  The update for the coefficients $p(\boldsymbol{\beta} \mid M, \boldsymbol{\theta})$ is as usual, while for $p(M \mid \boldsymbol{\theta}),$ we get the conditional Bayes factor,
 \begin{align*}
  p(M \mid \boldsymbol{Y}, \boldsymbol{\theta}) &\stackrel{M}{\propto} p(M) p(\boldsymbol{Y} \mid M, \boldsymbol{\theta})
  \\&= p(M) \int_{\mathbb{R}^{\mathbb{|M|}}}p(\boldsymbol{Y} \mid M, \boldsymbol{\beta},\boldsymbol{\theta}) p(\boldsymbol{\beta} \mid M, \boldsymbol{\theta}) d \boldsymbol{\beta}
@@ -588,5 +589,5 @@ where for most moves $J=1$ in this case, except in four cases where the dimensio
 - $J=3/2$ if $|M|=k_{\max}-1$ and we try to add the last covariate.
 
 
-The move for $M$ is accepted as usual if the drawn uniform $U \sim \mathsf{unif}(0,1)$ satisfies $U<R$. 
+The move for $M$ is accepted as usual if the drawn uniform $U \sim \mathsf{unif}(0,1)$ satisfies $U<R.$ 
 

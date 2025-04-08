@@ -264,7 +264,7 @@ we obtain a **mean-field** approximation. The latter will be poor if parameters 
 We use a factorization of $g,$ and denote the components $g_j(\cdot)$ for simplicity, omitting dependence on the parameters $\boldsymbol{\psi}.$ We can write the ELBO as
 \begin{align*}
 \mathsf{ELBO}(g) &= \int \log p(\boldsymbol{y}, \boldsymbol{\theta}) \prod_{j=1}^M g_j(\boldsymbol{\theta}_j)\mathrm{d} \boldsymbol{\theta} - \sum_{j=1}^M \int \log \{ g_j(\boldsymbol{\theta}_j) \} g_j(\boldsymbol{\theta}_j) \mathrm{d}  \boldsymbol{\theta}_j
- \\& = \int \int \left\{\log p(\boldsymbol{y}, \boldsymbol{\theta}) \prod_{\substack{i \neq j \\j=1}}^M g_j(\boldsymbol{\theta}_j)\mathrm{d} \boldsymbol{\theta}_{-i}\right\} \mathrm{d} \boldsymbol{\theta}_{-i} g_i(\boldsymbol{\theta}_i) \mathrm{d} \boldsymbol{\theta}_i \\& \quad - \sum_{j=1}^M \int \log \{ g_j(\boldsymbol{\theta}_j) \} g_j(\boldsymbol{\theta}_j) \mathrm{d}  \boldsymbol{\theta}_j
+ \\& = \idotsint \left\{\log p(\boldsymbol{y}, \boldsymbol{\theta}) \prod_{\substack{i \neq j \\j=1}}^M g_j(\boldsymbol{\theta}_j)\mathrm{d} \boldsymbol{\theta}_{-i}\right\}  g_i(\boldsymbol{\theta}_i) \mathrm{d} \boldsymbol{\theta}_i \\& \quad - \sum_{j=1}^M \int \log \{ g_j(\boldsymbol{\theta}_j) \} g_j(\boldsymbol{\theta}_j) \mathrm{d}  \boldsymbol{\theta}_j
  \\& \stackrel{\boldsymbol{\theta}_i}{\propto} \int \mathsf{E}_{-i}\left\{\log p(\boldsymbol{y}, \boldsymbol{\theta})\right\} g_i(\boldsymbol{\theta}_i) \mathrm{d} \boldsymbol{\theta}_i - \int \log \{ g_i(\boldsymbol{\theta}_i) \} g_i(\boldsymbol{\theta}_i) \mathrm{d} \boldsymbol{\theta}_i
 \end{align*}
 where the last line is a negative Kullback--Leibler divergence between $g_i$ and
@@ -297,7 +297,7 @@ This is an example where the full posterior is available in closed-form, so we c
 \begin{align*}
  \log g^{\star}_\mu(\mu) \propto -\frac{\mathsf{E}_{\tau}(\tau)}{2} \sum_{i=1}^n (y_i-\mu)^2-\frac{\tau_0}{2}(\mu-\mu_0)^2
 \end{align*}
-which is quadratic in $\mu$ and thus must be Gaussian with precision $\tau_n = \tau_0 + n\tau$ and mean $\tau_n^{-1}\{\tau_0\mu_0 + \mathsf{E}_{\tau}(\tau)n\overline{y})$ using @prp-quadratic-forms, where $n\overline{y} = \sum_{i=1}^n y_i.$ We could also note that this corresponds (up to expectation) to $p(\mu \mid \tau, \boldsymbol{y}).$ As the sample size increase, the approximation converges to a Dirac delta (point mass at the sample mean. The optimal precision factor satisfies
+which is quadratic in $\mu$ and thus must be Gaussian with precision $\tau_n = \tau_0 + n\mathsf{E}_{\tau}(\tau)$ and mean $\tau_n^{-1}\{\tau_0\mu_0 + \mathsf{E}_{\tau}(\tau)n\overline{y})$ using @prp-quadratic-forms, where $n\overline{y} = \sum_{i=1}^n y_i.$ We could also note that this corresponds (up to expectation) to $p(\mu \mid \tau, \boldsymbol{y}).$ As the sample size increase, the approximation converges to a Dirac delta (point mass at the sample mean. The optimal precision factor satisfies
 \begin{align*}
  \ln g^{\star}_{\tau}(\tau) \propto (a_0-1 +n/2) \log \tau - \tau \left[b_0  + \frac{1}{2} \mathsf{E}_{\mu}\left\{\sum_{i=1}^n (y_i-\mu)^2\right\}\right].
 \end{align*}
@@ -397,7 +397,7 @@ We focus on the case of full transformation; the derivation for independent comp
 \end{align*}
 where we have the absolute value of the determinant of the Jacobian of the transformation. If we apply the chain rule
 \begin{align*}
- \frac{\partial}{\partial \boldsymbol{\psi}}\log p(\boldsymbol{y}, T^{-1}(\boldsymbol{\mu} + \mathbf{L}\boldsymbol{Z}) = \frac{\partial \log p(\boldsymbol{y}, \boldsymbol{\theta})}{\partial \boldsymbol{\theta}} \frac{\partial T^{-1}(\boldsymbol{\zeta})}{\partial \boldsymbol{\zeta}} \frac{\partial \boldsymbol{\mu} + \mathbf{L}\boldsymbol{Z}}{\partial \boldsymbol{\psi}}
+ \frac{\partial}{\partial \boldsymbol{\psi}}\log p\{\boldsymbol{y}, T^{-1}(\boldsymbol{\mu} + \mathbf{L}\boldsymbol{Z})\} = \frac{\partial \log p(\boldsymbol{y}, \boldsymbol{\theta})}{\partial \boldsymbol{\theta}} \frac{\partial T^{-1}(\boldsymbol{\zeta})}{\partial \boldsymbol{\zeta}} \frac{\partial \boldsymbol{\mu} + \mathbf{L}\boldsymbol{Z}}{\partial \boldsymbol{\psi}}
 \end{align*}
 and we retrieve the gradients of the ELBO with respect to the mean and variance, which are
 \begin{align*}
