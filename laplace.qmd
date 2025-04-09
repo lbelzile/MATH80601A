@@ -32,9 +32,9 @@ where the remainder $R=\mathrm{O}\{(x-x_0)^3\}.$ If  $x_0$ is a maximizer and so
  I_n &\approx \exp\{nh(x_0)\} \int_{a}^b \exp \left\{-\frac{1}{2}(x-x_0)^2\right\}
   \\&= \exp\{nh(x_0)\} \left(\frac{2\pi}{\tau}\right)^{1/2} \left[\Phi\left\{ \tau(b-x_0)\right\} - \Phi\left\{\tau(a-x_0)\right\}\right]
 \end{align*}
-upon recovering the unnormalized kernel of a Gaussian random variable centered at $x_0$ with precision $\tau.$ The approximation error is $\mathrm{O}(n^{-1}).$
+upon recovering the unnormalized kernel of a Gaussian random variable centered at $x_0$ with precision $\tau.$ The approximation error is $\mathrm{O}(n^{-1}).$ This quantity reduces to  $\exp\{nh(x_0)\} \left(\frac{2\pi}{\tau}\right)^{1/2}$ when evaluated over the real line.
 
-The multivariate analog is similar, where now for an integral of the form $\exp\{nh(\boldsymbol{x})\}$ over a subset of $\mathbb{R}^d,$ we consider the Taylor series expansion
+The multivariate analog is similar, where now for an integral of the form $\exp\{nh(\boldsymbol{x})\}$ over $\mathbb{R}^d,$ we consider the Taylor series expansion
 \begin{align*}
  h(\boldsymbol{x}) &= h(\boldsymbol{x}_0) + (\boldsymbol{x}- \boldsymbol{x}_0)^\top h'(\boldsymbol{x}_0) + \frac{1}{2}(\boldsymbol{x}- \boldsymbol{x}_0)^\top h''(\boldsymbol{x}_0)(\boldsymbol{x}- \boldsymbol{x}_0) + R.
 \end{align*}
