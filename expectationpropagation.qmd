@@ -120,14 +120,13 @@ where $Z_j$ has distribution proportional to $L_j(z) \times \phi(z; \mathbf{x}_j
 #| echo: true
 #' @param mu_lc mean of the linear combination
 #' @param sd_lc std. dev of the linear combination
-library(cubature)
-ep_update <- function(mu_lc, sd_lc){
+ep_update <- function(y, mu_lc, sd_lc){
   # Calculate outside of the loop the cavity
-  fn <- function(x){ dnorm(x, mean = mu_lc, sd = sd_lc)*plogis(x)}
+  fn <- function(x){ dnorm(x, mean = mu_lc, sd = sd_lc)*plogis(y*x)}
   # Compute normalizing constant
-  cst <- pcubature(f = fn, lowerLimit = -Inf, upperLimit = Inf)$integral
-  mu <- pcubature(f = function(x){fn(x)*x}, -Inf, Inf)$integral/cst
-  va <- pcubature(f = function(x){fn(x)*(x-mu)^2}, -Inf, Inf)$integral/cst
+  cst <- integrate(f = fn, lower = -Inf, upper = Inf)$value
+  mu <- integrate(f = function(x){fn(x)*x}, -Inf, Inf)$value/cst
+  va <- integrate(f = function(x){fn(x)*(x-mu)^2}, -Inf, Inf)$value/cst
 }
 ```
 

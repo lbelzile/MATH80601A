@@ -335,17 +335,17 @@
 \newcommand*\listoflistings{\listof{codelisting}{List of Listings}}
 \usepackage{amsthm}
 \theoremstyle{plain}
-\newtheorem{proposition}{Proposition}[chapter]
+\newtheorem{theorem}{Theorem}[chapter]
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}[chapter]
 \theoremstyle{definition}
 \newtheorem{exercise}{Exercise}[chapter]
 \theoremstyle{definition}
 \newtheorem{example}{Example}[chapter]
 \theoremstyle{plain}
-\newtheorem{corollary}{Corollary}[chapter]
+\newtheorem{proposition}{Proposition}[chapter]
 \theoremstyle{plain}
-\newtheorem{theorem}{Theorem}[chapter]
-\theoremstyle{definition}
-\newtheorem{definition}{Definition}[chapter]
+\newtheorem{corollary}{Corollary}[chapter]
 \theoremstyle{remark}
 \AtBeginDocument{\renewcommand*{\proofname}{Proof}}
 \newtheorem*{remark}{Remark}
@@ -401,7 +401,7 @@ details.
 These notes are licensed under a
 \href{http://creativecommons.org/licenses/by-nc-sa/4.0/}{Creative
 Commons Attribution-NonCommercial-ShareAlike 4.0 International License}
-and were last compiled on mardi, avril 08 2025.
+and were last compiled on jeudi, avril 10 2025.
 
 The objective of the course is to provide a hands on introduction to
 Bayesian data analysis. The course will cover the formulation,
@@ -417,7 +417,7 @@ used throughout the course. The overview begins with basic statistical
 concepts, random variables, their distribution and density, moments and
 likelihood derivations.
 
-\begin{tcolorbox}[enhanced jigsaw, opacitybacktitle=0.6, opacityback=0, colback=white, left=2mm, colbacktitle=quarto-callout-important-color!10!white, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Learning objectives}:}, bottomrule=.15mm, leftrule=.75mm, toprule=.15mm, colframe=quarto-callout-important-color-frame, titlerule=0mm, coltitle=black, bottomtitle=1mm, toptitle=1mm, arc=.35mm, rightrule=.15mm, breakable]
+\begin{tcolorbox}[enhanced jigsaw, colframe=quarto-callout-important-color-frame, arc=.35mm, toptitle=1mm, breakable, opacitybacktitle=0.6, opacityback=0, bottomtitle=1mm, coltitle=black, colbacktitle=quarto-callout-important-color!10!white, colback=white, titlerule=0mm, leftrule=.75mm, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Learning objectives}:}, left=2mm, toprule=.15mm, rightrule=.15mm, bottomrule=.15mm]
 
 At the end of the chapter, students should be able to
 
@@ -1712,7 +1712,7 @@ The likelihood can then be written as \begin{align*}
 
 \end{example}
 
-\begin{tcolorbox}[enhanced jigsaw, opacitybacktitle=0.6, opacityback=0, colback=white, left=2mm, colbacktitle=quarto-callout-important-color!10!white, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Summary}}, bottomrule=.15mm, leftrule=.75mm, toprule=.15mm, colframe=quarto-callout-important-color-frame, titlerule=0mm, coltitle=black, bottomtitle=1mm, toptitle=1mm, arc=.35mm, rightrule=.15mm, breakable]
+\begin{tcolorbox}[enhanced jigsaw, colframe=quarto-callout-important-color-frame, arc=.35mm, toptitle=1mm, breakable, opacitybacktitle=0.6, opacityback=0, bottomtitle=1mm, coltitle=black, colbacktitle=quarto-callout-important-color!10!white, colback=white, titlerule=0mm, leftrule=.75mm, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Summary}}, left=2mm, toprule=.15mm, rightrule=.15mm, bottomrule=.15mm]
 
 \begin{itemize}
 \tightlist
@@ -1792,7 +1792,7 @@ elicitation and estimation of the marginal likelihood, are mentioned in
 passing. A brief discussion of Bayesian hypothesis testing (and
 alternatives) is presented.
 
-\begin{tcolorbox}[enhanced jigsaw, opacitybacktitle=0.6, opacityback=0, colback=white, left=2mm, colbacktitle=quarto-callout-important-color!10!white, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Learning objectives}:}, bottomrule=.15mm, leftrule=.75mm, toprule=.15mm, colframe=quarto-callout-important-color-frame, titlerule=0mm, coltitle=black, bottomtitle=1mm, toptitle=1mm, arc=.35mm, rightrule=.15mm, breakable]
+\begin{tcolorbox}[enhanced jigsaw, colframe=quarto-callout-important-color-frame, arc=.35mm, toptitle=1mm, breakable, opacitybacktitle=0.6, opacityback=0, bottomtitle=1mm, coltitle=black, colbacktitle=quarto-callout-important-color!10!white, colback=white, titlerule=0mm, leftrule=.75mm, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Learning objectives}:}, left=2mm, toprule=.15mm, rightrule=.15mm, bottomrule=.15mm]
 
 At the end of the chapter, students should be able to
 
@@ -2214,7 +2214,7 @@ likelihood is intractable. This is one of the main challenges of
 Bayesian statistics and the popularity and applicability has grown
 drastically with the development and popularity of numerical algorithms,
 following the publication of Geman and Geman
-(\citeproc{ref-Geman.Geman:1984}{1984}) and Gelfand and Smith
+(\citeproc{ref-Geman.Geman:1984}{1984}) and Alan E. Gelfand and Smith
 (\citeproc{ref-Gelfand.Smith:1990}{1990}). Markov chain Monte Carlo
 methods circumvent the calculation of the denominator by drawing
 approximate samples from the posterior.
@@ -2729,7 +2729,7 @@ the cutoff for the HDP region.}
 
 \end{figure}%
 
-\begin{tcolorbox}[enhanced jigsaw, opacitybacktitle=0.6, opacityback=0, colback=white, left=2mm, colbacktitle=quarto-callout-important-color!10!white, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Summary}:}, bottomrule=.15mm, leftrule=.75mm, toprule=.15mm, colframe=quarto-callout-important-color-frame, titlerule=0mm, coltitle=black, bottomtitle=1mm, toptitle=1mm, arc=.35mm, rightrule=.15mm, breakable]
+\begin{tcolorbox}[enhanced jigsaw, colframe=quarto-callout-important-color-frame, arc=.35mm, toptitle=1mm, breakable, opacitybacktitle=0.6, opacityback=0, bottomtitle=1mm, coltitle=black, colbacktitle=quarto-callout-important-color!10!white, colback=white, titlerule=0mm, leftrule=.75mm, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Summary}:}, left=2mm, toprule=.15mm, rightrule=.15mm, bottomrule=.15mm]
 
 \begin{itemize}
 \tightlist
@@ -2808,7 +2808,7 @@ inferences. Generally, we will choose the prior for convenience. Priors
 are controversial because they could be tuned aposteriori to give any
 answer an analyst might want.
 
-\begin{tcolorbox}[enhanced jigsaw, opacitybacktitle=0.6, opacityback=0, colback=white, left=2mm, colbacktitle=quarto-callout-important-color!10!white, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Learning objectives}:}, bottomrule=.15mm, leftrule=.75mm, toprule=.15mm, colframe=quarto-callout-important-color-frame, titlerule=0mm, coltitle=black, bottomtitle=1mm, toptitle=1mm, arc=.35mm, rightrule=.15mm, breakable]
+\begin{tcolorbox}[enhanced jigsaw, colframe=quarto-callout-important-color-frame, arc=.35mm, toptitle=1mm, breakable, opacitybacktitle=0.6, opacityback=0, bottomtitle=1mm, coltitle=black, colbacktitle=quarto-callout-important-color!10!white, colback=white, titlerule=0mm, leftrule=.75mm, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Learning objectives}:}, left=2mm, toprule=.15mm, rightrule=.15mm, bottomrule=.15mm]
 
 At the end of the chapter, students should be able to
 
@@ -3842,7 +3842,7 @@ improper priors on location and scale.}
 
 \end{example}
 
-\begin{tcolorbox}[enhanced jigsaw, opacitybacktitle=0.6, opacityback=0, colback=white, left=2mm, colbacktitle=quarto-callout-important-color!10!white, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Summary}:}, bottomrule=.15mm, leftrule=.75mm, toprule=.15mm, colframe=quarto-callout-important-color-frame, titlerule=0mm, coltitle=black, bottomtitle=1mm, toptitle=1mm, arc=.35mm, rightrule=.15mm, breakable]
+\begin{tcolorbox}[enhanced jigsaw, colframe=quarto-callout-important-color-frame, arc=.35mm, toptitle=1mm, breakable, opacitybacktitle=0.6, opacityback=0, bottomtitle=1mm, coltitle=black, colbacktitle=quarto-callout-important-color!10!white, colback=white, titlerule=0mm, leftrule=.75mm, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Summary}:}, left=2mm, toprule=.15mm, rightrule=.15mm, bottomrule=.15mm]
 
 \begin{itemize}
 \tightlist
@@ -4905,7 +4905,7 @@ computers became more widely available. The idea is to draw correlated
 samples from a posterior via Markov chains, constructed to have the
 posterior as invariant stationary distribution.
 
-\begin{tcolorbox}[enhanced jigsaw, opacitybacktitle=0.6, opacityback=0, colback=white, left=2mm, colbacktitle=quarto-callout-important-color!10!white, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Learning objectives}:}, bottomrule=.15mm, leftrule=.75mm, toprule=.15mm, colframe=quarto-callout-important-color-frame, titlerule=0mm, coltitle=black, bottomtitle=1mm, toptitle=1mm, arc=.35mm, rightrule=.15mm, breakable]
+\begin{tcolorbox}[enhanced jigsaw, colframe=quarto-callout-important-color-frame, arc=.35mm, toptitle=1mm, breakable, opacitybacktitle=0.6, opacityback=0, bottomtitle=1mm, coltitle=black, colbacktitle=quarto-callout-important-color!10!white, colback=white, titlerule=0mm, leftrule=.75mm, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Learning objectives}:}, left=2mm, toprule=.15mm, rightrule=.15mm, bottomrule=.15mm]
 
 At the end of the chapter, students should be able to
 
@@ -5595,7 +5595,7 @@ overdispersion.
 
 \end{example}
 
-\begin{tcolorbox}[enhanced jigsaw, opacitybacktitle=0.6, opacityback=0, colback=white, left=2mm, colbacktitle=quarto-callout-important-color!10!white, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Summary}:}, bottomrule=.15mm, leftrule=.75mm, toprule=.15mm, colframe=quarto-callout-important-color-frame, titlerule=0mm, coltitle=black, bottomtitle=1mm, toptitle=1mm, arc=.35mm, rightrule=.15mm, breakable]
+\begin{tcolorbox}[enhanced jigsaw, colframe=quarto-callout-important-color-frame, arc=.35mm, toptitle=1mm, breakable, opacitybacktitle=0.6, opacityback=0, bottomtitle=1mm, coltitle=black, colbacktitle=quarto-callout-important-color!10!white, colback=white, titlerule=0mm, leftrule=.75mm, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Summary}:}, left=2mm, toprule=.15mm, rightrule=.15mm, bottomrule=.15mm]
 
 \begin{itemize}
 \tightlist
@@ -5646,7 +5646,7 @@ overdispersion.
 
 \chapter{Gibbs sampling}\label{sec-Gibbs}
 
-\begin{tcolorbox}[enhanced jigsaw, opacitybacktitle=0.6, opacityback=0, colback=white, left=2mm, colbacktitle=quarto-callout-important-color!10!white, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Learning objectives}:}, bottomrule=.15mm, leftrule=.75mm, toprule=.15mm, colframe=quarto-callout-important-color-frame, titlerule=0mm, coltitle=black, bottomtitle=1mm, toptitle=1mm, arc=.35mm, rightrule=.15mm, breakable]
+\begin{tcolorbox}[enhanced jigsaw, colframe=quarto-callout-important-color-frame, arc=.35mm, toptitle=1mm, breakable, opacitybacktitle=0.6, opacityback=0, bottomtitle=1mm, coltitle=black, colbacktitle=quarto-callout-important-color!10!white, colback=white, titlerule=0mm, leftrule=.75mm, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Learning objectives}:}, left=2mm, toprule=.15mm, rightrule=.15mm, bottomrule=.15mm]
 
 At the end of the chapter, students should be able to
 
@@ -6112,7 +6112,7 @@ and Stephens (\citeproc{ref-Stephens:2002}{2002}) for more details.
 
 \end{refremark}
 
-\begin{tcolorbox}[enhanced jigsaw, opacitybacktitle=0.6, opacityback=0, colback=white, left=2mm, colbacktitle=quarto-callout-important-color!10!white, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Summary}:}, bottomrule=.15mm, leftrule=.75mm, toprule=.15mm, colframe=quarto-callout-important-color-frame, titlerule=0mm, coltitle=black, bottomtitle=1mm, toptitle=1mm, arc=.35mm, rightrule=.15mm, breakable]
+\begin{tcolorbox}[enhanced jigsaw, colframe=quarto-callout-important-color-frame, arc=.35mm, toptitle=1mm, breakable, opacitybacktitle=0.6, opacityback=0, bottomtitle=1mm, coltitle=black, colbacktitle=quarto-callout-important-color!10!white, colback=white, titlerule=0mm, leftrule=.75mm, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Summary}:}, left=2mm, toprule=.15mm, rightrule=.15mm, bottomrule=.15mm]
 
 \begin{itemize}
 \tightlist
@@ -6170,7 +6170,7 @@ Betancourt} for excellent visualizations. In this chapter, we focus on
 three aspects of the workflow: model validation, evaluation and
 comparison.
 
-\begin{tcolorbox}[enhanced jigsaw, opacitybacktitle=0.6, opacityback=0, colback=white, left=2mm, colbacktitle=quarto-callout-important-color!10!white, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Learning objectives}:}, bottomrule=.15mm, leftrule=.75mm, toprule=.15mm, colframe=quarto-callout-important-color-frame, titlerule=0mm, coltitle=black, bottomtitle=1mm, toptitle=1mm, arc=.35mm, rightrule=.15mm, breakable]
+\begin{tcolorbox}[enhanced jigsaw, colframe=quarto-callout-important-color-frame, arc=.35mm, toptitle=1mm, breakable, opacitybacktitle=0.6, opacityback=0, bottomtitle=1mm, coltitle=black, colbacktitle=quarto-callout-important-color!10!white, colback=white, titlerule=0mm, leftrule=.75mm, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Learning objectives}:}, left=2mm, toprule=.15mm, rightrule=.15mm, bottomrule=.15mm]
 
 At the end of the chapter, students should be able to
 
@@ -6454,7 +6454,7 @@ model with hundreds of parameters, we may run out of memory.
 checks}\label{posterior-predictive-checks}
 
 Posterior predictive checks can be used to compare models of varying
-complexity.One of the visual diagnostics, outlined in Gabry et al.
+complexity. One of the visual diagnostics, outlined in Gabry et al.
 (\citeproc{ref-Gabry:2019}{2019}), consists in computing a summary
 statistic of interest from the posterior predictive (whether mean,
 median, quantile, skewness, etc.) which is relevant for the problem at
@@ -6588,20 +6588,69 @@ function of the penalty \(\lambda.\)}
 Ideally, one would measure the predictive performance using the
 leave-one-out predictive distribution for observation \(i\) given all
 the rest, \(p(y_i \mid \boldsymbol{y}_{-i}),\) to avoid double dipping
---- the latter is computationally intractable because it would require
-running \(n\) Markov chains with \(n-1\) observations each, but we can
-get a good approximation using importance sampling. The \texttt{loo}
-package uses this with generalized Pareto smoothing to avoid overly
-large weights.
+--- the latter is computationally intensive to obtain because it would
+require running \(n\) Markov chains with \(n-1\) observations each, but
+we can get a good approximation using importance sampling, as proposed
+in eq. 25 of Section 7 of A. E. Gelfand and Dey
+(\citeproc{ref-Gelfand.Dey:1994}{1994}).
 
-Once we have the collection of estimated
-\(p(y_i \mid \boldsymbol{y}_{-i}),\) we can assess the probability level
-of each observation. This gives us a set of values which should be
-approximately uniform if the model was perfectly calibrated. The
-probability of seeing an outcome as extreme as \(y_i\) can be obtained
-by simulating draws from the posterior predictive given
-\(\boldsymbol{y}_{-i}\) and computing the scaled rank of the original
-observation. Values close to zero or one may indicate outliers.
+\begin{proposition}[Marginal predictive
+check]\protect\hypertarget{prp-marginal-pred-checks}{}\label{prp-marginal-pred-checks}
+
+To check the goodness-of-fit, we turn to the posterior predictive
+distribution. For each posterior draw and each observation, we generate
+a sample from the posterior predictive, resulting in an \(n \times B\)
+matrix. We can then for each observation \(y_i\) compare the latter with
+the simulated samples \(y_{i,b}^{\mathrm{rep}}\) for posterior sample
+\(\boldsymbol{\theta}_b.\) We compute
+\(\Pr(y_i \geq y_{i}^{\mathrm{rep}})\) by Monte Carlo, by looking at the
+sample proportion that are more extreme. Values close to zero or one may
+indicate outliers.
+
+\end{proposition}
+
+To avoid double dipping, we can check model adequacy by comparing the
+leave-one-cross validation predictive draws with the observation.
+
+\begin{proposition}[Cross-validation predictive
+density]\protect\hypertarget{prp-cv-predictive-dens}{}\label{prp-cv-predictive-dens}
+
+Consider estimation of the leave-one predictive density under the
+hypothesis that the likelihood factorizes as
+\(L(\boldsymbol{\theta}; \boldsymbol{y}) = \prod_{i=1}^n f_i(y_i; \boldsymbol{\theta});\)
+where \(f_i\) is the density or mass function of the \(i\)th
+observation. Then, with weights \begin{align*}
+w_i(\boldsymbol{\theta}) = \frac{p(\boldsymbol{\theta} \mid \boldsymbol{y}_{-i})}{p(\boldsymbol{\theta} \mid \boldsymbol{y})} \stackrel{\boldsymbol{\theta}}{\propto} \frac{1}{f_i(\boldsymbol{\theta} \mid y_i)}
+\end{align*} we can write the leave-one-out posterior predictive as
+\begin{align*}
+p(y_i \mid \boldsymbol{y}_{-i}) &= \int_{\boldsymbol{\Theta}} f_i(y_i \mid \boldsymbol{\theta}) p(\boldsymbol{\theta} \mid \boldsymbol{y}_{-i}) \mathrm{d} \boldsymbol{\theta}
+\\& = \int_{\boldsymbol{\Theta}} f(y_i \mid \boldsymbol{\theta}, \boldsymbol{y}_{-i}) w_i(\boldsymbol{\theta}) p(\boldsymbol{\theta} \mid \boldsymbol{y}) \mathrm{d} \boldsymbol{\theta}.
+\end{align*} This formula suggests the importance sampling estimator
+(cf. Proposition~\ref{prp-importance-sampling}) for a sample of size
+\(B\) from the posterior \(p(\boldsymbol{\theta} \mid \boldsymbol{y})\)
+\begin{align*}
+\widehat{p}(y_i \mid \boldsymbol{y}_{-i}) = \frac{\sum_{b=1}^B f_i(y_i \mid \boldsymbol{\theta}_b) w_i(\boldsymbol{\theta}_b)}{\sum_{b=1}^Bw_i(\boldsymbol{\theta}_b)}  = B \left\{\sum_{b=1}^B \frac{1}{f_i (y_i \mid \boldsymbol{\theta}_b)}\right\}^{-1}.
+\end{align*} This estimator takes the form of an harmonic mean, which
+can have very large variance due to some weights dominating the fit.
+Vehtari, Gelman, and Gabry
+(\citeproc{ref-Vehtari.Gelman.Gabry:2017}{2017}) proposed using Pareto
+smoothed importance sampling
+(\citeproc{ref-Vehtari.Simpson.Gelman.Yao.Gabry:2025}{Vehtari et al.
+2024}) to avoid overly large weights; this method is implemented in the
+\texttt{loo} \textbf{R} package.
+
+Suppose we have matrices of size \(n \times B\) containing the posterior
+predictive draws \(y_{i,b}^{\mathrm{rep}}\) associated with each
+posterior vector \(\boldsymbol{\theta}_b\) and the weights
+\(w_{i,b} = 1/f_i (y_i \mid \boldsymbol{\theta}_b)\) from the importance
+sampling estimator. We can then compute the probability integral
+transform with importance sampling \begin{align*}
+\widehat{p}_i^{\mathrm{loo}} = \Pr(y_i^{\mathrm{rep}} \leq y_i \mid \boldsymbol{y}_{-i}) \approx \frac{\sum_{b=1}^B \mathrm{I}(y_i^{\mathrm{rep}} \leq y_i)w_{i,b}}{\sum_{b=1}^B w_{i,b}}, \qquad i =1,\ldots, n
+\end{align*} We can then create a probability-probability plot with
+these values by comparing the \(n\) with ordered quantiles with uniform
+plotting positions. The values \(\widehat{p}_i^{\mathrm{loo}}\) should
+be approximately uniform if the model was perfectly calibrated.
+Figure~\ref{fig-loocv-qqplots} shows two examples of these.
 
 \begin{figure}[ht!]
 
@@ -6611,11 +6660,13 @@ observation. Values close to zero or one may indicate outliers.
 
 }
 
-\caption{\label{fig-loocv-qqplots}Quantile-quantile plots based on
+\caption{\label{fig-loocv-qqplots}Probability-probability plots based on
 leave-one-out cross validation for model for the Poisson hierarchical
 model with the individual random effects (left) and without (right).}
 
 \end{figure}%
+
+\end{proposition}
 
 \section{Computational strategies}\label{computational-strategies}
 
@@ -7641,11 +7692,13 @@ approximation \begin{align*}
   \\&= \exp\{nh(x_0)\} \left(\frac{2\pi}{\tau}\right)^{1/2} \left[\Phi\left\{ \tau(b-x_0)\right\} - \Phi\left\{\tau(a-x_0)\right\}\right]
 \end{align*} upon recovering the unnormalized kernel of a Gaussian
 random variable centered at \(x_0\) with precision \(\tau.\) The
-approximation error is \(\mathrm{O}(n^{-1}).\)
+approximation error is \(\mathrm{O}(n^{-1}).\) This quantity reduces to
+\(\exp\{nh(x_0)\} \left(\frac{2\pi}{\tau}\right)^{1/2}\) when evaluated
+over the real line.
 
 The multivariate analog is similar, where now for an integral of the
-form \(\exp\{nh(\boldsymbol{x})\}\) over a subset of \(\mathbb{R}^d,\)
-we consider the Taylor series expansion \begin{align*}
+form \(\exp\{nh(\boldsymbol{x})\}\) over \(\mathbb{R}^d,\) we consider
+the Taylor series expansion \begin{align*}
  h(\boldsymbol{x}) &= h(\boldsymbol{x}_0) + (\boldsymbol{x}- \boldsymbol{x}_0)^\top h'(\boldsymbol{x}_0) + \frac{1}{2}(\boldsymbol{x}- \boldsymbol{x}_0)^\top h''(\boldsymbol{x}_0)(\boldsymbol{x}- \boldsymbol{x}_0) + R.
 \end{align*} We obtain the Laplace approximation at the mode
 \(\boldsymbol{x}_0\) satisfying
@@ -8864,14 +8917,13 @@ exponential families are found in page 23 of Cseke and Heskes
 \begin{Highlighting}[]
 \CommentTok{\#\textquotesingle{} @param mu\_lc mean of the linear combination}
 \CommentTok{\#\textquotesingle{} @param sd\_lc std. dev of the linear combination}
-\FunctionTok{library}\NormalTok{(cubature)}
-\NormalTok{ep\_update }\OtherTok{\textless{}{-}} \ControlFlowTok{function}\NormalTok{(mu\_lc, sd\_lc)\{}
+\NormalTok{ep\_update }\OtherTok{\textless{}{-}} \ControlFlowTok{function}\NormalTok{(y, mu\_lc, sd\_lc)\{}
   \CommentTok{\# Calculate outside of the loop the cavity}
-\NormalTok{  fn }\OtherTok{\textless{}{-}} \ControlFlowTok{function}\NormalTok{(x)\{ }\FunctionTok{dnorm}\NormalTok{(x, }\AttributeTok{mean =}\NormalTok{ mu\_lc, }\AttributeTok{sd =}\NormalTok{ sd\_lc)}\SpecialCharTok{*}\FunctionTok{plogis}\NormalTok{(x)\}}
+\NormalTok{  fn }\OtherTok{\textless{}{-}} \ControlFlowTok{function}\NormalTok{(x)\{ }\FunctionTok{dnorm}\NormalTok{(x, }\AttributeTok{mean =}\NormalTok{ mu\_lc, }\AttributeTok{sd =}\NormalTok{ sd\_lc)}\SpecialCharTok{*}\FunctionTok{plogis}\NormalTok{(y}\SpecialCharTok{*}\NormalTok{x)\}}
   \CommentTok{\# Compute normalizing constant}
-\NormalTok{  cst }\OtherTok{\textless{}{-}} \FunctionTok{pcubature}\NormalTok{(}\AttributeTok{f =}\NormalTok{ fn, }\AttributeTok{lowerLimit =} \SpecialCharTok{{-}}\ConstantTok{Inf}\NormalTok{, }\AttributeTok{upperLimit =} \ConstantTok{Inf}\NormalTok{)}\SpecialCharTok{$}\NormalTok{integral}
-\NormalTok{  mu }\OtherTok{\textless{}{-}} \FunctionTok{pcubature}\NormalTok{(}\AttributeTok{f =} \ControlFlowTok{function}\NormalTok{(x)\{}\FunctionTok{fn}\NormalTok{(x)}\SpecialCharTok{*}\NormalTok{x\}, }\SpecialCharTok{{-}}\ConstantTok{Inf}\NormalTok{, }\ConstantTok{Inf}\NormalTok{)}\SpecialCharTok{$}\NormalTok{integral}\SpecialCharTok{/}\NormalTok{cst}
-\NormalTok{  va }\OtherTok{\textless{}{-}} \FunctionTok{pcubature}\NormalTok{(}\AttributeTok{f =} \ControlFlowTok{function}\NormalTok{(x)\{}\FunctionTok{fn}\NormalTok{(x)}\SpecialCharTok{*}\NormalTok{(x}\SpecialCharTok{{-}}\NormalTok{mu)}\SpecialCharTok{\^{}}\DecValTok{2}\NormalTok{\}, }\SpecialCharTok{{-}}\ConstantTok{Inf}\NormalTok{, }\ConstantTok{Inf}\NormalTok{)}\SpecialCharTok{$}\NormalTok{integral}\SpecialCharTok{/}\NormalTok{cst}
+\NormalTok{  cst }\OtherTok{\textless{}{-}} \FunctionTok{integrate}\NormalTok{(}\AttributeTok{f =}\NormalTok{ fn, }\AttributeTok{lower =} \SpecialCharTok{{-}}\ConstantTok{Inf}\NormalTok{, }\AttributeTok{upper =} \ConstantTok{Inf}\NormalTok{)}\SpecialCharTok{$}\NormalTok{value}
+\NormalTok{  mu }\OtherTok{\textless{}{-}} \FunctionTok{integrate}\NormalTok{(}\AttributeTok{f =} \ControlFlowTok{function}\NormalTok{(x)\{}\FunctionTok{fn}\NormalTok{(x)}\SpecialCharTok{*}\NormalTok{x\}, }\SpecialCharTok{{-}}\ConstantTok{Inf}\NormalTok{, }\ConstantTok{Inf}\NormalTok{)}\SpecialCharTok{$}\NormalTok{value}\SpecialCharTok{/}\NormalTok{cst}
+\NormalTok{  va }\OtherTok{\textless{}{-}} \FunctionTok{integrate}\NormalTok{(}\AttributeTok{f =} \ControlFlowTok{function}\NormalTok{(x)\{}\FunctionTok{fn}\NormalTok{(x)}\SpecialCharTok{*}\NormalTok{(x}\SpecialCharTok{{-}}\NormalTok{mu)}\SpecialCharTok{\^{}}\DecValTok{2}\NormalTok{\}, }\SpecialCharTok{{-}}\ConstantTok{Inf}\NormalTok{, }\ConstantTok{Inf}\NormalTok{)}\SpecialCharTok{$}\NormalTok{value}\SpecialCharTok{/}\NormalTok{cst}
 \NormalTok{\}}
 \end{Highlighting}
 \end{Shaded}
@@ -9050,6 +9102,12 @@ Gabry, Jonah, Daniel Simpson, Aki Vehtari, Michael Betancourt, and
 Andrew Gelman. 2019. {``{Visualization in {B}ayesian Workflow}.''}
 \emph{Journal of the Royal Statistical Society Series A: Statistics in
 Society} 182 (2): 389--402. \url{https://doi.org/10.1111/rssa.12378}.
+
+\bibitem[\citeproctext]{ref-Gelfand.Dey:1994}
+Gelfand, A. E., and D. K. Dey. 1994. {``Bayesian Model Choice:
+Asymptotics and Exact Calculations.''} \emph{Journal of the Royal
+Statistical Society: Series B (Methodological)} 56 (3): 501--14.
+\url{https://doi.org/10.1111/j.2517-6161.1994.tb01996.x}.
 
 \bibitem[\citeproctext]{ref-Gelfand.Smith:1990}
 Gelfand, Alan E., and Adrian F. M. Smith. 1990. {``Sampling-Based
@@ -9415,6 +9473,17 @@ van Niekerk, Janet, and Håavard Rue. 2024. {``Low-Rank Variational
 {B}ayes Correction to the {L}aplace Method.''} \emph{Journal of Machine
 Learning Research} 25 (62): 1--25.
 \url{http://jmlr.org/papers/v25/21-1405.html}.
+
+\bibitem[\citeproctext]{ref-Vehtari.Gelman.Gabry:2017}
+Vehtari, Aki, Andrew Gelman, and Jonah Gabry. 2017. {``Practical
+{B}ayesian Model Evaluation Using Leave-One-Out Cross-Validation and
+{WAIC}.''} \emph{Statistics and Computing} 27 (5): 1413--32.
+\url{https://doi.org/10.1007/s11222-016-9696-4}.
+
+\bibitem[\citeproctext]{ref-Vehtari.Simpson.Gelman.Yao.Gabry:2025}
+Vehtari, Aki, Daniel Simpson, Andrew Gelman, Yuling Yao, and Jonah
+Gabry. 2024. {``Pareto Smoothed Importance Sampling.''} \emph{Journal of
+Machine Learning Research} 25 (1): 3491--3548.
 
 \bibitem[\citeproctext]{ref-Villani:2023}
 Villani, Mattias. 2023. {``Bayesian Learning: A Gentle Introduction.''}

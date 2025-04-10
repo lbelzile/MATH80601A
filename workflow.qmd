@@ -340,7 +340,7 @@ MCMC algorithms are often run thinning the chain (i.e., keeping only a fraction 
 
 ### Posterior predictive checks
 
-Posterior predictive checks can be used to compare models of varying complexity.One of the visual diagnostics, outlined in @Gabry:2019, consists in computing a summary statistic of interest from the posterior predictive (whether mean, median, quantile, skewness, etc.) which is relevant for the problem at hand and which we hope our model can adequately capture. These should be salient features of the data, and may reveal inadequate likelihood or prior information.
+Posterior predictive checks can be used to compare models of varying complexity. One of the visual diagnostics, outlined in @Gabry:2019, consists in computing a summary statistic of interest from the posterior predictive (whether mean, median, quantile, skewness, etc.) which is relevant for the problem at hand and which we hope our model can adequately capture. These should be salient features of the data, and may reveal inadequate likelihood or prior information.
 
 
 Suppose we have $B$ draws from the posterior and simulate for each $n$ observations from the posterior predictive $p(\widetilde{\boldsymbol{y}} \mid \boldsymbol{y})$: we can benchmark summary statistics from our original data $\boldsymbol{y}$ with the posterior predictive copies $\widetilde{\boldsymbol{y}}_b.$ @fig-posterior-pred-check shows this for the two competing models and highlight the fact that the simpler model is not dispersed enough. Even the more complex model struggles to capture this additional heterogeneity with the additional variables. One could go back to the drawing board and consider a negative binomial model.
@@ -504,9 +504,43 @@ ggplot(data = data.frame(penalty =log(lambdaseq),
 
 :::
 
-Ideally, one would measure the predictive performance using the leave-one-out predictive distribution for observation $i$ given all the rest, $p(y_i \mid \boldsymbol{y}_{-i}),$ to avoid double dipping --- the latter is computationally intractable because it would require running $n$ Markov chains with $n-1$ observations each, but we can get a good approximation using importance sampling.  The `loo` package uses this with generalized Pareto smoothing to avoid overly large weights.
+Ideally, one would measure the predictive performance using the leave-one-out predictive distribution for observation $i$ given all the rest, $p(y_i \mid \boldsymbol{y}_{-i}),$ to avoid double dipping --- the latter is computationally intensive to obtain because it would require running $n$ Markov chains with $n-1$ observations each, but we can get a good approximation using importance sampling, as proposed in eq. 25 of Section 7 of @Gelfand.Dey:1994.
 
-Once we have the collection of estimated  $p(y_i \mid \boldsymbol{y}_{-i}),$ we can assess the probability level of each observation. This gives us a set of values which should be  approximately uniform if the model was perfectly calibrated. The probability of seeing an outcome as extreme as $y_i$ can be obtained by simulating draws from the posterior predictive given $\boldsymbol{y}_{-i}$ and computing the scaled rank of the original observation. Values close to zero or one may indicate outliers.
+:::{#prp-marginal-pred-checks}
+
+## Marginal predictive check
+
+To check the goodness-of-fit, we turn to the posterior predictive distribution. For each posterior draw and each observation, we generate a sample from the posterior predictive, resulting in an $n \times B$ matrix. We can then for each observation $y_i$ compare the latter with the simulated samples $y_{i,b}^{\mathrm{rep}}$ for posterior sample $\boldsymbol{\theta}_b.$ We compute $\Pr(y_i \geq y_{i}^{\mathrm{rep}})$ by Monte Carlo, by looking at the sample proportion that are more extreme.  Values close to zero or one may indicate outliers.
+
+:::
+
+To avoid double dipping, we can check model adequacy by comparing the leave-one-cross validation predictive draws with the observation.
+
+:::{#prp-cv-predictive-dens}
+
+## Cross-validation predictive density
+
+Consider estimation of the leave-one predictive density under the hypothesis that the likelihood factorizes as $L(\boldsymbol{\theta}; \boldsymbol{y}) = \prod_{i=1}^n f_i(y_i; \boldsymbol{\theta});$ where $f_i$ is the density or mass function of the $i$th observation. Then, with weights
+\begin{align*}
+w_i(\boldsymbol{\theta}) = \frac{p(\boldsymbol{\theta} \mid \boldsymbol{y}_{-i})}{p(\boldsymbol{\theta} \mid \boldsymbol{y})} \stackrel{\boldsymbol{\theta}}{\propto} \frac{1}{f_i(\boldsymbol{\theta} \mid y_i)}
+\end{align*} 
+we can write the leave-one-out posterior predictive as
+\begin{align*}
+p(y_i \mid \boldsymbol{y}_{-i}) &= \int_{\boldsymbol{\Theta}} f_i(y_i \mid \boldsymbol{\theta}) p(\boldsymbol{\theta} \mid \boldsymbol{y}_{-i}) \mathrm{d} \boldsymbol{\theta}
+\\& = \int_{\boldsymbol{\Theta}} f(y_i \mid \boldsymbol{\theta}, \boldsymbol{y}_{-i}) w_i(\boldsymbol{\theta}) p(\boldsymbol{\theta} \mid \boldsymbol{y}) \mathrm{d} \boldsymbol{\theta}.
+\end{align*}
+This formula suggests the importance sampling estimator (cf. @prp-importance-sampling) for a sample of size $B$ from the posterior $p(\boldsymbol{\theta} \mid \boldsymbol{y})$
+\begin{align*}
+\widehat{p}(y_i \mid \boldsymbol{y}_{-i}) = \frac{\sum_{b=1}^B f_i(y_i \mid \boldsymbol{\theta}_b) w_i(\boldsymbol{\theta}_b)}{\sum_{b=1}^Bw_i(\boldsymbol{\theta}_b)}  = B \left\{\sum_{b=1}^B \frac{1}{f_i (y_i \mid \boldsymbol{\theta}_b)}\right\}^{-1}.
+\end{align*}
+This estimator takes the form of an harmonic mean, which can have very large variance due to some weights dominating the fit. @Vehtari.Gelman.Gabry:2017 proposed using Pareto smoothed importance sampling [@Vehtari.Simpson.Gelman.Yao.Gabry:2025] to avoid overly large weights; this method is implemented in the `loo` **R** package.
+
+Suppose we have matrices of size $n \times B$ containing the posterior predictive draws $y_{i,b}^{\mathrm{rep}}$ associated with each posterior vector $\boldsymbol{\theta}_b$ and the weights $w_{i,b} = 1/f_i (y_i \mid \boldsymbol{\theta}_b)$ from the importance sampling estimator. We can then compute the probability integral transform with importance sampling
+\begin{align*}
+\widehat{p}_i^{\mathrm{loo}} = \Pr(y_i^{\mathrm{rep}} \leq y_i \mid \boldsymbol{y}_{-i}) \approx \frac{\sum_{b=1}^B \mathrm{I}(y_i^{\mathrm{rep}} \leq y_i)w_{i,b}}{\sum_{b=1}^B w_{i,b}}, \qquad i =1,\ldots, n
+\end{align*}
+We can then create a probability-probability plot with these values by comparing the $n$ with ordered quantiles with uniform plotting positions. The values  $\widehat{p}_i^{\mathrm{loo}}$ should be  approximately uniform if the model was perfectly calibrated. @fig-loocv-qqplots shows two examples of these. 
+
 
 
 ```{r}
@@ -515,7 +549,7 @@ Once we have the collection of estimated  $p(y_i \mid \boldsymbol{y}_{-i}),$ we 
 #| label: fig-loocv-qqplots
 #| warning: false
 #| message: false
-#| fig-cap: "Quantile-quantile plots based on leave-one-out cross validation for model for the Poisson hierarchical model with the individual random effects (left) and without (right)."
+#| fig-cap: "Probability-probability plots based on leave-one-out cross validation for model for the Poisson hierarchical model with the individual random effects (left) and without (right)."
 loo_test1 <- loo::loo(loglik_pt1, save_psis = TRUE)
 g1 <- bayesplot::ppc_loo_pit_qq(
   y = smartwatch$nviolation,
@@ -530,6 +564,10 @@ g2 <- bayesplot::ppc_loo_pit_qq(
 ) + theme_classic()
 g1 + g2
 ```
+
+
+:::
+
 
 
 <!--
