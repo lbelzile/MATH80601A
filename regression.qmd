@@ -87,8 +87,8 @@ where $\mathbf{C} = \mathbf{A} + \mathbf{B}$ and $\boldsymbol{c}= \mathbf{C}^{-1
 
 The conjugate prior for the Gaussian regression model for the mean and precision parameters $\boldsymbol{\beta}$ and $\omega,$ respectively, is a Gaussian-gamma and is defined hierarchically as
 \begin{align*}
-\boldsymbol{\beta} \mid \omega &\sim \mathsf{Gauss}\left\{\boldsymbol{\mu}_0, (
-\omega\boldsymbol{\Omega}_0)^{-1}\right\} \\
+\boldsymbol{Y}_i \sim \mathsf{Gauss}(\mathbf{x}_i\boldsymbol{\beta}, \omega^{-1}) \\
+\boldsymbol{\beta} \mid \omega &\sim \mathsf{Gauss}\left\{\boldsymbol{\mu}_0, (\omega\boldsymbol{\Omega}_0)^{-1}\right\} \\
 \omega &\sim \mathsf{gamma}(\nu_0/2,\tau_0/2).
 \end{align*}
 Using properties of the Gaussian distribution, the sampling distribution of the ordinary least squares estimator is $\widehat{\boldsymbol{\beta}} \sim \mathsf{Gauss}_p\{\boldsymbol{\beta}, (\omega\mathbf{X}^\top\mathbf{X})^{-1}\}.$

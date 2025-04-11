@@ -13,7 +13,7 @@
 
 
 
-The field of **variational inference**, which derives it's name from calculus of variation, uses approximations to a parametric distribution $p(\cdot)$ by a member from a family of distributions whose density or mass function is $g(\cdot; \boldsymbol{\psi})$ with parameters $\boldsymbol{\psi}.$ The objective of inference is thus to find the parameters that minimize some metric that measure discrepancy between the true postulated posterior and the approximation: doing so leads to optimization problems. Variational inference is widespread in machine learning and in large problems where Markov chain Monte Carlo or other methods might not be feasible.
+**Variational inference**, whose name comes from calculus of variation, considers approximations to the posterior $p(\boldsymbol{\theta} \mid \boldsymbol{y})$ by a member from a family of distributions whose density or mass function is $g(\cdot; \boldsymbol{\psi})$ with parameters $\boldsymbol{\psi}.$ The objective of inference is thus to find the parameters that minimize some metric that measure discrepancy between the true postulated posterior and the approximation: doing so leads to optimization problems. Variational inference is widespread in machine learning and in large problems where Markov chain Monte Carlo might be infeasible.
 
 This chapter is organized as follows: we first review notions of model misspecification and the Kullback--Leibler divergence. We then consider approximation schemes and some examples involving mixtures and model selection where analytical derivations are possible: these show how variational inference differs from Laplace approximation and she light on some practical aspects. Good references include Chapter 10 of @Bishop:2006; most modern application use automatic differentiation variational inference (ADVI, @Kucukelbir:2017) or stochastic optimization via black-box variational inference. 
 
@@ -43,7 +43,11 @@ g(\boldsymbol{\theta}; \widehat{\boldsymbol{\psi}}) = \mathrm{argmin}_{\boldsymb
 \end{align*}
 We will show soon that this is a sensible objective function.
 
-It is important to understand that the lack of symmetry of the Kullback--Leibler divergence means these yield different approximations. Consider an approximation of a bivariate Gaussian vector with correlated components $\boldsymbol{X} \sim \mathsf{Gauss}_2(\boldsymbol{\mu}, \boldsymbol{\Sigma})$. If we approximate each margin independently with a univariate Gaussian, the  Kullback--Leibler divergence will have the same marginal mean $\boldsymbol{\mu}$ and variance $\mathrm{diag}(\boldsymbol{\Sigma})$, whereas the reverse Kullback--Leibler will have the same mean, but a variance equal to the conditional variance of one component given the other, e.g., $\Sigma_{11} - \Sigma_{12} \Sigma_{22}^{-1}\Sigma_{21}$ for component $X_{1}.$ @fig-klvsrev shows the two approximations: the reverse Kullback--Leibler is much too narrow and only gives mass where both variables have positive density.
+:::{#rem-symmetry-kld}
+
+## Lack of symmetry of Kullback--Leibler divergence
+
+Consider an approximation of a bivariate Gaussian vector with correlated components $\boldsymbol{X} \sim \mathsf{Gauss}_2(\boldsymbol{\mu}, \boldsymbol{\Sigma})$. If we approximate each margin independently with a univariate Gaussian, the  Kullback--Leibler divergence will have the same marginal mean $\boldsymbol{\mu}$ and variance $\mathrm{diag}(\boldsymbol{\Sigma})$, whereas the reverse Kullback--Leibler will have the same mean, but a variance equal to the conditional variance of one component given the other, e.g., $\Sigma_{11} - \Sigma_{12} \Sigma_{22}^{-1}\Sigma_{21}$ for component $X_{1}.$ @fig-klvsrev shows the two approximations: the reverse Kullback--Leibler is much too narrow and only gives mass where both variables have positive density.
 
 ```{r}
 #| eval: true
@@ -99,6 +103,7 @@ g2 <- ggplot() +
 g1 + g2
 ```
 
+:::
 
 :::{#def-convex-function}
 
@@ -287,29 +292,41 @@ Due to the nature of this conditional expectation, we can devise an algorithm to
 
 :::{exm-gaussian-variational-approx}
 
-We consider the example from Section 2.2.2 of @Ormerod.Wand:2010 (see also Example 10.1.3 from @Bishop:2006) for approximation of a Gaussian distribution with conjugate prior parametrized in terms of precision, with
+## Variational approximation to Gaussian conjugate model
+
+We consider Example 10.1.3 from @Bishop:2006 for a variational approximation of a Gaussian distribution with conjugate prior parametrized in terms of precision, with
 \begin{align*}
 Y_i &\sim \mathsf{Gauss}(\mu, \tau^{-1}), \qquad i =1, \ldots, n;\\
-\mu &\sim \mathsf{Gauss}(\mu_0, \tau_0^{-1}) \\
+\mu &\sim \mathsf{Gauss}\{\mu_0, (\tau\tau_0)^{-1}\} \\
 \tau &\sim \mathsf{gamma}(a_0, b_0).
 \end{align*}
-This is an example where the full posterior is available in closed-form, so we can compare our approximation with the truth. We assume a factorization of the variational approximation $g_\mu(\mu)g_\tau(\tau);$ the factor for $g_\mu$ is proportional to
+This is an example where the marginal posteriors are available in closed-form, 
 \begin{align*}
- \log g^{\star}_\mu(\mu) \propto -\frac{\mathsf{E}_{\tau}(\tau)}{2} \sum_{i=1}^n (y_i-\mu)^2-\frac{\tau_0}{2}(\mu-\mu_0)^2
+\tau \mid \boldsymbol{y} &\sim \mathsf{gamma}\left\{ a_0 + (n-1)/2, b_0 + \frac{\sum_{i=1}^n y_i^2 + (n-\tau_0)^{-1}(n\overline{y}+\tau_0)^2}{2}\right\}
+\\ \mu \mid \boldsymbol{y}
 \end{align*}
-which is quadratic in $\mu$ and thus must be Gaussian with precision $\tau_n = \tau_0 + n\mathsf{E}_{\tau}(\tau)$ and mean $\tau_n^{-1}\{\tau_0\mu_0 + \mathsf{E}_{\tau}(\tau)n\overline{y})$ using @prp-quadratic-forms, where $n\overline{y} = \sum_{i=1}^n y_i.$ We could also note that this corresponds (up to expectation) to $p(\mu \mid \tau, \boldsymbol{y}).$ As the sample size increase, the approximation converges to a Dirac delta (point mass at the sample mean. The optimal precision factor satisfies
+so we can compare our approximation with the truth. We assume a factorization of the variational approximation $g_\mu(\mu)g_\tau(\tau);$ the factor for $g_\mu$ is proportional to
 \begin{align*}
- \ln g^{\star}_{\tau}(\tau) \propto (a_0-1 +n/2) \log \tau - \tau \left[b_0  + \frac{1}{2} \mathsf{E}_{\mu}\left\{\sum_{i=1}^n (y_i-\mu)^2\right\}\right].
+ \log g^{\star}_\mu(\mu) \propto -\frac{\mathsf{E}_{\tau}(\tau)}{2} \left\{ \sum_{i=1}^n (y_i-\mu)^2-\tau_0}{2}(\mu-\mu_0)^2\right\},
 \end{align*}
-This is the form as  $p(\tau \mid \mu, \boldsymbol{y}),$ namely a gamma with shape $a_n =a_0 +n/2$ and rate $b_n$ given by the term in the square brackets. It is helpful to rewrite the expected value as
+which is quadratic in $\mu$ and thus must be Gaussian with precision $\tau_n = \mathsf{E}_{\tau}(\tau)(n + \tau_0)$ and mean $(n + \tau_0)^{-1}\{\tau_0\mu_0 + n\overline{y}\}$ using @prp-quadratic-forms, where $n\overline{y} = \sum_{i=1}^n y_i.$ We could also note that this corresponds (up to expectation) to $p(\mu \mid \tau, \boldsymbol{y}).$ As the sample size increase, the approximation converges to a Dirac delta (point mass at the sample mean. The optimal precision factor satisfies
+\begin{align*}
+ \ln g^{\star}_{\tau}(\tau) \propto (n/2 + a_0-1) \log \tau - \tau \left[b_0  + \frac{1}{2} \mathsf{E}_{\mu}\left\{\sum_{i=1}^n (y_i-\mu)^2\right\} + \frac{\tau_0(\mu-\mu_0)^2}{2}\right].
+\end{align*}
+This is the form as  $p(\tau \mid \mu, \boldsymbol{y}),$ namely a gamma with shape $a_n =n/2 + a_0$ and rate $b_n$ given by the term in the square brackets. It is helpful to rewrite the expected value as
 \begin{align*}
  \mathsf{E}_{\mu}\left\{\sum_{i=1}^n (y_i-\mu)^2\right\} = \sum_{i=1}^n \{y_i - \mathsf{E}_{\mu}(\mu)\}^2 + n \mathsf{Var}_{\mu}(\mu),
 \end{align*}
-so that it depends on the parameters of the distribution of $\mu$ directly. We can then apply the coordinate ascent algorithm. Derivation of the ELBO, even in this toy setting, is tedious:
+so that it depends on the parameters of the distribution of $\mu$ directly. We can then apply the coordinate ascent algorithm. Derivation of the ELBO, even in this toy setting, is tedious.
+<!--
 \begin{align*}
-\mathsf{ELBO}(g) & = a_0\log(b_0)-\log \Gamma(a_0) - \frac{n+1}{2} \log(2\pi) + \frac{\log(\tau_0)}{2} \\&\quad+ (a_n-1)\mathsf{E}_{\tau}(\log \tau) -
-\frac{ \mathsf{E}_{\tau}(\tau)\left[b_0 +\mathsf{E}_{\mu}\left\{\sum_{i=1}^n (y_i - \mu)^2\right\}\right]}{2} - \frac{\tau_0}{2} \mathsf{E}_{\mu}\{(\mu - \mu_0)^2\}\\& \quad + \frac{1+\log(2\pi)-\log\tau_n}{2} -a_n\log b_n - \log \Gamma(a_n) - (a_n-1)\mathsf{E}_{\tau}(\log \tau) -b_n \mathsf{E}_{\tau}(\tau)
+\mathsf{ELBO}(g) & = a_0\log(b_0)-\log \Gamma(a_0) +(a_0-1)\mathsf{E}_{\tau}(\log \tau)- b_0\mathsf{E}_{\tau](\tau)\\
+& \quad - \frac{n+1}{2} \log(2\pi) + \frac{\log(\tau_0) + (n+1)\mathsf{E}_{\tau}(\log \tau)}{2} - \frac{\mathsf{E}_{\tau}(\tau)\tau_0}{2} \left\{\mu_0 - \mathsf{E}_{\mu}(\mu)\}^2 + \mathsf{Va}_{\mu}(\mu)
+\\&\quad - \frac{\mathsf{E}_{\tau}(\tau)}{2} \left[ \sum_{i=1}^n \left\{y_i - \mathsf{E}_{\mu}(\mu)\right\}^2 + n \mathsf{Va}_{\mu}(\mu)\right]
+\\ &\quad - a_n \log (b_n) + \log \Gamma(a_n) - (a_n-1) \mathsf{E}_{\tau}(\log \tau) + b_n \mathsf{E}_{\tau}(\tau) 
+\\& \quad + \frac{1 + \log(2\pi) + \log(n+\tau_0)}{2} + \frac{\mathsf{E}_{\tau}(\log \tau)}{2}
 \end{align*}
+-->
 The expected value of $\mathsf{E}_{\tau}(\tau) = a_n/b_n$ and the mean and variance of the Gaussian are given by it's parameters. The terms involving $\mathsf{E}_{\tau}(\log \tau)$ cancel out; the first line involves only normalizing constants for the hyperparameters, and $a_n$ is constant.
 We can keep track only of 
 \begin{align*}
@@ -324,7 +341,7 @@ y <- rnorm(n = 20, 150, 20)
  logpost <- function(pars){
     mu <- pars[1]; tau <- pars[2]
     sum(dnorm(y, mean = mu, sd = 1/sqrt(tau), log = TRUE)) +
-      dnorm(mu, sd = 100, log = TRUE) + 
+      dnorm(mu, sd = 100/sqrt(tau), log = TRUE) + 
       dgamma(tau, 0.01, 0.01, log = TRUE)
   }
 CAVI_gauss <- function(init = c(mean(y), 1/var(y)),
@@ -340,16 +357,20 @@ CAVI_gauss <- function(init = c(mean(y), 1/var(y)),
   an <- (a0+n/2-1)
   elbo <- numeric(B)
   for(i in 1:B){
-    var_mu <- 1/(tau0 + n*E_tau)
-    E_mu <- var_mu*(tau0*mu0 + E_tau*sum_y)
-    bn <- (b0+0.5*sum((y-E_mu)^2) + 0.5*n*var_mu)
-    E_tau <- an/bn
-    elbo[i] <- -an*log(bn) +0.5*log(var_mu)-0.5*tau0*((mu0-E_mu)^2 + var_mu)
+    var_mu <- 1/(E_tau* (tau0 + n))
+    E_mu <- (tau0*mu0 + sum_y)/(tau0 + n)
+    bn <- b0 + 0.5 * (sum((y-E_mu)^2) + n * var_mu) + 0.5 * tau0 * ((E_mu-mu0)^2 + var_mu)
+    E_tau <- an / bn
+    elbo[i] <- -an * log(bn) + 0.5 * log(var_mu) - 0.5 * tau0 * ((mu0 - E_mu)^2 + var_mu)
   }
+ list(elbo = elbo, mean_mu = E_mu, var_mu = var_mu, shape_tau = an, rate = bn)
 }
 ```
 
+```{r}
 
+
+```
 
 
 

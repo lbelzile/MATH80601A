@@ -550,6 +550,7 @@ We can then create a probability-probability plot with these values by comparing
 #| warning: false
 #| message: false
 #| fig-cap: "Probability-probability plots based on leave-one-out cross validation for model for the Poisson hierarchical model with the individual random effects (left) and without (right)."
+bayesplot::color_scheme_set("gray")
 loo_test1 <- loo::loo(loglik_pt1, save_psis = TRUE)
 g1 <- bayesplot::ppc_loo_pit_qq(
   y = smartwatch$nviolation,
