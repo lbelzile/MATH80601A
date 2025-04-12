@@ -17,7 +17,7 @@
 
 This chapter is organized as follows: we first review notions of model misspecification and the Kullback--Leibler divergence. We then consider approximation schemes and some examples involving mixtures and model selection where analytical derivations are possible: these show how variational inference differs from Laplace approximation and she light on some practical aspects. Good references include Chapter 10 of @Bishop:2006; most modern application use automatic differentiation variational inference (ADVI, @Kucukelbir:2017) or stochastic optimization via black-box variational inference. 
 
-## Model misspecification
+## Kullback--Leibler divergence and evidence lower bound
 
 Consider $g(\boldsymbol{\theta};\boldsymbol{\psi})$ with $\boldsymbol{\psi} \in \mathbb{R}^J$ an approximating density function whose integral is one over $\boldsymbol{\Theta} \subseteq \mathbb{R}^p$ and whose support includes that of $p(\boldsymbol{y}, \boldsymbol{\theta})$ over $\boldsymbol{\Theta}.$ Suppose data were generated from a model with true density $f_t$ and we consider instead the family of distributions $g(\cdot; \boldsymbol{\psi}),$ the latter may or not contain $f_t$ as special case. Intuitively, if we were to estimate the model by maximum likelihood, we expect that the model returned will be the one closest to $f_t$ among those considered in some sense.
 
@@ -35,7 +35,7 @@ where the subscript of the expectation indicates which distribution we integrate
 
 :::
 
-The Kullback--Leibler divergence notion is central to study of model misspecification: if we fit $g(\cdot)$ when data arise from $f_t,$ the maximum likelihood estimator of the parameters $\widehat{\boldsymbol{\psi}}$ will be the value of the parameter that minimizes the  Kullback--Leibler divergence $\mathsf{KL}(f_t \parallel g);$ this value will be positive unless the model is correctly specified and $g(\cdot; \widehat{\boldsymbol{\psi}}) = f_t(\cdot).$ See @Davison:2003, pp. 122--125 for a discussion.
+The Kullback--Leibler divergence is central to study of model misspecification: if we fit $g(\cdot)$ when data arise from $f_t,$ the maximum likelihood estimator of the parameters $\widehat{\boldsymbol{\psi}}$ will be the value of the parameter that minimizes the  Kullback--Leibler divergence $\mathsf{KL}(f_t \parallel g);$ this value will be positive unless the model is correctly specified and $g(\cdot; \widehat{\boldsymbol{\psi}}) = f_t(\cdot).$ See @Davison:2003, pp. 122--125 for a discussion.
 
 In the Bayesian setting, interest lies in approximating $f_t \equiv p(\boldsymbol{\theta} \mid \boldsymbol{y}).$ The problem of course is that we cannot compute expectations with respect to the posterior since these requires knowledge of the marginal likelihood, which acts as a normalizing constant, in most settings of interest. What we can do instead is to consider the model that minimizes the reverse Kullback--Leibler divergence
 \begin{align*}
@@ -47,7 +47,11 @@ We will show soon that this is a sensible objective function.
 
 ## Lack of symmetry of Kullback--Leibler divergence
 
-Consider an approximation of a bivariate Gaussian vector with correlated components $\boldsymbol{X} \sim \mathsf{Gauss}_2(\boldsymbol{\mu}, \boldsymbol{\Sigma})$. If we approximate each margin independently with a univariate Gaussian, the  Kullback--Leibler divergence will have the same marginal mean $\boldsymbol{\mu}$ and variance $\mathrm{diag}(\boldsymbol{\Sigma})$, whereas the reverse Kullback--Leibler will have the same mean, but a variance equal to the conditional variance of one component given the other, e.g., $\Sigma_{11} - \Sigma_{12} \Sigma_{22}^{-1}\Sigma_{21}$ for component $X_{1}.$ @fig-klvsrev shows the two approximations: the reverse Kullback--Leibler is much too narrow and only gives mass where both variables have positive density.
+Consider an approximation of a bivariate Gaussian vector with correlated components $\boldsymbol{X} \sim \mathsf{Gauss}_2(\boldsymbol{\mu}, \boldsymbol{\Sigma})$. If we approximate each margin independently with a univariate Gaussian, then the density which minimizes $
+$$\mathsf{KL}\{ \phi_2(\boldsymbol{\mu}, \boldsymbol{\Sigma}) \parallel \phi(\mu_{1g}, \sigma^2_{1g})\phi(\mu_{2g}, \sigma^2_{2g})\},$$
+the forward Kullback--Leibler divergence will have the same marginal mean $\widehat{\mu}_{ig}=\mu_i$ and variance $\sigma^2_{ig} = \Sigma_{ii}$, whereas the best approximation that minimizes the reverse Kullback--Leibler
+$$\mathsf{KL}\{ \phi(\mu_{1g}, \sigma^2_{1g})\phi(\mu_{2g}, \sigma^2_{2g}) \parallel  \phi_2(\boldsymbol{\mu}, \boldsymbol{\Sigma})\},$$
+will have the same mean, but a variance equal to the conditional variance of one component given the other, e.g., $\widehat{\sigma}_{1g} = \Sigma_{11} - \Sigma_{12} \Sigma_{22}^{-1}\Sigma_{21}.$ @fig-klvsrev shows the two approximations: the reverse Kullback--Leibler approximation is much too narrow and only gives mass where both variables have positive density, whereas the approximation that minimizes Kullback--Leibler divergence puts mass everywhere the target is supported.
 
 ```{r}
 #| eval: true
@@ -104,6 +108,8 @@ g1 + g2
 ```
 
 :::
+
+Before proceeding with variational inference objective function, we recall basic definitions on convexity, which underly Jensen's inequality.
 
 :::{#def-convex-function}
 
@@ -215,14 +221,6 @@ The ELBO is a lower bound for the marginal likelihood because the Kullback--Leib
 \end{align*}
 If we could estimate the marginal likelihood of a (typically simpler) competing alternative and the lower bound on the evidence in favour of the more complex model was very much larger, then we could use this but generally there is no theoretical guarantee for model comparison if we compare two lower evidence lower bounds. The purpose of variational inference is that approximations to expectations, credible intervals, etc. are obtained from $g(\cdot; \boldsymbol{\psi})$ instead of $p(\cdot).$
 
-:::{#rem-approximation-latent}
-
-## Approximation of latent variables
-
-While we have focused on exposition with only parameters $\boldsymbol{\theta},$ this can be generalized by including latent variables $\boldsymbol{U}$ as in @sec-gibbs-da in addition to the model parameters $\boldsymbol{\theta}$ as part of the variational modelling. 
-
-:::
-
 :::{#exm-varional-vs-laplace}
 
 ## Variational inference vs Laplace approximation
@@ -249,7 +247,7 @@ where $Z \sim \mathsf{Gauss}(0,1).$ We can approximate the last term by Monte Ca
 
 
 
-## Optimization of the evidence lower bound
+## Coordinate-ascent variational inference
 
 Variational inference in itself does not determine the choice of approximating density $g(\cdot; \boldsymbol{\psi});$ the quality of the approximation depends strongly on the latter.
 The user has ample choice to decide whether to use the fully correlated, factorized, or the mean-field approximation, along with the parametric family for each block. Note that the latter must be support dependent, as the Kullback--Leibler divergence will be infinite if the support of $g$ does not include that of $p(\boldsymbol{\theta} \mid \boldsymbol{y})$ (although we work with the reverse Kullback--Leibler).
@@ -257,7 +255,9 @@ The user has ample choice to decide whether to use the fully correlated, factori
 
 There are two main approaches: the first is to start off with the model with a factorization of the density, and deduce the form of the most suitable parametric family for the approximation that will minimize the ELBO. This requires bespoke derivation of the form of the density and the conditionals for each model, and does not lead itself easily to generalizations. The second approach alternative is to rely on a generic family for the approximation, and an omnibus procedure for the optimization using a reformulation via stochastic optimization that approximates the integrals appearing in the ELBO formula. 
 
-### Factorization
+:::{#prp-factorization}
+
+## Factorization
 
 Factorizations of $g(;\boldsymbol{\psi})$ into blocks with parameters $\boldsymbol{\psi}_1, \ldots, \boldsymbol{\psi}_M,$ where
 \begin{align*}
@@ -276,25 +276,28 @@ where the last line is a negative Kullback--Leibler divergence between $g_i$ and
 \begin{align*}
  \mathsf{E}_{-i}\left\{\log p(\boldsymbol{y}, \boldsymbol{\theta})\right\} = \int \log p(\boldsymbol{y}, \boldsymbol{\theta}) \prod_{\substack{i \neq j \\j=1}}^M g_j(\boldsymbol{\theta}_j)\mathrm{d} \boldsymbol{\theta}_{-i}
 \end{align*}
-and the subscript $-i$ indicates that we consider all but the $i$th component of the $J$ vector. Since the KL divergence is strictly non-negative and minimized if we take the same density, this reveals that the form of approximating density $g_i$ that maximizes the ELBO is of the form
+and the subscript $-i$ indicates that we consider all but the $i$th component of the $J$ vector.
+
+In some cases, maximization of the ELBO is implicit. Indeed, since the Kullback--Leibler divergence is strictly non-negative and minimized if we take the same density, this reveals that the form of approximating density $g_i$ that maximizes the ELBO occurs when both sides are equal, so is of the form
 \begin{align*}
  g^{\star}_i(\boldsymbol{\theta}_i) \propto \exp \left[ \mathsf{E}_{-i}\left\{\log p(\boldsymbol{y}, \boldsymbol{\theta})\right\}\right].
 \end{align*}
 This expression is specified up to proportionality, but we can often look at the kernel of $g^{\star}_i$  and deduce from it the normalizing constant, which is defined as the integral of the above. The posterior approximation will have a closed form expression if we consider cases of conditionally conjugate distributions in the exponential family: we can see that the optimal  $g^{\star}_j$ relates to the conditional since $p(\boldsymbol{\theta}, \boldsymbol{y}) \stackrel{\boldsymbol{\theta}_i}{\propto} p(\boldsymbol{\theta}_i \mid \boldsymbol{\theta}_{-i}, \boldsymbol{y}).$ The connection to Gibbs sampling, which instead draws parameters from the conditional, reveals that problems that can be tackled by the latter method will be amenable to factorizations with approximating densities from known families.
 
+:::
 
 If we consider maximization of the ELBO for $g_i,$ we can see from the law of iterated expectation that the latter is proportional to
 \begin{align*}
  \mathsf{ELBO}(g_i) \propto \mathsf{E}_i \left[ \mathsf{E}_{-i} \{\log p(\boldsymbol{\theta}, \boldsymbol{y}) \}\right] - \mathsf{E}_i\{\log g_i(\boldsymbol{\theta}_i)\}
 \end{align*}
-Due to the nature of this conditional expectation, we can devise an algorithm to maximize the ELBO of the factorized approximation. Each parameter update depends on the other components, but the $\mathsf{ELBO}(g_i)$ is concave. We can maximize $g^{\star}_i$ in turn for each $i=1, \ldots, M$ treating the other parameters as fixed, and iterate this scheme. The resulting approximation, termed coordinate ascent variational inference (CAVI), is guaranteed to monotonically increase the evidence lower bound until convergence to a local maximum; see Sections 3.1.5 and 3.2.4--3.2.5 of @Boyd.Vandenberghe:2004.  The scheme is a valid coordinate ascent algorithm. At each cycle, we compute the ELBO and stop the algorithm when the change is lower then some present numerical tolerance.  Since the approximation may have multiple local optima, we can perform random initializations and keep the one with highest performance.
+Due to the nature of this conditional expectation, we can devise an algorithm to maximize the ELBO of the factorized approximation. Each parameter update depends on the other components, but the $\mathsf{ELBO}(g_i)$ is concave. We can maximize $g^{\star}_i$ in turn for each $i=1, \ldots, M$ treating the other parameters as fixed, and iterate this scheme. The resulting approximation, termed coordinate ascent variational inference (CAVI), is guaranteed to monotonically increase the evidence lower bound until convergence to a local maximum; see Sections 3.1.5 and 3.2.4--3.2.5 of @Boyd.Vandenberghe:2004.  The scheme is a valid coordinate ascent algorithm. At each cycle, we compute the ELBO and stop the algorithm when the change is lower then some present numerical tolerance.  Since the approximation may have multiple local optima, we can perform random initialization and keep the run with the highest ELBO value.
 
 
-:::{exm-gaussian-variational-approx}
+:::{#exm-gaussian-variational-approx}
 
 ## Variational approximation to Gaussian conjugate model
 
-We consider Example 10.1.3 from @Bishop:2006 for a variational approximation of a Gaussian distribution with conjugate prior parametrized in terms of precision, with
+We consider Example 10.1.3 from @Bishop:2006 for a variational approximation of a Gaussian distribution with conjugate priors parametrized in terms of precision, with
 \begin{align*}
 Y_i &\sim \mathsf{Gauss}(\mu, \tau^{-1}), \qquad i =1, \ldots, n;\\
 \mu &\sim \mathsf{Gauss}\{\mu_0, (\tau\tau_0)^{-1}\} \\
@@ -302,51 +305,41 @@ Y_i &\sim \mathsf{Gauss}(\mu, \tau^{-1}), \qquad i =1, \ldots, n;\\
 \end{align*}
 This is an example where the marginal posteriors are available in closed-form, 
 \begin{align*}
-\tau \mid \boldsymbol{y} &\sim \mathsf{gamma}\left\{ a_0 + (n-1)/2, b_0 + \frac{\sum_{i=1}^n y_i^2 + (n-\tau_0)^{-1}(n\overline{y}+\tau_0)^2}{2}\right\}
-\\ \mu \mid \boldsymbol{y}
+\tau \mid \boldsymbol{y} &\sim \mathsf{gamma}\left\{ a_0 + \frac{n-1}{2}, b_0 + \frac{\sum_{i=1}^n y_i^2 + (n+\tau_0)^{-1}(n\overline{y}+\tau_0)^2}{2}\right\} 
+\\ \mu \mid \boldsymbol{y} &\sim \mathsf{Student}\left\{ \frac{n\overline{y}+\tau_0\mu_0}{n+\tau_0}, \frac{2b_0 +(n-1)s^2 + \tau_0n(\overline{y}-\mu_0)^2/(\tau_0+n)}{(n+2a_0)(\tau_0+n)}, 2a_0+n\right\}
 \end{align*}
 so we can compare our approximation with the truth. We assume a factorization of the variational approximation $g_\mu(\mu)g_\tau(\tau);$ the factor for $g_\mu$ is proportional to
 \begin{align*}
- \log g^{\star}_\mu(\mu) \propto -\frac{\mathsf{E}_{\tau}(\tau)}{2} \left\{ \sum_{i=1}^n (y_i-\mu)^2-\tau_0}{2}(\mu-\mu_0)^2\right\},
+ \log g^{\star}_{\mu}(\mu) \propto -\frac{\mathsf{E}_{\tau}(\tau)}{2} \left\{ \sum_{i=1}^n (y_i-\mu)^2-\frac{\tau_0}{2}(\mu-\mu_0)^2\right\},
 \end{align*}
 which is quadratic in $\mu$ and thus must be Gaussian with precision $\tau_n = \mathsf{E}_{\tau}(\tau)(n + \tau_0)$ and mean $(n + \tau_0)^{-1}\{\tau_0\mu_0 + n\overline{y}\}$ using @prp-quadratic-forms, where $n\overline{y} = \sum_{i=1}^n y_i.$ We could also note that this corresponds (up to expectation) to $p(\mu \mid \tau, \boldsymbol{y}).$ As the sample size increase, the approximation converges to a Dirac delta (point mass at the sample mean. The optimal precision factor satisfies
 \begin{align*}
- \ln g^{\star}_{\tau}(\tau) \propto (n/2 + a_0-1) \log \tau - \tau \left[b_0  + \frac{1}{2} \mathsf{E}_{\mu}\left\{\sum_{i=1}^n (y_i-\mu)^2\right\} + \frac{\tau_0(\mu-\mu_0)^2}{2}\right].
+ \ln g^{\star}_{\tau}(\tau) &\propto \log \tau\left(\frac{n+1}{2} + a_0-1\right)   \\&\quad- \tau \left[b_0  + \frac{1}{2} \mathsf{E}_{\mu}\left\{\sum_{i=1}^n (y_i-\mu)^2\right\} + \frac{\tau_0\mathsf{E}{\mu}\left\{(\mu-\mu_0)^2\right\}}{2}\right].
 \end{align*}
-This is the form as  $p(\tau \mid \mu, \boldsymbol{y}),$ namely a gamma with shape $a_n =n/2 + a_0$ and rate $b_n$ given by the term in the square brackets. It is helpful to rewrite the expected value as
+This is the form as  $p(\tau \mid \mu, \boldsymbol{y}),$ namely a gamma with shape $a_n =(n+1)/2 + a_0$ and rate $b_n$ given by the term in the square brackets. It is helpful to rewrite the expected value as
 \begin{align*}
  \mathsf{E}_{\mu}\left\{\sum_{i=1}^n (y_i-\mu)^2\right\} = \sum_{i=1}^n \{y_i - \mathsf{E}_{\mu}(\mu)\}^2 + n \mathsf{Var}_{\mu}(\mu),
 \end{align*}
 so that it depends on the parameters of the distribution of $\mu$ directly. We can then apply the coordinate ascent algorithm. Derivation of the ELBO, even in this toy setting, is tedious.
-<!--
 \begin{align*}
-\mathsf{ELBO}(g) & = a_0\log(b_0)-\log \Gamma(a_0) +(a_0-1)\mathsf{E}_{\tau}(\log \tau)- b_0\mathsf{E}_{\tau](\tau)\\
-& \quad - \frac{n+1}{2} \log(2\pi) + \frac{\log(\tau_0) + (n+1)\mathsf{E}_{\tau}(\log \tau)}{2} - \frac{\mathsf{E}_{\tau}(\tau)\tau_0}{2} \left\{\mu_0 - \mathsf{E}_{\mu}(\mu)\}^2 + \mathsf{Va}_{\mu}(\mu)
+\mathsf{ELBO}(g) & = a_0\log(b_0)-\log \Gamma(a_0) +(a_0-1)\mathsf{E}_{\tau}(\log \tau)- b_0\mathsf{E}_{\tau}(\tau)\\
+& \quad - \frac{n+1}{2} \log(2\pi) + \frac{\log(\tau_0) + (n+1)\mathsf{E}_{\tau}(\log \tau)}{2} \\&\quad - \frac{\mathsf{E}_{\tau}(\tau)\tau_0}{2} \left[\{\mu_0 - \mathsf{E}_{\mu}(\mu)\}^2 + \mathsf{Va}_{\mu}(\mu)\right]
 \\&\quad - \frac{\mathsf{E}_{\tau}(\tau)}{2} \left[ \sum_{i=1}^n \left\{y_i - \mathsf{E}_{\mu}(\mu)\right\}^2 + n \mathsf{Va}_{\mu}(\mu)\right]
 \\ &\quad - a_n \log (b_n) + \log \Gamma(a_n) - (a_n-1) \mathsf{E}_{\tau}(\log \tau) + b_n \mathsf{E}_{\tau}(\tau) 
-\\& \quad + \frac{1 + \log(2\pi) + \log(n+\tau_0)}{2} + \frac{\mathsf{E}_{\tau}(\log \tau)}{2}
-\end{align*}
--->
-The expected value of $\mathsf{E}_{\tau}(\tau) = a_n/b_n$ and the mean and variance of the Gaussian are given by it's parameters. The terms involving $\mathsf{E}_{\tau}(\log \tau)$ cancel out; the first line involves only normalizing constants for the hyperparameters, and $a_n$ is constant.
-We can keep track only of 
-\begin{align*}
-- \frac{\tau_0}{2} \mathsf{E}_{\mu}\{(\mu - \mu_0)^2\} - \frac{\log\tau_n}{2}-a_n\log b_n
-\end{align*}
-for convergence, although other normalizing constants would be necessary if we wanted to approximate the marginal likelihood.
+\\& \quad + \frac{1 + \log(2\pi\mathsf{Va}_{\mu}(\mu))}{2}
+\\&= a_0\log(b_0)-\log \Gamma(a_0) -a_n\log b_n + \log \Gamma(a_n) 
+\\& \quad - \frac{n}{2}\log(2\pi)+ \frac{1 + \log (\tau_0/\tau_n)}{2} \end{align*}
+The expected value of $\mathsf{E}_{\tau}(\tau) = a_n/b_n$ and the mean and variance of the Gaussian are given by it's parameters. The terms involving $\mathsf{E}_{\tau}(\log \tau) = \psi(a_n)-\log b_n$ cancel out.
+
+@fig-approx-cavi-gauss shows the contour plots of the true posterior (since the prior is conjugate) and the coordinate-ascent variational mean-field approximation. We can see that both are centered around the same values, but the independence assumption does not reflect the dependence and the CAVI approximation is slightly less dispersed.
 
 ```{r}
-#| eval: false
+#| eval: true
 #| echo: false
-y <- rnorm(n = 20, 150, 20)
- logpost <- function(pars){
-    mu <- pars[1]; tau <- pars[2]
-    sum(dnorm(y, mean = mu, sd = 1/sqrt(tau), log = TRUE)) +
-      dnorm(mu, sd = 100/sqrt(tau), log = TRUE) + 
-      dgamma(tau, 0.01, 0.01, log = TRUE)
-  }
-CAVI_gauss <- function(init = c(mean(y), 1/var(y)),
-                       y,
-                       tol = 1e-4){
+CAVI_gauss <- function(
+    y,
+    init = c(mean(y), length(y)/var(y), 1/var(y)),
+    tol = 1e-4){
   a0 <- 0.01; b0 <- 0.01
   mu0 <- 0; tau0 <- 1e-4
   n <- length(y); sum_y <- sum(y)
@@ -356,27 +349,335 @@ CAVI_gauss <- function(init = c(mean(y), 1/var(y)),
   B <- 20
   an <- (a0+n/2-1)
   elbo <- numeric(B)
+  lcst <- a0*log(b0) - lgamma(a0) + 0.5*(1 + log(tau0) - n*log(2*pi))
   for(i in 1:B){
     var_mu <- 1/(E_tau* (tau0 + n))
     E_mu <- (tau0*mu0 + sum_y)/(tau0 + n)
     bn <- b0 + 0.5 * (sum((y-E_mu)^2) + n * var_mu) + 0.5 * tau0 * ((E_mu-mu0)^2 + var_mu)
     E_tau <- an / bn
-    elbo[i] <- -an * log(bn) + 0.5 * log(var_mu) - 0.5 * tau0 * ((mu0 - E_mu)^2 + var_mu)
+    elbo[i] <- lcst - an*log(bn) + lgamma(an) + 0.5*log(var_mu)
   }
- list(elbo = elbo, mean_mu = E_mu, var_mu = var_mu, shape_tau = an, rate = bn)
+ list(
+  elbo = elbo, 
+  mu_mean = E_mu, 
+  mu_var = var_mu,
+  tau_shape = an, 
+  tau_rate = bn)
 }
+
 ```
 
 ```{r}
+#| eval: true
+#| echo: false
+#| label: fig-approx-cavi-gauss
+#| fig-cap: "Bivariate density posterior for the conjugate Gaussian-gamma model (left) and CAVI approximation (right)."
+set.seed(1234)
+y <- rnorm(n = 20, mean = 150, sd = sqrt(20))
+n <- length(y)
+a0 <- 0.01; 
+b0 <- 0.01
+mu0 <- 0; 
+tau0 <- 1e-4
 
+CAVI_approx <- CAVI_gauss(y = y)
+gt <- function(x,y, pars){
+  dnorm(x, mean = pars$mu_mean, sd = sqrt(pars$mu_var)) * 
+    dgamma(y, rate = pars$tau_rate, shape = pars$tau_shape)
+}
+pars_f <- list(
+  mu_mean = (sum(y) + tau0*mu0)/(n+tau0),
+  mu_var = 1/(n+tau0),
+  tau_rate = b0 + 0.5*(sum(y^2)+tau0*mu0^2 - (sum(y) + tau0*mu0)^2/(n+tau0)),
+  tau_shape = 0.5*(n-1) + a0)
+ft <- function(x,y, pars){
+  dnorm(x, mean = pars$mu_mean, sd = sqrt(pars$mu_var)/sqrt(y)) * 
+    dgamma(y, rate = pars$tau_rate, shape = pars$tau_shape)
+}
 
+nsim <- 1e4L
+tau_s <- rgamma(n = nsim, rate = pars_f$tau_rate, shape = pars_f$tau_shape)
+mu_s <- rnorm(n = nsim,
+              mean = pars_f$mu_mean, sd = sqrt(pars_f$mu_var)/sqrt(tau_s)) 
+
+library(ggdensity)
+g1 <- ggplot() +
+  # ggdensity::geom_hdr(
+  #   data = data.frame(tau = 1/tau_s, mu = mu_s),
+  #   probs = c(0.1, 0.25,0.5,0.75, 0.9),
+  #   mapping = aes(x = mu, y = tau)) +
+  geom_hdr_fun(fun = ft,
+               probs = c(0.1, 0.25,0.5,0.75, 0.9),
+               xlim = range(mu_s),
+               ylim = range(tau_s),
+               n = 1001L,
+               args = list(pars = pars_f)) +
+  labs(x = expression(mu), 
+       y = expression(tau)) +
+theme_classic()
+g2 <- ggplot() +
+  # ggdensity::geom_hdr(
+  #   data = data.frame(tau = 1/tau_s, mu = mu_s),
+  #   probs = c(0.1, 0.25,0.5,0.75, 0.9),
+  #   mapping = aes(x = mu, y = tau)) +
+  geom_hdr_fun(fun = gt,
+               probs = c(0.1, 0.25,0.5,0.75, 0.9),
+               xlim = range(mu_s),
+               ylim = range(tau_s),
+               n = 1001L,
+               args = list(pars = CAVI_approx)) +
+  labs(x = expression(mu), 
+       y = expression(tau)) +
+theme_classic()
+g1 + g2  +
+  plot_layout(guides = 'collect') &
+  theme(legend.position = "bottom")
+```
+
+```{r}
+#| eval: true
+#| echo: false
+#| label: fig-gauss-cavi-margdens
+#| fig-cap: "Marginal posterior density of the mean and precision of the Gaussian (full line), with CAVI approximation (dashed)."
+# Marginal densities
+mu_loc <- (tau0*mu0 + sum(y))/(tau0+n)
+mu_scale <- sqrt((2*b0 + (n-1)*var(y) +tau0*n*(mean(y)-mu0)^2/(tau0+n))/((tau0+n)*(n+2*a0)))
+mu_df <- 2*a0 +n
+
+g3 <- ggplot() +
+  stat_function(
+    fun = function(x){
+      dt((x - mu_loc)/mu_scale, 
+         df = mu_df)},
+    xlim = range(mu_s)) +
+  stat_function(
+    fun = dnorm, 
+    args = list(
+      mean = CAVI_approx$mu_mean, 
+      sd = sqrt(CAVI_approx$mu_var)),
+    xlim = range(mu_s),
+    linetype = "dashed")  +
+  labs(x = expression(mu), 
+       y = "density") +
+  theme_classic()
+g4 <- ggplot() +
+  stat_function(
+    fun = dgamma,
+    args = list(rate = pars_f$tau_rate,
+                shape = pars_f$tau_shape),
+    xlim = range(tau_s)) +
+  stat_function(
+    fun = dgamma, 
+    args = list(
+      rate = CAVI_approx$tau_rate, 
+      shape = CAVI_approx$tau_shape),
+    xlim = range(tau_s),
+    linetype = "dashed")  +
+  labs(x = expression(tau), 
+       y = "density") +
+  theme_classic()
+g3 + g4
 ```
 
 
 
 :::
 
-### General derivation
+
+:::{#rem-approximation-latent}
+
+## Approximation of latent variables
+
+While we have focused on exposition with only parameters $\boldsymbol{\theta},$ this can be generalized by including latent variables $\boldsymbol{U}$ as in @sec-gibbs-da in addition to the model parameters $\boldsymbol{\theta}$ as part of the variational modelling. 
+
+:::
+
+:::{#exm-probit-reg-cavi}
+
+## CAVI for probit regression
+
+A probit regression is a generalized linear model with probability of success $\Phi(\mathbf{x}_i\boldsymbol{\beta}),$ where $\Phi(\cdot)$ is the cumulative distribution function of a standard Gaussian variable. If we assign a Gaussian prior on the $\boldsymbol{\beta}$, we can write the model as
+\begin{align*}
+p(\boldsymbol{y} \mid \boldsymbol{\beta}) = \Phi(\mathbf{X}\boldsymbol{\beta})^{\boldsymbol{y}}\Phi(-\mathbf{X}\boldsymbol{\beta})^{\boldsymbol{1}_n -\boldsymbol{y}}
+\end{align*}
+since $1-\Phi(x) = \Phi(-x).$ Consider the data augmentation of @exm-probit-regression, with auxiliary variables $Z_i \mid \boldsymbol{\beta}\sim \mathsf{Gauss}(\mathbf{x}_i\boldsymbol{\beta}, 1).$ 
+
+With $\boldsymbol{\beta} \sim \mathsf{Gauss}_p(\boldsymbol{\mu}_0, \mathbf{Q}_0^{-1}),$ the model admits conditionals
+\begin{align*}
+\boldsymbol{\beta} \mid \boldsymbol{Z} &\sim \mathsf{Gauss}_p\left\{(\mathbf{X}^\top\mathbf{X} + \mathbf{Q_0})^{-1}(\mathbf{X}\boldsymbol{Z} + \mathbf{Q}_0\boldsymbol{\mu}_0),  (\mathbf{X}^\top\mathbf{X} + \mathbf{Q_0})^{-1} \right\}
+\\
+Z_i \mid y_i, \boldsymbol{\beta} &\sim \mathsf{trunc. Gauss}(\mathbf{x}_i\boldsymbol{\beta}, 1, l_i, u_i) 
+\end{align*}
+where $[l_i, u_i]$ is $(-\infty,0)$ if $y_i=0$ and $(0, \infty)$ if $y_i=1.$
+If we consider a factorization of the form $g_{\boldsymbol{Z}}(\boldsymbol{z})g_{\boldsymbol{\beta}}(\boldsymbol{\beta}),$ then we exploit the conditionals in the same way as for Gibbs sampling, but substituting unknown parameter functionals by their expectations. Furthermore, the optimal form of the density further factorizes as $g_{\boldsymbol{Z}}(\boldsymbol{z}) = \prod_{i=1}^n g_{Z_i}(z_i).$
+
+
+
+The model depends on the mean parameter of $\boldsymbol{Z}$, say $\mu_{\boldsymbol{Z}}$, and that of $\boldsymbol{\beta},$ say $\mu_{\boldsymbol{\beta}}.$ To see this, consider the terms in the posterior proportional to $Z_i$, where 
+\begin{align*}
+p(z_i \mid \boldsymbol{\beta}, y_i) \propto -\frac{z_i^2 - 2z_i \mathbf{x}_i\boldsymbol{\beta}}{2} \times \mathrm{I}(z_i >0)^{y_i}\mathrm{I}(z_i <0)^{1-y_i}
+\end{align*}
+which is linear in $\boldsymbol{\beta}$. The expectation of a univariate truncated Gaussian $Z \sim \mathsf{trunc. Gauss}(\mu,\sigma^2, l, u)$ is 
+\begin{align*}
+\mathsf{E}(Z) = \mu - \sigma\frac{\phi\{(u-\mu/\sigma)\} - \phi\{(l-\mu/\sigma)\}}{\Phi\{(u-\mu/\sigma)\} - \Phi\{(l-\mu/\sigma)\}}.
+\end{align*}
+If we replace $\mu=\mathbf{x}_i\mu_{\boldsymbol{\beta}}$ in this expression, we get the update
+\begin{align*}
+\mu_{Z_i}(z_i) = \begin{cases}
+\mathbf{x}_i\mu_{\boldsymbol{\beta}} - \frac{ \phi(\mathbf{x}_i\mu_{\boldsymbol{\beta}})}{1-\Phi(\mathbf{x}_i\mu_{\boldsymbol{\beta}})} & y_i = 0;\\
+\mathbf{x}_i\mu_{\boldsymbol{\beta}} + \frac{ \phi(\mathbf{x}_i\mu_{\boldsymbol{\beta}})}{\Phi(\mathbf{x}_i\mu_{\boldsymbol{\beta}})} & y_i = 1,
+\end{cases}
+\end{align*}
+since $\phi(x)=\phi(-x).$
+
+The optimal form for $\boldsymbol{\beta}$ is Gaussian and the only unknown parameter is $\boldsymbol{\mu}_{\boldsymbol{\beta}};$ the log density only involves a linear form for $\boldsymbol{Z}$, so follows from the same principle. We get regrouping the vector of means for the latent variables
+\begin{align*}
+\boldsymbol{\mu}_{\boldsymbol{\beta}} = (\mathbf{X}^\top\mathbf{X} + \mathbf{Q_0})^{-1}(\mathbf{X}\boldsymbol{\mu}_{\boldsymbol{Z}} + \mathbf{Q}_0\boldsymbol{\mu}_0)
+\end{align*}
+
+Starting with an initial vector for either parameters, the CAVI algorithm alternatives between updates of $\boldsymbol{\mu}_{\boldsymbol{\beta}}$ and $\boldsymbol{\mu}_{\boldsymbol{Z}}$ until the value of the evidence lower bound stabilizes.
+
+<!--
+The ELBO is
+\begin{align*}
+\mathsf{ELBO} = -\frac{1}{2}(\boldsymbol{z} - \mathbf{X}\boldsymbol{\beta})^\top(\boldsymbol{z} - \mathbf{X}\boldsymbol{\beta})\right\} \times \prod_{i=1}^n \mathrm{I}(z_i > 0)^{y_i}\mathrm{I}(z_i \le 0)^{1-y_i}
+\end{align*}
+where use the fact $\mathsf{E}_{Z_i}\{\mathrm{I}(z_i \le 0)\}=$that the entropy of a $p$-dimensional multivariate Gaussian random vector with precision $\mathbf{Q}$ is $p/2\{1+\log(2\pi)\} - \log |\mathbf{Q}|/2.$
+-->
+
+```{r}
+#| eval: true
+#| echo: true
+# Data augmentation: "z" is latent Gaussian, 
+# truncated to be negative for failures 
+# and positive for successes
+cavi_probit <- function(
+  y, # response vector (0/1)
+  X, # model matrix
+  prior_beta_prec = diag(rep(0.01, ncol(X))),
+  prior_beta_mean = rep(0, ncol(X)),
+  maxiter = 1000L,
+  tol = 1e-4
+) {
+  # Precompute fixed quantity
+  sc <- solve(crossprod(X) + prior_beta_prec)
+  pmu_prior <- prior_beta_prec %*% prior_beta_mean
+  n <- length(y) # number of observations
+  stopifnot(nrow(X) == n)
+  mu_z <- rep(0, n)
+  y <- as.logical(y)
+  ELBO <- numeric(maxiter)
+  lcst <- -0.5 *
+    log(det(solve(prior_beta_prec) %*% crossprod(X) + diag(ncol(X))))
+  for (b in seq_len(maxiter)) {
+    mu_b <- c(sc %*% (t(X) %*% mu_z + pmu_prior))
+    lp <- c(X %*% mu_b)
+    mu_z <- lp + dnorm(lp) / (pnorm(lp) - ifelse(y, 0, 1))
+    ELBO[b] <- sum(pnorm(lp, lower.tail = y, log.p = TRUE)) -
+      lcst - 0.5 *
+        c(t(mu_b - prior_beta_mean) %*%
+            prior_beta_prec %*%
+            (mu_b - prior_beta_mean)) 
+    if (b > 2 && (ELBO[b] - ELBO[b - 1]) < tol) {
+      break
+    }
+  }
+  list(mu_z = mu_z, mu_beta = mu_b, elbo = ELBO[1:b])
+}
+```
+
+We consider for illustration purposes data from Experiment 2 of @Duke.Amir:2023 on the effect of sequential decisions and purchasing formats. We fit a model with age of the participant and the binary variable `format`, which indicate the experimental condition. The model is fitted with a sum-to-zero constraint for the dummy variable.
+
+With vague priors, the coefficients for the mean $\boldsymbol{\mu}_{\boldsymbol{\beta}}=(\beta_0, \beta_1, \beta_2)^\top$ matches the frequentist point estimates of the probit regression to four significant digits. Convergence is very fast, as shown by the ELBO plot in the left panel of @fig-elbo-CAVI-probit. The posterior density approximation implied by variational inference, shown on the right panel of @fig-elbo-CAVI-probit, is once again underdispersed relative to the true marginal posterior.
+
+```{r}
+#| eval: true
+#| echo: false
+#| label: fig-elbo-CAVI-probit
+#| fig-cap: "Probit regression with CAVI for the Duke and Amir (2023) data. Left: ELBO as a function of the number of iterations until convergence. Right: marginal density approximation for a regression coefficient with kernel density estimation of the true density (full line) versus variational approximation (dashed)."
+# Example with data from Experiment 2 of Duke and Amir (2023)
+# on the effect of sequential decisions and purchasing formats
+data(DA23_E2, package = "hecedsm")
+X <- model.matrix(
+  ~ scale(age) + format,
+  data = DA23_E2,
+  contrasts.arg = list(format = "contr.sum")
+)
+y <- DA23_E2$purchased
+# Fit the probit model via coordinate-ascent variational inference
+cavi_probit_DA <- cavi_probit(y = y, X = X)
+# Compare posterior mean with frequentist estimates
+coefs <- cbind(cavi_probit_DA$mu_beta, coef(glm(y ~ X - 1, family = binomial("probit"))))
+library(rust)
+prior_beta_prec = diag(rep(0.01, ncol(X)))
+prior_beta_mean = rep(0, ncol(X))
+loglik <- function(par, y, X) {
+  par <- c(par)
+  sum(
+    y *
+      pnorm(
+        q = c(X %*% c(par)),
+        log.p = TRUE
+      ) +
+      (1 - y) *
+        pnorm(
+          q = c(X %*% c(par)),
+          log.p = TRUE,
+          lower.tail = FALSE
+        )
+  ) +
+    -0.5 *
+      c(
+        t(prior_beta_mean - par) %*% prior_beta_prec %*% (prior_beta_mean - par)
+      )
+}
+pars <- glm(formula = y ~ X - 1, family = binomial("probit"))$coef
+# optim(fn = loglik, par = pars, X = X, y = y, control = list(fnscale = -1))
+samp <- rust::ru(
+  logf = loglik,
+  d = 3,
+  n = 1e5,
+  init = pars,
+  X = X,
+  y = y,
+  trans = "BC"
+)
+
+marg_sd <- sqrt(diag(solve(crossprod(X) + prior_beta_prec)))
+
+
+g1 <- ggplot(data = data.frame(x = samp$sim_vals[, 3])) +
+  geom_density(mapping = aes(x = x)) +
+  stat_function(
+    fun = dnorm,
+    n = 1001,
+    args = list(mean = cavi_probit_DA$mu_beta[3], sd = marg_sd[3]),
+    linetype = "dashed"
+  ) +
+  scale_y_continuous(limits = c(0, NA), expand = expansion()) +
+  labs(x = expression(beta[2]), y = "", subtitle = "density") +
+  theme_classic()
+g2 <- ggplot(
+  data = data.frame(
+    niter = 1:length(cavi_probit_DA$elbo),
+    elbo = cavi_probit_DA$elbo
+  ),
+  mapping = aes(x = niter, y = elbo)
+) +
+  geom_point() +
+  geom_line() +
+  labs(
+    y = "",
+    subtitle = "evidence lower bound (ELBO)",
+    x = "number of iterations"
+  ) +
+  theme_classic()
+g2 + g1
+```
+:::
+
+
+## Automatic differentiation variational inference
 
 We consider alternative numeric schemes which rely on stochastic optimization. The key idea behind these methods is that we can use gradient-based algorithms, and approximate the expectations with respect to $g$ by drawing samples from the approximating densities. This gives rises to a general omnibus procedure for optimization, although some schemes capitalize on the structure of the approximating family. @Hoffman:2013 consider stochastic gradient for exponential families mean-field approximations, using natural gradients to device an algorithm. While efficient within this context, it is not a generic algorithm.
 

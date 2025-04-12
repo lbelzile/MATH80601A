@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.7.1">
+<meta name="generator" content="quarto-1.7.3">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -19,6 +19,40 @@ ul.task-list li input[type="checkbox"] {
   width: 0.8em;
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
 /* CSS for citations */
 div.csl-bib-body { }
@@ -57,10 +91,10 @@ div.csl-indent {
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="site_libs/quarto-html/anchor.min.js"></script>
 <link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-2bb0ec5e928ee8c40b12725cb7836c35.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-81b5c3e63835cfde897ecd3d35a35a41.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-a51e8ad160b68d9f8f1ac488cc0f242e.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-ad5ef081d17d57ab2b6cc5e45efb5d90.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
   "copy-button": false,
@@ -248,12 +282,9 @@ window.Quarto = {
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#model-misspecification" id="toc-model-misspecification" class="nav-link active" data-scroll-target="#model-misspecification"><span class="header-section-number">10.1</span> Model misspecification</a></li>
-  <li><a href="#optimization-of-the-evidence-lower-bound" id="toc-optimization-of-the-evidence-lower-bound" class="nav-link" data-scroll-target="#optimization-of-the-evidence-lower-bound"><span class="header-section-number">10.2</span> Optimization of the evidence lower bound</a>
-  <ul class="collapse">
-  <li><a href="#factorization" id="toc-factorization" class="nav-link" data-scroll-target="#factorization"><span class="header-section-number">10.2.1</span> Factorization</a></li>
-  <li><a href="#general-derivation" id="toc-general-derivation" class="nav-link" data-scroll-target="#general-derivation"><span class="header-section-number">10.2.2</span> General derivation</a></li>
-  </ul></li>
+  <li><a href="#kullbackleibler-divergence-and-evidence-lower-bound" id="toc-kullbackleibler-divergence-and-evidence-lower-bound" class="nav-link active" data-scroll-target="#kullbackleibler-divergence-and-evidence-lower-bound"><span class="header-section-number">10.1</span> Kullback–Leibler divergence and evidence lower bound</a></li>
+  <li><a href="#coordinate-ascent-variational-inference" id="toc-coordinate-ascent-variational-inference" class="nav-link" data-scroll-target="#coordinate-ascent-variational-inference"><span class="header-section-number">10.2</span> Coordinate-ascent variational inference</a></li>
+  <li><a href="#automatic-differentiation-variational-inference" id="toc-automatic-differentiation-variational-inference" class="nav-link" data-scroll-target="#automatic-differentiation-variational-inference"><span class="header-section-number">10.3</span> Automatic differentiation variational inference</a></li>
   </ul>
 <div class="toc-actions"><ul><li><a href="https://github.com/lbelzile/MATH80601A/edit/main/variational.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li></ul></div></nav>
     </div>
@@ -266,10 +297,10 @@ window.Quarto = {
 </header>
 
 
-<p>The field of <strong>variational inference</strong>, which derives it’s name from calculus of variation, uses approximations to a parametric distribution <span class="math inline">\(p(\cdot)\)</span> by a member from a family of distributions whose density or mass function is <span class="math inline">\(g(\cdot; \boldsymbol{\psi})\)</span> with parameters <span class="math inline">\(\boldsymbol{\psi}.\)</span> The objective of inference is thus to find the parameters that minimize some metric that measure discrepancy between the true postulated posterior and the approximation: doing so leads to optimization problems. Variational inference is widespread in machine learning and in large problems where Markov chain Monte Carlo or other methods might not be feasible.</p>
+<p><strong>Variational inference</strong>, whose name comes from calculus of variation, considers approximations to the posterior <span class="math inline">\(p(\boldsymbol{\theta} \mid \boldsymbol{y})\)</span> by a member from a family of distributions whose density or mass function is <span class="math inline">\(g(\cdot; \boldsymbol{\psi})\)</span> with parameters <span class="math inline">\(\boldsymbol{\psi}.\)</span> The objective of inference is thus to find the parameters that minimize some metric that measure discrepancy between the true postulated posterior and the approximation: doing so leads to optimization problems. Variational inference is widespread in machine learning and in large problems where Markov chain Monte Carlo might be infeasible.</p>
 <p>This chapter is organized as follows: we first review notions of model misspecification and the Kullback–Leibler divergence. We then consider approximation schemes and some examples involving mixtures and model selection where analytical derivations are possible: these show how variational inference differs from Laplace approximation and she light on some practical aspects. Good references include Chapter 10 of <span class="citation" data-cites="Bishop:2006">Bishop (<a href="references.html#ref-Bishop:2006" role="doc-biblioref">2006</a>)</span>; most modern application use automatic differentiation variational inference (ADVI, <span class="citation" data-cites="Kucukelbir:2017">Kucukelbir et al. (<a href="references.html#ref-Kucukelbir:2017" role="doc-biblioref">2017</a>)</span>) or stochastic optimization via black-box variational inference.</p>
-<section id="model-misspecification" class="level2" data-number="10.1">
-<h2 data-number="10.1" class="anchored" data-anchor-id="model-misspecification"><span class="header-section-number">10.1</span> Model misspecification</h2>
+<section id="kullbackleibler-divergence-and-evidence-lower-bound" class="level2" data-number="10.1">
+<h2 data-number="10.1" class="anchored" data-anchor-id="kullbackleibler-divergence-and-evidence-lower-bound"><span class="header-section-number">10.1</span> Kullback–Leibler divergence and evidence lower bound</h2>
 <p>Consider <span class="math inline">\(g(\boldsymbol{\theta};\boldsymbol{\psi})\)</span> with <span class="math inline">\(\boldsymbol{\psi} \in \mathbb{R}^J\)</span> an approximating density function whose integral is one over <span class="math inline">\(\boldsymbol{\Theta} \subseteq \mathbb{R}^p\)</span> and whose support includes that of <span class="math inline">\(p(\boldsymbol{y}, \boldsymbol{\theta})\)</span> over <span class="math inline">\(\boldsymbol{\Theta}.\)</span> Suppose data were generated from a model with true density <span class="math inline">\(f_t\)</span> and we consider instead the family of distributions <span class="math inline">\(g(\cdot; \boldsymbol{\psi}),\)</span> the latter may or not contain <span class="math inline">\(f_t\)</span> as special case. Intuitively, if we were to estimate the model by maximum likelihood, we expect that the model returned will be the one closest to <span class="math inline">\(f_t\)</span> among those considered in some sense.</p>
 <div id="def-kl-divergence" class="theorem definition">
 <p><span class="theorem-title"><strong>Definition 10.1 (Kullback–Leibler divergence)</strong></span> The Kullback–Leibler divergence between densities <span class="math inline">\(f_t(\cdot)\)</span> and <span class="math inline">\(g(\cdot; \boldsymbol{\psi}),\)</span> is <span class="math display">\[\begin{align*}
@@ -278,11 +309,12 @@ window.Quarto = {
 \\ &amp;= \mathsf{E}_{f_t}\{\log f_t(\boldsymbol{X})\} - \mathsf{E}_{f_t}\{\log g(\boldsymbol{X}; \boldsymbol{\psi})\}
 \end{align*}\]</span> where the subscript of the expectation indicates which distribution we integrate over. The term <span class="math inline">\(-\mathsf{E}_{f_t}\{\log f_t(\boldsymbol{X})\}\)</span> is called the entropy of the distribution. The divergence is strictly positive unless <span class="math inline">\(g(\cdot; \boldsymbol{\psi}) \equiv f_t(\cdot).\)</span> Note that, by construction, it is not symmetric.</p>
 </div>
-<p>The Kullback–Leibler divergence notion is central to study of model misspecification: if we fit <span class="math inline">\(g(\cdot)\)</span> when data arise from <span class="math inline">\(f_t,\)</span> the maximum likelihood estimator of the parameters <span class="math inline">\(\widehat{\boldsymbol{\psi}}\)</span> will be the value of the parameter that minimizes the Kullback–Leibler divergence <span class="math inline">\(\mathsf{KL}(f_t \parallel g);\)</span> this value will be positive unless the model is correctly specified and <span class="math inline">\(g(\cdot; \widehat{\boldsymbol{\psi}}) = f_t(\cdot).\)</span> See <span class="citation" data-cites="Davison:2003">Davison (<a href="references.html#ref-Davison:2003" role="doc-biblioref">2003</a>)</span>, pp.&nbsp;122–125 for a discussion.</p>
+<p>The Kullback–Leibler divergence is central to study of model misspecification: if we fit <span class="math inline">\(g(\cdot)\)</span> when data arise from <span class="math inline">\(f_t,\)</span> the maximum likelihood estimator of the parameters <span class="math inline">\(\widehat{\boldsymbol{\psi}}\)</span> will be the value of the parameter that minimizes the Kullback–Leibler divergence <span class="math inline">\(\mathsf{KL}(f_t \parallel g);\)</span> this value will be positive unless the model is correctly specified and <span class="math inline">\(g(\cdot; \widehat{\boldsymbol{\psi}}) = f_t(\cdot).\)</span> See <span class="citation" data-cites="Davison:2003">Davison (<a href="references.html#ref-Davison:2003" role="doc-biblioref">2003</a>)</span>, pp.&nbsp;122–125 for a discussion.</p>
 <p>In the Bayesian setting, interest lies in approximating <span class="math inline">\(f_t \equiv p(\boldsymbol{\theta} \mid \boldsymbol{y}).\)</span> The problem of course is that we cannot compute expectations with respect to the posterior since these requires knowledge of the marginal likelihood, which acts as a normalizing constant, in most settings of interest. What we can do instead is to consider the model that minimizes the reverse Kullback–Leibler divergence <span class="math display">\[\begin{align*}
 g(\boldsymbol{\theta}; \widehat{\boldsymbol{\psi}}) = \mathrm{argmin}_{\boldsymbol{\psi}} \mathsf{KL}\{g(\boldsymbol{\theta};\boldsymbol{\psi}) \parallel p(\boldsymbol{\theta} \mid \boldsymbol{y})\}.
 \end{align*}\]</span> We will show soon that this is a sensible objective function.</p>
-<p>It is important to understand that the lack of symmetry of the Kullback–Leibler divergence means these yield different approximations. Consider an approximation of a bivariate Gaussian vector with correlated components <span class="math inline">\(\boldsymbol{X} \sim \mathsf{Gauss}_2(\boldsymbol{\mu}, \boldsymbol{\Sigma})\)</span>. If we approximate each margin independently with a univariate Gaussian, the Kullback–Leibler divergence will have the same marginal mean <span class="math inline">\(\boldsymbol{\mu}\)</span> and variance <span class="math inline">\(\mathrm{diag}(\boldsymbol{\Sigma})\)</span>, whereas the reverse Kullback–Leibler will have the same mean, but a variance equal to the conditional variance of one component given the other, e.g., <span class="math inline">\(\Sigma_{11} - \Sigma_{12} \Sigma_{22}^{-1}\Sigma_{21}\)</span> for component <span class="math inline">\(X_{1}.\)</span> <a href="#fig-klvsrev" class="quarto-xref">Figure&nbsp;<span>10.1</span></a> shows the two approximations: the reverse Kullback–Leibler is much too narrow and only gives mass where both variables have positive density.</p>
+<div id="rem-symmetry-kld" class="proof remark">
+<p><span class="proof-title"><em>Remark 10.1</em> (Lack of symmetry of Kullback–Leibler divergence). </span>Consider an approximation of a bivariate Gaussian vector with correlated components <span class="math inline">\(\boldsymbol{X} \sim \mathsf{Gauss}_2(\boldsymbol{\mu}, \boldsymbol{\Sigma})\)</span>. If we approximate each margin independently with a univariate Gaussian, then the density which minimizes $ <span class="math display">\[\mathsf{KL}\{ \phi_2(\boldsymbol{\mu}, \boldsymbol{\Sigma}) \parallel \phi(\mu_{1g}, \sigma^2_{1g})\phi(\mu_{2g}, \sigma^2_{2g})\},\]</span> the forward Kullback–Leibler divergence will have the same marginal mean <span class="math inline">\(\widehat{\mu}_{ig}=\mu_i\)</span> and variance <span class="math inline">\(\sigma^2_{ig} = \Sigma_{ii}\)</span>, whereas the best approximation that minimizes the reverse Kullback–Leibler <span class="math display">\[\mathsf{KL}\{ \phi(\mu_{1g}, \sigma^2_{1g})\phi(\mu_{2g}, \sigma^2_{2g}) \parallel  \phi_2(\boldsymbol{\mu}, \boldsymbol{\Sigma})\},\]</span> will have the same mean, but a variance equal to the conditional variance of one component given the other, e.g., <span class="math inline">\(\widehat{\sigma}_{1g} = \Sigma_{11} - \Sigma_{12} \Sigma_{22}^{-1}\Sigma_{21}.\)</span> <a href="#fig-klvsrev" class="quarto-xref">Figure&nbsp;<span>10.1</span></a> shows the two approximations: the reverse Kullback–Leibler approximation is much too narrow and only gives mass where both variables have positive density, whereas the approximation that minimizes Kullback–Leibler divergence puts mass everywhere the target is supported.</p>
 <div class="cell">
 <div class="cell-output-display">
 <div id="fig-klvsrev" class="quarto-float quarto-figure quarto-figure-center anchored">
@@ -297,6 +329,8 @@ Figure&nbsp;10.1: Illustration of an approximation of a correlated bivariate Gau
 </div>
 </div>
 </div>
+</div>
+<p>Before proceeding with variational inference objective function, we recall basic definitions on convexity, which underly Jensen’s inequality.</p>
 <div id="def-convex-function" class="theorem definition">
 <p><span class="theorem-title"><strong>Definition 10.2 (Convex function)</strong></span> A real-valued function <span class="math inline">\(h: \mathbb{R} \to \mathbb{R}\)</span> is convex if for any <span class="math inline">\(x_1,x_2 \in \mathbb{R}\)</span> if any linear combination of <span class="math inline">\(x_1\)</span> and <span class="math inline">\(x_2\)</span> satisfies <span class="math display">\[\begin{align*}
 h(tx_1 + (1-t)x_2) \leq t h(x_1) + (1-t) h(x_2), \qquad 0 \leq t \leq 1
@@ -332,9 +366,6 @@ p(\boldsymbol{y}) = \int_{\boldsymbol{\Theta}}  \frac{p(\boldsymbol{y}, \boldsym
 <p>The ELBO is a lower bound for the marginal likelihood because the Kullback–Leibler divergence is non-negative and <span class="math display">\[\begin{align*}
 \log p(\boldsymbol{y}) = \mathsf{ELBO}(g) +  \mathsf{KL}\{g(\boldsymbol{\theta};\boldsymbol{\psi}) \parallel p(\boldsymbol{\theta} \mid \boldsymbol{y})\}.
 \end{align*}\]</span> If we could estimate the marginal likelihood of a (typically simpler) competing alternative and the lower bound on the evidence in favour of the more complex model was very much larger, then we could use this but generally there is no theoretical guarantee for model comparison if we compare two lower evidence lower bounds. The purpose of variational inference is that approximations to expectations, credible intervals, etc. are obtained from <span class="math inline">\(g(\cdot; \boldsymbol{\psi})\)</span> instead of <span class="math inline">\(p(\cdot).\)</span></p>
-<div id="rem-approximation-latent" class="proof remark">
-<p><span class="proof-title"><em>Remark 10.1</em> (Approximation of latent variables). </span>While we have focused on exposition with only parameters <span class="math inline">\(\boldsymbol{\theta},\)</span> this can be generalized by including latent variables <span class="math inline">\(\boldsymbol{U}\)</span> as in <a href="gibbs.html#sec-gibbs-da" class="quarto-xref"><span>Section 6.1</span></a> in addition to the model parameters <span class="math inline">\(\boldsymbol{\theta}\)</span> as part of the variational modelling.</p>
-</div>
 <div id="exm-varional-vs-laplace" class="theorem example">
 <p><span class="theorem-title"><strong>Example 10.1 (Variational inference vs Laplace approximation)</strong></span> The Laplace approximation differs from the Gaussian variational approximation; The right panel of <a href="#fig-convex" class="quarto-xref">Figure&nbsp;<span>10.2</span></a> shows a skew-Gaussian distribution with location zero, unit scale and a skewness parameter of <span class="math inline">\(\alpha=10;\)</span> it’s density is <span class="math inline">\(2\phi(x)\Phi(\alpha x).\)</span></p>
 <p>The Laplace approximation is easily obtained by numerical maximization; the mode is the mean of the resulting approximation, with a std. deviation that matches the square root of the reciprocal Hessian of the negative log density.</p>
@@ -347,13 +378,12 @@ p(\boldsymbol{y}) = \int_{\boldsymbol{\Theta}}  \frac{p(\boldsymbol{y}, \boldsym
 \end{align*}\]</span> where <span class="math inline">\(Z \sim \mathsf{Gauss}(0,1).\)</span> We can approximate the last term by Monte Carlo with a single sample (recycled at every iteration) and use this to find the optimal parameters. The right panel of <a href="#fig-convex" class="quarto-xref">Figure&nbsp;<span>10.2</span></a> shows that the resulting approximation aligns with the bulk. It of course fails to capture the asymmetry, since the approximating function is symmetric.</p>
 </div>
 </section>
-<section id="optimization-of-the-evidence-lower-bound" class="level2" data-number="10.2">
-<h2 data-number="10.2" class="anchored" data-anchor-id="optimization-of-the-evidence-lower-bound"><span class="header-section-number">10.2</span> Optimization of the evidence lower bound</h2>
+<section id="coordinate-ascent-variational-inference" class="level2" data-number="10.2">
+<h2 data-number="10.2" class="anchored" data-anchor-id="coordinate-ascent-variational-inference"><span class="header-section-number">10.2</span> Coordinate-ascent variational inference</h2>
 <p>Variational inference in itself does not determine the choice of approximating density <span class="math inline">\(g(\cdot; \boldsymbol{\psi});\)</span> the quality of the approximation depends strongly on the latter. The user has ample choice to decide whether to use the fully correlated, factorized, or the mean-field approximation, along with the parametric family for each block. Note that the latter must be support dependent, as the Kullback–Leibler divergence will be infinite if the support of <span class="math inline">\(g\)</span> does not include that of <span class="math inline">\(p(\boldsymbol{\theta} \mid \boldsymbol{y})\)</span> (although we work with the reverse Kullback–Leibler).</p>
 <p>There are two main approaches: the first is to start off with the model with a factorization of the density, and deduce the form of the most suitable parametric family for the approximation that will minimize the ELBO. This requires bespoke derivation of the form of the density and the conditionals for each model, and does not lead itself easily to generalizations. The second approach alternative is to rely on a generic family for the approximation, and an omnibus procedure for the optimization using a reformulation via stochastic optimization that approximates the integrals appearing in the ELBO formula.</p>
-<section id="factorization" class="level3" data-number="10.2.1">
-<h3 data-number="10.2.1" class="anchored" data-anchor-id="factorization"><span class="header-section-number">10.2.1</span> Factorization</h3>
-<p>Factorizations of <span class="math inline">\(g(;\boldsymbol{\psi})\)</span> into blocks with parameters <span class="math inline">\(\boldsymbol{\psi}_1, \ldots, \boldsymbol{\psi}_M,\)</span> where <span class="math display">\[\begin{align*}
+<div id="prp-factorization" class="theorem proposition">
+<p><span class="theorem-title"><strong>Proposition 10.1 (Factorization)</strong></span> Factorizations of <span class="math inline">\(g(;\boldsymbol{\psi})\)</span> into blocks with parameters <span class="math inline">\(\boldsymbol{\psi}_1, \ldots, \boldsymbol{\psi}_M,\)</span> where <span class="math display">\[\begin{align*}
 g(\boldsymbol{\theta}; \boldsymbol{\psi}) = \prod_{j=1}^M g_j(\boldsymbol{\theta}_j; \boldsymbol{\psi}_j)
 \end{align*}\]</span> If we assume that each of the <span class="math inline">\(J\)</span> parameters <span class="math inline">\(\theta_1, \ldots, \theta_J\)</span> are independent, then we obtain a <strong>mean-field</strong> approximation. The latter will be poor if parameters are strongly correlated, as we will demonstrate later.</p>
 <p>We use a factorization of <span class="math inline">\(g,\)</span> and denote the components <span class="math inline">\(g_j(\cdot)\)</span> for simplicity, omitting dependence on the parameters <span class="math inline">\(\boldsymbol{\psi}.\)</span> We can write the ELBO as <span class="math display">\[\begin{align*}
@@ -362,33 +392,157 @@ g(\boldsymbol{\theta}; \boldsymbol{\psi}) = \prod_{j=1}^M g_j(\boldsymbol{\theta
 \\&amp; \stackrel{\boldsymbol{\theta}_i}{\propto} \int \mathsf{E}_{-i}\left\{\log p(\boldsymbol{y}, \boldsymbol{\theta})\right\} g_i(\boldsymbol{\theta}_i) \mathrm{d} \boldsymbol{\theta}_i - \int \log \{ g_i(\boldsymbol{\theta}_i) \} g_i(\boldsymbol{\theta}_i) \mathrm{d} \boldsymbol{\theta}_i
 \end{align*}\]</span> where the last line is a negative Kullback–Leibler divergence between <span class="math inline">\(g_i\)</span> and <span class="math display">\[\begin{align*}
 \mathsf{E}_{-i}\left\{\log p(\boldsymbol{y}, \boldsymbol{\theta})\right\} = \int \log p(\boldsymbol{y}, \boldsymbol{\theta}) \prod_{\substack{i \neq j \\j=1}}^M g_j(\boldsymbol{\theta}_j)\mathrm{d} \boldsymbol{\theta}_{-i}
-\end{align*}\]</span> and the subscript <span class="math inline">\(-i\)</span> indicates that we consider all but the <span class="math inline">\(i\)</span>th component of the <span class="math inline">\(J\)</span> vector. Since the KL divergence is strictly non-negative and minimized if we take the same density, this reveals that the form of approximating density <span class="math inline">\(g_i\)</span> that maximizes the ELBO is of the form <span class="math display">\[\begin{align*}
+\end{align*}\]</span> and the subscript <span class="math inline">\(-i\)</span> indicates that we consider all but the <span class="math inline">\(i\)</span>th component of the <span class="math inline">\(J\)</span> vector.</p>
+<p>In some cases, maximization of the ELBO is implicit. Indeed, since the Kullback–Leibler divergence is strictly non-negative and minimized if we take the same density, this reveals that the form of approximating density <span class="math inline">\(g_i\)</span> that maximizes the ELBO occurs when both sides are equal, so is of the form <span class="math display">\[\begin{align*}
 g^{\star}_i(\boldsymbol{\theta}_i) \propto \exp \left[ \mathsf{E}_{-i}\left\{\log p(\boldsymbol{y}, \boldsymbol{\theta})\right\}\right].
 \end{align*}\]</span> This expression is specified up to proportionality, but we can often look at the kernel of <span class="math inline">\(g^{\star}_i\)</span> and deduce from it the normalizing constant, which is defined as the integral of the above. The posterior approximation will have a closed form expression if we consider cases of conditionally conjugate distributions in the exponential family: we can see that the optimal <span class="math inline">\(g^{\star}_j\)</span> relates to the conditional since <span class="math inline">\(p(\boldsymbol{\theta}, \boldsymbol{y}) \stackrel{\boldsymbol{\theta}_i}{\propto} p(\boldsymbol{\theta}_i \mid \boldsymbol{\theta}_{-i}, \boldsymbol{y}).\)</span> The connection to Gibbs sampling, which instead draws parameters from the conditional, reveals that problems that can be tackled by the latter method will be amenable to factorizations with approximating densities from known families.</p>
+</div>
 <p>If we consider maximization of the ELBO for <span class="math inline">\(g_i,\)</span> we can see from the law of iterated expectation that the latter is proportional to <span class="math display">\[\begin{align*}
 \mathsf{ELBO}(g_i) \propto \mathsf{E}_i \left[ \mathsf{E}_{-i} \{\log p(\boldsymbol{\theta}, \boldsymbol{y}) \}\right] - \mathsf{E}_i\{\log g_i(\boldsymbol{\theta}_i)\}
-\end{align*}\]</span> Due to the nature of this conditional expectation, we can devise an algorithm to maximize the ELBO of the factorized approximation. Each parameter update depends on the other components, but the <span class="math inline">\(\mathsf{ELBO}(g_i)\)</span> is concave. We can maximize <span class="math inline">\(g^{\star}_i\)</span> in turn for each <span class="math inline">\(i=1, \ldots, M\)</span> treating the other parameters as fixed, and iterate this scheme. The resulting approximation, termed coordinate ascent variational inference (CAVI), is guaranteed to monotonically increase the evidence lower bound until convergence to a local maximum; see Sections 3.1.5 and 3.2.4–3.2.5 of <span class="citation" data-cites="Boyd.Vandenberghe:2004">Boyd and Vandenberghe (<a href="references.html#ref-Boyd.Vandenberghe:2004" role="doc-biblioref">2004</a>)</span>. The scheme is a valid coordinate ascent algorithm. At each cycle, we compute the ELBO and stop the algorithm when the change is lower then some present numerical tolerance. Since the approximation may have multiple local optima, we can perform random initializations and keep the one with highest performance.</p>
-<div class="{exm-gaussian-variational-approx}">
-<p>We consider the example from Section 2.2.2 of <span class="citation" data-cites="Ormerod.Wand:2010">Ormerod and Wand (<a href="references.html#ref-Ormerod.Wand:2010" role="doc-biblioref">2010</a>)</span> (see also Example 10.1.3 from <span class="citation" data-cites="Bishop:2006">Bishop (<a href="references.html#ref-Bishop:2006" role="doc-biblioref">2006</a>)</span>) for approximation of a Gaussian distribution with conjugate prior parametrized in terms of precision, with <span class="math display">\[\begin{align*}
+\end{align*}\]</span> Due to the nature of this conditional expectation, we can devise an algorithm to maximize the ELBO of the factorized approximation. Each parameter update depends on the other components, but the <span class="math inline">\(\mathsf{ELBO}(g_i)\)</span> is concave. We can maximize <span class="math inline">\(g^{\star}_i\)</span> in turn for each <span class="math inline">\(i=1, \ldots, M\)</span> treating the other parameters as fixed, and iterate this scheme. The resulting approximation, termed coordinate ascent variational inference (CAVI), is guaranteed to monotonically increase the evidence lower bound until convergence to a local maximum; see Sections 3.1.5 and 3.2.4–3.2.5 of <span class="citation" data-cites="Boyd.Vandenberghe:2004">Boyd and Vandenberghe (<a href="references.html#ref-Boyd.Vandenberghe:2004" role="doc-biblioref">2004</a>)</span>. The scheme is a valid coordinate ascent algorithm. At each cycle, we compute the ELBO and stop the algorithm when the change is lower then some present numerical tolerance. Since the approximation may have multiple local optima, we can perform random initialization and keep the run with the highest ELBO value.</p>
+<div id="exm-gaussian-variational-approx" class="theorem example">
+<p><span class="theorem-title"><strong>Example 10.2 (Variational approximation to Gaussian conjugate model)</strong></span> We consider Example 10.1.3 from <span class="citation" data-cites="Bishop:2006">Bishop (<a href="references.html#ref-Bishop:2006" role="doc-biblioref">2006</a>)</span> for a variational approximation of a Gaussian distribution with conjugate priors parametrized in terms of precision, with <span class="math display">\[\begin{align*}
 Y_i &amp;\sim \mathsf{Gauss}(\mu, \tau^{-1}), \qquad i =1, \ldots, n;\\
-\mu &amp;\sim \mathsf{Gauss}(\mu_0, \tau_0^{-1}) \\
+\mu &amp;\sim \mathsf{Gauss}\{\mu_0, (\tau\tau_0)^{-1}\} \\
 \tau &amp;\sim \mathsf{gamma}(a_0, b_0).
-\end{align*}\]</span> This is an example where the full posterior is available in closed-form, so we can compare our approximation with the truth. We assume a factorization of the variational approximation <span class="math inline">\(g_\mu(\mu)g_\tau(\tau);\)</span> the factor for <span class="math inline">\(g_\mu\)</span> is proportional to <span class="math display">\[\begin{align*}
-\log g^{\star}_\mu(\mu) \propto -\frac{\mathsf{E}_{\tau}(\tau)}{2} \sum_{i=1}^n (y_i-\mu)^2-\frac{\tau_0}{2}(\mu-\mu_0)^2
-\end{align*}\]</span> which is quadratic in <span class="math inline">\(\mu\)</span> and thus must be Gaussian with precision <span class="math inline">\(\tau_n = \tau_0 + n\mathsf{E}_{\tau}(\tau)\)</span> and mean <span class="math inline">\(\tau_n^{-1}\{\tau_0\mu_0 + \mathsf{E}_{\tau}(\tau)n\overline{y})\)</span> using <a href="regression.html#prp-quadratic-forms" class="quarto-xref">Proposition&nbsp;<span>8.1</span></a>, where <span class="math inline">\(n\overline{y} = \sum_{i=1}^n y_i.\)</span> We could also note that this corresponds (up to expectation) to <span class="math inline">\(p(\mu \mid \tau, \boldsymbol{y}).\)</span> As the sample size increase, the approximation converges to a Dirac delta (point mass at the sample mean. The optimal precision factor satisfies <span class="math display">\[\begin{align*}
-\ln g^{\star}_{\tau}(\tau) \propto (a_0-1 +n/2) \log \tau - \tau \left[b_0  + \frac{1}{2} \mathsf{E}_{\mu}\left\{\sum_{i=1}^n (y_i-\mu)^2\right\}\right].
-\end{align*}\]</span> This is the form as <span class="math inline">\(p(\tau \mid \mu, \boldsymbol{y}),\)</span> namely a gamma with shape <span class="math inline">\(a_n =a_0 +n/2\)</span> and rate <span class="math inline">\(b_n\)</span> given by the term in the square brackets. It is helpful to rewrite the expected value as <span class="math display">\[\begin{align*}
+\end{align*}\]</span> This is an example where the marginal posteriors are available in closed-form, <span class="math display">\[\begin{align*}
+\tau \mid \boldsymbol{y} &amp;\sim \mathsf{gamma}\left\{ a_0 + \frac{n-1}{2}, b_0 + \frac{\sum_{i=1}^n y_i^2 + (n+\tau_0)^{-1}(n\overline{y}+\tau_0)^2}{2}\right\}
+\\ \mu \mid \boldsymbol{y} &amp;\sim \mathsf{Student}\left\{ \frac{n\overline{y}+\tau_0\mu_0}{n+\tau_0}, \frac{2b_0 +(n-1)s^2 + \tau_0n(\overline{y}-\mu_0)^2/(\tau_0+n)}{(n+2a_0)(\tau_0+n)}, 2a_0+n\right\}
+\end{align*}\]</span> so we can compare our approximation with the truth. We assume a factorization of the variational approximation <span class="math inline">\(g_\mu(\mu)g_\tau(\tau);\)</span> the factor for <span class="math inline">\(g_\mu\)</span> is proportional to <span class="math display">\[\begin{align*}
+\log g^{\star}_{\mu}(\mu) \propto -\frac{\mathsf{E}_{\tau}(\tau)}{2} \left\{ \sum_{i=1}^n (y_i-\mu)^2-\frac{\tau_0}{2}(\mu-\mu_0)^2\right\},
+\end{align*}\]</span> which is quadratic in <span class="math inline">\(\mu\)</span> and thus must be Gaussian with precision <span class="math inline">\(\tau_n = \mathsf{E}_{\tau}(\tau)(n + \tau_0)\)</span> and mean <span class="math inline">\((n + \tau_0)^{-1}\{\tau_0\mu_0 + n\overline{y}\}\)</span> using <a href="regression.html#prp-quadratic-forms" class="quarto-xref">Proposition&nbsp;<span>8.1</span></a>, where <span class="math inline">\(n\overline{y} = \sum_{i=1}^n y_i.\)</span> We could also note that this corresponds (up to expectation) to <span class="math inline">\(p(\mu \mid \tau, \boldsymbol{y}).\)</span> As the sample size increase, the approximation converges to a Dirac delta (point mass at the sample mean. The optimal precision factor satisfies <span class="math display">\[\begin{align*}
+\ln g^{\star}_{\tau}(\tau) &amp;\propto \log \tau\left(\frac{n+1}{2} + a_0-1\right)   \\&amp;\quad- \tau \left[b_0  + \frac{1}{2} \mathsf{E}_{\mu}\left\{\sum_{i=1}^n (y_i-\mu)^2\right\} + \frac{\tau_0\mathsf{E}{\mu}\left\{(\mu-\mu_0)^2\right\}}{2}\right].
+\end{align*}\]</span> This is the form as <span class="math inline">\(p(\tau \mid \mu, \boldsymbol{y}),\)</span> namely a gamma with shape <span class="math inline">\(a_n =(n+1)/2 + a_0\)</span> and rate <span class="math inline">\(b_n\)</span> given by the term in the square brackets. It is helpful to rewrite the expected value as <span class="math display">\[\begin{align*}
 \mathsf{E}_{\mu}\left\{\sum_{i=1}^n (y_i-\mu)^2\right\} = \sum_{i=1}^n \{y_i - \mathsf{E}_{\mu}(\mu)\}^2 + n \mathsf{Var}_{\mu}(\mu),
-\end{align*}\]</span> so that it depends on the parameters of the distribution of <span class="math inline">\(\mu\)</span> directly. We can then apply the coordinate ascent algorithm. Derivation of the ELBO, even in this toy setting, is tedious: <span class="math display">\[\begin{align*}
-\mathsf{ELBO}(g) &amp; = a_0\log(b_0)-\log \Gamma(a_0) - \frac{n+1}{2} \log(2\pi) + \frac{\log(\tau_0)}{2} \\&amp;\quad+ (a_n-1)\mathsf{E}_{\tau}(\log \tau) -
-\frac{ \mathsf{E}_{\tau}(\tau)\left[b_0 +\mathsf{E}_{\mu}\left\{\sum_{i=1}^n (y_i - \mu)^2\right\}\right]}{2} - \frac{\tau_0}{2} \mathsf{E}_{\mu}\{(\mu - \mu_0)^2\}\\&amp; \quad + \frac{1+\log(2\pi)-\log\tau_n}{2} -a_n\log b_n - \log \Gamma(a_n) - (a_n-1)\mathsf{E}_{\tau}(\log \tau) -b_n \mathsf{E}_{\tau}(\tau)
-\end{align*}\]</span> The expected value of <span class="math inline">\(\mathsf{E}_{\tau}(\tau) = a_n/b_n\)</span> and the mean and variance of the Gaussian are given by it’s parameters. The terms involving <span class="math inline">\(\mathsf{E}_{\tau}(\log \tau)\)</span> cancel out; the first line involves only normalizing constants for the hyperparameters, and <span class="math inline">\(a_n\)</span> is constant. We can keep track only of <span class="math display">\[\begin{align*}
-- \frac{\tau_0}{2} \mathsf{E}_{\mu}\{(\mu - \mu_0)^2\} - \frac{\log\tau_n}{2}-a_n\log b_n
-\end{align*}\]</span> for convergence, although other normalizing constants would be necessary if we wanted to approximate the marginal likelihood.</p>
+\end{align*}\]</span> so that it depends on the parameters of the distribution of <span class="math inline">\(\mu\)</span> directly. We can then apply the coordinate ascent algorithm. Derivation of the ELBO, even in this toy setting, is tedious. <span class="math display">\[\begin{align*}
+\mathsf{ELBO}(g) &amp; = a_0\log(b_0)-\log \Gamma(a_0) +(a_0-1)\mathsf{E}_{\tau}(\log \tau)- b_0\mathsf{E}_{\tau}(\tau)\\
+&amp; \quad - \frac{n+1}{2} \log(2\pi) + \frac{\log(\tau_0) + (n+1)\mathsf{E}_{\tau}(\log \tau)}{2} \\&amp;\quad - \frac{\mathsf{E}_{\tau}(\tau)\tau_0}{2} \left[\{\mu_0 - \mathsf{E}_{\mu}(\mu)\}^2 + \mathsf{Va}_{\mu}(\mu)\right]
+\\&amp;\quad - \frac{\mathsf{E}_{\tau}(\tau)}{2} \left[ \sum_{i=1}^n \left\{y_i - \mathsf{E}_{\mu}(\mu)\right\}^2 + n \mathsf{Va}_{\mu}(\mu)\right]
+\\ &amp;\quad - a_n \log (b_n) + \log \Gamma(a_n) - (a_n-1) \mathsf{E}_{\tau}(\log \tau) + b_n \mathsf{E}_{\tau}(\tau)
+\\&amp; \quad + \frac{1 + \log(2\pi\mathsf{Va}_{\mu}(\mu))}{2}
+\\&amp;= a_0\log(b_0)-\log \Gamma(a_0) -a_n\log b_n + \log \Gamma(a_n)
+\\&amp; \quad - \frac{n}{2}\log(2\pi)+ \frac{1 + \log (\tau_0/\tau_n)}{2} \end{align*}\]</span> The expected value of <span class="math inline">\(\mathsf{E}_{\tau}(\tau) = a_n/b_n\)</span> and the mean and variance of the Gaussian are given by it’s parameters. The terms involving <span class="math inline">\(\mathsf{E}_{\tau}(\log \tau) = \psi(a_n)-\log b_n\)</span> cancel out.</p>
+<p><a href="#fig-approx-cavi-gauss" class="quarto-xref">Figure&nbsp;<span>10.3</span></a> shows the contour plots of the true posterior (since the prior is conjugate) and the coordinate-ascent variational mean-field approximation. We can see that both are centered around the same values, but the independence assumption does not reflect the dependence and the CAVI approximation is slightly less dispersed.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-approx-cavi-gauss" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-approx-cavi-gauss-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="variational_files/figure-html/fig-approx-cavi-gauss-1.png" class="img-fluid figure-img" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-approx-cavi-gauss-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;10.3: Bivariate density posterior for the conjugate Gaussian-gamma model (left) and CAVI approximation (right).
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-gauss-cavi-margdens" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-gauss-cavi-margdens-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="variational_files/figure-html/fig-gauss-cavi-margdens-1.png" class="img-fluid figure-img" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-gauss-cavi-margdens-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;10.4: Marginal posterior density of the mean and precision of the Gaussian (full line), with CAVI approximation (dashed).
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<div id="rem-approximation-latent" class="proof remark">
+<p><span class="proof-title"><em>Remark 10.2</em> (Approximation of latent variables). </span>While we have focused on exposition with only parameters <span class="math inline">\(\boldsymbol{\theta},\)</span> this can be generalized by including latent variables <span class="math inline">\(\boldsymbol{U}\)</span> as in <a href="gibbs.html#sec-gibbs-da" class="quarto-xref"><span>Section 6.1</span></a> in addition to the model parameters <span class="math inline">\(\boldsymbol{\theta}\)</span> as part of the variational modelling.</p>
+</div>
+<div id="exm-probit-reg-cavi" class="theorem example">
+<p><span class="theorem-title"><strong>Example 10.3 (CAVI for probit regression)</strong></span> A probit regression is a generalized linear model with probability of success <span class="math inline">\(\Phi(\mathbf{x}_i\boldsymbol{\beta}),\)</span> where <span class="math inline">\(\Phi(\cdot)\)</span> is the cumulative distribution function of a standard Gaussian variable. If we assign a Gaussian prior on the <span class="math inline">\(\boldsymbol{\beta}\)</span>, we can write the model as <span class="math display">\[\begin{align*}
+p(\boldsymbol{y} \mid \boldsymbol{\beta}) = \Phi(\mathbf{X}\boldsymbol{\beta})^{\boldsymbol{y}}\Phi(-\mathbf{X}\boldsymbol{\beta})^{\boldsymbol{1}_n -\boldsymbol{y}}
+\end{align*}\]</span> since <span class="math inline">\(1-\Phi(x) = \Phi(-x).\)</span> Consider the data augmentation of <a href="gibbs.html#exm-probit-regression" class="quarto-xref">Example&nbsp;<span>6.2</span></a>, with auxiliary variables <span class="math inline">\(Z_i \mid \boldsymbol{\beta}\sim \mathsf{Gauss}(\mathbf{x}_i\boldsymbol{\beta}, 1).\)</span></p>
+<p>With <span class="math inline">\(\boldsymbol{\beta} \sim \mathsf{Gauss}_p(\boldsymbol{\mu}_0, \mathbf{Q}_0^{-1}),\)</span> the model admits conditionals <span class="math display">\[\begin{align*}
+\boldsymbol{\beta} \mid \boldsymbol{Z} &amp;\sim \mathsf{Gauss}_p\left\{(\mathbf{X}^\top\mathbf{X} + \mathbf{Q_0})^{-1}(\mathbf{X}\boldsymbol{Z} + \mathbf{Q}_0\boldsymbol{\mu}_0),  (\mathbf{X}^\top\mathbf{X} + \mathbf{Q_0})^{-1} \right\}
+\\
+Z_i \mid y_i, \boldsymbol{\beta} &amp;\sim \mathsf{trunc. Gauss}(\mathbf{x}_i\boldsymbol{\beta}, 1, l_i, u_i)
+\end{align*}\]</span> where <span class="math inline">\([l_i, u_i]\)</span> is <span class="math inline">\((-\infty,0)\)</span> if <span class="math inline">\(y_i=0\)</span> and <span class="math inline">\((0, \infty)\)</span> if <span class="math inline">\(y_i=1.\)</span> If we consider a factorization of the form <span class="math inline">\(g_{\boldsymbol{Z}}(\boldsymbol{z})g_{\boldsymbol{\beta}}(\boldsymbol{\beta}),\)</span> then we exploit the conditionals in the same way as for Gibbs sampling, but substituting unknown parameter functionals by their expectations. Furthermore, the optimal form of the density further factorizes as <span class="math inline">\(g_{\boldsymbol{Z}}(\boldsymbol{z}) = \prod_{i=1}^n g_{Z_i}(z_i).\)</span></p>
+<p>The model depends on the mean parameter of <span class="math inline">\(\boldsymbol{Z}\)</span>, say <span class="math inline">\(\mu_{\boldsymbol{Z}}\)</span>, and that of <span class="math inline">\(\boldsymbol{\beta},\)</span> say <span class="math inline">\(\mu_{\boldsymbol{\beta}}.\)</span> To see this, consider the terms in the posterior proportional to <span class="math inline">\(Z_i\)</span>, where <span class="math display">\[\begin{align*}
+p(z_i \mid \boldsymbol{\beta}, y_i) \propto -\frac{z_i^2 - 2z_i \mathbf{x}_i\boldsymbol{\beta}}{2} \times \mathrm{I}(z_i &gt;0)^{y_i}\mathrm{I}(z_i &lt;0)^{1-y_i}
+\end{align*}\]</span> which is linear in <span class="math inline">\(\boldsymbol{\beta}\)</span>. The expectation of a univariate truncated Gaussian <span class="math inline">\(Z \sim \mathsf{trunc. Gauss}(\mu,\sigma^2, l, u)\)</span> is <span class="math display">\[\begin{align*}
+\mathsf{E}(Z) = \mu - \sigma\frac{\phi\{(u-\mu/\sigma)\} - \phi\{(l-\mu/\sigma)\}}{\Phi\{(u-\mu/\sigma)\} - \Phi\{(l-\mu/\sigma)\}}.
+\end{align*}\]</span> If we replace <span class="math inline">\(\mu=\mathbf{x}_i\mu_{\boldsymbol{\beta}}\)</span> in this expression, we get the update <span class="math display">\[\begin{align*}
+\mu_{Z_i}(z_i) = \begin{cases}
+\mathbf{x}_i\mu_{\boldsymbol{\beta}} - \frac{ \phi(\mathbf{x}_i\mu_{\boldsymbol{\beta}})}{1-\Phi(\mathbf{x}_i\mu_{\boldsymbol{\beta}})} &amp; y_i = 0;\\
+\mathbf{x}_i\mu_{\boldsymbol{\beta}} + \frac{ \phi(\mathbf{x}_i\mu_{\boldsymbol{\beta}})}{\Phi(\mathbf{x}_i\mu_{\boldsymbol{\beta}})} &amp; y_i = 1,
+\end{cases}
+\end{align*}\]</span> since <span class="math inline">\(\phi(x)=\phi(-x).\)</span></p>
+<p>The optimal form for <span class="math inline">\(\boldsymbol{\beta}\)</span> is Gaussian and the only unknown parameter is <span class="math inline">\(\boldsymbol{\mu}_{\boldsymbol{\beta}};\)</span> the log density only involves a linear form for <span class="math inline">\(\boldsymbol{Z}\)</span>, so follows from the same principle. We get regrouping the vector of means for the latent variables <span class="math display">\[\begin{align*}
+\boldsymbol{\mu}_{\boldsymbol{\beta}} = (\mathbf{X}^\top\mathbf{X} + \mathbf{Q_0})^{-1}(\mathbf{X}\boldsymbol{\mu}_{\boldsymbol{Z}} + \mathbf{Q}_0\boldsymbol{\mu}_0)
+\end{align*}\]</span></p>
+<p>Starting with an initial vector for either parameters, the CAVI algorithm alternatives between updates of <span class="math inline">\(\boldsymbol{\mu}_{\boldsymbol{\beta}}\)</span> and <span class="math inline">\(\boldsymbol{\mu}_{\boldsymbol{Z}}\)</span> until the value of the evidence lower bound stabilizes.</p>
+<!--
+The ELBO is
+\begin{align*}
+\mathsf{ELBO} = -\frac{1}{2}(\boldsymbol{z} - \mathbf{X}\boldsymbol{\beta})^\top(\boldsymbol{z} - \mathbf{X}\boldsymbol{\beta})\right\} \times \prod_{i=1}^n \mathrm{I}(z_i > 0)^{y_i}\mathrm{I}(z_i \le 0)^{1-y_i}
+\end{align*}
+where use the fact $\mathsf{E}_{Z_i}\{\mathrm{I}(z_i \le 0)\}=$that the entropy of a $p$-dimensional multivariate Gaussian random vector with precision $\mathbf{Q}$ is $p/2\{1+\log(2\pi)\} - \log |\mathbf{Q}|/2.$
+-->
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Data augmentation: "z" is latent Gaussian, </span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="co"># truncated to be negative for failures </span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="co"># and positive for successes</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>cavi_probit <span class="ot">&lt;-</span> <span class="cf">function</span>(</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>  y, <span class="co"># response vector (0/1)</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>  X, <span class="co"># model matrix</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">prior_beta_prec =</span> <span class="fu">diag</span>(<span class="fu">rep</span>(<span class="fl">0.01</span>, <span class="fu">ncol</span>(X))),</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">prior_beta_mean =</span> <span class="fu">rep</span>(<span class="dv">0</span>, <span class="fu">ncol</span>(X)),</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">maxiter =</span> <span class="dv">1000</span>L,</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">tol =</span> <span class="fl">1e-4</span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>) {</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Precompute fixed quantity</span></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>  sc <span class="ot">&lt;-</span> <span class="fu">solve</span>(<span class="fu">crossprod</span>(X) <span class="sc">+</span> prior_beta_prec)</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>  pmu_prior <span class="ot">&lt;-</span> prior_beta_prec <span class="sc">%*%</span> prior_beta_mean</span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>  n <span class="ot">&lt;-</span> <span class="fu">length</span>(y) <span class="co"># number of observations</span></span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stopifnot</span>(<span class="fu">nrow</span>(X) <span class="sc">==</span> n)</span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>  mu_z <span class="ot">&lt;-</span> <span class="fu">rep</span>(<span class="dv">0</span>, n)</span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>  y <span class="ot">&lt;-</span> <span class="fu">as.logical</span>(y)</span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>  ELBO <span class="ot">&lt;-</span> <span class="fu">numeric</span>(maxiter)</span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>  lcst <span class="ot">&lt;-</span> <span class="sc">-</span><span class="fl">0.5</span> <span class="sc">*</span></span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>    <span class="fu">log</span>(<span class="fu">det</span>(<span class="fu">solve</span>(prior_beta_prec) <span class="sc">%*%</span> <span class="fu">crossprod</span>(X) <span class="sc">+</span> <span class="fu">diag</span>(<span class="fu">ncol</span>(X))))</span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> (b <span class="cf">in</span> <span class="fu">seq_len</span>(maxiter)) {</span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a>    mu_b <span class="ot">&lt;-</span> <span class="fu">c</span>(sc <span class="sc">%*%</span> (<span class="fu">t</span>(X) <span class="sc">%*%</span> mu_z <span class="sc">+</span> pmu_prior))</span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a>    lp <span class="ot">&lt;-</span> <span class="fu">c</span>(X <span class="sc">%*%</span> mu_b)</span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a>    mu_z <span class="ot">&lt;-</span> lp <span class="sc">+</span> <span class="fu">dnorm</span>(lp) <span class="sc">/</span> (<span class="fu">pnorm</span>(lp) <span class="sc">-</span> <span class="fu">ifelse</span>(y, <span class="dv">0</span>, <span class="dv">1</span>))</span>
+<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a>    ELBO[b] <span class="ot">&lt;-</span> <span class="fu">sum</span>(<span class="fu">pnorm</span>(lp, <span class="at">lower.tail =</span> y, <span class="at">log.p =</span> <span class="cn">TRUE</span>)) <span class="sc">-</span></span>
+<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a>      lcst <span class="sc">-</span> <span class="fl">0.5</span> <span class="sc">*</span></span>
+<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a>        <span class="fu">c</span>(<span class="fu">t</span>(mu_b <span class="sc">-</span> prior_beta_mean) <span class="sc">%*%</span></span>
+<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a>            prior_beta_prec <span class="sc">%*%</span></span>
+<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a>            (mu_b <span class="sc">-</span> prior_beta_mean)) </span>
+<span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> (b <span class="sc">&gt;</span> <span class="dv">2</span> <span class="sc">&amp;&amp;</span> (ELBO[b] <span class="sc">-</span> ELBO[b <span class="sc">-</span> <span class="dv">1</span>]) <span class="sc">&lt;</span> tol) {</span>
+<span id="cb1-32"><a href="#cb1-32" aria-hidden="true" tabindex="-1"></a>      <span class="cf">break</span></span>
+<span id="cb1-33"><a href="#cb1-33" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb1-34"><a href="#cb1-34" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb1-35"><a href="#cb1-35" aria-hidden="true" tabindex="-1"></a>  <span class="fu">list</span>(<span class="at">mu_z =</span> mu_z, <span class="at">mu_beta =</span> mu_b, <span class="at">elbo =</span> ELBO[<span class="dv">1</span><span class="sc">:</span>b])</span>
+<span id="cb1-36"><a href="#cb1-36" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>We consider for illustration purposes data from Experiment 2 of <span class="citation" data-cites="Duke.Amir:2023">Duke and Amir (<a href="references.html#ref-Duke.Amir:2023" role="doc-biblioref">2023</a>)</span> on the effect of sequential decisions and purchasing formats. We fit a model with age of the participant and the binary variable <code>format</code>, which indicate the experimental condition. The model is fitted with a sum-to-zero constraint for the dummy variable.</p>
+<p>With vague priors, the coefficients for the mean <span class="math inline">\(\boldsymbol{\mu}_{\boldsymbol{\beta}}=(\beta_0, \beta_1, \beta_2)^\top\)</span> matches the frequentist point estimates of the probit regression to four significant digits. Convergence is very fast, as shown by the ELBO plot in the left panel of <a href="#fig-elbo-CAVI-probit" class="quarto-xref">Figure&nbsp;<span>10.5</span></a>. The posterior density approximation implied by variational inference, shown on the right panel of <a href="#fig-elbo-CAVI-probit" class="quarto-xref">Figure&nbsp;<span>10.5</span></a>, is once again underdispersed relative to the true marginal posterior.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-elbo-CAVI-probit" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-elbo-CAVI-probit-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="variational_files/figure-html/fig-elbo-CAVI-probit-1.png" class="img-fluid figure-img" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-elbo-CAVI-probit-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;10.5: Probit regression with CAVI for the Duke and Amir (2023) data. Left: ELBO as a function of the number of iterations until convergence. Right: marginal density approximation for a regression coefficient with kernel density estimation of the true density (full line) versus variational approximation (dashed).
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
 </div>
 </section>
-<section id="general-derivation" class="level3" data-number="10.2.2">
-<h3 data-number="10.2.2" class="anchored" data-anchor-id="general-derivation"><span class="header-section-number">10.2.2</span> General derivation</h3>
+<section id="automatic-differentiation-variational-inference" class="level2" data-number="10.3">
+<h2 data-number="10.3" class="anchored" data-anchor-id="automatic-differentiation-variational-inference"><span class="header-section-number">10.3</span> Automatic differentiation variational inference</h2>
 <p>We consider alternative numeric schemes which rely on stochastic optimization. The key idea behind these methods is that we can use gradient-based algorithms, and approximate the expectations with respect to <span class="math inline">\(g\)</span> by drawing samples from the approximating densities. This gives rises to a general omnibus procedure for optimization, although some schemes capitalize on the structure of the approximating family. <span class="citation" data-cites="Hoffman:2013">Hoffman et al. (<a href="references.html#ref-Hoffman:2013" role="doc-biblioref">2013</a>)</span> consider stochastic gradient for exponential families mean-field approximations, using natural gradients to device an algorithm. While efficient within this context, it is not a generic algorithm.</p>
 <p><span class="citation" data-cites="Ranganath:2014">Ranganath, Gerrish, and Blei (<a href="references.html#ref-Ranganath:2014" role="doc-biblioref">2014</a>)</span> extend this to more general distributions by noting that the gradient of the ELBO, interchanging the derivative and the integral using the dominated convergence theorem, is <span class="math display">\[\begin{align*}
 \frac{\partial}{\partial \boldsymbol{\psi}} \mathsf{ELBO}(g) &amp;= \int g(\boldsymbol{\theta}; \boldsymbol{\psi}) \frac{\partial}{\partial \boldsymbol{\psi}} \log \left( \frac{p(\boldsymbol{\theta}, \boldsymbol{y})}{g(\boldsymbol{\theta}; \boldsymbol{\psi})}\right) \mathrm{d} \boldsymbol{\theta} + \int  \frac{\partial g(\boldsymbol{\theta}; \boldsymbol{\psi})}{\partial \boldsymbol{\psi}} \times \log \left( \frac{p(\boldsymbol{\theta}, \boldsymbol{y})}{g(\boldsymbol{\theta}; \boldsymbol{\psi})}\right) \mathrm{d} \boldsymbol{\theta}
@@ -430,20 +584,19 @@ Carpenter, Bob, Andrew Gelman, Matthew D. Hoffman, Daniel Lee, Ben Goodrich, Mic
 <div id="ref-Davison:2003" class="csl-entry" role="listitem">
 Davison, A. C. 2003. <em>Statistical Models</em>. Cambridge, UK: Cambridge University Press.
 </div>
+<div id="ref-Duke.Amir:2023" class="csl-entry" role="listitem">
+Duke, Kristen E., and On Amir. 2023. <span>“The Importance of Selling Formats: When Integrating Purchase and Quantity Decisions Increases Sales.”</span> <em>Marketing Science</em> 42 (1): 87–109. <a href="https://doi.org/10.1287/mksc.2022.1364">https://doi.org/10.1287/mksc.2022.1364</a>.
+</div>
 <div id="ref-Hoffman:2013" class="csl-entry" role="listitem">
 Hoffman, Matthew D., David M. Blei, Chong Wang, and John Paisley. 2013. <span>“Stochastic Variational Inference.”</span> <em>Journal of Machine Learning Research</em> 14 (40): 1303–47. <a href="http://jmlr.org/papers/v14/hoffman13a.html">http://jmlr.org/papers/v14/hoffman13a.html</a>.
 </div>
 <div id="ref-Kucukelbir:2017" class="csl-entry" role="listitem">
 Kucukelbir, Alp, Dustin Tran, Rajesh Ranganath, Andrew Gelman, and David M. Blei. 2017. <span>“Automatic Differentiation Variational Inference.”</span> <em>Journal of Machine Learning Research</em> 18 (14): 1–45. <a href="http://jmlr.org/papers/v18/16-107.html">http://jmlr.org/papers/v18/16-107.html</a>.
 </div>
-<div id="ref-Ormerod.Wand:2010" class="csl-entry" role="listitem">
-Ormerod, J. T., and M. P. Wand. 2010. <span>“Explaining Variational Approximations.”</span> <em>The American Statistician</em> 64 (2): 140–53. <a href="https://doi.org/10.1198/tast.2010.09058">https://doi.org/10.1198/tast.2010.09058</a>.
-</div>
 <div id="ref-Ranganath:2014" class="csl-entry" role="listitem">
 Ranganath, Rajesh, Sean Gerrish, and David Blei. 2014. <span>“<span>Black Box Variational Inference</span>.”</span> In <em>Proceedings of the Seventeenth International Conference on Artificial Intelligence and Statistics</em>, edited by Samuel Kaski and Jukka Corander, 33:814–22. Proceedings of Machine Learning Research. Reykjavik, Iceland: PMLR. <a href="https://proceedings.mlr.press/v33/ranganath14.html">https://proceedings.mlr.press/v33/ranganath14.html</a>.
 </div>
 </div>
-</section>
 </section>
 
 </main> <!-- /main -->

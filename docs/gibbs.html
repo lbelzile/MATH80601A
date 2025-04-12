@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.7.1">
+<meta name="generator" content="quarto-1.7.3">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -91,10 +91,10 @@ div.csl-indent {
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="site_libs/quarto-html/anchor.min.js"></script>
 <link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-2bb0ec5e928ee8c40b12725cb7836c35.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-81b5c3e63835cfde897ecd3d35a35a41.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-a51e8ad160b68d9f8f1ac488cc0f242e.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-ad5ef081d17d57ab2b6cc5e45efb5d90.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
   "copy-button": false,
@@ -404,15 +404,15 @@ p(\tau \mid \mu, \boldsymbol{y}) &amp; \propto \tau^{-n/2-\alpha-1}\exp\left[-\f
 <div id="exm-probit-regression" class="theorem example">
 <p><span class="theorem-title"><strong>Example 6.2 (Probit regression)</strong></span> Consider binary responses <span class="math inline">\(\boldsymbol{Y}_i,\)</span> for which we postulate a probit regression model, <span class="math display">\[\begin{align*}
 p_i = \Pr(Y_i=1) = \Phi(\beta_0 + \beta_1 \mathrm{X}_{i1} + \cdots + \beta_p\mathrm{X}_{ip}),
-\end{align*}\]</span> where <span class="math inline">\(\Phi\)</span> is the distribution function of the standard Gaussian distribution. The likelihood of the probit model for a sample of <span class="math inline">\(n\)</span> independent observations is <span class="math display">\[L(\boldsymbol{\beta}; \boldsymbol{y}) = \prod_{i=1}^n p_i^{y_i}(1-p_i)^{1-y_i},\]</span> and this prevents easy simulation. We can consider a data augmentation scheme where <span class="math inline">\(Y_i = \mathsf{I}(Z_i &gt; 0),\)</span> where <span class="math inline">\(Z_i \sim \mathsf{Gauss}(\mathbf{x}_i\boldsymbol{\beta}, 1),\)</span> with <span class="math inline">\(\mathbf{x}_i\)</span> denoting the <span class="math inline">\(i\)</span>th row of the design matrix.</p>
+\end{align*}\]</span> where <span class="math inline">\(\Phi\)</span> is the distribution function of the standard Gaussian distribution. The likelihood of the probit model for a sample of <span class="math inline">\(n\)</span> independent observations is <span class="math display">\[L(\boldsymbol{\beta}; \boldsymbol{y}) = \prod_{i=1}^n p_i^{y_i}(1-p_i)^{1-y_i},\]</span> and this prevents easy simulation. We can consider a data augmentation scheme where <span class="math inline">\(Y_i = \mathrm{I}(Z_i &gt; 0),\)</span> where <span class="math inline">\(Z_i \sim \mathsf{Gauss}(\mathbf{x}_i\boldsymbol{\beta}, 1),\)</span> with <span class="math inline">\(\mathbf{x}_i\)</span> denoting the <span class="math inline">\(i\)</span>th row of the design matrix.</p>
 <p>The augmented data likelihood is <span class="math display">\[\begin{align*}
-p(\boldsymbol{z}, \boldsymbol{y} \mid \boldsymbol{\beta}) \propto \exp\left\{-\frac{1}{2}(\boldsymbol{z} - \mathbf{X}\boldsymbol{\beta})^\top(\boldsymbol{z} - \mathbf{X}\boldsymbol{\beta})\right\} \times \prod_{i=1}^n \mathsf{I}(z_i &gt; 0)^{y_i}\mathsf{I}(z_i \le 0)^{1-y_i}
+p(\boldsymbol{z}, \boldsymbol{y} \mid \boldsymbol{\beta}) \propto \exp\left\{-\frac{1}{2}(\boldsymbol{z} - \mathbf{X}\boldsymbol{\beta})^\top(\boldsymbol{z} - \mathbf{X}\boldsymbol{\beta})\right\} \times \prod_{i=1}^n \mathrm{I}(z_i &gt; 0)^{y_i}\mathrm{I}(z_i \le 0)^{1-y_i}
 \end{align*}\]</span> Given <span class="math inline">\(Z_i,\)</span> the coefficients <span class="math inline">\(\boldsymbol{\beta}\)</span> are simply the results of ordinary linear regression with unit variance, so <span class="math display">\[\begin{align*}
 \boldsymbol{\beta} \mid \boldsymbol{z}, \boldsymbol{y} &amp;\sim \mathsf{Gauss}\left\{\widehat{\boldsymbol{\beta}}, (\mathbf{X}^\top\mathbf{X})^{-1}\right\}
 \end{align*}\]</span> with <span class="math inline">\(\widehat{\boldsymbol{\beta}}=(\mathbf{X}^\top\mathbf{X})^{-1}\mathbf{X}^\top\boldsymbol{z}\)</span> is the ordinary least square estimator from the regression with model matrix <span class="math inline">\(\mathbf{X}\)</span> and response vector <span class="math inline">\(\boldsymbol{z}.\)</span> The augmented variables <span class="math inline">\(Z_i\)</span> are conditionally independent and truncated Gaussian with <span class="math display">\[\begin{align*}
 Z_i \mid y_i, \boldsymbol{\beta} \sim \begin{cases}
-\mathsf{trunc. Gauss}(\mathbf{x}_i\boldsymbol{\beta}, -\infty, 0) &amp; y_i =0 \\
-\mathsf{trunc. Gauss}(\mathbf{x}_i\boldsymbol{\beta}, 0, \infty) &amp; y_i =1.
+\mathsf{trunc. Gauss}(\mathbf{x}_i\boldsymbol{\beta},1, -\infty, 0) &amp; y_i =0 \\
+\mathsf{trunc. Gauss}(\mathbf{x}_i\boldsymbol{\beta},1,  0, \infty) &amp; y_i =1.
 \end{cases}
 \end{align*}\]</span> and we can use the algorithms of <a href="montecarlo.html#exm-accept-reject-truncated" class="quarto-xref">Example&nbsp;<span>4.2</span></a> to simulate these.</p>
 <div class="cell">
@@ -489,7 +489,7 @@ Figure&nbsp;6.3: Traceplot of <span class="math inline">\(\beta\)</span> coeffic
 </div>
 <div id="exm-mixture" class="theorem example">
 <p><span class="theorem-title"><strong>Example 6.4 (Mixture models)</strong></span> In clustering problems, we can specify that observations arise from a mixture model with a fixed or unknown number of coefficients: the interest lies then in estimating the relative weights of the components, and their location and scale.</p>
-<p>A <span class="math inline">\(K\)</span>-mixture model is a weighted combination of models frequently used in clustering or to model subpopulations with respective densities <span class="math inline">\(f_k,\)</span> with density <span class="math display">\[f(x; \boldsymbol{\theta}, \boldsymbol{\omega}) = \sum_{k=1}^K \omega_kf_k(x; \boldsymbol{\theta}_k), \qquad \omega_1 + \cdots \omega_K=1.\]</span> Since the density involves a sum, numerical optimization is challenging. Let <span class="math inline">\(C_i\)</span> denote the cluster index for observation <span class="math inline">\(i\)</span>: if we knew the value of <span class="math inline">\(C_i =j,\)</span> the density would involve only <span class="math inline">\(f_j.\)</span> We can thus use latent variables representing the group allocation to simplify the problem and run an EM algorithm or use the data augmentation. In an iterative framework, we can consider the complete data as the tuples <span class="math inline">\((X_i, Z_i),\)</span> where <span class="math inline">\(Z_i = \mathsf{I}(C_i=k).\)</span></p>
+<p>A <span class="math inline">\(K\)</span>-mixture model is a weighted combination of models frequently used in clustering or to model subpopulations with respective densities <span class="math inline">\(f_k,\)</span> with density <span class="math display">\[f(x; \boldsymbol{\theta}, \boldsymbol{\omega}) = \sum_{k=1}^K \omega_kf_k(x; \boldsymbol{\theta}_k), \qquad \omega_1 + \cdots \omega_K=1.\]</span> Since the density involves a sum, numerical optimization is challenging. Let <span class="math inline">\(C_i\)</span> denote the cluster index for observation <span class="math inline">\(i\)</span>: if we knew the value of <span class="math inline">\(C_i =j,\)</span> the density would involve only <span class="math inline">\(f_j.\)</span> We can thus use latent variables representing the group allocation to simplify the problem and run an EM algorithm or use the data augmentation. In an iterative framework, we can consider the complete data as the tuples <span class="math inline">\((X_i, Z_i),\)</span> where <span class="math inline">\(Z_i = \mathrm{I}(C_i=k).\)</span></p>
 <p>With the augmented data, the likelihood becomes <span class="math display">\[\begin{align*}
 \prod_{i=1}^n \prod_{k=1}^K \{\omega_kf_k(x; \boldsymbol{\theta}_k)\}^{Z_i},
 \end{align*}\]</span> so the conditional distribution of <span class="math inline">\(Z_i \mid X_i, \boldsymbol{\omega}, \boldsymbol{\theta} \sim \mathsf{multinom}(1, \boldsymbol{\gamma}_{ik})\)</span> where <span class="math display">\[\gamma_{ik} = \frac{\omega_k f_k(X_i\boldsymbol{\theta}_k)}{\sum_{j=1}^K \omega_jf_j(X_i\boldsymbol{\theta}_k)}.\]</span> Given suitable priors for the probabilities <span class="math inline">\(\boldsymbol{\omega}\)</span> and <span class="math inline">\(\boldsymbol{\theta} \equiv \{\boldsymbol{\theta}_1, \ldots, \boldsymbol{\theta}_k\},\)</span> we can use Gibbs sampling updating <span class="math inline">\(\boldsymbol{Z},\)</span> <span class="math inline">\(\boldsymbol{\omega}\)</span> and <span class="math inline">\(\boldsymbol{\theta}\)</span> in turn, assigning a conjugate Dirichlet prior for <span class="math inline">\(\boldsymbol{\omega}.\)</span></p>

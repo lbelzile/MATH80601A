@@ -260,11 +260,11 @@ p_i = \Pr(Y_i=1) = \Phi(\beta_0 + \beta_1 \mathrm{X}_{i1} + \cdots + \beta_p\mat
 where $\Phi$ is the distribution function of the standard Gaussian distribution.
 The likelihood of the probit model for a sample of $n$ independent observations is
 $$L(\boldsymbol{\beta}; \boldsymbol{y}) = \prod_{i=1}^n p_i^{y_i}(1-p_i)^{1-y_i},$$
-and this prevents easy simulation. We can consider a data augmentation scheme where $Y_i = \mathsf{I}(Z_i > 0),$ where $Z_i \sim \mathsf{Gauss}(\mathbf{x}_i\boldsymbol{\beta}, 1),$ with $\mathbf{x}_i$ denoting the $i$th row of the design matrix.
+and this prevents easy simulation. We can consider a data augmentation scheme where $Y_i = \mathrm{I}(Z_i > 0),$ where $Z_i \sim \mathsf{Gauss}(\mathbf{x}_i\boldsymbol{\beta}, 1),$ with $\mathbf{x}_i$ denoting the $i$th row of the design matrix.
 
 The augmented data likelihood is
 \begin{align*}
-p(\boldsymbol{z}, \boldsymbol{y} \mid \boldsymbol{\beta}) \propto \exp\left\{-\frac{1}{2}(\boldsymbol{z} - \mathbf{X}\boldsymbol{\beta})^\top(\boldsymbol{z} - \mathbf{X}\boldsymbol{\beta})\right\} \times \prod_{i=1}^n \mathsf{I}(z_i > 0)^{y_i}\mathsf{I}(z_i \le 0)^{1-y_i}
+p(\boldsymbol{z}, \boldsymbol{y} \mid \boldsymbol{\beta}) \propto \exp\left\{-\frac{1}{2}(\boldsymbol{z} - \mathbf{X}\boldsymbol{\beta})^\top(\boldsymbol{z} - \mathbf{X}\boldsymbol{\beta})\right\} \times \prod_{i=1}^n \mathrm{I}(z_i > 0)^{y_i}\mathrm{I}(z_i \le 0)^{1-y_i}
 \end{align*}
 Given $Z_i,$ the coefficients $\boldsymbol{\beta}$ are simply the results of ordinary linear regression with unit variance, so
 \begin{align*}
@@ -273,8 +273,8 @@ Given $Z_i,$ the coefficients $\boldsymbol{\beta}$ are simply the results of ord
 with $\widehat{\boldsymbol{\beta}}=(\mathbf{X}^\top\mathbf{X})^{-1}\mathbf{X}^\top\boldsymbol{z}$ is the ordinary least square estimator from the regression with model matrix $\mathbf{X}$ and response vector $\boldsymbol{z}.$ The augmented variables $Z_i$ are conditionally independent and truncated Gaussian with
 \begin{align*}
 Z_i \mid y_i, \boldsymbol{\beta} \sim \begin{cases}
-\mathsf{trunc. Gauss}(\mathbf{x}_i\boldsymbol{\beta}, -\infty, 0) & y_i =0 \\
-\mathsf{trunc. Gauss}(\mathbf{x}_i\boldsymbol{\beta}, 0, \infty) & y_i =1.
+\mathsf{trunc. Gauss}(\mathbf{x}_i\boldsymbol{\beta},1, -\infty, 0) & y_i =0 \\
+\mathsf{trunc. Gauss}(\mathbf{x}_i\boldsymbol{\beta},1,  0, \infty) & y_i =1.
 \end{cases}
 \end{align*}
 and we can use the algorithms of @exm-accept-reject-truncated to simulate these.
@@ -569,7 +569,7 @@ In clustering problems, we can specify that observations arise from a mixture mo
 
 A $K$-mixture model is a weighted combination of models frequently used in clustering or to model subpopulations with respective densities $f_k,$ with density
 $$f(x; \boldsymbol{\theta}, \boldsymbol{\omega}) = \sum_{k=1}^K \omega_kf_k(x; \boldsymbol{\theta}_k), \qquad \omega_1 + \cdots \omega_K=1.$$
-Since the density involves a sum, numerical optimization is challenging. Let $C_i$ denote the cluster index for observation $i$: if we knew the value of $C_i =j,$ the density would involve only $f_j.$ We can thus use latent variables representing the group allocation to simplify the problem and run an EM algorithm or use the data augmentation. In an iterative framework, we can consider the complete data as the tuples $(X_i, Z_i),$ where $Z_i = \mathsf{I}(C_i=k).$
+Since the density involves a sum, numerical optimization is challenging. Let $C_i$ denote the cluster index for observation $i$: if we knew the value of $C_i =j,$ the density would involve only $f_j.$ We can thus use latent variables representing the group allocation to simplify the problem and run an EM algorithm or use the data augmentation. In an iterative framework, we can consider the complete data as the tuples $(X_i, Z_i),$ where $Z_i = \mathrm{I}(C_i=k).$
 
 With the augmented data, the likelihood becomes
 \begin{align*}
