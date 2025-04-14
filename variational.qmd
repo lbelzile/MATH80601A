@@ -697,35 +697,116 @@ The integral of a density is one regardless of the value of $\boldsymbol{\psi}$,
 \begin{align*}
  \mathsf{E}_{g}\left\{\frac{\partial \log g(\boldsymbol{\theta}; \boldsymbol{\psi})}{\partial \boldsymbol{\psi}} \times \log \left( \frac{p(\boldsymbol{\theta}, \boldsymbol{y})}{g(\boldsymbol{\theta}; \boldsymbol{\psi})}\right)\right\}
 \end{align*}
-which we can approximate via Monte Carlo by drawing samples from $g$, which gives a stochastic gradient algorithm. @Ranganath:2014 provide two methods to reduce the variance of this expression using control variates and Rao--Blackwellization, as excessive variance hinders the convergence and requires larger Monte Carlo sample sizes to be reliable. In the context of large samples of independent observations, we can also resort to mini-batching, by randomly selecting a subset of observations.
+which we can approximate via Monte Carlo by drawing samples from $g$. @Ranganath:2014 provide two methods to reduce the variance of this expression using control variates and Rao--Blackwellization, as excessive variance hinders the convergence and requires larger Monte Carlo sample sizes to be reliable. In the context of large samples of independent observations, we can also resort to mini-batching, by randomly selecting a subset of observations.
+
+We can use the Monte Carlo approximation to derive a stochastic gradient algorithm.
+
+:::{#prp-stoch-grad-descent}
+
+## Stochastic gradient descent
+
+Consider $f(\boldsymbol{\theta})$ a differentiable function with gradient $\nabla f(\boldsymbol{\theta})$ and $\rho_t$ a Robbins--Munro sequence of step sizes satisfying $\sum_{t=1}^\infty \rho_t = \infty$ and $\sum_{t=1}^\infty \rho^2_t< \infty.$
+
+To maximize $f(\boldsymbol{\theta})$, we construct a series of first-order approximations starting from $\boldsymbol{\theta}^{(0)}$ with 
+\begin{align*}
+\boldsymbol{\theta}^{(t)} = \boldsymbol{\theta}^{(t-1)} +\rho_t  \mathsf{E}\left\{\nabla f(\boldsymbol{\theta}^{(t-1)})\right\}.
+\end{align*}
+where the expected value is evaluated via Monte Carlo, until changes in $\|\boldsymbol{\theta}_{t} - \boldsymbol{\theta}_{t-1}\|$ is less than some tolerance value.
+
+:::
+
+The speed of convergence of the stochastic gradient descent depends on multiple factors: 
+
+- the properties of the function (here the ELBO) under evaluation. Good performance is obtained for log concave distributions.
+- the level of noise of the gradient estimator. Less noisy gradient estimators are preferable.
+- good starting values, as the algorithm converges to a local maximum and may struggle if we are in a region where the objective function is flat.
+- the Robbins--Munro sequence used for the step size, as the steps may lead to divergences unless we have a global concave objective function.
 
 
-Some families of distributions, notably location-scale (cf. @def-location-scale) and exponential families (@def-exponential-family) are particularly convenient, because we can get expressions for the ELBO that are simpler. For exponential families approximating distributions, we have sufficient statistics $S_k \equiv t_k(\boldsymbol{\theta})$ and the gradient of $\log g$ becomes $S_k$ under mean-field.
+The second point is worth some further discussion.
+Some families of distributions, notably location-scale (cf. @def-location-scale) and exponential families (@def-exponential-family) are particularly convenient, because we can get expressions for the ELBO that are simpler and lead to less noisy gradient estimators. For exponential families approximating distributions, we have sufficient statistics $S_k \equiv t_k(\boldsymbol{\theta})$ and the gradient of $\log g$ becomes $S_k$ under mean-field.
 
-@Kucukelbir:2017 proposes a stochastic gradient algorithm, but with two main innovations. The first is the general use of Gaussian approximating densities for factorized density, with parameter transformations to map from the support of $T: \boldsymbol{\Theta} \mapsto \mathbb{R}^p$ via $T(\boldsymbol{\theta})=\boldsymbol{\zeta}.$ We then consider an approximation $g(\boldsymbol{\zeta}; \boldsymbol{\psi})$ where $\boldsymbol{\psi}$ consists of mean parameters $\boldsymbol{\mu}$ and covariance $\boldsymbol{\Sigma}$, parametrized in terms of independent components via $\boldsymbol{\Sigma}=\mathsf{diag}\{\exp(\boldsymbol{\omega})\}$ or through a Cholesky decomposition of the covariance $\boldsymbol{\Sigma} = \mathbf{LL}^\top$, where $\mathbf{L}$ is a lower triangular matrix. The full approximation is of course more flexible when the transformed parameters $\boldsymbol{\zeta}$ are correlated, but is more expensive to compute than the mean-field approximation. The change of variable introduces a Jacobian term for the approximation to the density $p(\boldsymbol{\theta}, \boldsymbol{y}).$ Another benefit is that the entropy of the multivariate Gaussian for $g$ the density of $\mathsf{Gauss}_p(\boldsymbol{\mu}, \boldsymbol{\Sigma})$ is
+@Kucukelbir:2017 proposes a stochastic gradient algorithm, but with two main innovations. The first is the general use of Gaussian approximating densities for factorized density, with parameter transformations to map from the support of $T: \boldsymbol{\Theta} \mapsto \mathbb{R}^p$ via $T(\boldsymbol{\theta})=\boldsymbol{\zeta}.$ We then consider an approximation $g(\boldsymbol{\zeta}; \boldsymbol{\psi})$ where $\boldsymbol{\psi}$ consists of mean parameters $\boldsymbol{\mu}$ and covariance $\boldsymbol{\Sigma}$, parametrized in terms of independent components via $\boldsymbol{\Sigma}=\mathsf{diag}\{\exp(\boldsymbol{\omega})\}$ or through a decomposition of the covariance $\boldsymbol{\Sigma} = \mathbf{LL}^\top$. The full approximation is of course more flexible when the transformed parameters $\boldsymbol{\zeta}$ are correlated, but is more expensive to compute than the mean-field approximation. The change of variable introduces a Jacobian term for the approximation to the density $p(\boldsymbol{\theta}, \boldsymbol{y}).$ Another benefit is that the Gaussian entropy admits a closed-form solution that depends only on the covariance, so is not random. 
+
+:::{#prp-entropy-Gauss}
+
+## Entropy of Gaussian
+
+Write the entropy  of the multivariate Gaussian for $g$ the density of $\mathsf{Gauss}_p(\boldsymbol{\mu}, \boldsymbol{\Sigma})$ as
 \begin{align*}
  - \mathsf{E}_g(\log g) &= \frac{D\log(2\pi) + \log|\boldsymbol{\Sigma}|}{2} - \frac{1}{2}\mathsf{E}_g\left\{ (\boldsymbol{X}-\boldsymbol{\mu})^\top\boldsymbol{\Sigma}^{-1}(\boldsymbol{X}-\boldsymbol{\mu})\right\} \\& = \frac{D\log(2\pi) + \log|\boldsymbol{\Sigma}|}{2} - \frac{1}{2}\mathsf{E}_g\left[ \mathsf{tr}\left\{(\boldsymbol{X}-\boldsymbol{\mu})^\top\boldsymbol{\Sigma}^{-1}(\boldsymbol{X}-\boldsymbol{\mu})\right\}\right]
  \\& =  \frac{D\log(2\pi) + \log|\boldsymbol{\Sigma}|}{2} - \frac{1}{2}\mathsf{tr}\left[\boldsymbol{\Sigma}^{-1}\mathsf{E}_g\left\{(\boldsymbol{X}-\boldsymbol{\mu})(\boldsymbol{X}-\boldsymbol{\mu})^\top\right\}\right]
  \\& =\frac{D+D\log(2\pi) + \log |\boldsymbol{\Sigma}|}{2}.
 \end{align*}
-This follows from taking the trace of a $1\times 1$ matrix, and applying a cyclic permutation to which the trace is invariant. Since the trace is a linear operator, we can interchange the trace with the expected value.  Finally, we have $\mathsf{E}_g\left\{(\boldsymbol{X}-\boldsymbol{\mu})(\boldsymbol{X}-\boldsymbol{\mu})^\top\right\}=\boldsymbol{\Sigma}$, and the trace of a $D \times D$ identity matrix is simply $D$. The Gaussian entropy depends only on the covariance, so is not random. 
+This follows from taking the trace of a $1\times 1$ matrix, and applying a cyclic permutation to which the trace is invariant. Since the trace is a linear operator, we can interchange the trace with the expected value.  Finally, we have $\mathsf{E}_g\left\{(\boldsymbol{X}-\boldsymbol{\mu})(\boldsymbol{X}-\boldsymbol{\mu})^\top\right\}=\boldsymbol{\Sigma}$, and the trace of a $D \times D$ identity matrix is simply $D$.
 
+:::
 
 The transformation to $\mathbb{R}^p$ is not unique and different choices may yield to differences, but the choice of optimal transformation requires knowledge of the true posterior, which is thus intractable.
 
-We focus on the case of full transformation; the derivation for independent components is analogous. Since the Gaussian is a location-scale family, we can rewrite the model in terms of a standardized Gaussian variable $\boldsymbol{Z}\sim \mathsf{Gauss}_p(\boldsymbol{0}_p, \mathbf{I}_p)$ where $\boldsymbol{\zeta} = \boldsymbol{\mu} + \mathbf{L}\boldsymbol{Z}$ The ELBO with the transformation is of the form
+
+We give next some details about derivation of the full-rank approximation. We work with the matrix-log of the covariance matrix, defined through it's eigendecomposition $\boldsymbol{\Sigma}=\mathbf{V}\mathrm{diag}(\boldsymbol{\lambda})\mathbf{V}^{\top},$ where $\mathbf{V}$ is a $p\times p$ orthogonal matrix of eigenvectors, whose inverse is equal to it's transpose. Since we are decomposing a symmetric definite matrix,. Most operations on the matrix only affect the eigenvalues $\lambda_1, \ldots, \lambda_p$: the matrix-log is
 \begin{align*}
- \mathsf{E}_{\boldsymbol{Z}}\left[ \log p\{\boldsymbol{y}, T^{-1}(\boldsymbol{\mu} + \mathbf{L}\boldsymbol{Z})\} + \log \left|\mathbf{J}_{T^{-1}}(\boldsymbol{\mu} + \mathbf{L}\boldsymbol{Z})\right|\right] +\frac{D+D\log(2\pi) + \log |\mathbf{LL}^\top|}{2}.
+\mathbf{L} =\mathbf{V}\mathrm{diag}\left\{ \frac{1}{2}\log(\boldsymbol{\lambda})\right\}\mathbf{V}^\top.
 \end{align*}
-where we have the absolute value of the determinant of the Jacobian of the transformation. If we apply the chain rule
+Other operations on matrices are defined analogously: we write $\exp(\boldsymbol{\Sigma}) = \mathbf{V}\mathrm{diag}\{ \exp(\boldsymbol{\lambda})\}\mathbf{V}^\top$ and we write $\log(\boldsymbol{\Sigma}) = \mathbf{V}\mathrm{diag}\{ \log(\boldsymbol{\lambda})\}\mathbf{V}^\top$.
+
+We focus on the case of full transformation; the derivation for independent components is analogous. Since the Gaussian is a location-scale family, we can rewrite the model in terms of a standardized Gaussian variable $\boldsymbol{Z}\sim \mathsf{Gauss}_p(\boldsymbol{0}_p, \mathbf{I}_p)$ where $\boldsymbol{\zeta} = \boldsymbol{\mu} + \exp(\mathbf{L})\boldsymbol{Z}.$ The ELBO with the transformation is 
 \begin{align*}
- \frac{\partial}{\partial \boldsymbol{\psi}}\log p\{\boldsymbol{y}, T^{-1}(\boldsymbol{\mu} + \mathbf{L}\boldsymbol{Z})\} = \frac{\partial \log p(\boldsymbol{y}, \boldsymbol{\theta})}{\partial \boldsymbol{\theta}} \frac{\partial T^{-1}(\boldsymbol{\zeta})}{\partial \boldsymbol{\zeta}} \frac{\partial \boldsymbol{\mu} + \mathbf{L}\boldsymbol{Z}}{\partial \boldsymbol{\psi}}
+ \mathsf{ELBO}(g) & = \mathsf{E}_{\boldsymbol{Z}}\left[ \log p\left\{\boldsymbol{y}, T^{-1}(\boldsymbol{\zeta})\right\} + \log \left|\mathbf{J}_{T^{-1}}(\boldsymbol{\zeta})\right|\right] \\&\quad+\frac{D}{2}\{1+\log(2\pi)\} + \mathrm{trace}(\mathbf{L}).
 \end{align*}
-and we retrieve the gradients of the ELBO with respect to the mean and variance, which are
+where we have the logarithm of the absolute value of the determinant of the Jacobian of the transformation due to the change of variable. If we apply the chain rule
 \begin{align*}
- \frac{\partial \mathsf{ELBO}(g)}{\partial \boldsymbol{\mu}} &= \mathsf{E}_{\boldsymbol{Z}}\left\{\frac{\partial \log p(\boldsymbol{y}, \boldsymbol{\theta})}{\partial \boldsymbol{\theta}} \frac{\partial T^{-1}(\boldsymbol{\zeta})}{\partial \boldsymbol{\zeta}}  + \frac{\partial \log \left|\mathbf{J}_{T^{-1}}(\boldsymbol{\zeta})\right|}{\partial \boldsymbol{\zeta}}\right\} \\
- \frac{\partial \mathsf{ELBO}(g)}{\partial \mathbf{L}} &= \mathsf{E}_{\boldsymbol{Z}}\left[\left\{\frac{\partial \log p(\boldsymbol{y}, \boldsymbol{\theta})}{\partial \boldsymbol{\theta}} \frac{\partial T^{-1}(\boldsymbol{\zeta})}{\partial \boldsymbol{\zeta}}  + \frac{\partial \log \left|\mathbf{J}_{T^{-1}}(\boldsymbol{\zeta})\right|}{\partial \boldsymbol{\zeta}}\right\}\boldsymbol{Z}^\top\right] + \mathbf{L}^{-\top}.
+ \frac{\partial}{\partial \boldsymbol{\psi}}\log p\{\boldsymbol{y}, T^{-1}(\boldsymbol{\mu} + \exp(\mathbf{L})\boldsymbol{Z})\} = \frac{\partial \log p(\boldsymbol{y}, \boldsymbol{\theta})}{\partial \boldsymbol{\theta}} \frac{\partial T^{-1}(\boldsymbol{\zeta})}{\partial \boldsymbol{\zeta}} \frac{\partial \boldsymbol{\mu} + \exp(\mathbf{L})\boldsymbol{Z}}{\partial \boldsymbol{\psi}}
 \end{align*}
+and we retrieve the gradients of the ELBO with respect to the mean and variance, which are 
+\begin{align*}
+ \frac{\partial \mathsf{ELBO}(g)}{\partial \boldsymbol{\mu}} &= \mathsf{E}_{\boldsymbol{Z}}\left\{\nabla p(\boldsymbol{y}, \boldsymbol{\theta})\right\} \\
+ \frac{\partial \mathsf{ELBO}(g)}{\partial \mathbf{L}} &= \mathsf{symm}\left( \mathsf{E}_{\boldsymbol{Z}}\left\{\nabla p(\boldsymbol{y}, \boldsymbol{\theta})\boldsymbol{Z}^\top\exp(\mathbf{L})\right\}\right) + \mathbf{I}_p.
+\end{align*}
+where $\mathsf{symm}(\mathbf{X}) = (\mathbf{X} + \mathbf{X}^\top)/2$ is the symmetrization operator and
+\begin{align*}
+\nabla p(\boldsymbol{y}, \boldsymbol{\theta}) = \frac{\partial \log p(\boldsymbol{y}, \boldsymbol{\theta})}{\partial \boldsymbol{\theta}} \frac{\partial T^{-1}(\boldsymbol{\zeta})}{\partial \boldsymbol{\zeta}}  + \frac{\partial \log \left|\mathbf{J}_{T^{-1}}(\boldsymbol{\zeta})\right|}{\partial \boldsymbol{\zeta}}.
+\end{align*}
+
+
+Assume for simplicity that we have $T(\boldsymbol{\zeta}) = \boldsymbol{\zeta}$ is the identity. We can rewrite the expression for the gradient with respect to the matrix-log as
+\begin{align*}
+ \frac{\partial \mathsf{ELBO}(g)}{\partial \mathbf{L}} &= \mathsf{symm}\left[ \mathsf{E}_{\boldsymbol{Z}}\left\{\frac{\partial \log p\{\boldsymbol{y}, \boldsymbol{\theta}=\boldsymbol{\mu} + \exp(\mathbf{L})\boldsymbol{Z}\}}{\partial \boldsymbol{\theta}}\boldsymbol{Z}^\top\exp(\mathbf{L})\right\}\right] + \mathbf{I}_p.
+ \\& = \mathsf{symm}\left( \mathsf{E}_{\boldsymbol{Z}}\left[\frac{\partial \log p\{\boldsymbol{y}, \boldsymbol{\theta}=\boldsymbol{\mu} + \exp(\mathbf{L})\boldsymbol{Z}\}}{\partial \boldsymbol{\theta}\partial \boldsymbol{\theta}^\top}\exp(2\mathbf{L})\right]\right) + \mathbf{I}_p.
+\end{align*}
+The first expression typically leads to a more noisy gradient estimator, but the second requires derivation of the Hessian matrix. The equivalence follows from Stein's lemma, which can be proved by integration by part.
+
+:::{#prp-stein-lemma}
+
+## Stein's lemma
+
+Consider $h: \mathbb{R}^d \to \mathbb{R}$ a differentiable function and integration with respect to $\boldsymbol{X} \sim \mathsf{Gauss}_d(\boldsymbol{\mu}, \boldsymbol{\Sigma})$ such that the gradient is absolutely integrable, $\mathsf{E}_{\boldsymbol{X}}\{|\nabla_i h(\boldsymbol{X})|\} < \infty$ for $i=1, \ldots, d.$ Then [@Liu:1994],
+\begin{align*}
+\mathsf{E}_{\boldsymbol{X}}\left\{h(\boldsymbol{X})(\boldsymbol{X}-\boldsymbol{\mu})\right\} = \boldsymbol{\Sigma}\mathsf{E}_{\boldsymbol{X}}\left\{\nabla h(\boldsymbol{X})\right\}
+\end{align*}
+
+:::
+
+
+
+We can replace expectations by Monte Carlo estimation and apply stochastic gradient descent: for example, an estimator of the ELBO for the case with $\boldsymbol{\theta} = \boldsymbol{\eta} \in \mathbb{R}^p$ is
+\begin{align*}
+\frac{1}{B}\sum_{b=1}^B p\{\boldsymbol{y}, \boldsymbol{\theta} = \boldsymbol{\mu} + \exp(\mathbf{L})\boldsymbol{Z}_i\} + \frac{p}{2}\{\log(2\pi)+1\} + \mathrm{trace}(\mathbf{L})
+\end{align*}
+for $\boldsymbol{Z}_1, \ldots, \boldsymbol{Z}_b \sim \mathsf{Gauss}_p(\boldsymbol{0}_p, \mathbf{I}_p).$
+
 Compared to the black-box variational inference algorithm, this requires calculating the gradient of the log posterior with respect to $\boldsymbol{\theta}.$ This step can be done using automatic differentiation (hence the terminology ADVI), and moreover this gradient estimator is several orders less noisy than the black-box counterpart. The ELBO can be approximated via Monte Carlo integration.
 
-We can thus build a stochastic gradient algorithm with a Robins--Munroe sequence of updates. @Kucukelbir:2017 use an adaptive step-size for convergence. The ADVI algorithm is implemented in @Stan:2017; see [the manual](https://mc-stan.org/docs/reference-manual/variational.html) for more details.
+
+
+
+We can thus build a stochastic gradient algorithm with a Robins--Monro sequence of updates. @Kucukelbir:2017 use an adaptive step-size sequence $\rho_t$ for the stochastic gradient descent, which we explicit: consider the $k$th entry of the gradient evaluate at step $t$ by $g_{k,t}$, with
+\begin{align*}
+\rho_{k,t} &= \eta\frac{ t^{-1/2+10^{-15}}}{\tau + \alpha s_{k,t}} \\
+s^2_{k,t} &= \alpha g_{k,t}^2 + (1-\alpha)s^2_{k,t-1} = 
+\alpha g_{k,t}^2 + (1-\alpha)\sum_{i=1}^{t-1} \alpha^{t-i} g_{k,i}^2 
+\end{align*}
+with $s^2_{k,1}=g_{k,1}^2$ where the delay $\tau>0$ is some positive constant (typically 1) to prevent division by zero and $\eta>0$ controls the step size (smaller values may be required to avoid divergence) and $0<\alpha<1$ controls the mixture. This parameter-specific scaling helps with updates of parameters on very different scales. For matrix parameters, updates from vectorization of the matrix entries and application of the diagonal sequence to each element separately.
+
+The ADVI algorithm is implemented in @Stan:2017; see [the manual](https://mc-stan.org/docs/reference-manual/variational.html) for more details.

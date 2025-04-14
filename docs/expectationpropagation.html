@@ -311,17 +311,12 @@ q_{(i+1)}(\boldsymbol{\theta}) &amp;\propto \exp \left\{ - \frac{1}{2} \boldsymb
 <p>Suppose for simplicity that the domain <span class="math inline">\(\boldsymbol{\Theta}=\mathbb{R}^p\)</span>, so that no prior transformation is necessary. For location-scale family, we have seen in the section on ADVI that the variational Bayes with a Gaussian approximation on the target <span class="math inline">\(\boldsymbol{\theta} = \boldsymbol{\mu} + \mathbf{L}\boldsymbol{Z}\)</span> with <span class="math inline">\(\mathbf{LL}^\top=\boldsymbol{\Sigma}\)</span> and <span class="math inline">\(\boldsymbol{Z} \sim \mathsf{Gauss}_p(\boldsymbol{0}_p, \mathbf{I}_p)\)</span> that the gradient satisfies <span class="math display">\[\begin{align*}
 \nabla_{\boldsymbol{\mu}}\mathsf{ELBO}(q)&amp;= -\mathsf{E}_{\boldsymbol{Z}}\{\nabla_{\boldsymbol{\theta}}\psi(\boldsymbol{\theta})\} \\
 \nabla_{\mathbf{L}}\mathsf{ELBO}(q)&amp;= -\mathsf{E}_{\boldsymbol{Z}}\{\nabla_{\boldsymbol{\theta}}\psi(\boldsymbol{\theta})\boldsymbol{Z}^\top\} + \mathbf{L}^{-\top}
-\end{align*}\]</span> If we apply integration by parts (Stein’s lemma, see <a href="#prp-stein" class="quarto-xref">Proposition&nbsp;<span>11.1</span></a>) using the fact that the integral is with respect to a standard Gaussian density <span class="math inline">\(\phi_p(\boldsymbol{z}),\)</span> we can rewrite the second term as <span class="math display">\[\begin{align*}
+\end{align*}\]</span> If we apply integration by parts (Stein’s lemma, see <a href="variational.html#prp-stein-lemma" class="quarto-xref">Proposition&nbsp;<span>10.4</span></a>) using the fact that the integral is with respect to a standard Gaussian density <span class="math inline">\(\phi_p(\boldsymbol{z}),\)</span> we can rewrite the second term as <span class="math display">\[\begin{align*}
   \nabla_{\mathbf{L}}\mathsf{ELBO}(q)&amp;= -\mathsf{E}_{\boldsymbol{Z}}\left\{ \frac{\partial^2 \psi(\boldsymbol{\theta})}{\partial \boldsymbol{\theta} \partial \boldsymbol{\theta}^\top}\right\}\mathbf{L} + \mathbf{L}^{-\top}.
 \end{align*}\]</span> At a critical point, both of these derivatives must be zero, whence <span class="math display">\[\begin{align*}
 \mathsf{E}_{\boldsymbol{Z}}\{\nabla_{\boldsymbol{\theta}}\psi(\boldsymbol{\theta})\} &amp;= \boldsymbol{0}_p. \\
 \mathsf{E}_{\boldsymbol{Z}}\left\{ \frac{\partial^2 \psi(\boldsymbol{\theta})}{\partial \boldsymbol{\theta} \partial \boldsymbol{\theta}^\top}\right\} &amp;= \boldsymbol{\Sigma}^{-1}.
 \end{align*}\]</span> Compared to the Laplace approximation, the variational Gaussian approximation returns a vector <span class="math inline">\(\boldsymbol{\mu}\)</span> around which the expected value of the gradient is zero and similarly <span class="math inline">\(\boldsymbol{\Sigma}\)</span> for which the expected value of the curvature (Hessian) is equal to the precision. The averaging step is what distinguishes the Laplace and variational approximations.</p>
-<div id="prp-stein" class="theorem proposition">
-<p><span class="theorem-title"><strong>Proposition 11.1 (Stein’s lemma)</strong></span> Consider <span class="math inline">\(h: \mathbb{R}^d \to \mathbb{R}\)</span> a differentiable function and integration with respect to <span class="math inline">\(\boldsymbol{X} \sim \mathsf{Gauss}_d(\boldsymbol{\mu}, \boldsymbol{\Sigma})\)</span> such that the gradient is absolutely integrable, <span class="math inline">\(\mathsf{E}_{\boldsymbol{X}}\{|\nabla_i h(\boldsymbol{X})|\} &lt; \infty\)</span> for <span class="math inline">\(i=1, \ldots, d.\)</span> Then <span class="citation" data-cites="Liu:1994">(<a href="references.html#ref-Liu:1994" role="doc-biblioref">Liu 1994</a>)</span>, <span class="math display">\[\begin{align*}
-\mathsf{E}_{\boldsymbol{X}}\left\{h(\boldsymbol{X})(\boldsymbol{X}-\boldsymbol{\mu})\right\} = \boldsymbol{\Sigma}\mathsf{E}_{\boldsymbol{X}}\left\{\nabla h(\boldsymbol{X})\right\}
-\end{align*}\]</span></p>
-</div>
 </section>
 <section id="expectation-propagation" class="level2" data-number="11.2">
 <h2 data-number="11.2" class="anchored" data-anchor-id="expectation-propagation"><span class="header-section-number">11.2</span> Expectation propagation</h2>
@@ -344,11 +339,19 @@ c_j &amp;= \int h_j(\boldsymbol{\theta}) \mathrm{d} \boldsymbol{\theta} \\
 <div id="exm-logistic-ep" class="theorem example">
 <p><span class="theorem-title"><strong>Example 11.1 (Logistic regression)</strong></span> Consider a logistic regression model where we code successes <span class="math inline">\(Y=1\)</span> and failures <span class="math inline">\(Y=-1;\)</span> for a given row vector <span class="math inline">\(\mathbf{x}\)</span> of length <span class="math inline">\(p\)</span> and the vector <span class="math inline">\(\boldsymbol{\beta} \in \mathbb{R}^p\)</span> of coefficients, the probability of success is <span class="math display">\[\begin{align*}
 \Pr(Y=1 \mid \mathbf{x}, \boldsymbol{\beta}) = \left\{1+\exp(-\mathbf{x}\boldsymbol{\beta})\right\}^{-1} = \mathrm{expit}(\mathbf{x}\boldsymbol{\beta}).
-\end{align*}\]</span> The term on the right is the logistic function. This reparametrization makes it easier to write the likelihood contribution of observation <span class="math inline">\(i\)</span> as <span class="math display">\[L_i(\boldsymbol{\beta}) = \mathrm{expit}(y_i \mathbf{x}_i\boldsymbol{\beta}).\]</span> If we have the approximation for <span class="math inline">\(\boldsymbol{\beta} \sim \mathsf{Gauss}_p(\boldsymbol{\mu}, \boldsymbol{\Sigma}),\)</span> then the integrals for the normalizing constant, etc. depend only on the linear combination <span class="math inline">\(\mathbf{x}_i^\top\boldsymbol{\beta} \sim \mathsf{Gauss}(y_i \mathbf{x}_i^\top\boldsymbol{\mu}, y_i \mathbf{x}_i^\top\boldsymbol{\Sigma}\mathbf{x}_i).\)</span> This means all integrals for the tilting problem are unidimensional and can be obtained by Gaussian quadrature or similar numerical integration schemes.</p>
-<p>Given the mean and variance of the cavity, denoted <span class="math inline">\(\boldsymbol{\mu}_{-j}\)</span> and <span class="math inline">\(\boldsymbol{\Sigma}_{-j},\)</span> and with <span class="math inline">\(s_j = \mathbf{x}_j\boldsymbol{\Sigma}_{-j}\mathbf{x}_j^\top\)</span>, the updated mean and variance are <span class="math display">\[\begin{align*}
-\boldsymbol{\mu}_j^* &amp;= \boldsymbol{\mu}_{-j} s_j^{-1}\boldsymbol{\Sigma}_{-j}\mathbf{x}^\top \{\mathbf{E}(Z_j) -\mathbf{x}_j\boldsymbol{\mu}_{-j}\} \\
-\boldsymbol{\Sigma}_{j} &amp;=\boldsymbol{\Sigma}_{-j} + s_j^{-2}\boldsymbol{\Sigma}_{-j}\mathbf{x}^\top_j\left\{\mathsf{Var}(Z_j) - s_j\right\}\mathbf{x}_j\boldsymbol{\Sigma}_{-j}
-\end{align*}\]</span> where <span class="math inline">\(Z_j\)</span> has distribution proportional to <span class="math inline">\(L_j(z) \times \phi(z; \mathbf{x}_j\boldsymbol{\mu}_j, \mathbf{x}_j\boldsymbol{\Sigma}_{-j}\mathbf{x}_j^\top),\)</span> where <span class="math inline">\(\phi(\cdot; \mu, \sigma^2)\)</span> denotes the density of a Gaussian random variable. The updates to the parameters for more general exponential families are found in page 23 of <span class="citation" data-cites="Cseke.Heskes:2011">Cseke and Heskes (<a href="references.html#ref-Cseke.Heskes:2011" role="doc-biblioref">2011</a>)</span>.</p>
+\end{align*}\]</span> The term on the right is the logistic function. This reparametrization makes it easier to write the likelihood contribution of observation <span class="math inline">\(i\)</span> as <span class="math display">\[L_i(\boldsymbol{\beta}) = \mathrm{expit}(y_i \mathbf{x}_i\boldsymbol{\beta}).\]</span> Since this is a generalized linear model, we will have the approximation of the factor will have parameters <span class="math inline">\((a\mathbf{x}_i^\top, b\mathbf{x}_i^\top\mathbf{x}_i)\)</span>, which only depend on two scalars. Indeed, if we have the approximation for <span class="math inline">\(\boldsymbol{\beta} \sim \mathsf{Gauss}_p(\boldsymbol{\mu}, \boldsymbol{\Sigma}),\)</span> then the integrals for the normalizing constant, etc. depend only on the linear combination <span class="math inline">\(\mathbf{x}_i^\top\boldsymbol{\beta} \sim \mathsf{Gauss}(y_i \mathbf{x}_i^\top\boldsymbol{\mu}, y_i \mathbf{x}_i^\top\boldsymbol{\Sigma}\mathbf{x}_i).\)</span> This means all integrals for the tilting problem are unidimensional and can be obtained by Gaussian quadrature or similar numerical integration schemes.</p>
+<p>The dynamics of the expectation propagation given vectors of individual contributions <span class="math inline">\(\boldsymbol{a}^{(t)}\)</span> and <span class="math inline">\(\boldsymbol{b}^{(t)}\)</span> at iteration <span class="math inline">\(t\)</span> and the canonical parameters <span class="math display">\[\begin{align*}
+\boldsymbol{r}^{(t)} = \sum_{i=1}^n a_i^{(t)}\mathbf{x}_i^\top, \qquad \mathbf{Q}^{(t)} = \sum_{i=1}^n b_i\mathbf{x}_i^\top\mathbf{x}_i,
+\end{align*}\]</span> initialized to <span class="math inline">\(t=0\)</span>, are as follows for step <span class="math inline">\(t\)</span>:</p>
+<ol type="1">
+<li>Compute the natural parameters of the cavity distribution <span class="math inline">\(\boldsymbol{r}_{-i} = \boldsymbol{r} - a_i^{(t-1)}\mathbf{x}_i^\top\)</span> and <span class="math inline">\(\mathbf{Q}_{-i} = \mathbf{Q} - b_i^{(t-1)}\mathbf{x}_i^\top\mathbf{x}_i.\)</span></li>
+<li>Transform the canonical parameters to moments, with <span class="math inline">\(\boldsymbol{\Sigma}_{-i} = \mathbf{Q}_{-i}^{-1}\)</span> and <span class="math inline">\(\boldsymbol{\mu}_{-i} = \mathbf{Q}_{-i}^{-1}\boldsymbol{r}_{-i}\)</span>.</li>
+<li>Obtain the mean and variance of the conditional distribution with variance <span class="math inline">\(v_i = \mathbf{x}_i\boldsymbol{\Sigma}_{-i}\mathbf{x}_i^\top\)</span> and mean <span class="math inline">\(u_i=\mathbf{x}_i\boldsymbol{\mu}.\)</span></li>
+<li>Define the marginal hybrid as <span class="math display">\[\begin{align*}
+h_i(z) \propto \mathrm{expit}(y_iz) \exp\left\{-\frac{(z-u)^2}{2v}\right\}.
+\end{align*}\]</span></li>
+<li>Compute the normalizing constant, the mean <span class="math inline">\(\mathsf{E}_{h_i}(Z)\)</span> and the variance <span class="math inline">\(\mathsf{Va}_{h_i}(Z)\)</span> by numerical integration.</li>
+</ol>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co">#' @param mu_lc mean of the linear combination</span></span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="co">#' @param sd_lc std. dev of the linear combination</span></span>
@@ -361,7 +364,19 @@ c_j &amp;= \int h_j(\boldsymbol{\theta}) \mathrm{d} \boldsymbol{\theta} \\
 <span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>  va <span class="ot">&lt;-</span> <span class="fu">integrate</span>(<span class="at">f =</span> <span class="cf">function</span>(x){<span class="fu">fn</span>(x)<span class="sc">*</span>(x<span class="sc">-</span>mu)<span class="sc">^</span><span class="dv">2</span>}, <span class="sc">-</span><span class="cn">Inf</span>, <span class="cn">Inf</span>)<span class="sc">$</span>value<span class="sc">/</span>cst</span>
 <span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>In generalized linear models, the linear predictor will always be one-dimensional, and more generally, in exponential families, we can get a similar dimension reduction.</p>
+<ol start="6" type="1">
+<li>Back-transform the parameters to get the parameters for <span class="math inline">\(a_i^{(t)} = \mathsf{E}_{h_i}(Z)/\mathsf{Va}_{h_i}(Z) - u/v\)</span> and <span class="math inline">\(b_i^{(t)} = 1/\mathsf{Va}_{h_i}(Z).\)</span></li>
+<li>Update the parameters <span class="math inline">\(\boldsymbol{r} \gets \boldsymbol{r}_{-i} + a_i^{(t)}\mathbf{x}_i^\top\)</span> and <span class="math inline">\(\mathbf{Q} \gets \mathbf{Q}_{-i} + b_i^{(t)}\mathbf{x}_i^\top\mathbf{x}_i.\)</span></li>
+</ol>
+<!--
+Given the mean and variance of the cavity, denoted $\boldsymbol{\mu}_{-j}$ and $\boldsymbol{\Sigma}_{-j},$ and with $s_j = \mathbf{x}_j\boldsymbol{\Sigma}_{-j}\mathbf{x}_j^\top$, the updated mean and variance are
+\begin{align*}
+\boldsymbol{\mu}_j^* &= \boldsymbol{\mu}_{-j} s_j^{-1}\boldsymbol{\Sigma}_{-j}\mathbf{x}^\top \{\mathbf{E}(Z_j) -\mathbf{x}_j\boldsymbol{\mu}_{-j}\} \\
+\boldsymbol{\Sigma}_{j} &=\boldsymbol{\Sigma}_{-j} + s_j^{-2}\boldsymbol{\Sigma}_{-j}\mathbf{x}^\top_j\left\{\mathsf{Var}(Z_j) - s_j\right\}\mathbf{x}_j\boldsymbol{\Sigma}_{-j}
+\end{align*}
+where $Z_j$ has distribution proportional to $L_j(z) \times \phi(z; \mathbf{x}_j\boldsymbol{\mu}_j, \mathbf{x}_j\boldsymbol{\Sigma}_{-j}\mathbf{x}_j^\top),$ where $\phi(\cdot; \mu, \sigma^2)$ denotes the density of a Gaussian random variable.
+-->
+<p>In generalized linear models, the linear predictor will always be one-dimensional, and more generally, in exponential families, we can get a similar dimension reduction. The updates to the parameters for more general exponential families are found in page 23 of <span class="citation" data-cites="Cseke.Heskes:2011">Cseke and Heskes (<a href="references.html#ref-Cseke.Heskes:2011" role="doc-biblioref">2011</a>)</span>.</p>
 </div>
 <p>The EP algorithm is particularly well suited to latent Gaussian models <span class="citation" data-cites="Cseke.Heskes:2011">(<a href="references.html#ref-Cseke.Heskes:2011" role="doc-biblioref">Cseke and Heskes 2011</a>)</span> and generalized linear models with Gaussian priors for the coefficients.</p>
 <p>The EP algorithm iterates the steps until convergence:</p>
@@ -371,7 +386,7 @@ c_j &amp;= \int h_j(\boldsymbol{\theta}) \mathrm{d} \boldsymbol{\theta} \\
 <li>Declare convergence when change in parameters is less than tolerance.</li>
 </ol>
 <p>We can monitor convergence of EP by looking at changes in the parameters: it is a fixed point algorithm. However, the EP does not have guarantees of convergence and may diverge; <span class="citation" data-cites="Dehaene.Barthelme:2018">Dehaene and Barthelmé (<a href="references.html#ref-Dehaene.Barthelme:2018" role="doc-biblioref">2018</a>)</span> explain some heuristics for these by making analogies with Newton’s method, which only converges in the neighbourhood of fixed points and can diverge. The idea is to update the global approximation with a damping term for the canonical parameters. It is also useful to perform updates using suitable numerical linear algebra routines, for example by competing the Cholesky root of the covariance and back-solving to get the precision.</p>
-<p>The expensive steps are related to the inversion of the moments to get the canonical parameters from the moments; the matrix inversion has complexity <span class="math inline">\(\mathrm{O}(np^3)\)</span> for a single pass, but the algorithm typically converges quicky. The other bottleneck is calculation of the moments.</p>
+<p>The expensive steps are related to the inversion of the moments to get the canonical parameters from the moments; the matrix inversion has complexity <span class="math inline">\(\mathrm{O}(np^3)\)</span> for a single pass, but the algorithm typically converges quickly. The other bottleneck is calculation of the moments.</p>
 
 
 <div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list" style="display: none">
@@ -380,9 +395,6 @@ Cseke, Botond, and Tom Heskes. 2011. <span>“Approximate Marginals in Latent <s
 </div>
 <div id="ref-Dehaene.Barthelme:2018" class="csl-entry" role="listitem">
 Dehaene, Guillaume, and Simon Barthelmé. 2018. <span>“Expectation Propagation in the Large Data Limit.”</span> <em>Journal of the Royal Statistical Society: Series B (Statistical Methodology)</em> 80 (1): 199–217. <a href="https://doi.org/10.1111/rssb.12241">https://doi.org/10.1111/rssb.12241</a>.
-</div>
-<div id="ref-Liu:1994" class="csl-entry" role="listitem">
-Liu, Jun S. 1994. <span>“<span>S</span>iegel’s Formula via <span>S</span>tein’s Identities.”</span> <em>Statistics &amp; Probability Letters</em> 21 (3): 247–51. <a href="https://doi.org/10.1016/0167-7152(94)90121-X">https://doi.org/10.1016/0167-7152(94)90121-X</a>.
 </div>
 <div id="ref-Minka:2001" class="csl-entry" role="listitem">
 Minka, Thomas P. 2001. <span>“A Family of Algorithms for Approximate <span>B</span>ayesian Inference.”</span> PhD thesis, Massachusetts Institute of Technology. <a href="http://hdl.handle.net/1721.1/86583">http://hdl.handle.net/1721.1/86583</a>.

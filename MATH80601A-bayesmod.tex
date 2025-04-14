@@ -266,20 +266,6 @@
 \DeclareMathAlphabet{\mathcrl}{U}{rsfs}{m}{n}
 \usepackage{utopia}
 \DeclareMathAlphabet{\mathcal}{OMS}{cmsy}{m}{n}
-\usepackage{booktabs}
-\usepackage{longtable}
-\usepackage{array}
-\usepackage{multirow}
-\usepackage{wrapfig}
-\usepackage{float}
-\usepackage{colortbl}
-\usepackage{pdflscape}
-\usepackage{tabu}
-\usepackage{threeparttable}
-\usepackage{threeparttablex}
-\usepackage[normalem]{ulem}
-\usepackage{makecell}
-\usepackage{xcolor}
 \makeatletter
 \@ifpackageloaded{tcolorbox}{}{\usepackage[skins,breakable]{tcolorbox}}
 \@ifpackageloaded{fontawesome5}{}{\usepackage{fontawesome5}}
@@ -334,18 +320,18 @@
 \floatname{codelisting}{Listing}
 \newcommand*\listoflistings{\listof{codelisting}{List of Listings}}
 \usepackage{amsthm}
-\theoremstyle{plain}
-\newtheorem{corollary}{Corollary}[chapter]
-\theoremstyle{definition}
-\newtheorem{example}{Example}[chapter]
 \theoremstyle{definition}
 \newtheorem{exercise}{Exercise}[chapter]
+\theoremstyle{definition}
+\newtheorem{example}{Example}[chapter]
 \theoremstyle{definition}
 \newtheorem{definition}{Definition}[chapter]
 \theoremstyle{plain}
 \newtheorem{proposition}{Proposition}[chapter]
 \theoremstyle{plain}
 \newtheorem{theorem}{Theorem}[chapter]
+\theoremstyle{plain}
+\newtheorem{corollary}{Corollary}[chapter]
 \theoremstyle{remark}
 \AtBeginDocument{\renewcommand*{\proofname}{Proof}}
 \newtheorem*{remark}{Remark}
@@ -401,7 +387,7 @@ details.
 These notes are licensed under a
 \href{http://creativecommons.org/licenses/by-nc-sa/4.0/}{Creative
 Commons Attribution-NonCommercial-ShareAlike 4.0 International License}
-and were last compiled on Saturday, April 12 2025.
+and were last compiled on Sunday, April 13 2025.
 
 The objective of the course is to provide a hands on introduction to
 Bayesian data analysis. The course will cover the formulation,
@@ -417,7 +403,7 @@ used throughout the course. The overview begins with basic statistical
 concepts, random variables, their distribution and density, moments and
 likelihood derivations.
 
-\begin{tcolorbox}[enhanced jigsaw, rightrule=.15mm, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Learning objectives}:}, colbacktitle=quarto-callout-important-color!10!white, bottomrule=.15mm, breakable, opacityback=0, coltitle=black, titlerule=0mm, toprule=.15mm, opacitybacktitle=0.6, leftrule=.75mm, colback=white, arc=.35mm, bottomtitle=1mm, colframe=quarto-callout-important-color-frame, toptitle=1mm, left=2mm]
+\begin{tcolorbox}[enhanced jigsaw, bottomrule=.15mm, colbacktitle=quarto-callout-important-color!10!white, opacitybacktitle=0.6, colback=white, toprule=.15mm, leftrule=.75mm, breakable, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Learning objectives}:}, coltitle=black, opacityback=0, colframe=quarto-callout-important-color-frame, titlerule=0mm, left=2mm, bottomtitle=1mm, toptitle=1mm, arc=.35mm, rightrule=.15mm]
 
 At the end of the chapter, students should be able to
 
@@ -1712,7 +1698,7 @@ The likelihood can then be written as \begin{align*}
 
 \end{example}
 
-\begin{tcolorbox}[enhanced jigsaw, rightrule=.15mm, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Summary}}, colbacktitle=quarto-callout-important-color!10!white, bottomrule=.15mm, breakable, opacityback=0, coltitle=black, titlerule=0mm, toprule=.15mm, opacitybacktitle=0.6, leftrule=.75mm, colback=white, arc=.35mm, bottomtitle=1mm, colframe=quarto-callout-important-color-frame, toptitle=1mm, left=2mm]
+\begin{tcolorbox}[enhanced jigsaw, bottomrule=.15mm, colbacktitle=quarto-callout-important-color!10!white, opacitybacktitle=0.6, colback=white, toprule=.15mm, leftrule=.75mm, breakable, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Summary}}, coltitle=black, opacityback=0, colframe=quarto-callout-important-color-frame, titlerule=0mm, left=2mm, bottomtitle=1mm, toptitle=1mm, arc=.35mm, rightrule=.15mm]
 
 \begin{itemize}
 \tightlist
@@ -1792,7 +1778,7 @@ elicitation and estimation of the marginal likelihood, are mentioned in
 passing. A brief discussion of Bayesian hypothesis testing (and
 alternatives) is presented.
 
-\begin{tcolorbox}[enhanced jigsaw, rightrule=.15mm, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Learning objectives}:}, colbacktitle=quarto-callout-important-color!10!white, bottomrule=.15mm, breakable, opacityback=0, coltitle=black, titlerule=0mm, toprule=.15mm, opacitybacktitle=0.6, leftrule=.75mm, colback=white, arc=.35mm, bottomtitle=1mm, colframe=quarto-callout-important-color-frame, toptitle=1mm, left=2mm]
+\begin{tcolorbox}[enhanced jigsaw, bottomrule=.15mm, colbacktitle=quarto-callout-important-color!10!white, opacitybacktitle=0.6, colback=white, toprule=.15mm, leftrule=.75mm, breakable, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Learning objectives}:}, coltitle=black, opacityback=0, colframe=quarto-callout-important-color-frame, titlerule=0mm, left=2mm, bottomtitle=1mm, toptitle=1mm, arc=.35mm, rightrule=.15mm]
 
 At the end of the chapter, students should be able to
 
@@ -2729,7 +2715,7 @@ the cutoff for the HDP region.}
 
 \end{figure}%
 
-\begin{tcolorbox}[enhanced jigsaw, rightrule=.15mm, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Summary}:}, colbacktitle=quarto-callout-important-color!10!white, bottomrule=.15mm, breakable, opacityback=0, coltitle=black, titlerule=0mm, toprule=.15mm, opacitybacktitle=0.6, leftrule=.75mm, colback=white, arc=.35mm, bottomtitle=1mm, colframe=quarto-callout-important-color-frame, toptitle=1mm, left=2mm]
+\begin{tcolorbox}[enhanced jigsaw, bottomrule=.15mm, colbacktitle=quarto-callout-important-color!10!white, opacitybacktitle=0.6, colback=white, toprule=.15mm, leftrule=.75mm, breakable, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Summary}:}, coltitle=black, opacityback=0, colframe=quarto-callout-important-color-frame, titlerule=0mm, left=2mm, bottomtitle=1mm, toptitle=1mm, arc=.35mm, rightrule=.15mm]
 
 \begin{itemize}
 \tightlist
@@ -2808,7 +2794,7 @@ inferences. Generally, we will choose the prior for convenience. Priors
 are controversial because they could be tuned aposteriori to give any
 answer an analyst might want.
 
-\begin{tcolorbox}[enhanced jigsaw, rightrule=.15mm, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Learning objectives}:}, colbacktitle=quarto-callout-important-color!10!white, bottomrule=.15mm, breakable, opacityback=0, coltitle=black, titlerule=0mm, toprule=.15mm, opacitybacktitle=0.6, leftrule=.75mm, colback=white, arc=.35mm, bottomtitle=1mm, colframe=quarto-callout-important-color-frame, toptitle=1mm, left=2mm]
+\begin{tcolorbox}[enhanced jigsaw, bottomrule=.15mm, colbacktitle=quarto-callout-important-color!10!white, opacitybacktitle=0.6, colback=white, toprule=.15mm, leftrule=.75mm, breakable, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Learning objectives}:}, coltitle=black, opacityback=0, colframe=quarto-callout-important-color-frame, titlerule=0mm, left=2mm, bottomtitle=1mm, toptitle=1mm, arc=.35mm, rightrule=.15mm]
 
 At the end of the chapter, students should be able to
 
@@ -3842,7 +3828,7 @@ improper priors on location and scale.}
 
 \end{example}
 
-\begin{tcolorbox}[enhanced jigsaw, rightrule=.15mm, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Summary}:}, colbacktitle=quarto-callout-important-color!10!white, bottomrule=.15mm, breakable, opacityback=0, coltitle=black, titlerule=0mm, toprule=.15mm, opacitybacktitle=0.6, leftrule=.75mm, colback=white, arc=.35mm, bottomtitle=1mm, colframe=quarto-callout-important-color-frame, toptitle=1mm, left=2mm]
+\begin{tcolorbox}[enhanced jigsaw, bottomrule=.15mm, colbacktitle=quarto-callout-important-color!10!white, opacitybacktitle=0.6, colback=white, toprule=.15mm, leftrule=.75mm, breakable, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Summary}:}, coltitle=black, opacityback=0, colframe=quarto-callout-important-color-frame, titlerule=0mm, left=2mm, bottomtitle=1mm, toptitle=1mm, arc=.35mm, rightrule=.15mm]
 
 \begin{itemize}
 \tightlist
@@ -4905,7 +4891,7 @@ computers became more widely available. The idea is to draw correlated
 samples from a posterior via Markov chains, constructed to have the
 posterior as invariant stationary distribution.
 
-\begin{tcolorbox}[enhanced jigsaw, rightrule=.15mm, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Learning objectives}:}, colbacktitle=quarto-callout-important-color!10!white, bottomrule=.15mm, breakable, opacityback=0, coltitle=black, titlerule=0mm, toprule=.15mm, opacitybacktitle=0.6, leftrule=.75mm, colback=white, arc=.35mm, bottomtitle=1mm, colframe=quarto-callout-important-color-frame, toptitle=1mm, left=2mm]
+\begin{tcolorbox}[enhanced jigsaw, bottomrule=.15mm, colbacktitle=quarto-callout-important-color!10!white, opacitybacktitle=0.6, colback=white, toprule=.15mm, leftrule=.75mm, breakable, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Learning objectives}:}, coltitle=black, opacityback=0, colframe=quarto-callout-important-color-frame, titlerule=0mm, left=2mm, bottomtitle=1mm, toptitle=1mm, arc=.35mm, rightrule=.15mm]
 
 At the end of the chapter, students should be able to
 
@@ -5595,7 +5581,7 @@ overdispersion.
 
 \end{example}
 
-\begin{tcolorbox}[enhanced jigsaw, rightrule=.15mm, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Summary}:}, colbacktitle=quarto-callout-important-color!10!white, bottomrule=.15mm, breakable, opacityback=0, coltitle=black, titlerule=0mm, toprule=.15mm, opacitybacktitle=0.6, leftrule=.75mm, colback=white, arc=.35mm, bottomtitle=1mm, colframe=quarto-callout-important-color-frame, toptitle=1mm, left=2mm]
+\begin{tcolorbox}[enhanced jigsaw, bottomrule=.15mm, colbacktitle=quarto-callout-important-color!10!white, opacitybacktitle=0.6, colback=white, toprule=.15mm, leftrule=.75mm, breakable, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Summary}:}, coltitle=black, opacityback=0, colframe=quarto-callout-important-color-frame, titlerule=0mm, left=2mm, bottomtitle=1mm, toptitle=1mm, arc=.35mm, rightrule=.15mm]
 
 \begin{itemize}
 \tightlist
@@ -5646,7 +5632,7 @@ overdispersion.
 
 \chapter{Gibbs sampling}\label{sec-Gibbs}
 
-\begin{tcolorbox}[enhanced jigsaw, rightrule=.15mm, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Learning objectives}:}, colbacktitle=quarto-callout-important-color!10!white, bottomrule=.15mm, breakable, opacityback=0, coltitle=black, titlerule=0mm, toprule=.15mm, opacitybacktitle=0.6, leftrule=.75mm, colback=white, arc=.35mm, bottomtitle=1mm, colframe=quarto-callout-important-color-frame, toptitle=1mm, left=2mm]
+\begin{tcolorbox}[enhanced jigsaw, bottomrule=.15mm, colbacktitle=quarto-callout-important-color!10!white, opacitybacktitle=0.6, colback=white, toprule=.15mm, leftrule=.75mm, breakable, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Learning objectives}:}, coltitle=black, opacityback=0, colframe=quarto-callout-important-color-frame, titlerule=0mm, left=2mm, bottomtitle=1mm, toptitle=1mm, arc=.35mm, rightrule=.15mm]
 
 At the end of the chapter, students should be able to
 
@@ -6112,7 +6098,7 @@ and Stephens (\citeproc{ref-Stephens:2002}{2002}) for more details.
 
 \end{refremark}
 
-\begin{tcolorbox}[enhanced jigsaw, rightrule=.15mm, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Summary}:}, colbacktitle=quarto-callout-important-color!10!white, bottomrule=.15mm, breakable, opacityback=0, coltitle=black, titlerule=0mm, toprule=.15mm, opacitybacktitle=0.6, leftrule=.75mm, colback=white, arc=.35mm, bottomtitle=1mm, colframe=quarto-callout-important-color-frame, toptitle=1mm, left=2mm]
+\begin{tcolorbox}[enhanced jigsaw, bottomrule=.15mm, colbacktitle=quarto-callout-important-color!10!white, opacitybacktitle=0.6, colback=white, toprule=.15mm, leftrule=.75mm, breakable, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Summary}:}, coltitle=black, opacityback=0, colframe=quarto-callout-important-color-frame, titlerule=0mm, left=2mm, bottomtitle=1mm, toptitle=1mm, arc=.35mm, rightrule=.15mm]
 
 \begin{itemize}
 \tightlist
@@ -6170,7 +6156,7 @@ Betancourt} for excellent visualizations. In this chapter, we focus on
 three aspects of the workflow: model validation, evaluation and
 comparison.
 
-\begin{tcolorbox}[enhanced jigsaw, rightrule=.15mm, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Learning objectives}:}, colbacktitle=quarto-callout-important-color!10!white, bottomrule=.15mm, breakable, opacityback=0, coltitle=black, titlerule=0mm, toprule=.15mm, opacitybacktitle=0.6, leftrule=.75mm, colback=white, arc=.35mm, bottomtitle=1mm, colframe=quarto-callout-important-color-frame, toptitle=1mm, left=2mm]
+\begin{tcolorbox}[enhanced jigsaw, bottomrule=.15mm, colbacktitle=quarto-callout-important-color!10!white, opacitybacktitle=0.6, colback=white, toprule=.15mm, leftrule=.75mm, breakable, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Learning objectives}:}, coltitle=black, opacityback=0, colframe=quarto-callout-important-color-frame, titlerule=0mm, left=2mm, bottomtitle=1mm, toptitle=1mm, arc=.35mm, rightrule=.15mm]
 
 At the end of the chapter, students should be able to
 
@@ -7082,7 +7068,7 @@ The conjugate prior for the Gaussian regression model for the mean and
 precision parameters \(\boldsymbol{\beta}\) and \(\omega,\)
 respectively, is a Gaussian-gamma and is defined hierarchically as
 \begin{align*}
-\boldsymbol{Y}_i \sim \mathsf{Gauss}(\mathbf{x}_i\boldsymbol{\beta}, \omega^{-1}) \\
+\boldsymbol{Y}_i &\sim \mathsf{Gauss}(\mathbf{x}_i\boldsymbol{\beta}, \omega^{-1}) \\
 \boldsymbol{\beta} \mid \omega &\sim \mathsf{Gauss}\left\{\boldsymbol{\mu}_0, (\omega\boldsymbol{\Omega}_0)^{-1}\right\} \\
 \omega &\sim \mathsf{gamma}(\nu_0/2,\tau_0/2).
 \end{align*} Using properties of the Gaussian distribution, the sampling
@@ -8825,21 +8811,67 @@ depend on \(\boldsymbol{\psi}\), and \begin{align*}
 expected value \begin{align*}
  \mathsf{E}_{g}\left\{\frac{\partial \log g(\boldsymbol{\theta}; \boldsymbol{\psi})}{\partial \boldsymbol{\psi}} \times \log \left( \frac{p(\boldsymbol{\theta}, \boldsymbol{y})}{g(\boldsymbol{\theta}; \boldsymbol{\psi})}\right)\right\}
 \end{align*} which we can approximate via Monte Carlo by drawing samples
-from \(g\), which gives a stochastic gradient algorithm. Ranganath,
-Gerrish, and Blei (\citeproc{ref-Ranganath:2014}{2014}) provide two
-methods to reduce the variance of this expression using control variates
-and Rao--Blackwellization, as excessive variance hinders the convergence
-and requires larger Monte Carlo sample sizes to be reliable. In the
-context of large samples of independent observations, we can also resort
-to mini-batching, by randomly selecting a subset of observations.
+from \(g\). Ranganath, Gerrish, and Blei
+(\citeproc{ref-Ranganath:2014}{2014}) provide two methods to reduce the
+variance of this expression using control variates and
+Rao--Blackwellization, as excessive variance hinders the convergence and
+requires larger Monte Carlo sample sizes to be reliable. In the context
+of large samples of independent observations, we can also resort to
+mini-batching, by randomly selecting a subset of observations.
 
-Some families of distributions, notably location-scale (cf.
+We can use the Monte Carlo approximation to derive a stochastic gradient
+algorithm.
+
+\begin{proposition}[Stochastic gradient
+descent]\protect\hypertarget{prp-stoch-grad-descent}{}\label{prp-stoch-grad-descent}
+
+Consider \(f(\boldsymbol{\theta})\) a differentiable function with
+gradient \(\nabla f(\boldsymbol{\theta})\) and \(\rho_t\) a
+Robbins--Munro sequence of step sizes satisfying
+\(\sum_{t=1}^\infty \rho_t = \infty\) and
+\(\sum_{t=1}^\infty \rho^2_t< \infty.\)
+
+To maximize \(f(\boldsymbol{\theta})\), we construct a series of
+first-order approximations starting from \(\boldsymbol{\theta}^{(0)}\)
+with \begin{align*}
+\boldsymbol{\theta}^{(t)} = \boldsymbol{\theta}^{(t-1)} +\rho_t  \mathsf{E}\left\{\nabla f(\boldsymbol{\theta}^{(t-1)})\right\}.
+\end{align*} where the expected value is evaluated via Monte Carlo,
+until changes in
+\(\|\boldsymbol{\theta}_{t} - \boldsymbol{\theta}_{t-1}\|\) is less than
+some tolerance value.
+
+\end{proposition}
+
+The speed of convergence of the stochastic gradient descent depends on
+multiple factors:
+
+\begin{itemize}
+\tightlist
+\item
+  the properties of the function (here the ELBO) under evaluation. Good
+  performance is obtained for log concave distributions.
+\item
+  the level of noise of the gradient estimator. Less noisy gradient
+  estimators are preferable.
+\item
+  good starting values, as the algorithm converges to a local maximum
+  and may struggle if we are in a region where the objective function is
+  flat.
+\item
+  the Robbins--Munro sequence used for the step size, as the steps may
+  lead to divergences unless we have a global concave objective
+  function.
+\end{itemize}
+
+The second point is worth some further discussion. Some families of
+distributions, notably location-scale (cf.
 Definition~\ref{def-location-scale}) and exponential families
 (Definition~\ref{def-exponential-family}) are particularly convenient,
-because we can get expressions for the ELBO that are simpler. For
-exponential families approximating distributions, we have sufficient
-statistics \(S_k \equiv t_k(\boldsymbol{\theta})\) and the gradient of
-\(\log g\) becomes \(S_k\) under mean-field.
+because we can get expressions for the ELBO that are simpler and lead to
+less noisy gradient estimators. For exponential families approximating
+distributions, we have sufficient statistics
+\(S_k \equiv t_k(\boldsymbol{\theta})\) and the gradient of \(\log g\)
+becomes \(S_k\) under mean-field.
 
 Kucukelbir et al. (\citeproc{ref-Kucukelbir:2017}{2017}) proposes a
 stochastic gradient algorithm, but with two main innovations. The first
@@ -8852,16 +8884,21 @@ approximation \(g(\boldsymbol{\zeta}; \boldsymbol{\psi})\) where
 and covariance \(\boldsymbol{\Sigma}\), parametrized in terms of
 independent components via
 \(\boldsymbol{\Sigma}=\mathsf{diag}\{\exp(\boldsymbol{\omega})\}\) or
-through a Cholesky decomposition of the covariance
-\(\boldsymbol{\Sigma} = \mathbf{LL}^\top\), where \(\mathbf{L}\) is a
-lower triangular matrix. The full approximation is of course more
-flexible when the transformed parameters \(\boldsymbol{\zeta}\) are
-correlated, but is more expensive to compute than the mean-field
-approximation. The change of variable introduces a Jacobian term for the
-approximation to the density \(p(\boldsymbol{\theta}, \boldsymbol{y}).\)
-Another benefit is that the entropy of the multivariate Gaussian for
-\(g\) the density of
-\(\mathsf{Gauss}_p(\boldsymbol{\mu}, \boldsymbol{\Sigma})\) is
+through a decomposition of the covariance
+\(\boldsymbol{\Sigma} = \mathbf{LL}^\top\). The full approximation is of
+course more flexible when the transformed parameters
+\(\boldsymbol{\zeta}\) are correlated, but is more expensive to compute
+than the mean-field approximation. The change of variable introduces a
+Jacobian term for the approximation to the density
+\(p(\boldsymbol{\theta}, \boldsymbol{y}).\) Another benefit is that the
+Gaussian entropy admits a closed-form solution that depends only on the
+covariance, so is not random.
+
+\begin{proposition}[Entropy of
+Gaussian]\protect\hypertarget{prp-entropy-Gauss}{}\label{prp-entropy-Gauss}
+
+Write the entropy of the multivariate Gaussian for \(g\) the density of
+\(\mathsf{Gauss}_p(\boldsymbol{\mu}, \boldsymbol{\Sigma})\) as
 \begin{align*}
  - \mathsf{E}_g(\log g) &= \frac{D\log(2\pi) + \log|\boldsymbol{\Sigma}|}{2} - \frac{1}{2}\mathsf{E}_g\left\{ (\boldsymbol{X}-\boldsymbol{\mu})^\top\boldsymbol{\Sigma}^{-1}(\boldsymbol{X}-\boldsymbol{\mu})\right\} \\& = \frac{D\log(2\pi) + \log|\boldsymbol{\Sigma}|}{2} - \frac{1}{2}\mathsf{E}_g\left[ \mathsf{tr}\left\{(\boldsymbol{X}-\boldsymbol{\mu})^\top\boldsymbol{\Sigma}^{-1}(\boldsymbol{X}-\boldsymbol{\mu})\right\}\right]
  \\& =  \frac{D\log(2\pi) + \log|\boldsymbol{\Sigma}|}{2} - \frac{1}{2}\mathsf{tr}\left[\boldsymbol{\Sigma}^{-1}\mathsf{E}_g\left\{(\boldsymbol{X}-\boldsymbol{\mu})(\boldsymbol{X}-\boldsymbol{\mu})^\top\right\}\right]
@@ -8871,13 +8908,30 @@ matrix, and applying a cyclic permutation to which the trace is
 invariant. Since the trace is a linear operator, we can interchange the
 trace with the expected value. Finally, we have
 \(\mathsf{E}_g\left\{(\boldsymbol{X}-\boldsymbol{\mu})(\boldsymbol{X}-\boldsymbol{\mu})^\top\right\}=\boldsymbol{\Sigma}\),
-and the trace of a \(D \times D\) identity matrix is simply \(D\). The
-Gaussian entropy depends only on the covariance, so is not random.
+and the trace of a \(D \times D\) identity matrix is simply \(D\).
+
+\end{proposition}
 
 The transformation to \(\mathbb{R}^p\) is not unique and different
 choices may yield to differences, but the choice of optimal
 transformation requires knowledge of the true posterior, which is thus
 intractable.
+
+We give next some details about derivation of the full-rank
+approximation. We work with the matrix-log of the covariance matrix,
+defined through it's eigendecomposition
+\(\boldsymbol{\Sigma}=\mathbf{V}\mathrm{diag}(\boldsymbol{\lambda})\mathbf{V}^{\top},\)
+where \(\mathbf{V}\) is a \(p\times p\) orthogonal matrix of
+eigenvectors, whose inverse is equal to it's transpose. Since we are
+decomposing a symmetric definite matrix,. Most operations on the matrix
+only affect the eigenvalues \(\lambda_1, \ldots, \lambda_p\): the
+matrix-log is \begin{align*}
+\mathbf{L} =\mathbf{V}\mathrm{diag}\left\{ \frac{1}{2}\log(\boldsymbol{\lambda})\right\}\mathbf{V}^\top.
+\end{align*} Other operations on matrices are defined analogously: we
+write
+\(\exp(\boldsymbol{\Sigma}) = \mathbf{V}\mathrm{diag}\{ \exp(\boldsymbol{\lambda})\}\mathbf{V}^\top\)
+and we write
+\(\log(\boldsymbol{\Sigma}) = \mathbf{V}\mathrm{diag}\{ \log(\boldsymbol{\lambda})\}\mathbf{V}^\top\).
 
 We focus on the case of full transformation; the derivation for
 independent components is analogous. Since the Gaussian is a
@@ -8885,28 +8939,84 @@ location-scale family, we can rewrite the model in terms of a
 standardized Gaussian variable
 \(\boldsymbol{Z}\sim \mathsf{Gauss}_p(\boldsymbol{0}_p, \mathbf{I}_p)\)
 where
-\(\boldsymbol{\zeta} = \boldsymbol{\mu} + \mathbf{L}\boldsymbol{Z}\) The
-ELBO with the transformation is of the form \begin{align*}
- \mathsf{E}_{\boldsymbol{Z}}\left[ \log p\{\boldsymbol{y}, T^{-1}(\boldsymbol{\mu} + \mathbf{L}\boldsymbol{Z})\} + \log \left|\mathbf{J}_{T^{-1}}(\boldsymbol{\mu} + \mathbf{L}\boldsymbol{Z})\right|\right] +\frac{D+D\log(2\pi) + \log |\mathbf{LL}^\top|}{2}.
-\end{align*} where we have the absolute value of the determinant of the
-Jacobian of the transformation. If we apply the chain rule
-\begin{align*}
- \frac{\partial}{\partial \boldsymbol{\psi}}\log p\{\boldsymbol{y}, T^{-1}(\boldsymbol{\mu} + \mathbf{L}\boldsymbol{Z})\} = \frac{\partial \log p(\boldsymbol{y}, \boldsymbol{\theta})}{\partial \boldsymbol{\theta}} \frac{\partial T^{-1}(\boldsymbol{\zeta})}{\partial \boldsymbol{\zeta}} \frac{\partial \boldsymbol{\mu} + \mathbf{L}\boldsymbol{Z}}{\partial \boldsymbol{\psi}}
+\(\boldsymbol{\zeta} = \boldsymbol{\mu} + \exp(\mathbf{L})\boldsymbol{Z}.\)
+The ELBO with the transformation is \begin{align*}
+ \mathsf{ELBO}(g) & = \mathsf{E}_{\boldsymbol{Z}}\left[ \log p\left\{\boldsymbol{y}, T^{-1}(\boldsymbol{\zeta})\right\} + \log \left|\mathbf{J}_{T^{-1}}(\boldsymbol{\zeta})\right|\right] \\&\quad+\frac{D}{2}\{1+\log(2\pi)\} + \mathrm{trace}(\mathbf{L}).
+\end{align*} where we have the logarithm of the absolute value of the
+determinant of the Jacobian of the transformation due to the change of
+variable. If we apply the chain rule \begin{align*}
+ \frac{\partial}{\partial \boldsymbol{\psi}}\log p\{\boldsymbol{y}, T^{-1}(\boldsymbol{\mu} + \exp(\mathbf{L})\boldsymbol{Z})\} = \frac{\partial \log p(\boldsymbol{y}, \boldsymbol{\theta})}{\partial \boldsymbol{\theta}} \frac{\partial T^{-1}(\boldsymbol{\zeta})}{\partial \boldsymbol{\zeta}} \frac{\partial \boldsymbol{\mu} + \exp(\mathbf{L})\boldsymbol{Z}}{\partial \boldsymbol{\psi}}
 \end{align*} and we retrieve the gradients of the ELBO with respect to
 the mean and variance, which are \begin{align*}
- \frac{\partial \mathsf{ELBO}(g)}{\partial \boldsymbol{\mu}} &= \mathsf{E}_{\boldsymbol{Z}}\left\{\frac{\partial \log p(\boldsymbol{y}, \boldsymbol{\theta})}{\partial \boldsymbol{\theta}} \frac{\partial T^{-1}(\boldsymbol{\zeta})}{\partial \boldsymbol{\zeta}}  + \frac{\partial \log \left|\mathbf{J}_{T^{-1}}(\boldsymbol{\zeta})\right|}{\partial \boldsymbol{\zeta}}\right\} \\
- \frac{\partial \mathsf{ELBO}(g)}{\partial \mathbf{L}} &= \mathsf{E}_{\boldsymbol{Z}}\left[\left\{\frac{\partial \log p(\boldsymbol{y}, \boldsymbol{\theta})}{\partial \boldsymbol{\theta}} \frac{\partial T^{-1}(\boldsymbol{\zeta})}{\partial \boldsymbol{\zeta}}  + \frac{\partial \log \left|\mathbf{J}_{T^{-1}}(\boldsymbol{\zeta})\right|}{\partial \boldsymbol{\zeta}}\right\}\boldsymbol{Z}^\top\right] + \mathbf{L}^{-\top}.
-\end{align*} Compared to the black-box variational inference algorithm,
-this requires calculating the gradient of the log posterior with respect
-to \(\boldsymbol{\theta}.\) This step can be done using automatic
+ \frac{\partial \mathsf{ELBO}(g)}{\partial \boldsymbol{\mu}} &= \mathsf{E}_{\boldsymbol{Z}}\left\{\nabla p(\boldsymbol{y}, \boldsymbol{\theta})\right\} \\
+ \frac{\partial \mathsf{ELBO}(g)}{\partial \mathbf{L}} &= \mathsf{symm}\left( \mathsf{E}_{\boldsymbol{Z}}\left\{\nabla p(\boldsymbol{y}, \boldsymbol{\theta})\boldsymbol{Z}^\top\exp(\mathbf{L})\right\}\right) + \mathbf{I}_p.
+\end{align*} where
+\(\mathsf{symm}(\mathbf{X}) = (\mathbf{X} + \mathbf{X}^\top)/2\) is the
+symmetrization operator and \begin{align*}
+\nabla p(\boldsymbol{y}, \boldsymbol{\theta}) = \frac{\partial \log p(\boldsymbol{y}, \boldsymbol{\theta})}{\partial \boldsymbol{\theta}} \frac{\partial T^{-1}(\boldsymbol{\zeta})}{\partial \boldsymbol{\zeta}}  + \frac{\partial \log \left|\mathbf{J}_{T^{-1}}(\boldsymbol{\zeta})\right|}{\partial \boldsymbol{\zeta}}.
+\end{align*}
+
+Assume for simplicity that we have
+\(T(\boldsymbol{\zeta}) = \boldsymbol{\zeta}\) is the identity. We can
+rewrite the expression for the gradient with respect to the matrix-log
+as \begin{align*}
+ \frac{\partial \mathsf{ELBO}(g)}{\partial \mathbf{L}} &= \mathsf{symm}\left[ \mathsf{E}_{\boldsymbol{Z}}\left\{\frac{\partial \log p\{\boldsymbol{y}, \boldsymbol{\theta}=\boldsymbol{\mu} + \exp(\mathbf{L})\boldsymbol{Z}\}}{\partial \boldsymbol{\theta}}\boldsymbol{Z}^\top\exp(\mathbf{L})\right\}\right] + \mathbf{I}_p.
+ \\& = \mathsf{symm}\left( \mathsf{E}_{\boldsymbol{Z}}\left[\frac{\partial \log p\{\boldsymbol{y}, \boldsymbol{\theta}=\boldsymbol{\mu} + \exp(\mathbf{L})\boldsymbol{Z}\}}{\partial \boldsymbol{\theta}\partial \boldsymbol{\theta}^\top}\exp(2\mathbf{L})\right]\right) + \mathbf{I}_p.
+\end{align*} The first expression typically leads to a more noisy
+gradient estimator, but the second requires derivation of the Hessian
+matrix. The equivalence follows from Stein's lemma, which can be proved
+by integration by part.
+
+\begin{proposition}[Stein's
+lemma]\protect\hypertarget{prp-stein-lemma}{}\label{prp-stein-lemma}
+
+Consider \(h: \mathbb{R}^d \to \mathbb{R}\) a differentiable function
+and integration with respect to
+\(\boldsymbol{X} \sim \mathsf{Gauss}_d(\boldsymbol{\mu}, \boldsymbol{\Sigma})\)
+such that the gradient is absolutely integrable,
+\(\mathsf{E}_{\boldsymbol{X}}\{|\nabla_i h(\boldsymbol{X})|\} < \infty\)
+for \(i=1, \ldots, d.\) Then (\citeproc{ref-Liu:1994}{Liu 1994}),
+\begin{align*}
+\mathsf{E}_{\boldsymbol{X}}\left\{h(\boldsymbol{X})(\boldsymbol{X}-\boldsymbol{\mu})\right\} = \boldsymbol{\Sigma}\mathsf{E}_{\boldsymbol{X}}\left\{\nabla h(\boldsymbol{X})\right\}
+\end{align*}
+
+\end{proposition}
+
+We can replace expectations by Monte Carlo estimation and apply
+stochastic gradient descent: for example, an estimator of the ELBO for
+the case with
+\(\boldsymbol{\theta} = \boldsymbol{\eta} \in \mathbb{R}^p\) is
+\begin{align*}
+\frac{1}{B}\sum_{b=1}^B p\{\boldsymbol{y}, \boldsymbol{\theta} = \boldsymbol{\mu} + \exp(\mathbf{L})\boldsymbol{Z}_i\} + \frac{p}{2}\{\log(2\pi)+1\} + \mathrm{trace}(\mathbf{L})
+\end{align*} for
+\(\boldsymbol{Z}_1, \ldots, \boldsymbol{Z}_b \sim \mathsf{Gauss}_p(\boldsymbol{0}_p, \mathbf{I}_p).\)
+
+Compared to the black-box variational inference algorithm, this requires
+calculating the gradient of the log posterior with respect to
+\(\boldsymbol{\theta}.\) This step can be done using automatic
 differentiation (hence the terminology ADVI), and moreover this gradient
 estimator is several orders less noisy than the black-box counterpart.
 The ELBO can be approximated via Monte Carlo integration.
 
-We can thus build a stochastic gradient algorithm with a Robins--Munroe
+We can thus build a stochastic gradient algorithm with a Robins--Monro
 sequence of updates. Kucukelbir et al.
-(\citeproc{ref-Kucukelbir:2017}{2017}) use an adaptive step-size for
-convergence. The ADVI algorithm is implemented in Carpenter et al.
+(\citeproc{ref-Kucukelbir:2017}{2017}) use an adaptive step-size
+sequence \(\rho_t\) for the stochastic gradient descent, which we
+explicit: consider the \(k\)th entry of the gradient evaluate at step
+\(t\) by \(g_{k,t}\), with \begin{align*}
+\rho_{k,t} &= \eta\frac{ t^{-1/2+10^{-15}}}{\tau + \alpha s_{k,t}} \\
+s^2_{k,t} &= \alpha g_{k,t}^2 + (1-\alpha)s^2_{k,t-1} = 
+\alpha g_{k,t}^2 + (1-\alpha)\sum_{i=1}^{t-1} \alpha^{t-i} g_{k,i}^2 
+\end{align*} with \(s^2_{k,1}=g_{k,1}^2\) where the delay \(\tau>0\) is
+some positive constant (typically 1) to prevent division by zero and
+\(\eta>0\) controls the step size (smaller values may be required to
+avoid divergence) and \(0<\alpha<1\) controls the mixture. This
+parameter-specific scaling helps with updates of parameters on very
+different scales. For matrix parameters, updates from vectorization of
+the matrix entries and application of the diagonal sequence to each
+element separately.
+
+The ADVI algorithm is implemented in Carpenter et al.
 (\citeproc{ref-Stan:2017}{2017}); see
 \href{https://mc-stan.org/docs/reference-manual/variational.html}{the
 manual} for more details.
@@ -8968,9 +9078,9 @@ that the gradient satisfies \begin{align*}
  \nabla_{\boldsymbol{\mu}}\mathsf{ELBO}(q)&= -\mathsf{E}_{\boldsymbol{Z}}\{\nabla_{\boldsymbol{\theta}}\psi(\boldsymbol{\theta})\} \\
  \nabla_{\mathbf{L}}\mathsf{ELBO}(q)&= -\mathsf{E}_{\boldsymbol{Z}}\{\nabla_{\boldsymbol{\theta}}\psi(\boldsymbol{\theta})\boldsymbol{Z}^\top\} + \mathbf{L}^{-\top}
 \end{align*} If we apply integration by parts (Stein's lemma, see
-Proposition~\ref{prp-stein}) using the fact that the integral is with
-respect to a standard Gaussian density \(\phi_p(\boldsymbol{z}),\) we
-can rewrite the second term as \begin{align*}
+Proposition~\ref{prp-stein-lemma}) using the fact that the integral is
+with respect to a standard Gaussian density \(\phi_p(\boldsymbol{z}),\)
+we can rewrite the second term as \begin{align*}
   \nabla_{\mathbf{L}}\mathsf{ELBO}(q)&= -\mathsf{E}_{\boldsymbol{Z}}\left\{ \frac{\partial^2 \psi(\boldsymbol{\theta})}{\partial \boldsymbol{\theta} \partial \boldsymbol{\theta}^\top}\right\}\mathbf{L} + \mathbf{L}^{-\top}.
 \end{align*} At a critical point, both of these derivatives must be
 zero, whence \begin{align*}
@@ -8982,21 +9092,6 @@ which the expected value of the gradient is zero and similarly
 \(\boldsymbol{\Sigma}\) for which the expected value of the curvature
 (Hessian) is equal to the precision. The averaging step is what
 distinguishes the Laplace and variational approximations.
-
-\begin{proposition}[Stein's
-lemma]\protect\hypertarget{prp-stein}{}\label{prp-stein}
-
-Consider \(h: \mathbb{R}^d \to \mathbb{R}\) a differentiable function
-and integration with respect to
-\(\boldsymbol{X} \sim \mathsf{Gauss}_d(\boldsymbol{\mu}, \boldsymbol{\Sigma})\)
-such that the gradient is absolutely integrable,
-\(\mathsf{E}_{\boldsymbol{X}}\{|\nabla_i h(\boldsymbol{X})|\} < \infty\)
-for \(i=1, \ldots, d.\) Then (\citeproc{ref-Liu:1994}{Liu 1994}),
-\begin{align*}
-\mathsf{E}_{\boldsymbol{X}}\left\{h(\boldsymbol{X})(\boldsymbol{X}-\boldsymbol{\mu})\right\} = \boldsymbol{\Sigma}\mathsf{E}_{\boldsymbol{X}}\left\{\nabla h(\boldsymbol{X})\right\}
-\end{align*}
-
-\end{proposition}
 
 \section{Expectation propagation}\label{expectation-propagation-1}
 
@@ -9087,7 +9182,10 @@ the probability of success is \begin{align*}
 reparametrization makes it easier to write the likelihood contribution
 of observation \(i\) as
 \[L_i(\boldsymbol{\beta}) = \mathrm{expit}(y_i \mathbf{x}_i\boldsymbol{\beta}).\]
-If we have the approximation for
+Since this is a generalized linear model, we will have the approximation
+of the factor will have parameters
+\((a\mathbf{x}_i^\top, b\mathbf{x}_i^\top\mathbf{x}_i)\), which only
+depend on two scalars. Indeed, if we have the approximation for
 \(\boldsymbol{\beta} \sim \mathsf{Gauss}_p(\boldsymbol{\mu}, \boldsymbol{\Sigma}),\)
 then the integrals for the normalizing constant, etc. depend only on the
 linear combination
@@ -9096,18 +9194,37 @@ This means all integrals for the tilting problem are unidimensional and
 can be obtained by Gaussian quadrature or similar numerical integration
 schemes.
 
-Given the mean and variance of the cavity, denoted
-\(\boldsymbol{\mu}_{-j}\) and \(\boldsymbol{\Sigma}_{-j},\) and with
-\(s_j = \mathbf{x}_j\boldsymbol{\Sigma}_{-j}\mathbf{x}_j^\top\), the
-updated mean and variance are \begin{align*}
-\boldsymbol{\mu}_j^* &= \boldsymbol{\mu}_{-j} s_j^{-1}\boldsymbol{\Sigma}_{-j}\mathbf{x}^\top \{\mathbf{E}(Z_j) -\mathbf{x}_j\boldsymbol{\mu}_{-j}\} \\
-\boldsymbol{\Sigma}_{j} &=\boldsymbol{\Sigma}_{-j} + s_j^{-2}\boldsymbol{\Sigma}_{-j}\mathbf{x}^\top_j\left\{\mathsf{Var}(Z_j) - s_j\right\}\mathbf{x}_j\boldsymbol{\Sigma}_{-j}
-\end{align*} where \(Z_j\) has distribution proportional to
-\(L_j(z) \times \phi(z; \mathbf{x}_j\boldsymbol{\mu}_j, \mathbf{x}_j\boldsymbol{\Sigma}_{-j}\mathbf{x}_j^\top),\)
-where \(\phi(\cdot; \mu, \sigma^2)\) denotes the density of a Gaussian
-random variable. The updates to the parameters for more general
-exponential families are found in page 23 of Cseke and Heskes
-(\citeproc{ref-Cseke.Heskes:2011}{2011}).
+The dynamics of the expectation propagation given vectors of individual
+contributions \(\boldsymbol{a}^{(t)}\) and \(\boldsymbol{b}^{(t)}\) at
+iteration \(t\) and the canonical parameters \begin{align*}
+\boldsymbol{r}^{(t)} = \sum_{i=1}^n a_i^{(t)}\mathbf{x}_i^\top, \qquad \mathbf{Q}^{(t)} = \sum_{i=1}^n b_i\mathbf{x}_i^\top\mathbf{x}_i,
+\end{align*} initialized to \(t=0\), are as follows for step \(t\):
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  Compute the natural parameters of the cavity distribution
+  \(\boldsymbol{r}_{-i} = \boldsymbol{r} - a_i^{(t-1)}\mathbf{x}_i^\top\)
+  and
+  \(\mathbf{Q}_{-i} = \mathbf{Q} - b_i^{(t-1)}\mathbf{x}_i^\top\mathbf{x}_i.\)
+\item
+  Transform the canonical parameters to moments, with
+  \(\boldsymbol{\Sigma}_{-i} = \mathbf{Q}_{-i}^{-1}\) and
+  \(\boldsymbol{\mu}_{-i} = \mathbf{Q}_{-i}^{-1}\boldsymbol{r}_{-i}\).
+\item
+  Obtain the mean and variance of the conditional distribution with
+  variance
+  \(v_i = \mathbf{x}_i\boldsymbol{\Sigma}_{-i}\mathbf{x}_i^\top\) and
+  mean \(u_i=\mathbf{x}_i\boldsymbol{\mu}.\)
+\item
+  Define the marginal hybrid as \begin{align*}
+  h_i(z) \propto \mathrm{expit}(y_iz) \exp\left\{-\frac{(z-u)^2}{2v}\right\}.
+  \end{align*}
+\item
+  Compute the normalizing constant, the mean \(\mathsf{E}_{h_i}(Z)\) and
+  the variance \(\mathsf{Va}_{h_i}(Z)\) by numerical integration.
+\end{enumerate}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -9124,9 +9241,26 @@ exponential families are found in page 23 of Cseke and Heskes
 \end{Highlighting}
 \end{Shaded}
 
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{5}
+\tightlist
+\item
+  Back-transform the parameters to get the parameters for
+  \(a_i^{(t)} = \mathsf{E}_{h_i}(Z)/\mathsf{Va}_{h_i}(Z) - u/v\) and
+  \(b_i^{(t)} = 1/\mathsf{Va}_{h_i}(Z).\)
+\item
+  Update the parameters
+  \(\boldsymbol{r} \gets \boldsymbol{r}_{-i} + a_i^{(t)}\mathbf{x}_i^\top\)
+  and
+  \(\mathbf{Q} \gets \mathbf{Q}_{-i} + b_i^{(t)}\mathbf{x}_i^\top\mathbf{x}_i.\)
+\end{enumerate}
+
 In generalized linear models, the linear predictor will always be
 one-dimensional, and more generally, in exponential families, we can get
-a similar dimension reduction.
+a similar dimension reduction. The updates to the parameters for more
+general exponential families are found in page 23 of Cseke and Heskes
+(\citeproc{ref-Cseke.Heskes:2011}{2011}).
 
 \end{example}
 
@@ -9165,7 +9299,7 @@ root of the covariance and back-solving to get the precision.
 The expensive steps are related to the inversion of the moments to get
 the canonical parameters from the moments; the matrix inversion has
 complexity \(\mathrm{O}(np^3)\) for a single pass, but the algorithm
-typically converges quicky. The other bottleneck is calculation of the
+typically converges quickly. The other bottleneck is calculation of the
 moments.
 
 \bookmarksetup{startatroot}

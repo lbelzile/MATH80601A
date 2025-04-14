@@ -353,7 +353,7 @@ the latter can be evaluated efficiently using Shermann--Morrisson--Woodbury iden
 </div>
 <div id="prp-gaussian-ols" class="theorem proposition">
 <p><span class="theorem-title"><strong>Proposition 8.2 (Gaussian ordinary linear regression with conjugate priors)</strong></span> The conjugate prior for the Gaussian regression model for the mean and precision parameters <span class="math inline">\(\boldsymbol{\beta}\)</span> and <span class="math inline">\(\omega,\)</span> respectively, is a Gaussian-gamma and is defined hierarchically as <span class="math display">\[\begin{align*}
-\boldsymbol{Y}_i \sim \mathsf{Gauss}(\mathbf{x}_i\boldsymbol{\beta}, \omega^{-1}) \\
+\boldsymbol{Y}_i &amp;\sim \mathsf{Gauss}(\mathbf{x}_i\boldsymbol{\beta}, \omega^{-1}) \\
 \boldsymbol{\beta} \mid \omega &amp;\sim \mathsf{Gauss}\left\{\boldsymbol{\mu}_0, (\omega\boldsymbol{\Omega}_0)^{-1}\right\} \\
 \omega &amp;\sim \mathsf{gamma}(\nu_0/2,\tau_0/2).
 \end{align*}\]</span> Using properties of the Gaussian distribution, the sampling distribution of the ordinary least squares estimator is <span class="math inline">\(\widehat{\boldsymbol{\beta}} \sim \mathsf{Gauss}_p\{\boldsymbol{\beta}, (\omega\mathbf{X}^\top\mathbf{X})^{-1}\}.\)</span></p>
