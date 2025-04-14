@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.7.3">
+<meta name="generator" content="quarto-1.7.1">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -91,10 +91,10 @@ div.csl-indent {
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="site_libs/quarto-html/anchor.min.js"></script>
 <link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-81b5c3e63835cfde897ecd3d35a35a41.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-2bb0ec5e928ee8c40b12725cb7836c35.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-ad5ef081d17d57ab2b6cc5e45efb5d90.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-a51e8ad160b68d9f8f1ac488cc0f242e.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
   "copy-button": false,
@@ -282,12 +282,11 @@ window.Quarto = {
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#convergence-diagnostics-and-model-validation" id="toc-convergence-diagnostics-and-model-validation" class="nav-link active" data-scroll-target="#convergence-diagnostics-and-model-validation"><span class="header-section-number">7.1</span> Convergence diagnostics and model validation</a>
-  <ul class="collapse">
-  <li><a href="#posterior-predictive-checks" id="toc-posterior-predictive-checks" class="nav-link" data-scroll-target="#posterior-predictive-checks"><span class="header-section-number">7.1.1</span> Posterior predictive checks</a></li>
-  </ul></li>
-  <li><a href="#information-criteria" id="toc-information-criteria" class="nav-link" data-scroll-target="#information-criteria"><span class="header-section-number">7.2</span> Information criteria</a></li>
-  <li><a href="#computational-strategies" id="toc-computational-strategies" class="nav-link" data-scroll-target="#computational-strategies"><span class="header-section-number">7.3</span> Computational strategies</a></li>
+  <li><a href="#convergence-diagnostics-and-model-validation" id="toc-convergence-diagnostics-and-model-validation" class="nav-link active" data-scroll-target="#convergence-diagnostics-and-model-validation"><span class="header-section-number">7.1</span> Convergence diagnostics and model validation</a></li>
+  <li><a href="#multiple-short-chains-or-longer-runs" id="toc-multiple-short-chains-or-longer-runs" class="nav-link" data-scroll-target="#multiple-short-chains-or-longer-runs"><span class="header-section-number">7.2</span> Multiple short chains or longer runs?</a></li>
+  <li><a href="#posterior-predictive-checks" id="toc-posterior-predictive-checks" class="nav-link" data-scroll-target="#posterior-predictive-checks"><span class="header-section-number">7.2.1</span> Posterior predictive checks</a></li>
+  <li><a href="#information-criteria" id="toc-information-criteria" class="nav-link" data-scroll-target="#information-criteria"><span class="header-section-number">7.3</span> Information criteria</a></li>
+  <li><a href="#computational-strategies" id="toc-computational-strategies" class="nav-link" data-scroll-target="#computational-strategies"><span class="header-section-number">7.4</span> Computational strategies</a></li>
   </ul>
 <div class="toc-actions"><ul><li><a href="https://github.com/lbelzile/MATH80601A/edit/main/workflow.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li></ul></div></nav>
     </div>
@@ -377,6 +376,13 @@ Figure&nbsp;7.1: Traceplots of three Markov chains for the same target with diff
 <div id="def-warmup" class="theorem definition">
 <p><span class="theorem-title"><strong>Definition 7.4 (Warmup)</strong></span> Warmup period refers to the initial sampling phase (potentially overlapping with burn in period) during which proposals are tuned (for example, by changing the variance proposal to ensure good acceptance rate or for Hamiltonian Monte Carlo (HMC) to tune the size of the leapfrog. These initial steps should be disregarded.</p>
 </div>
+</section>
+<div id="rmk-short-vs-long">
+<section id="multiple-short-chains-or-longer-runs" class="level2" data-number="7.2">
+<h2 data-number="7.2" class="anchored" data-anchor-id="multiple-short-chains-or-longer-runs"><span class="header-section-number">7.2</span> Multiple short chains or longer runs?</h2>
+<p>In principle, it is more efficient to run a single Markov chain to draw samples for longer than multiple (shorter chains) for a fixed computational budget. Indeed, a single run means warmup needs to be achieve once. The benefits of running multiple chains comes from different considerations: we can monitor convergence to the stationary distribution (or to different modes for multimodal posteriors), and run diagnostics that rely on between-chain variance. Multiple chains can also be run in parallel and the results combined, a situation more in line with modern computer architecture.</p>
+</section>
+</div>
 <p>The target of inference is a functional (i.e., one-dimensional summaries of the chain): we need to have convergence of the latter, but also sufficient effective sample size for our averages to be accurate (at least to two significant digits).</p>
 <p>To illustrate these, we revisit the model from <a href="priors.html#exm-randomeffects" class="quarto-xref">Example&nbsp;<span>3.15</span></a> with a penalized complexity prior for the individual effect <span class="math inline">\(\alpha_i\)</span> and vague normal priors. We also fit a simple Poisson model with only the fixed effect, taking <span class="math inline">\(Y_{ij} \sim \mathsf{Poisson}\{\exp(\beta_j)\}\)</span> with <span class="math inline">\(\beta_j \sim \mathsf{Gauss}(0,100)\)</span>. This model has too little variability relative to the observations and fits poorly as is.</p>
 <p>For the Poisson example, the effective sample size for the <span class="math inline">\(\boldsymbol{\beta}\)</span> for the multilevel model is a bit higher than 1000 with <span class="math inline">\(B=5000\)</span> iterations, whereas we have for the simple naive model is <span class="math inline">\(1.028\times 10^{4}\)</span> for <span class="math inline">\(B=10000\)</span> draws, suggesting superefficient sampling. The dependency between <span class="math inline">\(\boldsymbol{\alpha}\)</span> and <span class="math inline">\(\boldsymbol{\beta}\)</span> is responsible for the drop in accuracy.</p>
@@ -408,8 +414,8 @@ Figure&nbsp;7.2: Two pairs of Markov chains: the top ones seem stationary, but w
 <div id="def-thinning" class="theorem definition">
 <p><span class="theorem-title"><strong>Definition 7.5 (Thinning)</strong></span> MCMC algorithms are often run thinning the chain (i.e., keeping only a fraction of the samples drawn, typically every <span class="math inline">\(k\)</span> iteration). This is wasteful as we can of course get more precise estimates by keeping all posterior draws, whether correlated or not. The only argument in favor of thinning is limited storage capacity: if we run very long chains in a model with hundreds of parameters, we may run out of memory.</p>
 </div>
-<section id="posterior-predictive-checks" class="level3" data-number="7.1.1">
-<h3 data-number="7.1.1" class="anchored" data-anchor-id="posterior-predictive-checks"><span class="header-section-number">7.1.1</span> Posterior predictive checks</h3>
+<section id="posterior-predictive-checks" class="level3" data-number="7.2.1">
+<h3 data-number="7.2.1" class="anchored" data-anchor-id="posterior-predictive-checks"><span class="header-section-number">7.2.1</span> Posterior predictive checks</h3>
 <p>Posterior predictive checks can be used to compare models of varying complexity. One of the visual diagnostics, outlined in <span class="citation" data-cites="Gabry:2019">Gabry et al. (<a href="references.html#ref-Gabry:2019" role="doc-biblioref">2019</a>)</span>, consists in computing a summary statistic of interest from the posterior predictive (whether mean, median, quantile, skewness, etc.) which is relevant for the problem at hand and which we hope our model can adequately capture. These should be salient features of the data, and may reveal inadequate likelihood or prior information.</p>
 <p>Suppose we have <span class="math inline">\(B\)</span> draws from the posterior and simulate for each <span class="math inline">\(n\)</span> observations from the posterior predictive <span class="math inline">\(p(\widetilde{\boldsymbol{y}} \mid \boldsymbol{y})\)</span>: we can benchmark summary statistics from our original data <span class="math inline">\(\boldsymbol{y}\)</span> with the posterior predictive copies <span class="math inline">\(\widetilde{\boldsymbol{y}}_b.\)</span> <a href="#fig-posterior-pred-check" class="quarto-xref">Figure&nbsp;<span>7.3</span></a> shows this for the two competing models and highlight the fact that the simpler model is not dispersed enough. Even the more complex model struggles to capture this additional heterogeneity with the additional variables. One could go back to the drawing board and consider a negative binomial model.</p>
 <div class="cell">
@@ -427,9 +433,8 @@ Figure&nbsp;7.3: Posterior predictive checks for the standard deviation (top) an
 </div>
 </div>
 </section>
-</section>
-<section id="information-criteria" class="level2" data-number="7.2">
-<h2 data-number="7.2" class="anchored" data-anchor-id="information-criteria"><span class="header-section-number">7.2</span> Information criteria</h2>
+<section id="information-criteria" class="level2" data-number="7.3">
+<h2 data-number="7.3" class="anchored" data-anchor-id="information-criteria"><span class="header-section-number">7.3</span> Information criteria</h2>
 <p>The widely applicable information criterion <span class="citation" data-cites="Watanabe:2010">(<a href="references.html#ref-Watanabe:2010" role="doc-biblioref">Watanabe 2010</a>)</span> is a measure of predictive performance that approximates the cross-validation loss. Consider first the log pointwise predictive density, defined as the expected value over the posterior distribution <span class="math inline">\(p(\boldsymbol{\theta} \mid \boldsymbol{y}),\)</span> <span class="math display">\[\begin{align*}
 \mathsf{LPPD}_i = \mathsf{E}_{\boldsymbol{\theta} \mid \boldsymbol{y}} \left\{ \log p(y_i \mid \boldsymbol{\theta})\right\}.
 \end{align*}\]</span> The higher the value of the predictive density <span class="math inline">\(\mathsf{LPPD}_i,\)</span> the better the fit for that observation.</p>
@@ -509,8 +514,8 @@ A meta-analysis is a combination of the results of different studies (of the sam
 A simple model, following @Gelman:2006, is to assume the effect size is Gaussian and treat the mean and variance as constant if each study is based on sufficient sample so that mean and variance are reliably estimated. We can then model data as a mixed model with a study-specific random effect.
 -->
 </section>
-<section id="computational-strategies" class="level2" data-number="7.3">
-<h2 data-number="7.3" class="anchored" data-anchor-id="computational-strategies"><span class="header-section-number">7.3</span> Computational strategies</h2>
+<section id="computational-strategies" class="level2" data-number="7.4">
+<h2 data-number="7.4" class="anchored" data-anchor-id="computational-strategies"><span class="header-section-number">7.4</span> Computational strategies</h2>
 <p>The data augmentation strategies considered in <a href="gibbs.html#sec-gibbs-da" class="quarto-xref"><span>Section 6.1</span></a> helps to simplify the likelihood and thereby reduce the cost of each iteration. However, latent variables are imputed conditional on current parameter values <span class="math inline">\(\boldsymbol{\theta}_a\)</span>: the higher the number of variables, the more the model will concentrate around current values of <span class="math inline">\(\boldsymbol{\theta}_a\)</span>, which leads to slow mixing.</p>
 <p>There are two main strategies to deal with this problem: blocking the random effects together and simulating them jointly to improve mixing, and marginalizing out over some of the latent variables.</p>
 <div id="exm-marginalization-Gauss" class="theorem example">
@@ -713,11 +718,50 @@ q(\boldsymbol{\beta} \mid \tau, \boldsymbol{\beta}^0)  \sim \mathsf{Gauss}_{366}
 \ell'(\boldsymbol{\beta}^0)_j  = \left. \frac{\partial \ell(y_j; \beta_j)}{\partial \beta_j}\right|_{\beta_j = \beta_j^0}, \quad \ell''(\boldsymbol{\beta}^0)_j  = \left. \frac{\partial^2 \ell(y_j; \beta_j)}{\partial \beta_j^2}\right|_{\beta_j = \beta_j^0}.
 \end{align*}\]</span> We can then simulate <span class="math inline">\(\tau\)</span> using an random walk step, then propose <span class="math inline">\(\boldsymbol{\beta}\)</span> conditional on this value using the Gaussian approximation above and accept/reject the pair <span class="math inline">\((\tau, \boldsymbol{\beta})\)</span> using a Metropolis step. As for the Metropolis-adjusted Langevin algorithm, we need to compute the backward move for the acceptance ratio. We refer to Section 4.4.1 of <span class="citation" data-cites="Rue.Held:2005">Rue and Held (<a href="references.html#ref-Rue.Held:2005" role="doc-biblioref">2005</a>)</span> for more details.</p>
 </div>
+<p>Strong dependence can be fixed by blocking (often via forward sampling), but perhaps conterintuitively also be adding additional redundant parameters. <span class="citation" data-cites="Gelman:2013">Gelman et al. (<a href="references.html#ref-Gelman:2013" role="doc-biblioref">2013</a>)</span> consider a simple hierarchical random effect model in which the range of the random effects is severely constrained by the variance.</p>
+<div id="exm-parameter-expansion" class="theorem example">
+<p><span class="theorem-title"><strong>Example 7.5 (Parameter expansion)</strong></span> Consider a one-way ANOVA with a single observation per group, where for <span class="math inline">\(i=1, \ldots, n,\)</span> we have <span class="math display">\[\begin{align*}
+Y_{i} &amp;\sim \mathsf{Gauss}(\mu + \alpha_i, \sigma^2_i) \\
+\alpha_i &amp;\sim \mathsf{Gauss}(0, \sigma^2_\alpha)
+\end{align*}\]</span> and an improper prior for the mean <span class="math inline">\(p(\mu) \propto 1.\)</span> If there are <span class="math inline">\(K\)</span> groups, then the group-specific mean is <span class="math inline">\(\mu+\alpha_k\)</span>, and there is a redundant parameter. In the Bayesian setting, the parameters are weakly identifiable because of the prior on <span class="math inline">\(\boldsymbol{\alpha}\)</span>, but the geometry is such that <span class="math inline">\(\alpha_k \to 0\)</span> as <span class="math inline">\(\sigma^2_{\alpha} \to 0.\)</span> See <a href="https://users.aalto.fi/~ave/BDA3.pdf">Section 5.5</a> on p.&nbsp;119 of <span class="citation" data-cites="Gelman:2013">Gelman et al. (<a href="references.html#ref-Gelman:2013" role="doc-biblioref">2013</a>)</span> for more details.</p>
+<p>We can improve mixing by adding the redundant parameter <span class="math inline">\(\xi_i&gt;0\)</span> <span class="citation" data-cites="Gelman.vanDyk:2008">(<a href="references.html#ref-Gelman.vanDyk:2008" role="doc-biblioref">Gelman et al. 2008</a>)</span> for each observation <span class="math display">\[\begin{align*}
+Y_{i} &amp;\sim \mathsf{Gauss}(\mu + \alpha\xi_i, \sigma^2_i) \\
+\xi_i &amp;\sim \mathsf{Gauss}(0, \sigma^2_\xi)
+\end{align*}\]</span> so that <span class="math inline">\(\alpha_j = \alpha \xi_j\)</span> and <span class="math inline">\(\sigma_\alpha = |\alpha|\sigma_\xi.\)</span> The common parameter <span class="math inline">\(\alpha\)</span> controls both the variance and the amplitude of the coefficients.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-eightschool" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-eightschool-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="workflow_files/figure-html/fig-eightschool-1.png" class="img-fluid figure-img" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-eightschool-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;7.10: Average treatment effect with asymptotic 95% confidence intervals for the eight school example.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-funnel" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-funnel-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="workflow_files/figure-html/fig-funnel-1.png" class="img-fluid figure-img" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-funnel-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;7.11: Dependence between random effect and it’s variance, showing a funnel pattern. The block Gibbs sample (left) does not explore the whole posterior, whereas the parameter-expansion algorithm (right) does.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</div>
 
 
 <div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list" style="display: none">
 <div id="ref-Andrieu.Roberts:2009" class="csl-entry" role="listitem">
-Andrieu, Christophe, and Gareth O. Roberts. 2009. <span>“The Pseudo-Marginal Approach for Efficient <span>M</span>onte <span>C</span>arlo Computations.”</span> <em>The Annals of Statistics</em> 37 (2): 697–725. <a href="https://doi.org/10.1214/07-AOS574">https://doi.org/10.1214/07-AOS574</a>.
+Andrieu, Christophe, and Gareth O. Roberts. 2009. <span>“The Pseudo-Marginal Approach for Efficient <span>M</span>onte <span>C</span>arlo Computations.”</span> <em>The Annals of Statistics</em> 37 (2): 697–725. <a href="https://doi.org/10.1214/07-aos574">https://doi.org/10.1214/07-aos574</a>.
 </div>
 <div id="ref-Beaumont:2003" class="csl-entry" role="listitem">
 Beaumont, Mark A. 2003. <span>“Estimation of Population Growth or Decline in Genetically Monitored Populations.”</span> <em>Genetics</em> 164 (3): 1139–60. <a href="https://doi.org/10.1093/genetics/164.3.1139">https://doi.org/10.1093/genetics/164.3.1139</a>.
@@ -730,6 +774,9 @@ Gelfand, A. E., and D. K. Dey. 1994. <span>“Bayesian Model Choice: Asymptotics
 </div>
 <div id="ref-Gelman:2013" class="csl-entry" role="listitem">
 Gelman, Andrew, John B. Carlin, Hal S. Stern, David B. Dunson, Aki Vehtari, and Donald B. Rubin. 2013. <em>Bayesian Data Analysis</em>. 3rd ed. New York: Chapman; Hall/CRC. <a href="https://doi.org/10.1201/b16018">https://doi.org/10.1201/b16018</a>.
+</div>
+<div id="ref-Gelman.vanDyk:2008" class="csl-entry" role="listitem">
+Gelman, Andrew, David A van Dyk, Zaiying Huang, and John W Boscardin. 2008. <span>“Using Redundant Parameterizations to Fit Hierarchical Models.”</span> <em>Journal of Computational and Graphical Statistics</em> 17 (1): 95–122. <a href="https://doi.org/10.1198/106186008x287337">https://doi.org/10.1198/106186008x287337</a>.
 </div>
 <div id="ref-Gelman.Rubin:1992" class="csl-entry" role="listitem">
 Gelman, Andrew, and Donald B. Rubin. 1992. <span>“Inference from Iterative Simulation Using Multiple Sequences.”</span> <em>Statistical Science</em> 7 (4): 457–72. <a href="https://doi.org/10.1214/ss/1177011136">https://doi.org/10.1214/ss/1177011136</a>.
@@ -744,7 +791,7 @@ Geweke, John. 1992. <span>“Evaluating the Accuracy of Sampling-Based Approache
 ———. 2004. <span>“Getting It Right: Joint Distribution Tests of Posterior Simulators.”</span> <em>Journal of the American Statistical Association</em> 99 (467): 799–804. <a href="https://doi.org/10.1198/016214504000001132">https://doi.org/10.1198/016214504000001132</a>.
 </div>
 <div id="ref-Kitagawa:1987" class="csl-entry" role="listitem">
-Kitagawa, Genshiro. 1987. <span>“Non-<span>G</span>aussian State—Space Modeling of Nonstationary Time Series.”</span> <em>Journal of the American Statistical Association</em> 82 (400): 1032–41. <a href="https://doi.org/10.1080/01621459.1987.10478534">https://doi.org/10.1080/01621459.1987.10478534</a>.
+Kitagawa, Genshiro. 1987. <span>“Non-<span>G</span>aussian State–Space Modeling of Nonstationary Time Series.”</span> <em>Journal of the American Statistical Association</em> 82 (400): 1032–41. <a href="https://doi.org/10.1080/01621459.1987.10478534">https://doi.org/10.1080/01621459.1987.10478534</a>.
 </div>
 <div id="ref-Nychka:2015" class="csl-entry" role="listitem">
 Nychka, Douglas, Soutir Bandyopadhyay, Dorit Hammerling, Finn Lindgren, and Stephan Sain. 2015. <span>“A Multiresolution <span>G</span>aussian Process Model for the Analysis of Large Spatial Datasets.”</span> <em>Journal of Computational and Graphical Statistics</em> 24 (2): 579–99.

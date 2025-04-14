@@ -230,6 +230,15 @@ These initial steps should be disregarded.
 :::
 
 
+
+:::{#rmk-short-vs-long}
+
+## Multiple short chains or longer runs?
+
+In principle, it is more efficient to run a single Markov chain to draw samples for longer than multiple (shorter chains) for a fixed computational budget. Indeed, a single run means warmup needs to be achieve once. The benefits of running multiple chains comes from different considerations: we can monitor convergence to the stationary distribution (or to different modes for multimodal posteriors), and run diagnostics that rely on between-chain variance. Multiple chains can also be run in parallel and the results combined, a situation more in line with modern computer architecture.
+
+:::
+
 The target of inference is a functional (i.e., one-dimensional summaries of the chain): we need to have convergence of the latter, but also sufficient effective sample size for our averages to be accurate (at least to two significant digits).
 
 ```{r}
@@ -964,5 +973,133 @@ Indeed, because of conditional independence, the $j$th element of $\ell'$ and $\
 \ell'(\boldsymbol{\beta}^0)_j  = \left. \frac{\partial \ell(y_j; \beta_j)}{\partial \beta_j}\right|_{\beta_j = \beta_j^0}, \quad \ell''(\boldsymbol{\beta}^0)_j  = \left. \frac{\partial^2 \ell(y_j; \beta_j)}{\partial \beta_j^2}\right|_{\beta_j = \beta_j^0}.
 \end{align*}
 We can then simulate $\tau$ using an random walk step, then propose $\boldsymbol{\beta}$ conditional on this value using the Gaussian approximation above and accept/reject the pair $(\tau, \boldsymbol{\beta})$ using a Metropolis step. As for the Metropolis-adjusted Langevin algorithm, we need to compute the backward move for the acceptance ratio. We refer to Section 4.4.1 of @Rue.Held:2005 for more details.
+
+:::
+
+Strong dependence can be fixed by blocking (often via forward sampling), but perhaps conterintuitively also be adding additional redundant parameters. @Gelman:2013 consider a simple hierarchical random effect model in which the range of the random effects is severely constrained by the variance.
+
+:::{#exm-parameter-expansion}
+
+## Parameter expansion
+
+
+Consider a one-way ANOVA with a single observation per group, where for $i=1, \ldots, n,$ we have
+\begin{align*}
+Y_{i} &\sim \mathsf{Gauss}(\mu + \alpha_i, \sigma^2_i) \\
+\alpha_i &\sim \mathsf{Gauss}(0, \sigma^2_\alpha)
+\end{align*}
+and an improper prior for the mean $p(\mu) \propto 1.$ If there are $K$ groups, then the group-specific mean is $\mu+\alpha_k$, and there is a redundant parameter. In the Bayesian setting, the parameters are weakly identifiable because of the prior on $\boldsymbol{\alpha}$, but the geometry is such that $\alpha_k \to 0$ as $\sigma^2_{\alpha} \to 0.$ See [Section 5.5](https://users.aalto.fi/~ave/BDA3.pdf) on p. 119 of @Gelman:2013 for more details.
+
+We can improve mixing by adding the redundant parameter $\xi_i>0$ [@Gelman.vanDyk:2008] for each observation
+\begin{align*}
+Y_{i} &\sim \mathsf{Gauss}(\mu + \alpha\xi_i, \sigma^2_i) \\
+\xi_i &\sim \mathsf{Gauss}(0, \sigma^2_\xi)
+\end{align*}
+so that $\alpha_j = \alpha \xi_j$ and $\sigma_\alpha = |\alpha|\sigma_\xi.$ The common parameter $\alpha$ controls both  the variance and the amplitude of the coefficients.
+
+```{r}
+#| eval: true
+#| echo: false
+
+# Eight school data
+es <- data.frame(school = LETTERS[1:8], 
+                 y = c(28, 8, -3, 7, -1, 1, 18, 12), 
+                 se = c(15, 10, 16, 11, 9, 11, 10, 18))
+n <- nrow(es)
+B <- 1e3L
+set.seed(80601)
+# Starting values
+alpha <- rnorm(0, sd = 0.01)
+mu <- mean(es$y)
+sigma_al <- sqrt(var(es$y) - mean(es$se))
+pars1 <- matrix(NA, nrow = B, ncol = n + 2)
+var_mu <- 1/sum(1/es$se^2)
+for(b in seq_len(B)){
+  var_al <- 1/(1/es$se^2 + 1/sigma_al^2)
+  pars1[b, 1:n] <- alpha <- rnorm(n = n, mean = var_al * (es$y - mu)/es$se^2, sd = sqrt(var_al))
+  pars1[b, n + 1] <- mu <- rnorm(n = 1, mean = var_mu * sum((es$y - alpha)/es$se^2), sd = sqrt(var_mu)) 
+  pars1[b, n + 2] <- sigma_al <- sum(alpha^2) / rchisq(1, df = n - 1) 
+}
+
+## Sampler 2
+# Same model, with joint updates
+set.seed(80601)
+# Starting values
+alpha <- rnorm(0, sd = 0.01)
+mu <- mean(es$y)
+sigma_al <- sqrt(var(es$y) - mean(es$se))
+pars2 <- matrix(NA, nrow = B, ncol = n + 2)
+for(b in seq_len(B)){
+  var_al <- 1/(1/es$se^2 + 1/sigma_al^2)
+  # Sample from joint of alpha, mu
+  # by taking p(alpha | sigma_al, y) * p(mu | alpha, sigma_al, y)
+  pars2[b, 1:n] <- alpha <- rnorm(n = n, mean = var_al * es$y/es$se^2, sd = sqrt(var_al))
+  pars2[b, n + 1] <- mu <- rnorm(n = 1, mean = var_mu * sum((es$y - alpha)/es$se^2), sd = sqrt(var_mu)) 
+  pars2[b, n + 2] <- sigma_al <- sum(alpha^2) / rchisq(1, df = n - 1) 
+}
+
+# Parameter expansion - V+PX sampler
+a <- 1
+pars3 <- matrix(NA, nrow = B, ncol = n + 3)
+for(b in seq_len(B)){
+  var_al <- 1/(1/es$se^2 + 1/sigma_al^2)
+  # Sample from joint of alpha, mu
+  # by taking p(alpha | sigma_al, y) * p(mu | alpha, sigma_al, y)
+  alpha_st <- rnorm(n = n, mean = var_al * es$y/es$se^2, sd = sqrt(var_al))
+  pars3[b, n + 1] <- mu <- rnorm(n = 1, mean = var_mu * sum((es$y - alpha)/es$se^2), sd = sqrt(var_mu)) 
+  pars3[b, n + 2] <- sigma_al_st <- sum(alpha_st^2) / rchisq(1, df = n - 1) 
+  pars3[b, n + 3] <- a <- rnorm(n = 1, mean = sum(alpha_st*(es$y-mu)/es$se^2)/sum(alpha_st^2/es$se^2), 
+                                sd = sum(alpha_st^2/es$se^2))
+  pars3[b, 1:n] <- alpha_st*a
+  pars3[b, n + 2] <- sigma_al <- abs(a)*sigma_al_st
+}
+```
+
+
+```{r}
+#| eval: true
+#| echo: false
+#| label: fig-eightschool
+#| fig-cap: "Average treatment effect with asymptotic 95% confidence intervals for the eight school example."
+ggplot(es, aes(x = school, y = y)) +
+  geom_point(col = "purple") +
+  geom_errorbar(aes(ymin = y - 1.96*se, ymax = y + 1.96*se), width = 0.3) +
+  labs(x = "school", y = "") +
+  theme_classic()
+```
+
+
+```{r}
+#| eval: true
+#| echo: false
+#| label: fig-funnel 
+#| fig-cap: "Dependence between random effect and it's variance, showing a funnel pattern. The block Gibbs sample (left) does not explore the whole posterior, whereas the parameter-expansion algorithm (right) does."
+# Funnel behaviour
+g1 <- ggplot(
+  data = data.frame(
+   beta2 = c(pars1[,2]), 
+   sigma = c(pars1[,n+2])),
+  mapping = aes(x = beta2, y = log(sigma))) +
+  geom_point() +
+  scale_color_grey() +
+  scale_y_continuous(limits = c(0, 13)) +
+  labs(x = expression(alpha[2]), 
+       y = expression("log"~sigma[alpha]),
+       caption = "block")  +
+  theme_classic()
+g2 <- ggplot(
+  data = data.frame(
+   beta2 = c(pars3[,2]), 
+   sigma = c(pars3[,n+2])),
+  mapping = aes(x = beta2, y = log(sigma))) +
+  geom_point() +
+  scale_color_grey() +
+  scale_y_continuous(limits = c(0, 13)) +
+  labs(x = expression(alpha[2]), 
+       y = expression("log"~sigma[alpha]),
+       caption = "expansion")  +
+  theme_classic()
+g1 + g2
+```
 
 :::

@@ -341,15 +341,97 @@ The scale parameters and hyperparameters can be estimated jointly with the model
 
 
 
-:::{#prp-spike-slab}
+:::{#def-spike-slab}
 
-## Spike-and-slab prior
-
-
-The spike-and-slab prior is a two-component mixture with that assigns a positive probability to zero via a point mass $\delta_0$ or a vary narrow distribution centered at the origin (the spike) and the balance to the slab, a diffuse distribution.
+## Discrete spike-and-slab prior
 
 
-The spike-and-slab prior was originally proposed by @Mitchell.Beauchamp:1988 with a uniform on a large interval and a point mass at zero. The term was also used in @George.McCulloch:1993, which replaced the prior by a mixture of Gaussians, one of which diffuse and the other with near infinite precision and centered at the origin. The latter is known under the vocable stochastic search variable selection prior. Letting $\gamma_j \in [0,1]$ denote the probability of the slab or inclusion of the variable, the independent priors for the regression coefficients are
+The spike-and-slab prior is a two-component mixture with that assigns a positive probability to zero via a point mass $\delta_0$ or a vary narrow distribution centered at the origin (the spike) and the balance to the slab, a diffuse distribution. The **discrete spike-and-slab** prior was originally proposed by @Mitchell.Beauchamp:1988 with a uniform on a large interval and a point mass at zero. More generally, people consider the 
+formulation 
+\begin{align*}
+\beta_j \mid \gamma_j, \sigma^2 \sim \gamma_j \delta_0 + (1-\gamma_j)\mathsf{Gauss}(0, \sigma^2)
+\end{align*}
+where a prior $p(\sigma^2)$ give rise to a Gaussian scale mixtures for the slab. If we set independent and identically distributed conjugate prior for $\gamma_j \sim \mathsf{binom}(1, \omega),$ we get
+\begin{align*}
+p(\boldsymbol{\gamma} \mid \omega) = \prod_{j=1}^n \omega^{\gamma_j} (1-\omega)^{1-\gamma_j}
+\end{align*}
+Apriori, the shared hyperparameters $\omega \in (0,1)$ corresponds to the proportion of the $p$ coefficients $\boldsymbol{\beta}$ that are zero (so $p(1-\omega)$ nonzero coefficients). Alternative priors focus on precentage of explained variance in the regression (via the coefficient of determination $R^2$) and the number of covariates. The prior has typically a strong impact on the posterior, by design.
+
+:::
+
+:::{#exm-spike-slab}
+
+## Spike-and-slab and variable selection
+
+Discrete spike-and-slab priors are not easy to fit because the component $\gamma_j\in\{0,1\}$ is discrete (so cannot be simulated via Hamiltonian Monte Carlo as is). Removal of a covariate changes the dimension and requires dedicated algorithms; see @George.McCulloch:1997, @Chipman.George.McCulloch:2001 and @Ghosh.Clyde:2011 for references. Some of these are implemented in the `BoomSpikeSlab` **R** package.
+
+```{r}
+library("BoomSpikeSlab")
+data(diabetes, package = "lars")
+diabetes <- as.data.frame(cbind(y = diabetes$y, diabetes$x2))
+dss <- BoomSpikeSlab::lm.spike(
+   y ~ .,
+   niter = 1e4L,
+   ping = -1,
+   expected.model.size = 5,
+   seed = 80601,
+   data = diabetes, 
+   error.distribution = "student")
+```
+
+We fit the discrete spike-and-slab to the `diabetes` data, which contains a model matrix of $n=442$ observations with $p=64$ covariates, with an expected number of non-zero component of 1. The result of the MCMC procedure is a matrix of coefficients for $\boldsymbol{\beta}$ plus other model parameters. From the former, we can estimate the probability of an active component by simply counting the number of non-zero entries in $\boldsymbol{\beta}$ over all replications. We can likewise compute the posterior probability of the number of non-zero components by simply counting the number of non-zero coefficients for each posterior draw. @fig-spike-slab-zero shows the result
+
+```{r}
+#| eval: true
+#| echo: false
+#| label: fig-spike-slab-zero
+#| fig-cap: "Probability of inclusion of variables (left) and posterior distribution of the number of non-zero components (right) for the discrete spike-and-slab fitted to the `diabetes` data, including 56 covariates with quadratic terms and interactions."
+df <- data.frame(
+  var = colnames(dss$beta[, -1]),
+  prop = colMeans(dss$beta[, -1] != 0)
+) |>
+  dplyr::arrange(prop, decreasing = TRUE) |>
+  dplyr::filter(prop > 0.01)
+g1 <- ggplot(
+  data = df |> dplyr::mutate(var = insight::text_remove_backticks(var)),
+  mapping = aes(x = prop, y = forcats::fct_reorder(var, prop))
+) +
+  geom_col() +
+  labs(y = "", x = "inclusion probability", subtitle = "variable") +
+  theme_classic()
+
+g2 <- ggplot(
+  data = data.frame(
+    nvar = rowSums(dss$beta[, -1] != 0)
+  ),
+  mapping = aes(x = nvar)
+) +
+  geom_bar(
+    mapping = aes(y = after_stat(count) / sum(after_stat(count)))
+  ) +
+  scale_y_continuous(
+    limits = c(0, NA),
+    expand = expansion(),
+    labels = scales::percent
+  ) +
+  scale_x_continuous(
+    limits = c(0, 15),
+    expand = expansion()
+  ) +
+  labs(x = "number of non-zero coefficients", y = "") +
+  theme_classic()
+g1 + g2
+
+```
+
+:::
+
+
+:::{#def-cont-spike-slab}
+
+## Continuous spike-and-slab prior
+
+The term was also used in @George.McCulloch:1993, which replaced the prior by a mixture of Gaussians, one of which diffuse and the other with near infinite precision and centered at the origin. The latter is known under the vocable stochastic search variable selection prior  after @George.McCulloch:1997, or more commonly as an instance of **continuous spike-and-slab** prior. Letting $\gamma_j \in [0,1]$ denote the probability of the slab or inclusion of the variable, the independent priors for the regression coefficients are
 \begin{align*}
  \beta_j \mid \gamma_j, \sigma_j^2,\phi^2_j \sim (1-\gamma_j) \mathsf{Gauss}(0, \sigma_j^2\phi^2_j) + \gamma_j \mathsf{Gauss}(0, \phi^2)
 \end{align*}

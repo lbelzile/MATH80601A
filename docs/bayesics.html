@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.7.3">
+<meta name="generator" content="quarto-1.7.1">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -91,10 +91,10 @@ div.csl-indent {
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="site_libs/quarto-html/anchor.min.js"></script>
 <link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-81b5c3e63835cfde897ecd3d35a35a41.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-2bb0ec5e928ee8c40b12725cb7836c35.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-ad5ef081d17d57ab2b6cc5e45efb5d90.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-a51e8ad160b68d9f8f1ac488cc0f242e.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
   "copy-button": false,
@@ -555,7 +555,7 @@ Figure&nbsp;2.5: Posterior curves per group (left) and odds ratio (right)
 <p>Prediction in the Bayesian paradigm is obtained by considering the <em>posterior predictive distribution</em>, <span class="math display">\[\begin{align*}
 p(y_{\text{new}} \mid \boldsymbol{y}) =
 \int_{\Theta} p(y_{\text{new}}  \mid \boldsymbol{\theta}) p(\boldsymbol{\theta} \mid  \boldsymbol{y}) \mathrm{d} \boldsymbol{\theta}
-\end{align*}\]</span></p>
+\end{align*}\]</span> In a simulation context, we generate one new dataset (or observation) for each posterior draw <span class="math inline">\(\boldsymbol{\theta}\)</span> from the posterior <span class="math inline">\(p(\boldsymbol{\theta} \mid  \boldsymbol{y}).\)</span></p>
 <p>Given draws from the posterior distribution, say <span class="math inline">\(\boldsymbol{\theta}_b\)</span> <span class="math inline">\((b=1, \ldots, B),\)</span> we sample from each a new realization from the distribution appearing in the likelihood <span class="math inline">\(p(y_{\text{new}}  \mid \boldsymbol{\theta}_b).\)</span> This is different from the frequentist setting, which fixes the value of the parameter to some estimate <span class="math inline">\(\widehat{\boldsymbol{\theta}}\)</span>; by contrast, the posterior predictive, here a beta-binomial distribution <span class="math inline">\(\mathsf{beta binom}(n, \alpha + y, n - y + \beta),\)</span> carries over the uncertainty so will typically be wider and overdispersed relative to the corresponding binomial model. This can be easily seen from the left-panel of <a href="#fig-betabinompostpred" class="quarto-xref">Figure&nbsp;<span>2.6</span></a>, which contrasts the binomial mass function evaluated at the maximum likelihood estimator <span class="math inline">\(\widehat{\theta}=6/14\)</span> with the posterior predictive.</p>
 <div class="exm-betabinompred">
 <div class="cell">

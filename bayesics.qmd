@@ -617,6 +617,7 @@ g1 + g2
 
 
 :::
+
 ## Posterior predictive distribution
 
 Prediction in the Bayesian paradigm is obtained by considering the *posterior predictive distribution*,
@@ -624,6 +625,8 @@ Prediction in the Bayesian paradigm is obtained by considering the *posterior pr
 p(y_{\text{new}} \mid \boldsymbol{y}) =
 \int_{\Theta} p(y_{\text{new}}  \mid \boldsymbol{\theta}) p(\boldsymbol{\theta} \mid  \boldsymbol{y}) \mathrm{d} \boldsymbol{\theta}
 \end{align*}
+In a simulation context, we generate one new dataset (or observation) for each posterior draw $\boldsymbol{\theta}$ from the posterior $p(\boldsymbol{\theta} \mid  \boldsymbol{y}).$
+
 
 Given draws from the posterior distribution, say $\boldsymbol{\theta}_b$ $(b=1, \ldots, B),$ we sample from each a new realization from the distribution appearing in the likelihood $p(y_{\text{new}}  \mid \boldsymbol{\theta}_b).$ This is different from the frequentist setting, which fixes the value of the parameter to some estimate $\widehat{\boldsymbol{\theta}}$; by contrast, the posterior predictive, here a beta-binomial distribution $\mathsf{beta binom}(n, \alpha + y, n - y + \beta),$ carries over the uncertainty so will typically be wider and overdispersed relative to the corresponding binomial model. This can be easily seen from the left-panel of @fig-betabinompostpred, which contrasts the binomial mass function evaluated at the maximum likelihood estimator $\widehat{\theta}=6/14$ with the posterior predictive.
 

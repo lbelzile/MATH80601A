@@ -230,7 +230,7 @@ The right panel of @fig-convex shows a skew-Gaussian distribution with location 
 
 The Laplace approximation is easily obtained by numerical maximization; the mode is the mean of the resulting approximation, with a std. deviation that matches the square root of the reciprocal Hessian of the negative log density.
 
-Consider an approximation with $g$ the density of $\mathsf{Gauss}(m, s^2);$ we obtain the parameters by minimizing the ELBO. The entropy term for a Gaussian approximating density is 
+Consider an approximation with $g$ the density of $\mathsf{Gauss}(m, s^2);$ we obtain the parameters by maximizing the ELBO. The entropy term for a Gaussian approximating density is 
 \begin{align*}
 -\mathsf{E}_g(\log g) = \frac{1}{2}\log(2\pi \sigma^2) + \frac{1}{2s^2}\mathsf{E}_g\left\{(X-m)^2 \right\} = \frac{1}{2} \left\{1+\log(2\pi s^2)\right\}
 \end{align*}
@@ -253,7 +253,7 @@ Variational inference in itself does not determine the choice of approximating d
 The user has ample choice to decide whether to use the fully correlated, factorized, or the mean-field approximation, along with the parametric family for each block. Note that the latter must be support dependent, as the Kullback--Leibler divergence will be infinite if the support of $g$ does not include that of $p(\boldsymbol{\theta} \mid \boldsymbol{y})$ (although we work with the reverse Kullback--Leibler).
 
 
-There are two main approaches: the first is to start off with the model with a factorization of the density, and deduce the form of the most suitable parametric family for the approximation that will minimize the ELBO. This requires bespoke derivation of the form of the density and the conditionals for each model, and does not lead itself easily to generalizations. The second approach alternative is to rely on a generic family for the approximation, and an omnibus procedure for the optimization using a reformulation via stochastic optimization that approximates the integrals appearing in the ELBO formula. 
+There are two main approaches: the first is to start off with the model with a factorization of the density, and deduce the form of the most suitable parametric family for the approximation that will maximize the ELBO. This requires bespoke derivation of the form of the density and the conditionals for each model, and does not lead itself easily to generalizations. The second approach alternative is to rely on a generic family for the approximation, and an omnibus procedure for the optimization using a reformulation via stochastic optimization that approximates the integrals appearing in the ELBO formula. 
 
 :::{#prp-factorization}
 
@@ -310,11 +310,11 @@ This is an example where the marginal posteriors are available in closed-form,
 \end{align*}
 so we can compare our approximation with the truth. We assume a factorization of the variational approximation $g_\mu(\mu)g_\tau(\tau);$ the factor for $g_\mu$ is proportional to
 \begin{align*}
- \log g^{\star}_{\mu}(\mu) \propto -\frac{\mathsf{E}_{\tau}(\tau)}{2} \left\{ \sum_{i=1}^n (y_i-\mu)^2-\frac{\tau_0}{2}(\mu-\mu_0)^2\right\},
+ \log g^{\star}_{\mu}(\mu) \propto -\frac{\mathsf{E}_{\tau}(\tau)}{2} \left\{ \sum_{i=1}^n (y_i-\mu)^2 + \tau_0(\mu-\mu_0)^2\right\},
 \end{align*}
 which is quadratic in $\mu$ and thus must be Gaussian with precision $\tau_n = \mathsf{E}_{\tau}(\tau)(n + \tau_0)$ and mean $(n + \tau_0)^{-1}\{\tau_0\mu_0 + n\overline{y}\}$ using @prp-quadratic-forms, where $n\overline{y} = \sum_{i=1}^n y_i.$ We could also note that this corresponds (up to expectation) to $p(\mu \mid \tau, \boldsymbol{y}).$ As the sample size increase, the approximation converges to a Dirac delta (point mass at the sample mean. The optimal precision factor satisfies
 \begin{align*}
- \ln g^{\star}_{\tau}(\tau) &\propto \log \tau\left(\frac{n+1}{2} + a_0-1\right)   \\&\quad- \tau \left[b_0  + \frac{1}{2} \mathsf{E}_{\mu}\left\{\sum_{i=1}^n (y_i-\mu)^2\right\} + \frac{\tau_0\mathsf{E}{\mu}\left\{(\mu-\mu_0)^2\right\}}{2}\right].
+ \ln g^{\star}_{\tau}(\tau) &\propto \log \tau\left(\frac{n+1}{2} + a_0-1\right)   \\&\quad- \tau \left[b_0  + \frac{\mathsf{E}_{\mu}\left\{\sum_{i=1}^n (y_i-\mu)^2\right\}}{2}  + \frac{\tau_0\mathsf{E}_{\mu}\left\{(\mu-\mu_0)^2\right\}}{2}\right].
 \end{align*}
 This is the form as  $p(\tau \mid \mu, \boldsymbol{y}),$ namely a gamma with shape $a_n =(n+1)/2 + a_0$ and rate $b_n$ given by the term in the square brackets. It is helpful to rewrite the expected value as
 \begin{align*}
@@ -504,7 +504,7 @@ since $1-\Phi(x) = \Phi(-x).$ Consider the data augmentation of @exm-probit-regr
 
 With $\boldsymbol{\beta} \sim \mathsf{Gauss}_p(\boldsymbol{\mu}_0, \mathbf{Q}_0^{-1}),$ the model admits conditionals
 \begin{align*}
-\boldsymbol{\beta} \mid \boldsymbol{Z} &\sim \mathsf{Gauss}_p\left\{(\mathbf{X}^\top\mathbf{X} + \mathbf{Q_0})^{-1}(\mathbf{X}\boldsymbol{Z} + \mathbf{Q}_0\boldsymbol{\mu}_0),  (\mathbf{X}^\top\mathbf{X} + \mathbf{Q_0})^{-1} \right\}
+\boldsymbol{\beta} \mid \boldsymbol{z} &\sim \mathsf{Gauss}_p\left\{(\mathbf{X}^\top\mathbf{X} + \mathbf{Q_0})^{-1}(\mathbf{X}\boldsymbol{z} + \mathbf{Q}_0\boldsymbol{\mu}_0),  (\mathbf{X}^\top\mathbf{X} + \mathbf{Q_0})^{-1} \right\}
 \\
 Z_i \mid y_i, \boldsymbol{\beta} &\sim \mathsf{trunc. Gauss}(\mathbf{x}_i\boldsymbol{\beta}, 1, l_i, u_i) 
 \end{align*}
@@ -674,7 +674,11 @@ g2 <- ggplot(
   theme_classic()
 g2 + g1
 ```
+
 :::
+
+
+Given the strong requirements for getting tractable conditionals, coordinate-ascent variational inference is mostly useful in ultra high-dimensional settings where Markov chain Monte Carlo algorithms are not viable. This is the case notable for regression models with the discrete spike-and-slab of @def-spike-slab, models for image processing or topic modelling using latent Dirichlet allocations.
 
 
 ## Automatic differentiation variational inference

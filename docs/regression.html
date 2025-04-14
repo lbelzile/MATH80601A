@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.7.3">
+<meta name="generator" content="quarto-1.7.1">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -91,10 +91,10 @@ div.csl-indent {
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="site_libs/quarto-html/anchor.min.js"></script>
 <link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-81b5c3e63835cfde897ecd3d35a35a41.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-2bb0ec5e928ee8c40b12725cb7836c35.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-ad5ef081d17d57ab2b6cc5e45efb5d90.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-a51e8ad160b68d9f8f1ac488cc0f242e.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
   "copy-button": false,
@@ -508,18 +508,73 @@ Figure&nbsp;8.2: Prior draws from a bivariate inverse Wishart with identity scal
 <p>In the Bayesian paradigm, regularization is achieved via priors that have mass at or towards zero, pushing coefficients of the regression model towards zero unless there is strong evidence from the likelihood against this. We however want to allow non-zero coefficients, typically by setting coefficient-specific parameters with a heavy tailed distribution to prevent overshrinking. Most if not all parameter can be viewed as scale mixtures of Gaussian.</p>
 <p>We make a distinction between <strong>global</strong> shrinkage priors those that consider a common shrinkage parameter for all regression coefficients, to be compared with <strong>local</strong> scale mixtures that have coefficient-specific parameters.</p>
 <p>The scale parameters and hyperparameters can be estimated jointly with the model, and uncertainty diagnostics follow naturally. We assume that coefficients <span class="math inline">\(\beta_j\)</span> are independent apriori, although it is possible to specify group structures (e.g., for handling coefficients associated to a common categorical covariate with <span class="math inline">\(K\)</span> levels, represented by <span class="math inline">\(K-1\)</span> columns of dummy group indicators).</p>
-<div id="prp-spike-slab" class="theorem proposition">
-<p><span class="theorem-title"><strong>Proposition 8.6 (Spike-and-slab prior)</strong></span> The spike-and-slab prior is a two-component mixture with that assigns a positive probability to zero via a point mass <span class="math inline">\(\delta_0\)</span> or a vary narrow distribution centered at the origin (the spike) and the balance to the slab, a diffuse distribution.</p>
-<p>The spike-and-slab prior was originally proposed by <span class="citation" data-cites="Mitchell.Beauchamp:1988">Mitchell and Beauchamp (<a href="references.html#ref-Mitchell.Beauchamp:1988" role="doc-biblioref">1988</a>)</span> with a uniform on a large interval and a point mass at zero. The term was also used in <span class="citation" data-cites="George.McCulloch:1993">George and McCulloch (<a href="references.html#ref-George.McCulloch:1993" role="doc-biblioref">1993</a>)</span>, which replaced the prior by a mixture of Gaussians, one of which diffuse and the other with near infinite precision and centered at the origin. The latter is known under the vocable stochastic search variable selection prior. Letting <span class="math inline">\(\gamma_j \in [0,1]\)</span> denote the probability of the slab or inclusion of the variable, the independent priors for the regression coefficients are <span class="math display">\[\begin{align*}
+<div id="def-spike-slab" class="theorem definition">
+<p><span class="theorem-title"><strong>Definition 8.2 (Discrete spike-and-slab prior)</strong></span> The spike-and-slab prior is a two-component mixture with that assigns a positive probability to zero via a point mass <span class="math inline">\(\delta_0\)</span> or a vary narrow distribution centered at the origin (the spike) and the balance to the slab, a diffuse distribution. The <strong>discrete spike-and-slab</strong> prior was originally proposed by <span class="citation" data-cites="Mitchell.Beauchamp:1988">Mitchell and Beauchamp (<a href="references.html#ref-Mitchell.Beauchamp:1988" role="doc-biblioref">1988</a>)</span> with a uniform on a large interval and a point mass at zero. More generally, people consider the formulation <span class="math display">\[\begin{align*}
+\beta_j \mid \gamma_j, \sigma^2 \sim \gamma_j \delta_0 + (1-\gamma_j)\mathsf{Gauss}(0, \sigma^2)
+\end{align*}\]</span> where a prior <span class="math inline">\(p(\sigma^2)\)</span> give rise to a Gaussian scale mixtures for the slab. If we set independent and identically distributed conjugate prior for <span class="math inline">\(\gamma_j \sim \mathsf{binom}(1, \omega),\)</span> we get <span class="math display">\[\begin{align*}
+p(\boldsymbol{\gamma} \mid \omega) = \prod_{j=1}^n \omega^{\gamma_j} (1-\omega)^{1-\gamma_j}
+\end{align*}\]</span> Apriori, the shared hyperparameters <span class="math inline">\(\omega \in (0,1)\)</span> corresponds to the proportion of the <span class="math inline">\(p\)</span> coefficients <span class="math inline">\(\boldsymbol{\beta}\)</span> that are zero (so <span class="math inline">\(p(1-\omega)\)</span> nonzero coefficients). Alternative priors focus on precentage of explained variance in the regression (via the coefficient of determination <span class="math inline">\(R^2\)</span>) and the number of covariates. The prior has typically a strong impact on the posterior, by design.</p>
+</div>
+<div id="exm-spike-slab" class="theorem example">
+<p><span class="theorem-title"><strong>Example 8.2 (Spike-and-slab and variable selection)</strong></span> Discrete spike-and-slab priors are not easy to fit because the component <span class="math inline">\(\gamma_j\in\{0,1\}\)</span> is discrete (so cannot be simulated via Hamiltonian Monte Carlo as is). Removal of a covariate changes the dimension and requires dedicated algorithms; see <span class="citation" data-cites="George.McCulloch:1997">George and McCulloch (<a href="references.html#ref-George.McCulloch:1997" role="doc-biblioref">1997</a>)</span>, <span class="citation" data-cites="Chipman.George.McCulloch:2001">Chipman et al. (<a href="references.html#ref-Chipman.George.McCulloch:2001" role="doc-biblioref">2001</a>)</span> and <span class="citation" data-cites="Ghosh.Clyde:2011">Ghosh and Clyde (<a href="references.html#ref-Ghosh.Clyde:2011" role="doc-biblioref">2011</a>)</span> for references. Some of these are implemented in the <code>BoomSpikeSlab</code> <strong>R</strong> package.</p>
+<div class="cell">
+<div class="cell-output cell-output-stderr">
+<pre><code>Le chargement a nécessité le package : Boom</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>
+Attachement du package : 'Boom'</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>L'objet suivant est masqué depuis 'package:stats':
+
+    rWishart</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>
+Attachement du package : 'BoomSpikeSlab'</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>L'objet suivant est masqué depuis 'package:stats':
+
+    knots</code></pre>
+</div>
+</div>
+<p>We fit the discrete spike-and-slab to the <code>diabetes</code> data, which contains a model matrix of <span class="math inline">\(n=442\)</span> observations with <span class="math inline">\(p=64\)</span> covariates, with an expected number of non-zero component of 1. The result of the MCMC procedure is a matrix of coefficients for <span class="math inline">\(\boldsymbol{\beta}\)</span> plus other model parameters. From the former, we can estimate the probability of an active component by simply counting the number of non-zero entries in <span class="math inline">\(\boldsymbol{\beta}\)</span> over all replications. We can likewise compute the posterior probability of the number of non-zero components by simply counting the number of non-zero coefficients for each posterior draw. <a href="#fig-spike-slab-zero" class="quarto-xref">Figure&nbsp;<span>8.3</span></a> shows the result</p>
+<div class="cell">
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Removed 3 rows containing non-finite outside the scale range
+(`stat_count()`).</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Removed 1 row containing missing values or values outside the scale range
+(`geom_bar()`).</code></pre>
+</div>
+<div class="cell-output-display">
+<div id="fig-spike-slab-zero" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-spike-slab-zero-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="regression_files/figure-html/fig-spike-slab-zero-1.png" class="img-fluid figure-img" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-spike-slab-zero-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;8.3: Probability of inclusion of variables (left) and posterior distribution of the number of non-zero components (right) for the discrete spike-and-slab fitted to the <code>diabetes</code> data, including 56 covariates with quadratic terms and interactions.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<div id="def-cont-spike-slab" class="theorem definition">
+<p><span class="theorem-title"><strong>Definition 8.3 (Continuous spike-and-slab prior)</strong></span> The term was also used in <span class="citation" data-cites="George.McCulloch:1993">George and McCulloch (<a href="references.html#ref-George.McCulloch:1993" role="doc-biblioref">1993</a>)</span>, which replaced the prior by a mixture of Gaussians, one of which diffuse and the other with near infinite precision and centered at the origin. The latter is known under the vocable stochastic search variable selection prior after <span class="citation" data-cites="George.McCulloch:1997">George and McCulloch (<a href="references.html#ref-George.McCulloch:1997" role="doc-biblioref">1997</a>)</span>, or more commonly as an instance of <strong>continuous spike-and-slab</strong> prior. Letting <span class="math inline">\(\gamma_j \in [0,1]\)</span> denote the probability of the slab or inclusion of the variable, the independent priors for the regression coefficients are <span class="math display">\[\begin{align*}
 \beta_j \mid \gamma_j, \sigma_j^2,\phi^2_j \sim (1-\gamma_j) \mathsf{Gauss}(0, \sigma_j^2\phi^2_j) + \gamma_j \mathsf{Gauss}(0, \phi^2)
 \end{align*}\]</span> where <span class="math inline">\(\phi^2_j\)</span> is very nearly zero, e.g., <span class="math inline">\(\phi_j^2=0.001.\)</span> The construction allows for variable augmentation with mixture indicators and Gibbs sampling, analogous to the Gaussian mixture models but with the variance and mean of one of the cluster for the spike fixed. However, mixing of the Gibbs sampler Markov chain tends to be poor.</p>
 </div>
 <div id="prp-horseshoe" class="theorem proposition">
-<p><span class="theorem-title"><strong>Proposition 8.7 (Horseshoe prior)</strong></span> The horseshoe prior of <span class="citation" data-cites="Carvalho.Polson.Scott:2010">Carvalho, Polson, and Scott (<a href="references.html#ref-Carvalho.Polson.Scott:2010" role="doc-biblioref">2010</a>)</span> is a hierarchical prior of the form <span class="math display">\[\begin{align*}
+<p><span class="theorem-title"><strong>Proposition 8.6 (Horseshoe prior)</strong></span> The horseshoe prior of <span class="citation" data-cites="Carvalho.Polson.Scott:2010">Carvalho, Polson, and Scott (<a href="references.html#ref-Carvalho.Polson.Scott:2010" role="doc-biblioref">2010</a>)</span> is a hierarchical prior of the form <span class="math display">\[\begin{align*}
 \beta_j \mid \sigma^2_j \sim \mathsf{Gauss}(0, \sigma^2_j), \quad \sigma_j \mid \lambda \sim \mathsf{Student}_{+}(0, \lambda, 1), \quad \lambda \sim \mathsf{Student}_{+}(0, \omega, 1)
 \end{align*}\]</span> where <span class="math inline">\(\mathsf{Student}_{+}(0, a, 1)\)</span> denotes a half-Cauchy distribution with scale <span class="math inline">\(a&gt;0,\)</span> truncated on <span class="math inline">\(\mathbb{R}_{+}\)</span> <span class="citation" data-cites="Carvalho.Polson.Scott:2010">Carvalho, Polson, and Scott (<a href="references.html#ref-Carvalho.Polson.Scott:2010" role="doc-biblioref">2010</a>)</span> use an improper prior for the scale <span class="math inline">\(p(\omega^2) \propto 1/\omega^2.\)</span></p>
 <p>This prior has no explicit density, but is continuous and can be simulated. It is useful to consider the behaviour of the random variance <span class="math inline">\(\sigma^2_j\)</span> term, which leads to an unconditional scale mixture of Gaussian for <span class="math inline">\(\beta_j.\)</span> More useful to understanding is looking at <span class="math inline">\(\kappa = 1 - 1/(1+\sigma^2),\)</span> which gives a weight in <span class="math inline">\([0,1].\)</span> We can see what happens to the shrunk components close to zero by looking at the density of <span class="math inline">\(\kappa \to 0,\)</span> and similarly at the large signals when <span class="math inline">\(\kappa \to 1.\)</span> The Cauchy prior does not shrink towards zero, and lets large signals pass, whereas the Bayesian LASSO double exponential shrinkage leads to attenuation of strong signals. The horseshoe prior name comes from the shape of the prior, which leads to a shrinkage analog to <span class="math inline">\(\mathsf{beta}(1/2, 1/2)\)</span> and thus penalizes, forcing components to be either large or small.</p>
-<p><a href="#fig-weights-shrinkage" class="quarto-xref">Figure&nbsp;<span>8.3</span></a> shows the weighting implied by the mixture density for a Cauchy prior on the variance, the double exponential of the Laplace from Bayesian LASSO and the horseshoe.</p>
+<p><a href="#fig-weights-shrinkage" class="quarto-xref">Figure&nbsp;<span>8.4</span></a> shows the weighting implied by the mixture density for a Cauchy prior on the variance, the double exponential of the Laplace from Bayesian LASSO and the horseshoe.</p>
 <div class="cell">
 <div class="cell-output-display">
 <div id="fig-weights-shrinkage" class="quarto-float quarto-figure quarto-figure-center anchored">
@@ -528,7 +583,7 @@ Figure&nbsp;8.2: Prior draws from a bivariate inverse Wishart with identity scal
 <img src="regression_files/figure-html/fig-weights-shrinkage-1.png" class="img-fluid figure-img" width="672">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-weights-shrinkage-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;8.3: Density of penalization weights <span class="math inline">\(\kappa\)</span> of spike (near zero) and slab (near one) for three shrinkage priors.
+Figure&nbsp;8.4: Density of penalization weights <span class="math inline">\(\kappa\)</span> of spike (near zero) and slab (near one) for three shrinkage priors.
 </figcaption>
 </figure>
 </div>
@@ -543,7 +598,7 @@ Figure&nbsp;8.3: Density of penalization weights <span class="math inline">\(\ka
 <img src="regression_files/figure-html/fig-shrinkage-1.png" class="img-fluid figure-img" width="672">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-shrinkage-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;8.4: Marginal density for a regression coefficient <span class="math inline">\(\beta\)</span> with horseshoe prior (full), Laplace (dashed) and a Student-<span class="math inline">\(t\)</span> (thick dotted). The plot on the right shows the tail behaviour. The density of the horseshoe is unbounded at the origin. Inspired from Figure 1 of <span class="citation" data-cites="Carvalho.Polson.Scott:2010">Carvalho, Polson, and Scott (<a href="references.html#ref-Carvalho.Polson.Scott:2010" role="doc-biblioref">2010</a>)</span>.
+Figure&nbsp;8.5: Marginal density for a regression coefficient <span class="math inline">\(\beta\)</span> with horseshoe prior (full), Laplace (dashed) and a Student-<span class="math inline">\(t\)</span> (thick dotted). The plot on the right shows the tail behaviour. The density of the horseshoe is unbounded at the origin. Inspired from Figure 1 of <span class="citation" data-cites="Carvalho.Polson.Scott:2010">Carvalho, Polson, and Scott (<a href="references.html#ref-Carvalho.Polson.Scott:2010" role="doc-biblioref">2010</a>)</span>.
 </figcaption>
 </figure>
 </div>
@@ -555,8 +610,8 @@ Figure&nbsp;8.4: Marginal density for a regression coefficient <span class="math
 c^2 \mid s^2, \nu &amp;\sim \mathsf{inv. gamma}(\nu/2, \nu s^2/2).
 \end{align*}\]</span> When <span class="math inline">\(\tau^2\lambda^2_j\)</span> is much greater than <span class="math inline">\(c^2,\)</span> this amounts to having a Student slab with <span class="math inline">\(\nu\)</span> degrees of freedom for large coefficients; taking a small value of <span class="math inline">\(\nu\)</span> allows for large, but not extreme components, and the authors use <span class="math inline">\(s^2=2, \nu=4.\)</span> The above specification does not specify the prior for the global scale <span class="math inline">\(\lambda,\)</span> for which <span class="citation" data-cites="Piironen.Vehtari:2017">Piironen and Vehtari (<a href="references.html#ref-Piironen.Vehtari:2017" role="doc-biblioref">2017</a>)</span> recommend using an empirical Bayes prior, with <span class="math display">\[\lambda \sim \mathsf{Student}_{+}\left\{0, \frac{p_0}{(p-p_0)}\frac{\sigma}{n^{1/2}}, 1\right\},\]</span> where <span class="math inline">\(p_0\)</span> is a prior guess for the number of non-zero components out of <span class="math inline">\(p,\)</span> <span class="math inline">\(n\)</span> is the sample size and <span class="math inline">\(\sigma\)</span> is some level of the noise.</p>
 <div id="exm-case-study-shrinkage" class="theorem example">
-<p><span class="theorem-title"><strong>Example 8.2 (Comparison of shrinkage priors)</strong></span> We revisit the <code>diabetes</code> data from the <strong>R</strong> package <code>lars</code>, which was used in <span class="citation" data-cites="Park.Casella:2008">Park and Casella (<a href="references.html#ref-Park.Casella:2008" role="doc-biblioref">2008</a>)</span> to illustrate the Bayesian LASSO. We consider three methods: the default Gaussian prior, which gives a ridge penalty, the Bayesian LASSO and finally the horseshoe. Models are fitted using the <code>bayesreg</code> package.</p>
-<p><a href="#fig-shrinkage-dens-comparison" class="quarto-xref">Figure&nbsp;<span>8.5</span></a> shows the ordered coefficients for each method. We can see that the ridge has the widest intervals of all methods, providing some shrinkage only for large values of <span class="math inline">\(\beta.\)</span> The horseshoe has typically narrower intervals, with more mass in a neighborhood of zero for smaller coefficients, and asymmetric intervals.</p>
+<p><span class="theorem-title"><strong>Example 8.3 (Comparison of shrinkage priors)</strong></span> We revisit the <code>diabetes</code> data from the <strong>R</strong> package <code>lars</code>, which was used in <span class="citation" data-cites="Park.Casella:2008">Park and Casella (<a href="references.html#ref-Park.Casella:2008" role="doc-biblioref">2008</a>)</span> to illustrate the Bayesian LASSO. We consider three methods: the default Gaussian prior, which gives a ridge penalty, the Bayesian LASSO and finally the horseshoe. Models are fitted using the <code>bayesreg</code> package.</p>
+<p><a href="#fig-shrinkage-dens-comparison" class="quarto-xref">Figure&nbsp;<span>8.6</span></a> shows the ordered coefficients for each method. We can see that the ridge has the widest intervals of all methods, providing some shrinkage only for large values of <span class="math inline">\(\beta.\)</span> The horseshoe has typically narrower intervals, with more mass in a neighborhood of zero for smaller coefficients, and asymmetric intervals.</p>
 <div class="cell">
 <div class="cell-output-display">
 <div id="fig-shrinkage-dens-comparison" class="quarto-float quarto-figure quarto-figure-center anchored">
@@ -565,13 +620,13 @@ c^2 \mid s^2, \nu &amp;\sim \mathsf{inv. gamma}(\nu/2, \nu s^2/2).
 <img src="regression_files/figure-html/fig-shrinkage-dens-comparison-1.png" class="img-fluid figure-img" width="672">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-shrinkage-dens-comparison-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;8.5: Density estimates for regression coefficients with Gaussian (ridge), double exponential (Laplace) and horseshoe priors for the <code>diabetes</code> data.
+Figure&nbsp;8.6: Density estimates for regression coefficients with Gaussian (ridge), double exponential (Laplace) and horseshoe priors for the <code>diabetes</code> data.
 </figcaption>
 </figure>
 </div>
 </div>
 </div>
-<p>One aspect worth mentioning is that the horseshoe prior impacts strongly the geometry and leads to slower mixing than the conjugate or Student-<span class="math inline">\(t\)</span> priors: the effective sample size fraction relative to the number of samples ranges from 15% to 79%, compared to 60% to 100% for the Bayesian LASSO and near-independent draws with the conjugate ridge.</p>
+<p>One aspect worth mentioning is that the horseshoe prior impacts strongly the geometry and leads to slower mixing than the conjugate or Student-<span class="math inline">\(t\)</span> priors: the effective sample size fraction relative to the number of samples ranges from 12% to 90%, compared to 48% to 99% for the Bayesian LASSO and near-independent draws with the conjugate ridge.</p>
 </div>
 </section>
 <section id="bayesian-model-averaging" class="level2" data-number="8.3">
@@ -609,6 +664,9 @@ R = J\frac{p(\boldsymbol{\theta}_t^{\star})}{p(\boldsymbol{\theta}_{t-1})}\frac{
 <div id="ref-Carvalho.Polson.Scott:2010" class="csl-entry" role="listitem">
 Carvalho, Carlos M., Nicholas G. Polson, and James G. Scott. 2010. <span>“The Horseshoe Estimator for Sparse Signals.”</span> <em>Biometrika</em> 97 (2): 465–80. <a href="https://doi.org/10.1093/biomet/asq017">https://doi.org/10.1093/biomet/asq017</a>.
 </div>
+<div id="ref-Chipman.George.McCulloch:2001" class="csl-entry" role="listitem">
+Chipman, Hugh, Edward I. George, Robert E. McCulloch, M. Clyde, Dean P. Foster, and Robert A. Stine. 2001. <span>“The Practical Implementation of <span>B</span>ayesian Model Selection.”</span> <em>Lecture Notes-Monograph Series</em> 38: 65–134. <a href="http://www.jstor.org/stable/4356164">http://www.jstor.org/stable/4356164</a>.
+</div>
 <div id="ref-Eaton:2007" class="csl-entry" role="listitem">
 Eaton, Morris L. 2007. <em>Multivariate Statistics: A Vector Space Approach</em>. Institute for Mathematical Statistics. <a href="https://doi.org/10.1214/lnms/1196285102">https://doi.org/10.1214/lnms/1196285102</a>.
 </div>
@@ -617,6 +675,12 @@ Gelman, Andrew, John B. Carlin, Hal S. Stern, David B. Dunson, Aki Vehtari, and 
 </div>
 <div id="ref-George.McCulloch:1993" class="csl-entry" role="listitem">
 George, Edward I., and Robert E. McCulloch. 1993. <span>“Variable Selection via <span>G</span>ibbs Sampling.”</span> <em>Journal of the American Statistical Association</em> 88 (423): 881–89. <a href="https://doi.org/10.1080/01621459.1993.10476353">https://doi.org/10.1080/01621459.1993.10476353</a>.
+</div>
+<div id="ref-George.McCulloch:1997" class="csl-entry" role="listitem">
+———. 1997. <span>“Approaches for <span>B</span>ayesian Variable Selection.”</span> <em>Statistica Sinica</em> 7 (2): 339–73. <a href="http://www.jstor.org/stable/24306083">http://www.jstor.org/stable/24306083</a>.
+</div>
+<div id="ref-Ghosh.Clyde:2011" class="csl-entry" role="listitem">
+Ghosh, Joyee, and Merlise A. Clyde. 2011. <span>“<span>R</span>ao–<span>B</span>lackwellization for <span>B</span>ayesian Variable Selection and Model Averaging in Linear and Binary Regression: A Novel Data Augmentation Approach.”</span> <em>Journal of the American Statistical Association</em> 106 (495): 1041–52. <a href="https://doi.org/10.1198/jasa.2011.tm10518">https://doi.org/10.1198/jasa.2011.tm10518</a>.
 </div>
 <div id="ref-Green:1995" class="csl-entry" role="listitem">
 Green, Peter J. 1995. <span>“Reversible Jump <span>M</span>arkov Chain <span>M</span>onte <span>C</span>arlo Computation and <span>B</span>ayesian Model Determination.”</span> <em>Biometrika</em> 82 (4): 711–32. <a href="https://doi.org/10.1093/biomet/82.4.711">https://doi.org/10.1093/biomet/82.4.711</a>.
