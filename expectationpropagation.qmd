@@ -85,6 +85,25 @@ in practice, this is most easily done by subtracting the term from the approxima
 \end{align*}
 The normalizing constant, mean and variance in the above are written in terms of $p$-dimensional integrals but could be easily obtained by Monte Carlo by drawing from the cavity prior. We then go back from moments to canonical parameters $\mathbf{Q}_j$ and $\boldsymbol{r}_j$ and update the global approximation $q.$ These updates can be performed sequentially or in parallel, which can lead to massive gains in efficiency.
 
+The EP algorithm is particularly well suited to latent Gaussian models [@Cseke.Heskes:2011] and generalized linear models with Gaussian priors for the coefficients.
+
+
+The EP algorithm iterates the steps until convergence:
+
+1. Initialize the site-specific parameters
+2. Loop over each observation of the likelihood factorization:
+    2.1 form the cavity and the hybrid distribution
+    2.2 compute the moments of the hybrid $\boldsymbol{\mu}$ and $\boldsymbol{\Sigma}$
+    2.3 transform back to canonical parameters $\mathbf{Q}$ and $\boldsymbol{r}$
+    2.3 update the global approximation
+3. Declare convergence when change in parameters is less than tolerance.
+
+
+We can monitor convergence of EP by looking at changes in the parameters: it is a fixed point algorithm. However, the EP does not have guarantees of convergence and may diverge; @Dehaene.Barthelme:2018 explain some heuristics for these by making analogies with Newton's method, which only converges in the neighbourhood of fixed points and can diverge. The idea is to update the global approximation with a damping term for the canonical parameters. It is also useful to perform updates using suitable numerical linear algebra routines, for example by competing the Cholesky root of the covariance and back-solving to get the precision.
+
+The expensive steps are related to the inversion of the moments to get the canonical parameters from the moments; the matrix inversion has complexity $\mathrm{O}(np^3)$ for a single pass, but the algorithm typically converges quickly. The other bottleneck is calculation of the moments.
+
+
 :::{#exm-logistic-ep}
 
 ## Logistic regression
@@ -142,22 +161,4 @@ In generalized linear models, the linear predictor will always be one-dimensiona
 
 
 :::
-
-The EP algorithm is particularly well suited to latent Gaussian models [@Cseke.Heskes:2011] and generalized linear models with Gaussian priors for the coefficients.
-
-
-The EP algorithm iterates the steps until convergence:
-
-1. Initialize the site-specific parameters
-2. Loop over each observation of the likelihood factorization:
-    2.1 form the cavity and the hybrid distribution
-    2.2 compute the moments of the hybrid $\boldsymbol{\mu}$ and $\boldsymbol{\Sigma}$
-    2.3 transform back to canonical parameters $\mathbf{Q}$ and $\boldsymbol{r}$
-    2.3 update the global approximation
-3. Declare convergence when change in parameters is less than tolerance.
-
-
-We can monitor convergence of EP by looking at changes in the parameters: it is a fixed point algorithm. However, the EP does not have guarantees of convergence and may diverge; @Dehaene.Barthelme:2018 explain some heuristics for these by making analogies with Newton's method, which only converges in the neighbourhood of fixed points and can diverge. The idea is to update the global approximation with a damping term for the canonical parameters. It is also useful to perform updates using suitable numerical linear algebra routines, for example by competing the Cholesky root of the covariance and back-solving to get the precision.
-
-The expensive steps are related to the inversion of the moments to get the canonical parameters from the moments; the matrix inversion has complexity $\mathrm{O}(np^3)$ for a single pass, but the algorithm typically converges quickly. The other bottleneck is calculation of the moments.
 

@@ -266,6 +266,20 @@
 \DeclareMathAlphabet{\mathcrl}{U}{rsfs}{m}{n}
 \usepackage{utopia}
 \DeclareMathAlphabet{\mathcal}{OMS}{cmsy}{m}{n}
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{wrapfig}
+\usepackage{float}
+\usepackage{colortbl}
+\usepackage{pdflscape}
+\usepackage{tabu}
+\usepackage{threeparttable}
+\usepackage{threeparttablex}
+\usepackage[normalem]{ulem}
+\usepackage{makecell}
+\usepackage{xcolor}
 \makeatletter
 \@ifpackageloaded{tcolorbox}{}{\usepackage[skins,breakable]{tcolorbox}}
 \@ifpackageloaded{fontawesome5}{}{\usepackage{fontawesome5}}
@@ -320,18 +334,18 @@
 \floatname{codelisting}{Listing}
 \newcommand*\listoflistings{\listof{codelisting}{List of Listings}}
 \usepackage{amsthm}
+\theoremstyle{plain}
+\newtheorem{corollary}{Corollary}[chapter]
+\theoremstyle{plain}
+\newtheorem{proposition}{Proposition}[chapter]
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}[chapter]
 \theoremstyle{definition}
 \newtheorem{exercise}{Exercise}[chapter]
 \theoremstyle{definition}
 \newtheorem{example}{Example}[chapter]
-\theoremstyle{definition}
-\newtheorem{definition}{Definition}[chapter]
-\theoremstyle{plain}
-\newtheorem{proposition}{Proposition}[chapter]
 \theoremstyle{plain}
 \newtheorem{theorem}{Theorem}[chapter]
-\theoremstyle{plain}
-\newtheorem{corollary}{Corollary}[chapter]
 \theoremstyle{remark}
 \AtBeginDocument{\renewcommand*{\proofname}{Proof}}
 \newtheorem*{remark}{Remark}
@@ -387,7 +401,7 @@ details.
 These notes are licensed under a
 \href{http://creativecommons.org/licenses/by-nc-sa/4.0/}{Creative
 Commons Attribution-NonCommercial-ShareAlike 4.0 International License}
-and were last compiled on Sunday, April 13 2025.
+and were last compiled on Monday, April 14 2025.
 
 The objective of the course is to provide a hands on introduction to
 Bayesian data analysis. The course will cover the formulation,
@@ -403,7 +417,7 @@ used throughout the course. The overview begins with basic statistical
 concepts, random variables, their distribution and density, moments and
 likelihood derivations.
 
-\begin{tcolorbox}[enhanced jigsaw, bottomrule=.15mm, colbacktitle=quarto-callout-important-color!10!white, opacitybacktitle=0.6, colback=white, toprule=.15mm, leftrule=.75mm, breakable, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Learning objectives}:}, coltitle=black, opacityback=0, colframe=quarto-callout-important-color-frame, titlerule=0mm, left=2mm, bottomtitle=1mm, toptitle=1mm, arc=.35mm, rightrule=.15mm]
+\begin{tcolorbox}[enhanced jigsaw, arc=.35mm, bottomrule=.15mm, bottomtitle=1mm, titlerule=0mm, toprule=.15mm, opacityback=0, breakable, left=2mm, leftrule=.75mm, toptitle=1mm, colframe=quarto-callout-important-color-frame, opacitybacktitle=0.6, rightrule=.15mm, colback=white, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Learning objectives}:}, colbacktitle=quarto-callout-important-color!10!white, coltitle=black]
 
 At the end of the chapter, students should be able to
 
@@ -1698,7 +1712,7 @@ The likelihood can then be written as \begin{align*}
 
 \end{example}
 
-\begin{tcolorbox}[enhanced jigsaw, bottomrule=.15mm, colbacktitle=quarto-callout-important-color!10!white, opacitybacktitle=0.6, colback=white, toprule=.15mm, leftrule=.75mm, breakable, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Summary}}, coltitle=black, opacityback=0, colframe=quarto-callout-important-color-frame, titlerule=0mm, left=2mm, bottomtitle=1mm, toptitle=1mm, arc=.35mm, rightrule=.15mm]
+\begin{tcolorbox}[enhanced jigsaw, arc=.35mm, bottomrule=.15mm, bottomtitle=1mm, titlerule=0mm, toprule=.15mm, opacityback=0, breakable, left=2mm, leftrule=.75mm, toptitle=1mm, colframe=quarto-callout-important-color-frame, opacitybacktitle=0.6, rightrule=.15mm, colback=white, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Summary}}, colbacktitle=quarto-callout-important-color!10!white, coltitle=black]
 
 \begin{itemize}
 \tightlist
@@ -1778,7 +1792,7 @@ elicitation and estimation of the marginal likelihood, are mentioned in
 passing. A brief discussion of Bayesian hypothesis testing (and
 alternatives) is presented.
 
-\begin{tcolorbox}[enhanced jigsaw, bottomrule=.15mm, colbacktitle=quarto-callout-important-color!10!white, opacitybacktitle=0.6, colback=white, toprule=.15mm, leftrule=.75mm, breakable, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Learning objectives}:}, coltitle=black, opacityback=0, colframe=quarto-callout-important-color-frame, titlerule=0mm, left=2mm, bottomtitle=1mm, toptitle=1mm, arc=.35mm, rightrule=.15mm]
+\begin{tcolorbox}[enhanced jigsaw, arc=.35mm, bottomrule=.15mm, bottomtitle=1mm, titlerule=0mm, toprule=.15mm, opacityback=0, breakable, left=2mm, leftrule=.75mm, toptitle=1mm, colframe=quarto-callout-important-color-frame, opacitybacktitle=0.6, rightrule=.15mm, colback=white, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Learning objectives}:}, colbacktitle=quarto-callout-important-color!10!white, coltitle=black]
 
 At the end of the chapter, students should be able to
 
@@ -2715,7 +2729,7 @@ the cutoff for the HDP region.}
 
 \end{figure}%
 
-\begin{tcolorbox}[enhanced jigsaw, bottomrule=.15mm, colbacktitle=quarto-callout-important-color!10!white, opacitybacktitle=0.6, colback=white, toprule=.15mm, leftrule=.75mm, breakable, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Summary}:}, coltitle=black, opacityback=0, colframe=quarto-callout-important-color-frame, titlerule=0mm, left=2mm, bottomtitle=1mm, toptitle=1mm, arc=.35mm, rightrule=.15mm]
+\begin{tcolorbox}[enhanced jigsaw, arc=.35mm, bottomrule=.15mm, bottomtitle=1mm, titlerule=0mm, toprule=.15mm, opacityback=0, breakable, left=2mm, leftrule=.75mm, toptitle=1mm, colframe=quarto-callout-important-color-frame, opacitybacktitle=0.6, rightrule=.15mm, colback=white, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Summary}:}, colbacktitle=quarto-callout-important-color!10!white, coltitle=black]
 
 \begin{itemize}
 \tightlist
@@ -2794,7 +2808,7 @@ inferences. Generally, we will choose the prior for convenience. Priors
 are controversial because they could be tuned aposteriori to give any
 answer an analyst might want.
 
-\begin{tcolorbox}[enhanced jigsaw, bottomrule=.15mm, colbacktitle=quarto-callout-important-color!10!white, opacitybacktitle=0.6, colback=white, toprule=.15mm, leftrule=.75mm, breakable, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Learning objectives}:}, coltitle=black, opacityback=0, colframe=quarto-callout-important-color-frame, titlerule=0mm, left=2mm, bottomtitle=1mm, toptitle=1mm, arc=.35mm, rightrule=.15mm]
+\begin{tcolorbox}[enhanced jigsaw, arc=.35mm, bottomrule=.15mm, bottomtitle=1mm, titlerule=0mm, toprule=.15mm, opacityback=0, breakable, left=2mm, leftrule=.75mm, toptitle=1mm, colframe=quarto-callout-important-color-frame, opacitybacktitle=0.6, rightrule=.15mm, colback=white, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Learning objectives}:}, colbacktitle=quarto-callout-important-color!10!white, coltitle=black]
 
 At the end of the chapter, students should be able to
 
@@ -3828,7 +3842,7 @@ improper priors on location and scale.}
 
 \end{example}
 
-\begin{tcolorbox}[enhanced jigsaw, bottomrule=.15mm, colbacktitle=quarto-callout-important-color!10!white, opacitybacktitle=0.6, colback=white, toprule=.15mm, leftrule=.75mm, breakable, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Summary}:}, coltitle=black, opacityback=0, colframe=quarto-callout-important-color-frame, titlerule=0mm, left=2mm, bottomtitle=1mm, toptitle=1mm, arc=.35mm, rightrule=.15mm]
+\begin{tcolorbox}[enhanced jigsaw, arc=.35mm, bottomrule=.15mm, bottomtitle=1mm, titlerule=0mm, toprule=.15mm, opacityback=0, breakable, left=2mm, leftrule=.75mm, toptitle=1mm, colframe=quarto-callout-important-color-frame, opacitybacktitle=0.6, rightrule=.15mm, colback=white, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Summary}:}, colbacktitle=quarto-callout-important-color!10!white, coltitle=black]
 
 \begin{itemize}
 \tightlist
@@ -4891,7 +4905,7 @@ computers became more widely available. The idea is to draw correlated
 samples from a posterior via Markov chains, constructed to have the
 posterior as invariant stationary distribution.
 
-\begin{tcolorbox}[enhanced jigsaw, bottomrule=.15mm, colbacktitle=quarto-callout-important-color!10!white, opacitybacktitle=0.6, colback=white, toprule=.15mm, leftrule=.75mm, breakable, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Learning objectives}:}, coltitle=black, opacityback=0, colframe=quarto-callout-important-color-frame, titlerule=0mm, left=2mm, bottomtitle=1mm, toptitle=1mm, arc=.35mm, rightrule=.15mm]
+\begin{tcolorbox}[enhanced jigsaw, arc=.35mm, bottomrule=.15mm, bottomtitle=1mm, titlerule=0mm, toprule=.15mm, opacityback=0, breakable, left=2mm, leftrule=.75mm, toptitle=1mm, colframe=quarto-callout-important-color-frame, opacitybacktitle=0.6, rightrule=.15mm, colback=white, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Learning objectives}:}, colbacktitle=quarto-callout-important-color!10!white, coltitle=black]
 
 At the end of the chapter, students should be able to
 
@@ -5581,7 +5595,7 @@ overdispersion.
 
 \end{example}
 
-\begin{tcolorbox}[enhanced jigsaw, bottomrule=.15mm, colbacktitle=quarto-callout-important-color!10!white, opacitybacktitle=0.6, colback=white, toprule=.15mm, leftrule=.75mm, breakable, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Summary}:}, coltitle=black, opacityback=0, colframe=quarto-callout-important-color-frame, titlerule=0mm, left=2mm, bottomtitle=1mm, toptitle=1mm, arc=.35mm, rightrule=.15mm]
+\begin{tcolorbox}[enhanced jigsaw, arc=.35mm, bottomrule=.15mm, bottomtitle=1mm, titlerule=0mm, toprule=.15mm, opacityback=0, breakable, left=2mm, leftrule=.75mm, toptitle=1mm, colframe=quarto-callout-important-color-frame, opacitybacktitle=0.6, rightrule=.15mm, colback=white, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Summary}:}, colbacktitle=quarto-callout-important-color!10!white, coltitle=black]
 
 \begin{itemize}
 \tightlist
@@ -5632,7 +5646,7 @@ overdispersion.
 
 \chapter{Gibbs sampling}\label{sec-Gibbs}
 
-\begin{tcolorbox}[enhanced jigsaw, bottomrule=.15mm, colbacktitle=quarto-callout-important-color!10!white, opacitybacktitle=0.6, colback=white, toprule=.15mm, leftrule=.75mm, breakable, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Learning objectives}:}, coltitle=black, opacityback=0, colframe=quarto-callout-important-color-frame, titlerule=0mm, left=2mm, bottomtitle=1mm, toptitle=1mm, arc=.35mm, rightrule=.15mm]
+\begin{tcolorbox}[enhanced jigsaw, arc=.35mm, bottomrule=.15mm, bottomtitle=1mm, titlerule=0mm, toprule=.15mm, opacityback=0, breakable, left=2mm, leftrule=.75mm, toptitle=1mm, colframe=quarto-callout-important-color-frame, opacitybacktitle=0.6, rightrule=.15mm, colback=white, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Learning objectives}:}, colbacktitle=quarto-callout-important-color!10!white, coltitle=black]
 
 At the end of the chapter, students should be able to
 
@@ -6098,7 +6112,7 @@ and Stephens (\citeproc{ref-Stephens:2002}{2002}) for more details.
 
 \end{refremark}
 
-\begin{tcolorbox}[enhanced jigsaw, bottomrule=.15mm, colbacktitle=quarto-callout-important-color!10!white, opacitybacktitle=0.6, colback=white, toprule=.15mm, leftrule=.75mm, breakable, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Summary}:}, coltitle=black, opacityback=0, colframe=quarto-callout-important-color-frame, titlerule=0mm, left=2mm, bottomtitle=1mm, toptitle=1mm, arc=.35mm, rightrule=.15mm]
+\begin{tcolorbox}[enhanced jigsaw, arc=.35mm, bottomrule=.15mm, bottomtitle=1mm, titlerule=0mm, toprule=.15mm, opacityback=0, breakable, left=2mm, leftrule=.75mm, toptitle=1mm, colframe=quarto-callout-important-color-frame, opacitybacktitle=0.6, rightrule=.15mm, colback=white, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Summary}:}, colbacktitle=quarto-callout-important-color!10!white, coltitle=black]
 
 \begin{itemize}
 \tightlist
@@ -6156,7 +6170,7 @@ Betancourt} for excellent visualizations. In this chapter, we focus on
 three aspects of the workflow: model validation, evaluation and
 comparison.
 
-\begin{tcolorbox}[enhanced jigsaw, bottomrule=.15mm, colbacktitle=quarto-callout-important-color!10!white, opacitybacktitle=0.6, colback=white, toprule=.15mm, leftrule=.75mm, breakable, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Learning objectives}:}, coltitle=black, opacityback=0, colframe=quarto-callout-important-color-frame, titlerule=0mm, left=2mm, bottomtitle=1mm, toptitle=1mm, arc=.35mm, rightrule=.15mm]
+\begin{tcolorbox}[enhanced jigsaw, arc=.35mm, bottomrule=.15mm, bottomtitle=1mm, titlerule=0mm, toprule=.15mm, opacityback=0, breakable, left=2mm, leftrule=.75mm, toptitle=1mm, colframe=quarto-callout-important-color-frame, opacitybacktitle=0.6, rightrule=.15mm, colback=white, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Learning objectives}:}, colbacktitle=quarto-callout-important-color!10!white, coltitle=black]
 
 At the end of the chapter, students should be able to
 
@@ -8332,7 +8346,7 @@ target is supported.
 
 \centering{
 
-\pandocbounded{\includegraphics[keepaspectratio]{variational_files/figure-pdf/fig-klvsrev-1.pdf}}
+\includegraphics[width=0.85\linewidth,height=\textheight,keepaspectratio]{variational_files/figure-pdf/fig-klvsrev-1.pdf}
 
 }
 
@@ -8370,7 +8384,7 @@ quadratic \(ax^2+bx + c\) with \(a>0.\)
 
 \centering{
 
-\pandocbounded{\includegraphics[keepaspectratio]{variational_files/figure-pdf/fig-convex-1.pdf}}
+\includegraphics[width=0.85\linewidth,height=\textheight,keepaspectratio]{variational_files/figure-pdf/fig-convex-1.pdf}
 
 }
 
@@ -8611,7 +8625,7 @@ the dependence and the CAVI approximation is slightly less dispersed.
 
 \centering{
 
-\pandocbounded{\includegraphics[keepaspectratio]{variational_files/figure-pdf/fig-approx-cavi-gauss-1.pdf}}
+\includegraphics[width=0.85\linewidth,height=\textheight,keepaspectratio]{variational_files/figure-pdf/fig-approx-cavi-gauss-1.pdf}
 
 }
 
@@ -8625,7 +8639,7 @@ the conjugate Gaussian-gamma model (left) and CAVI approximation
 
 \centering{
 
-\pandocbounded{\includegraphics[keepaspectratio]{variational_files/figure-pdf/fig-gauss-cavi-margdens-1.pdf}}
+\includegraphics[width=0.85\linewidth,height=\textheight,keepaspectratio]{variational_files/figure-pdf/fig-gauss-cavi-margdens-1.pdf}
 
 }
 
@@ -8768,7 +8782,7 @@ underdispersed relative to the true marginal posterior.
 
 \centering{
 
-\pandocbounded{\includegraphics[keepaspectratio]{variational_files/figure-pdf/fig-elbo-CAVI-probit-1.pdf}}
+\includegraphics[width=0.85\linewidth,height=\textheight,keepaspectratio]{variational_files/figure-pdf/fig-elbo-CAVI-probit-1.pdf}
 
 }
 
@@ -8919,19 +8933,20 @@ intractable.
 
 We give next some details about derivation of the full-rank
 approximation. We work with the matrix-log of the covariance matrix,
-defined through it's eigendecomposition
+defined through it's eigendecomposition (or singular value
+decomposition)
 \(\boldsymbol{\Sigma}=\mathbf{V}\mathrm{diag}(\boldsymbol{\lambda})\mathbf{V}^{\top},\)
 where \(\mathbf{V}\) is a \(p\times p\) orthogonal matrix of
-eigenvectors, whose inverse is equal to it's transpose. Since we are
-decomposing a symmetric definite matrix,. Most operations on the matrix
-only affect the eigenvalues \(\lambda_1, \ldots, \lambda_p\): the
-matrix-log is \begin{align*}
-\mathbf{L} =\mathbf{V}\mathrm{diag}\left\{ \frac{1}{2}\log(\boldsymbol{\lambda})\right\}\mathbf{V}^\top.
+eigenvectors, whose inverse is equal to it's transpose. Most operations
+on the matrix only affect the eigenvalues
+\(\lambda_1, \ldots, \lambda_p\): the matrix-log is \begin{align*}
+\mathbf{M} =\mathbf{V}\mathrm{diag}\left\{ \frac{1}{2}\log(\boldsymbol{\lambda})\right\}\mathbf{V}^\top.
 \end{align*} Other operations on matrices are defined analogously: we
 write
 \(\exp(\boldsymbol{\Sigma}) = \mathbf{V}\mathrm{diag}\{ \exp(\boldsymbol{\lambda})\}\mathbf{V}^\top\)
 and we write
 \(\log(\boldsymbol{\Sigma}) = \mathbf{V}\mathrm{diag}\{ \log(\boldsymbol{\lambda})\}\mathbf{V}^\top\).
+and \(\boldsymbol{\Sigma} = \exp(2\mathbf{M})\).
 
 We focus on the case of full transformation; the derivation for
 independent components is analogous. Since the Gaussian is a
@@ -8939,17 +8954,17 @@ location-scale family, we can rewrite the model in terms of a
 standardized Gaussian variable
 \(\boldsymbol{Z}\sim \mathsf{Gauss}_p(\boldsymbol{0}_p, \mathbf{I}_p)\)
 where
-\(\boldsymbol{\zeta} = \boldsymbol{\mu} + \exp(\mathbf{L})\boldsymbol{Z}.\)
+\(\boldsymbol{\zeta} = \boldsymbol{\mu} + \exp(\mathbf{M})\boldsymbol{Z}.\)
 The ELBO with the transformation is \begin{align*}
- \mathsf{ELBO}(g) & = \mathsf{E}_{\boldsymbol{Z}}\left[ \log p\left\{\boldsymbol{y}, T^{-1}(\boldsymbol{\zeta})\right\} + \log \left|\mathbf{J}_{T^{-1}}(\boldsymbol{\zeta})\right|\right] \\&\quad+\frac{D}{2}\{1+\log(2\pi)\} + \mathrm{trace}(\mathbf{L}).
+ \mathsf{ELBO}(g) & = \mathsf{E}_{\boldsymbol{Z}}\left[ \log p\left\{\boldsymbol{y}, T^{-1}(\boldsymbol{\zeta})\right\} + \log \left|\mathbf{J}_{T^{-1}}(\boldsymbol{\zeta})\right|\right] \\&\quad+\frac{D}{2}\{1+\log(2\pi)\} + \mathrm{trace}(\mathbf{M}).
 \end{align*} where we have the logarithm of the absolute value of the
 determinant of the Jacobian of the transformation due to the change of
 variable. If we apply the chain rule \begin{align*}
- \frac{\partial}{\partial \boldsymbol{\psi}}\log p\{\boldsymbol{y}, T^{-1}(\boldsymbol{\mu} + \exp(\mathbf{L})\boldsymbol{Z})\} = \frac{\partial \log p(\boldsymbol{y}, \boldsymbol{\theta})}{\partial \boldsymbol{\theta}} \frac{\partial T^{-1}(\boldsymbol{\zeta})}{\partial \boldsymbol{\zeta}} \frac{\partial \boldsymbol{\mu} + \exp(\mathbf{L})\boldsymbol{Z}}{\partial \boldsymbol{\psi}}
+ \frac{\partial}{\partial \boldsymbol{\psi}}\log p\{\boldsymbol{y}, T^{-1}(\boldsymbol{\mu} + \exp(\mathbf{M})\boldsymbol{Z})\} = \frac{\partial \log p(\boldsymbol{y}, \boldsymbol{\theta})}{\partial \boldsymbol{\theta}} \frac{\partial T^{-1}(\boldsymbol{\zeta})}{\partial \boldsymbol{\zeta}} \frac{\partial \boldsymbol{\mu} + \exp(\mathbf{M})\boldsymbol{Z}}{\partial \boldsymbol{\psi}}
 \end{align*} and we retrieve the gradients of the ELBO with respect to
 the mean and variance, which are \begin{align*}
  \frac{\partial \mathsf{ELBO}(g)}{\partial \boldsymbol{\mu}} &= \mathsf{E}_{\boldsymbol{Z}}\left\{\nabla p(\boldsymbol{y}, \boldsymbol{\theta})\right\} \\
- \frac{\partial \mathsf{ELBO}(g)}{\partial \mathbf{L}} &= \mathsf{symm}\left( \mathsf{E}_{\boldsymbol{Z}}\left\{\nabla p(\boldsymbol{y}, \boldsymbol{\theta})\boldsymbol{Z}^\top\exp(\mathbf{L})\right\}\right) + \mathbf{I}_p.
+ \frac{\partial \mathsf{ELBO}(g)}{\partial \mathbf{M}} &= \mathsf{symm}\left( \mathsf{E}_{\boldsymbol{Z}}\left\{\nabla p(\boldsymbol{y}, \boldsymbol{\theta})\boldsymbol{Z}^\top\exp(\mathbf{M})\right\}\right) + \mathbf{I}_p.
 \end{align*} where
 \(\mathsf{symm}(\mathbf{X}) = (\mathbf{X} + \mathbf{X}^\top)/2\) is the
 symmetrization operator and \begin{align*}
@@ -8960,8 +8975,8 @@ Assume for simplicity that we have
 \(T(\boldsymbol{\zeta}) = \boldsymbol{\zeta}\) is the identity. We can
 rewrite the expression for the gradient with respect to the matrix-log
 as \begin{align*}
- \frac{\partial \mathsf{ELBO}(g)}{\partial \mathbf{L}} &= \mathsf{symm}\left[ \mathsf{E}_{\boldsymbol{Z}}\left\{\frac{\partial \log p\{\boldsymbol{y}, \boldsymbol{\theta}=\boldsymbol{\mu} + \exp(\mathbf{L})\boldsymbol{Z}\}}{\partial \boldsymbol{\theta}}\boldsymbol{Z}^\top\exp(\mathbf{L})\right\}\right] + \mathbf{I}_p.
- \\& = \mathsf{symm}\left( \mathsf{E}_{\boldsymbol{Z}}\left[\frac{\partial \log p\{\boldsymbol{y}, \boldsymbol{\theta}=\boldsymbol{\mu} + \exp(\mathbf{L})\boldsymbol{Z}\}}{\partial \boldsymbol{\theta}\partial \boldsymbol{\theta}^\top}\exp(2\mathbf{L})\right]\right) + \mathbf{I}_p.
+ \frac{\partial \mathsf{ELBO}(g)}{\partial \mathbf{M}} &= \mathsf{symm}\left[ \mathsf{E}_{\boldsymbol{Z}}\left\{\frac{\partial \log p\{\boldsymbol{y}, \boldsymbol{\theta}=\boldsymbol{\mu} + \exp(\mathbf{M})\boldsymbol{Z}\}}{\partial \boldsymbol{\theta}}\boldsymbol{Z}^\top\exp(\mathbf{M})\right\}\right] + \mathbf{I}_p.
+ \\& = \mathsf{symm}\left( \mathsf{E}_{\boldsymbol{Z}}\left[\frac{\partial \log p\{\boldsymbol{y}, \boldsymbol{\theta}=\boldsymbol{\mu} + \exp(\mathbf{M})\boldsymbol{Z}\}}{\partial \boldsymbol{\theta}\partial \boldsymbol{\theta}^\top}\exp(2\mathbf{M})\right]\right) + \mathbf{I}_p.
 \end{align*} The first expression typically leads to a more noisy
 gradient estimator, but the second requires derivation of the Hessian
 matrix. The equivalence follows from Stein's lemma, which can be proved
@@ -8987,7 +9002,7 @@ stochastic gradient descent: for example, an estimator of the ELBO for
 the case with
 \(\boldsymbol{\theta} = \boldsymbol{\eta} \in \mathbb{R}^p\) is
 \begin{align*}
-\frac{1}{B}\sum_{b=1}^B p\{\boldsymbol{y}, \boldsymbol{\theta} = \boldsymbol{\mu} + \exp(\mathbf{L})\boldsymbol{Z}_i\} + \frac{p}{2}\{\log(2\pi)+1\} + \mathrm{trace}(\mathbf{L})
+\frac{1}{B}\sum_{b=1}^B p\{\boldsymbol{y}, \boldsymbol{\theta} = \boldsymbol{\mu} + \exp(\mathbf{M})\boldsymbol{Z}_i\} + \frac{p}{2}\{\log(2\pi)+1\} + \mathrm{trace}(\mathbf{M})
 \end{align*} for
 \(\boldsymbol{Z}_1, \ldots, \boldsymbol{Z}_b \sim \mathsf{Gauss}_p(\boldsymbol{0}_p, \mathbf{I}_p).\)
 
@@ -9170,6 +9185,44 @@ back from moments to canonical parameters \(\mathbf{Q}_j\) and
 updates can be performed sequentially or in parallel, which can lead to
 massive gains in efficiency.
 
+The EP algorithm is particularly well suited to latent Gaussian models
+(\citeproc{ref-Cseke.Heskes:2011}{Cseke and Heskes 2011}) and
+generalized linear models with Gaussian priors for the coefficients.
+
+The EP algorithm iterates the steps until convergence:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  Initialize the site-specific parameters
+\item
+  Loop over each observation of the likelihood factorization: 2.1 form
+  the cavity and the hybrid distribution 2.2 compute the moments of the
+  hybrid \(\boldsymbol{\mu}\) and \(\boldsymbol{\Sigma}\) 2.3 transform
+  back to canonical parameters \(\mathbf{Q}\) and \(\boldsymbol{r}\) 2.3
+  update the global approximation
+\item
+  Declare convergence when change in parameters is less than tolerance.
+\end{enumerate}
+
+We can monitor convergence of EP by looking at changes in the
+parameters: it is a fixed point algorithm. However, the EP does not have
+guarantees of convergence and may diverge; Dehaene and Barthelmé
+(\citeproc{ref-Dehaene.Barthelme:2018}{2018}) explain some heuristics
+for these by making analogies with Newton's method, which only converges
+in the neighbourhood of fixed points and can diverge. The idea is to
+update the global approximation with a damping term for the canonical
+parameters. It is also useful to perform updates using suitable
+numerical linear algebra routines, for example by competing the Cholesky
+root of the covariance and back-solving to get the precision.
+
+The expensive steps are related to the inversion of the moments to get
+the canonical parameters from the moments; the matrix inversion has
+complexity \(\mathrm{O}(np^3)\) for a single pass, but the algorithm
+typically converges quickly. The other bottleneck is calculation of the
+moments.
+
 \begin{example}[Logistic
 regression]\protect\hypertarget{exm-logistic-ep}{}\label{exm-logistic-ep}
 
@@ -9263,44 +9316,6 @@ general exponential families are found in page 23 of Cseke and Heskes
 (\citeproc{ref-Cseke.Heskes:2011}{2011}).
 
 \end{example}
-
-The EP algorithm is particularly well suited to latent Gaussian models
-(\citeproc{ref-Cseke.Heskes:2011}{Cseke and Heskes 2011}) and
-generalized linear models with Gaussian priors for the coefficients.
-
-The EP algorithm iterates the steps until convergence:
-
-\begin{enumerate}
-\def\labelenumi{\arabic{enumi}.}
-\tightlist
-\item
-  Initialize the site-specific parameters
-\item
-  Loop over each observation of the likelihood factorization: 2.1 form
-  the cavity and the hybrid distribution 2.2 compute the moments of the
-  hybrid \(\boldsymbol{\mu}\) and \(\boldsymbol{\Sigma}\) 2.3 transform
-  back to canonical parameters \(\mathbf{Q}\) and \(\boldsymbol{r}\) 2.3
-  update the global approximation
-\item
-  Declare convergence when change in parameters is less than tolerance.
-\end{enumerate}
-
-We can monitor convergence of EP by looking at changes in the
-parameters: it is a fixed point algorithm. However, the EP does not have
-guarantees of convergence and may diverge; Dehaene and Barthelmé
-(\citeproc{ref-Dehaene.Barthelme:2018}{2018}) explain some heuristics
-for these by making analogies with Newton's method, which only converges
-in the neighbourhood of fixed points and can diverge. The idea is to
-update the global approximation with a damping term for the canonical
-parameters. It is also useful to perform updates using suitable
-numerical linear algebra routines, for example by competing the Cholesky
-root of the covariance and back-solving to get the precision.
-
-The expensive steps are related to the inversion of the moments to get
-the canonical parameters from the moments; the matrix inversion has
-complexity \(\mathrm{O}(np^3)\) for a single pass, but the algorithm
-typically converges quickly. The other bottleneck is calculation of the
-moments.
 
 \bookmarksetup{startatroot}
 

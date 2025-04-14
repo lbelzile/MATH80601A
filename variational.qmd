@@ -745,24 +745,24 @@ This follows from taking the trace of a $1\times 1$ matrix, and applying a cycli
 The transformation to $\mathbb{R}^p$ is not unique and different choices may yield to differences, but the choice of optimal transformation requires knowledge of the true posterior, which is thus intractable.
 
 
-We give next some details about derivation of the full-rank approximation. We work with the matrix-log of the covariance matrix, defined through it's eigendecomposition $\boldsymbol{\Sigma}=\mathbf{V}\mathrm{diag}(\boldsymbol{\lambda})\mathbf{V}^{\top},$ where $\mathbf{V}$ is a $p\times p$ orthogonal matrix of eigenvectors, whose inverse is equal to it's transpose. Since we are decomposing a symmetric definite matrix,. Most operations on the matrix only affect the eigenvalues $\lambda_1, \ldots, \lambda_p$: the matrix-log is
+We give next some details about derivation of the full-rank approximation. We work with the matrix-log of the covariance matrix, defined through it's eigendecomposition (or singular value decomposition) $\boldsymbol{\Sigma}=\mathbf{V}\mathrm{diag}(\boldsymbol{\lambda})\mathbf{V}^{\top},$ where $\mathbf{V}$ is a $p\times p$ orthogonal matrix of eigenvectors, whose inverse is equal to it's transpose. Most operations on the matrix only affect the eigenvalues $\lambda_1, \ldots, \lambda_p$: the matrix-log is
 \begin{align*}
-\mathbf{L} =\mathbf{V}\mathrm{diag}\left\{ \frac{1}{2}\log(\boldsymbol{\lambda})\right\}\mathbf{V}^\top.
+\mathbf{M} =\mathbf{V}\mathrm{diag}\left\{ \frac{1}{2}\log(\boldsymbol{\lambda})\right\}\mathbf{V}^\top.
 \end{align*}
-Other operations on matrices are defined analogously: we write $\exp(\boldsymbol{\Sigma}) = \mathbf{V}\mathrm{diag}\{ \exp(\boldsymbol{\lambda})\}\mathbf{V}^\top$ and we write $\log(\boldsymbol{\Sigma}) = \mathbf{V}\mathrm{diag}\{ \log(\boldsymbol{\lambda})\}\mathbf{V}^\top$.
+Other operations on matrices are defined analogously: we write $\exp(\boldsymbol{\Sigma}) = \mathbf{V}\mathrm{diag}\{ \exp(\boldsymbol{\lambda})\}\mathbf{V}^\top$ and we write $\log(\boldsymbol{\Sigma}) = \mathbf{V}\mathrm{diag}\{ \log(\boldsymbol{\lambda})\}\mathbf{V}^\top$. and $\boldsymbol{\Sigma} = \exp(2\mathbf{M})$.
 
-We focus on the case of full transformation; the derivation for independent components is analogous. Since the Gaussian is a location-scale family, we can rewrite the model in terms of a standardized Gaussian variable $\boldsymbol{Z}\sim \mathsf{Gauss}_p(\boldsymbol{0}_p, \mathbf{I}_p)$ where $\boldsymbol{\zeta} = \boldsymbol{\mu} + \exp(\mathbf{L})\boldsymbol{Z}.$ The ELBO with the transformation is 
+We focus on the case of full transformation; the derivation for independent components is analogous. Since the Gaussian is a location-scale family, we can rewrite the model in terms of a standardized Gaussian variable $\boldsymbol{Z}\sim \mathsf{Gauss}_p(\boldsymbol{0}_p, \mathbf{I}_p)$ where $\boldsymbol{\zeta} = \boldsymbol{\mu} + \exp(\mathbf{M})\boldsymbol{Z}.$ The ELBO with the transformation is 
 \begin{align*}
- \mathsf{ELBO}(g) & = \mathsf{E}_{\boldsymbol{Z}}\left[ \log p\left\{\boldsymbol{y}, T^{-1}(\boldsymbol{\zeta})\right\} + \log \left|\mathbf{J}_{T^{-1}}(\boldsymbol{\zeta})\right|\right] \\&\quad+\frac{D}{2}\{1+\log(2\pi)\} + \mathrm{trace}(\mathbf{L}).
+ \mathsf{ELBO}(g) & = \mathsf{E}_{\boldsymbol{Z}}\left[ \log p\left\{\boldsymbol{y}, T^{-1}(\boldsymbol{\zeta})\right\} + \log \left|\mathbf{J}_{T^{-1}}(\boldsymbol{\zeta})\right|\right] \\&\quad+\frac{D}{2}\{1+\log(2\pi)\} + \mathrm{trace}(\mathbf{M}).
 \end{align*}
 where we have the logarithm of the absolute value of the determinant of the Jacobian of the transformation due to the change of variable. If we apply the chain rule
 \begin{align*}
- \frac{\partial}{\partial \boldsymbol{\psi}}\log p\{\boldsymbol{y}, T^{-1}(\boldsymbol{\mu} + \exp(\mathbf{L})\boldsymbol{Z})\} = \frac{\partial \log p(\boldsymbol{y}, \boldsymbol{\theta})}{\partial \boldsymbol{\theta}} \frac{\partial T^{-1}(\boldsymbol{\zeta})}{\partial \boldsymbol{\zeta}} \frac{\partial \boldsymbol{\mu} + \exp(\mathbf{L})\boldsymbol{Z}}{\partial \boldsymbol{\psi}}
+ \frac{\partial}{\partial \boldsymbol{\psi}}\log p\{\boldsymbol{y}, T^{-1}(\boldsymbol{\mu} + \exp(\mathbf{M})\boldsymbol{Z})\} = \frac{\partial \log p(\boldsymbol{y}, \boldsymbol{\theta})}{\partial \boldsymbol{\theta}} \frac{\partial T^{-1}(\boldsymbol{\zeta})}{\partial \boldsymbol{\zeta}} \frac{\partial \boldsymbol{\mu} + \exp(\mathbf{M})\boldsymbol{Z}}{\partial \boldsymbol{\psi}}
 \end{align*}
 and we retrieve the gradients of the ELBO with respect to the mean and variance, which are 
 \begin{align*}
  \frac{\partial \mathsf{ELBO}(g)}{\partial \boldsymbol{\mu}} &= \mathsf{E}_{\boldsymbol{Z}}\left\{\nabla p(\boldsymbol{y}, \boldsymbol{\theta})\right\} \\
- \frac{\partial \mathsf{ELBO}(g)}{\partial \mathbf{L}} &= \mathsf{symm}\left( \mathsf{E}_{\boldsymbol{Z}}\left\{\nabla p(\boldsymbol{y}, \boldsymbol{\theta})\boldsymbol{Z}^\top\exp(\mathbf{L})\right\}\right) + \mathbf{I}_p.
+ \frac{\partial \mathsf{ELBO}(g)}{\partial \mathbf{M}} &= \mathsf{symm}\left( \mathsf{E}_{\boldsymbol{Z}}\left\{\nabla p(\boldsymbol{y}, \boldsymbol{\theta})\boldsymbol{Z}^\top\exp(\mathbf{M})\right\}\right) + \mathbf{I}_p.
 \end{align*}
 where $\mathsf{symm}(\mathbf{X}) = (\mathbf{X} + \mathbf{X}^\top)/2$ is the symmetrization operator and
 \begin{align*}
@@ -772,8 +772,8 @@ where $\mathsf{symm}(\mathbf{X}) = (\mathbf{X} + \mathbf{X}^\top)/2$ is the symm
 
 Assume for simplicity that we have $T(\boldsymbol{\zeta}) = \boldsymbol{\zeta}$ is the identity. We can rewrite the expression for the gradient with respect to the matrix-log as
 \begin{align*}
- \frac{\partial \mathsf{ELBO}(g)}{\partial \mathbf{L}} &= \mathsf{symm}\left[ \mathsf{E}_{\boldsymbol{Z}}\left\{\frac{\partial \log p\{\boldsymbol{y}, \boldsymbol{\theta}=\boldsymbol{\mu} + \exp(\mathbf{L})\boldsymbol{Z}\}}{\partial \boldsymbol{\theta}}\boldsymbol{Z}^\top\exp(\mathbf{L})\right\}\right] + \mathbf{I}_p.
- \\& = \mathsf{symm}\left( \mathsf{E}_{\boldsymbol{Z}}\left[\frac{\partial \log p\{\boldsymbol{y}, \boldsymbol{\theta}=\boldsymbol{\mu} + \exp(\mathbf{L})\boldsymbol{Z}\}}{\partial \boldsymbol{\theta}\partial \boldsymbol{\theta}^\top}\exp(2\mathbf{L})\right]\right) + \mathbf{I}_p.
+ \frac{\partial \mathsf{ELBO}(g)}{\partial \mathbf{M}} &= \mathsf{symm}\left[ \mathsf{E}_{\boldsymbol{Z}}\left\{\frac{\partial \log p\{\boldsymbol{y}, \boldsymbol{\theta}=\boldsymbol{\mu} + \exp(\mathbf{M})\boldsymbol{Z}\}}{\partial \boldsymbol{\theta}}\boldsymbol{Z}^\top\exp(\mathbf{M})\right\}\right] + \mathbf{I}_p.
+ \\& = \mathsf{symm}\left( \mathsf{E}_{\boldsymbol{Z}}\left[\frac{\partial \log p\{\boldsymbol{y}, \boldsymbol{\theta}=\boldsymbol{\mu} + \exp(\mathbf{M})\boldsymbol{Z}\}}{\partial \boldsymbol{\theta}\partial \boldsymbol{\theta}^\top}\exp(2\mathbf{M})\right]\right) + \mathbf{I}_p.
 \end{align*}
 The first expression typically leads to a more noisy gradient estimator, but the second requires derivation of the Hessian matrix. The equivalence follows from Stein's lemma, which can be proved by integration by part.
 
@@ -792,7 +792,7 @@ Consider $h: \mathbb{R}^d \to \mathbb{R}$ a differentiable function and integrat
 
 We can replace expectations by Monte Carlo estimation and apply stochastic gradient descent: for example, an estimator of the ELBO for the case with $\boldsymbol{\theta} = \boldsymbol{\eta} \in \mathbb{R}^p$ is
 \begin{align*}
-\frac{1}{B}\sum_{b=1}^B p\{\boldsymbol{y}, \boldsymbol{\theta} = \boldsymbol{\mu} + \exp(\mathbf{L})\boldsymbol{Z}_i\} + \frac{p}{2}\{\log(2\pi)+1\} + \mathrm{trace}(\mathbf{L})
+\frac{1}{B}\sum_{b=1}^B p\{\boldsymbol{y}, \boldsymbol{\theta} = \boldsymbol{\mu} + \exp(\mathbf{M})\boldsymbol{Z}_i\} + \frac{p}{2}\{\log(2\pi)+1\} + \mathrm{trace}(\mathbf{M})
 \end{align*}
 for $\boldsymbol{Z}_1, \ldots, \boldsymbol{Z}_b \sim \mathsf{Gauss}_p(\boldsymbol{0}_p, \mathbf{I}_p).$
 

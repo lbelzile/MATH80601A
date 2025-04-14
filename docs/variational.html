@@ -315,12 +315,12 @@ g(\boldsymbol{\theta}; \widehat{\boldsymbol{\psi}}) = \mathrm{argmin}_{\boldsymb
 \end{align*}\]</span> We will show soon that this is a sensible objective function.</p>
 <div id="rem-symmetry-kld" class="proof remark">
 <p><span class="proof-title"><em>Remark 10.1</em> (Lack of symmetry of Kullback–Leibler divergence). </span>Consider an approximation of a bivariate Gaussian vector with correlated components <span class="math inline">\(\boldsymbol{X} \sim \mathsf{Gauss}_2(\boldsymbol{\mu}, \boldsymbol{\Sigma})\)</span>. If we approximate each margin independently with a univariate Gaussian, then the density which minimizes $ <span class="math display">\[\mathsf{KL}\{ \phi_2(\boldsymbol{\mu}, \boldsymbol{\Sigma}) \parallel \phi(\mu_{1g}, \sigma^2_{1g})\phi(\mu_{2g}, \sigma^2_{2g})\},\]</span> the forward Kullback–Leibler divergence will have the same marginal mean <span class="math inline">\(\widehat{\mu}_{ig}=\mu_i\)</span> and variance <span class="math inline">\(\sigma^2_{ig} = \Sigma_{ii}\)</span>, whereas the best approximation that minimizes the reverse Kullback–Leibler <span class="math display">\[\mathsf{KL}\{ \phi(\mu_{1g}, \sigma^2_{1g})\phi(\mu_{2g}, \sigma^2_{2g}) \parallel  \phi_2(\boldsymbol{\mu}, \boldsymbol{\Sigma})\},\]</span> will have the same mean, but a variance equal to the conditional variance of one component given the other, e.g., <span class="math inline">\(\widehat{\sigma}_{1g} = \Sigma_{11} - \Sigma_{12} \Sigma_{22}^{-1}\Sigma_{21}.\)</span> <a href="#fig-klvsrev" class="quarto-xref">Figure&nbsp;<span>10.1</span></a> shows the two approximations: the reverse Kullback–Leibler approximation is much too narrow and only gives mass where both variables have positive density, whereas the approximation that minimizes Kullback–Leibler divergence puts mass everywhere the target is supported.</p>
-<div class="cell">
+<div class="cell" data-layout-align="center">
 <div class="cell-output-display">
-<div id="fig-klvsrev" class="quarto-float quarto-figure quarto-figure-center anchored">
+<div id="fig-klvsrev" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-klvsrev-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="variational_files/figure-html/fig-klvsrev-1.png" class="img-fluid figure-img" width="672">
+<img src="variational_files/figure-html/fig-klvsrev-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:85.0%">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-klvsrev-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Figure&nbsp;10.1: Illustration of an approximation of a correlated bivariate Gaussian density (dashed contour lines) with an uncorrelated Gaussian, obtained by minimizing the reverse Kullback–Leibler divergence (variational approximation, left) and the Kullback–Leibler divergence (right).
@@ -336,12 +336,12 @@ Figure&nbsp;10.1: Illustration of an approximation of a correlated bivariate Gau
 h(tx_1 + (1-t)x_2) \leq t h(x_1) + (1-t) h(x_2), \qquad 0 \leq t \leq 1
 \end{align*}\]</span> The left panel of <a href="#fig-convex" class="quarto-xref">Figure&nbsp;<span>10.2</span></a> shows an illustration of the fact that the chord between any two points lies above the function. Examples include the exponential function, or a quadratic <span class="math inline">\(ax^2+bx + c\)</span> with <span class="math inline">\(a&gt;0.\)</span></p>
 </div>
-<div class="cell">
+<div class="cell" data-layout-align="center">
 <div class="cell-output-display">
-<div id="fig-convex" class="quarto-float quarto-figure quarto-figure-center anchored">
+<div id="fig-convex" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-convex-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="variational_files/figure-html/fig-convex-1.png" class="img-fluid figure-img" width="768">
+<img src="variational_files/figure-html/fig-convex-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:85.0%">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-convex-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Figure&nbsp;10.2: Left panel: the convex function <span class="math inline">\(h(x)=-\log(x),\)</span> with a straight line between any two points falls above the function. Right panel: a skewed density with the Laplace Gaussian approximation (dashed orange), the Gaussian variational approximation (reverse Kullback–Leibler divergence, dotted yellow) and the Gaussian that minimizes the Kullback–Leibler divergence (dot-dashed blue).
@@ -423,12 +423,12 @@ Y_i &amp;\sim \mathsf{Gauss}(\mu, \tau^{-1}), \qquad i =1, \ldots, n;\\
 \\&amp;= a_0\log(b_0)-\log \Gamma(a_0) -a_n\log b_n + \log \Gamma(a_n)
 \\&amp; \quad - \frac{n}{2}\log(2\pi)+ \frac{1 + \log (\tau_0/\tau_n)}{2} \end{align*}\]</span> The expected value of <span class="math inline">\(\mathsf{E}_{\tau}(\tau) = a_n/b_n\)</span> and the mean and variance of the Gaussian are given by it’s parameters. The terms involving <span class="math inline">\(\mathsf{E}_{\tau}(\log \tau) = \psi(a_n)-\log b_n\)</span> cancel out.</p>
 <p><a href="#fig-approx-cavi-gauss" class="quarto-xref">Figure&nbsp;<span>10.3</span></a> shows the contour plots of the true posterior (since the prior is conjugate) and the coordinate-ascent variational mean-field approximation. We can see that both are centered around the same values, but the independence assumption does not reflect the dependence and the CAVI approximation is slightly less dispersed.</p>
-<div class="cell">
+<div class="cell" data-layout-align="center">
 <div class="cell-output-display">
-<div id="fig-approx-cavi-gauss" class="quarto-float quarto-figure quarto-figure-center anchored">
+<div id="fig-approx-cavi-gauss" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-approx-cavi-gauss-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="variational_files/figure-html/fig-approx-cavi-gauss-1.png" class="img-fluid figure-img" width="672">
+<img src="variational_files/figure-html/fig-approx-cavi-gauss-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:85.0%">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-approx-cavi-gauss-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Figure&nbsp;10.3: Bivariate density posterior for the conjugate Gaussian-gamma model (left) and CAVI approximation (right).
@@ -437,12 +437,12 @@ Figure&nbsp;10.3: Bivariate density posterior for the conjugate Gaussian-gamma m
 </div>
 </div>
 </div>
-<div class="cell">
+<div class="cell" data-layout-align="center">
 <div class="cell-output-display">
-<div id="fig-gauss-cavi-margdens" class="quarto-float quarto-figure quarto-figure-center anchored">
+<div id="fig-gauss-cavi-margdens" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-gauss-cavi-margdens-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="variational_files/figure-html/fig-gauss-cavi-margdens-1.png" class="img-fluid figure-img" width="672">
+<img src="variational_files/figure-html/fig-gauss-cavi-margdens-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:85.0%">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-gauss-cavi-margdens-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Figure&nbsp;10.4: Marginal posterior density of the mean and precision of the Gaussian (full line), with CAVI approximation (dashed).
@@ -485,7 +485,7 @@ The ELBO is
 \end{align*}
 where use the fact $\mathsf{E}_{Z_i}\{\mathrm{I}(z_i \le 0)\}=$that the entropy of a $p$-dimensional multivariate Gaussian random vector with precision $\mathbf{Q}$ is $p/2\{1+\log(2\pi)\} - \log |\mathbf{Q}|/2.$
 -->
-<div class="cell">
+<div class="cell" data-layout-align="center">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Data augmentation: "z" is latent Gaussian, </span></span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="co"># truncated to be negative for failures </span></span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="co"># and positive for successes</span></span>
@@ -525,12 +525,12 @@ where use the fact $\mathsf{E}_{Z_i}\{\mathrm{I}(z_i \le 0)\}=$that the entropy 
 </div>
 <p>We consider for illustration purposes data from Experiment 2 of <span class="citation" data-cites="Duke.Amir:2023">Duke and Amir (<a href="references.html#ref-Duke.Amir:2023" role="doc-biblioref">2023</a>)</span> on the effect of sequential decisions and purchasing formats. We fit a model with age of the participant and the binary variable <code>format</code>, which indicate the experimental condition. The model is fitted with a sum-to-zero constraint for the dummy variable.</p>
 <p>With vague priors, the coefficients for the mean <span class="math inline">\(\boldsymbol{\mu}_{\boldsymbol{\beta}}=(\beta_0, \beta_1, \beta_2)^\top\)</span> matches the frequentist point estimates of the probit regression to four significant digits. Convergence is very fast, as shown by the ELBO plot in the left panel of <a href="#fig-elbo-CAVI-probit" class="quarto-xref">Figure&nbsp;<span>10.5</span></a>. The posterior density approximation implied by variational inference, shown on the right panel of <a href="#fig-elbo-CAVI-probit" class="quarto-xref">Figure&nbsp;<span>10.5</span></a>, is once again underdispersed relative to the true marginal posterior.</p>
-<div class="cell">
+<div class="cell" data-layout-align="center">
 <div class="cell-output-display">
-<div id="fig-elbo-CAVI-probit" class="quarto-float quarto-figure quarto-figure-center anchored">
+<div id="fig-elbo-CAVI-probit" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-elbo-CAVI-probit-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="variational_files/figure-html/fig-elbo-CAVI-probit-1.png" class="img-fluid figure-img" width="672">
+<img src="variational_files/figure-html/fig-elbo-CAVI-probit-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:85.0%">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-elbo-CAVI-probit-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Figure&nbsp;10.5: Probit regression with CAVI for the Duke and Amir (2023) data. Left: ELBO as a function of the number of iterations until convergence. Right: marginal density approximation for a regression coefficient with kernel density estimation of the true density (full line) versus variational approximation (dashed).
@@ -577,22 +577,22 @@ Figure&nbsp;10.5: Probit regression with CAVI for the Duke and Amir (2023) data.
 \end{align*}\]</span> This follows from taking the trace of a <span class="math inline">\(1\times 1\)</span> matrix, and applying a cyclic permutation to which the trace is invariant. Since the trace is a linear operator, we can interchange the trace with the expected value. Finally, we have <span class="math inline">\(\mathsf{E}_g\left\{(\boldsymbol{X}-\boldsymbol{\mu})(\boldsymbol{X}-\boldsymbol{\mu})^\top\right\}=\boldsymbol{\Sigma}\)</span>, and the trace of a <span class="math inline">\(D \times D\)</span> identity matrix is simply <span class="math inline">\(D\)</span>.</p>
 </div>
 <p>The transformation to <span class="math inline">\(\mathbb{R}^p\)</span> is not unique and different choices may yield to differences, but the choice of optimal transformation requires knowledge of the true posterior, which is thus intractable.</p>
-<p>We give next some details about derivation of the full-rank approximation. We work with the matrix-log of the covariance matrix, defined through it’s eigendecomposition <span class="math inline">\(\boldsymbol{\Sigma}=\mathbf{V}\mathrm{diag}(\boldsymbol{\lambda})\mathbf{V}^{\top},\)</span> where <span class="math inline">\(\mathbf{V}\)</span> is a <span class="math inline">\(p\times p\)</span> orthogonal matrix of eigenvectors, whose inverse is equal to it’s transpose. Since we are decomposing a symmetric definite matrix,. Most operations on the matrix only affect the eigenvalues <span class="math inline">\(\lambda_1, \ldots, \lambda_p\)</span>: the matrix-log is <span class="math display">\[\begin{align*}
-\mathbf{L} =\mathbf{V}\mathrm{diag}\left\{ \frac{1}{2}\log(\boldsymbol{\lambda})\right\}\mathbf{V}^\top.
-\end{align*}\]</span> Other operations on matrices are defined analogously: we write <span class="math inline">\(\exp(\boldsymbol{\Sigma}) = \mathbf{V}\mathrm{diag}\{ \exp(\boldsymbol{\lambda})\}\mathbf{V}^\top\)</span> and we write <span class="math inline">\(\log(\boldsymbol{\Sigma}) = \mathbf{V}\mathrm{diag}\{ \log(\boldsymbol{\lambda})\}\mathbf{V}^\top\)</span>.</p>
-<p>We focus on the case of full transformation; the derivation for independent components is analogous. Since the Gaussian is a location-scale family, we can rewrite the model in terms of a standardized Gaussian variable <span class="math inline">\(\boldsymbol{Z}\sim \mathsf{Gauss}_p(\boldsymbol{0}_p, \mathbf{I}_p)\)</span> where <span class="math inline">\(\boldsymbol{\zeta} = \boldsymbol{\mu} + \exp(\mathbf{L})\boldsymbol{Z}.\)</span> The ELBO with the transformation is <span class="math display">\[\begin{align*}
-\mathsf{ELBO}(g) &amp; = \mathsf{E}_{\boldsymbol{Z}}\left[ \log p\left\{\boldsymbol{y}, T^{-1}(\boldsymbol{\zeta})\right\} + \log \left|\mathbf{J}_{T^{-1}}(\boldsymbol{\zeta})\right|\right] \\&amp;\quad+\frac{D}{2}\{1+\log(2\pi)\} + \mathrm{trace}(\mathbf{L}).
+<p>We give next some details about derivation of the full-rank approximation. We work with the matrix-log of the covariance matrix, defined through it’s eigendecomposition (or singular value decomposition) <span class="math inline">\(\boldsymbol{\Sigma}=\mathbf{V}\mathrm{diag}(\boldsymbol{\lambda})\mathbf{V}^{\top},\)</span> where <span class="math inline">\(\mathbf{V}\)</span> is a <span class="math inline">\(p\times p\)</span> orthogonal matrix of eigenvectors, whose inverse is equal to it’s transpose. Most operations on the matrix only affect the eigenvalues <span class="math inline">\(\lambda_1, \ldots, \lambda_p\)</span>: the matrix-log is <span class="math display">\[\begin{align*}
+\mathbf{M} =\mathbf{V}\mathrm{diag}\left\{ \frac{1}{2}\log(\boldsymbol{\lambda})\right\}\mathbf{V}^\top.
+\end{align*}\]</span> Other operations on matrices are defined analogously: we write <span class="math inline">\(\exp(\boldsymbol{\Sigma}) = \mathbf{V}\mathrm{diag}\{ \exp(\boldsymbol{\lambda})\}\mathbf{V}^\top\)</span> and we write <span class="math inline">\(\log(\boldsymbol{\Sigma}) = \mathbf{V}\mathrm{diag}\{ \log(\boldsymbol{\lambda})\}\mathbf{V}^\top\)</span>. and <span class="math inline">\(\boldsymbol{\Sigma} = \exp(2\mathbf{M})\)</span>.</p>
+<p>We focus on the case of full transformation; the derivation for independent components is analogous. Since the Gaussian is a location-scale family, we can rewrite the model in terms of a standardized Gaussian variable <span class="math inline">\(\boldsymbol{Z}\sim \mathsf{Gauss}_p(\boldsymbol{0}_p, \mathbf{I}_p)\)</span> where <span class="math inline">\(\boldsymbol{\zeta} = \boldsymbol{\mu} + \exp(\mathbf{M})\boldsymbol{Z}.\)</span> The ELBO with the transformation is <span class="math display">\[\begin{align*}
+\mathsf{ELBO}(g) &amp; = \mathsf{E}_{\boldsymbol{Z}}\left[ \log p\left\{\boldsymbol{y}, T^{-1}(\boldsymbol{\zeta})\right\} + \log \left|\mathbf{J}_{T^{-1}}(\boldsymbol{\zeta})\right|\right] \\&amp;\quad+\frac{D}{2}\{1+\log(2\pi)\} + \mathrm{trace}(\mathbf{M}).
 \end{align*}\]</span> where we have the logarithm of the absolute value of the determinant of the Jacobian of the transformation due to the change of variable. If we apply the chain rule <span class="math display">\[\begin{align*}
-\frac{\partial}{\partial \boldsymbol{\psi}}\log p\{\boldsymbol{y}, T^{-1}(\boldsymbol{\mu} + \exp(\mathbf{L})\boldsymbol{Z})\} = \frac{\partial \log p(\boldsymbol{y}, \boldsymbol{\theta})}{\partial \boldsymbol{\theta}} \frac{\partial T^{-1}(\boldsymbol{\zeta})}{\partial \boldsymbol{\zeta}} \frac{\partial \boldsymbol{\mu} + \exp(\mathbf{L})\boldsymbol{Z}}{\partial \boldsymbol{\psi}}
+\frac{\partial}{\partial \boldsymbol{\psi}}\log p\{\boldsymbol{y}, T^{-1}(\boldsymbol{\mu} + \exp(\mathbf{M})\boldsymbol{Z})\} = \frac{\partial \log p(\boldsymbol{y}, \boldsymbol{\theta})}{\partial \boldsymbol{\theta}} \frac{\partial T^{-1}(\boldsymbol{\zeta})}{\partial \boldsymbol{\zeta}} \frac{\partial \boldsymbol{\mu} + \exp(\mathbf{M})\boldsymbol{Z}}{\partial \boldsymbol{\psi}}
 \end{align*}\]</span> and we retrieve the gradients of the ELBO with respect to the mean and variance, which are <span class="math display">\[\begin{align*}
 \frac{\partial \mathsf{ELBO}(g)}{\partial \boldsymbol{\mu}} &amp;= \mathsf{E}_{\boldsymbol{Z}}\left\{\nabla p(\boldsymbol{y}, \boldsymbol{\theta})\right\} \\
-\frac{\partial \mathsf{ELBO}(g)}{\partial \mathbf{L}} &amp;= \mathsf{symm}\left( \mathsf{E}_{\boldsymbol{Z}}\left\{\nabla p(\boldsymbol{y}, \boldsymbol{\theta})\boldsymbol{Z}^\top\exp(\mathbf{L})\right\}\right) + \mathbf{I}_p.
+\frac{\partial \mathsf{ELBO}(g)}{\partial \mathbf{M}} &amp;= \mathsf{symm}\left( \mathsf{E}_{\boldsymbol{Z}}\left\{\nabla p(\boldsymbol{y}, \boldsymbol{\theta})\boldsymbol{Z}^\top\exp(\mathbf{M})\right\}\right) + \mathbf{I}_p.
 \end{align*}\]</span> where <span class="math inline">\(\mathsf{symm}(\mathbf{X}) = (\mathbf{X} + \mathbf{X}^\top)/2\)</span> is the symmetrization operator and <span class="math display">\[\begin{align*}
 \nabla p(\boldsymbol{y}, \boldsymbol{\theta}) = \frac{\partial \log p(\boldsymbol{y}, \boldsymbol{\theta})}{\partial \boldsymbol{\theta}} \frac{\partial T^{-1}(\boldsymbol{\zeta})}{\partial \boldsymbol{\zeta}}  + \frac{\partial \log \left|\mathbf{J}_{T^{-1}}(\boldsymbol{\zeta})\right|}{\partial \boldsymbol{\zeta}}.
 \end{align*}\]</span></p>
 <p>Assume for simplicity that we have <span class="math inline">\(T(\boldsymbol{\zeta}) = \boldsymbol{\zeta}\)</span> is the identity. We can rewrite the expression for the gradient with respect to the matrix-log as <span class="math display">\[\begin{align*}
-\frac{\partial \mathsf{ELBO}(g)}{\partial \mathbf{L}} &amp;= \mathsf{symm}\left[ \mathsf{E}_{\boldsymbol{Z}}\left\{\frac{\partial \log p\{\boldsymbol{y}, \boldsymbol{\theta}=\boldsymbol{\mu} + \exp(\mathbf{L})\boldsymbol{Z}\}}{\partial \boldsymbol{\theta}}\boldsymbol{Z}^\top\exp(\mathbf{L})\right\}\right] + \mathbf{I}_p.
-\\&amp; = \mathsf{symm}\left( \mathsf{E}_{\boldsymbol{Z}}\left[\frac{\partial \log p\{\boldsymbol{y}, \boldsymbol{\theta}=\boldsymbol{\mu} + \exp(\mathbf{L})\boldsymbol{Z}\}}{\partial \boldsymbol{\theta}\partial \boldsymbol{\theta}^\top}\exp(2\mathbf{L})\right]\right) + \mathbf{I}_p.
+\frac{\partial \mathsf{ELBO}(g)}{\partial \mathbf{M}} &amp;= \mathsf{symm}\left[ \mathsf{E}_{\boldsymbol{Z}}\left\{\frac{\partial \log p\{\boldsymbol{y}, \boldsymbol{\theta}=\boldsymbol{\mu} + \exp(\mathbf{M})\boldsymbol{Z}\}}{\partial \boldsymbol{\theta}}\boldsymbol{Z}^\top\exp(\mathbf{M})\right\}\right] + \mathbf{I}_p.
+\\&amp; = \mathsf{symm}\left( \mathsf{E}_{\boldsymbol{Z}}\left[\frac{\partial \log p\{\boldsymbol{y}, \boldsymbol{\theta}=\boldsymbol{\mu} + \exp(\mathbf{M})\boldsymbol{Z}\}}{\partial \boldsymbol{\theta}\partial \boldsymbol{\theta}^\top}\exp(2\mathbf{M})\right]\right) + \mathbf{I}_p.
 \end{align*}\]</span> The first expression typically leads to a more noisy gradient estimator, but the second requires derivation of the Hessian matrix. The equivalence follows from Stein’s lemma, which can be proved by integration by part.</p>
 <div id="prp-stein-lemma" class="theorem proposition">
 <p><span class="theorem-title"><strong>Proposition 10.4 (Stein’s lemma)</strong></span> Consider <span class="math inline">\(h: \mathbb{R}^d \to \mathbb{R}\)</span> a differentiable function and integration with respect to <span class="math inline">\(\boldsymbol{X} \sim \mathsf{Gauss}_d(\boldsymbol{\mu}, \boldsymbol{\Sigma})\)</span> such that the gradient is absolutely integrable, <span class="math inline">\(\mathsf{E}_{\boldsymbol{X}}\{|\nabla_i h(\boldsymbol{X})|\} &lt; \infty\)</span> for <span class="math inline">\(i=1, \ldots, d.\)</span> Then <span class="citation" data-cites="Liu:1994">(<a href="references.html#ref-Liu:1994" role="doc-biblioref">Liu 1994</a>)</span>, <span class="math display">\[\begin{align*}
@@ -600,7 +600,7 @@ Figure&nbsp;10.5: Probit regression with CAVI for the Duke and Amir (2023) data.
 \end{align*}\]</span></p>
 </div>
 <p>We can replace expectations by Monte Carlo estimation and apply stochastic gradient descent: for example, an estimator of the ELBO for the case with <span class="math inline">\(\boldsymbol{\theta} = \boldsymbol{\eta} \in \mathbb{R}^p\)</span> is <span class="math display">\[\begin{align*}
-\frac{1}{B}\sum_{b=1}^B p\{\boldsymbol{y}, \boldsymbol{\theta} = \boldsymbol{\mu} + \exp(\mathbf{L})\boldsymbol{Z}_i\} + \frac{p}{2}\{\log(2\pi)+1\} + \mathrm{trace}(\mathbf{L})
+\frac{1}{B}\sum_{b=1}^B p\{\boldsymbol{y}, \boldsymbol{\theta} = \boldsymbol{\mu} + \exp(\mathbf{M})\boldsymbol{Z}_i\} + \frac{p}{2}\{\log(2\pi)+1\} + \mathrm{trace}(\mathbf{M})
 \end{align*}\]</span> for <span class="math inline">\(\boldsymbol{Z}_1, \ldots, \boldsymbol{Z}_b \sim \mathsf{Gauss}_p(\boldsymbol{0}_p, \mathbf{I}_p).\)</span></p>
 <p>Compared to the black-box variational inference algorithm, this requires calculating the gradient of the log posterior with respect to <span class="math inline">\(\boldsymbol{\theta}.\)</span> This step can be done using automatic differentiation (hence the terminology ADVI), and moreover this gradient estimator is several orders less noisy than the black-box counterpart. The ELBO can be approximated via Monte Carlo integration.</p>
 <p>We can thus build a stochastic gradient algorithm with a Robins–Monro sequence of updates. <span class="citation" data-cites="Kucukelbir:2017">Kucukelbir et al. (<a href="references.html#ref-Kucukelbir:2017" role="doc-biblioref">2017</a>)</span> use an adaptive step-size sequence <span class="math inline">\(\rho_t\)</span> for the stochastic gradient descent, which we explicit: consider the <span class="math inline">\(k\)</span>th entry of the gradient evaluate at step <span class="math inline">\(t\)</span> by <span class="math inline">\(g_{k,t}\)</span>, with <span class="math display">\[\begin{align*}
