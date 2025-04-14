@@ -421,7 +421,8 @@ Y_i &amp;\sim \mathsf{Gauss}(\mu, \tau^{-1}), \qquad i =1, \ldots, n;\\
 \\ &amp;\quad - a_n \log (b_n) + \log \Gamma(a_n) - (a_n-1) \mathsf{E}_{\tau}(\log \tau) + b_n \mathsf{E}_{\tau}(\tau)
 \\&amp; \quad + \frac{1 + \log(2\pi\mathsf{Va}_{\mu}(\mu))}{2}
 \\&amp;= a_0\log(b_0)-\log \Gamma(a_0) -a_n\log b_n + \log \Gamma(a_n)
-\\&amp; \quad - \frac{n}{2}\log(2\pi)+ \frac{1 + \log (\tau_0/\tau_n)}{2} \end{align*}\]</span> The expected value of <span class="math inline">\(\mathsf{E}_{\tau}(\tau) = a_n/b_n\)</span> and the mean and variance of the Gaussian are given by it’s parameters. The terms involving <span class="math inline">\(\mathsf{E}_{\tau}(\log \tau) = \psi(a_n)-\log b_n\)</span> cancel out.</p>
+\\&amp; \quad - \frac{n}{2}\log(2\pi)+ \frac{1 + \log (\tau_0/\tau_n)}{2}
+\end{align*}\]</span> The expected value of <span class="math inline">\(\mathsf{E}_{\tau}(\tau) = a_n/b_n\)</span> and the mean and variance of the Gaussian are given by it’s parameters. The terms involving <span class="math inline">\(\mathsf{E}_{\tau}(\log \tau) = \psi(a_n)-\log b_n\)</span> cancel out.</p>
 <p><a href="#fig-approx-cavi-gauss" class="quarto-xref">Figure&nbsp;<span>10.3</span></a> shows the contour plots of the true posterior (since the prior is conjugate) and the coordinate-ascent variational mean-field approximation. We can see that both are centered around the same values, but the independence assumption does not reflect the dependence and the CAVI approximation is slightly less dispersed.</p>
 <div class="cell">
 <div class="cell-output-display">

@@ -985,17 +985,22 @@ Strong dependence can be fixed by blocking (often via forward sampling), but per
 
 Consider a one-way ANOVA with a single observation per group, where for $i=1, \ldots, n,$ we have
 \begin{align*}
-Y_{i} &\sim \mathsf{Gauss}(\mu + \alpha_i, \sigma^2_i) \\
+Y_{i} &\sim \mathsf{Gauss}(\mu + \alpha_i, s^2_i) \\
 \alpha_i &\sim \mathsf{Gauss}(0, \sigma^2_\alpha)
 \end{align*}
 and an improper prior for the mean $p(\mu) \propto 1.$ If there are $K$ groups, then the group-specific mean is $\mu+\alpha_k$, and there is a redundant parameter. In the Bayesian setting, the parameters are weakly identifiable because of the prior on $\boldsymbol{\alpha}$, but the geometry is such that $\alpha_k \to 0$ as $\sigma^2_{\alpha} \to 0.$ See [Section 5.5](https://users.aalto.fi/~ave/BDA3.pdf) on p. 119 of @Gelman:2013 for more details.
 
-We can improve mixing by adding the redundant parameter $\xi_i>0$ [@Gelman.vanDyk:2008] for each observation
+We can improve mixing by adding the redundant parameter $\nu$ [@Gelman.vanDyk:2008] common to each observation
 \begin{align*}
-Y_{i} &\sim \mathsf{Gauss}(\mu + \alpha\xi_i, \sigma^2_i) \\
+Y_{i} &\sim \mathsf{Gauss}(\mu + \nu\xi_i, s^2_i) \\
 \xi_i &\sim \mathsf{Gauss}(0, \sigma^2_\xi)
 \end{align*}
-so that $\alpha_j = \alpha \xi_j$ and $\sigma_\alpha = |\alpha|\sigma_\xi.$ The common parameter $\alpha$ controls both  the variance and the amplitude of the coefficients.
+so that $\alpha_j = \nu \xi_j$ and $\sigma_\alpha = |\nu|\sigma_\xi.$ The common parameter $\nu$ controls both  the variance and the amplitude of the coefficients.
+
+
+
+Consider the eight school data from Educational Testing Service (ETS), featured prominently in @Gelman:2013. The data shows results of randomized experiments in eight different schools to estimate the effect of coaching on SAT-V scores.
+The data consist of estimated treatment mean difference $y_1, \ldots, y_8$ and their standard errors $\sigma_1, \ldots, s_8$. The data size are large, so the average treatment effect (ATE) can be considered Gaussian and the school-specific standard errors $s_j$ are treated as a known quantity.
 
 ```{r}
 #| eval: true
@@ -1049,24 +1054,26 @@ for(b in seq_len(B)){
   pars3[b, n + 1] <- mu <- rnorm(n = 1, mean = var_mu * sum((es$y - alpha)/es$se^2), sd = sqrt(var_mu)) 
   pars3[b, n + 2] <- sigma_al_st <- sum(alpha_st^2) / rchisq(1, df = n - 1) 
   pars3[b, n + 3] <- a <- rnorm(n = 1, mean = sum(alpha_st*(es$y-mu)/es$se^2)/sum(alpha_st^2/es$se^2), 
-                                sd = sum(alpha_st^2/es$se^2))
+                                sd = sqrt(sum(alpha_st^2/es$se^2)))
   pars3[b, 1:n] <- alpha_st*a
   pars3[b, n + 2] <- sigma_al <- abs(a)*sigma_al_st
 }
 ```
 
 
-```{r}
-#| eval: true
-#| echo: false
-#| label: fig-eightschool
-#| fig-cap: "Average treatment effect with asymptotic 95% confidence intervals for the eight school example."
-ggplot(es, aes(x = school, y = y)) +
-  geom_point(col = "purple") +
-  geom_errorbar(aes(ymin = y - 1.96*se, ymax = y + 1.96*se), width = 0.3) +
-  labs(x = "school", y = "") +
-  theme_classic()
-```
+We can devise different Gibbs sampling from this problem. The naive Gibbs sampler, which iterates between conditionals of $p(\boldsymbol{\alpha} \mid \boldsymbol{y}, \boldsymbol{s}^2, \mu, \sigma^2_{\alpha})$ and $p(\mu \mid \boldsymbol{y}, \boldsymbol{s}^2, \boldsymbol{\alpha})$ leads to strong autocorrelation. A better strategy is to marginalize over the global mean $\mu$ and simulate from $p(\boldsymbol{\alpha} \mid \boldsymbol{y}, \boldsymbol{s}^2, \sigma^2_{\alpha})$ instead. We get then the conditionals
+\begin{align*}
+\alpha_i \mid y_i, s_i^2, \sigma^2_{\alpha} &\sim \mathsf{Gauss}\left\{ \left(s^{-2}_i + \sigma^{-2}_{\alpha}\right)^{-1}\frac{y_i}{s^2_j}, \left(s^{-2}_i + \sigma^{-2}_{\alpha}\right)^{-1}\right\}\\
+\mu \mid \boldsymbol{y}, \boldsymbol{s}^2, \boldsymbol{\alpha} & \sim \mathsf{Gauss}\left( s^2_{\mu} \sum_{j=1}^8 \frac{y_i-\alpha_i}{s^2_j}, s^2_{\mu}\right)\\
+\sigma^2_{\alpha} \mid \boldsymbol{\alpha} &\sim \mathsf{inv. gamma}\left( \frac{n-1}{2}, \frac{\sum_{j=1}^8 \alpha_j^2}{2}\right)
+\end{align*}
+where $s^{-2}_{\mu} =\sum_{j=1}^8 s_j^{-2}.$
+
+The parameter expansion sampler proceeds in exactly the same way with the same conditionals for $\sigma_{\xi}^2$ and $\boldsymbol{\xi}$ as above; the only additional step is 
+\begin{align*}
+\nu \mid \boldsymbol{y}, \boldsymbol{s}^2, \boldsymbol{\xi} & \sim \mathsf{Gauss}\left\{ \left( \sum_{j=1}^8 \xi_j^2/s_j^2\right)^{-1} \sum_{j=1}^8 \xi_j(y_j-\mu)/s^2_j, \left( \sum_{j=1}^8 \xi_j^2/s_j^2\right)^{-1}\right\}.
+\end{align*}
+After each update, we then save the progress of  $\alpha_j = \nu \xi_j$ and $\sigma_\alpha = |\nu|\sigma_\xi,$ as the other parameters are not identifiable on their own. The redundant parametrization allows one to more efficiently explore the space. @fig-funnel shows that many regions with small variance are not explored after 1000 iterations of the Gibbs sampler. The geometry exhibited by @fig-funnel is typical of hierarchical construction and complicated for more complex solvers like Hamiltonian Monte Carlo, which will report warnings.
 
 
 ```{r}
@@ -1101,5 +1108,7 @@ g2 <- ggplot(
   theme_classic()
 g1 + g2
 ```
+
+
 
 :::

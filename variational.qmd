@@ -328,7 +328,8 @@ so that it depends on the parameters of the distribution of $\mu$ directly. We c
 \\ &\quad - a_n \log (b_n) + \log \Gamma(a_n) - (a_n-1) \mathsf{E}_{\tau}(\log \tau) + b_n \mathsf{E}_{\tau}(\tau) 
 \\& \quad + \frac{1 + \log(2\pi\mathsf{Va}_{\mu}(\mu))}{2}
 \\&= a_0\log(b_0)-\log \Gamma(a_0) -a_n\log b_n + \log \Gamma(a_n) 
-\\& \quad - \frac{n}{2}\log(2\pi)+ \frac{1 + \log (\tau_0/\tau_n)}{2} \end{align*}
+\\& \quad - \frac{n}{2}\log(2\pi)+ \frac{1 + \log (\tau_0/\tau_n)}{2} 
+\end{align*}
 The expected value of $\mathsf{E}_{\tau}(\tau) = a_n/b_n$ and the mean and variance of the Gaussian are given by it's parameters. The terms involving $\mathsf{E}_{\tau}(\log \tau) = \psi(a_n)-\log b_n$ cancel out.
 
 @fig-approx-cavi-gauss shows the contour plots of the true posterior (since the prior is conjugate) and the coordinate-ascent variational mean-field approximation. We can see that both are centered around the same values, but the independence assumption does not reflect the dependence and the CAVI approximation is slightly less dispersed.

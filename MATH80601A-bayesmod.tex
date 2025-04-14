@@ -266,6 +266,20 @@
 \DeclareMathAlphabet{\mathcrl}{U}{rsfs}{m}{n}
 \usepackage{utopia}
 \DeclareMathAlphabet{\mathcal}{OMS}{cmsy}{m}{n}
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{wrapfig}
+\usepackage{float}
+\usepackage{colortbl}
+\usepackage{pdflscape}
+\usepackage{tabu}
+\usepackage{threeparttable}
+\usepackage{threeparttablex}
+\usepackage[normalem]{ulem}
+\usepackage{makecell}
+\usepackage{xcolor}
 \makeatletter
 \@ifpackageloaded{tcolorbox}{}{\usepackage[skins,breakable]{tcolorbox}}
 \@ifpackageloaded{fontawesome5}{}{\usepackage{fontawesome5}}
@@ -320,18 +334,18 @@
 \floatname{codelisting}{Listing}
 \newcommand*\listoflistings{\listof{codelisting}{List of Listings}}
 \usepackage{amsthm}
+\theoremstyle{definition}
+\newtheorem{exercise}{Exercise}[chapter]
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}[chapter]
+\theoremstyle{definition}
+\newtheorem{example}{Example}[chapter]
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}[chapter]
 \theoremstyle{plain}
 \newtheorem{corollary}{Corollary}[chapter]
 \theoremstyle{plain}
 \newtheorem{proposition}{Proposition}[chapter]
-\theoremstyle{plain}
-\newtheorem{theorem}{Theorem}[chapter]
-\theoremstyle{definition}
-\newtheorem{exercise}{Exercise}[chapter]
-\theoremstyle{definition}
-\newtheorem{example}{Example}[chapter]
-\theoremstyle{definition}
-\newtheorem{definition}{Definition}[chapter]
 \theoremstyle{remark}
 \AtBeginDocument{\renewcommand*{\proofname}{Proof}}
 \newtheorem*{remark}{Remark}
@@ -403,7 +417,7 @@ used throughout the course. The overview begins with basic statistical
 concepts, random variables, their distribution and density, moments and
 likelihood derivations.
 
-\begin{tcolorbox}[enhanced jigsaw, colbacktitle=quarto-callout-important-color!10!white, toprule=.15mm, left=2mm, colframe=quarto-callout-important-color-frame, colback=white, breakable, coltitle=black, arc=.35mm, opacityback=0, rightrule=.15mm, titlerule=0mm, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Learning objectives}:}, bottomtitle=1mm, toptitle=1mm, leftrule=.75mm, bottomrule=.15mm, opacitybacktitle=0.6]
+\begin{tcolorbox}[enhanced jigsaw, bottomrule=.15mm, rightrule=.15mm, colframe=quarto-callout-important-color-frame, opacityback=0, titlerule=0mm, toprule=.15mm, coltitle=black, bottomtitle=1mm, colback=white, colbacktitle=quarto-callout-important-color!10!white, breakable, leftrule=.75mm, left=2mm, toptitle=1mm, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Learning objectives}:}, arc=.35mm, opacitybacktitle=0.6]
 
 At the end of the chapter, students should be able to
 
@@ -1698,7 +1712,7 @@ The likelihood can then be written as \begin{align*}
 
 \end{example}
 
-\begin{tcolorbox}[enhanced jigsaw, colbacktitle=quarto-callout-important-color!10!white, toprule=.15mm, left=2mm, colframe=quarto-callout-important-color-frame, colback=white, breakable, coltitle=black, arc=.35mm, opacityback=0, rightrule=.15mm, titlerule=0mm, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Summary}}, bottomtitle=1mm, toptitle=1mm, leftrule=.75mm, bottomrule=.15mm, opacitybacktitle=0.6]
+\begin{tcolorbox}[enhanced jigsaw, bottomrule=.15mm, rightrule=.15mm, colframe=quarto-callout-important-color-frame, opacityback=0, titlerule=0mm, toprule=.15mm, coltitle=black, bottomtitle=1mm, colback=white, colbacktitle=quarto-callout-important-color!10!white, breakable, leftrule=.75mm, left=2mm, toptitle=1mm, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Summary}}, arc=.35mm, opacitybacktitle=0.6]
 
 \begin{itemize}
 \tightlist
@@ -1778,7 +1792,7 @@ elicitation and estimation of the marginal likelihood, are mentioned in
 passing. A brief discussion of Bayesian hypothesis testing (and
 alternatives) is presented.
 
-\begin{tcolorbox}[enhanced jigsaw, colbacktitle=quarto-callout-important-color!10!white, toprule=.15mm, left=2mm, colframe=quarto-callout-important-color-frame, colback=white, breakable, coltitle=black, arc=.35mm, opacityback=0, rightrule=.15mm, titlerule=0mm, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Learning objectives}:}, bottomtitle=1mm, toptitle=1mm, leftrule=.75mm, bottomrule=.15mm, opacitybacktitle=0.6]
+\begin{tcolorbox}[enhanced jigsaw, bottomrule=.15mm, rightrule=.15mm, colframe=quarto-callout-important-color-frame, opacityback=0, titlerule=0mm, toprule=.15mm, coltitle=black, bottomtitle=1mm, colback=white, colbacktitle=quarto-callout-important-color!10!white, breakable, leftrule=.75mm, left=2mm, toptitle=1mm, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Learning objectives}:}, arc=.35mm, opacitybacktitle=0.6]
 
 At the end of the chapter, students should be able to
 
@@ -2717,7 +2731,7 @@ the cutoff for the HDP region.}
 
 \end{figure}%
 
-\begin{tcolorbox}[enhanced jigsaw, colbacktitle=quarto-callout-important-color!10!white, toprule=.15mm, left=2mm, colframe=quarto-callout-important-color-frame, colback=white, breakable, coltitle=black, arc=.35mm, opacityback=0, rightrule=.15mm, titlerule=0mm, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Summary}:}, bottomtitle=1mm, toptitle=1mm, leftrule=.75mm, bottomrule=.15mm, opacitybacktitle=0.6]
+\begin{tcolorbox}[enhanced jigsaw, bottomrule=.15mm, rightrule=.15mm, colframe=quarto-callout-important-color-frame, opacityback=0, titlerule=0mm, toprule=.15mm, coltitle=black, bottomtitle=1mm, colback=white, colbacktitle=quarto-callout-important-color!10!white, breakable, leftrule=.75mm, left=2mm, toptitle=1mm, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Summary}:}, arc=.35mm, opacitybacktitle=0.6]
 
 \begin{itemize}
 \tightlist
@@ -2796,7 +2810,7 @@ inferences. Generally, we will choose the prior for convenience. Priors
 are controversial because they could be tuned aposteriori to give any
 answer an analyst might want.
 
-\begin{tcolorbox}[enhanced jigsaw, colbacktitle=quarto-callout-important-color!10!white, toprule=.15mm, left=2mm, colframe=quarto-callout-important-color-frame, colback=white, breakable, coltitle=black, arc=.35mm, opacityback=0, rightrule=.15mm, titlerule=0mm, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Learning objectives}:}, bottomtitle=1mm, toptitle=1mm, leftrule=.75mm, bottomrule=.15mm, opacitybacktitle=0.6]
+\begin{tcolorbox}[enhanced jigsaw, bottomrule=.15mm, rightrule=.15mm, colframe=quarto-callout-important-color-frame, opacityback=0, titlerule=0mm, toprule=.15mm, coltitle=black, bottomtitle=1mm, colback=white, colbacktitle=quarto-callout-important-color!10!white, breakable, leftrule=.75mm, left=2mm, toptitle=1mm, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Learning objectives}:}, arc=.35mm, opacitybacktitle=0.6]
 
 At the end of the chapter, students should be able to
 
@@ -3830,7 +3844,7 @@ improper priors on location and scale.}
 
 \end{example}
 
-\begin{tcolorbox}[enhanced jigsaw, colbacktitle=quarto-callout-important-color!10!white, toprule=.15mm, left=2mm, colframe=quarto-callout-important-color-frame, colback=white, breakable, coltitle=black, arc=.35mm, opacityback=0, rightrule=.15mm, titlerule=0mm, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Summary}:}, bottomtitle=1mm, toptitle=1mm, leftrule=.75mm, bottomrule=.15mm, opacitybacktitle=0.6]
+\begin{tcolorbox}[enhanced jigsaw, bottomrule=.15mm, rightrule=.15mm, colframe=quarto-callout-important-color-frame, opacityback=0, titlerule=0mm, toprule=.15mm, coltitle=black, bottomtitle=1mm, colback=white, colbacktitle=quarto-callout-important-color!10!white, breakable, leftrule=.75mm, left=2mm, toptitle=1mm, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Summary}:}, arc=.35mm, opacitybacktitle=0.6]
 
 \begin{itemize}
 \tightlist
@@ -4893,7 +4907,7 @@ computers became more widely available. The idea is to draw correlated
 samples from a posterior via Markov chains, constructed to have the
 posterior as invariant stationary distribution.
 
-\begin{tcolorbox}[enhanced jigsaw, colbacktitle=quarto-callout-important-color!10!white, toprule=.15mm, left=2mm, colframe=quarto-callout-important-color-frame, colback=white, breakable, coltitle=black, arc=.35mm, opacityback=0, rightrule=.15mm, titlerule=0mm, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Learning objectives}:}, bottomtitle=1mm, toptitle=1mm, leftrule=.75mm, bottomrule=.15mm, opacitybacktitle=0.6]
+\begin{tcolorbox}[enhanced jigsaw, bottomrule=.15mm, rightrule=.15mm, colframe=quarto-callout-important-color-frame, opacityback=0, titlerule=0mm, toprule=.15mm, coltitle=black, bottomtitle=1mm, colback=white, colbacktitle=quarto-callout-important-color!10!white, breakable, leftrule=.75mm, left=2mm, toptitle=1mm, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Learning objectives}:}, arc=.35mm, opacitybacktitle=0.6]
 
 At the end of the chapter, students should be able to
 
@@ -5583,7 +5597,7 @@ overdispersion.
 
 \end{example}
 
-\begin{tcolorbox}[enhanced jigsaw, colbacktitle=quarto-callout-important-color!10!white, toprule=.15mm, left=2mm, colframe=quarto-callout-important-color-frame, colback=white, breakable, coltitle=black, arc=.35mm, opacityback=0, rightrule=.15mm, titlerule=0mm, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Summary}:}, bottomtitle=1mm, toptitle=1mm, leftrule=.75mm, bottomrule=.15mm, opacitybacktitle=0.6]
+\begin{tcolorbox}[enhanced jigsaw, bottomrule=.15mm, rightrule=.15mm, colframe=quarto-callout-important-color-frame, opacityback=0, titlerule=0mm, toprule=.15mm, coltitle=black, bottomtitle=1mm, colback=white, colbacktitle=quarto-callout-important-color!10!white, breakable, leftrule=.75mm, left=2mm, toptitle=1mm, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Summary}:}, arc=.35mm, opacitybacktitle=0.6]
 
 \begin{itemize}
 \tightlist
@@ -5634,7 +5648,7 @@ overdispersion.
 
 \chapter{Gibbs sampling}\label{sec-Gibbs}
 
-\begin{tcolorbox}[enhanced jigsaw, colbacktitle=quarto-callout-important-color!10!white, toprule=.15mm, left=2mm, colframe=quarto-callout-important-color-frame, colback=white, breakable, coltitle=black, arc=.35mm, opacityback=0, rightrule=.15mm, titlerule=0mm, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Learning objectives}:}, bottomtitle=1mm, toptitle=1mm, leftrule=.75mm, bottomrule=.15mm, opacitybacktitle=0.6]
+\begin{tcolorbox}[enhanced jigsaw, bottomrule=.15mm, rightrule=.15mm, colframe=quarto-callout-important-color-frame, opacityback=0, titlerule=0mm, toprule=.15mm, coltitle=black, bottomtitle=1mm, colback=white, colbacktitle=quarto-callout-important-color!10!white, breakable, leftrule=.75mm, left=2mm, toptitle=1mm, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Learning objectives}:}, arc=.35mm, opacitybacktitle=0.6]
 
 At the end of the chapter, students should be able to
 
@@ -5996,14 +6010,14 @@ the value of \(C_i =j,\) the density would involve only \(f_j.\) We can
 thus use latent variables representing the group allocation to simplify
 the problem and run an EM algorithm or use the data augmentation. In an
 iterative framework, we can consider the complete data as the tuples
-\((X_i, Z_i),\) where \(Z_i = \mathrm{I}(C_i=k).\)
+\((X_i, \boldsymbol{Z}_i),\) where \(Z_{ik} = \mathrm{I}(C_i=k).\)
 
 With the augmented data, the likelihood becomes \begin{align*}
-\prod_{i=1}^n \prod_{k=1}^K \{\omega_kf_k(x; \boldsymbol{\theta}_k)\}^{Z_i},
+\prod_{i=1}^n \prod_{k=1}^K \{\omega_kf_k(x; \boldsymbol{\theta}_k)\}^{Z_{ik}},
 \end{align*} so the conditional distribution of
-\(Z_i \mid X_i, \boldsymbol{\omega}, \boldsymbol{\theta} \sim \mathsf{multinom}(1, \boldsymbol{\gamma}_{ik})\)
+\(\boldsymbol{Z}_i \mid X_i, \boldsymbol{\omega}, \boldsymbol{\theta} \sim \mathsf{multinom}(1, \boldsymbol{\gamma}_{i})\)
 where
-\[\gamma_{ik} = \frac{\omega_k f_k(X_i\boldsymbol{\theta}_k)}{\sum_{j=1}^K \omega_jf_j(X_i\boldsymbol{\theta}_k)}.\]
+\[\gamma_{ik} = \frac{\omega_k f_k(X_i\boldsymbol{\theta}_k)}{\sum_{j=1}^K \omega_jf_j(X_i\boldsymbol{\theta}_k)}, \qquad k=1, \ldots. K.\]
 Given suitable priors for the probabilities \(\boldsymbol{\omega}\) and
 \(\boldsymbol{\theta} \equiv \{\boldsymbol{\theta}_1, \ldots, \boldsymbol{\theta}_k\},\)
 we can use Gibbs sampling updating \(\boldsymbol{Z},\)
@@ -6100,7 +6114,7 @@ and Stephens (\citeproc{ref-Stephens:2002}{2002}) for more details.
 
 \end{refremark}
 
-\begin{tcolorbox}[enhanced jigsaw, colbacktitle=quarto-callout-important-color!10!white, toprule=.15mm, left=2mm, colframe=quarto-callout-important-color-frame, colback=white, breakable, coltitle=black, arc=.35mm, opacityback=0, rightrule=.15mm, titlerule=0mm, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Summary}:}, bottomtitle=1mm, toptitle=1mm, leftrule=.75mm, bottomrule=.15mm, opacitybacktitle=0.6]
+\begin{tcolorbox}[enhanced jigsaw, bottomrule=.15mm, rightrule=.15mm, colframe=quarto-callout-important-color-frame, opacityback=0, titlerule=0mm, toprule=.15mm, coltitle=black, bottomtitle=1mm, colback=white, colbacktitle=quarto-callout-important-color!10!white, breakable, leftrule=.75mm, left=2mm, toptitle=1mm, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Summary}:}, arc=.35mm, opacitybacktitle=0.6]
 
 \begin{itemize}
 \tightlist
@@ -6158,7 +6172,7 @@ Betancourt} for excellent visualizations. In this chapter, we focus on
 three aspects of the workflow: model validation, evaluation and
 comparison.
 
-\begin{tcolorbox}[enhanced jigsaw, colbacktitle=quarto-callout-important-color!10!white, toprule=.15mm, left=2mm, colframe=quarto-callout-important-color-frame, colback=white, breakable, coltitle=black, arc=.35mm, opacityback=0, rightrule=.15mm, titlerule=0mm, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Learning objectives}:}, bottomtitle=1mm, toptitle=1mm, leftrule=.75mm, bottomrule=.15mm, opacitybacktitle=0.6]
+\begin{tcolorbox}[enhanced jigsaw, bottomrule=.15mm, rightrule=.15mm, colframe=quarto-callout-important-color-frame, opacityback=0, titlerule=0mm, toprule=.15mm, coltitle=black, bottomtitle=1mm, colback=white, colbacktitle=quarto-callout-important-color!10!white, breakable, leftrule=.75mm, left=2mm, toptitle=1mm, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Learning objectives}:}, arc=.35mm, opacitybacktitle=0.6]
 
 At the end of the chapter, students should be able to
 
@@ -7043,7 +7057,7 @@ expansion]\protect\hypertarget{exm-parameter-expansion}{}\label{exm-parameter-ex
 
 Consider a one-way ANOVA with a single observation per group, where for
 \(i=1, \ldots, n,\) we have \begin{align*}
-Y_{i} &\sim \mathsf{Gauss}(\mu + \alpha_i, \sigma^2_i) \\
+Y_{i} &\sim \mathsf{Gauss}(\mu + \alpha_i, s^2_i) \\
 \alpha_i &\sim \mathsf{Gauss}(0, \sigma^2_\alpha)
 \end{align*} and an improper prior for the mean \(p(\mu) \propto 1.\) If
 there are \(K\) groups, then the group-specific mean is
@@ -7054,27 +7068,52 @@ setting, the parameters are weakly identifiable because of the prior on
 \href{https://users.aalto.fi/~ave/BDA3.pdf}{Section 5.5} on p.~119 of
 Gelman et al. (\citeproc{ref-Gelman:2013}{2013}) for more details.
 
-We can improve mixing by adding the redundant parameter \(\xi_i>0\)
-(\citeproc{ref-Gelman.vanDyk:2008}{Gelman et al. 2008}) for each
+We can improve mixing by adding the redundant parameter \(\nu\)
+(\citeproc{ref-Gelman.vanDyk:2008}{Gelman et al. 2008}) common to each
 observation \begin{align*}
-Y_{i} &\sim \mathsf{Gauss}(\mu + \alpha\xi_i, \sigma^2_i) \\
+Y_{i} &\sim \mathsf{Gauss}(\mu + \nu\xi_i, s^2_i) \\
 \xi_i &\sim \mathsf{Gauss}(0, \sigma^2_\xi)
-\end{align*} so that \(\alpha_j = \alpha \xi_j\) and
-\(\sigma_\alpha = |\alpha|\sigma_\xi.\) The common parameter \(\alpha\)
+\end{align*} so that \(\alpha_j = \nu \xi_j\) and
+\(\sigma_\alpha = |\nu|\sigma_\xi.\) The common parameter \(\nu\)
 controls both the variance and the amplitude of the coefficients.
 
-\begin{figure}[ht!]
+Consider the eight school data from Educational Testing Service (ETS),
+featured prominently in Gelman et al.
+(\citeproc{ref-Gelman:2013}{2013}). The data shows results of randomized
+experiments in eight different schools to estimate the effect of
+coaching on SAT-V scores. The data consist of estimated treatment mean
+difference \(y_1, \ldots, y_8\) and their standard errors
+\(\sigma_1, \ldots, s_8\). The data size are large, so the average
+treatment effect (ATE) can be considered Gaussian and the
+school-specific standard errors \(s_j\) are treated as a known quantity.
 
-\centering{
+We can devise different Gibbs sampling from this problem. The naive
+Gibbs sampler, which iterates between conditionals of
+\(p(\boldsymbol{\alpha} \mid \boldsymbol{y}, \boldsymbol{s}^2, \mu, \sigma^2_{\alpha})\)
+and
+\(p(\mu \mid \boldsymbol{y}, \boldsymbol{s}^2, \boldsymbol{\alpha})\)
+leads to strong autocorrelation. A better strategy is to marginalize
+over the global mean \(\mu\) and simulate from
+\(p(\boldsymbol{\alpha} \mid \boldsymbol{y}, \boldsymbol{s}^2, \sigma^2_{\alpha})\)
+instead. We get then the conditionals \begin{align*}
+\alpha_i \mid y_i, s_i^2, \sigma^2_{\alpha} &\sim \mathsf{Gauss}\left\{ \left(s^{-2}_i + \sigma^{-2}_{\alpha}\right)^{-1}\frac{y_i}{s^2_j}, \left(s^{-2}_i + \sigma^{-2}_{\alpha}\right)^{-1}\right\}\\
+\mu \mid \boldsymbol{y}, \boldsymbol{s}^2, \boldsymbol{\alpha} & \sim \mathsf{Gauss}\left( s^2_{\mu} \sum_{j=1}^8 \frac{y_i-\alpha_i}{s^2_j}, s^2_{\mu}\right)\\
+\sigma^2_{\alpha} \mid \boldsymbol{\alpha} &\sim \mathsf{inv. gamma}\left( \frac{n-1}{2}, \frac{\sum_{j=1}^8 \alpha_j^2}{2}\right)
+\end{align*} where \(s^{-2}_{\mu} =\sum_{j=1}^8 s_j^{-2}.\)
 
-\pandocbounded{\includegraphics[keepaspectratio]{workflow_files/figure-pdf/fig-eightschool-1.pdf}}
-
-}
-
-\caption{\label{fig-eightschool}Average treatment effect with asymptotic
-95\% confidence intervals for the eight school example.}
-
-\end{figure}%
+The parameter expansion sampler proceeds in exactly the same way with
+the same conditionals for \(\sigma_{\xi}^2\) and \(\boldsymbol{\xi}\) as
+above; the only additional step is \begin{align*}
+\nu \mid \boldsymbol{y}, \boldsymbol{s}^2, \boldsymbol{\xi} & \sim \mathsf{Gauss}\left\{ \left( \sum_{j=1}^8 \xi_j^2/s_j^2\right)^{-1} \sum_{j=1}^8 \xi_j(y_j-\mu)/s^2_j, \left( \sum_{j=1}^8 \xi_j^2/s_j^2\right)^{-1}\right\}.
+\end{align*} After each update, we then save the progress of
+\(\alpha_j = \nu \xi_j\) and \(\sigma_\alpha = |\nu|\sigma_\xi,\) as the
+other parameters are not identifiable on their own. The redundant
+parametrization allows one to more efficiently explore the space.
+Figure~\ref{fig-funnel} shows that many regions with small variance are
+not explored after 1000 iterations of the Gibbs sampler. The geometry
+exhibited by Figure~\ref{fig-funnel} is typical of hierarchical
+construction and complicated for more complex solvers like Hamiltonian
+Monte Carlo, which will report warnings.
 
 \begin{figure}[ht!]
 
@@ -8772,11 +8811,11 @@ Derivation of the ELBO, even in this toy setting, is tedious.
 \\ &\quad - a_n \log (b_n) + \log \Gamma(a_n) - (a_n-1) \mathsf{E}_{\tau}(\log \tau) + b_n \mathsf{E}_{\tau}(\tau) 
 \\& \quad + \frac{1 + \log(2\pi\mathsf{Va}_{\mu}(\mu))}{2}
 \\&= a_0\log(b_0)-\log \Gamma(a_0) -a_n\log b_n + \log \Gamma(a_n) 
-\\& \quad - \frac{n}{2}\log(2\pi)+ \frac{1 + \log (\tau_0/\tau_n)}{2} \end{align*}
-The expected value of \(\mathsf{E}_{\tau}(\tau) = a_n/b_n\) and the mean
-and variance of the Gaussian are given by it's parameters. The terms
-involving \(\mathsf{E}_{\tau}(\log \tau) = \psi(a_n)-\log b_n\) cancel
-out.
+\\& \quad - \frac{n}{2}\log(2\pi)+ \frac{1 + \log (\tau_0/\tau_n)}{2} 
+\end{align*} The expected value of \(\mathsf{E}_{\tau}(\tau) = a_n/b_n\)
+and the mean and variance of the Gaussian are given by it's parameters.
+The terms involving
+\(\mathsf{E}_{\tau}(\log \tau) = \psi(a_n)-\log b_n\) cancel out.
 
 Figure~\ref{fig-approx-cavi-gauss} shows the contour plots of the true
 posterior (since the prior is conjugate) and the coordinate-ascent

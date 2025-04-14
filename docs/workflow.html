@@ -721,27 +721,22 @@ q(\boldsymbol{\beta} \mid \tau, \boldsymbol{\beta}^0)  \sim \mathsf{Gauss}_{366}
 <p>Strong dependence can be fixed by blocking (often via forward sampling), but perhaps conterintuitively also be adding additional redundant parameters. <span class="citation" data-cites="Gelman:2013">Gelman et al. (<a href="references.html#ref-Gelman:2013" role="doc-biblioref">2013</a>)</span> consider a simple hierarchical random effect model in which the range of the random effects is severely constrained by the variance.</p>
 <div id="exm-parameter-expansion" class="theorem example">
 <p><span class="theorem-title"><strong>Example 7.5 (Parameter expansion)</strong></span> Consider a one-way ANOVA with a single observation per group, where for <span class="math inline">\(i=1, \ldots, n,\)</span> we have <span class="math display">\[\begin{align*}
-Y_{i} &amp;\sim \mathsf{Gauss}(\mu + \alpha_i, \sigma^2_i) \\
+Y_{i} &amp;\sim \mathsf{Gauss}(\mu + \alpha_i, s^2_i) \\
 \alpha_i &amp;\sim \mathsf{Gauss}(0, \sigma^2_\alpha)
 \end{align*}\]</span> and an improper prior for the mean <span class="math inline">\(p(\mu) \propto 1.\)</span> If there are <span class="math inline">\(K\)</span> groups, then the group-specific mean is <span class="math inline">\(\mu+\alpha_k\)</span>, and there is a redundant parameter. In the Bayesian setting, the parameters are weakly identifiable because of the prior on <span class="math inline">\(\boldsymbol{\alpha}\)</span>, but the geometry is such that <span class="math inline">\(\alpha_k \to 0\)</span> as <span class="math inline">\(\sigma^2_{\alpha} \to 0.\)</span> See <a href="https://users.aalto.fi/~ave/BDA3.pdf">Section 5.5</a> on p.&nbsp;119 of <span class="citation" data-cites="Gelman:2013">Gelman et al. (<a href="references.html#ref-Gelman:2013" role="doc-biblioref">2013</a>)</span> for more details.</p>
-<p>We can improve mixing by adding the redundant parameter <span class="math inline">\(\xi_i&gt;0\)</span> <span class="citation" data-cites="Gelman.vanDyk:2008">(<a href="references.html#ref-Gelman.vanDyk:2008" role="doc-biblioref">Gelman et al. 2008</a>)</span> for each observation <span class="math display">\[\begin{align*}
-Y_{i} &amp;\sim \mathsf{Gauss}(\mu + \alpha\xi_i, \sigma^2_i) \\
+<p>We can improve mixing by adding the redundant parameter <span class="math inline">\(\nu\)</span> <span class="citation" data-cites="Gelman.vanDyk:2008">(<a href="references.html#ref-Gelman.vanDyk:2008" role="doc-biblioref">Gelman et al. 2008</a>)</span> common to each observation <span class="math display">\[\begin{align*}
+Y_{i} &amp;\sim \mathsf{Gauss}(\mu + \nu\xi_i, s^2_i) \\
 \xi_i &amp;\sim \mathsf{Gauss}(0, \sigma^2_\xi)
-\end{align*}\]</span> so that <span class="math inline">\(\alpha_j = \alpha \xi_j\)</span> and <span class="math inline">\(\sigma_\alpha = |\alpha|\sigma_\xi.\)</span> The common parameter <span class="math inline">\(\alpha\)</span> controls both the variance and the amplitude of the coefficients.</p>
-<div class="cell">
-<div class="cell-output-display">
-<div id="fig-eightschool" class="quarto-float quarto-figure quarto-figure-center anchored">
-<figure class="quarto-float quarto-float-fig figure">
-<div aria-describedby="fig-eightschool-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="workflow_files/figure-html/fig-eightschool-1.png" class="img-fluid figure-img" width="672">
-</div>
-<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-eightschool-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;7.10: Average treatment effect with asymptotic 95% confidence intervals for the eight school example.
-</figcaption>
-</figure>
-</div>
-</div>
-</div>
+\end{align*}\]</span> so that <span class="math inline">\(\alpha_j = \nu \xi_j\)</span> and <span class="math inline">\(\sigma_\alpha = |\nu|\sigma_\xi.\)</span> The common parameter <span class="math inline">\(\nu\)</span> controls both the variance and the amplitude of the coefficients.</p>
+<p>Consider the eight school data from Educational Testing Service (ETS), featured prominently in <span class="citation" data-cites="Gelman:2013">Gelman et al. (<a href="references.html#ref-Gelman:2013" role="doc-biblioref">2013</a>)</span>. The data shows results of randomized experiments in eight different schools to estimate the effect of coaching on SAT-V scores. The data consist of estimated treatment mean difference <span class="math inline">\(y_1, \ldots, y_8\)</span> and their standard errors <span class="math inline">\(\sigma_1, \ldots, s_8\)</span>. The data size are large, so the average treatment effect (ATE) can be considered Gaussian and the school-specific standard errors <span class="math inline">\(s_j\)</span> are treated as a known quantity.</p>
+<p>We can devise different Gibbs sampling from this problem. The naive Gibbs sampler, which iterates between conditionals of <span class="math inline">\(p(\boldsymbol{\alpha} \mid \boldsymbol{y}, \boldsymbol{s}^2, \mu, \sigma^2_{\alpha})\)</span> and <span class="math inline">\(p(\mu \mid \boldsymbol{y}, \boldsymbol{s}^2, \boldsymbol{\alpha})\)</span> leads to strong autocorrelation. A better strategy is to marginalize over the global mean <span class="math inline">\(\mu\)</span> and simulate from <span class="math inline">\(p(\boldsymbol{\alpha} \mid \boldsymbol{y}, \boldsymbol{s}^2, \sigma^2_{\alpha})\)</span> instead. We get then the conditionals <span class="math display">\[\begin{align*}
+\alpha_i \mid y_i, s_i^2, \sigma^2_{\alpha} &amp;\sim \mathsf{Gauss}\left\{ \left(s^{-2}_i + \sigma^{-2}_{\alpha}\right)^{-1}\frac{y_i}{s^2_j}, \left(s^{-2}_i + \sigma^{-2}_{\alpha}\right)^{-1}\right\}\\
+\mu \mid \boldsymbol{y}, \boldsymbol{s}^2, \boldsymbol{\alpha} &amp; \sim \mathsf{Gauss}\left( s^2_{\mu} \sum_{j=1}^8 \frac{y_i-\alpha_i}{s^2_j}, s^2_{\mu}\right)\\
+\sigma^2_{\alpha} \mid \boldsymbol{\alpha} &amp;\sim \mathsf{inv. gamma}\left( \frac{n-1}{2}, \frac{\sum_{j=1}^8 \alpha_j^2}{2}\right)
+\end{align*}\]</span> where <span class="math inline">\(s^{-2}_{\mu} =\sum_{j=1}^8 s_j^{-2}.\)</span></p>
+<p>The parameter expansion sampler proceeds in exactly the same way with the same conditionals for <span class="math inline">\(\sigma_{\xi}^2\)</span> and <span class="math inline">\(\boldsymbol{\xi}\)</span> as above; the only additional step is <span class="math display">\[\begin{align*}
+\nu \mid \boldsymbol{y}, \boldsymbol{s}^2, \boldsymbol{\xi} &amp; \sim \mathsf{Gauss}\left\{ \left( \sum_{j=1}^8 \xi_j^2/s_j^2\right)^{-1} \sum_{j=1}^8 \xi_j(y_j-\mu)/s^2_j, \left( \sum_{j=1}^8 \xi_j^2/s_j^2\right)^{-1}\right\}.
+\end{align*}\]</span> After each update, we then save the progress of <span class="math inline">\(\alpha_j = \nu \xi_j\)</span> and <span class="math inline">\(\sigma_\alpha = |\nu|\sigma_\xi,\)</span> as the other parameters are not identifiable on their own. The redundant parametrization allows one to more efficiently explore the space. <a href="#fig-funnel" class="quarto-xref">Figure&nbsp;<span>7.10</span></a> shows that many regions with small variance are not explored after 1000 iterations of the Gibbs sampler. The geometry exhibited by <a href="#fig-funnel" class="quarto-xref">Figure&nbsp;<span>7.10</span></a> is typical of hierarchical construction and complicated for more complex solvers like Hamiltonian Monte Carlo, which will report warnings.</p>
 <div class="cell">
 <div class="cell-output-display">
 <div id="fig-funnel" class="quarto-float quarto-figure quarto-figure-center anchored">
@@ -750,7 +745,7 @@ Figure&nbsp;7.10: Average treatment effect with asymptotic 95% confidence interv
 <img src="workflow_files/figure-html/fig-funnel-1.png" class="img-fluid figure-img" width="672">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-funnel-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;7.11: Dependence between random effect and it’s variance, showing a funnel pattern. The block Gibbs sample (left) does not explore the whole posterior, whereas the parameter-expansion algorithm (right) does.
+Figure&nbsp;7.10: Dependence between random effect and it’s variance, showing a funnel pattern. The block Gibbs sample (left) does not explore the whole posterior, whereas the parameter-expansion algorithm (right) does.
 </figcaption>
 </figure>
 </div>
