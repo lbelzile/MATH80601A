@@ -458,6 +458,7 @@ g3 <- ggplot() +
       sd = sqrt(CAVI_approx$mu_var)),
     xlim = range(mu_s),
     linetype = "dashed")  +
+    scale_y_continuous(limits = c(0, NA), expand = expansion()) +
   labs(x = expression(mu), 
        y = "density") +
   theme_classic()
@@ -474,6 +475,7 @@ g4 <- ggplot() +
       shape = CAVI_approx$tau_shape),
     xlim = range(tau_s),
     linetype = "dashed")  +
+    scale_y_continuous(limits = c(0, NA), expand = expansion()) +
   labs(x = expression(tau), 
        y = "density") +
   theme_classic()

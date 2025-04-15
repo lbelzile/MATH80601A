@@ -454,6 +454,7 @@ ggplot(data = df_Tokyopred,
   geom_line(aes(y = median)) +
     geom_line(aes(y = lower), linetype = "dashed") +
     geom_line(aes(y = upper), linetype = "dashed") +
+    scale_y_continuous(limits = c(0,1), expand = expansion()) +
   labs(x = "day of year", y = "", subtitle = "posterior probability of rainfall above 1mm") +
   theme_classic()
 ```
