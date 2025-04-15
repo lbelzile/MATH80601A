@@ -346,10 +346,10 @@ The scale parameters and hyperparameters can be estimated jointly with the model
 ## Discrete spike-and-slab prior
 
 
-The spike-and-slab prior is a two-component mixture with that assigns a positive probability to zero via a point mass $\delta_0$ or a vary narrow distribution centered at the origin (the spike) and the balance to the slab, a diffuse distribution. The **discrete spike-and-slab** prior was originally proposed by @Mitchell.Beauchamp:1988 with a uniform on a large interval and a point mass at zero. More generally, people consider the 
+The spike-and-slab prior is a two-component mixture with that assigns a positive probability to zero via a point mass $\mathrm{I}(\beta_j=0)$ or a vary narrow distribution centered at the origin (the spike) and the balance to the slab, a diffuse distribution. The **discrete spike-and-slab** prior was originally proposed by @Mitchell.Beauchamp:1988 with a uniform on a large interval and a point mass at zero. More generally, people consider the 
 formulation 
 \begin{align*}
-\beta_j \mid \gamma_j, \sigma^2 \sim \gamma_j \delta_0 + (1-\gamma_j)\mathsf{Gauss}(0, \sigma^2)
+\beta_j \mid \gamma_j, \sigma^2 \sim \gamma_j \mathrm{I}(\beta_j=0) + (1-\gamma_j)\mathsf{Gauss}(0, \sigma^2)
 \end{align*}
 where a prior $p(\sigma^2)$ give rise to a Gaussian scale mixtures for the slab. If we set independent and identically distributed conjugate prior for $\gamma_j \sim \mathsf{binom}(1, \omega),$ we get
 \begin{align*}
@@ -366,7 +366,9 @@ Apriori, the shared hyperparameters $\omega \in (0,1)$ corresponds to the propor
 Discrete spike-and-slab priors are not easy to fit because the component $\gamma_j\in\{0,1\}$ is discrete (so cannot be simulated via Hamiltonian Monte Carlo as is). Removal of a covariate changes the dimension and requires dedicated algorithms; see @George.McCulloch:1997, @Chipman.George.McCulloch:2001 and @Ghosh.Clyde:2011 for references. Some of these are implemented in the `BoomSpikeSlab` **R** package.
 
 ```{r}
-library("BoomSpikeSlab")
+#| message: false
+#| warning: false
+library("BoomSpikeSlab", warn.conflicts = FALSE, quietly = TRUE)
 data(diabetes, package = "lars")
 diabetes <- as.data.frame(cbind(y = diabetes$y, diabetes$x2))
 dss <- BoomSpikeSlab::lm.spike(
@@ -384,6 +386,8 @@ We fit the discrete spike-and-slab to the `diabetes` data, which contains a mode
 ```{r}
 #| eval: true
 #| echo: false
+#| message: false
+#| warning: false
 #| label: fig-spike-slab-zero
 #| fig-cap: "Probability of inclusion of variables (left) and posterior distribution of the number of non-zero components (right) for the discrete spike-and-slab fitted to the `diabetes` data, including 56 covariates with quadratic terms and interactions."
 df <- data.frame(
@@ -433,9 +437,9 @@ g1 + g2
 
 The term was also used in @George.McCulloch:1993, which replaced the prior by a mixture of Gaussians, one of which diffuse and the other with near infinite precision and centered at the origin. The latter is known under the vocable stochastic search variable selection prior  after @George.McCulloch:1997, or more commonly as an instance of **continuous spike-and-slab** prior. Letting $\gamma_j \in [0,1]$ denote the probability of the slab or inclusion of the variable, the independent priors for the regression coefficients are
 \begin{align*}
- \beta_j \mid \gamma_j, \sigma_j^2,\phi^2_j \sim (1-\gamma_j) \mathsf{Gauss}(0, \sigma_j^2\phi^2_j) + \gamma_j \mathsf{Gauss}(0, \phi^2)
+ \beta_j \mid \gamma_j, \sigma_j^2, \phi^2 \sim  \gamma_j \underbracket[0.25pt]{\mathsf{Gauss}(0, \phi^2)}_{\text{spike}} + (1-\gamma_j) \underbracket[0.25pt]{\mathsf{Gauss}(0, \sigma_j^2\phi^2)}_{\text{slab}}
 \end{align*}
-where $\phi^2_j$ is very nearly zero, e.g., $\phi_j^2=0.001.$ The construction allows for variable augmentation with mixture indicators and Gibbs sampling, analogous to the Gaussian mixture models but with the variance and mean of one of the cluster for the spike fixed.  However, mixing of the Gibbs sampler Markov chain tends to be poor.
+where $\phi^2$ is very nearly zero, e.g., $\phi^2=0.001.$ The construction allows for variable augmentation with mixture indicators and Gibbs sampling, analogous to the Gaussian mixture models but with the variance and mean of one of the cluster for the spike fixed.  However, mixing of the Gibbs sampler Markov chain tends to be poor.
 
 
 :::

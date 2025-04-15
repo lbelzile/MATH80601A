@@ -116,7 +116,7 @@ The term on the right is the logistic function. This reparametrization makes it 
 
 The dynamics of the expectation propagation given vectors of individual contributions $\boldsymbol{a}^{(t)}$ and $\boldsymbol{b}^{(t)}$ at iteration $t$ and the canonical parameters
 \begin{align*}
-\boldsymbol{r}^{(t)} = \sum_{i=1}^n a_i^{(t)}\mathbf{x}_i^\top, \qquad \mathbf{Q}^{(t)} = \sum_{i=1}^n b_i\mathbf{x}_i^\top\mathbf{x}_i,
+\boldsymbol{r}^{(t)} = \sum_{i=1}^n a_i^{(t)}\mathbf{x}_i^\top, \qquad \mathbf{Q}^{(t)} = \sum_{i=1}^n b_i^{(t)}\mathbf{x}_i^\top\mathbf{x}_i,
 \end{align*} initialized to $t=0$, are as follows for step $t$:
 
 

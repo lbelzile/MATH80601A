@@ -134,22 +134,22 @@ par(bty = "l", mfrow = c(1,2), mar = c(4,4,1,1))
 curve(-log(x), from = 0.25, to = 2.25, ylab = "h(x)")
 segments(x0 = 0.5, x1 = 2, y0 = -log(0.5), y1 = -log(2), lty = 2)
 # Consider approximation of a skew-normal density
-
+al <- 20
 # Laplace approximation
 # Find mode by numerical optimization
 mode_laplace <- optim(
    par = 0.2, 
    fn = function(x){
-     -sn::dsn(x, xi = 0, alpha = 10, log = TRUE)},
+     -sn::dsn(x, xi = 0, alpha = al, log = TRUE)},
    method = "Brent", 
    lower = -1, 
    upper = 2, hessian = TRUE)
-curve(sn::dsn(x, xi = 0, alpha = 10), 
+curve(sn::dsn(x, xi = 0, alpha = al), 
      from = -2, 
      to = 4, 
      n = 1001, 
      bty = "n", ylab = "density",
-     ylim = c(0,1))
+     ylim = c(0,1.5))
 curve(dnorm(x, 
   mean = mode_laplace$par, 
   sd = sqrt(1/mode_laplace$hessian[1])),
@@ -159,7 +159,7 @@ dsn <- function(x, loc = 0, scale = 1, alpha){
   2*dnorm(x, loc, scale)*pnorm(alpha*x, loc, scale)
 }
   X <- rnorm(10000)
-elbo <- function(pars, mu = 0, sigma = 1, alpha = 10){
+elbo <- function(pars, mu = 0, sigma = 1, alpha = al){
   ms <- pars[1]
   s2 <- exp(pars[2])
   obj <- log(s2) - 0.5*(s2+ms^2-2*mu*ms)/(sigma^2) +
@@ -168,10 +168,10 @@ elbo <- function(pars, mu = 0, sigma = 1, alpha = 10){
   -obj
 }
 
-revKL_sn <- optim(par =rep(0,2), fn = elbo,  alpha = 10)
+revKL_sn <- optim(par =rep(0,2), fn = elbo,  alpha = al)
 
 # With a Gaussian approximation, the mean and variance are the minimizers
-loc <- 0; scale <- 1; asym <- 10
+loc <- 0; scale <- 1; asym <- al
 KL_sn_mean <- loc + scale*asym/sqrt(1+asym^2)*sqrt(2/pi)
 KL_sn_var <- scale^2*(1-2*asym^2/(1+asym^2)/pi)
 # Variational approximation

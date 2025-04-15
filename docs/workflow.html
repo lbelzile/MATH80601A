@@ -282,11 +282,12 @@ window.Quarto = {
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#convergence-diagnostics-and-model-validation" id="toc-convergence-diagnostics-and-model-validation" class="nav-link active" data-scroll-target="#convergence-diagnostics-and-model-validation"><span class="header-section-number">7.1</span> Convergence diagnostics and model validation</a></li>
-  <li><a href="#multiple-short-chains-or-longer-runs" id="toc-multiple-short-chains-or-longer-runs" class="nav-link" data-scroll-target="#multiple-short-chains-or-longer-runs"><span class="header-section-number">7.2</span> Multiple short chains or longer runs?</a></li>
-  <li><a href="#posterior-predictive-checks" id="toc-posterior-predictive-checks" class="nav-link" data-scroll-target="#posterior-predictive-checks"><span class="header-section-number">7.2.1</span> Posterior predictive checks</a></li>
-  <li><a href="#information-criteria" id="toc-information-criteria" class="nav-link" data-scroll-target="#information-criteria"><span class="header-section-number">7.3</span> Information criteria</a></li>
-  <li><a href="#computational-strategies" id="toc-computational-strategies" class="nav-link" data-scroll-target="#computational-strategies"><span class="header-section-number">7.4</span> Computational strategies</a></li>
+  <li><a href="#convergence-diagnostics-and-model-validation" id="toc-convergence-diagnostics-and-model-validation" class="nav-link active" data-scroll-target="#convergence-diagnostics-and-model-validation"><span class="header-section-number">7.1</span> Convergence diagnostics and model validation</a>
+  <ul class="collapse">
+  <li><a href="#posterior-predictive-checks" id="toc-posterior-predictive-checks" class="nav-link" data-scroll-target="#posterior-predictive-checks"><span class="header-section-number">7.1.1</span> Posterior predictive checks</a></li>
+  </ul></li>
+  <li><a href="#information-criteria" id="toc-information-criteria" class="nav-link" data-scroll-target="#information-criteria"><span class="header-section-number">7.2</span> Information criteria</a></li>
+  <li><a href="#computational-strategies" id="toc-computational-strategies" class="nav-link" data-scroll-target="#computational-strategies"><span class="header-section-number">7.3</span> Computational strategies</a></li>
   </ul>
 <div class="toc-actions"><ul><li><a href="https://github.com/lbelzile/MATH80601A/edit/main/workflow.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li></ul></div></nav>
     </div>
@@ -376,12 +377,8 @@ Figure&nbsp;7.1: Traceplots of three Markov chains for the same target with diff
 <div id="def-warmup" class="theorem definition">
 <p><span class="theorem-title"><strong>Definition 7.4 (Warmup)</strong></span> Warmup period refers to the initial sampling phase (potentially overlapping with burn in period) during which proposals are tuned (for example, by changing the variance proposal to ensure good acceptance rate or for Hamiltonian Monte Carlo (HMC) to tune the size of the leapfrog. These initial steps should be disregarded.</p>
 </div>
-</section>
-<div id="rmk-short-vs-long">
-<section id="multiple-short-chains-or-longer-runs" class="level2" data-number="7.2">
-<h2 data-number="7.2" class="anchored" data-anchor-id="multiple-short-chains-or-longer-runs"><span class="header-section-number">7.2</span> Multiple short chains or longer runs?</h2>
-<p>In principle, it is more efficient to run a single Markov chain to draw samples for longer than multiple (shorter chains) for a fixed computational budget. Indeed, a single run means warmup needs to be achieve once. The benefits of running multiple chains comes from different considerations: we can monitor convergence to the stationary distribution (or to different modes for multimodal posteriors), and run diagnostics that rely on between-chain variance. Multiple chains can also be run in parallel and the results combined, a situation more in line with modern computer architecture.</p>
-</section>
+<div id="rem-short-vs-long" class="proof remark">
+<p><span class="proof-title"><em>Remark 7.1</em> (Multiple short chains or longer runs?). </span>In principle, it is more efficient to run a single Markov chain to draw samples for longer than multiple (shorter chains) for a fixed computational budget. Indeed, a single run means warmup needs to be achieve once. The benefits of running multiple chains comes from different considerations: we can monitor convergence to the stationary distribution (or to different modes for multimodal posteriors), and run diagnostics that rely on between-chain variance. Multiple chains can also be run in parallel and the results combined, a situation more in line with modern computer architecture.</p>
 </div>
 <p>The target of inference is a functional (i.e., one-dimensional summaries of the chain): we need to have convergence of the latter, but also sufficient effective sample size for our averages to be accurate (at least to two significant digits).</p>
 <p>To illustrate these, we revisit the model from <a href="priors.html#exm-randomeffects" class="quarto-xref">Example&nbsp;<span>3.15</span></a> with a penalized complexity prior for the individual effect <span class="math inline">\(\alpha_i\)</span> and vague normal priors. We also fit a simple Poisson model with only the fixed effect, taking <span class="math inline">\(Y_{ij} \sim \mathsf{Poisson}\{\exp(\beta_j)\}\)</span> with <span class="math inline">\(\beta_j \sim \mathsf{Gauss}(0,100)\)</span>. This model has too little variability relative to the observations and fits poorly as is.</p>
@@ -414,8 +411,8 @@ Figure&nbsp;7.2: Two pairs of Markov chains: the top ones seem stationary, but w
 <div id="def-thinning" class="theorem definition">
 <p><span class="theorem-title"><strong>Definition 7.5 (Thinning)</strong></span> MCMC algorithms are often run thinning the chain (i.e., keeping only a fraction of the samples drawn, typically every <span class="math inline">\(k\)</span> iteration). This is wasteful as we can of course get more precise estimates by keeping all posterior draws, whether correlated or not. The only argument in favor of thinning is limited storage capacity: if we run very long chains in a model with hundreds of parameters, we may run out of memory.</p>
 </div>
-<section id="posterior-predictive-checks" class="level3" data-number="7.2.1">
-<h3 data-number="7.2.1" class="anchored" data-anchor-id="posterior-predictive-checks"><span class="header-section-number">7.2.1</span> Posterior predictive checks</h3>
+<section id="posterior-predictive-checks" class="level3" data-number="7.1.1">
+<h3 data-number="7.1.1" class="anchored" data-anchor-id="posterior-predictive-checks"><span class="header-section-number">7.1.1</span> Posterior predictive checks</h3>
 <p>Posterior predictive checks can be used to compare models of varying complexity. One of the visual diagnostics, outlined in <span class="citation" data-cites="Gabry:2019">Gabry et al. (<a href="references.html#ref-Gabry:2019" role="doc-biblioref">2019</a>)</span>, consists in computing a summary statistic of interest from the posterior predictive (whether mean, median, quantile, skewness, etc.) which is relevant for the problem at hand and which we hope our model can adequately capture. These should be salient features of the data, and may reveal inadequate likelihood or prior information.</p>
 <p>Suppose we have <span class="math inline">\(B\)</span> draws from the posterior and simulate for each <span class="math inline">\(n\)</span> observations from the posterior predictive <span class="math inline">\(p(\widetilde{\boldsymbol{y}} \mid \boldsymbol{y})\)</span>: we can benchmark summary statistics from our original data <span class="math inline">\(\boldsymbol{y}\)</span> with the posterior predictive copies <span class="math inline">\(\widetilde{\boldsymbol{y}}_b.\)</span> <a href="#fig-posterior-pred-check" class="quarto-xref">Figure&nbsp;<span>7.3</span></a> shows this for the two competing models and highlight the fact that the simpler model is not dispersed enough. Even the more complex model struggles to capture this additional heterogeneity with the additional variables. One could go back to the drawing board and consider a negative binomial model.</p>
 <div class="cell">
@@ -433,8 +430,9 @@ Figure&nbsp;7.3: Posterior predictive checks for the standard deviation (top) an
 </div>
 </div>
 </section>
-<section id="information-criteria" class="level2" data-number="7.3">
-<h2 data-number="7.3" class="anchored" data-anchor-id="information-criteria"><span class="header-section-number">7.3</span> Information criteria</h2>
+</section>
+<section id="information-criteria" class="level2" data-number="7.2">
+<h2 data-number="7.2" class="anchored" data-anchor-id="information-criteria"><span class="header-section-number">7.2</span> Information criteria</h2>
 <p>The widely applicable information criterion <span class="citation" data-cites="Watanabe:2010">(<a href="references.html#ref-Watanabe:2010" role="doc-biblioref">Watanabe 2010</a>)</span> is a measure of predictive performance that approximates the cross-validation loss. Consider first the log pointwise predictive density, defined as the expected value over the posterior distribution <span class="math inline">\(p(\boldsymbol{\theta} \mid \boldsymbol{y}),\)</span> <span class="math display">\[\begin{align*}
 \mathsf{LPPD}_i = \mathsf{E}_{\boldsymbol{\theta} \mid \boldsymbol{y}} \left\{ \log p(y_i \mid \boldsymbol{\theta})\right\}.
 \end{align*}\]</span> The higher the value of the predictive density <span class="math inline">\(\mathsf{LPPD}_i,\)</span> the better the fit for that observation.</p>
@@ -479,12 +477,12 @@ Figure&nbsp;7.4: Widely applicable information criterion for the Bayesian LASSO 
 <p>To avoid double dipping, we can check model adequacy by comparing the leave-one-cross validation predictive draws with the observation.</p>
 <div id="prp-cv-predictive-dens" class="theorem proposition">
 <p><span class="theorem-title"><strong>Proposition 7.4 (Cross-validation predictive density)</strong></span> Consider estimation of the leave-one predictive density under the hypothesis that the likelihood factorizes as <span class="math inline">\(L(\boldsymbol{\theta}; \boldsymbol{y}) = \prod_{i=1}^n f_i(y_i; \boldsymbol{\theta});\)</span> where <span class="math inline">\(f_i\)</span> is the density or mass function of the <span class="math inline">\(i\)</span>th observation. Then, with weights <span class="math display">\[\begin{align*}
-w_i(\boldsymbol{\theta}) = \frac{p(\boldsymbol{\theta} \mid \boldsymbol{y}_{-i})}{p(\boldsymbol{\theta} \mid \boldsymbol{y})} \stackrel{\boldsymbol{\theta}}{\propto} \frac{1}{f_i(\boldsymbol{\theta} \mid y_i)}
+w_i(\boldsymbol{\theta}) = \frac{p(\boldsymbol{\theta} \mid \boldsymbol{y}_{-i})}{p(\boldsymbol{\theta} \mid \boldsymbol{y})} \stackrel{\boldsymbol{\theta}}{\propto} \frac{1}{f_i(y_i; \boldsymbol{\theta})}
 \end{align*}\]</span> we can write the leave-one-out posterior predictive as <span class="math display">\[\begin{align*}
-p(y_i \mid \boldsymbol{y}_{-i}) &amp;= \int_{\boldsymbol{\Theta}} f_i(y_i \mid \boldsymbol{\theta}) p(\boldsymbol{\theta} \mid \boldsymbol{y}_{-i}) \mathrm{d} \boldsymbol{\theta}
-\\&amp; = \int_{\boldsymbol{\Theta}} f(y_i \mid \boldsymbol{\theta}, \boldsymbol{y}_{-i}) w_i(\boldsymbol{\theta}) p(\boldsymbol{\theta} \mid \boldsymbol{y}) \mathrm{d} \boldsymbol{\theta}.
+p(y_i \mid \boldsymbol{y}_{-i}) &amp;= \int_{\boldsymbol{\Theta}} f_i(y_i; \boldsymbol{\theta}) p(\boldsymbol{\theta} \mid \boldsymbol{y}_{-i}) \mathrm{d} \boldsymbol{\theta}
+\\&amp; = \int_{\boldsymbol{\Theta}} f(y_i; \boldsymbol{\theta}) w_i(\boldsymbol{\theta}) p(\boldsymbol{\theta} \mid \boldsymbol{y}) \mathrm{d} \boldsymbol{\theta}.
 \end{align*}\]</span> This formula suggests the importance sampling estimator (cf. <a href="montecarlo.html#prp-importance-sampling" class="quarto-xref">Proposition&nbsp;<span>4.4</span></a>) for a sample of size <span class="math inline">\(B\)</span> from the posterior <span class="math inline">\(p(\boldsymbol{\theta} \mid \boldsymbol{y})\)</span> <span class="math display">\[\begin{align*}
-\widehat{p}(y_i \mid \boldsymbol{y}_{-i}) = \frac{\sum_{b=1}^B f_i(y_i \mid \boldsymbol{\theta}_b) w_i(\boldsymbol{\theta}_b)}{\sum_{b=1}^Bw_i(\boldsymbol{\theta}_b)}  = B \left\{\sum_{b=1}^B \frac{1}{f_i (y_i \mid \boldsymbol{\theta}_b)}\right\}^{-1}.
+\widehat{p}(y_i \mid \boldsymbol{y}_{-i}) = \frac{\sum_{b=1}^B f_i(y_i; \boldsymbol{\theta}_b) w_i(\boldsymbol{\theta}_b)}{\sum_{b=1}^Bw_i(\boldsymbol{\theta}_b)}  = B \left\{\sum_{b=1}^B \frac{1}{f_i (y_i; \boldsymbol{\theta}_b)}\right\}^{-1}.
 \end{align*}\]</span> This estimator takes the form of an harmonic mean, which can have very large variance due to some weights dominating the fit. <span class="citation" data-cites="Vehtari.Gelman.Gabry:2017">Vehtari, Gelman, and Gabry (<a href="references.html#ref-Vehtari.Gelman.Gabry:2017" role="doc-biblioref">2017</a>)</span> proposed using Pareto smoothed importance sampling <span class="citation" data-cites="Vehtari.Simpson.Gelman.Yao.Gabry:2025">(<a href="references.html#ref-Vehtari.Simpson.Gelman.Yao.Gabry:2025" role="doc-biblioref">Vehtari et al. 2024</a>)</span> to avoid overly large weights; this method is implemented in the <code>loo</code> <strong>R</strong> package.</p>
 <p>Suppose we have matrices of size <span class="math inline">\(n \times B\)</span> containing the posterior predictive draws <span class="math inline">\(y_{i,b}^{\mathrm{rep}}\)</span> associated with each posterior vector <span class="math inline">\(\boldsymbol{\theta}_b\)</span> and the weights <span class="math inline">\(w_{i,b} = 1/f_i (y_i \mid \boldsymbol{\theta}_b)\)</span> from the importance sampling estimator. We can then compute the probability integral transform with importance sampling <span class="math display">\[\begin{align*}
 \widehat{p}_i^{\mathrm{loo}} = \Pr(y_i^{\mathrm{rep}} \leq y_i \mid \boldsymbol{y}_{-i}) \approx \frac{\sum_{b=1}^B \mathrm{I}(y_i^{\mathrm{rep}} \leq y_i)w_{i,b}}{\sum_{b=1}^B w_{i,b}}, \qquad i =1,\ldots, n
@@ -514,8 +512,8 @@ A meta-analysis is a combination of the results of different studies (of the sam
 A simple model, following @Gelman:2006, is to assume the effect size is Gaussian and treat the mean and variance as constant if each study is based on sufficient sample so that mean and variance are reliably estimated. We can then model data as a mixed model with a study-specific random effect.
 -->
 </section>
-<section id="computational-strategies" class="level2" data-number="7.4">
-<h2 data-number="7.4" class="anchored" data-anchor-id="computational-strategies"><span class="header-section-number">7.4</span> Computational strategies</h2>
+<section id="computational-strategies" class="level2" data-number="7.3">
+<h2 data-number="7.3" class="anchored" data-anchor-id="computational-strategies"><span class="header-section-number">7.3</span> Computational strategies</h2>
 <p>The data augmentation strategies considered in <a href="gibbs.html#sec-gibbs-da" class="quarto-xref"><span>Section 6.1</span></a> helps to simplify the likelihood and thereby reduce the cost of each iteration. However, latent variables are imputed conditional on current parameter values <span class="math inline">\(\boldsymbol{\theta}_a\)</span>: the higher the number of variables, the more the model will concentrate around current values of <span class="math inline">\(\boldsymbol{\theta}_a\)</span>, which leads to slow mixing.</p>
 <p>There are two main strategies to deal with this problem: blocking the random effects together and simulating them jointly to improve mixing, and marginalizing out over some of the latent variables.</p>
 <div id="exm-marginalization-Gauss" class="theorem example">

@@ -231,7 +231,7 @@ These initial steps should be disregarded.
 
 
 
-:::{#rmk-short-vs-long}
+:::{#rem-short-vs-long}
 
 ## Multiple short chains or longer runs?
 
@@ -531,16 +531,16 @@ To avoid double dipping, we can check model adequacy by comparing the leave-one-
 
 Consider estimation of the leave-one predictive density under the hypothesis that the likelihood factorizes as $L(\boldsymbol{\theta}; \boldsymbol{y}) = \prod_{i=1}^n f_i(y_i; \boldsymbol{\theta});$ where $f_i$ is the density or mass function of the $i$th observation. Then, with weights
 \begin{align*}
-w_i(\boldsymbol{\theta}) = \frac{p(\boldsymbol{\theta} \mid \boldsymbol{y}_{-i})}{p(\boldsymbol{\theta} \mid \boldsymbol{y})} \stackrel{\boldsymbol{\theta}}{\propto} \frac{1}{f_i(\boldsymbol{\theta} \mid y_i)}
+w_i(\boldsymbol{\theta}) = \frac{p(\boldsymbol{\theta} \mid \boldsymbol{y}_{-i})}{p(\boldsymbol{\theta} \mid \boldsymbol{y})} \stackrel{\boldsymbol{\theta}}{\propto} \frac{1}{f_i(y_i; \boldsymbol{\theta})}
 \end{align*} 
 we can write the leave-one-out posterior predictive as
 \begin{align*}
-p(y_i \mid \boldsymbol{y}_{-i}) &= \int_{\boldsymbol{\Theta}} f_i(y_i \mid \boldsymbol{\theta}) p(\boldsymbol{\theta} \mid \boldsymbol{y}_{-i}) \mathrm{d} \boldsymbol{\theta}
-\\& = \int_{\boldsymbol{\Theta}} f(y_i \mid \boldsymbol{\theta}, \boldsymbol{y}_{-i}) w_i(\boldsymbol{\theta}) p(\boldsymbol{\theta} \mid \boldsymbol{y}) \mathrm{d} \boldsymbol{\theta}.
+p(y_i \mid \boldsymbol{y}_{-i}) &= \int_{\boldsymbol{\Theta}} f_i(y_i; \boldsymbol{\theta}) p(\boldsymbol{\theta} \mid \boldsymbol{y}_{-i}) \mathrm{d} \boldsymbol{\theta}
+\\& = \int_{\boldsymbol{\Theta}} f(y_i; \boldsymbol{\theta}) w_i(\boldsymbol{\theta}) p(\boldsymbol{\theta} \mid \boldsymbol{y}) \mathrm{d} \boldsymbol{\theta}.
 \end{align*}
 This formula suggests the importance sampling estimator (cf. @prp-importance-sampling) for a sample of size $B$ from the posterior $p(\boldsymbol{\theta} \mid \boldsymbol{y})$
 \begin{align*}
-\widehat{p}(y_i \mid \boldsymbol{y}_{-i}) = \frac{\sum_{b=1}^B f_i(y_i \mid \boldsymbol{\theta}_b) w_i(\boldsymbol{\theta}_b)}{\sum_{b=1}^Bw_i(\boldsymbol{\theta}_b)}  = B \left\{\sum_{b=1}^B \frac{1}{f_i (y_i \mid \boldsymbol{\theta}_b)}\right\}^{-1}.
+\widehat{p}(y_i \mid \boldsymbol{y}_{-i}) = \frac{\sum_{b=1}^B f_i(y_i; \boldsymbol{\theta}_b) w_i(\boldsymbol{\theta}_b)}{\sum_{b=1}^Bw_i(\boldsymbol{\theta}_b)}  = B \left\{\sum_{b=1}^B \frac{1}{f_i (y_i; \boldsymbol{\theta}_b)}\right\}^{-1}.
 \end{align*}
 This estimator takes the form of an harmonic mean, which can have very large variance due to some weights dominating the fit. @Vehtari.Gelman.Gabry:2017 proposed using Pareto smoothed importance sampling [@Vehtari.Simpson.Gelman.Yao.Gabry:2025] to avoid overly large weights; this method is implemented in the `loo` **R** package.
 

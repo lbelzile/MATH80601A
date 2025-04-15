@@ -509,47 +509,16 @@ Figure&nbsp;8.2: Prior draws from a bivariate inverse Wishart with identity scal
 <p>We make a distinction between <strong>global</strong> shrinkage priors those that consider a common shrinkage parameter for all regression coefficients, to be compared with <strong>local</strong> scale mixtures that have coefficient-specific parameters.</p>
 <p>The scale parameters and hyperparameters can be estimated jointly with the model, and uncertainty diagnostics follow naturally. We assume that coefficients <span class="math inline">\(\beta_j\)</span> are independent apriori, although it is possible to specify group structures (e.g., for handling coefficients associated to a common categorical covariate with <span class="math inline">\(K\)</span> levels, represented by <span class="math inline">\(K-1\)</span> columns of dummy group indicators).</p>
 <div id="def-spike-slab" class="theorem definition">
-<p><span class="theorem-title"><strong>Definition 8.2 (Discrete spike-and-slab prior)</strong></span> The spike-and-slab prior is a two-component mixture with that assigns a positive probability to zero via a point mass <span class="math inline">\(\delta_0\)</span> or a vary narrow distribution centered at the origin (the spike) and the balance to the slab, a diffuse distribution. The <strong>discrete spike-and-slab</strong> prior was originally proposed by <span class="citation" data-cites="Mitchell.Beauchamp:1988">Mitchell and Beauchamp (<a href="references.html#ref-Mitchell.Beauchamp:1988" role="doc-biblioref">1988</a>)</span> with a uniform on a large interval and a point mass at zero. More generally, people consider the formulation <span class="math display">\[\begin{align*}
-\beta_j \mid \gamma_j, \sigma^2 \sim \gamma_j \delta_0 + (1-\gamma_j)\mathsf{Gauss}(0, \sigma^2)
+<p><span class="theorem-title"><strong>Definition 8.2 (Discrete spike-and-slab prior)</strong></span> The spike-and-slab prior is a two-component mixture with that assigns a positive probability to zero via a point mass <span class="math inline">\(\mathrm{I}(\beta_j=0)\)</span> or a vary narrow distribution centered at the origin (the spike) and the balance to the slab, a diffuse distribution. The <strong>discrete spike-and-slab</strong> prior was originally proposed by <span class="citation" data-cites="Mitchell.Beauchamp:1988">Mitchell and Beauchamp (<a href="references.html#ref-Mitchell.Beauchamp:1988" role="doc-biblioref">1988</a>)</span> with a uniform on a large interval and a point mass at zero. More generally, people consider the formulation <span class="math display">\[\begin{align*}
+\beta_j \mid \gamma_j, \sigma^2 \sim \gamma_j \mathrm{I}(\beta_j=0) + (1-\gamma_j)\mathsf{Gauss}(0, \sigma^2)
 \end{align*}\]</span> where a prior <span class="math inline">\(p(\sigma^2)\)</span> give rise to a Gaussian scale mixtures for the slab. If we set independent and identically distributed conjugate prior for <span class="math inline">\(\gamma_j \sim \mathsf{binom}(1, \omega),\)</span> we get <span class="math display">\[\begin{align*}
 p(\boldsymbol{\gamma} \mid \omega) = \prod_{j=1}^n \omega^{\gamma_j} (1-\omega)^{1-\gamma_j}
 \end{align*}\]</span> Apriori, the shared hyperparameters <span class="math inline">\(\omega \in (0,1)\)</span> corresponds to the proportion of the <span class="math inline">\(p\)</span> coefficients <span class="math inline">\(\boldsymbol{\beta}\)</span> that are zero (so <span class="math inline">\(p(1-\omega)\)</span> nonzero coefficients). Alternative priors focus on precentage of explained variance in the regression (via the coefficient of determination <span class="math inline">\(R^2\)</span>) and the number of covariates. The prior has typically a strong impact on the posterior, by design.</p>
 </div>
 <div id="exm-spike-slab" class="theorem example">
 <p><span class="theorem-title"><strong>Example 8.2 (Spike-and-slab and variable selection)</strong></span> Discrete spike-and-slab priors are not easy to fit because the component <span class="math inline">\(\gamma_j\in\{0,1\}\)</span> is discrete (so cannot be simulated via Hamiltonian Monte Carlo as is). Removal of a covariate changes the dimension and requires dedicated algorithms; see <span class="citation" data-cites="George.McCulloch:1997">George and McCulloch (<a href="references.html#ref-George.McCulloch:1997" role="doc-biblioref">1997</a>)</span>, <span class="citation" data-cites="Chipman.George.McCulloch:2001">Chipman et al. (<a href="references.html#ref-Chipman.George.McCulloch:2001" role="doc-biblioref">2001</a>)</span> and <span class="citation" data-cites="Ghosh.Clyde:2011">Ghosh and Clyde (<a href="references.html#ref-Ghosh.Clyde:2011" role="doc-biblioref">2011</a>)</span> for references. Some of these are implemented in the <code>BoomSpikeSlab</code> <strong>R</strong> package.</p>
-<div class="cell">
-<div class="cell-output cell-output-stderr">
-<pre><code>Le chargement a nécessité le package : Boom</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>
-Attachement du package : 'Boom'</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>L'objet suivant est masqué depuis 'package:stats':
-
-    rWishart</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>
-Attachement du package : 'BoomSpikeSlab'</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>L'objet suivant est masqué depuis 'package:stats':
-
-    knots</code></pre>
-</div>
-</div>
 <p>We fit the discrete spike-and-slab to the <code>diabetes</code> data, which contains a model matrix of <span class="math inline">\(n=442\)</span> observations with <span class="math inline">\(p=64\)</span> covariates, with an expected number of non-zero component of 1. The result of the MCMC procedure is a matrix of coefficients for <span class="math inline">\(\boldsymbol{\beta}\)</span> plus other model parameters. From the former, we can estimate the probability of an active component by simply counting the number of non-zero entries in <span class="math inline">\(\boldsymbol{\beta}\)</span> over all replications. We can likewise compute the posterior probability of the number of non-zero components by simply counting the number of non-zero coefficients for each posterior draw. <a href="#fig-spike-slab-zero" class="quarto-xref">Figure&nbsp;<span>8.3</span></a> shows the result</p>
 <div class="cell">
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning: Removed 3 rows containing non-finite outside the scale range
-(`stat_count()`).</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning: Removed 1 row containing missing values or values outside the scale range
-(`geom_bar()`).</code></pre>
-</div>
 <div class="cell-output-display">
 <div id="fig-spike-slab-zero" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
@@ -566,8 +535,8 @@ Figure&nbsp;8.3: Probability of inclusion of variables (left) and posterior dist
 </div>
 <div id="def-cont-spike-slab" class="theorem definition">
 <p><span class="theorem-title"><strong>Definition 8.3 (Continuous spike-and-slab prior)</strong></span> The term was also used in <span class="citation" data-cites="George.McCulloch:1993">George and McCulloch (<a href="references.html#ref-George.McCulloch:1993" role="doc-biblioref">1993</a>)</span>, which replaced the prior by a mixture of Gaussians, one of which diffuse and the other with near infinite precision and centered at the origin. The latter is known under the vocable stochastic search variable selection prior after <span class="citation" data-cites="George.McCulloch:1997">George and McCulloch (<a href="references.html#ref-George.McCulloch:1997" role="doc-biblioref">1997</a>)</span>, or more commonly as an instance of <strong>continuous spike-and-slab</strong> prior. Letting <span class="math inline">\(\gamma_j \in [0,1]\)</span> denote the probability of the slab or inclusion of the variable, the independent priors for the regression coefficients are <span class="math display">\[\begin{align*}
-\beta_j \mid \gamma_j, \sigma_j^2,\phi^2_j \sim (1-\gamma_j) \mathsf{Gauss}(0, \sigma_j^2\phi^2_j) + \gamma_j \mathsf{Gauss}(0, \phi^2)
-\end{align*}\]</span> where <span class="math inline">\(\phi^2_j\)</span> is very nearly zero, e.g., <span class="math inline">\(\phi_j^2=0.001.\)</span> The construction allows for variable augmentation with mixture indicators and Gibbs sampling, analogous to the Gaussian mixture models but with the variance and mean of one of the cluster for the spike fixed. However, mixing of the Gibbs sampler Markov chain tends to be poor.</p>
+\beta_j \mid \gamma_j, \sigma_j^2, \phi^2 \sim  \gamma_j \underbracket[0.25pt]{\mathsf{Gauss}(0, \phi^2)}_{\text{spike}} + (1-\gamma_j) \underbracket[0.25pt]{\mathsf{Gauss}(0, \sigma_j^2\phi^2)}_{\text{slab}}
+\end{align*}\]</span> where <span class="math inline">\(\phi^2\)</span> is very nearly zero, e.g., <span class="math inline">\(\phi^2=0.001.\)</span> The construction allows for variable augmentation with mixture indicators and Gibbs sampling, analogous to the Gaussian mixture models but with the variance and mean of one of the cluster for the spike fixed. However, mixing of the Gibbs sampler Markov chain tends to be poor.</p>
 </div>
 <div id="prp-horseshoe" class="theorem proposition">
 <p><span class="theorem-title"><strong>Proposition 8.6 (Horseshoe prior)</strong></span> The horseshoe prior of <span class="citation" data-cites="Carvalho.Polson.Scott:2010">Carvalho, Polson, and Scott (<a href="references.html#ref-Carvalho.Polson.Scott:2010" role="doc-biblioref">2010</a>)</span> is a hierarchical prior of the form <span class="math display">\[\begin{align*}
