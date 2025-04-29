@@ -287,7 +287,6 @@ window.Quarto = {
   <li><a href="#uninformative-priors" id="toc-uninformative-priors" class="nav-link" data-scroll-target="#uninformative-priors"><span class="header-section-number">3.3</span> Uninformative priors</a></li>
   <li><a href="#priors-for-regression-models" id="toc-priors-for-regression-models" class="nav-link" data-scroll-target="#priors-for-regression-models"><span class="header-section-number">3.4</span> Priors for regression models</a></li>
   <li><a href="#informative-priors" id="toc-informative-priors" class="nav-link" data-scroll-target="#informative-priors"><span class="header-section-number">3.5</span> Informative priors</a></li>
-  <li><a href="#sensitivity-analysis" id="toc-sensitivity-analysis" class="nav-link" data-scroll-target="#sensitivity-analysis"><span class="header-section-number">3.6</span> Sensitivity analysis</a></li>
   </ul>
 <div class="toc-actions"><ul><li><a href="https://github.com/lbelzile/MATH80601A/edit/main/priors.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li></ul></div></nav>
     </div>
@@ -664,70 +663,6 @@ Y_{ij} &amp;\sim \mathsf{Gauss}(\mu + \alpha_j, \sigma^2),\\
 \end{align*}\]</span> The conditionally conjugate prior <span class="math inline">\(p(\tau \mid \boldsymbol{\alpha}, \mu, \sigma)\)</span> is inverse gamma. Standard inference with this parametrization is however complicated, because there is strong dependence between parameters.</p>
 <p>To reduce this dependence, one can add a parameter, taking <span class="math inline">\(\alpha_j = \xi \eta_j\)</span> and <span class="math inline">\(\tau_\alpha=|\xi|\tau_{\eta}\)</span>; the model is now overparametrized. Suppose <span class="math inline">\(\eta_j \sim \mathsf{Gauss}(0, \tau^2_\eta)\)</span> and consider the likelihood conditional on <span class="math inline">\(\mu, \eta_j\)</span>: we have that <span class="math inline">\((y_{ij} - \mu)/\eta_j \sim \mathsf{Gauss}(\xi, \sigma^2/\eta_j)\)</span> so conditionally conjugate priors for <span class="math inline">\(\xi\)</span> and <span class="math inline">\(\tau_\eta\)</span> are respectively Gaussian and inverse gamma. This translates into a prior distribution for <span class="math inline">\(\tau_\alpha\)</span> which is that of the absolute value of a noncentral Student-<span class="math inline">\(t\)</span> with location, scale and degrees of freedom <span class="math inline">\(\nu.\)</span> If we set the location to zero, the prior puts high mass at the origin, but is heavy tailed with polynomial decay. We recommend to set degrees of freedom so that the variance is heavy-tailed, e.g., <span class="math inline">\(\nu=3.\)</span> While this prior is not conjugate, it compares favorably to the <span class="math inline">\(\mathsf{inv. gamma}(\epsilon, \epsilon).\)</span></p>
 </div>
-<div id="exm-randomeffects" class="theorem example">
-<p><span class="theorem-title"><strong>Example 3.15 (Poisson random effect models)</strong></span> We consider data from an experimental study conducted at Tech3Lab on road safety. In <span class="citation" data-cites="Brodeur:2021">Brodeur et al. (<a href="references.html#ref-Brodeur:2021" role="doc-biblioref">2021</a>)</span>, 31 participants were asked to drive in a virtual environment; the number of road violation was measured for different type of distractions (phone notification, phone on speaker, texting and smartwatch). The data are balanced, with each participant exposed to each task exactly once.</p>
-<p>We model the data using a Poisson mixed model to measure the number of violations, <code>nviolation</code>, with a fixed effect for <code>task</code>, which captures the type of distraction, and a random effect for participant <code>id</code>. The hierarchical model fitted for individual <span class="math inline">\(i\)</span> <span class="math inline">\((i=1, \ldots, 34)\)</span> and distraction type <span class="math inline">\(j\)</span> <span class="math inline">\((j=1, \ldots, 4)\)</span> is <span class="math display">\[\begin{align*}
-Y_{ij} &amp;\sim \mathsf{Poisson}\{\mu = \exp(\beta_{j} + \alpha_i)\},\\
-\beta_j &amp;\sim \mathsf{Gauss}(0, 100), \\
-\alpha_i &amp;\sim \mathsf{Gauss}(0, \kappa^2), \\
-\kappa &amp;\sim \mathsf{Student}_{+}(0,1,3).
-\end{align*}\]</span> so observations are conditionally independent given hyperparameters <span class="math inline">\(\boldsymbol{\alpha}\)</span> and <span class="math inline">\(\boldsymbol{\beta}.\)</span></p>
-<p>In frequentist statistics, there is a distinction made in mixed-effect models between parameters that are treated as constants, termed fixed effects and corresponding in this example to <span class="math inline">\(\boldsymbol{\beta},\)</span> and random effects, equivalent to <span class="math inline">\(\boldsymbol{\alpha}.\)</span> There is no such distinction in the Bayesian paradigm, except perhaps for the choice of prior.</p>
-<p>We can look at some of posterior distribution of the 31 random effects (here the first five individuals) and the fixed effect parameters <span class="math inline">\(\boldsymbol{\beta},\)</span> plus the variance of the random effect <span class="math inline">\(\kappa\)</span>: there is strong evidence that the latter is non-zero, suggesting strong heterogeneity between individuals. The distraction which results in the largest number of violation is texting, while the other conditions all seem equally distracting on average (note that there is no control group with no distraction to compare with, so it is hard to draw conclusions).</p>
-<div class="cell">
-<div class="cell-output-display">
-<div id="fig-post-dist-poisson-mixed" class="quarto-float quarto-figure quarto-figure-center anchored">
-<figure class="quarto-float quarto-float-fig figure">
-<div aria-describedby="fig-post-dist-poisson-mixed-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="priors_files/figure-html/fig-post-dist-poisson-mixed-1.png" class="img-fluid figure-img" width="672">
-</div>
-<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-post-dist-poisson-mixed-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;3.5: Posterior density plots with 50% credible intervals and median value for the random effects of the first five individuals (left) and the fixed effects and random effect variance (right).
-</figcaption>
-</figure>
-</div>
-</div>
-</div>
-</div>
-</section>
-<section id="sensitivity-analysis" class="level2" data-number="3.6">
-<h2 data-number="3.6" class="anchored" data-anchor-id="sensitivity-analysis"><span class="header-section-number">3.6</span> Sensitivity analysis</h2>
-<p>Do priors matter? The answer to that question depends strongly on the model, and how much information the data provides about hyperparameters. While this question is easily answered in conjugate models (the relative weight of hyperparameters relative to data can be derived from the posterior parameters), it is not so simple in hierarchical models, where the interplay between prior distributions is often more intricate. To see the impact, one often has to rely on doing several analyses with different values fr the prior and see the sensitivity of the conclusions to these changes, for example by considering a vague prior or modifying the parameters values (say halving or doubling). If the changes are immaterial, then this provides reassurance that our analyses are robust.</p>
-<div id="exm-sensitivity-poisson-mixed" class="theorem example">
-<p><span class="theorem-title"><strong>Example 3.16</strong></span> To check the sensitivity of the conclusion, we revisit the modelling of the <code>smartwatch</code> experiment data using a Poisson regression and compare four priors: a uniform prior truncated to <span class="math inline">\([0, 10],\)</span> an inverse gamma <span class="math inline">\(\mathsf{InvGamma}(0.01, 0.01)\)</span> prior, a penalized complexity prior such that the 0.95 percentile of the scale is 5, corresponding to <span class="math inline">\(\mathsf{Exp}(0.6).\)</span> Since each distraction type appears 31 times, there is plenty of information to reliably estimate the dispersion <span class="math inline">\(\kappa\)</span> of the random effects <span class="math inline">\(\alpha\)</span>: the different density plots in <a href="#fig-sensitivity" class="quarto-xref">Figure&nbsp;<span>3.6</span></a> are virtually indistinguishable from one another. This is perhaps unsurprising given the large number of replicates, and the significant variability between groups.</p>
-<div class="cell">
-<div class="cell-output-display">
-<div id="fig-sensitivity" class="quarto-float quarto-figure quarto-figure-center anchored">
-<figure class="quarto-float quarto-float-fig figure">
-<div aria-describedby="fig-sensitivity-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="priors_files/figure-html/fig-sensitivity-1.png" class="img-fluid figure-img" width="672">
-</div>
-<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-sensitivity-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;3.6: Posterior density of the scale of the random effects with uniform, inverse gamma, penalized complexity and folded Student-t with three degrees of freedom. The circle denotes the median and the bars the 50% and 95% percentile credible intervals.
-</figcaption>
-</figure>
-</div>
-</div>
-</div>
-</div>
-<div id="exm-rainfall-abisko" class="theorem example">
-<p><span class="theorem-title"><strong>Example 3.17 (Extreme rainfall in Abisko, Sweden)</strong></span> As illustrating example, consider maximum daily cumulated rainfall in Abisko, Sweden. The time series spans from 1913 until December 2014; we compute the 102 yearly maximum, which range from 11mm to 62mm, and fit a generalized extreme value distribution to these.</p>
-<p>For the priors, suppose an expert elicits quantiles of the 10, 50 and 100 years return levels; say 30mm, 45mm and 70mm, respectively, for the median and likewise 40mm, 70mm and 120mm for the 90% percentile of the return levels. We can compute the differences and calculate the parameters of the gamma distribution through moment-matching: this gives roughly a shape of <span class="math inline">\(\alpha_1=18.27\)</span> and <span class="math inline">\(\beta_1=0.6,\)</span> etc. <a href="#fig-gev-colestawn-quant-prior" class="quarto-xref">Figure&nbsp;<span>3.7</span></a> shows the transfer from the prior predictive to the posterior distribution. The prior is much more dispersed and concentrated on the tail, which translates in a less peaked posterior than using a weakly informative prior (dotted line): the mode of the latter is slightly to the left and with lower density in the tail.</p>
-<div class="cell">
-<div class="cell-output-display">
-<div id="fig-gev-colestawn-quant-prior" class="quarto-float quarto-figure quarto-figure-center anchored">
-<figure class="quarto-float quarto-float-fig figure">
-<div aria-describedby="fig-gev-colestawn-quant-prior-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="priors_files/figure-html/fig-gev-colestawn-quant-prior-1.png" class="img-fluid figure-img" width="672">
-</div>
-<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-gev-colestawn-quant-prior-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;3.7: Kernel density estimates of draws from the posterior distribution of 100 year return levels with a Coles–Tawn quantile prior (full line) and from the corresponding prior predictive (dashed). The dotted line gives the posterior distribution for a maximum domain information prior on the shape with improper priors on location and scale.
-</figcaption>
-</figure>
-</div>
-</div>
-</div>
-</div>
 <div class="callout callout-style-default callout-important callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -796,9 +731,6 @@ Alexander, Rohan. 2023. <em>Telling Stories with Data: With Applications in <spa
 </div>
 <div id="ref-Bolin:2023" class="csl-entry" role="listitem">
 Bolin, David, Alexandre B. Simas, and Zhen Xiong. 2023. <span>“<span>W</span>asserstein Complexity Penalization Priors: A New Class of Penalizing Complexity Priors.”</span> <em>arXiv e-Prints</em>, arXiv:2312.04481. <a href="https://doi.org/10.48550/arXiv.2312.04481">https://doi.org/10.48550/arXiv.2312.04481</a>.
-</div>
-<div id="ref-Brodeur:2021" class="csl-entry" role="listitem">
-Brodeur, Mathieu, Perrine Ruer, Pierre-Majorique Léger, and Sylvain Sénécal. 2021. <span>“Smartwatches Are More Distracting Than Mobile Phones While Driving: Results from an Experimental Study.”</span> <em>Accident Analysis &amp; Prevention</em> 149: 105846. <a href="https://doi.org/10.1016/j.aap.2020.105846">https://doi.org/10.1016/j.aap.2020.105846</a>.
 </div>
 <div id="ref-Coles.Tawn:1996" class="csl-entry" role="listitem">
 Coles, Stuart G., and Jonathan A. Tawn. 1996. <span>“A <span>B</span>ayesian Analysis of Extreme Rainfall Data.”</span> <em>Journal of the Royal Statistical Society. Series C (Applied Statistics)</em> 45 (4): 463–78. <a href="https://doi.org/10.2307/2986068">https://doi.org/10.2307/2986068</a>.

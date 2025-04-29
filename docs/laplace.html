@@ -537,7 +537,7 @@ Figure&nbsp;9.3: Marginal densities of precision and autocorrelation parameters 
 </div>
 </div>
 <div id="exm-rainfall-inla" class="theorem example">
-<p><span class="theorem-title"><strong>Example 9.5 (Tokyo binomial time series)</strong></span> We revisit <a href="workflow.html#exm-Tokyo-rainfall" class="quarto-xref">Example&nbsp;<span>7.3</span></a>, but this time fit the model with <code>INLA</code>. We specify the mean model without intercept and fit a logistic regression, with a second-order cyclic random walk prior for the coefficients, and the default priors for the other parameters.</p>
+<p><span class="theorem-title"><strong>Example 9.5 (Tokyo binomial time series)</strong></span> We revisit <a href="workflow.html#exm-Tokyo-rainfall" class="quarto-xref">Example&nbsp;<span>7.6</span></a>, but this time fit the model with <code>INLA</code>. We specify the mean model without intercept and fit a logistic regression, with a second-order cyclic random walk prior for the coefficients, and the default priors for the other parameters.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(Tokyo, <span class="at">package =</span> <span class="st">"INLA"</span>)</span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Formula (removing intercept)</span></span>

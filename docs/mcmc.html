@@ -277,8 +277,14 @@ window.Quarto = {
 </nav>
 <div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
 <!-- margin-sidebar -->
-    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
-        
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#convergence-diagnostics" id="toc-convergence-diagnostics" class="nav-link active" data-scroll-target="#convergence-diagnostics"><span class="header-section-number">5.1</span> Convergence diagnostics</a></li>
+  </ul>
+<div class="toc-actions"><ul><li><a href="https://github.com/lbelzile/MATH80601A/edit/main/mcmc.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li></ul></div></nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block"><h1 class="title display-7"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Metropolis–Hastings algorithm</span></h1></header>
@@ -653,6 +659,44 @@ p(\theta) \approx p(\theta_{t-1}) + p'(\theta_{t-1})(\theta - \theta_{t-1}) + \f
 <p>MALA requires critically a good mass matrix, especially if the gradient is very large at the starting values (often the case when the starting value is far from the mode). Given the precision of the original observations, we did not need to modify anything to deal with the parameter constraints <span class="math inline">\(0 \leq \mu \leq 1\)</span> and <span class="math inline">\(\sigma&gt;0,\)</span> outside of encoding them in the log posterior function.</p>
 <p>The posterior mean for the standard deviation is 0.64, which suggests overdispersion.</p>
 </div>
+<section id="convergence-diagnostics" class="level2" data-number="5.1">
+<h2 data-number="5.1" class="anchored" data-anchor-id="convergence-diagnostics"><span class="header-section-number">5.1</span> Convergence diagnostics</h2>
+<p>There are several visual checks that are run to validate the output of models based on Markov chain Monte Carlo. Indeed, unlike with exact sampling algorithms, one needs to worry both about the convergence to the posterior and the quality of the mixing, which determines the effective sample size available for inference. Many visual diagnostics can be used to diagnose lack of convergence, or inefficiency: we review key notions that appear in the literature.</p>
+<div id="def-traceplots" class="theorem definition">
+<p><span class="theorem-title"><strong>Definition 5.2 (Trace plots)</strong></span> A trace plot is a line plot of the Markov chain as a function of the number of iterations. It should be stable around some values if the posterior is unimodal and the chain has reached stationarity. The ideal shape is that of a ‘fat hairy catterpilar’.</p>
+</div>
+<p>It is useful to inspect visually the Markov chain, as it may indicate several problems. If the chain drifts around without stabilizing around the posterior mode, then we can suspect that it hasn’t reached it’s stationary distribution (likely due to poor starting values). In such cases, we need to disregard the dubious draws from the chain by discarding the so-called warm up or <strong>burn in</strong> period. While there are some guarantees of convergence in the long term, silly starting values may translate into tens of thousands of iterations lost wandering around in regions with low posterior mass. Preliminary optimization and plausible starting values help alleviate these problems. <a href="#fig-badstart" class="quarto-xref">Figure&nbsp;<span>5.5</span></a> shows the effect of bad starting values on a toy problem where convergence to the mode is relatively fast. If the proposal is in a flat region of the space, it can wander around for a very long time before converging to the stationary distribution.</p>
+<div id="def-trankplot" class="theorem definition">
+<p><span class="theorem-title"><strong>Definition 5.3 (Trace rank plot)</strong></span> If we run several chains, as in <a href="#fig-badstart" class="quarto-xref">Figure&nbsp;<span>5.5</span></a>, with different starting values, we can monitor convergence by checking whether these chains converge to the same target. A <strong>trace rank</strong> plot compares the rank of the values of the different chain at a given iteration: with good mixing, the ranks should switch frequently and be distributed uniformly across integers.</p>
+</div>
+<p>A trace rank plot is shown on right panel of <a href="#fig-badstart" class="quarto-xref">Figure&nbsp;<span>5.5</span></a>.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-badstart" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-badstart-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="mcmc_files/figure-html/fig-badstart-1.png" class="img-fluid figure-img" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-badstart-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;5.5: Traceplots of three Markov chains for the same target with different initial values for the first 500 iterations (left) and trace rank plot after discarding these (right).
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<div id="def-burnin" class="theorem definition">
+<p><span class="theorem-title"><strong>Definition 5.4 (Burn in period)</strong></span> We term “burn in” the initial steps of the MCMC algorithm that are discarded because the chain has not reached it’s stationary distribution, due to poor starting values. , but visual inspection using a trace plot may show that it is necessary to remove additional observations.</p>
+</div>
+<p>Most software will remove the first <span class="math inline">\(N\)</span> initial values (typically one thousand). Good starting values can reduce the need for a long burn in period. If visual inspection of the chains reveal that some of the chains for one or more parameters are not stationary until some iteration, we will discard all of these in addition. <span class="citation" data-cites="Geweke:1992">Geweke (<a href="references.html#ref-Geweke:1992" role="doc-biblioref">1992</a>)</span>’s test measure whether the distribution of the resulting Markov chain is the same at the beginning and at the end through a test of equality of means.</p>
+<div id="def-warmup" class="theorem definition">
+<p><span class="theorem-title"><strong>Definition 5.5 (Warmup)</strong></span> Warmup period refers to the initial sampling phase (potentially overlapping with burn in period) during which proposals are tuned (for example, by changing the variance proposal to ensure good acceptance rate or for Hamiltonian Monte Carlo (HMC) to tune the size of the leapfrog. These initial steps should be disregarded.</p>
+</div>
+<div id="def-thinning" class="theorem definition">
+<p><span class="theorem-title"><strong>Definition 5.6 (Thinning)</strong></span> MCMC algorithms are often run thinning the chain (i.e., keeping only a fraction of the samples drawn, typically every <span class="math inline">\(k\)</span> iteration). This is wasteful as we can of course get more precise estimates by keeping all posterior draws, whether correlated or not. The only argument in favor of thinning is limited storage capacity: if we run very long chains in a model with hundreds of parameters, we may run out of memory.</p>
+</div>
+<div id="rem-short-vs-long" class="proof remark">
+<p><span class="proof-title"><em>Remark 5.2</em> (Multiple short chains or longer runs?). </span>Many diagnostics rely on running multiple Markov chains for the same problem, with different starting values. In principle, it is more efficient to run a single Markov chain to draw samples for longer than multiple (shorter chains) for a fixed computational budget. Indeed, a single run means warmup needs to be achieve once. The benefits of running multiple chains comes from different considerations: we can monitor convergence to the stationary distribution (or to different modes for multimodal posteriors), and run diagnostics that rely on between-chain variance. Multiple chains can also be run in parallel and the results combined, a situation more in line with modern computer architecture.</p>
+</div>
 <div class="callout callout-style-default callout-important callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -686,6 +730,9 @@ Andrieu, Christophe, and Johannes Thoms. 2008. <span>“A Tutorial on Adaptive <
 <div id="ref-LEcuyer.Botev:2017" class="csl-entry" role="listitem">
 Botev, Zdravko, and Pierre L’Écuyer. 2017. <span>“Simulation from the Normal Distribution Truncated to an Interval in the Tail.”</span> In <em>Proceedings of the 10th EAI International Conference on Performance Evaluation Methodologies and Tools on 10th EAI International Conference on Performance Evaluation Methodologies and Tools</em>, 23–29. <a href="https://doi.org/10.4108/eai.25-10-2016.2266879">https://doi.org/10.4108/eai.25-10-2016.2266879</a>.
 </div>
+<div id="ref-Geweke:1992" class="csl-entry" role="listitem">
+Geweke, John. 1992. <span>“Evaluating the Accuracy of Sampling-Based Approaches to the Calculation of Posterior Moments.”</span> In <em>Bayesian Statistics 4: Proceedings of the Fourth Valencia International Meeting, Dedicated to the Memory of Morris h. DeGroot, 1931–1989</em>. Oxford University Press. <a href="https://doi.org/10.1093/oso/9780198522669.003.0010">https://doi.org/10.1093/oso/9780198522669.003.0010</a>.
+</div>
 <div id="ref-Green:2001" class="csl-entry" role="listitem">
 Green, Peter J. 2001. <span>“A Primer on <span>M</span>arkov Chain <span>M</span>onte <span>C</span>arlo.”</span> <em>Monographs on Statistics and Applied Probability</em> 87: 1–62.
 </div>
@@ -714,6 +761,7 @@ Rue, H., and L. Held. 2005. <em><span>G</span>aussian <span>M</span>arkov Random
 Sherlock, Chris. 2013. <span>“Optimal Scaling of the Random Walk <span>M</span>etropolis: General Criteria for the 0.234 Acceptance Rule.”</span> <em>Journal of Applied Probability</em> 50 (1): 1–15. <a href="https://doi.org/10.1239/jap/1363784420">https://doi.org/10.1239/jap/1363784420</a>.
 </div>
 </div>
+</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
@@ -1153,7 +1201,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     </div>   
     <div class="nav-footer-center">
 <p>Copyright 2024-2025, Léo Belzile</p>
-<div class="toc-actions"><ul><li><a href="https://github.com/lbelzile/MATH80601A/edit/main/mcmc.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li></ul></div></div>
+<div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/lbelzile/MATH80601A/edit/main/mcmc.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li></ul></div></div>
     <div class="nav-footer-right">
       &nbsp;
     </div>

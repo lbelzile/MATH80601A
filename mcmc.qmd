@@ -514,6 +514,121 @@ The posterior mean for the standard deviation is  `r round(mean(chains[,'sigma']
 :::
 
 
+
+
+## Convergence diagnostics
+
+There are several visual checks that are run to validate the output of models based on Markov chain Monte Carlo. Indeed, unlike with exact sampling algorithms, one needs to worry both about the convergence to the posterior and the quality of the mixing, which determines the effective sample size available for inference. Many visual diagnostics can be used to diagnose lack of convergence, or inefficiency: we review key notions that appear in the literature.
+
+:::{#def-traceplots}
+
+## Trace plots
+
+A trace plot is a line plot of the Markov chain as a function of the number of iterations. It should be stable around some values if the posterior is unimodal and the chain has reached stationarity. The ideal shape is that of a 'fat hairy catterpilar'.
+
+:::
+
+It is useful to inspect visually the Markov chain, as it may indicate several problems. If the chain drifts around without stabilizing around the posterior mode, then we can suspect that it hasn't reached it's stationary distribution (likely due to poor starting values). In such cases, we need to disregard the dubious draws from the chain by discarding the so-called warm up or **burn in** period. While there are some guarantees of convergence in the long term, silly starting values may translate into tens of thousands of iterations lost wandering around in regions with low posterior mass. Preliminary optimization and plausible starting values help alleviate these problems. @fig-badstart shows the effect of bad starting values on a toy problem where convergence to the mode is relatively fast. If the proposal is in a flat region of the space, it can wander around for a very long time before converging to the stationary distribution.
+
+
+
+:::{#def-trankplot}
+
+## Trace rank plot
+
+If we run several chains, as in @fig-badstart, with different starting values, we can monitor convergence by checking whether these chains converge to the same target. A **trace rank** plot compares the rank of the values of the different chain at a given iteration: with good mixing, the ranks should switch frequently and be distributed uniformly across integers.
+
+:::
+
+A trace rank plot is shown on right panel of @fig-badstart.
+
+```{r}
+#| eval: true
+#| echo: false
+#| label: fig-badstart
+#| fig-cap: "Traceplots of three Markov chains for the same target with different initial values for the first 500 iterations (left) and trace rank plot after discarding these (right)."
+set.seed(80601)
+niter <- 2500
+fakesamp <- rnorm(n = 20, mean = 1, sd = 2)
+fn <- function(par){ sum(dnorm(fakesamp, mean = par, sd = 2, log = TRUE))}
+chain1 <- matrix(nrow = niter, ncol = 1)
+colnames(chain1) <- "beta"
+chain2 <- chain3 <-  chain1
+cur <- c(-50, 10, 0)
+for(i in seq_len(niter)){
+  chain1[i,1] <- mgp::mh.fun(cur = cur[1], lb = -Inf, ub = Inf, prior.fun = identity, lik.fun = fn, pcov = matrix(0.3), cond = FALSE, transform = FALSE)$cur
+  chain2[i,1] <- mgp::mh.fun(cur = cur[2], lb = -Inf, ub = Inf, prior.fun = identity, lik.fun = fn, pcov = matrix(0.3), cond = FALSE, transform = FALSE)$cur
+  chain3[i,1] <- mgp::mh.fun(cur = cur[3], lb = -Inf, ub = Inf, prior.fun = identity, lik.fun = fn, pcov = matrix(0.3), cond = FALSE, transform = FALSE)$cur
+  cur <- c(chain1[i,1], chain2[i,1], chain3[i,1])
+}
+# coda::traceplot(coda::as.mcmc(chains_goldi))
+bayesplot::color_scheme_set("darkgray")
+mcmc_list <- coda::mcmc.list(
+  coda::mcmc(chain1),
+  coda::mcmc(chain2),
+  coda::mcmc(chain3))
+mcmc_list2 <- coda::mcmc.list(
+  coda::mcmc(chain1[-(1:500),,drop = FALSE]),
+  coda::mcmc(chain2[-(1:500),,drop = FALSE]),
+  coda::mcmc(chain3[-(1:500),,drop = FALSE]))
+g1 <- bayesplot::mcmc_trace(
+  x = mcmc_list,
+  n_warmup = 0,window = c(1,500)) +
+  labs(y = "") +
+  theme_classic() +
+  theme(legend.position = "none")
+g2 <- bayesplot::mcmc_rank_overlay(
+  x = mcmc_list2) +
+  labs(y = "") +
+  theme_classic() +
+  theme(legend.position = "none")
+g1 + g2
+```
+
+
+:::{#def-burnin}
+
+## Burn in period
+
+We term "burn in" the initial steps of the MCMC algorithm that are discarded because the chain has not reached it's stationary distribution, due to poor starting values. , but visual inspection using a trace plot may show that it is necessary to remove additional observations. 
+
+:::
+
+Most software will remove the first $N$ initial values (typically one thousand). Good starting values can reduce the need for a long burn in period. If visual inspection of the chains reveal that some of the chains for one or more parameters are not stationary until some iteration, we will discard all of these in addition. @Geweke:1992's test measure whether the distribution of the resulting Markov chain is the same at the beginning and at the end through a test of equality of means.
+
+:::{#def-warmup}
+
+## Warmup
+
+Warmup period refers to the initial sampling phase (potentially overlapping with burn in period) during which proposals are tuned (for example, by changing the variance proposal to ensure good acceptance rate or for Hamiltonian Monte Carlo (HMC) to tune the size of the leapfrog.
+These initial steps should be disregarded.
+
+:::
+
+
+
+
+
+:::{#def-thinning}
+
+## Thinning
+
+MCMC algorithms are often run thinning the chain (i.e., keeping only a fraction of the samples drawn, typically every $k$ iteration). This is wasteful as we can of course get more precise estimates by keeping all posterior draws, whether correlated or not. The only argument in favor of thinning is limited storage capacity: if we run very long chains in a model with hundreds of  parameters, we may run out of memory.
+
+:::
+
+
+
+
+:::{#rem-short-vs-long}
+
+## Multiple short chains or longer runs?
+
+
+Many diagnostics rely on running multiple Markov chains for the same problem, with different starting values. In principle, it is more efficient to run a single Markov chain to draw samples for longer than multiple (shorter chains) for a fixed computational budget. Indeed, a single run means warmup needs to be achieve once. The benefits of running multiple chains comes from different considerations: we can monitor convergence to the stationary distribution (or to different modes for multimodal posteriors), and run diagnostics that rely on between-chain variance. Multiple chains can also be run in parallel and the results combined, a situation more in line with modern computer architecture.
+
+:::
+
 ::: {.callout-important}
 
 ## **Summary**:

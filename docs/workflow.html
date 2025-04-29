@@ -282,7 +282,7 @@ window.Quarto = {
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#convergence-diagnostics-and-model-validation" id="toc-convergence-diagnostics-and-model-validation" class="nav-link active" data-scroll-target="#convergence-diagnostics-and-model-validation"><span class="header-section-number">7.1</span> Convergence diagnostics and model validation</a>
+  <li><a href="#sensitivity-analysis" id="toc-sensitivity-analysis" class="nav-link active" data-scroll-target="#sensitivity-analysis"><span class="header-section-number">7.1</span> Sensitivity analysis</a>
   <ul class="collapse">
   <li><a href="#posterior-predictive-checks" id="toc-posterior-predictive-checks" class="nav-link" data-scroll-target="#posterior-predictive-checks"><span class="header-section-number">7.1.1</span> Posterior predictive checks</a></li>
   </ul></li>
@@ -322,76 +322,138 @@ window.Quarto = {
 </ul>
 </div>
 </div>
-<p>For a given problem, there are many different Markov chain Monte Carlo algorithms that one can implement: they will typically be distinguished based on the running time per iteration and the efficiency of the samplers, with algorithms providing realizations of Markov chains with lower autocorrelation being preferred. Many visual diagnostics and standard tests can be used to diagnose lack of convergence, or inefficiency. The purpose of this section is to review these in turn, and to go over tricks that can improve mixing.</p>
-<!--
-**Prior to posterior**: prior sensitivity requires to rerun the algorithm with different priors, but it is sometimes feasible in simpler models to simply use a fast Gaussian approximation via the maximum a posteriori, and generate from the latter, to assess the impact of the prior. We can compare posterior density with prior density. The general rule is that parameters far from the data layer are more impacted by the prior choice.
--->
-<!-- A modular approach to model building is recommended. It is a good strategy to start small, with a toy model, and to complexify until the fit is adequate. The modular approach can also help to diagnose convergence problems, bugs and identifiability problems.  -->
-<p><strong>Generating artificial data</strong>: Some problems and checks relate to models and the correct implementations (of the algorithms). Sometimes, the probabilistic procedure will generate draws, but it’s unclear whether our numerical implementation is correct. We can sometimes see this if the output is truly misleading, but it’s not always obvious. We can for example generate an “artificial” or fake data set from the model with some fixed parameter inputs to see if we can recover the parameter values used to generate these within some credible set.</p>
-<p>Many such sanity checks can be implemented by means of simulations. Consider prior predictive checks: if the prior has a distribution from which we can generate, we can obtain prior draws from <span class="math inline">\(p(\boldsymbol{\theta})\)</span>, generate data from the prior predictive <span class="math inline">\(p(y \mid \boldsymbol{\theta})\)</span> by simulating new observations from the data generating mechanism of the likelihood, and use these to obtain prior predictive by removing the likelihood component altogether: the draws from the prior predictive should then match posterior draws with only the prior.</p>
-<p>The “data-averaged posterior” is obtained upon noting that <span class="citation" data-cites="Geweke:2004">(<a href="references.html#ref-Geweke:2004" role="doc-biblioref">Geweke 2004</a>)</span> <span class="math display">\[\begin{align*}
-p(\boldsymbol{\theta}) = \int \int_{\boldsymbol{\Theta}} p( \boldsymbol{\theta} \mid \boldsymbol{y}) p(\boldsymbol{y} \mid \widetilde{\boldsymbol{\theta}}) p(\widetilde{\boldsymbol{\theta}}) \mathrm{d} \widetilde{\boldsymbol{\theta}} \mathrm{d} \boldsymbol{y}
-\end{align*}\]</span> by forward sampling first the prior, than data for this particular value and obtaining the posterior associated with the latter.</p>
-<p>We can test that our sampling algorithm correctly samples from the posterior distribution of interest by running the following procedure, which is however computationally intensive.</p>
-<div id="prp-sbc" class="theorem proposition">
-<p><span class="theorem-title"><strong>Proposition 7.1 (Simulation based calibration)</strong></span> Simulation-based calibration <span class="citation" data-cites="Talts:2020">(<a href="references.html#ref-Talts:2020" role="doc-biblioref">Talts et al. 2020</a>)</span> proceeds with, in order</p>
-<ol type="1">
-<li><span class="math inline">\(\boldsymbol{\theta}_0 \sim p(\boldsymbol{\theta}),\)</span></li>
-<li><span class="math inline">\(\boldsymbol{y}_0 \sim p(\boldsymbol{y} \mid \boldsymbol{\theta}_0),\)</span></li>
-<li><span class="math inline">\(\boldsymbol{\theta}_1, \ldots, \boldsymbol{\theta}_B \sim p(\boldsymbol{\theta} \mid \boldsymbol{y}_0 ).\)</span></li>
-</ol>
-<p>Conditional on the simulated <span class="math inline">\(\boldsymbol{y}\)</span>, the distribution of <span class="math inline">\(\boldsymbol{\theta}_0\)</span> is the same as that of <span class="math inline">\(\boldsymbol{\theta}_1, \ldots, \boldsymbol{\theta}_B.\)</span> We do a dimension reduction step taking the test function <span class="math inline">\(t(\cdot)\)</span> to get the rank of the prior draw among the posterior ones, breaking ties at random if any. In the absence of ties, <span class="math display">\[\begin{align*}
-T = \sum_{b=1}^B \mathrm{I}\{t(\boldsymbol{\theta}_b, \boldsymbol{y}) &lt; t(\boldsymbol{\theta}_0,\boldsymbol{y})\},
-\end{align*}\]</span></p>
-<p>These steps are repeated <span class="math inline">\(K\)</span> times, yielding <span class="math inline">\(K\)</span> test functions <span class="math inline">\(T_1, \ldots, T_K.\)</span> We then test for uniformity using results from <span class="citation" data-cites="Sailynoja:2022">Säilynoja, Bürkner, and Vehtari (<a href="references.html#ref-Sailynoja:2022" role="doc-biblioref">2022</a>)</span>.</p>
-</div>
-<section id="convergence-diagnostics-and-model-validation" class="level2" data-number="7.1">
-<h2 data-number="7.1" class="anchored" data-anchor-id="convergence-diagnostics-and-model-validation"><span class="header-section-number">7.1</span> Convergence diagnostics and model validation</h2>
-<p>Many diagnostics rely on running multiple Markov chains for the same problem, with different starting values. In practice, it is more efficient to run a single long chain than multiple chains, because of the additional computational overhead related to burn in and warmup period. Running multiple chains however has the benefit of allowing one to compute diagnostics of convergence (by comparing chains) such as <span class="math inline">\(\widehat{R},\)</span> and to detect local modes.</p>
-<div id="def-traceplots" class="theorem definition">
-<p><span class="theorem-title"><strong>Definition 7.1 (Trace plots)</strong></span> A trace plot is a line plot of the Markov chain as a function of the number of iterations. It should be stable around some values if the posterior is unimodal and the chain has reached stationarity. The ideal shape is that of a ‘fat hairy catterpilar’.</p>
-</div>
-<p>It is useful to inspect visually the Markov chain, as it may indicate several problems. If the chain drifts around without stabilizing around the posterior mode, then we can suspect that it hasn’t reached it’s stationary distribution (likely due to poor starting values). In such cases, we need to disregard the dubious draws from the chain by discarding the so-called warm up or <strong>burn in</strong> period. While there are some guarantees of convergence in the long term, silly starting values may translate into tens of thousands of iterations lost wandering around in regions with low posterior mass. Preliminary optimization and plausible starting values help alleviate these problems. <a href="#fig-badstart" class="quarto-xref">Figure&nbsp;<span>7.1</span></a> shows the effect of bad starting values on a toy problem where convergence to the mode is relatively fast. If the proposal is in a flat region of the space, it can wander around for a very long time before converging to the stationary distribution.</p>
-<div id="def-trankplot" class="theorem definition">
-<p><span class="theorem-title"><strong>Definition 7.2 (Trace rank plot)</strong></span> If we run several chains, as in <a href="#fig-badstart" class="quarto-xref">Figure&nbsp;<span>7.1</span></a>, with different starting values, we can monitor convergence by checking whether these chains converge to the same target. A <strong>trace rank</strong> plot compares the rank of the values of the different chain at a given iteration: with good mixing, the ranks should switch frequently and be distributed uniformly across integers.</p>
-</div>
-<p>A trace rank plot is shown on right panel of <a href="#fig-badstart" class="quarto-xref">Figure&nbsp;<span>7.1</span></a>.</p>
+<p>We begin with a running example that will be used to illustrate the concepts.</p>
+<div id="exm-randomeffects" class="theorem example">
+<p><span class="theorem-title"><strong>Example 7.1 (Poisson random effect models)</strong></span> We consider data from an experimental study conducted at Tech3Lab on road safety. In <span class="citation" data-cites="Brodeur:2021">Brodeur et al. (<a href="references.html#ref-Brodeur:2021" role="doc-biblioref">2021</a>)</span>, 31 participants were asked to drive in a virtual environment; the number of road violation was measured for different type of distractions (phone notification, phone on speaker, texting and smartwatch). The data are balanced, with each participant exposed to each task exactly once.</p>
+<p>We model the data using a Poisson mixed model to measure the number of violations, <code>nviolation</code>, with a fixed effect for <code>task</code>, which captures the type of distraction, and a random effect for participant <code>id</code>. The hierarchical model fitted for individual <span class="math inline">\(i\)</span> <span class="math inline">\((i=1, \ldots, 34)\)</span> and distraction type <span class="math inline">\(j\)</span> <span class="math inline">\((j=1, \ldots, 4)\)</span> is <span class="math display">\[\begin{align*}
+Y_{ij} &amp;\sim \mathsf{Poisson}\{\mu_{ij} = \exp(\beta_{j} + \alpha_i)\},\\
+\beta_j &amp;\sim \mathsf{Gauss}(0, 100), \\
+\alpha_i &amp;\sim \mathsf{Gauss}(0, \kappa^2), \\
+\kappa &amp;\sim \mathsf{Student}_{+}(0,1,3).
+\end{align*}\]</span> so observations are conditionally independent given hyperparameters <span class="math inline">\(\boldsymbol{\alpha}\)</span> and <span class="math inline">\(\boldsymbol{\beta}.\)</span></p>
+<p>We can look at some of posterior distribution of the 31 random effects (here the first five individuals) and the fixed effect parameters <span class="math inline">\(\boldsymbol{\beta},\)</span> plus the variance of the random effect <span class="math inline">\(\kappa\)</span>: there is strong evidence that the latter is non-zero, suggesting strong heterogeneity between individuals. The distraction which results in the largest number of violation is texting, while the other conditions all seem equally distracting on average (note that there is no control group with no distraction to compare with, so it is hard to draw conclusions).</p>
 <div class="cell">
 <div class="cell-output-display">
-<div id="fig-badstart" class="quarto-float quarto-figure quarto-figure-center anchored">
+<div id="fig-post-dist-poisson-mixed" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
-<div aria-describedby="fig-badstart-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="workflow_files/figure-html/fig-badstart-1.png" class="img-fluid figure-img" width="672">
+<div aria-describedby="fig-post-dist-poisson-mixed-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="workflow_files/figure-html/fig-post-dist-poisson-mixed-1.png" class="img-fluid figure-img" width="672">
 </div>
-<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-badstart-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;7.1: Traceplots of three Markov chains for the same target with different initial values for the first 500 iterations (left) and trace rank plot after discarding these (right).
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-post-dist-poisson-mixed-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;7.1: Posterior density plots with 50% credible intervals and median value for the random effects of the first five individuals (left) and the fixed effects and random effect variance (right).
 </figcaption>
 </figure>
 </div>
 </div>
 </div>
-<div id="def-burnin" class="theorem definition">
-<p><span class="theorem-title"><strong>Definition 7.3 (Burn in period)</strong></span> We term “burn in” the initial steps of the MCMC algorithm that are discarded because the chain has not reached it’s stationary distribution, due to poor starting values. , but visual inspection using a trace plot may show that it is necessary to remove additional observations.</p>
 </div>
-<p>Most software will remove the first <span class="math inline">\(N\)</span> initial values (typically one thousand). Good starting values can reduce the need for a long burn in period. If visual inspection of the chains reveal that some of the chains for one or more parameters are not stationary until some iteration, we will discard all of these in addition. <span class="citation" data-cites="Geweke:1992">Geweke (<a href="references.html#ref-Geweke:1992" role="doc-biblioref">1992</a>)</span>’s test measure whether the distribution of the resulting Markov chain is the same at the beginning and at the end through a test of equality of means.</p>
-<div id="def-warmup" class="theorem definition">
-<p><span class="theorem-title"><strong>Definition 7.4 (Warmup)</strong></span> Warmup period refers to the initial sampling phase (potentially overlapping with burn in period) during which proposals are tuned (for example, by changing the variance proposal to ensure good acceptance rate or for Hamiltonian Monte Carlo (HMC) to tune the size of the leapfrog. These initial steps should be disregarded.</p>
+<div id="rem-remark-mixed" class="proof remark">
+<p><span class="proof-title"><em>Remark 7.1</em> (Bayesian random effect models). </span>In frequentist statistics, there is a distinction made in mixed-effect models between parameters that are treated as constants, termed fixed effects and corresponding in this example to <span class="math inline">\(\boldsymbol{\beta},\)</span> and random effects, equivalent to <span class="math inline">\(\boldsymbol{\alpha}.\)</span> There is no such distinction in the Bayesian paradigm, except perhaps for the choice of prior and the informativeness of the latter.</p>
 </div>
-<div id="rem-short-vs-long" class="proof remark">
-<p><span class="proof-title"><em>Remark 7.1</em> (Multiple short chains or longer runs?). </span>In principle, it is more efficient to run a single Markov chain to draw samples for longer than multiple (shorter chains) for a fixed computational budget. Indeed, a single run means warmup needs to be achieve once. The benefits of running multiple chains comes from different considerations: we can monitor convergence to the stationary distribution (or to different modes for multimodal posteriors), and run diagnostics that rely on between-chain variance. Multiple chains can also be run in parallel and the results combined, a situation more in line with modern computer architecture.</p>
+<section id="sensitivity-analysis" class="level2" data-number="7.1">
+<h2 data-number="7.1" class="anchored" data-anchor-id="sensitivity-analysis"><span class="header-section-number">7.1</span> Sensitivity analysis</h2>
+<p>Do priors matter? The answer to that question depends strongly on the model, and how much information the data provides about hyperparameters. While this question is easily answered in conjugate models (the relative weight of hyperparameters relative to data can be derived from the posterior parameters), it is not so simple in hierarchical models, where the interplay between prior distributions is often more intricate. To see the impact, one often has to rely on doing several analyses with different values fr the prior and see the sensitivity of the conclusions to these changes, for example by considering a vague prior or modifying the parameters values (say halving or doubling). If the changes are immaterial, then this provides reassurance that our analyses are robust.</p>
+<div id="exm-sensitivity-poisson-mixed" class="theorem example">
+<p><span class="theorem-title"><strong>Example 7.2</strong></span> To check the sensitivity of the conclusion, we revisit the modelling of the <code>smartwatch</code> experiment data using a Poisson regression and compare four priors: a uniform prior truncated to <span class="math inline">\([0, 10],\)</span> an inverse gamma <span class="math inline">\(\mathsf{InvGamma}(0.01, 0.01)\)</span> prior, a penalized complexity prior such that the 0.95 percentile of the scale is 5, corresponding to <span class="math inline">\(\mathsf{Exp}(0.6).\)</span> Since each distraction type appears 31 times, there is plenty of information to reliably estimate the dispersion <span class="math inline">\(\kappa\)</span> of the random effects <span class="math inline">\(\alpha\)</span>: the different density plots in <a href="#fig-sensitivity" class="quarto-xref">Figure&nbsp;<span>7.2</span></a> are virtually indistinguishable from one another. This is perhaps unsurprising given the large number of replicates, and the significant variability between groups.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-sensitivity" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-sensitivity-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="workflow_files/figure-html/fig-sensitivity-1.png" class="img-fluid figure-img" width="672">
 </div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-sensitivity-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;7.2: Posterior density of the scale of the random effects with uniform, inverse gamma, penalized complexity and folded Student-t with three degrees of freedom. The circle denotes the median and the bars the 50% and 95% percentile credible intervals.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<div id="exm-rainfall-abisko" class="theorem example">
+<p><span class="theorem-title"><strong>Example 7.3 (Extreme rainfall in Abisko, Sweden)</strong></span> As illustrating example, consider maximum daily cumulated rainfall in Abisko, Sweden. The time series spans from 1913 until December 2014; we compute the 102 yearly maximum, which range from 11mm to 62mm, and fit a generalized extreme value distribution to these.</p>
+<p>For the priors, suppose an expert elicits quantiles of the 10, 50 and 100 years return levels; say 30mm, 45mm and 70mm, respectively, for the median and likewise 40mm, 70mm and 120mm for the 90% percentile of the return levels. We can compute the differences and calculate the parameters of the gamma distribution through moment-matching: this gives roughly a shape of <span class="math inline">\(\alpha_1=18.27\)</span> and <span class="math inline">\(\beta_1=0.6,\)</span> etc. <a href="#fig-gev-colestawn-quant-prior" class="quarto-xref">Figure&nbsp;<span>7.3</span></a> shows the transfer from the prior predictive to the posterior distribution. The prior is much more dispersed and concentrated on the tail, which translates in a less peaked posterior than using a weakly informative prior (dotted line): the mode of the latter is slightly to the left and with lower density in the tail.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-gev-colestawn-quant-prior" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-gev-colestawn-quant-prior-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="workflow_files/figure-html/fig-gev-colestawn-quant-prior-1.png" class="img-fluid figure-img" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-gev-colestawn-quant-prior-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;7.3: Kernel density estimates of draws from the posterior distribution of 100 year return levels with a Coles–Tawn quantile prior (full line) and from the corresponding prior predictive (dashed). The dotted line gives the posterior distribution for a maximum domain information prior on the shape with improper priors on location and scale.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<!--
+:::{#prop-power-scaling}
+
+## Sensitivity via power-scaling
+
+TODO add this to notes
+
+@Kallioinen:2023 propose varying the parameters through power scaling: this 
+
+:::
+
+-->
+<p>For a given problem, there are many different Markov chain Monte Carlo algorithms that one can implement: they will typically be distinguished based on the running time per iteration and the efficiency of the samplers, with algorithms providing realizations of Markov chains with lower autocorrelation being preferred. The purpose of this section is to review these in turn, and to go over tricks that can improve mixing.</p>
+<p>–&gt;</p>
+<!--
+**Prior to posterior**: prior sensitivity requires to rerun the algorithm with different priors, but it is sometimes feasible in simpler models to simply use a fast Gaussian approximation via the maximum a posteriori, and generate from the latter, to assess the impact of the prior. We can compare posterior density with prior density. The general rule is that parameters far from the data layer are more impacted by the prior choice.
+-->
+<!-- A modular approach to model building is recommended. It is a good strategy to start small, with a toy model, and to complexify until the fit is adequate. The modular approach can also help to diagnose convergence problems, bugs and identifiability problems.  -->
+<!--
+**Generating artificial data**: Some problems and checks relate to models and the correct implementations (of the algorithms). Sometimes, the probabilistic procedure will generate draws, but it's unclear whether our numerical implementation is correct. We can sometimes see this if the output is truly misleading, but it's not always obvious. We can for example generate an "artificial" or fake data set from the model with some fixed parameter inputs to see if we can recover the parameter values used to generate these within some credible set. 
+-->
+<!-- 
+Many such sanity checks can be implemented by means of simulations. Consider prior predictive checks: if the prior has a distribution from which we can generate, we can obtain prior draws from $p(\boldsymbol{\theta})$, generate data from the prior predictive $p(y \mid \boldsymbol{\theta})$ by simulating new observations from the data generating mechanism of the likelihood, and use these to obtain prior predictive by removing the likelihood component altogether: the draws from the prior predictive should then match posterior draws with only the prior. 
+
+The "data-averaged posterior" is obtained upon noting that [@Geweke:2004]
+\begin{align*}
+p(\boldsymbol{\theta}) = \int \int_{\boldsymbol{\Theta}} p( \boldsymbol{\theta} \mid \boldsymbol{y}) p(\boldsymbol{y} \mid \widetilde{\boldsymbol{\theta}}) p(\widetilde{\boldsymbol{\theta}}) \mathrm{d} \widetilde{\boldsymbol{\theta}} \mathrm{d} \boldsymbol{y}
+\end{align*}
+by forward sampling first the prior, than data for this particular value and obtaining the posterior associated with the latter. 
+
+We can test that our sampling algorithm correctly samples from the posterior distribution of interest by running the following procedure, which is however computationally intensive.
+
+
+
+:::{#prp-sbc}
+
+## Simulation based calibration
+
+Simulation-based calibration  [@Talts:2020] proceeds with simulation of the following quantities, in the specified order:
+
+1. $\boldsymbol{\theta}_0 \sim p(\boldsymbol{\theta}),$
+2. $\boldsymbol{y}_0 \sim p(\boldsymbol{y} \mid \boldsymbol{\theta}_0),$
+3. $\boldsymbol{\theta}_1, \ldots, \boldsymbol{\theta}_B \sim p(\boldsymbol{\theta} \mid \boldsymbol{y}_0 ).$
+
+
+Conditional on the simulated $\boldsymbol{y}$, the distribution of $\boldsymbol{\theta}_0$ is the same as that of $\boldsymbol{\theta}_1, \ldots, \boldsymbol{\theta}_B.$ We do a dimension reduction step taking the test function $t(\cdot)$ to get the rank of the prior draw among the posterior ones, breaking ties at random if any. In the absence of ties,
+\begin{align*}
+T = \sum_{b=1}^B \mathrm{I}\{t(\boldsymbol{\theta}_b, \boldsymbol{y}) < t(\boldsymbol{\theta}_0,\boldsymbol{y})\},
+\end{align*}
+
+These steps are repeated $K$ times, yielding $K$ test functions $T_1, \ldots, T_K.$ We then test for uniformity using results from @Sailynoja:2022.
+
+:::
+
+-->
 <p>The target of inference is a functional (i.e., one-dimensional summaries of the chain): we need to have convergence of the latter, but also sufficient effective sample size for our averages to be accurate (at least to two significant digits).</p>
-<p>To illustrate these, we revisit the model from <a href="priors.html#exm-randomeffects" class="quarto-xref">Example&nbsp;<span>3.15</span></a> with a penalized complexity prior for the individual effect <span class="math inline">\(\alpha_i\)</span> and vague normal priors. We also fit a simple Poisson model with only the fixed effect, taking <span class="math inline">\(Y_{ij} \sim \mathsf{Poisson}\{\exp(\beta_j)\}\)</span> with <span class="math inline">\(\beta_j \sim \mathsf{Gauss}(0,100)\)</span>. This model has too little variability relative to the observations and fits poorly as is.</p>
+<p>To illustrate these, we revisit the model from <a href="#exm-randomeffects" class="quarto-xref">Example&nbsp;<span>7.1</span></a> with a penalized complexity prior for the individual effect <span class="math inline">\(\alpha_i\)</span> and vague normal priors. We also fit a simple Poisson model with only the fixed effect, taking <span class="math inline">\(Y_{ij} \sim \mathsf{Poisson}\{\exp(\beta_j)\}\)</span> with <span class="math inline">\(\beta_j \sim \mathsf{Gauss}(0,100)\)</span>. This model has too little variability relative to the observations and fits poorly as is.</p>
 <p>For the Poisson example, the effective sample size for the <span class="math inline">\(\boldsymbol{\beta}\)</span> for the multilevel model is a bit higher than 1000 with <span class="math inline">\(B=5000\)</span> iterations, whereas we have for the simple naive model is <span class="math inline">\(1.028\times 10^{4}\)</span> for <span class="math inline">\(B=10000\)</span> draws, suggesting superefficient sampling. The dependency between <span class="math inline">\(\boldsymbol{\alpha}\)</span> and <span class="math inline">\(\boldsymbol{\beta}\)</span> is responsible for the drop in accuracy.</p>
 <p>The <code>coda</code> (convergence diagnosis and output analysis) <strong>R</strong> package <span class="citation" data-cites="coda">(<a href="references.html#ref-coda" role="doc-biblioref">Plummer et al. 2006</a>)</span> contains many tests. For example, the Geweke <span class="math inline">\(Z\)</span>-score compares the averages for the beginning and the end of the chain: rejection of the null implies lack of convergence, or poor mixing.</p>
-<p>Running multiple Markov chains can be useful for diagnostics.</p>
 <div id="prp-rhat" class="theorem proposition">
-<p><span class="theorem-title"><strong>Proposition 7.2 (Gelman–Rubin diagnostic)</strong></span> The Gelman–Rubin diagnostic <span class="math inline">\(\widehat{R},\)</span> introduced in <span class="citation" data-cites="Gelman.Rubin:1992">Gelman and Rubin (<a href="references.html#ref-Gelman.Rubin:1992" role="doc-biblioref">1992</a>)</span> and also called potential scale reduction statistic, is obtained by considering the difference between within-chains and between-chains variance. Suppose we run <span class="math inline">\(M\)</span> chains for <span class="math inline">\(B\)</span> iterations, post burn in. Denoting by <span class="math inline">\(\theta_{bm}\)</span> the <span class="math inline">\(b\)</span>th draw of the <span class="math inline">\(m\)</span>th chain, we compute the global average <span class="math inline">\(\overline{\theta} = B^{-1}M^{-1}\sum_{b=1}^B \sum_{m=1}^m \theta_{bm}\)</span> and similarly the chain sample average and variances, respectively <span class="math inline">\(\overline{\theta}_m\)</span> and <span class="math inline">\(\widehat{\sigma}^2_m\)</span> (<span class="math inline">\(m=1, \ldots, M\)</span>). The between-chain variance and within-chain variance estimator are <span class="math display">\[\begin{align*}
+<p><span class="theorem-title"><strong>Proposition 7.1 (Gelman–Rubin diagnostic)</strong></span> The Gelman–Rubin diagnostic <span class="math inline">\(\widehat{R},\)</span> introduced in <span class="citation" data-cites="Gelman.Rubin:1992">Gelman and Rubin (<a href="references.html#ref-Gelman.Rubin:1992" role="doc-biblioref">1992</a>)</span> and also called potential scale reduction statistic, is obtained by considering the difference between within-chains and between-chains variance. Suppose we run <span class="math inline">\(M\)</span> chains for <span class="math inline">\(B\)</span> iterations, post burn in. Denoting by <span class="math inline">\(\theta_{bm}\)</span> the <span class="math inline">\(b\)</span>th draw of the <span class="math inline">\(m\)</span>th chain, we compute the global average <span class="math inline">\(\overline{\theta} = B^{-1}M^{-1}\sum_{b=1}^B \sum_{m=1}^m \theta_{bm}\)</span> and similarly the chain sample average and variances, respectively <span class="math inline">\(\overline{\theta}_m\)</span> and <span class="math inline">\(\widehat{\sigma}^2_m\)</span> (<span class="math inline">\(m=1, \ldots, M\)</span>). The between-chain variance and within-chain variance estimator are <span class="math display">\[\begin{align*}
 \mathsf{Va}_{\text{between}} &amp;= \frac{B}{M-1}\sum_{m=1}^M (\overline{\theta}_m - \overline{\theta})^2\\
 \mathsf{Va}_{\text{within}} &amp;= \frac{1}{M}\sum_{m=1}^M \widehat{\sigma}^2_m
 \end{align*}\]</span> and we can compute <span class="math display">\[\begin{align*}
 \widehat{R} = \left(\frac{\mathsf{Va}_{\text{within}}(B-1) + \mathsf{Va}_{\text{between}}}{B\mathsf{Va}_{\text{within}}}\right)^{1/2}
-\end{align*}\]</span> The potential scale reduction statistic must be, by construction, larger than 1 in large sample. Any value larger than this is indicative of problems of convergence. While the Gelman–Rubin diagnostic is frequently reported, and any value larger than 1 deemed problematic, it is not enough to have approximately <span class="math inline">\(\widehat{R}=1\)</span> to guarantee convergence, but large values are usually indication of something being amiss. <a href="#fig-rhat" class="quarto-xref">Figure&nbsp;<span>7.2</span></a> shows two instances where the chains are visually very far from having the same average and this is reflected by the large values of <span class="math inline">\(\widehat{R}.\)</span></p>
+\end{align*}\]</span> The potential scale reduction statistic must be, by construction, larger than 1 in large sample. Any value larger than this is indicative of problems of convergence. While the Gelman–Rubin diagnostic is frequently reported, and any value larger than 1 deemed problematic, it is not enough to have approximately <span class="math inline">\(\widehat{R}=1\)</span> to guarantee convergence, but large values are usually indication of something being amiss. <a href="#fig-rhat" class="quarto-xref">Figure&nbsp;<span>7.4</span></a> shows two instances where the chains are visually very far from having the same average and this is reflected by the large values of <span class="math inline">\(\widehat{R}.\)</span></p>
 </div>
 <div class="cell">
 <div class="cell-output-display">
@@ -401,20 +463,17 @@ Figure&nbsp;7.1: Traceplots of three Markov chains for the same target with diff
 <img src="workflow_files/figure-html/fig-rhat-1.png" class="img-fluid figure-img" width="672">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-rhat-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;7.2: Two pairs of Markov chains: the top ones seem stationary, but with different modes. This makes the between chain variance substantial, with a value of <span class="math inline">\(\widehat{R} \approx 3.4,\)</span> whereas the chains on the right hover around the same values of zero, but do not appear stable with <span class="math inline">\(\widehat{R} \approx 1.6.\)</span>
+Figure&nbsp;7.4: Two pairs of Markov chains: the top ones seem stationary, but with different modes. This makes the between chain variance substantial, with a value of <span class="math inline">\(\widehat{R} \approx 3.4,\)</span> whereas the chains on the right hover around the same values of zero, but do not appear stable with <span class="math inline">\(\widehat{R} \approx 1.6.\)</span>
 </figcaption>
 </figure>
 </div>
 </div>
 </div>
 <p>Generally, it is preferable to run a single chain for a longer period than run multiple chains sequentially, as there is a cost to initializing multiple times with different starting values since we must discard initial draws. With parallel computations, multiple chains are more frequent nowadays.</p>
-<div id="def-thinning" class="theorem definition">
-<p><span class="theorem-title"><strong>Definition 7.5 (Thinning)</strong></span> MCMC algorithms are often run thinning the chain (i.e., keeping only a fraction of the samples drawn, typically every <span class="math inline">\(k\)</span> iteration). This is wasteful as we can of course get more precise estimates by keeping all posterior draws, whether correlated or not. The only argument in favor of thinning is limited storage capacity: if we run very long chains in a model with hundreds of parameters, we may run out of memory.</p>
-</div>
 <section id="posterior-predictive-checks" class="level3" data-number="7.1.1">
 <h3 data-number="7.1.1" class="anchored" data-anchor-id="posterior-predictive-checks"><span class="header-section-number">7.1.1</span> Posterior predictive checks</h3>
 <p>Posterior predictive checks can be used to compare models of varying complexity. One of the visual diagnostics, outlined in <span class="citation" data-cites="Gabry:2019">Gabry et al. (<a href="references.html#ref-Gabry:2019" role="doc-biblioref">2019</a>)</span>, consists in computing a summary statistic of interest from the posterior predictive (whether mean, median, quantile, skewness, etc.) which is relevant for the problem at hand and which we hope our model can adequately capture. These should be salient features of the data, and may reveal inadequate likelihood or prior information.</p>
-<p>Suppose we have <span class="math inline">\(B\)</span> draws from the posterior and simulate for each <span class="math inline">\(n\)</span> observations from the posterior predictive <span class="math inline">\(p(\widetilde{\boldsymbol{y}} \mid \boldsymbol{y})\)</span>: we can benchmark summary statistics from our original data <span class="math inline">\(\boldsymbol{y}\)</span> with the posterior predictive copies <span class="math inline">\(\widetilde{\boldsymbol{y}}_b.\)</span> <a href="#fig-posterior-pred-check" class="quarto-xref">Figure&nbsp;<span>7.3</span></a> shows this for the two competing models and highlight the fact that the simpler model is not dispersed enough. Even the more complex model struggles to capture this additional heterogeneity with the additional variables. One could go back to the drawing board and consider a negative binomial model.</p>
+<p>Suppose we have <span class="math inline">\(B\)</span> draws from the posterior and simulate for each <span class="math inline">\(n\)</span> observations from the posterior predictive <span class="math inline">\(p(\widetilde{\boldsymbol{y}} \mid \boldsymbol{y})\)</span>: we can benchmark summary statistics from our original data <span class="math inline">\(\boldsymbol{y}\)</span> with the posterior predictive copies <span class="math inline">\(\widetilde{\boldsymbol{y}}_b.\)</span> <a href="#fig-posterior-pred-check" class="quarto-xref">Figure&nbsp;<span>7.5</span></a> shows this for the two competing models and highlight the fact that the simpler model is not dispersed enough. Even the more complex model struggles to capture this additional heterogeneity with the additional variables. One could go back to the drawing board and consider a negative binomial model.</p>
 <div class="cell">
 <div class="cell-output-display">
 <div id="fig-posterior-pred-check" class="quarto-float quarto-figure quarto-figure-center anchored">
@@ -423,7 +482,7 @@ Figure&nbsp;7.2: Two pairs of Markov chains: the top ones seem stationary, but w
 <img src="workflow_files/figure-html/fig-posterior-pred-check-1.png" class="img-fluid figure-img" width="672">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-posterior-pred-check-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;7.3: Posterior predictive checks for the standard deviation (top) and density of posterior draws (bottom) for hierarchical Poisson model with individual effects (left) and simpler model with only conditions (right).
+Figure&nbsp;7.5: Posterior predictive checks for the standard deviation (top) and density of posterior draws (bottom) for hierarchical Poisson model with individual effects (left) and simpler model with only conditions (right).
 </figcaption>
 </figure>
 </div>
@@ -446,15 +505,42 @@ p_D = \mathsf{E}\{D(\boldsymbol{\theta}, \widetilde{\boldsymbol{\theta}}) \mid \
 \end{align*}\]</span> The DIC can be easily evaluated by keeping track of the log likelihood evaluated at each posterior draw from a Markov chain Monte Carlo algorithm. The penalty term <span class="math inline">\(p_D\)</span> is however not invariant to reparametrizations. Assuming we can derive a multivariate Gaussian approximation to the MLE under suitable regularity conditions, the <span class="math inline">\(\mathsf{DIC}\)</span> is equivalent in large samples to <span class="math inline">\(\mathsf{AIC}.\)</span> The <span class="math inline">\(\mathsf{DIC}\)</span> is considered by many authors as not being a Bayesian procedure; see <span class="citation" data-cites="Spiegelhalter:2014">Spiegelhalter et al. (<a href="references.html#ref-Spiegelhalter:2014" role="doc-biblioref">2014</a>)</span> and the discussion therein.</p>
 <p>Criteria such as <span class="math inline">\(\mathsf{LPPD}\)</span> and therefore <span class="math inline">\(\mathsf{WAIC}\)</span> require some form of exchangeability, and don’t apply to cases where leave-one-out cross validation isn’t adequate, for example in spatio-temporal models.</p>
 <div id="exm-smartwatch-infocriteria" class="theorem example">
-<p><span class="theorem-title"><strong>Example 7.1 (Information criteria for smartwatch and Bayesian LASSO)</strong></span> For the smartwatch model, we get a value of 3.07 for the complex model and 4.5: this suggests an improvement in using individual-specific effects.</p>
+<p><span class="theorem-title"><strong>Example 7.4 (Information criteria for smartwatch and Bayesian LASSO)</strong></span> For the smartwatch model, we get a value of 3.07 for the complex model and 4.5: this suggests an improvement in using individual-specific effects.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co">#' WAIC</span></span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="co">#' @param loglik_pt B by n matrix of pointwise log likelihood</span></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>WAIC <span class="ot">&lt;-</span> <span class="cf">function</span>(loglik_pt){</span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>  <span class="sc">-</span><span class="fu">mean</span>(<span class="fu">apply</span>(loglik_pt, <span class="dv">2</span>, mean)) <span class="sc">+</span>  <span class="fu">mean</span>(<span class="fu">apply</span>(loglik_pt, <span class="dv">2</span>, var))</span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># posterior: B x K matrix of posterior draws for the K coefficients</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(smartwatch, <span class="at">package =</span> <span class="st">"hecbayes"</span>)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(posterior_smartwatch, <span class="at">package =</span> <span class="st">"hecbayes"</span>)</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Match coefficients to column of posterior</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>coef_beta <span class="ot">&lt;-</span> <span class="fu">paste0</span>(<span class="st">"beta["</span>,<span class="fu">as.integer</span>(smartwatch<span class="sc">$</span>task),<span class="st">"]"</span>)</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>id_beta <span class="ot">&lt;-</span> <span class="fu">match</span>(coef_beta, <span class="fu">colnames</span>(posterior_smartwatch))</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>coef_alpha <span class="ot">&lt;-</span> <span class="fu">paste0</span>(<span class="st">"alpha["</span>,<span class="fu">as.integer</span>(smartwatch<span class="sc">$</span>id),<span class="st">"]"</span>)</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>id_alpha <span class="ot">&lt;-</span> <span class="fu">match</span>(coef_alpha, <span class="fu">colnames</span>(posterior_smartwatch))</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Create containers for pointwise log likelihood and posterior predictive</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>B <span class="ot">&lt;-</span> <span class="fu">nrow</span>(posterior_smartwatch)</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>y <span class="ot">&lt;-</span> smartwatch<span class="sc">$</span>nviolation</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="fu">length</span>(y)</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>loglik_pt <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="at">nrow =</span> B, <span class="at">ncol =</span> n)</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>postpred <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="at">nrow =</span> B, <span class="at">ncol =</span> n)</span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a><span class="co"># Sample from posterior predictive / evaluate log likelihood</span></span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span>(b <span class="cf">in</span> <span class="fu">seq_len</span>(B)){</span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>loglik_pt[b,] <span class="ot">&lt;-</span> <span class="fu">dpois</span>(</span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>  <span class="at">x =</span> smartwatch<span class="sc">$</span>nviolation,</span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>  <span class="at">lambda =</span> <span class="fu">exp</span>(posterior_smartwatch[b,id_alpha] <span class="sc">+</span> posterior_smartwatch[b,id_beta]),</span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>  <span class="at">log =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>postpred[b,] <span class="ot">&lt;-</span> <span class="fu">rpois</span>(</span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>  <span class="at">n =</span> n,</span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a>  <span class="at">lambda =</span> <span class="fu">exp</span>(posterior_smartwatch[b,id_alpha] <span class="sc">+</span> posterior_smartwatch[b,id_beta]))</span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a><span class="co"># Watanabe's widely available information criterion</span></span>
+<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a>WAIC <span class="ot">&lt;-</span> <span class="cf">function</span>(loglik_pt){</span>
+<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a>  <span class="sc">-</span><span class="fu">mean</span>(<span class="fu">apply</span>(loglik_pt, <span class="dv">2</span>, mean)) <span class="sc">+</span>  <span class="fu">mean</span>(<span class="fu">apply</span>(loglik_pt, <span class="dv">2</span>, var))</span>
+<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a><span class="fu">WAIC</span>(loglik_pt)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
 </div>
-<p>We can also look at the predictive performance. For the <code>diabetes</code> data application with the Bayesian LASSO with fixed <span class="math inline">\(\lambda,\)</span> the predictive performance is a trade-off between the effective number of parameter (with larger penalties translating into smaller number of parameters) and the goodness-of-fit. <a href="#fig-waic-blasso" class="quarto-xref">Figure&nbsp;<span>7.4</span></a> shows that the decrease in predictive performance is severe when estimates are shrunk towards 0, but the model performs equally well for small penalties.</p>
+<p>We can also look at the predictive performance. For the <code>diabetes</code> data application with the Bayesian LASSO with fixed <span class="math inline">\(\lambda,\)</span> the predictive performance is a trade-off between the effective number of parameter (with larger penalties translating into smaller number of parameters) and the goodness-of-fit. <a href="#fig-waic-blasso" class="quarto-xref">Figure&nbsp;<span>7.6</span></a> shows that the decrease in predictive performance is severe when estimates are shrunk towards 0, but the model performs equally well for small penalties.</p>
 <div class="cell">
 <div class="cell-output-display">
 <div id="fig-waic-blasso" class="quarto-float quarto-figure quarto-figure-center anchored">
@@ -463,7 +549,7 @@ p_D = \mathsf{E}\{D(\boldsymbol{\theta}, \widetilde{\boldsymbol{\theta}}) \mid \
 <img src="workflow_files/figure-html/fig-waic-blasso-1.png" class="img-fluid figure-img" width="672">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-waic-blasso-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;7.4: Widely applicable information criterion for the Bayesian LASSO problem fitted to the diabetes data, as a function of the penalty <span class="math inline">\(\lambda.\)</span>
+Figure&nbsp;7.6: Widely applicable information criterion for the Bayesian LASSO problem fitted to the diabetes data, as a function of the penalty <span class="math inline">\(\lambda.\)</span>
 </figcaption>
 </figure>
 </div>
@@ -472,11 +558,11 @@ Figure&nbsp;7.4: Widely applicable information criterion for the Bayesian LASSO 
 </div>
 <p>Ideally, one would measure the predictive performance using the leave-one-out predictive distribution for observation <span class="math inline">\(i\)</span> given all the rest, <span class="math inline">\(p(y_i \mid \boldsymbol{y}_{-i}),\)</span> to avoid double dipping — the latter is computationally intensive to obtain because it would require running <span class="math inline">\(n\)</span> Markov chains with <span class="math inline">\(n-1\)</span> observations each, but we can get a good approximation using importance sampling, as proposed in eq. 25 of Section 7 of <span class="citation" data-cites="Gelfand.Dey:1994">Gelfand and Dey (<a href="references.html#ref-Gelfand.Dey:1994" role="doc-biblioref">1994</a>)</span>.</p>
 <div id="prp-marginal-pred-checks" class="theorem proposition">
-<p><span class="theorem-title"><strong>Proposition 7.3 (Marginal predictive check)</strong></span> To check the goodness-of-fit, we turn to the posterior predictive distribution. For each posterior draw and each observation, we generate a sample from the posterior predictive, resulting in an <span class="math inline">\(n \times B\)</span> matrix. We can then for each observation <span class="math inline">\(y_i\)</span> compare the latter with the simulated samples <span class="math inline">\(y_{i,b}^{\mathrm{rep}}\)</span> for posterior sample <span class="math inline">\(\boldsymbol{\theta}_b.\)</span> We compute <span class="math inline">\(\Pr(y_i \geq y_{i}^{\mathrm{rep}})\)</span> by Monte Carlo, by looking at the sample proportion that are more extreme. Values close to zero or one may indicate outliers.</p>
+<p><span class="theorem-title"><strong>Proposition 7.2 (Marginal predictive check)</strong></span> To check the goodness-of-fit, we turn to the posterior predictive distribution. For each posterior draw and each observation, we generate a sample from the posterior predictive, resulting in an <span class="math inline">\(n \times B\)</span> matrix. We can then for each observation <span class="math inline">\(y_i\)</span> compare the latter with the simulated samples <span class="math inline">\(y_{i,b}^{\mathrm{rep}}\)</span> for posterior sample <span class="math inline">\(\boldsymbol{\theta}_b.\)</span> We compute <span class="math inline">\(\Pr(y_i \geq y_{i}^{\mathrm{rep}})\)</span> by Monte Carlo, by looking at the sample proportion that are more extreme. Values close to zero or one may indicate outliers.</p>
 </div>
 <p>To avoid double dipping, we can check model adequacy by comparing the leave-one-cross validation predictive draws with the observation.</p>
 <div id="prp-cv-predictive-dens" class="theorem proposition">
-<p><span class="theorem-title"><strong>Proposition 7.4 (Cross-validation predictive density)</strong></span> Consider estimation of the leave-one predictive density under the hypothesis that the likelihood factorizes as <span class="math inline">\(L(\boldsymbol{\theta}; \boldsymbol{y}) = \prod_{i=1}^n f_i(y_i; \boldsymbol{\theta});\)</span> where <span class="math inline">\(f_i\)</span> is the density or mass function of the <span class="math inline">\(i\)</span>th observation. Then, with weights <span class="math display">\[\begin{align*}
+<p><span class="theorem-title"><strong>Proposition 7.3 (Cross-validation predictive density)</strong></span> Consider estimation of the leave-one predictive density under the hypothesis that the likelihood factorizes as <span class="math inline">\(L(\boldsymbol{\theta}; \boldsymbol{y}) = \prod_{i=1}^n f_i(y_i; \boldsymbol{\theta});\)</span> where <span class="math inline">\(f_i\)</span> is the density or mass function of the <span class="math inline">\(i\)</span>th observation. Then, with weights <span class="math display">\[\begin{align*}
 w_i(\boldsymbol{\theta}) = \frac{p(\boldsymbol{\theta} \mid \boldsymbol{y}_{-i})}{p(\boldsymbol{\theta} \mid \boldsymbol{y})} \stackrel{\boldsymbol{\theta}}{\propto} \frac{1}{f_i(y_i; \boldsymbol{\theta})}
 \end{align*}\]</span> we can write the leave-one-out posterior predictive as <span class="math display">\[\begin{align*}
 p(y_i \mid \boldsymbol{y}_{-i}) &amp;= \int_{\boldsymbol{\Theta}} f_i(y_i; \boldsymbol{\theta}) p(\boldsymbol{\theta} \mid \boldsymbol{y}_{-i}) \mathrm{d} \boldsymbol{\theta}
@@ -486,7 +572,23 @@ p(y_i \mid \boldsymbol{y}_{-i}) &amp;= \int_{\boldsymbol{\Theta}} f_i(y_i; \bold
 \end{align*}\]</span> This estimator takes the form of an harmonic mean, which can have very large variance due to some weights dominating the fit. <span class="citation" data-cites="Vehtari.Gelman.Gabry:2017">Vehtari, Gelman, and Gabry (<a href="references.html#ref-Vehtari.Gelman.Gabry:2017" role="doc-biblioref">2017</a>)</span> proposed using Pareto smoothed importance sampling <span class="citation" data-cites="Vehtari.Simpson.Gelman.Yao.Gabry:2025">(<a href="references.html#ref-Vehtari.Simpson.Gelman.Yao.Gabry:2025" role="doc-biblioref">Vehtari et al. 2024</a>)</span> to avoid overly large weights; this method is implemented in the <code>loo</code> <strong>R</strong> package.</p>
 <p>Suppose we have matrices of size <span class="math inline">\(n \times B\)</span> containing the posterior predictive draws <span class="math inline">\(y_{i,b}^{\mathrm{rep}}\)</span> associated with each posterior vector <span class="math inline">\(\boldsymbol{\theta}_b\)</span> and the weights <span class="math inline">\(w_{i,b} = 1/f_i (y_i \mid \boldsymbol{\theta}_b)\)</span> from the importance sampling estimator. We can then compute the probability integral transform with importance sampling <span class="math display">\[\begin{align*}
 \widehat{p}_i^{\mathrm{loo}} = \Pr(y_i^{\mathrm{rep}} \leq y_i \mid \boldsymbol{y}_{-i}) \approx \frac{\sum_{b=1}^B \mathrm{I}(y_i^{\mathrm{rep}} \leq y_i)w_{i,b}}{\sum_{b=1}^B w_{i,b}}, \qquad i =1,\ldots, n
-\end{align*}\]</span> We can then create a probability-probability plot with these values by comparing the <span class="math inline">\(n\)</span> with ordered quantiles with uniform plotting positions. The values <span class="math inline">\(\widehat{p}_i^{\mathrm{loo}}\)</span> should be approximately uniform if the model was perfectly calibrated. <a href="#fig-loocv-qqplots" class="quarto-xref">Figure&nbsp;<span>7.5</span></a> shows two examples of these.</p>
+\end{align*}\]</span> We can then create a probability-probability plot with these values by comparing the <span class="math inline">\(n\)</span> with ordered quantiles with uniform plotting positions. The values <span class="math inline">\(\widehat{p}_i^{\mathrm{loo}}\)</span> should be approximately uniform if the model was perfectly calibrated. <a href="#fig-loocv-qqplots" class="quarto-xref">Figure&nbsp;<span>7.7</span></a> shows two examples of these.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>is_wgt <span class="ot">&lt;-</span> <span class="fu">exp</span>(<span class="sc">-</span>loglik_pt) <span class="co"># log weights</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="co"># importance sampling estimator</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>ploo <span class="ot">&lt;-</span> <span class="fu">numeric</span>(n)</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span>(i <span class="cf">in</span> <span class="fu">seq_along</span>(y)){</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a> ploo[i] <span class="ot">&lt;-</span> <span class="fu">weighted.mean</span>(<span class="at">x =</span> <span class="fu">I</span>(postpred[,i] <span class="sc">&lt;=</span> y[i]), <span class="at">w =</span> is_wgt[,i])</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> <span class="fu">data.frame</span>(<span class="at">ploo =</span> <span class="fu">sort</span>(ploo), <span class="at">punif =</span> <span class="fu">ppoints</span>(n)),</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>       <span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">x =</span> punif, <span class="at">y =</span> ploo)) <span class="sc">+</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_abline</span>(<span class="at">slope =</span> <span class="dv">1</span>, <span class="at">intercept =</span> <span class="dv">0</span>) <span class="sc">+</span> </span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"uniform"</span>, <span class="at">y =</span> <span class="st">"LOO-PIT"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
 <div class="cell">
 <div class="cell-output-display">
 <div id="fig-loocv-qqplots" class="quarto-float quarto-figure quarto-figure-center anchored">
@@ -495,7 +597,7 @@ p(y_i \mid \boldsymbol{y}_{-i}) &amp;= \int_{\boldsymbol{\Theta}} f_i(y_i; \bold
 <img src="workflow_files/figure-html/fig-loocv-qqplots-1.png" class="img-fluid figure-img" width="672">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-loocv-qqplots-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;7.5: Probability-probability plots based on leave-one-out cross validation for model for the Poisson hierarchical model with the individual random effects (left) and without (right).
+Figure&nbsp;7.7: Probability-probability plots based on leave-one-out cross validation for model for the Poisson hierarchical model with the individual random effects (left) and without (right).
 </figcaption>
 </figure>
 </div>
@@ -517,7 +619,7 @@ A simple model, following @Gelman:2006, is to assume the effect size is Gaussian
 <p>The data augmentation strategies considered in <a href="gibbs.html#sec-gibbs-da" class="quarto-xref"><span>Section 6.1</span></a> helps to simplify the likelihood and thereby reduce the cost of each iteration. However, latent variables are imputed conditional on current parameter values <span class="math inline">\(\boldsymbol{\theta}_a\)</span>: the higher the number of variables, the more the model will concentrate around current values of <span class="math inline">\(\boldsymbol{\theta}_a\)</span>, which leads to slow mixing.</p>
 <p>There are two main strategies to deal with this problem: blocking the random effects together and simulating them jointly to improve mixing, and marginalizing out over some of the latent variables.</p>
 <div id="exm-marginalization-Gauss" class="theorem example">
-<p><span class="theorem-title"><strong>Example 7.2 (Marginalization in Gaussian models)</strong></span> To illustrate this fact, consider a hierarchical Gaussian model of the form <span class="math display">\[\begin{align*}
+<p><span class="theorem-title"><strong>Example 7.5 (Marginalization in Gaussian models)</strong></span> To illustrate this fact, consider a hierarchical Gaussian model of the form <span class="math display">\[\begin{align*}
 \boldsymbol{Y} = \mathbf{X}\boldsymbol{\beta} + \mathbf{Z}\boldsymbol{B} + \boldsymbol{\varepsilon}
 \end{align*}\]</span> where <span class="math inline">\(\mathbf{X}\)</span> is an <span class="math inline">\(n \times p\)</span> design matrix with centered inputs, <span class="math inline">\(\boldsymbol{\beta} \sim \mathsf{Gauss}(\boldsymbol{0}_p, \sigma^2\mathbf{I}_p),\)</span> <span class="math inline">\(\boldsymbol{B}\sim \mathsf{Gauss}_q(\boldsymbol{0}_q, \boldsymbol{\Omega})\)</span> are random effects and <span class="math inline">\(\boldsymbol{\varepsilon} \sim \mathsf{Gauss}_n(\boldsymbol{0}_n, \kappa^2\mathbf{I}_n)\)</span> are independent white noise.</p>
 <p>We can write <span class="math display">\[\begin{align*}
@@ -530,7 +632,7 @@ A simple model, following @Gelman:2006, is to assume the effect size is Gaussian
 \end{align*}\]</span> Section 3.1 of <span class="citation" data-cites="Nychka:2015">Nychka et al. (<a href="references.html#ref-Nychka:2015" role="doc-biblioref">2015</a>)</span> details efficient ways of calculating the quadratic form involving <span class="math inline">\(\mathbf{Q}\)</span> and it’s determinant.</p>
 </div>
 <div id="prp-pseudo-marginal" class="theorem proposition">
-<p><span class="theorem-title"><strong>Proposition 7.5 (Pseudo marginal)</strong></span> Another option proposed by <span class="citation" data-cites="Andrieu.Roberts:2009">Andrieu and Roberts (<a href="references.html#ref-Andrieu.Roberts:2009" role="doc-biblioref">2009</a>)</span> based on an original idea from <span class="citation" data-cites="Beaumont:2003">Beaumont (<a href="references.html#ref-Beaumont:2003" role="doc-biblioref">2003</a>)</span> relies on pseudo marginalization, where integration is done via Monte Carlo sampling. Specifically, suppose that we are ultimately interested in <span class="math display">\[p(\boldsymbol{\theta})= \int p(\boldsymbol{\theta}, \boldsymbol{z}) \mathrm{d} \boldsymbol{z},\]</span> but that for this purpose we normally sample from both parameters. Given a proposal <span class="math inline">\(\boldsymbol{\theta}\)</span> and <span class="math inline">\(q_1(\boldsymbol{\theta})\)</span> and subsequently <span class="math inline">\(L\)</span> draws once from <span class="math inline">\(q_2(\boldsymbol{z} \mid \boldsymbol{\theta})\)</span> for the nuisance, we can approximate the marginal using, e.g., importance sampling as <span class="math display">\[\begin{align*}
+<p><span class="theorem-title"><strong>Proposition 7.4 (Pseudo marginal)</strong></span> Another option proposed by <span class="citation" data-cites="Andrieu.Roberts:2009">Andrieu and Roberts (<a href="references.html#ref-Andrieu.Roberts:2009" role="doc-biblioref">2009</a>)</span> based on an original idea from <span class="citation" data-cites="Beaumont:2003">Beaumont (<a href="references.html#ref-Beaumont:2003" role="doc-biblioref">2003</a>)</span> relies on pseudo marginalization, where integration is done via Monte Carlo sampling. Specifically, suppose that we are ultimately interested in <span class="math display">\[p(\boldsymbol{\theta})= \int p(\boldsymbol{\theta}, \boldsymbol{z}) \mathrm{d} \boldsymbol{z},\]</span> but that for this purpose we normally sample from both parameters. Given a proposal <span class="math inline">\(\boldsymbol{\theta}\)</span> and <span class="math inline">\(q_1(\boldsymbol{\theta})\)</span> and subsequently <span class="math inline">\(L\)</span> draws once from <span class="math inline">\(q_2(\boldsymbol{z} \mid \boldsymbol{\theta})\)</span> for the nuisance, we can approximate the marginal using, e.g., importance sampling as <span class="math display">\[\begin{align*}
 \widehat{p}(\boldsymbol{\theta}; \boldsymbol{z}) = \frac{1}{L} \sum_{l=1}^L \frac{p(\boldsymbol{\theta}, \boldsymbol{z}_l)}{q_2(\boldsymbol{z}_l, \boldsymbol{\theta})}.
 \end{align*}\]</span> We then run a Markov chain on an augmented state space <span class="math inline">\(\boldsymbol{\Theta} \times \mathcal{Z}^L\)</span>, with Metropolis–Hastings acceptance ratio of <span class="math display">\[\begin{align*}
 \frac{\widehat{p}(\boldsymbol{\theta}^{\star}; \boldsymbol{z}_{1,t}^{\star}, \boldsymbol{z}_{L,t}^{\star})}{
@@ -541,11 +643,11 @@ A simple model, following @Gelman:2006, is to assume the effect size is Gaussian
 <p>The idea of pseudo-marginal extends beyond the user case presented above, as as long as we have an unbiased non-negative estimator of the likelihood <span class="math inline">\(\mathsf{E}\{\widehat{p}(\boldsymbol{\theta})\}=p(\boldsymbol{\theta})\)</span>, even when the likelihood itself is intractable. This is useful for models where we can approximate the likelihood by simulation, like for particle filters. Pseudo marginal MCMC algorithms are notorious for yielding sticky chains.</p>
 </div>
 <div id="prp-blocking" class="theorem proposition">
-<p><span class="theorem-title"><strong>Proposition 7.6 (Blocking)</strong></span> When parameters of the vector <span class="math inline">\(\boldsymbol{\theta}\)</span> that we wish to sample are strongly correlated, it is advisable when possible to simulate them jointly. Because the unnormalized posterior is evaluated at each step conditional on all values, the Markov chain will be making incremental moves and mix slowly if we sample them one step at a time.</p>
+<p><span class="theorem-title"><strong>Proposition 7.5 (Blocking)</strong></span> When parameters of the vector <span class="math inline">\(\boldsymbol{\theta}\)</span> that we wish to sample are strongly correlated, it is advisable when possible to simulate them jointly. Because the unnormalized posterior is evaluated at each step conditional on all values, the Markov chain will be making incremental moves and mix slowly if we sample them one step at a time.</p>
 </div>
 <p>Before showcasing the effect of blocking and joint updates, we present another example of data augmentation using <a href="gibbs.html#exm-probit-regression" class="quarto-xref">Example&nbsp;<span>6.2</span></a>.</p>
 <div id="exm-Tokyo-rainfall" class="theorem example">
-<p><span class="theorem-title"><strong>Example 7.3 (Tokyo rainfall)</strong></span> We consider data from <span class="citation" data-cites="Kitagawa:1987">Kitagawa (<a href="references.html#ref-Kitagawa:1987" role="doc-biblioref">1987</a>)</span> that provide a binomial time series giving the number of days in years 1983 and 1984 (a leap year) in which there was more than 1mm of rain in Tokyo. These data and the model we consider are discussed in in section 4.3.4 of <span class="citation" data-cites="Rue.Held:2005">Rue and Held (<a href="references.html#ref-Rue.Held:2005" role="doc-biblioref">2005</a>)</span>. We thus have <span class="math inline">\(T=366\)</span> days and <span class="math inline">\(n_t \in \{1,2\}\)</span> <span class="math inline">\((t=1, \ldots, T)\)</span> the number of observations in day <span class="math inline">\(t\)</span> and <span class="math inline">\(y_t=\{0,\ldots, n_t\}\)</span> the number of days with rain. The objective is to obtain a smoothed probability of rain. The underlying probit model considered takes <span class="math inline">\(Y_t \mid n_t, p_t \sim \mathsf{binom}(n_t, p_t)\)</span> and <span class="math inline">\(p_t = \Phi(\beta_t).\)</span></p>
+<p><span class="theorem-title"><strong>Example 7.6 (Tokyo rainfall)</strong></span> We consider data from <span class="citation" data-cites="Kitagawa:1987">Kitagawa (<a href="references.html#ref-Kitagawa:1987" role="doc-biblioref">1987</a>)</span> that provide a binomial time series giving the number of days in years 1983 and 1984 (a leap year) in which there was more than 1mm of rain in Tokyo. These data and the model we consider are discussed in in section 4.3.4 of <span class="citation" data-cites="Rue.Held:2005">Rue and Held (<a href="references.html#ref-Rue.Held:2005" role="doc-biblioref">2005</a>)</span>. We thus have <span class="math inline">\(T=366\)</span> days and <span class="math inline">\(n_t \in \{1,2\}\)</span> <span class="math inline">\((t=1, \ldots, T)\)</span> the number of observations in day <span class="math inline">\(t\)</span> and <span class="math inline">\(y_t=\{0,\ldots, n_t\}\)</span> the number of days with rain. The objective is to obtain a smoothed probability of rain. The underlying probit model considered takes <span class="math inline">\(Y_t \mid n_t, p_t \sim \mathsf{binom}(n_t, p_t)\)</span> and <span class="math inline">\(p_t = \Phi(\beta_t).\)</span></p>
 <p>We specify the random effects <span class="math inline">\(\boldsymbol{\beta} \sim \mathsf{Gauss}_{T}(\boldsymbol{0}, \tau^{-1}\mathbf{Q}^{-1}),\)</span> where <span class="math inline">\(\mathbf{Q}\)</span> is a <span class="math inline">\(T \times T\)</span> precision matrix that encodes the local dependence. A circular random walk structure of order 2 is used to model the smooth curves by smoothing over neighbors, and enforces small second derivative. This is a suitable prior because it enforces no constraint on the mean structure. This amounts to specifying the process with <span class="math display">\[\begin{align*}
 \Delta^2\beta_t &amp;= (\beta_{t+1} - \beta_t) - (\beta_t - \beta_{t-1})
 \\&amp;=-\beta_{t-1} +2 \beta_t - \beta_{t+1} \sim \mathsf{Gauss}(0, \tau^{-1}), \qquad t \in \mathbb{N} \mod 366.
@@ -567,7 +669,7 @@ A simple model, following @Gelman:2006, is to assume the effect size is Gaussian
 \vdots &amp; \ddots &amp; \ddots  &amp; \ddots  &amp; \ddots  &amp; \ddots &amp; \vdots \\
 -4 &amp; 1 &amp; 0 &amp; 0 &amp; \cdots &amp; -4 &amp; 6
 \end{pmatrix}.
-\end{align*}\]</span> Because of the linear dependency, the determinant of <span class="math inline">\(\mathbf{Q}\)</span> is zero. The contribution from the latent mean parameters is multivariate Gaussian and we exploit for computations the sparsity of the precision matrix <span class="math inline">\(\mathbf{Q}.\)</span> <a href="#fig-CRW2-prior" class="quarto-xref">Figure&nbsp;<span>7.6</span></a> shows five draws from the prior model, which loops back between December 31st and January 1st, and is rather smooth.</p>
+\end{align*}\]</span> Because of the linear dependency, the determinant of <span class="math inline">\(\mathbf{Q}\)</span> is zero. The contribution from the latent mean parameters is multivariate Gaussian and we exploit for computations the sparsity of the precision matrix <span class="math inline">\(\mathbf{Q}.\)</span> <a href="#fig-CRW2-prior" class="quarto-xref">Figure&nbsp;<span>7.8</span></a> shows five draws from the prior model, which loops back between December 31st and January 1st, and is rather smooth.</p>
 <div class="cell">
 <div class="cell-output-display">
 <div id="fig-CRW2-prior" class="quarto-float quarto-figure quarto-figure-center anchored">
@@ -576,7 +678,7 @@ A simple model, following @Gelman:2006, is to assume the effect size is Gaussian
 <img src="workflow_files/figure-html/fig-CRW2-prior-1.png" class="img-fluid figure-img" width="672">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-CRW2-prior-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;7.6: Five realizations from the cyclical random walk Gaussian prior of order 2.
+Figure&nbsp;7.8: Five realizations from the cyclical random walk Gaussian prior of order 2.
 </figcaption>
 </figure>
 </div>
@@ -597,51 +699,51 @@ p(\boldsymbol{\beta}, \tau) &amp;\propto \tau^{(n-1)/2}\exp \left( - \frac{\tau}
 \tau \mid \boldsymbol{\beta} &amp; \sim \mathsf{gamma}\left( \frac{n-1}{2} + a, \frac{\boldsymbol{\beta}^\top \mathbf{Q}\boldsymbol{\beta}}{2} + b \right)
 \end{align*}\]</span></p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(Matrix)</span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(TruncatedNormal)</span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(tokyorain, <span class="at">package =</span> <span class="st">"hecbayes"</span>)</span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Aggregate data</span></span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>tokyo <span class="ot">&lt;-</span> tokyorain <span class="sc">|&gt;</span> </span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>   dplyr<span class="sc">::</span><span class="fu">group_by</span>(day) <span class="sc">|&gt;</span></span>
-<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>   dplyr<span class="sc">::</span><span class="fu">summarize</span>(<span class="at">y =</span> <span class="fu">sum</span>(y), <span class="at">n =</span> dplyr<span class="sc">::</span><span class="fu">n</span>())</span>
-<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>nt <span class="ot">&lt;-</span> <span class="dv">366</span>L</span>
-<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Circulant random walk of order two precision matrix</span></span>
-<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>Q <span class="ot">&lt;-</span> hecbayes<span class="sc">::</span><span class="fu">crw_Q</span>(<span class="at">d =</span> nt, <span class="at">type =</span> <span class="st">"rw2"</span>, <span class="at">sparse =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Sparse Cholesky root</span></span>
-<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>cholQ <span class="ot">&lt;-</span> Matrix<span class="sc">::</span><span class="fu">chol</span>(Q)</span>
-<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>N <span class="ot">&lt;-</span> Matrix<span class="sc">::</span><span class="fu">Diagonal</span>(<span class="at">n =</span> nt, <span class="at">x =</span> tokyo<span class="sc">$</span>n)</span>
-<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a><span class="co"># Create containers</span></span>
-<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>B <span class="ot">&lt;-</span> <span class="fl">1e4</span>L <span class="co"># number of draws</span></span>
-<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>beta_s <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="at">nrow =</span> B, <span class="at">ncol =</span> nt)</span>
-<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>x_s <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="at">nrow =</span> B, <span class="at">ncol =</span> nt)</span>
-<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>tau_s <span class="ot">&lt;-</span> <span class="fu">numeric</span>(B)</span>
-<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a><span class="co"># Initial values</span></span>
-<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>beta <span class="ot">&lt;-</span> <span class="fu">rep</span>(<span class="dv">0</span>, nt)</span>
-<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a>tau <span class="ot">&lt;-</span> <span class="dv">1000</span></span>
-<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a><span class="co"># Hyperprior parameter values</span></span>
-<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a>tau_a <span class="ot">&lt;-</span> <span class="dv">1</span></span>
-<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a>tau_b <span class="ot">&lt;-</span> <span class="fl">0.0001</span></span>
-<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a><span class="co"># Gibbs sampling</span></span>
-<span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span>(b <span class="cf">in</span> <span class="fu">seq_len</span>(B)){</span>
-<span id="cb2-27"><a href="#cb2-27" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Step 1: data augmentation</span></span>
-<span id="cb2-28"><a href="#cb2-28" aria-hidden="true" tabindex="-1"></a>  x <span class="ot">&lt;-</span> TruncatedNormal<span class="sc">::</span><span class="fu">rtnorm</span>(</span>
-<span id="cb2-29"><a href="#cb2-29" aria-hidden="true" tabindex="-1"></a>    <span class="at">n =</span> <span class="dv">1</span>,  <span class="at">mu =</span> beta[tokyorain<span class="sc">$</span>day], <span class="at">sd =</span> <span class="dv">1</span>,</span>
-<span id="cb2-30"><a href="#cb2-30" aria-hidden="true" tabindex="-1"></a>    <span class="at">lb =</span> <span class="fu">ifelse</span>(tokyorain<span class="sc">$</span>y <span class="sc">==</span> <span class="dv">0</span>, <span class="sc">-</span><span class="cn">Inf</span>, <span class="dv">0</span>),</span>
-<span id="cb2-31"><a href="#cb2-31" aria-hidden="true" tabindex="-1"></a>    <span class="at">ub =</span> <span class="fu">ifelse</span>(tokyorain<span class="sc">$</span>y <span class="sc">==</span> <span class="dv">0</span>, <span class="dv">0</span>, <span class="cn">Inf</span>))</span>
-<span id="cb2-32"><a href="#cb2-32" aria-hidden="true" tabindex="-1"></a>  tx <span class="ot">&lt;-</span> <span class="fu">aggregate</span>(<span class="at">x =</span> x, <span class="at">by =</span> <span class="fu">list</span>(tokyorain<span class="sc">$</span>day), <span class="at">FUN =</span> sum)<span class="sc">$</span>x</span>
-<span id="cb2-33"><a href="#cb2-33" aria-hidden="true" tabindex="-1"></a>  x_s[b,] <span class="ot">&lt;-</span> tx</span>
-<span id="cb2-34"><a href="#cb2-34" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Step 2: Simulate random effects in block</span></span>
-<span id="cb2-35"><a href="#cb2-35" aria-hidden="true" tabindex="-1"></a>  beta <span class="ot">&lt;-</span> beta_s[b,] <span class="ot">&lt;-</span> <span class="fu">c</span>(hecbayes<span class="sc">::</span><span class="fu">rGaussQ</span>(</span>
-<span id="cb2-36"><a href="#cb2-36" aria-hidden="true" tabindex="-1"></a>    <span class="at">n =</span> <span class="dv">1</span>,</span>
-<span id="cb2-37"><a href="#cb2-37" aria-hidden="true" tabindex="-1"></a>    <span class="at">b =</span> tx, </span>
-<span id="cb2-38"><a href="#cb2-38" aria-hidden="true" tabindex="-1"></a>    <span class="at">Q =</span> tau <span class="sc">*</span> Q <span class="sc">+</span> N))</span>
-<span id="cb2-39"><a href="#cb2-39" aria-hidden="true" tabindex="-1"></a><span class="co"># Simulate precision</span></span>
-<span id="cb2-40"><a href="#cb2-40" aria-hidden="true" tabindex="-1"></a>  tau <span class="ot">&lt;-</span> tau_s[b] <span class="ot">&lt;-</span> <span class="fu">rgamma</span>(</span>
-<span id="cb2-41"><a href="#cb2-41" aria-hidden="true" tabindex="-1"></a>    <span class="at">n =</span> <span class="dv">1</span>, </span>
-<span id="cb2-42"><a href="#cb2-42" aria-hidden="true" tabindex="-1"></a>    <span class="at">shape =</span> (nt<span class="dv">-1</span>)<span class="sc">/</span><span class="dv">2</span> <span class="sc">+</span> tau_a, </span>
-<span id="cb2-43"><a href="#cb2-43" aria-hidden="true" tabindex="-1"></a>    <span class="at">rate =</span> <span class="fl">0.5</span><span class="sc">*</span><span class="fu">as.numeric</span>(<span class="fu">crossprod</span>(cholQ <span class="sc">%*%</span> beta)) <span class="sc">+</span> tau_b)</span>
-<span id="cb2-44"><a href="#cb2-44" aria-hidden="true" tabindex="-1"></a>  <span class="co"># if beta is VERY smooth, then precision is large</span></span>
-<span id="cb2-45"><a href="#cb2-45" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(Matrix)</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(TruncatedNormal)</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(tokyorain, <span class="at">package =</span> <span class="st">"hecbayes"</span>)</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Aggregate data</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>tokyo <span class="ot">&lt;-</span> tokyorain <span class="sc">|&gt;</span> </span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>   dplyr<span class="sc">::</span><span class="fu">group_by</span>(day) <span class="sc">|&gt;</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>   dplyr<span class="sc">::</span><span class="fu">summarize</span>(<span class="at">y =</span> <span class="fu">sum</span>(y), <span class="at">n =</span> dplyr<span class="sc">::</span><span class="fu">n</span>())</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>nt <span class="ot">&lt;-</span> <span class="dv">366</span>L</span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Circulant random walk of order two precision matrix</span></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>Q <span class="ot">&lt;-</span> hecbayes<span class="sc">::</span><span class="fu">crw_Q</span>(<span class="at">d =</span> nt, <span class="at">type =</span> <span class="st">"rw2"</span>, <span class="at">sparse =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Sparse Cholesky root</span></span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>cholQ <span class="ot">&lt;-</span> Matrix<span class="sc">::</span><span class="fu">chol</span>(Q)</span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>N <span class="ot">&lt;-</span> Matrix<span class="sc">::</span><span class="fu">Diagonal</span>(<span class="at">n =</span> nt, <span class="at">x =</span> tokyo<span class="sc">$</span>n)</span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a><span class="co"># Create containers</span></span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>B <span class="ot">&lt;-</span> <span class="fl">1e4</span>L <span class="co"># number of draws</span></span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>beta_s <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="at">nrow =</span> B, <span class="at">ncol =</span> nt)</span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>x_s <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="at">nrow =</span> B, <span class="at">ncol =</span> nt)</span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>tau_s <span class="ot">&lt;-</span> <span class="fu">numeric</span>(B)</span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a><span class="co"># Initial values</span></span>
+<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a>beta <span class="ot">&lt;-</span> <span class="fu">rep</span>(<span class="dv">0</span>, nt)</span>
+<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a>tau <span class="ot">&lt;-</span> <span class="dv">1000</span></span>
+<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a><span class="co"># Hyperprior parameter values</span></span>
+<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a>tau_a <span class="ot">&lt;-</span> <span class="dv">1</span></span>
+<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a>tau_b <span class="ot">&lt;-</span> <span class="fl">0.0001</span></span>
+<span id="cb3-25"><a href="#cb3-25" aria-hidden="true" tabindex="-1"></a><span class="co"># Gibbs sampling</span></span>
+<span id="cb3-26"><a href="#cb3-26" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span>(b <span class="cf">in</span> <span class="fu">seq_len</span>(B)){</span>
+<span id="cb3-27"><a href="#cb3-27" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Step 1: data augmentation</span></span>
+<span id="cb3-28"><a href="#cb3-28" aria-hidden="true" tabindex="-1"></a>  x <span class="ot">&lt;-</span> TruncatedNormal<span class="sc">::</span><span class="fu">rtnorm</span>(</span>
+<span id="cb3-29"><a href="#cb3-29" aria-hidden="true" tabindex="-1"></a>    <span class="at">n =</span> <span class="dv">1</span>,  <span class="at">mu =</span> beta[tokyorain<span class="sc">$</span>day], <span class="at">sd =</span> <span class="dv">1</span>,</span>
+<span id="cb3-30"><a href="#cb3-30" aria-hidden="true" tabindex="-1"></a>    <span class="at">lb =</span> <span class="fu">ifelse</span>(tokyorain<span class="sc">$</span>y <span class="sc">==</span> <span class="dv">0</span>, <span class="sc">-</span><span class="cn">Inf</span>, <span class="dv">0</span>),</span>
+<span id="cb3-31"><a href="#cb3-31" aria-hidden="true" tabindex="-1"></a>    <span class="at">ub =</span> <span class="fu">ifelse</span>(tokyorain<span class="sc">$</span>y <span class="sc">==</span> <span class="dv">0</span>, <span class="dv">0</span>, <span class="cn">Inf</span>))</span>
+<span id="cb3-32"><a href="#cb3-32" aria-hidden="true" tabindex="-1"></a>  tx <span class="ot">&lt;-</span> <span class="fu">aggregate</span>(<span class="at">x =</span> x, <span class="at">by =</span> <span class="fu">list</span>(tokyorain<span class="sc">$</span>day), <span class="at">FUN =</span> sum)<span class="sc">$</span>x</span>
+<span id="cb3-33"><a href="#cb3-33" aria-hidden="true" tabindex="-1"></a>  x_s[b,] <span class="ot">&lt;-</span> tx</span>
+<span id="cb3-34"><a href="#cb3-34" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Step 2: Simulate random effects in block</span></span>
+<span id="cb3-35"><a href="#cb3-35" aria-hidden="true" tabindex="-1"></a>  beta <span class="ot">&lt;-</span> beta_s[b,] <span class="ot">&lt;-</span> <span class="fu">c</span>(hecbayes<span class="sc">::</span><span class="fu">rGaussQ</span>(</span>
+<span id="cb3-36"><a href="#cb3-36" aria-hidden="true" tabindex="-1"></a>    <span class="at">n =</span> <span class="dv">1</span>,</span>
+<span id="cb3-37"><a href="#cb3-37" aria-hidden="true" tabindex="-1"></a>    <span class="at">b =</span> tx, </span>
+<span id="cb3-38"><a href="#cb3-38" aria-hidden="true" tabindex="-1"></a>    <span class="at">Q =</span> tau <span class="sc">*</span> Q <span class="sc">+</span> N))</span>
+<span id="cb3-39"><a href="#cb3-39" aria-hidden="true" tabindex="-1"></a><span class="co"># Simulate precision</span></span>
+<span id="cb3-40"><a href="#cb3-40" aria-hidden="true" tabindex="-1"></a>  tau <span class="ot">&lt;-</span> tau_s[b] <span class="ot">&lt;-</span> <span class="fu">rgamma</span>(</span>
+<span id="cb3-41"><a href="#cb3-41" aria-hidden="true" tabindex="-1"></a>    <span class="at">n =</span> <span class="dv">1</span>, </span>
+<span id="cb3-42"><a href="#cb3-42" aria-hidden="true" tabindex="-1"></a>    <span class="at">shape =</span> (nt<span class="dv">-1</span>)<span class="sc">/</span><span class="dv">2</span> <span class="sc">+</span> tau_a, </span>
+<span id="cb3-43"><a href="#cb3-43" aria-hidden="true" tabindex="-1"></a>    <span class="at">rate =</span> <span class="fl">0.5</span><span class="sc">*</span><span class="fu">as.numeric</span>(<span class="fu">crossprod</span>(cholQ <span class="sc">%*%</span> beta)) <span class="sc">+</span> tau_b)</span>
+<span id="cb3-44"><a href="#cb3-44" aria-hidden="true" tabindex="-1"></a>  <span class="co"># if beta is VERY smooth, then precision is large</span></span>
+<span id="cb3-45"><a href="#cb3-45" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
 <div class="cell-output-display">
@@ -651,7 +753,7 @@ p(\boldsymbol{\beta}, \tau) &amp;\propto \tau^{(n-1)/2}\exp \left( - \frac{\tau}
 <img src="workflow_files/figure-html/fig-tokyo-post1-1.png" class="img-fluid figure-img" width="672">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-tokyo-post1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;7.7: Trace plots (top) and correlograms (bottom) for two parameters of the Gibbs sampler for the Tokyo rainfall data, with block updates.
+Figure&nbsp;7.9: Trace plots (top) and correlograms (bottom) for two parameters of the Gibbs sampler for the Tokyo rainfall data, with block updates.
 </figcaption>
 </figure>
 </div>
@@ -665,7 +767,7 @@ Figure&nbsp;7.7: Trace plots (top) and correlograms (bottom) for two parameters 
 <img src="workflow_files/figure-html/fig-rainfall-1.png" class="img-fluid figure-img" width="672">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-rainfall-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;7.8: Tokyo rainfall fitted median probability with 50% and 89% pointwise credible intervals as a function of time of the year, with the proportion of days of rain (points).
+Figure&nbsp;7.10: Tokyo rainfall fitted median probability with 50% and 89% pointwise credible intervals as a function of time of the year, with the proportion of days of rain (points).
 </figcaption>
 </figure>
 </div>
@@ -673,23 +775,23 @@ Figure&nbsp;7.8: Tokyo rainfall fitted median probability with 50% and 89% point
 </div>
 </div>
 <div id="exm-blocking-rainfall" class="theorem example">
-<p><span class="theorem-title"><strong>Example 7.4 (Blocking)</strong></span> We revisit <a href="#exm-Tokyo-rainfall" class="quarto-xref">Example&nbsp;<span>7.3</span></a> with two modifications: imputing one parameter <span class="math inline">\(\beta_t\)</span> at a time using random scan Gibbs step, which leads to slower mixing but univariate updates, and a joint update that first draws <span class="math inline">\(\tau^{\star}\)</span> from some proposal distribution, then sample conditional on that value generates the <span class="math inline">\(\boldsymbol{\beta}\)</span> vector and proposes acceptance using a Metropolis step.</p>
+<p><span class="theorem-title"><strong>Example 7.7 (Blocking)</strong></span> We revisit <a href="#exm-Tokyo-rainfall" class="quarto-xref">Example&nbsp;<span>7.6</span></a> with two modifications: imputing one parameter <span class="math inline">\(\beta_t\)</span> at a time using random scan Gibbs step, which leads to slower mixing but univariate updates, and a joint update that first draws <span class="math inline">\(\tau^{\star}\)</span> from some proposal distribution, then sample conditional on that value generates the <span class="math inline">\(\boldsymbol{\beta}\)</span> vector and proposes acceptance using a Metropolis step.</p>
 <p>A different (less efficient) strategy would be to simulate the <span class="math inline">\(\beta_t\)</span> terms one at a time using a random scan Gibbs, i.e., picking <span class="math inline">\(t_0 \in \{1, \ldots, 366\}\)</span> and looping over indices. This yields higher autocorrelation between components than sampling by block.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Compute mean vector for betas</span></span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  mbeta <span class="ot">&lt;-</span> Matrix<span class="sc">::</span><span class="fu">solve</span>(<span class="at">a =</span> tau<span class="sc">*</span>Q <span class="sc">+</span> N, <span class="at">b =</span> tx)</span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  <span class="co"># weights of precision for neighbours</span></span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>  nw <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="sc">-</span><span class="dv">4</span>, <span class="sc">-</span><span class="dv">4</span>, <span class="dv">1</span>)</span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Sample an index at random</span></span>
-<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>  st <span class="ot">&lt;-</span> <span class="fu">sample.int</span>(nt, <span class="dv">1</span>)</span>
-<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span>(i <span class="cf">in</span> (st <span class="sc">+</span> <span class="fu">seq_len</span>(nt)) <span class="sc">%%</span> nt <span class="sc">+</span> <span class="dv">1</span>L){</span>
-<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>   <span class="co"># Indices of the non-zero entries for row Q[i,]</span></span>
-<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>  nh <span class="ot">&lt;-</span> <span class="fu">c</span>(i<span class="dv">-3</span>, i<span class="dv">-2</span>, i, i<span class="sc">+</span><span class="dv">1</span>) <span class="sc">%%</span> <span class="dv">366</span> <span class="sc">+</span> <span class="dv">1</span></span>
-<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>  prec <span class="ot">&lt;-</span> tau <span class="sc">*</span> <span class="dv">6</span> <span class="sc">+</span> tokyo<span class="sc">$</span>n[i]</span>
-<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>  condmean <span class="ot">&lt;-</span> mbeta[i] <span class="sc">-</span> <span class="fu">sum</span>(nw<span class="sc">*</span>(beta[nh] <span class="sc">-</span> mbeta[nh])) <span class="sc">*</span> tau <span class="sc">/</span> prec</span>
-<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>    beta[i] <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(<span class="at">n =</span> <span class="dv">1</span>, <span class="at">mean =</span> condmean, <span class="at">sd =</span> <span class="dv">1</span><span class="sc">/</span><span class="fu">sqrt</span>(prec))</span>
-<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>  }</span>
-<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>  beta_s[b,] <span class="ot">&lt;-</span> beta</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Compute mean vector for betas</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  mbeta <span class="ot">&lt;-</span> Matrix<span class="sc">::</span><span class="fu">solve</span>(<span class="at">a =</span> tau<span class="sc">*</span>Q <span class="sc">+</span> N, <span class="at">b =</span> tx)</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>  <span class="co"># weights of precision for neighbours</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>  nw <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="sc">-</span><span class="dv">4</span>, <span class="sc">-</span><span class="dv">4</span>, <span class="dv">1</span>)</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Sample an index at random</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>  st <span class="ot">&lt;-</span> <span class="fu">sample.int</span>(nt, <span class="dv">1</span>)</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span>(i <span class="cf">in</span> (st <span class="sc">+</span> <span class="fu">seq_len</span>(nt)) <span class="sc">%%</span> nt <span class="sc">+</span> <span class="dv">1</span>L){</span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>   <span class="co"># Indices of the non-zero entries for row Q[i,]</span></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>  nh <span class="ot">&lt;-</span> <span class="fu">c</span>(i<span class="dv">-3</span>, i<span class="dv">-2</span>, i, i<span class="sc">+</span><span class="dv">1</span>) <span class="sc">%%</span> <span class="dv">366</span> <span class="sc">+</span> <span class="dv">1</span></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>  prec <span class="ot">&lt;-</span> tau <span class="sc">*</span> <span class="dv">6</span> <span class="sc">+</span> tokyo<span class="sc">$</span>n[i]</span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>  condmean <span class="ot">&lt;-</span> mbeta[i] <span class="sc">-</span> <span class="fu">sum</span>(nw<span class="sc">*</span>(beta[nh] <span class="sc">-</span> mbeta[nh])) <span class="sc">*</span> tau <span class="sc">/</span> prec</span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>    beta[i] <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(<span class="at">n =</span> <span class="dv">1</span>, <span class="at">mean =</span> condmean, <span class="at">sd =</span> <span class="dv">1</span><span class="sc">/</span><span class="fu">sqrt</span>(prec))</span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>  beta_s[b,] <span class="ot">&lt;-</span> beta</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
 <div class="cell-output-display">
@@ -699,7 +801,7 @@ Figure&nbsp;7.8: Tokyo rainfall fitted median probability with 50% and 89% point
 <img src="workflow_files/figure-html/fig-tokyo-post2-1.png" class="img-fluid figure-img" width="672">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-tokyo-post2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;7.9: Trace plots (top) and correlograms (bottom) for two parameters of the Gibbs sampler for the Tokyo rainfall data, with individual updates for <span class="math inline">\(\beta_t\)</span>.
+Figure&nbsp;7.11: Trace plots (top) and correlograms (bottom) for two parameters of the Gibbs sampler for the Tokyo rainfall data, with individual updates for <span class="math inline">\(\beta_t\)</span>.
 </figcaption>
 </figure>
 </div>
@@ -718,7 +820,7 @@ q(\boldsymbol{\beta} \mid \tau, \boldsymbol{\beta}^0)  \sim \mathsf{Gauss}_{366}
 </div>
 <p>Strong dependence can be fixed by blocking (often via forward sampling), but perhaps conterintuitively also be adding additional redundant parameters. <span class="citation" data-cites="Gelman:2013">Gelman et al. (<a href="references.html#ref-Gelman:2013" role="doc-biblioref">2013</a>)</span> consider a simple hierarchical random effect model in which the range of the random effects is severely constrained by the variance.</p>
 <div id="exm-parameter-expansion" class="theorem example">
-<p><span class="theorem-title"><strong>Example 7.5 (Parameter expansion)</strong></span> Consider a one-way ANOVA with a single observation per group, where for <span class="math inline">\(i=1, \ldots, n,\)</span> we have <span class="math display">\[\begin{align*}
+<p><span class="theorem-title"><strong>Example 7.8 (Parameter expansion)</strong></span> Consider a one-way ANOVA with a single observation per group, where for <span class="math inline">\(i=1, \ldots, n,\)</span> we have <span class="math display">\[\begin{align*}
 Y_{i} &amp;\sim \mathsf{Gauss}(\mu + \alpha_i, s^2_i) \\
 \alpha_i &amp;\sim \mathsf{Gauss}(0, \sigma^2_\alpha)
 \end{align*}\]</span> and an improper prior for the mean <span class="math inline">\(p(\mu) \propto 1.\)</span> If there are <span class="math inline">\(K\)</span> groups, then the group-specific mean is <span class="math inline">\(\mu+\alpha_k\)</span>, and there is a redundant parameter. In the Bayesian setting, the parameters are weakly identifiable because of the prior on <span class="math inline">\(\boldsymbol{\alpha}\)</span>, but the geometry is such that <span class="math inline">\(\alpha_k \to 0\)</span> as <span class="math inline">\(\sigma^2_{\alpha} \to 0.\)</span> See <a href="https://users.aalto.fi/~ave/BDA3.pdf">Section 5.5</a> on p.&nbsp;119 of <span class="citation" data-cites="Gelman:2013">Gelman et al. (<a href="references.html#ref-Gelman:2013" role="doc-biblioref">2013</a>)</span> for more details.</p>
@@ -734,7 +836,7 @@ Y_{i} &amp;\sim \mathsf{Gauss}(\mu + \nu\xi_i, s^2_i) \\
 \end{align*}\]</span> where <span class="math inline">\(s^{-2}_{\mu} =\sum_{j=1}^8 s_j^{-2}.\)</span></p>
 <p>The parameter expansion sampler proceeds in exactly the same way with the same conditionals for <span class="math inline">\(\sigma_{\xi}^2\)</span> and <span class="math inline">\(\boldsymbol{\xi}\)</span> as above; the only additional step is <span class="math display">\[\begin{align*}
 \nu \mid \boldsymbol{y}, \boldsymbol{s}^2, \boldsymbol{\xi} &amp; \sim \mathsf{Gauss}\left\{ \left( \sum_{j=1}^8 \xi_j^2/s_j^2\right)^{-1} \sum_{j=1}^8 \xi_j(y_j-\mu)/s^2_j, \left( \sum_{j=1}^8 \xi_j^2/s_j^2\right)^{-1}\right\}.
-\end{align*}\]</span> After each update, we then save the progress of <span class="math inline">\(\alpha_j = \nu \xi_j\)</span> and <span class="math inline">\(\sigma_\alpha = |\nu|\sigma_\xi,\)</span> as the other parameters are not identifiable on their own. The redundant parametrization allows one to more efficiently explore the space. <a href="#fig-funnel" class="quarto-xref">Figure&nbsp;<span>7.10</span></a> shows that many regions with small variance are not explored after 1000 iterations of the Gibbs sampler. The geometry exhibited by <a href="#fig-funnel" class="quarto-xref">Figure&nbsp;<span>7.10</span></a> is typical of hierarchical construction and complicated for more complex solvers like Hamiltonian Monte Carlo, which will report warnings.</p>
+\end{align*}\]</span> After each update, we then save the progress of <span class="math inline">\(\alpha_j = \nu \xi_j\)</span> and <span class="math inline">\(\sigma_\alpha = |\nu|\sigma_\xi,\)</span> as the other parameters are not identifiable on their own. The redundant parametrization allows one to more efficiently explore the space. <a href="#fig-funnel" class="quarto-xref">Figure&nbsp;<span>7.12</span></a> shows that many regions with small variance are not explored after 1000 iterations of the Gibbs sampler. The geometry exhibited by <a href="#fig-funnel" class="quarto-xref">Figure&nbsp;<span>7.12</span></a> is typical of hierarchical construction and complicated for more complex solvers like Hamiltonian Monte Carlo, which will report warnings.</p>
 <div class="cell">
 <div class="cell-output-display">
 <div id="fig-funnel" class="quarto-float quarto-figure quarto-figure-center anchored">
@@ -743,7 +845,7 @@ Y_{i} &amp;\sim \mathsf{Gauss}(\mu + \nu\xi_i, s^2_i) \\
 <img src="workflow_files/figure-html/fig-funnel-1.png" class="img-fluid figure-img" width="672">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-funnel-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;7.10: Dependence between random effect and it’s variance, showing a funnel pattern. The block Gibbs sample (left) does not explore the whole posterior, whereas the parameter-expansion algorithm (right) does.
+Figure&nbsp;7.12: Dependence between random effect and it’s variance, showing a funnel pattern. The block Gibbs sample (left) does not explore the whole posterior, whereas the parameter-expansion algorithm (right) does.
 </figcaption>
 </figure>
 </div>
@@ -758,6 +860,9 @@ Andrieu, Christophe, and Gareth O. Roberts. 2009. <span>“The Pseudo-Marginal A
 </div>
 <div id="ref-Beaumont:2003" class="csl-entry" role="listitem">
 Beaumont, Mark A. 2003. <span>“Estimation of Population Growth or Decline in Genetically Monitored Populations.”</span> <em>Genetics</em> 164 (3): 1139–60. <a href="https://doi.org/10.1093/genetics/164.3.1139">https://doi.org/10.1093/genetics/164.3.1139</a>.
+</div>
+<div id="ref-Brodeur:2021" class="csl-entry" role="listitem">
+Brodeur, Mathieu, Perrine Ruer, Pierre-Majorique Léger, and Sylvain Sénécal. 2021. <span>“Smartwatches Are More Distracting Than Mobile Phones While Driving: Results from an Experimental Study.”</span> <em>Accident Analysis &amp; Prevention</em> 149: 105846. <a href="https://doi.org/10.1016/j.aap.2020.105846">https://doi.org/10.1016/j.aap.2020.105846</a>.
 </div>
 <div id="ref-Gabry:2019" class="csl-entry" role="listitem">
 Gabry, Jonah, Daniel Simpson, Aki Vehtari, Michael Betancourt, and Andrew Gelman. 2019. <span>“<span class="nocase">Visualization in <span>B</span>ayesian Workflow</span>.”</span> <em>Journal of the Royal Statistical Society Series A: Statistics in Society</em> 182 (2): 389–402. <a href="https://doi.org/10.1111/rssa.12378">https://doi.org/10.1111/rssa.12378</a>.
@@ -777,12 +882,6 @@ Gelman, Andrew, and Donald B. Rubin. 1992. <span>“Inference from Iterative Sim
 <div id="ref-Gelman:2020" class="csl-entry" role="listitem">
 Gelman, Andrew, Aki Vehtari, Daniel Simpson, Charles C Margossian, Bob Carpenter, Yuling Yao, Lauren Kennedy, Jonah Gabry, Paul-Christian Bürkner, and Martin Modrák. 2020. <span>“Bayesian Workflow.”</span> <em>arXiv</em>. https://doi.org/<a href="https://doi.org/10.48550/arXiv.2011.01808">https://doi.org/10.48550/arXiv.2011.01808</a>.
 </div>
-<div id="ref-Geweke:1992" class="csl-entry" role="listitem">
-Geweke, John. 1992. <span>“Evaluating the Accuracy of Sampling-Based Approaches to the Calculation of Posterior Moments.”</span> In <em>Bayesian Statistics 4: Proceedings of the Fourth Valencia International Meeting, Dedicated to the Memory of Morris h. DeGroot, 1931–1989</em>. Oxford University Press. <a href="https://doi.org/10.1093/oso/9780198522669.003.0010">https://doi.org/10.1093/oso/9780198522669.003.0010</a>.
-</div>
-<div id="ref-Geweke:2004" class="csl-entry" role="listitem">
-———. 2004. <span>“Getting It Right: Joint Distribution Tests of Posterior Simulators.”</span> <em>Journal of the American Statistical Association</em> 99 (467): 799–804. <a href="https://doi.org/10.1198/016214504000001132">https://doi.org/10.1198/016214504000001132</a>.
-</div>
 <div id="ref-Kitagawa:1987" class="csl-entry" role="listitem">
 Kitagawa, Genshiro. 1987. <span>“Non-<span>G</span>aussian State–Space Modeling of Nonstationary Time Series.”</span> <em>Journal of the American Statistical Association</em> 82 (400): 1032–41. <a href="https://doi.org/10.1080/01621459.1987.10478534">https://doi.org/10.1080/01621459.1987.10478534</a>.
 </div>
@@ -795,17 +894,11 @@ Plummer, Martyn, Nicky Best, Kate Cowles, and Karen Vines. 2006. <span>“<span>
 <div id="ref-Rue.Held:2005" class="csl-entry" role="listitem">
 Rue, H., and L. Held. 2005. <em><span>G</span>aussian <span>M</span>arkov Random Fields: Theory and Applications</em>. Chapman &amp; Hall/CRC Monographs on Statistics &amp; Applied Probability. Boca Raton: CRC Press.
 </div>
-<div id="ref-Sailynoja:2022" class="csl-entry" role="listitem">
-Säilynoja, Teemu, Paul-Christian Bürkner, and Aki Vehtari. 2022. <span>“Graphical Test for Discrete Uniformity and Its Applications in Goodness-of-Fit Evaluation and Multiple Sample Comparison.”</span> <em>Statistics and Computing</em> 32 (2): 32. <a href="https://doi.org/10.1007/s11222-022-10090-6">https://doi.org/10.1007/s11222-022-10090-6</a>.
-</div>
 <div id="ref-Spiegelhalter:2014" class="csl-entry" role="listitem">
 Spiegelhalter, David J., Nicola G. Best, Bradley P. Carlin, and Angelika Linde. 2014. <span>“The Deviance Information Criterion: 12 Years On.”</span> <em>Journal of the Royal Statistical Society Series B: Statistical Methodology</em> 76 (3): 485–93. <a href="https://doi.org/10.1111/rssb.12062">https://doi.org/10.1111/rssb.12062</a>.
 </div>
 <div id="ref-Spiegelhalter:2002" class="csl-entry" role="listitem">
 Spiegelhalter, David J., Nicola G. Best, Bradley P. Carlin, and Angelika Van Der Linde. 2002. <span>“Bayesian Measures of Model Complexity and Fit.”</span> <em>Journal of the Royal Statistical Society: Series B (Statistical Methodology)</em> 64 (4): 583–639. <a href="https://doi.org/10.1111/1467-9868.00353">https://doi.org/10.1111/1467-9868.00353</a>.
-</div>
-<div id="ref-Talts:2020" class="csl-entry" role="listitem">
-Talts, Sean, Michael Betancourt, Daniel Simpson, Aki Vehtari, and Andrew Gelman. 2020. <span>“Validating <span>B</span>ayesian Inference Algorithms with Simulation-Based Calibration.”</span> <a href="https://doi.org/10.48550/arXiv.1804.06788">https://doi.org/10.48550/arXiv.1804.06788</a>.
 </div>
 <div id="ref-Vehtari.Gelman.Gabry:2017" class="csl-entry" role="listitem">
 Vehtari, Aki, Andrew Gelman, and Jonah Gabry. 2017. <span>“Practical <span>B</span>ayesian Model Evaluation Using Leave-One-Out Cross-Validation and <span>WAIC</span>.”</span> <em>Statistics and Computing</em> 27 (5): 1413–32. <a href="https://doi.org/10.1007/s11222-016-9696-4">https://doi.org/10.1007/s11222-016-9696-4</a>.
