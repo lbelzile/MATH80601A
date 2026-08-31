@@ -769,8 +769,7 @@ We can then create a probability-probability plot with these values by comparing
 #| eval: false
 #| echo: true
 #| code-fold: true
-is_wgt <- exp(-loglik_pt) # log weights
-# importance sampling estimator
+# LOO-CV P-P plot with importance sampling estimator
 ploo <- numeric(n)
 for(i in seq_along(y)){
  ploo[i] <- weighted.mean(x = I(postpred[,i] <= y[i]), w = is_wgt[,i])
