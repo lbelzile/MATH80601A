@@ -62,9 +62,7 @@ $$ {#eq-posterior}
 The posterior $p(\boldsymbol{\theta} \mid \boldsymbol{y})$ is proportional, as a function of $\theta,$ to the product of the likelihood and the prior function. 
 
 
-For the posterior to be **proper**, we need the product of the prior and the likelihood on the right hand side to be integrable as a function of $\boldsymbol{\theta}$ over the parameter domain $\boldsymbol{\Theta}.$ The integral in the denominator, termed marginal likelihood or prior predictive distribution and denoted $p(\boldsymbol{y}) = \mathsf{E}_{\boldsymbol{\theta}}\{p(\boldsymbol{y} \mid \boldsymbol{\theta})\}.$ It represents the distribution of the data before data collection, the respective weights being governed by the prior probability of different parameters values. The denominator of @eq-posterior is a normalizing constant, making the posterior density integrate to unity. The marginal likelihood plays a central role in Bayesian testing. 
-
-If $\boldsymbol{\theta}$ is low dimensional, numerical integration such as quadrature methods can be used to compute the marginal likelihood. 
+For the posterior to be **proper**, we need the product of the prior and the likelihood on the right hand side to be integrable as a function of $\boldsymbol{\theta}$ over the parameter domain $\boldsymbol{\Theta}.$ The integral in the denominator, $p(\boldsymbol{y}) = \mathsf{E}_{\boldsymbol{\theta}}\{p(\boldsymbol{y} \mid \boldsymbol{\theta})\},$, is termed marginal likelihood or prior predictive distribution: it represents the distribution of the data before data collection, the respective weights being governed by the prior probability of different parameters values. The denominator of @eq-posterior is a normalizing constant, making the posterior density integrate to unity. The marginal likelihood plays a central role in Bayesian testing and needs to be estimated should one try to calculate moments of the posterior via analytical approximations. If $\boldsymbol{\theta}$ is low dimensional, numerical integration such as quadrature methods can be used to compute the marginal likelihood. 
 
 To fix ideas, we consider next a simple one-parameter model where the marginal likelihood can be computed explicitly.
 
@@ -306,6 +304,7 @@ p_{Y}(y) = \binom{n}{y} \frac{\mathrm{beta}(\alpha + y, \beta + n - y)}{\mathrm{
 \end{align*}
 where $\mathrm{beta}(\alpha, \beta) = \Gamma(\alpha)\Gamma(\beta)/\Gamma(\alpha+\beta)$ is the beta function, expressed in terms of gamma functions.
 
+<!--
 Consider three models with $Y \mid P^{(i)}=p, \mathcal{M}_i \sim \mathsf{binom}(n, p)$ for $i=1, 2, 3$ and uniform, point mass and beta priors $P^{(1)}\sim \mathsf{unif}(0,1),$  $P^{(2)} \sim \mathsf{beta}(3/2, 3/2)$ and $P^{(3)}\sim \mathsf{1}_{p=0.5}.$ For $\mathcal{M}_3,$ the marginal likelihood is simply equal to the binomial distribution with $p=0.5.$
 
 If $n=14,$ but we let instead the number of success varies, the models that put more mass closer to the ratio $y/n$ will be favored. The uniform prior in model $\mathcal{M}_1$ will have a higher Bayes factor than model $\mathcal{M}_2$ or $\mathcal{M}_3$ for values closer to $p=0$ or $p=1,$ but there is mild evidence as shown in @fig-bayesfactor.
@@ -313,13 +312,15 @@ If $n=14,$ but we let instead the number of success varies, the models that put 
 ```{r}
 #| eval: true
 #| echo: true
-# Log of marginal posterior for binom with beta prior (default is uniform)
+# Log of marginal posterior for binomial with beta prior (default is uniform)
 log_marg_post_beta <- function(n, y, alpha = 1, beta = 1){
   lchoose(n, y) + lbeta(alpha + y, beta + n - y) - lbeta(alpha, beta)
 }
 # Log of Bayes factor
-logBF2vs3 <- function(y, n){ # model 2 (beta(1.5,1.5) vs 3 (point mass at 0.5)
-  log_marg_post_beta(n = n, y = y, alpha = 1.5, beta = 1.5) - dbinom(x = y, size = n, prob = 0.5, log = TRUE)
+logBF2vs3 <- function(y, n){ 
+  # model 2 (beta(1.5,1.5) vs 3 (point mass at 0.5)
+  log_marg_post_beta(n = n, y = y, alpha = 1.5, beta = 1.5) - 
+    dbinom(x = y, size = n, prob = 0.5, log = TRUE)
 }
 ```
 
@@ -344,6 +345,8 @@ ggplot(data = data.frame(
    labs(x = "number of successes out of 14 trials", y = "", subtitle = "log of Bayes factor")
 # plot(ys, BFs, bty = "l", type = "b", ylab = "Bayes factor")
 ```  
+
+-->
 
 :::
 
@@ -539,7 +542,7 @@ When $\boldsymbol{\theta}$ is high-dimensional, the marginal likelihood is intra
 
 ## Importance of selling format
 
-@Duke.Amir:2023 consider the difference between integrated and sequential format for sales. The `sellingformat` dataset contains $n=397$ observations split into two groups: quantity-integrated decision (decide the amount to buy) and quantity-sequential (first select buy, then select the amount). Participants of the study were randomly allocated to either of these two format and their decision, either buy, `1`, or do not buy `0`, is recorded. 
+@Duke.Amir:2023 consider the difference between integrated and sequential format for sales. The `sellingformat` dataset contains $n=397$ observations split into two groups: quantity-integrated decision ($X_0$ decide the amount to buy) and quantity-sequential ($X=1$, first select buy, then select the amount). Participants of the study were randomly allocated to either of these two format and their decision, either buy, `Y=1`, or do not buy `Y=0`, is recorded. 
 
 
 ```{r}
@@ -554,8 +557,26 @@ knitr::kable(contingency, booktabs = TRUE)
 
 We consider the number of purchased out of the total, treating records as independent Bernoulli observations with a flat (uniform prior).
 
+**Bayes factor**: consider a simple model comparison where the null hypothesis is that the selling format has no impact on the decision to buy or not (no treatment effect). We write $y=\sum_{i=1}^n y_i$ and $y_1 = \sum_{i=1}^n x_iy_i,$ $n_1 = \sum_{i=1}^n x_i$ and $y_0+y_1=y$, $n_0+n_1=n.$ The subscript indicates the groups $0$ (quantity-integrated) and $1$ (quantity-sequential)$.
+```{r}
+#| eval: true
+#| echo: false
+log_marg_post_bern <- function(n, y){
+  lbeta(1 + y, 1 + n - y)
+}
+BF1 <- log_marg_post_bern(n = 198, y = 46) + 
+  log_marg_post_bern(n = 199, y = 23)
+BF0 <- log_marg_post_bern(n = 397, y = 69)
+# Bayes factor
+# exp(BF0 - BF1)
+```
+With a uniform prior, the unnormalized posterior for the null model is $$\mathcal{L}_0(\theta) = \theta^y(1-\theta)^{n-y}$$
+and that of the alternative model is 
+$$\mathcal{L}_0(\theta_0, \theta_1) = \theta_0^{y_0}(1-\theta_0)^{n_0-y_0}\theta_1^{y_1}(1-\theta_1)^{n_1-y_1},$$ the marginal likelihood is $\mathrm{beta}(y+1, n-y+1)$ (cf. @exm-bayesfactor) and the Bayes factor is $`r round(exp(BF0-BF1),3)`$, indicating strong preference for the alternative model, which suggests that there are differences due to present evidence sequentially as opposed to all at once.
 
-With a beta-binomial model, the posterior for the probability of buying is $\mathsf{beta}(47, 153)$ for quantity-integrated and $\mathsf{beta}(24, 177)$ for quantity-sequential. We can compute the posterior of the odds ratio,
+
+
+**Posterior summary**: with a beta-binomial model, the posterior for the probability of buying is $\mathsf{beta}(47, 153)$ for quantity-integrated and $\mathsf{beta}(24, 177)$ for quantity-sequential. We can compute the posterior of the odds ratio,
 $$O = \frac{\Pr(Y=1 \mid \texttt{integrated})}{\Pr(Y=0 \mid \texttt{integrated})}\frac{\Pr(Y=0 \mid \texttt{sequential})}{\Pr(Y=1 \mid \texttt{sequential})},$$
 by simulating independent draws from the posteriors of each condition and computing the odds ratio.
 
@@ -841,7 +862,9 @@ height <- max(hpeaks)
 mixt_mode <- c(mu, (shape-1)/rate)[which.max(hpeaks)]
 
 g2 <- ggplot() + 
-  stat_function(fun = function(x){we*dgamma(x, shape = shape, rate = rate) + (1-we)*dnorm(x, mean = mu, sd = sigma)},
+  stat_function(fun = function(x){
+    we*dgamma(x, shape = shape, rate = rate) + 
+      (1-we)*dnorm(x, mean = mu, sd = sigma)},
                 xlim = c(-2,10), n = 1001) +
   geom_vline(xintercept = mixt_mode, 
              linetype = "dotted",
@@ -851,15 +874,18 @@ g2 <- ggplot() +
   geom_vline(xintercept = mixt_median,
              linetype = "dashed",
              colour = cols[3]) + 
-  geom_label(mapping = aes(x = mixt_mode, y = 0.9*height, label = "mode"), 
-             fill = "white", label.r = unit(0, "lines"),
-             colour = cols[1]) +
-  geom_label(mapping = aes(x = mixt_mean, y = 0.5*height, label = "mean"),
-             fill = "white", label.r = unit(0, "lines"),
-             colour = cols[2]) +
-  geom_label(mapping = aes(x = mixt_median, y = 0.1*height, label = "median"),
-             fill = "white", label.r = unit(0, "lines"),
-             colour = cols[3]) +
+  geom_label(
+    mapping = aes(x = mixt_mode, y = 0.9*height, label = "mode"), 
+    fill = "white", label.r = unit(0, "lines"),
+    colour = cols[1]) +
+  geom_label(
+    mapping = aes(x = mixt_mean, y = 0.5*height, label = "mean"),
+    fill = "white", label.r = unit(0, "lines"),
+    colour = cols[2]) +
+  geom_label(
+    mapping = aes(x = mixt_median, y = 0.1*height, label = "median"),
+    fill = "white", label.r = unit(0, "lines"),
+    colour = cols[3]) +
   scale_y_continuous(expand = c(0,0)) + 
   scale_x_continuous(expand = c(0,0)) + 
   labs(y = "", subtitle = "density", x = "") + 
@@ -1046,6 +1072,8 @@ g2 <- ggplot(data = data.frame(
 g1 + g2
 ```
 
+Given the posterior distribution of the parameter(s), different loss functions thus lead to different point estimates or summaries to be reported. The quantile or pinball loss is an example that allows user to report selected quantiles, or build regression models to 
+
 :::
 
 
@@ -1125,7 +1153,10 @@ g1 <- ggplot(data = data.frame(x = mixt),
   labs(x = "", y = "") +
   scale_y_continuous(limits = c(0,0.05), expand = c(0,0)) +
   theme_classic() 
-hdiD <- HDInterval::hdi(density(mixt), credMass = 0.89, allowSplit = TRUE)
+hdiD <- HDInterval::hdi(
+  density(mixt), 
+  credMass = 0.89, 
+  allowSplit = TRUE)
 g2 <- ggplot(data = data.frame(x = mixt),
        mapping = aes(x = x)) +
     geom_hline(yintercept = attr(hdiD, "height"),
@@ -1158,8 +1189,10 @@ g3 <- ggplot()  +
   stat_function(fun = dbeta, 
                 args = list(shape1 = shape, shape2 = shape), 
                 xlim = c(0,1),n = 1001) +
-  geom_hline(yintercept = dbeta(qbeta(p = 0.75, shape, shape),shape, shape),
-             alpha = 0.5, linetype = "dashed") +
+  geom_hline(
+    yintercept = dbeta(qbeta(p = 0.75, shape, shape),shape, shape),
+    alpha = 0.5, 
+    linetype = "dashed") +
   labs(x = "", y = "") +
   scale_x_continuous(limits = c(0,1), expand = c(0,0)) +
   scale_y_continuous(limits = c(0,5), expand = c(0,0)) +

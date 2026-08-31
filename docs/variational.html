@@ -2,13 +2,16 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.7.1">
+<meta name="generator" content="quarto-1.9.36">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
 <title>10&nbsp; Variational inference – Bayesian modelling</title>
 <style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
 div.columns{display: flex; gap: min(4vw, 1.5em);}
@@ -21,8 +24,9 @@ ul.task-list li input[type="checkbox"] {
   vertical-align: middle;
 }
 /* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
 pre > code.sourceCode { white-space: pre; position: relative; }
-pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
 pre > code.sourceCode > span:empty { height: 1.2em; }
 .sourceCode { overflow: visible; }
 code.sourceCode > span { color: inherit; text-decoration: inherit; }
@@ -33,7 +37,7 @@ div.sourceCode { overflow: auto; }
 }
 @media print {
 pre > code.sourceCode { white-space: pre-wrap; }
-pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
 }
 pre.numberSource code
   { counter-reset: source-line 0; }
@@ -58,7 +62,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 div.csl-bib-body { }
 div.csl-entry {
   clear: both;
-  margin-bottom: 0em;
 }
 .hanging-indent div.csl-entry {
   margin-left:2em;
@@ -86,15 +89,16 @@ div.csl-indent {
 <meta name="quarto:offset" content="./">
 <link href="./expectationpropagation.html" rel="next">
 <link href="./laplace.html" rel="prev">
-<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="site_libs/quarto-html/anchor.min.js"></script>
 <link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-2bb0ec5e928ee8c40b12725cb7836c35.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-845c23b38eaddc0f92fda52bfe77a8c8.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-a51e8ad160b68d9f8f1ac488cc0f242e.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-59dbc398b4a3746ce649f4e501c3be8e.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
   "copy-button": false,
@@ -124,7 +128,7 @@ div.csl-indent {
 }</script>
 
   <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
-  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
 
 <script type="text/javascript">
 const typesetMath = (el) => {
@@ -137,7 +141,7 @@ const typesetMath = (el) => {
     var macros = [];
     for (var i = 0; i < mathElements.length; i++) {
       var texText = mathElements[i].firstChild;
-      if (mathElements[i].tagName == "SPAN") {
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
         window.katex.render(texText.data, mathElements[i], {
           displayMode: mathElements[i].classList.contains('display'),
           throwOnError: false,
@@ -156,7 +160,7 @@ window.Quarto = {
 <link rel="stylesheet" href="style.css">
 </head>
 
-<body class="nav-sidebar floating">
+<body class="nav-sidebar floating quarto-light">
 
 <div id="quarto-search-results"></div>
   <header id="quarto-header" class="headroom fixed-top">
@@ -284,7 +288,8 @@ window.Quarto = {
   <ul>
   <li><a href="#kullbackleibler-divergence-and-evidence-lower-bound" id="toc-kullbackleibler-divergence-and-evidence-lower-bound" class="nav-link active" data-scroll-target="#kullbackleibler-divergence-and-evidence-lower-bound"><span class="header-section-number">10.1</span> Kullback–Leibler divergence and evidence lower bound</a></li>
   <li><a href="#coordinate-ascent-variational-inference" id="toc-coordinate-ascent-variational-inference" class="nav-link" data-scroll-target="#coordinate-ascent-variational-inference"><span class="header-section-number">10.2</span> Coordinate-ascent variational inference</a></li>
-  <li><a href="#automatic-differentiation-variational-inference" id="toc-automatic-differentiation-variational-inference" class="nav-link" data-scroll-target="#automatic-differentiation-variational-inference"><span class="header-section-number">10.3</span> Automatic differentiation variational inference</a></li>
+  <li><a href="#skew-approximations" id="toc-skew-approximations" class="nav-link" data-scroll-target="#skew-approximations"><span class="header-section-number">10.3</span> Skew-approximations</a></li>
+  <li><a href="#automatic-differentiation-variational-inference" id="toc-automatic-differentiation-variational-inference" class="nav-link" data-scroll-target="#automatic-differentiation-variational-inference"><span class="header-section-number">10.4</span> Automatic differentiation variational inference</a></li>
   </ul>
 <div class="toc-actions"><ul><li><a href="https://github.com/lbelzile/MATH80601A/edit/main/variational.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li></ul></div></nav>
     </div>
@@ -309,12 +314,12 @@ window.Quarto = {
 \\ &amp;= \mathsf{E}_{f_t}\{\log f_t(\boldsymbol{X})\} - \mathsf{E}_{f_t}\{\log g(\boldsymbol{X}; \boldsymbol{\psi})\}
 \end{align*}\]</span> where the subscript of the expectation indicates which distribution we integrate over. The term <span class="math inline">\(-\mathsf{E}_{f_t}\{\log f_t(\boldsymbol{X})\}\)</span> is called the entropy of the distribution. The divergence is strictly positive unless <span class="math inline">\(g(\cdot; \boldsymbol{\psi}) \equiv f_t(\cdot).\)</span> Note that, by construction, it is not symmetric.</p>
 </div>
-<p>The Kullback–Leibler divergence is central to study of model misspecification: if we fit <span class="math inline">\(g(\cdot)\)</span> when data arise from <span class="math inline">\(f_t,\)</span> the maximum likelihood estimator of the parameters <span class="math inline">\(\widehat{\boldsymbol{\psi}}\)</span> will be the value of the parameter that minimizes the Kullback–Leibler divergence <span class="math inline">\(\mathsf{KL}(f_t \parallel g);\)</span> this value will be positive unless the model is correctly specified and <span class="math inline">\(g(\cdot; \widehat{\boldsymbol{\psi}}) = f_t(\cdot).\)</span> See <span class="citation" data-cites="Davison:2003">Davison (<a href="references.html#ref-Davison:2003" role="doc-biblioref">2003</a>)</span>, pp.&nbsp;122–125 for a discussion.</p>
+<p>The Kullback–Leibler divergence is central to study of model misspecification: if we fit <span class="math inline">\(g(\cdot)\)</span> when data arise from <span class="math inline">\(f_t,\)</span> the maximum likelihood estimator of the parameters <span class="math inline">\(\widehat{\boldsymbol{\psi}}\)</span> will be the value of the parameter that minimizes the Kullback–Leibler divergence <span class="math inline">\(\mathsf{KL}(f_t \parallel g).\)</span> See <span class="citation" data-cites="Davison:2003">Davison (<a href="references.html#ref-Davison:2003" role="doc-biblioref">2003</a>)</span>, pp.&nbsp;122–125 for a discussion.</p>
 <p>In the Bayesian setting, interest lies in approximating <span class="math inline">\(f_t \equiv p(\boldsymbol{\theta} \mid \boldsymbol{y}).\)</span> The problem of course is that we cannot compute expectations with respect to the posterior since these requires knowledge of the marginal likelihood, which acts as a normalizing constant, in most settings of interest. What we can do instead is to consider the model that minimizes the reverse Kullback–Leibler divergence <span class="math display">\[\begin{align*}
 g(\boldsymbol{\theta}; \widehat{\boldsymbol{\psi}}) = \mathrm{argmin}_{\boldsymbol{\psi}} \mathsf{KL}\{g(\boldsymbol{\theta};\boldsymbol{\psi}) \parallel p(\boldsymbol{\theta} \mid \boldsymbol{y})\}.
 \end{align*}\]</span> We will show soon that this is a sensible objective function.</p>
 <div id="rem-symmetry-kld" class="proof remark">
-<p><span class="proof-title"><em>Remark 10.1</em> (Lack of symmetry of Kullback–Leibler divergence). </span>Consider an approximation of a bivariate Gaussian vector with correlated components <span class="math inline">\(\boldsymbol{X} \sim \mathsf{Gauss}_2(\boldsymbol{\mu}, \boldsymbol{\Sigma})\)</span>. If we approximate each margin independently with a univariate Gaussian, then the density which minimizes $ <span class="math display">\[\mathsf{KL}\{ \phi_2(\boldsymbol{\mu}, \boldsymbol{\Sigma}) \parallel \phi(\mu_{1g}, \sigma^2_{1g})\phi(\mu_{2g}, \sigma^2_{2g})\},\]</span> the forward Kullback–Leibler divergence will have the same marginal mean <span class="math inline">\(\widehat{\mu}_{ig}=\mu_i\)</span> and variance <span class="math inline">\(\sigma^2_{ig} = \Sigma_{ii}\)</span>, whereas the best approximation that minimizes the reverse Kullback–Leibler <span class="math display">\[\mathsf{KL}\{ \phi(\mu_{1g}, \sigma^2_{1g})\phi(\mu_{2g}, \sigma^2_{2g}) \parallel  \phi_2(\boldsymbol{\mu}, \boldsymbol{\Sigma})\},\]</span> will have the same mean, but a variance equal to the conditional variance of one component given the other, e.g., <span class="math inline">\(\widehat{\sigma}_{1g} = \Sigma_{11} - \Sigma_{12} \Sigma_{22}^{-1}\Sigma_{21}.\)</span> <a href="#fig-klvsrev" class="quarto-xref">Figure&nbsp;<span>10.1</span></a> shows the two approximations: the reverse Kullback–Leibler approximation is much too narrow and only gives mass where both variables have positive density, whereas the approximation that minimizes Kullback–Leibler divergence puts mass everywhere the target is supported.</p>
+<p><span class="proof-title"><em>Remark 10.1</em> (Lack of symmetry of Kullback–Leibler divergence). </span>Consider an approximation of a bivariate Gaussian vector with correlated components <span class="math inline">\(\boldsymbol{X} \sim \mathsf{Gauss}_2(\boldsymbol{\mu}, \boldsymbol{\Sigma})\)</span>. If we approximate each margin independently with a univariate Gaussian, then the density which minimizes <span class="math display">\[\mathsf{KL}\{ \phi_2(\boldsymbol{\mu}, \boldsymbol{\Sigma}) \parallel \phi(\mu_{1g}, \sigma^2_{1g})\phi(\mu_{2g}, \sigma^2_{2g})\},\]</span> the forward Kullback–Leibler divergence will have the same marginal mean <span class="math inline">\(\widehat{\mu}_{ig}=\mu_i\)</span> and variance <span class="math inline">\(\sigma^2_{ig} = \Sigma_{ii}\)</span>, whereas the best approximation that minimizes the reverse Kullback–Leibler <span class="math display">\[\mathsf{KL}\{ \phi(\mu_{1g}, \sigma^2_{1g})\phi(\mu_{2g}, \sigma^2_{2g}) \parallel  \phi_2(\boldsymbol{\mu}, \boldsymbol{\Sigma})\},\]</span> will have the same mean, but a variance equal to the conditional variance of one component given the other, e.g., <span class="math inline">\(\widehat{\sigma}_{1g} = \Sigma_{11} - \Sigma_{12} \Sigma_{22}^{-1}\Sigma_{21}.\)</span> <a href="#fig-klvsrev" class="quarto-xref">Figure&nbsp;<span>10.1</span></a> shows the two approximations: the reverse Kullback–Leibler approximation is much too narrow and only gives mass where both variables have positive density, whereas the approximation that minimizes Kullback–Leibler divergence puts mass everywhere the target is supported.</p>
 <div class="cell">
 <div class="cell-output-display">
 <div id="fig-klvsrev" class="quarto-float quarto-figure quarto-figure-center anchored">
@@ -487,7 +492,7 @@ The ELBO is
 where use the fact $\mathsf{E}_{Z_i}\{\mathrm{I}(z_i \le 0)\}=$that the entropy of a $p$-dimensional multivariate Gaussian random vector with precision $\mathbf{Q}$ is $p/2\{1+\log(2\pi)\} - \log |\mathbf{Q}|/2.$
 -->
 <div class="cell">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Data augmentation: "z" is latent Gaussian, </span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Data augmentation: "z" is latent Gaussian, </span></span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="co"># truncated to be negative for failures </span></span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="co"># and positive for successes</span></span>
 <span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>cavi_probit <span class="ot">&lt;-</span> <span class="cf">function</span>(</span>
@@ -522,7 +527,7 @@ where use the fact $\mathsf{E}_{Z_i}\{\mathrm{I}(z_i \le 0)\}=$that the entropy 
 <span id="cb1-33"><a href="#cb1-33" aria-hidden="true" tabindex="-1"></a>    }</span>
 <span id="cb1-34"><a href="#cb1-34" aria-hidden="true" tabindex="-1"></a>  }</span>
 <span id="cb1-35"><a href="#cb1-35" aria-hidden="true" tabindex="-1"></a>  <span class="fu">list</span>(<span class="at">mu_z =</span> mu_z, <span class="at">mu_beta =</span> mu_b, <span class="at">elbo =</span> ELBO[<span class="dv">1</span><span class="sc">:</span>b])</span>
-<span id="cb1-36"><a href="#cb1-36" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb1-36"><a href="#cb1-36" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>We consider for illustration purposes data from Experiment 2 of <span class="citation" data-cites="Duke.Amir:2023">Duke and Amir (<a href="references.html#ref-Duke.Amir:2023" role="doc-biblioref">2023</a>)</span> on the effect of sequential decisions and purchasing formats. We fit a model with age of the participant and the binary variable <code>format</code>, which indicate the experimental condition. The model is fitted with a sum-to-zero constraint for the dummy variable.</p>
 <p>With vague priors, the coefficients for the mean <span class="math inline">\(\boldsymbol{\mu}_{\boldsymbol{\beta}}=(\beta_0, \beta_1, \beta_2)^\top\)</span> matches the frequentist point estimates of the probit regression to four significant digits. Convergence is very fast, as shown by the ELBO plot in the left panel of <a href="#fig-elbo-CAVI-probit" class="quarto-xref">Figure&nbsp;<span>10.5</span></a>. The posterior density approximation implied by variational inference, shown on the right panel of <a href="#fig-elbo-CAVI-probit" class="quarto-xref">Figure&nbsp;<span>10.5</span></a>, is once again underdispersed relative to the true marginal posterior.</p>
@@ -543,10 +548,30 @@ Figure&nbsp;10.5: Probit regression with CAVI for the Duke and Amir (2023) data.
 </div>
 <p>Given the strong requirements for getting tractable conditionals, coordinate-ascent variational inference is mostly useful in ultra high-dimensional settings where Markov chain Monte Carlo algorithms are not viable. This is the case notable for regression models with the discrete spike-and-slab of <a href="regression.html#def-spike-slab" class="quarto-xref">Definition&nbsp;<span>8.2</span></a>, models for image processing or topic modelling using latent Dirichlet allocations.</p>
 </section>
-<section id="automatic-differentiation-variational-inference" class="level2" data-number="10.3">
-<h2 data-number="10.3" class="anchored" data-anchor-id="automatic-differentiation-variational-inference"><span class="header-section-number">10.3</span> Automatic differentiation variational inference</h2>
+<section id="skew-approximations" class="level2" data-number="10.3">
+<h2 data-number="10.3" class="anchored" data-anchor-id="skew-approximations"><span class="header-section-number">10.3</span> Skew-approximations</h2>
+<p>The Gaussian Laplace, variational and expected propagation approximations typically rely on symmetric approximations to the posterior. A symmetric function <span class="math inline">\(g\)</span> about <span class="math inline">\(\boldsymbol{x}_{\text{sym}}\)</span> is one for which the identity <span class="math inline">\(g(\boldsymbol{x}) = g(2\boldsymbol{x}_{\text{sym}}-\boldsymbol{x}_{\text{sym}})\)</span> for any <span class="math inline">\(\boldsymbol{x}\)</span> in the domain.</p>
+<p>Symmetric approximations perform poorly when the underlying posterior is skewed, as in the example in the right panel of <a href="#fig-convex" class="quarto-xref">Figure&nbsp;<span>10.2</span></a> shows. Recent work of <span class="citation" data-cites="Pozza.Durante.Szabo:2026">Pozza et al. (<a href="references.html#ref-Pozza.Durante.Szabo:2026" role="doc-biblioref">2026</a>)</span> show how one can build a skew-symmetric approximation for the posterior <span class="math inline">\(p(\boldsymbol{\theta} \mid \boldsymbol{y})\)</span> from a symmetric one, say <span class="math inline">\(g(\boldsymbol{\theta})\)</span> at the cost of two additional likelihood and prior evaluations for every parameter vector <span class="math inline">\(\boldsymbol{\theta}\)</span> of interest.</p>
+<p>Let <span class="math inline">\(g^{\text{sym}}(\boldsymbol{\theta}; \boldsymbol{\theta}_{\text{sym}})\)</span> be a density function that is symmetric around <span class="math inline">\(\boldsymbol{\theta}_{\text{sym}};\)</span> for a Gaussian or any elliptical distribution, this value <span class="math inline">\(\boldsymbol{\theta}_{\text{sym}}\)</span> would be the location vector <span class="math inline">\(\boldsymbol{\mu}.\)</span> We consider a skewing factor <span class="math inline">\(w(\boldsymbol{\theta};  \boldsymbol{\theta}_{\text{sym}})\)</span> satisfying <span class="math inline">\(w(\boldsymbol{\theta}; \boldsymbol{\theta}_{\text{sym}}) = 1-w(2\boldsymbol{\theta}_{\text{sym}}-\boldsymbol{\theta}; \boldsymbol{\theta}_{\text{sym}})\)</span> for any <span class="math inline">\(\boldsymbol{\theta} \in \boldsymbol{\Theta} \subseteq \mathbb{R}^d.\)</span></p>
+<p>The skew-symmetric approximation is obtained by multiplying the symmetric density by a perturbation factor, where <span class="math display">\[\begin{align*}
+g^{\text{skew}}(\boldsymbol{\theta}) = 2 g^{\text{sym}}(\boldsymbol{\theta}; \boldsymbol{\theta}_{\text{sym}})w(\boldsymbol{\theta}, \boldsymbol{\theta}_{\text{sym}}; \boldsymbol{\theta}_{\text{sym}}).
+\end{align*}\]</span></p>
+<p>In a Bayesian setting with deterministic approximations, we can easily take <span class="math inline">\(g\)</span> to be symmetric, so the only outstanding question is how to define the tilting parameter. Consider a posterior density <span class="math inline">\(p(\boldsymbol{\theta} \mid \boldsymbol{y}) \propto_{\boldsymbol{\theta}} p(\boldsymbol{\theta})p(\boldsymbol{y}\mid \boldsymbol{\theta}).\)</span> Taking as skewing factor <span class="math display">\[\begin{align*}
+w(\boldsymbol{\theta};\boldsymbol{\theta}_{\text{sym}}) = \frac{p(\boldsymbol{\theta})p(\boldsymbol{y}\mid \boldsymbol{\theta})}{p(\boldsymbol{\theta})p(\boldsymbol{y}\mid \boldsymbol{\theta}) + p(2\boldsymbol{\theta}_{\text{sym}} -\boldsymbol{\theta})p(\boldsymbol{y}\mid 2\boldsymbol{\theta}_{\text{sym}}-\boldsymbol{\theta})}
+\end{align*}\]</span> leads to an improvement in fit (in the sense of reducing the Kullback–Leibler divergence with the true distribution) <span class="citation" data-cites="Pozza.Durante.Szabo:2026">(<a href="references.html#ref-Pozza.Durante.Szabo:2026" role="doc-biblioref">Pozza et al. 2026</a>)</span>. The cleverness of this ratio is that, since the unnormalized posterior (prior and likelihood) appear in both the numerator and the denominator, this amounts to using the posterior density in the skewing factor definition, as the marginal likelihood would cancel out. If the posterior is zero at some value of <span class="math inline">\(\boldsymbol{\theta},\)</span> which is outside the support, then we define <span class="math inline">\(w(\boldsymbol{\theta};\boldsymbol{\theta}_{\text{sym}})=0.5\)</span> to satisfy the properties of <span class="math inline">\(w(\cdot;\cdot).\)</span></p>
+<p>While the above gives an approximation to the density, it is sometimes useful to generate samples from the skewed approximating density. Proposition 1 of <span class="citation" data-cites="Pozza.Durante.Szabo:2026">Pozza et al. (<a href="references.html#ref-Pozza.Durante.Szabo:2026" role="doc-biblioref">2026</a>)</span> show that we can generate from the skewed approximation by first sampling a candidate <span class="math inline">\(\boldsymbol{\omega}_0\)</span> from the model with density <span class="math inline">\(g^{\text{sym}}(\cdot; \boldsymbol{\theta}_{\text{sym}})\)</span> and <span class="math inline">\(U \sim \mathsf{unif}(0,1),\)</span> then setting <span class="math display">\[\begin{align*}
+\boldsymbol{\theta}_0 =
+\begin{cases}
+\boldsymbol{\omega}_0, &amp;
+U \leq w(\boldsymbol{\omega}_0; \boldsymbol{\theta}_{\text{sym}}) \\
+2\boldsymbol{\theta}_{\text{sym}}-\boldsymbol{\omega}_0, &amp; U &gt; w(\boldsymbol{\omega}_0; \boldsymbol{\theta}_{\text{sym}}).
+\end{cases}
+\end{align*}\]</span></p>
+</section>
+<section id="automatic-differentiation-variational-inference" class="level2" data-number="10.4">
+<h2 data-number="10.4" class="anchored" data-anchor-id="automatic-differentiation-variational-inference"><span class="header-section-number">10.4</span> Automatic differentiation variational inference</h2>
 <p>We consider alternative numeric schemes which rely on stochastic optimization. The key idea behind these methods is that we can use gradient-based algorithms, and approximate the expectations with respect to <span class="math inline">\(g\)</span> by drawing samples from the approximating densities. This gives rises to a general omnibus procedure for optimization, although some schemes capitalize on the structure of the approximating family. <span class="citation" data-cites="Hoffman:2013">Hoffman et al. (<a href="references.html#ref-Hoffman:2013" role="doc-biblioref">2013</a>)</span> consider stochastic gradient for exponential families mean-field approximations, using natural gradients to device an algorithm. While efficient within this context, it is not a generic algorithm.</p>
-<p><span class="citation" data-cites="Ranganath:2014">Ranganath, Gerrish, and Blei (<a href="references.html#ref-Ranganath:2014" role="doc-biblioref">2014</a>)</span> extend this to more general distributions by noting that the gradient of the ELBO, interchanging the derivative and the integral using the dominated convergence theorem, is <span class="math display">\[\begin{align*}
+<p><span class="citation" data-cites="Ranganath:2014">Ranganath et al. (<a href="references.html#ref-Ranganath:2014" role="doc-biblioref">2014</a>)</span> extend this to more general distributions by noting that the gradient of the ELBO, interchanging the derivative and the integral using the dominated convergence theorem, is <span class="math display">\[\begin{align*}
 \frac{\partial}{\partial \boldsymbol{\psi}} \mathsf{ELBO}(g) &amp;= \int g(\boldsymbol{\theta}; \boldsymbol{\psi}) \frac{\partial}{\partial \boldsymbol{\psi}} \log \left( \frac{p(\boldsymbol{\theta}, \boldsymbol{y})}{g(\boldsymbol{\theta}; \boldsymbol{\psi})}\right) \mathrm{d} \boldsymbol{\theta} + \int  \frac{\partial g(\boldsymbol{\theta}; \boldsymbol{\psi})}{\partial \boldsymbol{\psi}} \times \log \left( \frac{p(\boldsymbol{\theta}, \boldsymbol{y})}{g(\boldsymbol{\theta}; \boldsymbol{\psi})}\right) \mathrm{d} \boldsymbol{\theta}
 \\&amp; = \int  \frac{\partial \log g(\boldsymbol{\theta}; \boldsymbol{\psi})}{\partial \boldsymbol{\psi}} \times \log \left( \frac{p(\boldsymbol{\theta}, \boldsymbol{y})}{g(\boldsymbol{\theta}; \boldsymbol{\psi})}\right) g(\boldsymbol{\theta}; \boldsymbol{\psi})\mathrm{d} \boldsymbol{\theta}
 \end{align*}\]</span> where <span class="math inline">\(p(\boldsymbol{\theta}, \boldsymbol{y})\)</span> does not depend on <span class="math inline">\(\boldsymbol{\psi}\)</span>, and <span class="math display">\[\begin{align*}
@@ -554,7 +579,7 @@ Figure&nbsp;10.5: Probit regression with CAVI for the Duke and Amir (2023) data.
 \frac{\partial}{\partial \boldsymbol{\psi}}\int g(\boldsymbol{\theta}; \boldsymbol{\psi})  \mathrm{d} \boldsymbol{\theta} = 0.
 \end{align*}\]</span> The integral of a density is one regardless of the value of <span class="math inline">\(\boldsymbol{\psi}\)</span>, so it’s derivative vanishes. We are left with the expected value <span class="math display">\[\begin{align*}
 \mathsf{E}_{g}\left\{\frac{\partial \log g(\boldsymbol{\theta}; \boldsymbol{\psi})}{\partial \boldsymbol{\psi}} \times \log \left( \frac{p(\boldsymbol{\theta}, \boldsymbol{y})}{g(\boldsymbol{\theta}; \boldsymbol{\psi})}\right)\right\}
-\end{align*}\]</span> which we can approximate via Monte Carlo by drawing samples from <span class="math inline">\(g\)</span>. <span class="citation" data-cites="Ranganath:2014">Ranganath, Gerrish, and Blei (<a href="references.html#ref-Ranganath:2014" role="doc-biblioref">2014</a>)</span> provide two methods to reduce the variance of this expression using control variates and Rao–Blackwellization, as excessive variance hinders the convergence and requires larger Monte Carlo sample sizes to be reliable. In the context of large samples of independent observations, we can also resort to mini-batching, by randomly selecting a subset of observations.</p>
+\end{align*}\]</span> which we can approximate via Monte Carlo by drawing samples from <span class="math inline">\(g\)</span>. <span class="citation" data-cites="Ranganath:2014">Ranganath et al. (<a href="references.html#ref-Ranganath:2014" role="doc-biblioref">2014</a>)</span> provide two methods to reduce the variance of this expression using control variates and Rao–Blackwellization, as excessive variance hinders the convergence and requires larger Monte Carlo sample sizes to be reliable. In the context of large samples of independent observations, we can also resort to mini-batching, by randomly selecting a subset of observations.</p>
 <p>We can use the Monte Carlo approximation to derive a stochastic gradient algorithm.</p>
 <div id="prp-stoch-grad-descent" class="theorem proposition">
 <p><span class="theorem-title"><strong>Proposition 10.2 (Stochastic gradient descent)</strong></span> Consider <span class="math inline">\(f(\boldsymbol{\theta})\)</span> a differentiable function with gradient <span class="math inline">\(\nabla f(\boldsymbol{\theta})\)</span> and <span class="math inline">\(\rho_t\)</span> a Robbins–Munro sequence of step sizes satisfying <span class="math inline">\(\sum_{t=1}^\infty \rho_t = \infty\)</span> and <span class="math inline">\(\sum_{t=1}^\infty \rho^2_t&lt; \infty.\)</span></p>
@@ -613,18 +638,18 @@ s^2_{k,t} &amp;= \alpha g_{k,t}^2 + (1-\alpha)s^2_{k,t-1} =
 <p>The ADVI algorithm is implemented in <span class="citation" data-cites="Stan:2017">Carpenter et al. (<a href="references.html#ref-Stan:2017" role="doc-biblioref">2017</a>)</span>; see <a href="https://mc-stan.org/docs/reference-manual/variational.html">the manual</a> for more details.</p>
 
 
-<div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list" style="display: none">
+<div id="refs" class="references csl-bib-body hanging-indent" role="list" style="display: none">
 <div id="ref-Bishop:2006" class="csl-entry" role="listitem">
-Bishop, Christopher M. 2006. <em>Pattern Recognition and Machine Learning</em>. New York, NY: Springer. <a href="https://www.microsoft.com/en-us/research/publication/pattern-recognition-machine-learning/">https://www.microsoft.com/en-us/research/publication/pattern-recognition-machine-learning/</a>.
+Bishop, Christopher M. 2006. <em>Pattern Recognition and Machine Learning</em>. Springer. <a href="https://www.microsoft.com/en-us/research/publication/pattern-recognition-machine-learning/">https://www.microsoft.com/en-us/research/publication/pattern-recognition-machine-learning/</a>.
 </div>
 <div id="ref-Boyd.Vandenberghe:2004" class="csl-entry" role="listitem">
-Boyd, Stephen, and Lieven Vandenberghe. 2004. <em>Convex Optimization</em>. Cambridge, UK: Cambridge University Press. <a href="https://doi.org/10.1017/cbo9780511804441">https://doi.org/10.1017/cbo9780511804441</a>.
+Boyd, Stephen, and Lieven Vandenberghe. 2004. <em>Convex Optimization</em>. Cambridge University Press. <a href="https://doi.org/10.1017/cbo9780511804441">https://doi.org/10.1017/cbo9780511804441</a>.
 </div>
 <div id="ref-Stan:2017" class="csl-entry" role="listitem">
-Carpenter, Bob, Andrew Gelman, Matthew D. Hoffman, Daniel Lee, Ben Goodrich, Michael Betancourt, Marcus Brubaker, Jiqiang Guo, Peter Li, and Allen Riddell. 2017. <span>“<span>Stan</span>: A Probabilistic Programming Language.”</span> <em>Journal of Statistical Software</em> 76 (1): 1–32. <a href="https://doi.org/10.18637/jss.v076.i01">https://doi.org/10.18637/jss.v076.i01</a>.
+Carpenter, Bob, Andrew Gelman, Matthew D. Hoffman, et al. 2017. <span>“<span>Stan</span>: A Probabilistic Programming Language.”</span> <em>Journal of Statistical Software</em> 76 (1): 1–32. <a href="https://doi.org/10.18637/jss.v076.i01">https://doi.org/10.18637/jss.v076.i01</a>.
 </div>
 <div id="ref-Davison:2003" class="csl-entry" role="listitem">
-Davison, A. C. 2003. <em>Statistical Models</em>. Cambridge, UK: Cambridge University Press.
+Davison, A. C. 2003. <em>Statistical Models</em>. Cambridge University Press.
 </div>
 <div id="ref-Duke.Amir:2023" class="csl-entry" role="listitem">
 Duke, Kristen E., and On Amir. 2023. <span>“The Importance of Selling Formats: When Integrating Purchase and Quantity Decisions Increases Sales.”</span> <em>Marketing Science</em> 42 (1): 87–109. <a href="https://doi.org/10.1287/mksc.2022.1364">https://doi.org/10.1287/mksc.2022.1364</a>.
@@ -638,244 +663,254 @@ Kucukelbir, Alp, Dustin Tran, Rajesh Ranganath, Andrew Gelman, and David M. Blei
 <div id="ref-Liu:1994" class="csl-entry" role="listitem">
 Liu, Jun S. 1994. <span>“<span>S</span>iegel’s Formula via <span>S</span>tein’s Identities.”</span> <em>Statistics &amp; Probability Letters</em> 21 (3): 247–51. <a href="https://doi.org/10.1016/0167-7152(94)90121-x">https://doi.org/10.1016/0167-7152(94)90121-x</a>.
 </div>
+<div id="ref-Pozza.Durante.Szabo:2026" class="csl-entry" role="listitem">
+Pozza, Francesco, Daniele Durante, and Botond Szabo. 2026. <span>“Skew-Symmetric Approximations of Posterior Distributions.”</span> <em>Journal of the Royal Statistical Society Series B: Statistical Methodology</em>, January, qkaf082. <a href="https://doi.org/10.1093/jrsssb/qkaf082">https://doi.org/10.1093/jrsssb/qkaf082</a>.
+</div>
 <div id="ref-Ranganath:2014" class="csl-entry" role="listitem">
-Ranganath, Rajesh, Sean Gerrish, and David Blei. 2014. <span>“Black Box Variational Inference.”</span> In <em>Proceedings of the Seventeenth International Conference on Artificial Intelligence and Statistics</em>, edited by Samuel Kaski and Jukka Corander, 33:814–22. Proceedings of Machine Learning Research. Reykjavik, Iceland: Pmlr. <a href="https://proceedings.mlr.press/v33/ranganath14.html">https://proceedings.mlr.press/v33/ranganath14.html</a>.
+Ranganath, Rajesh, Sean Gerrish, and David Blei. 2014. <span>“Black Box Variational Inference.”</span> In <em>Proceedings of the Seventeenth International Conference on Artificial Intelligence and Statistics</em>, edited by Samuel Kaski and Jukka Corander, vol. 33. Proceedings of Machine Learning Research. Pmlr. <a href="https://proceedings.mlr.press/v33/ranganath14.html">https://proceedings.mlr.press/v33/ranganath14.html</a>.
 </div>
 </div>
 </section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
-window.document.addEventListener("DOMContentLoaded", function (event) {
-  const toggleBodyColorMode = (bsSheetEl) => {
-    const mode = bsSheetEl.getAttribute("data-mode");
-    const bodyEl = window.document.querySelector("body");
-    if (mode === "dark") {
-      bodyEl.classList.add("quarto-dark");
-      bodyEl.classList.remove("quarto-light");
-    } else {
-      bodyEl.classList.add("quarto-light");
-      bodyEl.classList.remove("quarto-dark");
-    }
-  }
-  const toggleBodyColorPrimary = () => {
-    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
-    if (bsSheetEl) {
-      toggleBodyColorMode(bsSheetEl);
-    }
-  }
-  toggleBodyColorPrimary();  
-  const icon = "";
-  const anchorJS = new window.AnchorJS();
-  anchorJS.options = {
-    placement: 'right',
-    icon: icon
-  };
-  anchorJS.add('.anchored');
-  const isCodeAnnotation = (el) => {
-    for (const clz of el.classList) {
-      if (clz.startsWith('code-annotation-')) {                     
-        return true;
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
       }
+      return false;
     }
-    return false;
-  }
-  const onCopySuccess = function(e) {
-    // button target
-    const button = e.trigger;
-    // don't keep focus
-    button.blur();
-    // flash "checked"
-    button.classList.add('code-copy-button-checked');
-    var currentTitle = button.getAttribute("title");
-    button.setAttribute("title", "Copied!");
-    let tooltip;
-    if (window.bootstrap) {
-      button.setAttribute("data-bs-toggle", "tooltip");
-      button.setAttribute("data-bs-placement", "left");
-      button.setAttribute("data-bs-title", "Copied!");
-      tooltip = new bootstrap.Tooltip(button, 
-        { trigger: "manual", 
-          customClass: "code-copy-button-tooltip",
-          offset: [0, -8]});
-      tooltip.show();    
-    }
-    setTimeout(function() {
-      if (tooltip) {
-        tooltip.hide();
-        button.removeAttribute("data-bs-title");
-        button.removeAttribute("data-bs-toggle");
-        button.removeAttribute("data-bs-placement");
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
       }
-      button.setAttribute("title", currentTitle);
-      button.classList.remove('code-copy-button-checked');
-    }, 1000);
-    // clear code selection
-    e.clearSelection();
-  }
-  const getTextToCopy = function(trigger) {
-      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
       for (const childEl of codeEl.children) {
         if (isCodeAnnotation(childEl)) {
           childEl.remove();
         }
       }
       return codeEl.innerText;
-  }
-  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
-    text: getTextToCopy
-  });
-  clipboard.on('success', onCopySuccess);
-  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
-    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
-      text: getTextToCopy,
-      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
     });
-    clipboardModal.on('success', onCopySuccess);
-  }
-    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
-    var mailtoRegex = new RegExp(/^mailto:/);
-      var filterRegex = new RegExp("https:\/\/lbelzile\.github\.io\/MATH80601A\/");
-    var isInternal = (href) => {
-        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
     }
-    // Inspect non-navigation links and adorn them if external
- 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
-    for (var i=0; i<links.length; i++) {
-      const link = links[i];
-      if (!isInternal(link.href)) {
-        // undo the damage that might have been done by quarto-nav.js in the case of
-        // links that we want to consider external
-        if (link.dataset.originalHref !== undefined) {
-          link.href = link.dataset.originalHref;
-        }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp("https:\/\/lbelzile\.github\.io\/MATH80601A\/");
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
       }
-    }
-  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
-    const config = {
-      allowHTML: true,
-      maxWidth: 500,
-      delay: 100,
-      arrow: false,
-      appendTo: function(el) {
-          return el.parentElement;
-      },
-      interactive: true,
-      interactiveBorder: 10,
-      theme: 'quarto',
-      placement: 'bottom-start',
-    };
-    if (contentFn) {
-      config.content = contentFn;
-    }
-    if (onTriggerFn) {
-      config.onTrigger = onTriggerFn;
-    }
-    if (onUntriggerFn) {
-      config.onUntrigger = onUntriggerFn;
-    }
-    window.tippy(el, config); 
-  }
-  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
-  for (var i=0; i<noterefs.length; i++) {
-    const ref = noterefs[i];
-    tippyHover(ref, function() {
-      // use id or data attribute instead here
-      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
-      try { href = new URL(href).hash; } catch {}
-      const id = href.replace(/^#\/?/, "");
-      const note = window.document.getElementById(id);
-      if (note) {
-        return note.innerHTML;
-      } else {
-        return "";
-      }
-    });
-  }
-  const xrefs = window.document.querySelectorAll('a.quarto-xref');
-  const processXRef = (id, note) => {
-    // Strip column container classes
-    const stripColumnClz = (el) => {
-      el.classList.remove("page-full", "page-columns");
-      if (el.children) {
-        for (const child of el.children) {
-          stripColumnClz(child);
-        }
-      }
-    }
-    stripColumnClz(note)
-    if (id === null || id.startsWith('sec-')) {
-      // Special case sections, only their first couple elements
-      const container = document.createElement("div");
-      if (note.children && note.children.length > 2) {
-        container.appendChild(note.children[0].cloneNode(true));
-        for (let i = 1; i < note.children.length; i++) {
-          const child = note.children[i];
-          if (child.tagName === "P" && child.innerText === "") {
-            continue;
-          } else {
-            container.appendChild(child.cloneNode(true));
-            break;
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
           }
         }
-        if (window.Quarto?.typesetMath) {
-          window.Quarto.typesetMath(container);
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
         }
-        return container.innerHTML
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
       } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
         if (window.Quarto?.typesetMath) {
           window.Quarto.typesetMath(note);
         }
-        return note.innerHTML;
-      }
-    } else {
-      // Remove any anchor links if they are present
-      const anchorLink = note.querySelector('a.anchorjs-link');
-      if (anchorLink) {
-        anchorLink.remove();
-      }
-      if (window.Quarto?.typesetMath) {
-        window.Quarto.typesetMath(note);
-      }
-      if (note.classList.contains("callout")) {
-        return note.outerHTML;
-      } else {
-        return note.innerHTML;
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
       }
     }
-  }
-  for (var i=0; i<xrefs.length; i++) {
-    const xref = xrefs[i];
-    tippyHover(xref, undefined, function(instance) {
-      instance.disable();
-      let url = xref.getAttribute('href');
-      let hash = undefined; 
-      if (url.startsWith('#')) {
-        hash = url;
-      } else {
-        try { hash = new URL(url).hash; } catch {}
-      }
-      if (hash) {
-        const id = hash.replace(/^#\/?/, "");
-        const note = window.document.getElementById(id);
-        if (note !== null) {
-          try {
-            const html = processXRef(id, note.cloneNode(true));
-            instance.setContent(html);
-          } finally {
-            instance.enable();
-            instance.show();
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
           }
         } else {
-          // See if we can fetch this
-          fetch(url.split('#')[0])
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
           .then(res => res.text())
           .then(html => {
             const parser = new DOMParser();
             const htmlDoc = parser.parseFromString(html, "text/html");
-            const note = htmlDoc.getElementById(id);
+            const note = htmlDoc.querySelector('main.content');
             if (note !== null) {
-              const html = processXRef(id, note);
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
               instance.setContent(html);
             } 
           }).finally(() => {
@@ -883,185 +918,161 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
             instance.show();
           });
         }
-      } else {
-        // See if we can fetch a full url (with no hash to target)
-        // This is a special case and we should probably do some content thinning / targeting
-        fetch(url)
-        .then(res => res.text())
-        .then(html => {
-          const parser = new DOMParser();
-          const htmlDoc = parser.parseFromString(html, "text/html");
-          const note = htmlDoc.querySelector('main.content');
-          if (note !== null) {
-            // This should only happen for chapter cross references
-            // (since there is no id in the URL)
-            // remove the first header
-            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
-              note.children[0].remove();
-            }
-            const html = processXRef(null, note);
-            instance.setContent(html);
-          } 
-        }).finally(() => {
-          instance.enable();
-          instance.show();
-        });
-      }
-    }, function(instance) {
-    });
-  }
-      let selectedAnnoteEl;
-      const selectorForAnnotation = ( cell, annotation) => {
-        let cellAttr = 'data-code-cell="' + cell + '"';
-        let lineAttr = 'data-code-annotation="' +  annotation + '"';
-        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
-        return selector;
-      }
-      const selectCodeLines = (annoteEl) => {
-        const doc = window.document;
-        const targetCell = annoteEl.getAttribute("data-target-cell");
-        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
-        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
-        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
-        const lineIds = lines.map((line) => {
-          return targetCell + "-" + line;
-        })
-        let top = null;
-        let height = null;
-        let parent = null;
-        if (lineIds.length > 0) {
-            //compute the position of the single el (top and bottom and make a div)
-            const el = window.document.getElementById(lineIds[0]);
-            top = el.offsetTop;
-            height = el.offsetHeight;
-            parent = el.parentElement.parentElement;
-          if (lineIds.length > 1) {
-            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
-            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
-            height = bottom - top;
-          }
-          if (top !== null && height !== null && parent !== null) {
-            // cook up a div (if necessary) and position it 
-            let div = window.document.getElementById("code-annotation-line-highlight");
-            if (div === null) {
-              div = window.document.createElement("div");
-              div.setAttribute("id", "code-annotation-line-highlight");
-              div.style.position = 'absolute';
-              parent.appendChild(div);
-            }
-            div.style.top = top - 2 + "px";
-            div.style.height = height + 4 + "px";
-            div.style.left = 0;
-            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
-            if (gutterDiv === null) {
-              gutterDiv = window.document.createElement("div");
-              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
-              gutterDiv.style.position = 'absolute';
-              const codeCell = window.document.getElementById(targetCell);
-              const gutter = codeCell.querySelector('.code-annotation-gutter');
-              gutter.appendChild(gutterDiv);
-            }
-            gutterDiv.style.top = top - 2 + "px";
-            gutterDiv.style.height = height + 4 + "px";
-          }
-          selectedAnnoteEl = annoteEl;
-        }
-      };
-      const unselectCodeLines = () => {
-        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
-        elementsIds.forEach((elId) => {
-          const div = window.document.getElementById(elId);
-          if (div) {
-            div.remove();
-          }
-        });
-        selectedAnnoteEl = undefined;
-      };
-        // Handle positioning of the toggle
-    window.addEventListener(
-      "resize",
-      throttle(() => {
-        elRect = undefined;
-        if (selectedAnnoteEl) {
-          selectCodeLines(selectedAnnoteEl);
-        }
-      }, 10)
-    );
-    function throttle(fn, ms) {
-    let throttle = false;
-    let timer;
-      return (...args) => {
-        if(!throttle) { // first call gets through
-            fn.apply(this, args);
-            throttle = true;
-        } else { // all the others get throttled
-            if(timer) clearTimeout(timer); // cancel #2
-            timer = setTimeout(() => {
-              fn.apply(this, args);
-              timer = throttle = false;
-            }, ms);
-        }
-      };
-    }
-      // Attach click handler to the DT
-      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
-      for (const annoteDlNode of annoteDls) {
-        annoteDlNode.addEventListener('click', (event) => {
-          const clickedEl = event.target;
-          if (clickedEl !== selectedAnnoteEl) {
-            unselectCodeLines();
-            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
-            if (activeEl) {
-              activeEl.classList.remove('code-annotation-active');
-            }
-            selectCodeLines(clickedEl);
-            clickedEl.classList.add('code-annotation-active');
-          } else {
-            // Unselect the line
-            unselectCodeLines();
-            clickedEl.classList.remove('code-annotation-active');
-          }
-        });
-      }
-  const findCites = (el) => {
-    const parentEl = el.parentElement;
-    if (parentEl) {
-      const cites = parentEl.dataset.cites;
-      if (cites) {
-        return {
-          el,
-          cites: cites.split(' ')
-        };
-      } else {
-        return findCites(el.parentElement)
-      }
-    } else {
-      return undefined;
-    }
-  };
-  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
-  for (var i=0; i<bibliorefs.length; i++) {
-    const ref = bibliorefs[i];
-    const citeInfo = findCites(ref);
-    if (citeInfo) {
-      tippyHover(citeInfo.el, function() {
-        var popup = window.document.createElement('div');
-        citeInfo.cites.forEach(function(cite) {
-          var citeDiv = window.document.createElement('div');
-          citeDiv.classList.add('hanging-indent');
-          citeDiv.classList.add('csl-entry');
-          var biblioDiv = window.document.getElementById('ref-' + cite);
-          if (biblioDiv) {
-            citeDiv.innerHTML = biblioDiv.innerHTML;
-          }
-          popup.appendChild(citeDiv);
-        });
-        return popup.innerHTML;
+      }, function(instance) {
       });
     }
-  }
-});
-</script>
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
       <a href="./laplace.html" class="pagination-link" aria-label="Deterministic approximations">

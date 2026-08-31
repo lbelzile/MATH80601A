@@ -114,6 +114,8 @@ Consider a logistic regression model where we code successes $Y=1$ and failures 
 \end{align*}
 The term on the right is the logistic function. This reparametrization makes it easier to write the likelihood contribution of observation $i$ as $$L_i(\boldsymbol{\beta}) = \mathrm{expit}(y_i \mathbf{x}_i\boldsymbol{\beta}).$$ Since this is a generalized linear model, we will have the approximation of the factor will have parameters $(a\mathbf{x}_i^\top, b\mathbf{x}_i^\top\mathbf{x}_i)$, which only depend on two scalars. Indeed, if we have the approximation for $\boldsymbol{\beta} \sim \mathsf{Gauss}_p(\boldsymbol{\mu}, \boldsymbol{\Sigma}),$ then the integrals for the normalizing constant, etc. depend only on the linear combination $\mathbf{x}_i^\top\boldsymbol{\beta} \sim \mathsf{Gauss}(y_i \mathbf{x}_i^\top\boldsymbol{\mu}, y_i \mathbf{x}_i^\top\boldsymbol{\Sigma}\mathbf{x}_i).$ This means all integrals for the tilting problem are unidimensional and can be obtained by Gaussian quadrature or similar numerical integration schemes.
 
+:::
+
 The dynamics of the expectation propagation given vectors of individual contributions $\boldsymbol{a}^{(t)}$ and $\boldsymbol{b}^{(t)}$ at iteration $t$ and the canonical parameters
 \begin{align*}
 \boldsymbol{r}^{(t)} = \sum_{i=1}^n a_i^{(t)}\mathbf{x}_i^\top, \qquad \mathbf{Q}^{(t)} = \sum_{i=1}^n b_i^{(t)}\mathbf{x}_i^\top\mathbf{x}_i,
@@ -160,5 +162,4 @@ where $Z_j$ has distribution proportional to $L_j(z) \times \phi(z; \mathbf{x}_j
 In generalized linear models, the linear predictor will always be one-dimensional, and more generally, in exponential families, we can get a similar dimension reduction. The updates to the parameters for more general exponential families are found in page 23 of @Cseke.Heskes:2011.
 
 
-:::
 

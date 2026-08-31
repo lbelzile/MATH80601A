@@ -234,7 +234,7 @@ p_a(d, r) = c\left[(r d + 1) \, b_0(r) \displaystyle\prod_{j=1}^d \left\{b_j(r) 
 <!--
 
 
-The ratio-of-uniform method [@Kinderman.Monahan:1977; @Wakefield:1991] is a variant of accept-reject used to draw samples from a unnormalized density $f(\boldsymbol{\theta})$ for $\boldsymbol{\theta} \in \boldsymbol{\Theta} \subseteq \mathbb{R}^d.$ For some $r \geq 0,$ consider the set \begin{align*}
+The ratio-of-uniform method [@Kinderman.Monahan:1977; @Wakefield.Gelfand.Smith:1991] is a variant of accept-reject used to draw samples from a unnormalized density $f(\boldsymbol{\theta})$ for $\boldsymbol{\theta} \in \boldsymbol{\Theta} \subseteq \mathbb{R}^d.$ For some $r \geq 0,$ consider the set \begin{align*}
 \mathcal{C}_r = \left\{ (u_0, \ldots, u_d): 0 < u_0 \leq \left[f(u_1/u_0^r, \ldots, u_d/u_0^r)\right]^{\frac{1}{rd+1}}\right\}.
 \end{align*} If we can generate $u_0, \ldots, u_d$ uniformly over $\mathcal{C}_R,$ then the draws $(u_1/u_0^r, \ldots, u_d/u_0^r)$ are from the normalized density $f.$ Rejection sampling is used to obtain uniform draws over $\mathcal{C}_r$ under some conditions on the density and marginal moments. See [the `rust` package vignette](https://paulnorthrop.github.io/rust/articles/rust-a-vignette.html) for technical details and examples. Like with other accept-reject algorithms, the acceptance rate of the proposal goes down with the dimension of the problem. 
 
@@ -495,9 +495,6 @@ Consider $X \sim \mathsf{gamma}(\alpha, \beta),$ a gamma distribution with shape
 
 Suppose we have drawn a Monte Carlo sample of size $B.$ If the function $g(\cdot)$ is square integrable,[^mcmc-1] with variance $\sigma^2_g,$ then a central limit theorem applies. In large samples and for independent observations, our Monte Carlo average $\widehat{\mu}_g = B^{-1}\sum_{b=1}^B g(X_i)$ has variance $\sigma^2_g/B.$ We can approximate the unknown variance $\sigma^2_g$ by it's empirical counterpart.[^mcmc-2]. Note that, while the variance decreases linearly with $B,$ the choice of $g$ impacts the speed of convergence: for our examples, we can compute $$\sigma^2_g =\Pr(X \leq 1)\{1-\Pr(X \leq 1)\}=0.0434$$ (left) and $\sigma^2_g=\alpha/\beta^2=1/8$ (middle plot).
 
-@fig-monte-carlo-path shows the empirical trace plot of the Monte Carlo average (note the $\sqrt{B}$ $x$-axis scale!) as a function of the Monte Carlo sample size $B$ along with 95% Wald-based confidence intervals (gray shaded region), $\widehat{\mu}_g \pm 1.96 \times \sigma_g/\sqrt{B}.$ We can see that the 'likely region' for the average shrinks with $B.$
-
-What happens if our function is not integrable? The right-hand plot of @fig-monte-carlo-path shows empirical averages of $g(x) = x^{-1},$ which is not integrable if $\alpha < 1.$ We can compute the empirical average, but the result won't converge to any meaningful quantity regardless of the sample size. The large jumps are testimonial of this.
 ```{r}
 #| label: fig-monte-carlo-path
 #| eval: true
@@ -562,6 +559,11 @@ g3 <- ggplot(data = data.frame(nsim = Bseq, y = int3),
        subtitle = "E(1/X) (divergent)")
 g1 + g2 + g3 & theme_classic()
 ```
+
+@fig-monte-carlo-path shows the empirical trace plot of the Monte Carlo average (note the $\sqrt{B}$ $x$-axis scale!) as a function of the Monte Carlo sample size $B$ along with 95% Wald-based confidence intervals (gray shaded region), $\widehat{\mu}_g \pm 1.96 \times \sigma_g/\sqrt{B}.$ We can see that the 'likely region' for the average shrinks with $B.$
+
+What happens if our function is not integrable? The right-hand plot of @fig-monte-carlo-path shows empirical averages of $g(x) = x^{-1},$ which is not integrable if $\alpha < 1.$ We can compute the empirical average, but the result won't converge to any meaningful quantity regardless of the sample size. The large jumps are testimonial of this.
+
 :::
 
 [^mcmc-1]: Meaning $\mathsf{E}\{g^2(X)\}<\infty,$ so the variance of $g(X)$ exists.

@@ -583,7 +583,7 @@ In the case of a discrete random variable $X$ with support $\mathcal{X},$ the de
 
 :::
 
-::: {#exm-covidrapidtest}
+:::{#exm-covidrapidtest}
 
 # Covid rapid tests
 
@@ -1090,7 +1090,7 @@ making use of the identity $|\boldsymbol{Q}| = |\boldsymbol{Q}_{11}||\boldsymbol
 
 
 
-::: {#def-likelihood}
+:::{#def-likelihood}
 
 ## Likelihood
 

@@ -1,4 +1,5 @@
 % Options for packages loaded elsewhere
+% Options for packages loaded elsewhere
 \PassOptionsToPackage{unicode}{hyperref}
 \PassOptionsToPackage{hyphens}{url}
 %
@@ -6,21 +7,22 @@
   11pt,
   letterpaper,
 ]{scrbook}
-
+\usepackage{xcolor}
 \usepackage{amsmath,amssymb}
+\setcounter{secnumdepth}{5}
 \usepackage{iftex}
 \ifPDFTeX
   \usepackage[T1]{fontenc}
   \usepackage[utf8]{inputenc}
   \usepackage{textcomp} % provide euro and other symbols
 \else % if luatex or xetex
-  \usepackage{unicode-math}
+  \usepackage{unicode-math} % this also loads fontspec
   \defaultfontfeatures{Scale=MatchLowercase}
   \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
 \fi
 \usepackage{lmodern}
-\ifPDFTeX\else  
-    % xetex/luatex font selection
+\ifPDFTeX\else
+  % xetex/luatex font selection
 \fi
 % Use upquote if available, for straight quotes in verbatim environments
 \IfFileExists{upquote.sty}{\usepackage{upquote}}{}
@@ -38,9 +40,6 @@
 }{% if KOMA class
   \KOMAoptions{parskip=half}}
 \makeatother
-\usepackage{xcolor}
-\setlength{\emergencystretch}{3em} % prevent overfull lines
-\setcounter{secnumdepth}{5}
 % Make \paragraph and \subparagraph free-standing
 \makeatletter
 \ifx\paragraph\undefined\else
@@ -106,8 +105,8 @@
 \newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.13,0.47,0.30}{#1}}
 \newcommand{\WarningTok}[1]{\textcolor[rgb]{0.37,0.37,0.37}{\textit{#1}}}
 
-\providecommand{\tightlist}{%
-  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}\usepackage{longtable,booktabs,array}
+\usepackage{longtable,booktabs,array}
+\newcounter{none} % for unnumbered tables
 \usepackage{calc} % for calculating minipage widths
 % Correct order of tables after \paragraph or \subparagraph
 \usepackage{etoolbox}
@@ -132,6 +131,8 @@
 % Set default figure placement to htbp
 \def\fps@figure{htbp}
 \makeatother
+
+
 % definitions for citeproc citations
 \NewDocumentCommand\citeproctext{}{}
 \NewDocumentCommand\citeproc{mm}{%
@@ -165,6 +166,18 @@
 \newcommand{\CSLLeftMargin}[1]{\parbox[t]{\csllabelwidth}{\strut#1\strut}}
 \newcommand{\CSLRightInline}[1]{\parbox[t]{\linewidth - \csllabelwidth}{\strut#1\strut}}
 \newcommand{\CSLIndent}[1]{\hspace{\cslhangindent}#1}
+
+
+
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+
+
+
+ 
+
 
 % \usepackage{amsmath,amssymb,mathtools}
 \usepackage{mathtools}
@@ -266,20 +279,6 @@
 \DeclareMathAlphabet{\mathcrl}{U}{rsfs}{m}{n}
 \usepackage{utopia}
 \DeclareMathAlphabet{\mathcal}{OMS}{cmsy}{m}{n}
-\usepackage{booktabs}
-\usepackage{longtable}
-\usepackage{array}
-\usepackage{multirow}
-\usepackage{wrapfig}
-\usepackage{float}
-\usepackage{colortbl}
-\usepackage{pdflscape}
-\usepackage{tabu}
-\usepackage{threeparttable}
-\usepackage{threeparttablex}
-\usepackage[normalem]{ulem}
-\usepackage{makecell}
-\usepackage{xcolor}
 \makeatletter
 \@ifpackageloaded{tcolorbox}{}{\usepackage[skins,breakable]{tcolorbox}}
 \@ifpackageloaded{fontawesome5}{}{\usepackage{fontawesome5}}
@@ -335,17 +334,17 @@
 \newcommand*\listoflistings{\listof{codelisting}{List of Listings}}
 \usepackage{amsthm}
 \theoremstyle{definition}
-\newtheorem{definition}{Definition}[chapter]
-\theoremstyle{plain}
-\newtheorem{theorem}{Theorem}[chapter]
-\theoremstyle{plain}
-\newtheorem{corollary}{Corollary}[chapter]
-\theoremstyle{plain}
-\newtheorem{proposition}{Proposition}[chapter]
+\newtheorem{exercise}{Exercise}[chapter]
 \theoremstyle{definition}
 \newtheorem{example}{Example}[chapter]
+\theoremstyle{plain}
+\newtheorem{proposition}{Proposition}[chapter]
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}[chapter]
 \theoremstyle{definition}
-\newtheorem{exercise}{Exercise}[chapter]
+\newtheorem{definition}{Definition}[chapter]
+\theoremstyle{plain}
+\newtheorem{corollary}{Corollary}[chapter]
 \theoremstyle{remark}
 \AtBeginDocument{\renewcommand*{\proofname}{Proof}}
 \newtheorem*{remark}{Remark}
@@ -359,11 +358,9 @@
 \@ifpackageloaded{caption}{}{\usepackage{caption}}
 \@ifpackageloaded{subcaption}{}{\usepackage{subcaption}}
 \makeatother
-
 \usepackage{bookmark}
-
 \IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
-\urlstyle{same} % disable monospaced font for URLs
+\urlstyle{same}
 \hypersetup{
   pdftitle={Bayesian modelling},
   pdfauthor={Léo Belzile},
@@ -374,7 +371,6 @@
 \title{Bayesian modelling}
 \author{Léo Belzile}
 \date{}
-
 \begin{document}
 \frontmatter
 \maketitle
@@ -401,7 +397,7 @@ details.
 These notes are licensed under a
 \href{http://creativecommons.org/licenses/by-nc-sa/4.0/}{Creative
 Commons Attribution-NonCommercial-ShareAlike 4.0 International License}
-and were last compiled on mardi, avril 29 2025.
+and were last compiled on Monday, August 31 2026.
 
 The objective of the course is to provide a hands on introduction to
 Bayesian data analysis. The course will cover the formulation,
@@ -417,7 +413,7 @@ used throughout the course. The overview begins with basic statistical
 concepts, random variables, their distribution and density, moments and
 likelihood derivations.
 
-\begin{tcolorbox}[enhanced jigsaw, opacityback=0, left=2mm, breakable, colbacktitle=quarto-callout-important-color!10!white, colback=white, colframe=quarto-callout-important-color-frame, opacitybacktitle=0.6, toptitle=1mm, bottomtitle=1mm, arc=.35mm, leftrule=.75mm, bottomrule=.15mm, rightrule=.15mm, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Learning objectives}:}, titlerule=0mm, toprule=.15mm, coltitle=black]
+\begin{tcolorbox}[enhanced jigsaw, arc=.35mm, bottomrule=.15mm, bottomtitle=1mm, breakable, colback=white, colbacktitle=quarto-callout-important-color!10!white, colframe=quarto-callout-important-color-frame, coltitle=black, left=2mm, leftrule=.75mm, opacityback=0, opacitybacktitle=0.6, rightrule=.15mm, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Learning objectives}:}, titlerule=0mm, toprule=.15mm, toptitle=1mm]
 
 At the end of the chapter, students should be able to
 
@@ -447,7 +443,7 @@ At the end of the chapter, students should be able to
 
 We begin with a characterization of random vectors and their marginal,
 conditional and joint distributions. A good reference for this material
-is Chapter 3 of McNeil, Frey, and Embrechts
+is Chapter 3 of McNeil et al.
 (\citeproc{ref-McNeil.Frey.Embrechts:2005}{2005}), and Appendix A of
 Held and Bové (\citeproc{ref-Held.Bove:2020}{2020}).
 
@@ -1021,6 +1017,8 @@ Consider a bivariate distribution for \((Y_1, Y_2)\) supported on
 \(\{1, 2, 3\} \times \{1, 2\},\) whose joint probability mass function
 is given in Table~\ref{tbl-bivardiscrete}
 
+{
+
 \begin{longtable}[]{@{}lrrrr@{}}
 
 \caption{\label{tbl-bivardiscrete}Bivariate mass function with
@@ -1039,6 +1037,8 @@ probability of each outcome for \((Y_1, Y_2).\)}
 total & 0.35 & 0.5 & 0.15 & 1.0 \\
 
 \end{longtable}
+
+}
 
 The marginal distribution of \(Y_1\) is obtain by looking at the total
 probability for each column, as
@@ -1625,7 +1625,7 @@ i_{\alpha, \alpha} & = n\alpha^{-2}(1 + \gamma^2-2\gamma+\pi^2/6)
 \end{align*}
 
 We can check this result numerically by comparing the expected value of
-the observed information matrix
+the observed information matrix ::: \{.cell\}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -1666,6 +1666,8 @@ the observed information matrix
 \end{Shaded}
 
 \end{example}
+
+:::
 
 The joint density function only factorizes for independent data, but an
 alternative sequential decomposition can be helpful. For example, we can
@@ -1712,7 +1714,7 @@ The likelihood can then be written as \begin{align*}
 
 \end{example}
 
-\begin{tcolorbox}[enhanced jigsaw, opacityback=0, left=2mm, breakable, colbacktitle=quarto-callout-important-color!10!white, colback=white, colframe=quarto-callout-important-color-frame, opacitybacktitle=0.6, toptitle=1mm, bottomtitle=1mm, arc=.35mm, leftrule=.75mm, bottomrule=.15mm, rightrule=.15mm, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Summary}}, titlerule=0mm, toprule=.15mm, coltitle=black]
+\begin{tcolorbox}[enhanced jigsaw, arc=.35mm, bottomrule=.15mm, bottomtitle=1mm, breakable, colback=white, colbacktitle=quarto-callout-important-color!10!white, colframe=quarto-callout-important-color-frame, coltitle=black, left=2mm, leftrule=.75mm, opacityback=0, opacitybacktitle=0.6, rightrule=.15mm, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Summary}}, titlerule=0mm, toprule=.15mm, toptitle=1mm]
 
 \begin{itemize}
 \tightlist
@@ -1792,7 +1794,7 @@ elicitation and estimation of the marginal likelihood, are mentioned in
 passing. A brief discussion of Bayesian hypothesis testing (and
 alternatives) is presented.
 
-\begin{tcolorbox}[enhanced jigsaw, opacityback=0, left=2mm, breakable, colbacktitle=quarto-callout-important-color!10!white, colback=white, colframe=quarto-callout-important-color-frame, opacitybacktitle=0.6, toptitle=1mm, bottomtitle=1mm, arc=.35mm, leftrule=.75mm, bottomrule=.15mm, rightrule=.15mm, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Learning objectives}:}, titlerule=0mm, toprule=.15mm, coltitle=black]
+\begin{tcolorbox}[enhanced jigsaw, arc=.35mm, bottomrule=.15mm, bottomtitle=1mm, breakable, colback=white, colbacktitle=quarto-callout-important-color!10!white, colframe=quarto-callout-important-color-frame, coltitle=black, left=2mm, leftrule=.75mm, opacityback=0, opacitybacktitle=0.6, rightrule=.15mm, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Learning objectives}:}, titlerule=0mm, toprule=.15mm, toptitle=1mm]
 
 At the end of the chapter, students should be able to
 
@@ -1890,7 +1892,7 @@ is performed conditional on the observed sample values. By Bayes'
 theorem, our target is therefore the posterior density
 \(p(\boldsymbol{\theta} \mid \boldsymbol{y}),\) defined as
 
-\begin{equation}\phantomsection\label{eq-posterior}{
+\begin{equation}\protect\phantomsection\label{eq-posterior}{
 \underbracket[0.25pt]{p(\boldsymbol{\theta} \mid \boldsymbol{y})}_{\text{posterior}} = \frac{\overbracket[0.25pt]{p(\boldsymbol{y} \mid \boldsymbol{\theta})}^{\text{likelihood}} \times  \overbracket[0.25pt]{p(\boldsymbol{\theta})}^{\text{prior}}}{\underbracket[0.25pt]{\int p(\boldsymbol{y} \mid \boldsymbol{\theta}) p(\boldsymbol{\theta}) \mathrm{d} \boldsymbol{\theta}}_{\text{marginal likelihood }p(\boldsymbol{y})}}.
 }\end{equation}
 
@@ -1901,18 +1903,18 @@ likelihood and the prior function.
 For the posterior to be \textbf{proper}, we need the product of the
 prior and the likelihood on the right hand side to be integrable as a
 function of \(\boldsymbol{\theta}\) over the parameter domain
-\(\boldsymbol{\Theta}.\) The integral in the denominator, termed
-marginal likelihood or prior predictive distribution and denoted
-\(p(\boldsymbol{y}) = \mathsf{E}_{\boldsymbol{\theta}}\{p(\boldsymbol{y} \mid \boldsymbol{\theta})\}.\)
-It represents the distribution of the data before data collection, the
+\(\boldsymbol{\Theta}.\) The integral in the denominator,
+\(p(\boldsymbol{y}) = \mathsf{E}_{\boldsymbol{\theta}}\{p(\boldsymbol{y} \mid \boldsymbol{\theta})\},\),
+is termed marginal likelihood or prior predictive distribution: it
+represents the distribution of the data before data collection, the
 respective weights being governed by the prior probability of different
 parameters values. The denominator of Equation~\ref{eq-posterior} is a
 normalizing constant, making the posterior density integrate to unity.
-The marginal likelihood plays a central role in Bayesian testing.
-
-If \(\boldsymbol{\theta}\) is low dimensional, numerical integration
-such as quadrature methods can be used to compute the marginal
-likelihood.
+The marginal likelihood plays a central role in Bayesian testing and
+needs to be estimated should one try to calculate moments of the
+posterior via analytical approximations. If \(\boldsymbol{\theta}\) is
+low dimensional, numerical integration such as quadrature methods can be
+used to compute the marginal likelihood.
 
 To fix ideas, we consider next a simple one-parameter model where the
 marginal likelihood can be computed explicitly.
@@ -2061,49 +2063,6 @@ p_{Y}(y) = \binom{n}{y} \frac{\mathrm{beta}(\alpha + y, \beta + n - y)}{\mathrm{
 \(\mathrm{beta}(\alpha, \beta) = \Gamma(\alpha)\Gamma(\beta)/\Gamma(\alpha+\beta)\)
 is the beta function, expressed in terms of gamma functions.
 
-Consider three models with
-\(Y \mid P^{(i)}=p, \mathcal{M}_i \sim \mathsf{binom}(n, p)\) for
-\(i=1, 2, 3\) and uniform, point mass and beta priors
-\(P^{(1)}\sim \mathsf{unif}(0,1),\)
-\(P^{(2)} \sim \mathsf{beta}(3/2, 3/2)\) and
-\(P^{(3)}\sim \mathsf{1}_{p=0.5}.\) For \(\mathcal{M}_3,\) the marginal
-likelihood is simply equal to the binomial distribution with \(p=0.5.\)
-
-If \(n=14,\) but we let instead the number of success varies, the models
-that put more mass closer to the ratio \(y/n\) will be favored. The
-uniform prior in model \(\mathcal{M}_1\) will have a higher Bayes factor
-than model \(\mathcal{M}_2\) or \(\mathcal{M}_3\) for values closer to
-\(p=0\) or \(p=1,\) but there is mild evidence as shown in
-Figure~\ref{fig-bayesfactor}.
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\CommentTok{\# Log of marginal posterior for binom with beta prior (default is uniform)}
-\NormalTok{log\_marg\_post\_beta }\OtherTok{\textless{}{-}} \ControlFlowTok{function}\NormalTok{(n, y, }\AttributeTok{alpha =} \DecValTok{1}\NormalTok{, }\AttributeTok{beta =} \DecValTok{1}\NormalTok{)\{}
-  \FunctionTok{lchoose}\NormalTok{(n, y) }\SpecialCharTok{+} \FunctionTok{lbeta}\NormalTok{(alpha }\SpecialCharTok{+}\NormalTok{ y, beta }\SpecialCharTok{+}\NormalTok{ n }\SpecialCharTok{{-}}\NormalTok{ y) }\SpecialCharTok{{-}} \FunctionTok{lbeta}\NormalTok{(alpha, beta)}
-\NormalTok{\}}
-\CommentTok{\# Log of Bayes factor}
-\NormalTok{logBF2vs3 }\OtherTok{\textless{}{-}} \ControlFlowTok{function}\NormalTok{(y, n)\{ }\CommentTok{\# model 2 (beta(1.5,1.5) vs 3 (point mass at 0.5)}
-  \FunctionTok{log\_marg\_post\_beta}\NormalTok{(}\AttributeTok{n =}\NormalTok{ n, }\AttributeTok{y =}\NormalTok{ y, }\AttributeTok{alpha =} \FloatTok{1.5}\NormalTok{, }\AttributeTok{beta =} \FloatTok{1.5}\NormalTok{) }\SpecialCharTok{{-}} \FunctionTok{dbinom}\NormalTok{(}\AttributeTok{x =}\NormalTok{ y, }\AttributeTok{size =}\NormalTok{ n, }\AttributeTok{prob =} \FloatTok{0.5}\NormalTok{, }\AttributeTok{log =} \ConstantTok{TRUE}\NormalTok{)}
-\NormalTok{\}}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{figure}[ht!]
-
-\centering{
-
-\pandocbounded{\includegraphics[keepaspectratio]{bayesics_files/figure-pdf/fig-bayesfactor-1.pdf}}
-
-}
-
-\caption{\label{fig-bayesfactor}Log of Bayes factors for comparison of
-binomial models with \(n=14\) trials as a function of the number of
-successes \(n.\) Values larger than zero (on log scale) indicate
-preference for Model 2.}
-
-\end{figure}%
-
 \end{example}
 
 \begin{proposition}[Sequentiality and Bayesian
@@ -2214,7 +2173,7 @@ likelihood is intractable. This is one of the main challenges of
 Bayesian statistics and the popularity and applicability has grown
 drastically with the development and popularity of numerical algorithms,
 following the publication of Geman and Geman
-(\citeproc{ref-Geman.Geman:1984}{1984}) and Alan E. Gelfand and Smith
+(\citeproc{ref-Geman.Geman:1984}{1984}) and Gelfand and Smith
 (\citeproc{ref-Gelfand.Smith:1990}{1990}). Markov chain Monte Carlo
 methods circumvent the calculation of the denominator by drawing
 approximate samples from the posterior.
@@ -2225,11 +2184,13 @@ format]\protect\hypertarget{exm-Duke-Amir}{}\label{exm-Duke-Amir}
 Duke and Amir (\citeproc{ref-Duke.Amir:2023}{2023}) consider the
 difference between integrated and sequential format for sales. The
 \texttt{sellingformat} dataset contains \(n=397\) observations split
-into two groups: quantity-integrated decision (decide the amount to buy)
-and quantity-sequential (first select buy, then select the amount).
-Participants of the study were randomly allocated to either of these two
-format and their decision, either buy, \texttt{1}, or do not buy
-\texttt{0}, is recorded.
+into two groups: quantity-integrated decision (\(X_0\) decide the amount
+to buy) and quantity-sequential (\(X=1\), first select buy, then select
+the amount). Participants of the study were randomly allocated to either
+of these two format and their decision, either buy, \texttt{Y=1}, or do
+not buy \texttt{Y=0}, is recorded.
+
+{
 
 \begin{longtable}[]{@{}lrr@{}}
 
@@ -2251,13 +2212,32 @@ quantity-sequential & 176 & 23 \\
 
 \end{longtable}
 
+}
+
 We consider the number of purchased out of the total, treating records
 as independent Bernoulli observations with a flat (uniform prior).
 
-With a beta-binomial model, the posterior for the probability of buying
-is \(\mathsf{beta}(47, 153)\) for quantity-integrated and
-\(\mathsf{beta}(24, 177)\) for quantity-sequential. We can compute the
-posterior of the odds ratio,
+\textbf{Bayes factor}: consider a simple model comparison where the null
+hypothesis is that the selling format has no impact on the decision to
+buy or not (no treatment effect). We write \(y=\sum_{i=1}^n y_i\) and
+\(y_1 = \sum_{i=1}^n x_iy_i,\) \(n_1 = \sum_{i=1}^n x_i\) and
+\(y_0+y_1=y\), \(n_0+n_1=n.\) The subscript indicates the groups \(0\)
+(quantity-integrated) and \(1\) (quantity-sequential)\$.
+
+With a uniform prior, the unnormalized posterior for the null model is
+\[\mathcal{L}_0(\theta) = \theta^y(1-\theta)^{n-y}\] and that of the
+alternative model is
+\[\mathcal{L}_0(\theta_0, \theta_1) = \theta_0^{y_0}(1-\theta_0)^{n_0-y_0}\theta_1^{y_1}(1-\theta_1)^{n_1-y_1},\]
+the marginal likelihood is \(\mathrm{beta}(y+1, n-y+1)\) (cf.
+Example~\ref{exm-bayesfactor}) and the Bayes factor is \(0.093\),
+indicating strong preference for the alternative model, which suggests
+that there are differences due to present evidence sequentially as
+opposed to all at once.
+
+\textbf{Posterior summary}: with a beta-binomial model, the posterior
+for the probability of buying is \(\mathsf{beta}(47, 153)\) for
+quantity-integrated and \(\mathsf{beta}(24, 177)\) for
+quantity-sequential. We can compute the posterior of the odds ratio,
 \[O = \frac{\Pr(Y=1 \mid \texttt{integrated})}{\Pr(Y=0 \mid \texttt{integrated})}\frac{\Pr(Y=0 \mid \texttt{sequential})}{\Pr(Y=1 \mid \texttt{sequential})},\]
 by simulating independent draws from the posteriors of each condition
 and computing the odds ratio.
@@ -2515,9 +2495,8 @@ products. These risks are often communicated through the value-at-risk
 fire insurance claim amounts for inflation-adjusted data collected from
 January 1980 until December 1990 that are in excess of a million Danish
 kroner, found in the \texttt{evir} package and analyzed in Example 7.23
-of McNeil, Frey, and Embrechts
-(\citeproc{ref-McNeil.Frey.Embrechts:2005}{2005}). These claims are
-denoted \(Y\) and there are 2167 observations.
+of McNeil et al. (\citeproc{ref-McNeil.Frey.Embrechts:2005}{2005}).
+These claims are denoted \(Y\) and there are 2167 observations.
 
 We fit a generalized Pareto distribution to exceedances above 10
 millions krones, keeping 109 observations or roughly the largest 5\% of
@@ -2648,6 +2627,11 @@ loss functions.}
 
 \end{figure}%
 
+Given the posterior distribution of the parameter(s), different loss
+functions thus lead to different point estimates or summaries to be
+reported. The quantile or pinball loss is an example that allows user to
+report selected quantiles, or build regression models to
+
 \end{example}
 
 To communicate uncertainty, we may resort to credible regions and
@@ -2731,7 +2715,7 @@ the cutoff for the HDP region.}
 
 \end{figure}%
 
-\begin{tcolorbox}[enhanced jigsaw, opacityback=0, left=2mm, breakable, colbacktitle=quarto-callout-important-color!10!white, colback=white, colframe=quarto-callout-important-color-frame, opacitybacktitle=0.6, toptitle=1mm, bottomtitle=1mm, arc=.35mm, leftrule=.75mm, bottomrule=.15mm, rightrule=.15mm, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Summary}:}, titlerule=0mm, toprule=.15mm, coltitle=black]
+\begin{tcolorbox}[enhanced jigsaw, arc=.35mm, bottomrule=.15mm, bottomtitle=1mm, breakable, colback=white, colbacktitle=quarto-callout-important-color!10!white, colframe=quarto-callout-important-color-frame, coltitle=black, left=2mm, leftrule=.75mm, opacityback=0, opacitybacktitle=0.6, rightrule=.15mm, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Summary}:}, titlerule=0mm, toprule=.15mm, toptitle=1mm]
 
 \begin{itemize}
 \tightlist
@@ -2782,35 +2766,40 @@ the cutoff for the HDP region.}
 
 The posterior distribution combines two ingredients: the likelihood and
 the prior. If the former is a standard ingredient of any
-likelihood-based inference, prior specification requires some care. The
-purpose of this chapter is to consider different standard way of
-constructing prior functions, and to specify the parameters of the
-latter: we term these hyperparameters.
+likelihood-based modelling, prior specification is more delicate. The
+purpose of this chapter is to consider different ways of constructing
+prior functions, although these are generally chosen for convenience.
+Priors are somewhat controversial among frequentist statisticians
+because they can impact the outcome results, and different prior
+elicitation yields potentially different conclusions.
 
-The posterior is a compromise prior and likelihood: the more informative
-the prior, the more the posterior resembles it, but in large samples,
-the effect of the prior is often negligible if there is enough
-information in the likelihood about all parameters. We can assess the
-robustness of the prior specification through a sensitivity analysis by
-comparing the outcomes of the posterior for different priors or
-different values of the hyperparameters.
+While the sole requirement for inference is that the posterior is
+proper, the most common choice of prior function is to take a density
+function of random variables. Using the latter, we can use moment
+matching to get sensible values or tune via trial-and-error using the
+prior predictive draws to assess the implausibility of the prior
+outcomes. One challenge is that even if we have some prior information
+(e.g., we can obtain sensible prior values for the mean, quantiles or
+variance of the parameter of interest), these summary statistics will
+not typically be enough to fully characterize the prior as many
+different functions or distributions could encode the same information.
+
+The posterior is a compromise between the prior and the likelihood. With
+independent data, the prior has weight \(\mathrm{O}(1)\) and the
+likelihood \(\mathrm{O}(n)\), so the effect of the prior typically
+becomes negligible in large samples, but in multi-level models, not all
+observations need to be informative for parameters in the hierarchy and
+careful prior elicitation becomes crucial.
+
+We can assess the robustness of the prior specification through a
+sensitivity analysis by comparing the outcomes of the posterior for
+different priors or different values of the hyperparameters, which are
+the parameters of the prior.
 
 Oftentimes, we will specify independent priors in multiparameter models,
 but the posterior of these will not be independent.
 
-We can use moment matching to get sensible values, or tune via
-trial-and-error using the prior predictive draws to assess the
-implausibility of the prior outcomes. One challenge is that even if we
-have some prior information (e.g., we can obtain sensible prior values
-for the mean, quantiles or variance of the parameter of interest), these
-summary statisticss will not typically be enough to fully characterize
-the prior: many different functions or distributions could encode the
-same information. This means that different analysts get different
-inferences. Generally, we will choose the prior for convenience. Priors
-are controversial because they could be tuned aposteriori to give any
-answer an analyst might want.
-
-\begin{tcolorbox}[enhanced jigsaw, opacityback=0, left=2mm, breakable, colbacktitle=quarto-callout-important-color!10!white, colback=white, colframe=quarto-callout-important-color-frame, opacitybacktitle=0.6, toptitle=1mm, bottomtitle=1mm, arc=.35mm, leftrule=.75mm, bottomrule=.15mm, rightrule=.15mm, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Learning objectives}:}, titlerule=0mm, toprule=.15mm, coltitle=black]
+\begin{tcolorbox}[enhanced jigsaw, arc=.35mm, bottomrule=.15mm, bottomtitle=1mm, breakable, colback=white, colbacktitle=quarto-callout-important-color!10!white, colframe=quarto-callout-important-color-frame, coltitle=black, left=2mm, leftrule=.75mm, opacityback=0, opacitybacktitle=0.6, rightrule=.15mm, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Learning objectives}:}, titlerule=0mm, toprule=.15mm, toptitle=1mm]
 
 At the end of the chapter, students should be able to
 
@@ -2932,6 +2921,7 @@ Exponential families (see Definition~\ref{def-exponential-family},
 including the binomial, Poisson, exponential, Gaussian distributions)
 admit conjugate priors.
 
+{\def\LTcaptype{none} % do not increment counter
 \begin{longtable}[]{@{}
   >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3455}}
   >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3273}}
@@ -2962,6 +2952,7 @@ conjugate prior
 \(\mu \mid \sigma^2 \sim \mathsf{Gauss}(\nu, \omega \sigma^2),\)
 \(\sigma^{2} \sim \mathsf{inv. gamma}(\alpha, \beta)\) \\
 \end{longtable}
+}
 
 \end{definition}
 
@@ -2978,7 +2969,7 @@ The beta distribution is also the conjugate prior for the negative
 binomial, geometric and Bernoulli distributions, since their likelihoods
 are all proportional to that of the beta. The fact that different
 sampling schemes that result in proportional likelihood functions give
-the same inference is called likelihood principle.
+the same inference is called \textbf{likelihood principle}.
 
 \end{example}
 
@@ -3052,6 +3043,8 @@ by moment matching yields approximately \(\alpha = 1.65\) and
 \(\alpha/\beta = 0.0158\) and \(\alpha/\beta^2=0.0123^2\) and solving
 for the two unknown parameters.
 
+{
+
 \begin{longtable}[]{@{}lrr@{}}
 
 \caption{\label{tbl-upworthy}Number of views, clicks for different
@@ -3071,6 +3064,8 @@ H3 & 3112 & 31 \\
 H4 & 3083 & 9 \\
 
 \end{longtable}
+
+}
 
 \begin{figure}[ht!]
 
@@ -3150,15 +3145,17 @@ given the enormous sample sizes.
 Consider instead a Bayesian analysis with conjugate prior: we model
 separately the rates of each group (question or not). Suppose we think
 apriori that the click-rate is on average 1\%, with a standard deviation
-of 2\%, with no difference between questions or not. For a
-\(\mathsf{Gamma}(\alpha, \beta)\) prior, this would translate, using
-moment matching, into a rate of
-\(\beta = 25 = \mathsf{E}_0(\lambda_j)/ \mathsf{Var}_0(\lambda_j)\) and
-a shape of \(\alpha = 0.25\) (\(j=1, 2\)). If \(\lambda_{j}\) is the
-average rate for each factor level (yes and no), then
-\(\mathsf{E}(Y_{ij}/n_{ij}) = \lambda_j\) so the log likelihood is
-proportional, as a function of \(\lambda_1\) and \(\lambda_2,\) to
-\begin{align*}
+of 2\%, regardless of whether the title asks a question or not. If we
+adopt a \(\mathsf{Gamma}(\alpha, \beta)\) prior, we can transfer this
+prior specification using moment matching into suitable values for the
+hyperparameters, by taking a rate of
+\(\beta = \mathsf{E}_0(\lambda_j)/ \mathsf{Var}_0(\lambda_j)=0.01/0.02^2=25\)
+and a shape of
+\(\alpha=\mathsf{E}_0(\lambda_j)\times\beta=0.01 \times 25=0.25\)
+(\(j=1, 2\)). If \(\lambda_{j}\) is the average rate for each factor
+level (yes and no), then \(\mathsf{E}(Y_{ij}/n_{ij}) = \lambda_j\) so
+the log likelihood is proportional, as a function of \(\lambda_1\) and
+\(\lambda_2,\) to \begin{align*}
 \ell(\boldsymbol{\lambda}; \boldsymbol{y}, \boldsymbol{n}) \stackrel{\boldsymbol{\lambda}}{\propto} \sum_{i=1}^n \sum_{j=1}^2 y_{ij}\log \lambda_j - \lambda_jn_{ij}
 \end{align*} and we can recognize that the posterior for \(\lambda_i\)
 is gamma with shape \(\alpha + \sum_{i=1}^n y_{ij}\) and rate
@@ -3189,10 +3186,7 @@ simulations from the independent gamma posteriors.}
 To get an approximation to the posterior mean of the ratio
 \(\lambda_1/\lambda_2,\) it suffices to draw independent observations
 from their respective posterior, compute the ratio and take the sample
-mean of those draws. We can see that the sampling distribution of the
-ratio is nearly symmetrical, so we can expect Wald intervals to perform
-well should one be interested in building confidence intervals. This is
-however hardly surprising given the sample size at play.
+mean of those draws: the later is nearly symmetric.
 
 \end{example}
 
@@ -3579,8 +3573,8 @@ simpler parsimonious model the more prior mass one places on
 
 To construct a penalized-complexity prior, we compute the
 Kullback--Leibler divergence (\citeproc{ref-Simpson:2017}{Simpson et al.
-2017}) or the Wasserstein distance (\citeproc{ref-Bolin:2023}{Bolin,
-Simas, and Xiong 2023}) between the model
+2017}) or the Wasserstein distance (\citeproc{ref-Bolin:2023}{Bolin et
+al. 2023}) between the model
 \(p_\zeta \equiv p(\boldsymbol{\theta} \mid \zeta)\) relative to the
 baseline with \(\zeta_0,\) \(p_0 \equiv p(\boldsymbol{\theta} \mid
 \zeta_0);\) the distance between the prior densities is then set to
@@ -3596,23 +3590,21 @@ To choose \(\lambda,\) the authors recommend elicitation of a pair
 \(1-\alpha\), such that \(\Pr(\lambda > Q_\zeta)=\alpha.\)
 
 The construction of Wasserstein complexity priors
-(\citeproc{ref-Bolin:2023}{Bolin, Simas, and Xiong 2023}) is more
-involved, but those priors are also parametrization-invariant and
-well-defined even when the Kullback--Leibler divergence limit does not
-exist.
+(\citeproc{ref-Bolin:2023}{Bolin et al. 2023}) is more involved, but
+those priors are also parametrization-invariant and well-defined even
+when the Kullback--Leibler divergence limit does not exist.
 
 \end{proposition}
 
 \begin{example}[Penalized complexity prior for random effects
 models]\protect\hypertarget{exm-pcprior-randomeffect}{}\label{exm-pcprior-randomeffect}
 
-Bolin, Simas, and Xiong (\citeproc{ref-Bolin:2023}{2023}) consider a
-Gaussian prior for independent and identically random effects
-\(\boldsymbol{\alpha},\) of the form
-\(\alpha_j \mid \zeta \sim \mathsf{Gauss}(0, \zeta^2)\) where
-\(\zeta_0=0\) corresponds to the absence of random subject-variability.
-The penalized complexity prior for the scale \(\zeta\) is then an
-exponential with rate \(\lambda,\) with density
+Bolin et al. (\citeproc{ref-Bolin:2023}{2023}) consider a Gaussian prior
+for independent and identically random effects \(\boldsymbol{\alpha},\)
+of the form \(\alpha_j \mid \zeta \sim \mathsf{Gauss}(0, \zeta^2)\)
+where \(\zeta_0=0\) corresponds to the absence of random
+subject-variability. The penalized complexity prior for the scale
+\(\zeta\) is then an exponential with rate \(\lambda,\) with density
 \[p(\zeta \mid \lambda) = \lambda \exp(-\lambda \zeta).\]
 
 We can elicit a high quantile \(Q_\zeta\) at tail probability \(\alpha\)
@@ -3701,7 +3693,7 @@ the \(\mathsf{inv. gamma}(\epsilon, \epsilon).\)
 
 \end{example}
 
-\begin{tcolorbox}[enhanced jigsaw, opacityback=0, left=2mm, breakable, colbacktitle=quarto-callout-important-color!10!white, colback=white, colframe=quarto-callout-important-color-frame, opacitybacktitle=0.6, toptitle=1mm, bottomtitle=1mm, arc=.35mm, leftrule=.75mm, bottomrule=.15mm, rightrule=.15mm, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Summary}:}, titlerule=0mm, toprule=.15mm, coltitle=black]
+\begin{tcolorbox}[enhanced jigsaw, arc=.35mm, bottomrule=.15mm, bottomtitle=1mm, breakable, colback=white, colbacktitle=quarto-callout-important-color!10!white, colframe=quarto-callout-important-color-frame, coltitle=black, left=2mm, leftrule=.75mm, opacityback=0, opacitybacktitle=0.6, rightrule=.15mm, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Summary}:}, titlerule=0mm, toprule=.15mm, toptitle=1mm]
 
 \begin{itemize}
 \tightlist
@@ -3935,7 +3927,7 @@ points from the Gaussian and accept any that falls within the bounds.
 \end{Shaded}
 
 \begin{verbatim}
-[1] 0.34174
+[1] 0.34002
 \end{verbatim}
 
 \begin{Shaded}
@@ -4025,9 +4017,9 @@ this generality is randomness.
 ratio-of-uniform]\protect\hypertarget{prp-ratio-uniform}{}\label{prp-ratio-uniform}
 
 An exact simulation algorithm is described in Kinderman and Monahan
-(\citeproc{ref-Kinderman.Monahan:1977}{1977}) and extended Wakefield,
-Gelfand, and Smith (\citeproc{ref-Wakefield.Gelfand.Smith:1991}{1991})
-for random number generation in low dimensions. Consider a \(d\)-vector
+(\citeproc{ref-Kinderman.Monahan:1977}{1977}) and extended Wakefield et
+al. (\citeproc{ref-Wakefield.Gelfand.Smith:1991}{1991}) for random
+number generation in low dimensions. Consider a \(d\)-vector
 \(\boldsymbol{X}\) with density
 \(cf(\boldsymbol{x}): \mathbb{R}^d \to \mathbb{R}^{+}\) with support
 \(\mathcal{S} \subseteq \mathbb{R}^d\), and \(c>0\) is the (possibly
@@ -4060,14 +4052,13 @@ dimension and is \begin{align*}
 p_a(d, r) = c\left[(r d + 1) \, b_0(r) \displaystyle\prod_{j=1}^d \left\{b_j(r) -a_j(r) \right\}\right]^{-1}.
 \end{align*}
 
-Wakefield, Gelfand, and Smith
-(\citeproc{ref-Wakefield.Gelfand.Smith:1991}{1991}) propose using
-\(r=1/2\) and relocating the mode of \(f\) to the origin increase the
-acceptance rate. Northrop proposes to use a Box--Cox transformation
-(\citeproc{ref-Box.Cox:1964}{Box and Cox 1964}) together with a rotation
-in the software Northrop (\citeproc{ref-rust}{2024}) to improve the
-acceptance rate. The bounding box may exist only for certain values of
-\(r\); see the
+Wakefield et al. (\citeproc{ref-Wakefield.Gelfand.Smith:1991}{1991})
+propose using \(r=1/2\) and relocating the mode of \(f\) to the origin
+increase the acceptance rate. Northrop proposes to use a Box--Cox
+transformation (\citeproc{ref-Box.Cox:1964}{Box and Cox 1964}) together
+with a rotation in the software Northrop (\citeproc{ref-rust}{2024}) to
+improve the acceptance rate. The bounding box may exist only for certain
+values of \(r\); see the
 \href{https://paulnorthrop.github.io/rust/articles/rust-a-vignette.html}{\texttt{rust}
 package vignette} for technical details and examples.
 
@@ -4248,7 +4239,7 @@ more than 9\% for the same Monte Carlo sample size.
 
 \begin{verbatim}
                true         monte carlo importance sampling 
-             0.0625              0.0620              0.0623 
+             0.0625              0.0622              0.0627 
 \end{verbatim}
 
 \begin{Shaded}
@@ -4259,7 +4250,7 @@ more than 9\% for the same Monte Carlo sample size.
 \end{Shaded}
 
 \begin{verbatim}
-[1] 1.080627
+[1] 1.087118
 \end{verbatim}
 
 \begin{figure}[ht!]
@@ -4308,20 +4299,6 @@ of \(g\) impacts the speed of convergence: for our examples, we can
 compute \[\sigma^2_g =\Pr(X \leq 1)\{1-\Pr(X \leq 1)\}=0.0434\] (left)
 and \(\sigma^2_g=\alpha/\beta^2=1/8\) (middle plot).
 
-Figure~\ref{fig-monte-carlo-path} shows the empirical trace plot of the
-Monte Carlo average (note the \(\sqrt{B}\) \(x\)-axis scale!) as a
-function of the Monte Carlo sample size \(B\) along with 95\% Wald-based
-confidence intervals (gray shaded region),
-\(\widehat{\mu}_g \pm 1.96 \times \sigma_g/\sqrt{B}.\) We can see that
-the `likely region' for the average shrinks with \(B.\)
-
-What happens if our function is not integrable? The right-hand plot of
-Figure~\ref{fig-monte-carlo-path} shows empirical averages of
-\(g(x) = x^{-1},\) which is not integrable if \(\alpha < 1.\) We can
-compute the empirical average, but the result won't converge to any
-meaningful quantity regardless of the sample size. The large jumps are
-testimonial of this.
-
 \begin{figure}[ht!]
 
 \centering{
@@ -4336,6 +4313,20 @@ testimonial of this.
 function of the Monte Carlo sample size.}
 
 \end{figure}%
+
+Figure~\ref{fig-monte-carlo-path} shows the empirical trace plot of the
+Monte Carlo average (note the \(\sqrt{B}\) \(x\)-axis scale!) as a
+function of the Monte Carlo sample size \(B\) along with 95\% Wald-based
+confidence intervals (gray shaded region),
+\(\widehat{\mu}_g \pm 1.96 \times \sigma_g/\sqrt{B}.\) We can see that
+the `likely region' for the average shrinks with \(B.\)
+
+What happens if our function is not integrable? The right-hand plot of
+Figure~\ref{fig-monte-carlo-path} shows empirical averages of
+\(g(x) = x^{-1},\) which is not integrable if \(\alpha < 1.\) We can
+compute the empirical average, but the result won't converge to any
+meaningful quantity regardless of the sample size. The large jumps are
+testimonial of this.
 
 \end{example}
 
@@ -4532,7 +4523,7 @@ Loosely speaking, the effective sample size is the equivalent number of
 observations if the marginal posterior draws were independent. We define
 it as
 
-\begin{equation}\phantomsection\label{eq-effective-sample-size}{
+\begin{equation}\protect\phantomsection\label{eq-effective-sample-size}{
 \mathsf{ESS} = \frac{B}{\left\{1+2\sum_{t=1}^\infty \rho_t\right\}}
 }\end{equation} where \(\rho_t\) is the lag \(t\) correlation. The
 relative effective sample size is simply the fraction of the effective
@@ -4764,7 +4755,7 @@ computers became more widely available. The idea is to draw correlated
 samples from a posterior via Markov chains, constructed to have the
 posterior as invariant stationary distribution.
 
-\begin{tcolorbox}[enhanced jigsaw, opacityback=0, left=2mm, breakable, colbacktitle=quarto-callout-important-color!10!white, colback=white, colframe=quarto-callout-important-color-frame, opacitybacktitle=0.6, toptitle=1mm, bottomtitle=1mm, arc=.35mm, leftrule=.75mm, bottomrule=.15mm, rightrule=.15mm, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Learning objectives}:}, titlerule=0mm, toprule=.15mm, coltitle=black]
+\begin{tcolorbox}[enhanced jigsaw, arc=.35mm, bottomrule=.15mm, bottomtitle=1mm, breakable, colback=white, colbacktitle=quarto-callout-important-color!10!white, colframe=quarto-callout-important-color-frame, coltitle=black, left=2mm, leftrule=.75mm, opacityback=0, opacitybacktitle=0.6, rightrule=.15mm, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Learning objectives}:}, titlerule=0mm, toprule=.15mm, toptitle=1mm]
 
 At the end of the chapter, students should be able to
 
@@ -4806,7 +4797,7 @@ value \(\boldsymbol{\theta}_0:\)
   \(\boldsymbol{\theta}_t^{\star} \sim q(\boldsymbol{\theta} \mid \boldsymbol{\theta}_{t-1}).\)
 \item
   Compute the acceptance ratio
-  \begin{equation}\phantomsection\label{eq-metropolis-ratio}{
+  \begin{equation}\protect\phantomsection\label{eq-metropolis-ratio}{
   R = \frac{p(\boldsymbol{\theta}_t^{\star})}{p(\boldsymbol{\theta}_{t-1})}\frac{q(\boldsymbol{\theta}_{t-1} \mid \boldsymbol{\theta}_t^{\star} )}{q(\boldsymbol{\theta}_t^{\star} \mid \boldsymbol{\theta}_{t-1})}
   }\end{equation}
 \item
@@ -5287,7 +5278,7 @@ evaluation costs. The proposal requires that both \(f''(\theta_{t-1})\)
 and \(f''(\theta^{\star}_{t})\) be negative since the variance is
 \(-1/f''(\theta)\): this shouldn't be problematic in the vicinity of the
 mode. Otherwise, one could use a global scaling derived from the hessian
-at the mode (\citeproc{ref-Rue.Held:2005}{H. Rue and Held 2005}).
+at the mode (\citeproc{ref-Rue.Held:2005}{Rue and Held 2005}).
 
 The simpler Metropolis-adjusted Langevin algorithm (MALA) is equivalent
 to using a Gaussian random walk where the proposal has mean
@@ -5575,7 +5566,7 @@ architecture.
 
 \end{refremark}
 
-\begin{tcolorbox}[enhanced jigsaw, opacityback=0, left=2mm, breakable, colbacktitle=quarto-callout-important-color!10!white, colback=white, colframe=quarto-callout-important-color-frame, opacitybacktitle=0.6, toptitle=1mm, bottomtitle=1mm, arc=.35mm, leftrule=.75mm, bottomrule=.15mm, rightrule=.15mm, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Summary}:}, titlerule=0mm, toprule=.15mm, coltitle=black]
+\begin{tcolorbox}[enhanced jigsaw, arc=.35mm, bottomrule=.15mm, bottomtitle=1mm, breakable, colback=white, colbacktitle=quarto-callout-important-color!10!white, colframe=quarto-callout-important-color-frame, coltitle=black, left=2mm, leftrule=.75mm, opacityback=0, opacitybacktitle=0.6, rightrule=.15mm, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Summary}:}, titlerule=0mm, toprule=.15mm, toptitle=1mm]
 
 \begin{itemize}
 \tightlist
@@ -5626,7 +5617,7 @@ architecture.
 
 \chapter{Gibbs sampling}\label{sec-Gibbs}
 
-\begin{tcolorbox}[enhanced jigsaw, opacityback=0, left=2mm, breakable, colbacktitle=quarto-callout-important-color!10!white, colback=white, colframe=quarto-callout-important-color-frame, opacitybacktitle=0.6, toptitle=1mm, bottomtitle=1mm, arc=.35mm, leftrule=.75mm, bottomrule=.15mm, rightrule=.15mm, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Learning objectives}:}, titlerule=0mm, toprule=.15mm, coltitle=black]
+\begin{tcolorbox}[enhanced jigsaw, arc=.35mm, bottomrule=.15mm, bottomtitle=1mm, breakable, colback=white, colbacktitle=quarto-callout-important-color!10!white, colframe=quarto-callout-important-color-frame, coltitle=black, left=2mm, leftrule=.75mm, opacityback=0, opacitybacktitle=0.6, rightrule=.15mm, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Learning objectives}:}, titlerule=0mm, toprule=.15mm, toptitle=1mm]
 
 At the end of the chapter, students should be able to
 
@@ -6084,15 +6075,15 @@ Markov chains with symmetric priors or using tempering algorithms. Two
 chains may thus reach the same stationary distribution, with group
 labels swapped. It is sometimes necessary to impose ordering constraints
 on the mean parameters \(\boldsymbol{\mu},\) although this isn't
-necessarily easy to generalize beyond the univariate setting. See Jasra,
-Holmes, and Stephens (\citeproc{ref-Jasra.Holmes.Stephens:2005}{2005})
-and Stephens (\citeproc{ref-Stephens:2002}{2002}) for more details.
+necessarily easy to generalize beyond the univariate setting. See Jasra
+et al. (\citeproc{ref-Jasra.Holmes.Stephens:2005}{2005}) and Stephens
+(\citeproc{ref-Stephens:2002}{2002}) for more details.
 
 \label{rem-label-switching}
 
 \end{refremark}
 
-\begin{tcolorbox}[enhanced jigsaw, opacityback=0, left=2mm, breakable, colbacktitle=quarto-callout-important-color!10!white, colback=white, colframe=quarto-callout-important-color-frame, opacitybacktitle=0.6, toptitle=1mm, bottomtitle=1mm, arc=.35mm, leftrule=.75mm, bottomrule=.15mm, rightrule=.15mm, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Summary}:}, titlerule=0mm, toprule=.15mm, coltitle=black]
+\begin{tcolorbox}[enhanced jigsaw, arc=.35mm, bottomrule=.15mm, bottomtitle=1mm, breakable, colback=white, colbacktitle=quarto-callout-important-color!10!white, colframe=quarto-callout-important-color-frame, coltitle=black, left=2mm, leftrule=.75mm, opacityback=0, opacitybacktitle=0.6, rightrule=.15mm, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Summary}:}, titlerule=0mm, toprule=.15mm, toptitle=1mm]
 
 \begin{itemize}
 \tightlist
@@ -6150,7 +6141,7 @@ Betancourt} for excellent visualizations. In this chapter, we focus on
 three aspects of the workflow: model validation, evaluation and
 comparison.
 
-\begin{tcolorbox}[enhanced jigsaw, opacityback=0, left=2mm, breakable, colbacktitle=quarto-callout-important-color!10!white, colback=white, colframe=quarto-callout-important-color-frame, opacitybacktitle=0.6, toptitle=1mm, bottomtitle=1mm, arc=.35mm, leftrule=.75mm, bottomrule=.15mm, rightrule=.15mm, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Learning objectives}:}, titlerule=0mm, toprule=.15mm, coltitle=black]
+\begin{tcolorbox}[enhanced jigsaw, arc=.35mm, bottomrule=.15mm, bottomtitle=1mm, breakable, colback=white, colbacktitle=quarto-callout-important-color!10!white, colframe=quarto-callout-important-color-frame, coltitle=black, left=2mm, leftrule=.75mm, opacityback=0, opacitybacktitle=0.6, rightrule=.15mm, title=\textcolor{quarto-callout-important-color}{\faExclamation}\hspace{0.5em}{\textbf{Learning objectives}:}, titlerule=0mm, toprule=.15mm, toptitle=1mm]
 
 At the end of the chapter, students should be able to
 
@@ -6578,7 +6569,7 @@ the rest, \(p(y_i \mid \boldsymbol{y}_{-i}),\) to avoid double dipping
 --- the latter is computationally intensive to obtain because it would
 require running \(n\) Markov chains with \(n-1\) observations each, but
 we can get a good approximation using importance sampling, as proposed
-in eq. 25 of Section 7 of A. E. Gelfand and Dey
+in eq. 25 of Section 7 of Gelfand and Dey
 (\citeproc{ref-Gelfand.Dey:1994}{1994}).
 
 \begin{proposition}[Marginal predictive
@@ -6619,9 +6610,8 @@ p(y_i \mid \boldsymbol{y}_{-i}) &= \int_{\boldsymbol{\Theta}} f_i(y_i; \boldsymb
 \widehat{p}(y_i \mid \boldsymbol{y}_{-i}) = \frac{\sum_{b=1}^B f_i(y_i; \boldsymbol{\theta}_b) w_i(\boldsymbol{\theta}_b)}{\sum_{b=1}^Bw_i(\boldsymbol{\theta}_b)}  = B \left\{\sum_{b=1}^B \frac{1}{f_i (y_i; \boldsymbol{\theta}_b)}\right\}^{-1}.
 \end{align*} This estimator takes the form of an harmonic mean, which
 can have very large variance due to some weights dominating the fit.
-Vehtari, Gelman, and Gabry
-(\citeproc{ref-Vehtari.Gelman.Gabry:2017}{2017}) proposed using Pareto
-smoothed importance sampling
+Vehtari et al. (\citeproc{ref-Vehtari.Gelman.Gabry:2017}{2017}) proposed
+using Pareto smoothed importance sampling
 (\citeproc{ref-Vehtari.Simpson.Gelman.Yao.Gabry:2025}{Vehtari et al.
 2024}) to avoid overly large weights; this method is implemented in the
 \texttt{loo} \textbf{R} package.
@@ -6654,6 +6644,11 @@ Figure~\ref{fig-loocv-qqplots} shows two examples of these.
   \FunctionTok{labs}\NormalTok{(}\AttributeTok{x =} \StringTok{"uniform"}\NormalTok{, }\AttributeTok{y =} \StringTok{"LOO{-}PIT"}\NormalTok{)}
 \end{Highlighting}
 \end{Shaded}
+
+\begin{verbatim}
+Some PIT values larger than 1! Largest:  1 
+Rounding PIT > 1 to 1.
+\end{verbatim}
 
 \begin{figure}[ht!]
 
@@ -6787,11 +6782,11 @@ We consider data from Kitagawa (\citeproc{ref-Kitagawa:1987}{1987}) that
 provide a binomial time series giving the number of days in years 1983
 and 1984 (a leap year) in which there was more than 1mm of rain in
 Tokyo. These data and the model we consider are discussed in in section
-4.3.4 of H. Rue and Held (\citeproc{ref-Rue.Held:2005}{2005}). We thus
-have \(T=366\) days and \(n_t \in \{1,2\}\) \((t=1, \ldots, T)\) the
-number of observations in day \(t\) and \(y_t=\{0,\ldots, n_t\}\) the
-number of days with rain. The objective is to obtain a smoothed
-probability of rain. The underlying probit model considered takes
+4.3.4 of Rue and Held (\citeproc{ref-Rue.Held:2005}{2005}). We thus have
+\(T=366\) days and \(n_t \in \{1,2\}\) \((t=1, \ldots, T)\) the number
+of observations in day \(t\) and \(y_t=\{0,\ldots, n_t\}\) the number of
+days with rain. The objective is to obtain a smoothed probability of
+rain. The underlying probit model considered takes
 \(Y_t \mid n_t, p_t \sim \mathsf{binom}(n_t, p_t)\) and
 \(p_t = \Phi(\beta_t).\)
 
@@ -7028,8 +7023,8 @@ then propose \(\boldsymbol{\beta}\) conditional on this value using the
 Gaussian approximation above and accept/reject the pair
 \((\tau, \boldsymbol{\beta})\) using a Metropolis step. As for the
 Metropolis-adjusted Langevin algorithm, we need to compute the backward
-move for the acceptance ratio. We refer to Section 4.4.1 of H. Rue and
-Held (\citeproc{ref-Rue.Held:2005}{2005}) for more details.
+move for the acceptance ratio. We refer to Section 4.4.1 of Rue and Held
+(\citeproc{ref-Rue.Held:2005}{2005}) for more details.
 
 \end{example}
 
@@ -7441,10 +7436,10 @@ freedom.}
 A better alternative is to specify different prior for each marginal
 scale \(\sigma_j\) and a prior on the correlation matrix \(\mathbf{R}.\)
 For the latter, the onion peel or LKJ prior, named after the authors of
-Lewandowski, Kurowicka, and Joe (\citeproc{ref-Lewandowski:2009}{2009}),
-is \(p(\mathbf{R}) \propto |\mathbf{R}|^{\eta-1}\) for a scale
-\(\eta>0.\) The case \(\eta=1\) leads to uniform over the space of
-correlation matrices, and \(\eta>1\) favours the identity matrix.
+Lewandowski et al. (\citeproc{ref-Lewandowski:2009}{2009}), is
+\(p(\mathbf{R}) \propto |\mathbf{R}|^{\eta-1}\) for a scale \(\eta>0.\)
+The case \(\eta=1\) leads to uniform over the space of correlation
+matrices, and \(\eta>1\) favours the identity matrix.
 
 \end{proposition}
 
@@ -7575,13 +7570,13 @@ be poor.
 \begin{proposition}[Horseshoe
 prior]\protect\hypertarget{prp-horseshoe}{}\label{prp-horseshoe}
 
-The horseshoe prior of Carvalho, Polson, and Scott
+The horseshoe prior of Carvalho et al.
 (\citeproc{ref-Carvalho.Polson.Scott:2010}{2010}) is a hierarchical
 prior of the form \begin{align*}
 \beta_j \mid \sigma^2_j \sim \mathsf{Gauss}(0, \sigma^2_j), \quad \sigma_j \mid \lambda \sim \mathsf{Student}_{+}(0, \lambda, 1), \quad \lambda \sim \mathsf{Student}_{+}(0, \omega, 1)
 \end{align*} where \(\mathsf{Student}_{+}(0, a, 1)\) denotes a
 half-Cauchy distribution with scale \(a>0,\) truncated on
-\(\mathbb{R}_{+}\). Carvalho, Polson, and Scott
+\(\mathbb{R}_{+}\). Carvalho et al.
 (\citeproc{ref-Carvalho.Polson.Scott:2010}{2010}) use an improper prior
 for the scale \(p(\omega^2) \propto 1/\omega^2\) in the context of
 linear regression model when
@@ -7636,7 +7631,7 @@ priors.}
 coefficient \(\beta\) with horseshoe prior (full), Laplace (dashed) and
 a Student-\(t\) (thick dotted). The plot on the right shows the tail
 behaviour. The density of the horseshoe is unbounded at the origin.
-Inspired from Figure 1 of Carvalho, Polson, and Scott
+Inspired from Figure 1 of Carvalho et al.
 (\citeproc{ref-Carvalho.Polson.Scott:2010}{2010}).}
 
 \end{figure}%
@@ -7699,7 +7694,7 @@ regression coefficients with Gaussian (ridge), double exponential
 One aspect worth mentioning is that the horseshoe prior impacts strongly
 the geometry and leads to slower mixing than the conjugate or
 Student-\(t\) priors: the effective sample size fraction relative to the
-number of samples ranges from 20\% to 100\%, compared to 52\% to 100\%
+number of samples ranges from 15\% to 100\%, compared to 50\% to 96\%
 for the Bayesian LASSO and near-independent draws with the conjugate
 ridge.
 
@@ -7767,7 +7762,7 @@ p(\boldsymbol{M} \mid \boldsymbol{Y}, \boldsymbol{\theta}) \propto p(M) |\boldsy
 
 We then consider different types of move for the \(k_{\max}\) potential
 covariates (including interactions, etc.)
-(\citeproc{ref-Holmes:2002}{Holmes, Denison, and Mallick 2002})
+(\citeproc{ref-Holmes:2002}{Holmes et al. 2002})
 
 \begin{itemize}
 \tightlist
@@ -7817,12 +7812,11 @@ approximations for integrals (\citeproc{ref-Tierney.Kadane:1986}{Tierney
 and Kadane 1986}), and their applications for model comparison
 (\citeproc{ref-Raftery:1995}{Raftery 1995}) and evaluation of the
 marginal likelihood. We also discuss integrated nested Laplace
-approximations (\citeproc{ref-Rue.Martino.Chopin:2009}{Håvard Rue,
-Martino, and Chopin 2009}; \citeproc{ref-Wood:2019}{Wood 2019}), used in
-hierarchical models with Gaussian components to obtain approximations to
-the marginal distribution. This material also borrows from Section 8.2
-and appendix C.2.2 of Held and Bové
-(\citeproc{ref-Held.Bove:2020}{2020}).
+approximations (\citeproc{ref-Rue.Martino.Chopin:2009}{Rue et al. 2009};
+\citeproc{ref-Wood:2019}{Wood 2019}), used in hierarchical models with
+Gaussian components to obtain approximations to the marginal
+distribution. This material also borrows from Section 8.2 and appendix
+C.2.2 of Held and Bové (\citeproc{ref-Held.Bove:2020}{2020}).
 
 We make use of Landau's notation to describe the growth rate of some
 functions: we write \(x = \mathrm{O}(n)\) (big-O) to indicate that the
@@ -8192,9 +8186,9 @@ To obtain \(p(\theta_i \mid \boldsymbol{y})\), we then proceed with
   \(\widetilde{p}(\boldsymbol{\theta} \mid \boldsymbol{y}).\)
 \end{enumerate}
 
-To approximate \(p(\beta_i \mid \boldsymbol{y})\), Håvard Rue, Martino,
-and Chopin (\citeproc{ref-Rue.Martino.Chopin:2009}{2009}) proceed
-instead by building an approximation of it based on maximizing
+To approximate \(p(\beta_i \mid \boldsymbol{y})\), Rue et al.
+(\citeproc{ref-Rue.Martino.Chopin:2009}{2009}) proceed instead by
+building an approximation of it based on maximizing
 \(\boldsymbol{\beta}_{-i} \mid \beta_i, \boldsymbol{\theta}, \boldsymbol{y}\)
 to yield \(\widehat{\boldsymbol{\beta}}_{(i)}\) whose \(i\)th element is
 \(\beta_i,\) yielding \begin{align*}
@@ -8213,7 +8207,7 @@ to evaluate it repeatedly for each marginal \(\beta_i\) for
 \(i=1, \ldots, p\) is prohibitive since it involves factorizations of
 \(p \times p\) matrices.
 
-To reduce the computational costs, Håvard Rue, Martino, and Chopin
+To reduce the computational costs, Rue et al.
 (\citeproc{ref-Rue.Martino.Chopin:2009}{2009}) propose to use the
 approximate mean to avoid optimizing and consider the conditional based
 on the conditional of the Gaussian approximation with mean
@@ -8227,18 +8221,18 @@ suggest to use a Newton step to correct
 \(\widetilde{\boldsymbol{\beta}}_{(i)},\) starting from the conditional
 mean. The second step is to exploit the local dependence on
 \(\boldsymbol{\beta}\) using the Markov structure to build an
-improvement to the Hessian. Further improvements are proposed in Håvard
-Rue, Martino, and Chopin (\citeproc{ref-Rue.Martino.Chopin:2009}{2009}),
-who used a simplified Laplace approximation to correct the Gaussian
-approximation for location and skewness, a necessary step when the
-likelihood itself is not Gaussian. This leads to a Taylor series
-approximation to correct the log determinant of the Hessian matrix. Wood
+improvement to the Hessian. Further improvements are proposed in Rue et
+al. (\citeproc{ref-Rue.Martino.Chopin:2009}{2009}), who used a
+simplified Laplace approximation to correct the Gaussian approximation
+for location and skewness, a necessary step when the likelihood itself
+is not Gaussian. This leads to a Taylor series approximation to correct
+the log determinant of the Hessian matrix. Wood
 (\citeproc{ref-Wood:2019}{2019}) consider a BFGS update to
 \(\mathbf{M}^{-1}_{-i,-i}\) directly, which works less well than the
 Taylor expansion near \(\widehat{\beta}_i\), but improves upon when we
 move far from this value. Nowadays, the INLA software uses a low-rank
-variational correction to Laplace method, proposed in van Niekerk and
-Rue (\citeproc{ref-vanNiekerk.Rue:2024}{2024}).
+variational correction to Laplace method, proposed in {van Niekerk and
+Rue} (\citeproc{ref-vanNiekerk.Rue:2024}{2024}).
 
 The \texttt{INLA} \href{https://www.r-inla.org/}{\textbf{R} package}
 provides an interface to fit models with Gaussian latent random effects.
@@ -8318,7 +8312,7 @@ the parameters using the change of variable formula.
 \end{Shaded}
 
 \begin{verbatim}
-[1] 0.9706630 0.9847944 0.9929106
+[1] 0.9874671 0.9929791 0.9963883
 \end{verbatim}
 
 \begin{Shaded}
@@ -8332,7 +8326,7 @@ the parameters using the change of variable formula.
 \end{Shaded}
 
 \begin{verbatim}
-[1] 0.2864909 0.7396801
+[1] 0.1727294 0.4049276
 \end{verbatim}
 
 \begin{Shaded}
@@ -8350,7 +8344,7 @@ the parameters using the change of variable formula.
 
 \begin{verbatim}
        mean          sd 
-0.984052716 0.005762504 
+0.992721400 0.002303183 
 \end{verbatim}
 
 \end{example}
@@ -8463,9 +8457,7 @@ misspecification: if we fit \(g(\cdot)\) when data arise from \(f_t,\)
 the maximum likelihood estimator of the parameters
 \(\widehat{\boldsymbol{\psi}}\) will be the value of the parameter that
 minimizes the Kullback--Leibler divergence
-\(\mathsf{KL}(f_t \parallel g);\) this value will be positive unless the
-model is correctly specified and
-\(g(\cdot; \widehat{\boldsymbol{\psi}}) = f_t(\cdot).\) See Davison
+\(\mathsf{KL}(f_t \parallel g).\) See Davison
 (\citeproc{ref-Davison:2003}{2003}), pp.~122--125 for a discussion.
 
 In the Bayesian setting, interest lies in approximating
@@ -8484,7 +8476,7 @@ Consider an approximation of a bivariate Gaussian vector with correlated
 components
 \(\boldsymbol{X} \sim \mathsf{Gauss}_2(\boldsymbol{\mu}, \boldsymbol{\Sigma})\).
 If we approximate each margin independently with a univariate Gaussian,
-then the density which minimizes \$
+then the density which minimizes
 \[\mathsf{KL}\{ \phi_2(\boldsymbol{\mu}, \boldsymbol{\Sigma}) \parallel \phi(\mu_{1g}, \sigma^2_{1g})\phi(\mu_{2g}, \sigma^2_{2g})\},\]
 the forward Kullback--Leibler divergence will have the same marginal
 mean \(\widehat{\mu}_{ig}=\mu_i\) and variance
@@ -8961,6 +8953,75 @@ not viable. This is the case notable for regression models with the
 discrete spike-and-slab of Definition~\ref{def-spike-slab}, models for
 image processing or topic modelling using latent Dirichlet allocations.
 
+\section{Skew-approximations}\label{skew-approximations}
+
+The Gaussian Laplace, variational and expected propagation
+approximations typically rely on symmetric approximations to the
+posterior. A symmetric function \(g\) about
+\(\boldsymbol{x}_{\text{sym}}\) is one for which the identity
+\(g(\boldsymbol{x}) = g(2\boldsymbol{x}_{\text{sym}}-\boldsymbol{x}_{\text{sym}})\)
+for any \(\boldsymbol{x}\) in the domain.
+
+Symmetric approximations perform poorly when the underlying posterior is
+skewed, as in the example in the right panel of Figure~\ref{fig-convex}
+shows. Recent work of Pozza et al.
+(\citeproc{ref-Pozza.Durante.Szabo:2026}{2026}) show how one can build a
+skew-symmetric approximation for the posterior
+\(p(\boldsymbol{\theta} \mid \boldsymbol{y})\) from a symmetric one, say
+\(g(\boldsymbol{\theta})\) at the cost of two additional likelihood and
+prior evaluations for every parameter vector \(\boldsymbol{\theta}\) of
+interest.
+
+Let
+\(g^{\text{sym}}(\boldsymbol{\theta}; \boldsymbol{\theta}_{\text{sym}})\)
+be a density function that is symmetric around
+\(\boldsymbol{\theta}_{\text{sym}};\) for a Gaussian or any elliptical
+distribution, this value \(\boldsymbol{\theta}_{\text{sym}}\) would be
+the location vector \(\boldsymbol{\mu}.\) We consider a skewing factor
+\(w(\boldsymbol{\theta};  \boldsymbol{\theta}_{\text{sym}})\) satisfying
+\(w(\boldsymbol{\theta}; \boldsymbol{\theta}_{\text{sym}}) = 1-w(2\boldsymbol{\theta}_{\text{sym}}-\boldsymbol{\theta}; \boldsymbol{\theta}_{\text{sym}})\)
+for any
+\(\boldsymbol{\theta} \in \boldsymbol{\Theta} \subseteq \mathbb{R}^d.\)
+
+The skew-symmetric approximation is obtained by multiplying the
+symmetric density by a perturbation factor, where \begin{align*}
+g^{\text{skew}}(\boldsymbol{\theta}) = 2 g^{\text{sym}}(\boldsymbol{\theta}; \boldsymbol{\theta}_{\text{sym}})w(\boldsymbol{\theta}, \boldsymbol{\theta}_{\text{sym}}; \boldsymbol{\theta}_{\text{sym}}).
+\end{align*}
+
+In a Bayesian setting with deterministic approximations, we can easily
+take \(g\) to be symmetric, so the only outstanding question is how to
+define the tilting parameter. Consider a posterior density
+\(p(\boldsymbol{\theta} \mid \boldsymbol{y}) \propto_{\boldsymbol{\theta}} p(\boldsymbol{\theta})p(\boldsymbol{y}\mid \boldsymbol{\theta}).\)
+Taking as skewing factor \begin{align*}
+w(\boldsymbol{\theta};\boldsymbol{\theta}_{\text{sym}}) = \frac{p(\boldsymbol{\theta})p(\boldsymbol{y}\mid \boldsymbol{\theta})}{p(\boldsymbol{\theta})p(\boldsymbol{y}\mid \boldsymbol{\theta}) + p(2\boldsymbol{\theta}_{\text{sym}} -\boldsymbol{\theta})p(\boldsymbol{y}\mid 2\boldsymbol{\theta}_{\text{sym}}-\boldsymbol{\theta})}
+\end{align*} leads to an improvement in fit (in the sense of reducing
+the Kullback--Leibler divergence with the true distribution)
+(\citeproc{ref-Pozza.Durante.Szabo:2026}{Pozza et al. 2026}). The
+cleverness of this ratio is that, since the unnormalized posterior
+(prior and likelihood) appear in both the numerator and the denominator,
+this amounts to using the posterior density in the skewing factor
+definition, as the marginal likelihood would cancel out. If the
+posterior is zero at some value of \(\boldsymbol{\theta},\) which is
+outside the support, then we define
+\(w(\boldsymbol{\theta};\boldsymbol{\theta}_{\text{sym}})=0.5\) to
+satisfy the properties of \(w(\cdot;\cdot).\)
+
+While the above gives an approximation to the density, it is sometimes
+useful to generate samples from the skewed approximating density.
+Proposition 1 of Pozza et al.
+(\citeproc{ref-Pozza.Durante.Szabo:2026}{2026}) show that we can
+generate from the skewed approximation by first sampling a candidate
+\(\boldsymbol{\omega}_0\) from the model with density
+\(g^{\text{sym}}(\cdot; \boldsymbol{\theta}_{\text{sym}})\) and
+\(U \sim \mathsf{unif}(0,1),\) then setting \begin{align*}
+\boldsymbol{\theta}_0 = 
+\begin{cases} 
+\boldsymbol{\omega}_0, & 
+U \leq w(\boldsymbol{\omega}_0; \boldsymbol{\theta}_{\text{sym}}) \\
+2\boldsymbol{\theta}_{\text{sym}}-\boldsymbol{\omega}_0, & U > w(\boldsymbol{\omega}_0; \boldsymbol{\theta}_{\text{sym}}).
+\end{cases}
+\end{align*}
+
 \section{Automatic differentiation variational
 inference}\label{automatic-differentiation-variational-inference}
 
@@ -8975,10 +9036,10 @@ for exponential families mean-field approximations, using natural
 gradients to device an algorithm. While efficient within this context,
 it is not a generic algorithm.
 
-Ranganath, Gerrish, and Blei (\citeproc{ref-Ranganath:2014}{2014})
-extend this to more general distributions by noting that the gradient of
-the ELBO, interchanging the derivative and the integral using the
-dominated convergence theorem, is \begin{align*}
+Ranganath et al. (\citeproc{ref-Ranganath:2014}{2014}) extend this to
+more general distributions by noting that the gradient of the ELBO,
+interchanging the derivative and the integral using the dominated
+convergence theorem, is \begin{align*}
 \frac{\partial}{\partial \boldsymbol{\psi}} \mathsf{ELBO}(g) &= \int g(\boldsymbol{\theta}; \boldsymbol{\psi}) \frac{\partial}{\partial \boldsymbol{\psi}} \log \left( \frac{p(\boldsymbol{\theta}, \boldsymbol{y})}{g(\boldsymbol{\theta}; \boldsymbol{\psi})}\right) \mathrm{d} \boldsymbol{\theta} + \int  \frac{\partial g(\boldsymbol{\theta}; \boldsymbol{\psi})}{\partial \boldsymbol{\psi}} \times \log \left( \frac{p(\boldsymbol{\theta}, \boldsymbol{y})}{g(\boldsymbol{\theta}; \boldsymbol{\psi})}\right) \mathrm{d} \boldsymbol{\theta}
 \\& = \int  \frac{\partial \log g(\boldsymbol{\theta}; \boldsymbol{\psi})}{\partial \boldsymbol{\psi}} \times \log \left( \frac{p(\boldsymbol{\theta}, \boldsymbol{y})}{g(\boldsymbol{\theta}; \boldsymbol{\psi})}\right) g(\boldsymbol{\theta}; \boldsymbol{\psi})\mathrm{d} \boldsymbol{\theta}
 \end{align*} where \(p(\boldsymbol{\theta}, \boldsymbol{y})\) does not
@@ -8990,13 +9051,13 @@ depend on \(\boldsymbol{\psi}\), and \begin{align*}
 expected value \begin{align*}
  \mathsf{E}_{g}\left\{\frac{\partial \log g(\boldsymbol{\theta}; \boldsymbol{\psi})}{\partial \boldsymbol{\psi}} \times \log \left( \frac{p(\boldsymbol{\theta}, \boldsymbol{y})}{g(\boldsymbol{\theta}; \boldsymbol{\psi})}\right)\right\}
 \end{align*} which we can approximate via Monte Carlo by drawing samples
-from \(g\). Ranganath, Gerrish, and Blei
-(\citeproc{ref-Ranganath:2014}{2014}) provide two methods to reduce the
-variance of this expression using control variates and
-Rao--Blackwellization, as excessive variance hinders the convergence and
-requires larger Monte Carlo sample sizes to be reliable. In the context
-of large samples of independent observations, we can also resort to
-mini-batching, by randomly selecting a subset of observations.
+from \(g\). Ranganath et al. (\citeproc{ref-Ranganath:2014}{2014})
+provide two methods to reduce the variance of this expression using
+control variates and Rao--Blackwellization, as excessive variance
+hinders the convergence and requires larger Monte Carlo sample sizes to
+be reliable. In the context of large samples of independent
+observations, we can also resort to mini-batching, by randomly selecting
+a subset of observations.
 
 We can use the Monte Carlo approximation to derive a stochastic gradient
 algorithm.
@@ -9412,6 +9473,8 @@ This means all integrals for the tilting problem are unidimensional and
 can be obtained by Gaussian quadrature or similar numerical integration
 schemes.
 
+\end{example}
+
 The dynamics of the expectation propagation given vectors of individual
 contributions \(\boldsymbol{a}^{(t)}\) and \(\boldsymbol{b}^{(t)}\) at
 iteration \(t\) and the canonical parameters \begin{align*}
@@ -9441,7 +9504,8 @@ iteration \(t\) and the canonical parameters \begin{align*}
   \end{align*}
 \item
   Compute the normalizing constant, the mean \(\mathsf{E}_{h_i}(Z)\) and
-  the variance \(\mathsf{Va}_{h_i}(Z)\) by numerical integration.
+  the variance \(\mathsf{Va}_{h_i}(Z)\) by numerical integration. :::
+  \{.cell\}
 \end{enumerate}
 
 \begin{Shaded}
@@ -9459,20 +9523,12 @@ iteration \(t\) and the canonical parameters \begin{align*}
 \end{Highlighting}
 \end{Shaded}
 
-\begin{enumerate}
-\def\labelenumi{\arabic{enumi}.}
-\setcounter{enumi}{5}
-\tightlist
-\item
-  Back-transform the parameters to get the parameters for
-  \(a_i^{(t)} = \mathsf{E}_{h_i}(Z)/\mathsf{Va}_{h_i}(Z) - u/v\) and
-  \(b_i^{(t)} = 1/\mathsf{Va}_{h_i}(Z).\)
-\item
-  Update the parameters
-  \(\boldsymbol{r} \gets \boldsymbol{r}_{-i} + a_i^{(t)}\mathbf{x}_i^\top\)
-  and
-  \(\mathbf{Q} \gets \mathbf{Q}_{-i} + b_i^{(t)}\mathbf{x}_i^\top\mathbf{x}_i.\)
-\end{enumerate}
+::: 6. Back-transform the parameters to get the parameters for
+\(a_i^{(t)} = \mathsf{E}_{h_i}(Z)/\mathsf{Va}_{h_i}(Z) - u/v\) and
+\(b_i^{(t)} = 1/\mathsf{Va}_{h_i}(Z).\) 7. Update the parameters
+\(\boldsymbol{r} \gets \boldsymbol{r}_{-i} + a_i^{(t)}\mathbf{x}_i^\top\)
+and
+\(\mathbf{Q} \gets \mathbf{Q}_{-i} + b_i^{(t)}\mathbf{x}_i^\top\mathbf{x}_i.\)
 
 In generalized linear models, the linear predictor will always be
 one-dimensional, and more generally, in exponential families, we can get
@@ -9480,21 +9536,19 @@ a similar dimension reduction. The updates to the parameters for more
 general exponential families are found in page 23 of Cseke and Heskes
 (\citeproc{ref-Cseke.Heskes:2011}{2011}).
 
-\end{example}
-
 \bookmarksetup{startatroot}
 
 \chapter{References}\label{references}
 
-\phantomsection\label{refs}
-\begin{CSLReferences}{1}{0}
+\protect\phantomsection\label{refs}
+\begin{CSLReferences}{1}{1}
 \bibitem[\citeproctext]{ref-Albert:2009}
-Albert, Jim. 2009. \emph{Bayesian Computation with {R}}. 2nd ed. New
-York: Springer. \url{https://doi.org/10.1007/978-0-387-92298-0}.
+Albert, Jim. 2009. \emph{Bayesian Computation with {R}}. 2nd ed.
+Springer. \url{https://doi.org/10.1007/978-0-387-92298-0}.
 
 \bibitem[\citeproctext]{ref-Alexander:2023}
 Alexander, Rohan. 2023. \emph{Telling Stories with Data: With
-Applications in {R}}. Boca Raton, FL: CRC Press.
+Applications in {R}}. CRC Press.
 
 \bibitem[\citeproctext]{ref-Andrieu.Roberts:2009}
 Andrieu, Christophe, and Gareth O. Roberts. 2009. {``The Pseudo-Marginal
@@ -9514,7 +9568,7 @@ Genetically Monitored Populations.''} \emph{Genetics} 164 (3): 1139--60.
 
 \bibitem[\citeproctext]{ref-Bishop:2006}
 Bishop, Christopher M. 2006. \emph{Pattern Recognition and Machine
-Learning}. New York, NY: Springer.
+Learning}. Springer.
 \url{https://www.microsoft.com/en-us/research/publication/pattern-recognition-machine-learning/}.
 
 \bibitem[\citeproctext]{ref-Bolin:2023}
@@ -9525,10 +9579,10 @@ Priors.''} \emph{arXiv e-Prints}, arXiv:2312.04481.
 
 \bibitem[\citeproctext]{ref-LEcuyer.Botev:2017}
 Botev, Zdravko, and Pierre L'Écuyer. 2017. {``Simulation from the Normal
-Distribution Truncated to an Interval in the Tail.''} In
-\emph{Proceedings of the 10th EAI International Conference on
-Performance Evaluation Methodologies and Tools on 10th EAI International
-Conference on Performance Evaluation Methodologies and Tools}, 23--29.
+Distribution Truncated to an Interval in the Tail.''} \emph{Proceedings
+of the 10th EAI International Conference on Performance Evaluation
+Methodologies and Tools on 10th EAI International Conference on
+Performance Evaluation Methodologies and Tools}, 23--29.
 \url{https://doi.org/10.4108/eai.25-10-2016.2266879}.
 
 \bibitem[\citeproctext]{ref-Box.Cox:1964}
@@ -9539,7 +9593,7 @@ Series B (Methodological)} 26 (2): 211--43.
 
 \bibitem[\citeproctext]{ref-Boyd.Vandenberghe:2004}
 Boyd, Stephen, and Lieven Vandenberghe. 2004. \emph{Convex
-Optimization}. Cambridge, UK: Cambridge University Press.
+Optimization}. Cambridge University Press.
 \url{https://doi.org/10.1017/cbo9780511804441}.
 
 \bibitem[\citeproctext]{ref-Brodeur:2021}
@@ -9550,10 +9604,9 @@ Analysis \& Prevention} 149: 105846.
 \url{https://doi.org/10.1016/j.aap.2020.105846}.
 
 \bibitem[\citeproctext]{ref-Stan:2017}
-Carpenter, Bob, Andrew Gelman, Matthew D. Hoffman, Daniel Lee, Ben
-Goodrich, Michael Betancourt, Marcus Brubaker, Jiqiang Guo, Peter Li,
-and Allen Riddell. 2017. {``{Stan}: A Probabilistic Programming
-Language.''} \emph{Journal of Statistical Software} 76 (1): 1--32.
+Carpenter, Bob, Andrew Gelman, Matthew D. Hoffman, et al. 2017.
+{``{Stan}: A Probabilistic Programming Language.''} \emph{Journal of
+Statistical Software} 76 (1): 1--32.
 \url{https://doi.org/10.18637/jss.v076.i01}.
 
 \bibitem[\citeproctext]{ref-Carvalho.Polson.Scott:2010}
@@ -9579,8 +9632,8 @@ Cseke, Botond, and Tom Heskes. 2011. {``Approximate Marginals in Latent
 (13): 417--54. \url{http://jmlr.org/papers/v12/cseke11a.html}.
 
 \bibitem[\citeproctext]{ref-Davison:2003}
-Davison, A. C. 2003. \emph{Statistical Models}. Cambridge, UK: Cambridge
-University Press.
+Davison, A. C. 2003. \emph{Statistical Models}. Cambridge University
+Press.
 
 \bibitem[\citeproctext]{ref-Dehaene.Barthelme:2018}
 Dehaene, Guillaume, and Simon Barthelmé. 2018. {``Expectation
@@ -9589,8 +9642,8 @@ Statistical Society: Series B (Statistical Methodology)} 80 (1):
 199--217. \url{https://doi.org/10.1111/rssb.12241}.
 
 \bibitem[\citeproctext]{ref-Devroye:1986}
-Devroye, L. 1986. \emph{Non-Uniform Random Variate Generation}. New
-York: Springer. \url{http://www.nrbook.com/devroye/}.
+Devroye, L. 1986. \emph{Non-Uniform Random Variate Generation}.
+Springer. \url{http://www.nrbook.com/devroye/}.
 
 \bibitem[\citeproctext]{ref-Duke.Amir:2023}
 Duke, Kristen E., and On Amir. 2023. {``The Importance of Selling
@@ -9611,7 +9664,7 @@ Approach}. Institute for Mathematical Statistics.
 
 \bibitem[\citeproctext]{ref-deFinetti:1974}
 Finetti, Bruno de. 1974. \emph{Theory of Probability: A Critical
-Introductory Treatment}. Vol. 1. New York: Wiley.
+Introductory Treatment}. Vol. 1. Wiley.
 
 \bibitem[\citeproctext]{ref-Gabry:2019}
 Gabry, Jonah, Daniel Simpson, Aki Vehtari, Michael Betancourt, and
@@ -9640,7 +9693,7 @@ Hierarchical Models (Comment on Article by {B}rowne and {D}raper).''}
 \bibitem[\citeproctext]{ref-Gelman:2013}
 Gelman, Andrew, John B. Carlin, Hal S. Stern, David B. Dunson, Aki
 Vehtari, and Donald B. Rubin. 2013. \emph{Bayesian Data Analysis}. 3rd
-ed. New York: Chapman; Hall/CRC. \url{https://doi.org/10.1201/b16018}.
+ed. Chapman; Hall/CRC. \url{https://doi.org/10.1201/b16018}.
 
 \bibitem[\citeproctext]{ref-Gelman.vanDyk:2008}
 Gelman, Andrew, David A van Dyk, Zaiying Huang, and John W Boscardin.
@@ -9654,9 +9707,8 @@ Simulation Using Multiple Sequences.''} \emph{Statistical Science} 7
 (4): 457--72. \url{https://doi.org/10.1214/ss/1177011136}.
 
 \bibitem[\citeproctext]{ref-Gelman:2020}
-Gelman, Andrew, Aki Vehtari, Daniel Simpson, Charles C Margossian, Bob
-Carpenter, Yuling Yao, Lauren Kennedy, Jonah Gabry, Paul-Christian
-Bürkner, and Martin Modrák. 2020. {``Bayesian Workflow.''} \emph{arXiv}.
+Gelman, Andrew, Aki Vehtari, Daniel Simpson, et al. 2020. {``Bayesian
+Workflow.''} \emph{arXiv}, ahead of print.
 https://doi.org/\url{https://doi.org/10.48550/arXiv.2011.01808}.
 
 \bibitem[\citeproctext]{ref-Geman.Geman:1984}
@@ -9672,9 +9724,9 @@ Association} 88 (423): 881--89.
 \url{https://doi.org/10.1080/01621459.1993.10476353}.
 
 \bibitem[\citeproctext]{ref-George.McCulloch:1997}
----------. 1997. {``Approaches for {B}ayesian Variable Selection.''}
-\emph{Statistica Sinica} 7 (2): 339--73.
-\url{http://www.jstor.org/stable/24306083}.
+George, Edward I., and Robert E. McCulloch. 1997. {``Approaches for
+{B}ayesian Variable Selection.''} \emph{Statistica Sinica} 7 (2):
+339--73. \url{http://www.jstor.org/stable/24306083}.
 
 \bibitem[\citeproctext]{ref-Geweke:1992}
 Geweke, John. 1992. {``Evaluating the Accuracy of Sampling-Based
@@ -9685,16 +9737,16 @@ University Press.
 \url{https://doi.org/10.1093/oso/9780198522669.003.0010}.
 
 \bibitem[\citeproctext]{ref-Geweke:2004}
----------. 2004. {``Getting It Right: Joint Distribution Tests of
+Geweke, John. 2004. {``Getting It Right: Joint Distribution Tests of
 Posterior Simulators.''} \emph{Journal of the American Statistical
 Association} 99 (467): 799--804.
 \url{https://doi.org/10.1198/016214504000001132}.
 
 \bibitem[\citeproctext]{ref-Geyer:2011}
 Geyer, Charles J. 2011. {``Introduction to {M}arkov Chain {M}onte
-{C}arlo.''} In \emph{Handbook of {M}arkov Chain {M}onte {C}arlo}, edited
-by S. Brooks, A. Gelman, G. Jones, and X. L. Meng, 3--48. Boca Raton:
-CRC Press. \url{https://doi.org/10.1201/b10905-3}.
+{C}arlo.''} Chap. 1 in \emph{Handbook of {M}arkov Chain {M}onte
+{C}arlo}, edited by S. Brooks, A. Gelman, G. Jones, and X. L. Meng. CRC
+Press. \url{https://doi.org/10.1201/b10905-3}.
 
 \bibitem[\citeproctext]{ref-Ghosh.Clyde:2011}
 Ghosh, Joyee, and Merlise A. Clyde. 2011. {``{R}ao--{B}lackwellization
@@ -9719,7 +9771,7 @@ Computation and {B}ayesian Model Determination.''} \emph{Biometrika} 82
 (4): 711--32. \url{https://doi.org/10.1093/biomet/82.4.711}.
 
 \bibitem[\citeproctext]{ref-Green:2001}
----------. 2001. {``A Primer on {M}arkov Chain {M}onte {C}arlo.''}
+Green, Peter J. 2001. {``A Primer on {M}arkov Chain {M}onte {C}arlo.''}
 \emph{Monographs on Statistics and Applied Probability} 87: 1--62.
 
 \bibitem[\citeproctext]{ref-Hastings:1970}
@@ -9730,14 +9782,13 @@ chains and their applications}.''} \emph{Biometrika} 57 (1): 97--109.
 \bibitem[\citeproctext]{ref-Held.Bove:2020}
 Held, Leonhard, and Daniel Sabanés Bové. 2020. \emph{Likelihood and
 {B}ayesian Inference: With Applications in Biology and Medicine}. 2nd
-ed. Heidelberg: Springer Berlin.
-\url{https://doi.org/10.1007/978-3-662-60792-3}.
+ed. Springer Berlin. \url{https://doi.org/10.1007/978-3-662-60792-3}.
 
 \bibitem[\citeproctext]{ref-Hobert:2011}
 Hobert, James. 2011. {``The Data Augmentation Algorithm: Theory and
-Methodology.''} In \emph{Handbook of {M}arkov Chain {M}onte {C}arlo},
-edited by S. Brooks, A. Gelman, G. Jones, and X. L. Meng, 253--93. Boca
-Raton: CRC Press. \url{https://doi.org/10.1201/b10905-11}.
+Methodology.''} Chap. 10 in \emph{Handbook of {M}arkov Chain {M}onte
+{C}arlo}, edited by S. Brooks, A. Gelman, G. Jones, and X. L. Meng. CRC
+Press. \url{https://doi.org/10.1201/b10905-11}.
 
 \bibitem[\citeproctext]{ref-Hoffman:2013}
 Hoffman, Matthew D., David M. Blei, Chong Wang, and John Paisley. 2013.
@@ -9767,7 +9818,7 @@ Bittel, and Michael Nagler. 2021. {``Diagnostic Accuracy of a
 \bibitem[\citeproctext]{ref-Kinderman.Monahan:1977}
 Kinderman, A. J., and J. F. Monahan. 1977. {``Computer Generation of
 Random Variables Using the Ratio of Uniform Deviates.''} \emph{ACM
-Transactions on Mathematical Software} 3 (3): 257--60.
+Transactions on Mathematical Software} (New York, NY) 3 (3): 257--60.
 \url{https://doi.org/10.1145/355744.355750}.
 
 \bibitem[\citeproctext]{ref-Kitagawa:1987}
@@ -9791,7 +9842,7 @@ Onion Method.''} \emph{Journal of Multivariate Analysis} 100 (9):
 \bibitem[\citeproctext]{ref-Lin:2024}
 Lin, Jason D, Nicole You Jeung Kim, Esther Uduehi, and Anat Keinan.
 2024. {``Culture for Sale: Unpacking Consumer Perceptions of Cultural
-Appropriation.''} \emph{Journal of Consumer Research}.
+Appropriation.''} \emph{Journal of Consumer Research}, ahead of print.
 \url{https://doi.org/10.1093/jcr/ucad076}.
 
 \bibitem[\citeproctext]{ref-Liu:1994}
@@ -9812,8 +9863,7 @@ Hydrologic Data.''} \emph{Water Resources Research} 36 (3): 737--44.
 \url{https://doi.org/10.1029/1999wr900330}.
 
 \bibitem[\citeproctext]{ref-owidcoronavirus}
-Mathieu, Edouard, Hannah Ritchie, Lucas Rodés-Guirao, Cameron Appel,
-Charlie Giattino, Joe Hasell, Bobbie Macdonald, et al. 2020.
+Mathieu, Edouard, Hannah Ritchie, Lucas Rodés-Guirao, et al. 2020.
 {``Coronavirus Pandemic (COVID-19).''} \emph{Our World in Data}.
 
 \bibitem[\citeproctext]{ref-Matias:2021}
@@ -9824,8 +9874,8 @@ Ebersole. 2021. {``The {U}pworthy {R}esearch {A}rchive, a Time Series of
 
 \bibitem[\citeproctext]{ref-McNeil.Frey.Embrechts:2005}
 McNeil, A. J., R. Frey, and P. Embrechts. 2005. \emph{Quantitative Risk
-Management: Concepts, Techniques, and Tools}. 1st ed. Princeton, NJ:
-Princeton University Press.
+Management: Concepts, Techniques, and Tools}. 1st ed. Princeton
+University Press.
 
 \bibitem[\citeproctext]{ref-Metropolis:1953}
 Metropolis, Nicholas, Arianna W. Rosenbluth, Marshall N. Rosenbluth,
@@ -9851,9 +9901,9 @@ Nadarajah, Saralees. 2008. {``{M}arshall and {O}lkin's Distributions.''}
 \url{https://doi.org/10.1007/s10440-008-9221-7}.
 
 \bibitem[\citeproctext]{ref-Neal:2011}
-Neal, Radford M. 2011. {``{MCMC} Using {H}amiltonian Dynamics.''} In
-\emph{Handbook of {M}arkov Chain {M}onte {C}arlo}, edited by S. Brooks,
-A. Gelman, G. Jones, and X. L. Meng, 113--62. Boca Raton: CRC Press.
+Neal, Radford M. 2011. {``{MCMC} Using {H}amiltonian Dynamics.''} Chap.
+5 in \emph{Handbook of {M}arkov Chain {M}onte {C}arlo}, edited by S.
+Brooks, A. Gelman, G. Jones, and X. L. Meng. CRC Press.
 \url{https://doi.org/10.1201/b10905-5}.
 
 \bibitem[\citeproctext]{ref-rust}
@@ -9895,6 +9945,13 @@ Plummer, Martyn, Nicky Best, Kate Cowles, and Karen Vines. 2006.
 \emph{R News} 6 (1): 7--11.
 \url{https://doi.org/10.32614/CRAN.package.coda}.
 
+\bibitem[\citeproctext]{ref-Pozza.Durante.Szabo:2026}
+Pozza, Francesco, Daniele Durante, and Botond Szabo. 2026.
+{``Skew-Symmetric Approximations of Posterior Distributions.''}
+\emph{Journal of the Royal Statistical Society Series B: Statistical
+Methodology}, January, qkaf082.
+\url{https://doi.org/10.1093/jrsssb/qkaf082}.
+
 \bibitem[\citeproctext]{ref-Raftery:1995}
 Raftery, Adrian E. 1995. {``Bayesian Model Selection in Social
 Research.''} \emph{Sociological Methodology} 25: 111--63.
@@ -9904,13 +9961,13 @@ Research.''} \emph{Sociological Methodology} 25: 111--63.
 Ranganath, Rajesh, Sean Gerrish, and David Blei. 2014. {``Black Box
 Variational Inference.''} In \emph{Proceedings of the Seventeenth
 International Conference on Artificial Intelligence and Statistics},
-edited by Samuel Kaski and Jukka Corander, 33:814--22. Proceedings of
-Machine Learning Research. Reykjavik, Iceland: Pmlr.
+edited by Samuel Kaski and Jukka Corander, vol. 33. Proceedings of
+Machine Learning Research. Pmlr.
 \url{https://proceedings.mlr.press/v33/ranganath14.html}.
 
 \bibitem[\citeproctext]{ref-Casella.Robert:2004}
 Robert, Christian P., and George Casella. 2004. \emph{{M}onte {C}arlo
-Statistical Methods}. 2nd ed. New York, NY: Springer.
+Statistical Methods}. 2nd ed. Springer.
 \url{https://doi.org/10.1007/978-1-4757-4145-2}.
 
 \bibitem[\citeproctext]{ref-Roberts.Rosenthal:2001}
@@ -9928,7 +9985,7 @@ Statistical Society: Series B (Statistical Methodology)} 71 (2):
 \bibitem[\citeproctext]{ref-Rue.Held:2005}
 Rue, H., and L. Held. 2005. \emph{{G}aussian {M}arkov Random Fields:
 Theory and Applications}. Chapman \& Hall/CRC Monographs on Statistics
-\& Applied Probability. Boca Raton: CRC Press.
+\& Applied Probability. CRC Press.
 
 \bibitem[\citeproctext]{ref-Sherlock:2013}
 Sherlock, Chris. 2013. {``Optimal Scaling of the Random Walk
@@ -9986,7 +10043,7 @@ American Statistical Association} 81 (393): 82--86.
 \url{https://doi.org/10.1080/01621459.1986.10478240}.
 
 \bibitem[\citeproctext]{ref-vanNiekerk.Rue:2024}
-van Niekerk, Janet, and Håavard Rue. 2024. {``Low-Rank Variational
+{van Niekerk, Janet, and Håavard Rue}. 2024. {``Low-Rank Variational
 {B}ayes Correction to the {L}aplace Method.''} \emph{Journal of Machine
 Learning Research} 25 (62): 1--25.
 \url{http://jmlr.org/papers/v25/21-1405.html}.
@@ -10000,10 +10057,10 @@ Vehtari, Aki, Andrew Gelman, and Jonah Gabry. 2017. {``Practical
 \bibitem[\citeproctext]{ref-Vehtari.Simpson.Gelman.Yao.Gabry:2025}
 Vehtari, Aki, Daniel Simpson, Andrew Gelman, Yuling Yao, and Jonah
 Gabry. 2024. {``Pareto Smoothed Importance Sampling.''} \emph{Journal of
-Machine Learning Research} 25 (1): 3491--3548.
+Machine Learning Research} 25 (1): 3491--548.
 
 \bibitem[\citeproctext]{ref-Villani:2023}
-Villani, Mattias. 2023. {``Bayesian Learning: A Gentle Introduction.''}
+Villani, Mattias. 2023. \emph{Bayesian Learning: A Gentle Introduction}.
 \url{https://mattiasvillani.com/BayesianLearningBook/}.
 
 \bibitem[\citeproctext]{ref-Wakefield.Gelfand.Smith:1991}
@@ -10028,15 +10085,15 @@ Zellner, Arnold. 1971. \emph{An Introduction to {B}ayesian Inference in
 Econometrics}. Wiley.
 
 \bibitem[\citeproctext]{ref-Zellner:1986}
----------. 1986. {``On Assessing Prior Distributions and {B}ayesian
-Regression Analysis with \(g\)-Prior Distributions.''} In
+Zellner, Arnold. 1986. {``On Assessing Prior Distributions and
+{B}ayesian Regression Analysis with \(g\)-Prior Distributions.''}
 \emph{{B}ayesian Inference and Decision Techniques: Essays in Honor of
-{B}runo de {F}inetti}, 233--43. North-Holland/Elsevier.
+{B}runo de {F}inetti}, 233--43.
 
 \bibitem[\citeproctext]{ref-Zhang.Shaby:2023}
 Zhang, Likun, and Benjamin A. Shaby. 2023. {``Reference Priors for the
 Generalized Extreme Value Distribution.''} \emph{Statistica Sinica} 33:
-2185--2208. \url{https://doi.org/10.5705/ss.202021.0258}.
+2185--208. \url{https://doi.org/10.5705/ss.202021.0258}.
 
 \end{CSLReferences}
 

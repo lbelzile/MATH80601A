@@ -42,3 +42,5 @@ vignettes/*.pdf
 
 /data/tokyo_mcmc1.csv
 /data/tokyo_mcmc2.csv
+
+**/*.quarto_ipynb

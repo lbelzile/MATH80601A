@@ -9,15 +9,15 @@
 #| echo: false
 ```
 
-The posterior distribution combines two ingredients: the likelihood and the prior. If the former is a standard ingredient of any likelihood-based inference, prior specification requires some care. The purpose of this chapter is to consider different standard way of constructing prior functions, and to specify the parameters of the latter: we term these hyperparameters.
+The posterior distribution combines two ingredients: the likelihood and the prior. If the former is a standard ingredient of any likelihood-based modelling, prior specification is more delicate. The purpose of this chapter is to consider different ways of constructing prior functions, although these are generally chosen for convenience. Priors are somewhat controversial among frequentist statisticians because they can impact the outcome results, and different prior elicitation yields potentially different conclusions.
 
+While the sole requirement for inference is that the posterior is proper, the most common choice of prior function is to take a density function of random variables. Using the latter, we can use moment matching to get sensible values or tune via trial-and-error using the prior predictive draws to assess the implausibility of the prior outcomes. One challenge is that even if we have some prior information (e.g., we can obtain sensible prior values for the mean, quantiles or variance of the parameter of interest), these summary statistics will not typically be enough to fully characterize the prior as many different functions or distributions could encode the same information.
 
-The posterior is a compromise prior and likelihood: the more informative the prior, the more the posterior resembles it, but in large samples, the effect of the prior is often negligible if there is enough information in the likelihood about all parameters.
-We can assess the robustness of the prior specification through a  sensitivity analysis by comparing the outcomes of the posterior for different priors or different values of the hyperparameters.
+The posterior is a compromise between the prior and the likelihood. With independent data, the prior has weight $\mathrm{O}(1)$ and the likelihood $\mathrm{O}(n)$, so the effect of the prior typically becomes negligible in large samples, but in multi-level models, not all observations need to be informative for parameters in the hierarchy and careful prior elicitation becomes crucial.
+
+We can assess the robustness of the prior specification through a sensitivity analysis by comparing the outcomes of the posterior for different priors or different values of the hyperparameters, which are the parameters of the prior.
 
 Oftentimes, we will specify independent priors in multiparameter models, but the posterior of these will not be independent.
-
-We can use moment matching to get sensible values, or tune via trial-and-error using the prior predictive draws to assess the implausibility of the prior outcomes. One challenge is that even if we have some prior information (e.g., we can obtain sensible prior values for the mean, quantiles or variance of the parameter of interest), these summary statisticss will not typically be enough to fully characterize the prior: many different functions or distributions could encode the same information. This means that different analysts get different inferences. Generally, we will choose the prior for convenience. Priors are controversial because they could be tuned aposteriori to give any answer an analyst might want.
 
 
 
@@ -140,7 +140,7 @@ Exponential families (see @def-exponential-family, including the binomial, Poiss
 
 Since the density of the binomial is of the form $p^y(1-p)^{n-y}$ and it belongs to an exponential family (@exm-exponential-family-binom), the beta distribution $\mathsf{beta}(\alpha, \beta)$ with density $$f(x) \propto x^{\alpha-1} (1-x)^{\beta-1}$$ is the conjugate prior.
 
-The beta distribution is also the conjugate prior for the negative binomial, geometric and Bernoulli distributions, since their likelihoods are all proportional to that of the beta. The fact that different sampling schemes that result in proportional likelihood functions give the same inference is called likelihood principle.
+The beta distribution is also the conjugate prior for the negative binomial, geometric and Bernoulli distributions, since their likelihoods are all proportional to that of the beta. The fact that different sampling schemes that result in proportional likelihood functions give the same inference is called **likelihood principle**.
 
 :::
 
@@ -263,7 +263,7 @@ coef(poismod)
 The coefficients represent the difference in log rate (multiplicative effect) relative to the baseline rate, with an increase of `r round((exp(coef(poismod))[2]-1)*100, 1) - 1` percent when the headline does not contain a question. A likelihood ratio test can be performed by comparing the deviance of the null model (intercept-only), indicating strong evidence that including question leads to significatively different rates. This is rather unsurprising given the enormous sample sizes.
 
 
-Consider instead a Bayesian analysis with conjugate prior: we model separately the rates of each group (question or not). Suppose we think apriori that the click-rate is on average 1%, with a standard deviation of 2%, with no difference between questions or not. For a $\mathsf{Gamma}(\alpha, \beta)$ prior, this would translate, using moment matching, into a rate of $\beta = 25 = \mathsf{E}_0(\lambda_j)/ \mathsf{Var}_0(\lambda_j)$ and a shape of $\alpha = 0.25$ ($j=1, 2$). If $\lambda_{j}$ is the average rate for each factor level (yes and no), then $\mathsf{E}(Y_{ij}/n_{ij}) = \lambda_j$ so the log likelihood is proportional, as a function of $\lambda_1$ and $\lambda_2,$ to
+Consider instead a Bayesian analysis with conjugate prior: we model separately the rates of each group (question or not). Suppose we think apriori that the click-rate is on average 1%, with a standard deviation of 2%, regardless of whether the title asks a question or not. If we adopt a $\mathsf{Gamma}(\alpha, \beta)$ prior, we can transfer this prior specification using moment matching into suitable values for the hyperparameters, by taking a rate of $\beta = \mathsf{E}_0(\lambda_j)/ \mathsf{Var}_0(\lambda_j)=0.01/0.02^2=25$ and a shape of $\alpha=\mathsf{E}_0(\lambda_j)\times\beta=0.01 \times 25=0.25$ ($j=1, 2$). If $\lambda_{j}$ is the average rate for each factor level (yes and no), then $\mathsf{E}(Y_{ij}/n_{ij}) = \lambda_j$ so the log likelihood is proportional, as a function of $\lambda_1$ and $\lambda_2,$ to
 \begin{align*}
 \ell(\boldsymbol{\lambda}; \boldsymbol{y}, \boldsymbol{n}) \stackrel{\boldsymbol{\lambda}}{\propto} \sum_{i=1}^n \sum_{j=1}^2 y_{ij}\log \lambda_j - \lambda_jn_{ij}
 \end{align*}
@@ -313,7 +313,7 @@ g1 + g2
 post_mean <- with(post_data_upworthy_question, mean(yes/no))
 ```
 
-To get an approximation to the posterior mean of the ratio $\lambda_1/\lambda_2,$ it suffices to draw independent observations from their respective posterior, compute the ratio and take the sample mean of those draws. We can see that the sampling distribution of the ratio is nearly symmetrical, so we can expect Wald intervals to perform well should one be interested in building confidence intervals. This is however hardly surprising given the sample size at play.
+To get an approximation to the posterior mean of the ratio $\lambda_1/\lambda_2,$ it suffices to draw independent observations from their respective posterior, compute the ratio and take the sample mean of those draws: the later is nearly symmetric.
 
 :::
 

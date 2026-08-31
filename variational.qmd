@@ -35,7 +35,7 @@ where the subscript of the expectation indicates which distribution we integrate
 
 :::
 
-The Kullback--Leibler divergence is central to study of model misspecification: if we fit $g(\cdot)$ when data arise from $f_t,$ the maximum likelihood estimator of the parameters $\widehat{\boldsymbol{\psi}}$ will be the value of the parameter that minimizes the  Kullback--Leibler divergence $\mathsf{KL}(f_t \parallel g);$ this value will be positive unless the model is correctly specified and $g(\cdot; \widehat{\boldsymbol{\psi}}) = f_t(\cdot).$ See @Davison:2003, pp. 122--125 for a discussion.
+The Kullback--Leibler divergence is central to study of model misspecification: if we fit $g(\cdot)$ when data arise from $f_t,$ the maximum likelihood estimator of the parameters $\widehat{\boldsymbol{\psi}}$ will be the value of the parameter that minimizes the  Kullback--Leibler divergence $\mathsf{KL}(f_t \parallel g).$ See @Davison:2003, pp. 122--125 for a discussion.
 
 In the Bayesian setting, interest lies in approximating $f_t \equiv p(\boldsymbol{\theta} \mid \boldsymbol{y}).$ The problem of course is that we cannot compute expectations with respect to the posterior since these requires knowledge of the marginal likelihood, which acts as a normalizing constant, in most settings of interest. What we can do instead is to consider the model that minimizes the reverse Kullback--Leibler divergence
 \begin{align*}
@@ -47,7 +47,7 @@ We will show soon that this is a sensible objective function.
 
 ## Lack of symmetry of Kullback--Leibler divergence
 
-Consider an approximation of a bivariate Gaussian vector with correlated components $\boldsymbol{X} \sim \mathsf{Gauss}_2(\boldsymbol{\mu}, \boldsymbol{\Sigma})$. If we approximate each margin independently with a univariate Gaussian, then the density which minimizes $
+Consider an approximation of a bivariate Gaussian vector with correlated components $\boldsymbol{X} \sim \mathsf{Gauss}_2(\boldsymbol{\mu}, \boldsymbol{\Sigma})$. If we approximate each margin independently with a univariate Gaussian, then the density which minimizes
 $$\mathsf{KL}\{ \phi_2(\boldsymbol{\mu}, \boldsymbol{\Sigma}) \parallel \phi(\mu_{1g}, \sigma^2_{1g})\phi(\mu_{2g}, \sigma^2_{2g})\},$$
 the forward Kullback--Leibler divergence will have the same marginal mean $\widehat{\mu}_{ig}=\mu_i$ and variance $\sigma^2_{ig} = \Sigma_{ii}$, whereas the best approximation that minimizes the reverse Kullback--Leibler
 $$\mathsf{KL}\{ \phi(\mu_{1g}, \sigma^2_{1g})\phi(\mu_{2g}, \sigma^2_{2g}) \parallel  \phi_2(\boldsymbol{\mu}, \boldsymbol{\Sigma})\},$$
@@ -683,6 +683,35 @@ g2 + g1
 
 Given the strong requirements for getting tractable conditionals, coordinate-ascent variational inference is mostly useful in ultra high-dimensional settings where Markov chain Monte Carlo algorithms are not viable. This is the case notable for regression models with the discrete spike-and-slab of @def-spike-slab, models for image processing or topic modelling using latent Dirichlet allocations.
 
+## Skew-approximations
+
+The Gaussian Laplace, variational and expected propagation approximations typically rely on symmetric approximations to the posterior. A symmetric function $g$ about $\boldsymbol{x}_{\text{sym}}$ is one for which the identity $g(\boldsymbol{x}) = g(2\boldsymbol{x}_{\text{sym}}-\boldsymbol{x}_{\text{sym}})$ for any $\boldsymbol{x}$ in the domain.
+
+
+Symmetric approximations perform poorly when the underlying posterior is skewed, as in the example in the right panel of @fig-convex shows. Recent work of @Pozza.Durante.Szabo:2026 show how one can build a skew-symmetric approximation for the posterior $p(\boldsymbol{\theta} \mid \boldsymbol{y})$ from a symmetric one, say $g(\boldsymbol{\theta})$ at the cost of two additional likelihood and prior evaluations for every parameter vector $\boldsymbol{\theta}$ of interest.
+
+Let $g^{\text{sym}}(\boldsymbol{\theta}; \boldsymbol{\theta}_{\text{sym}})$ be a density function that is symmetric around $\boldsymbol{\theta}_{\text{sym}};$ for a Gaussian or any elliptical distribution, this value $\boldsymbol{\theta}_{\text{sym}}$ would be the location vector $\boldsymbol{\mu}.$ We consider a skewing factor $w(\boldsymbol{\theta};  \boldsymbol{\theta}_{\text{sym}})$ satisfying $w(\boldsymbol{\theta}; \boldsymbol{\theta}_{\text{sym}}) = 1-w(2\boldsymbol{\theta}_{\text{sym}}-\boldsymbol{\theta}; \boldsymbol{\theta}_{\text{sym}})$ for any $\boldsymbol{\theta} \in \boldsymbol{\Theta} \subseteq \mathbb{R}^d.$
+
+The skew-symmetric approximation is obtained by multiplying the symmetric density by a perturbation factor, where 
+\begin{align*}
+g^{\text{skew}}(\boldsymbol{\theta}) = 2 g^{\text{sym}}(\boldsymbol{\theta}; \boldsymbol{\theta}_{\text{sym}})w(\boldsymbol{\theta}, \boldsymbol{\theta}_{\text{sym}}; \boldsymbol{\theta}_{\text{sym}}).
+\end{align*}
+
+In a Bayesian setting with deterministic approximations, we can easily take $g$ to be symmetric, so the only outstanding question is how to define the tilting parameter. Consider a posterior density $p(\boldsymbol{\theta} \mid \boldsymbol{y}) \propto_{\boldsymbol{\theta}} p(\boldsymbol{\theta})p(\boldsymbol{y}\mid \boldsymbol{\theta}).$ Taking as skewing factor 
+\begin{align*}
+w(\boldsymbol{\theta};\boldsymbol{\theta}_{\text{sym}}) = \frac{p(\boldsymbol{\theta})p(\boldsymbol{y}\mid \boldsymbol{\theta})}{p(\boldsymbol{\theta})p(\boldsymbol{y}\mid \boldsymbol{\theta}) + p(2\boldsymbol{\theta}_{\text{sym}} -\boldsymbol{\theta})p(\boldsymbol{y}\mid 2\boldsymbol{\theta}_{\text{sym}}-\boldsymbol{\theta})}
+\end{align*}
+leads to an improvement in fit (in the sense of reducing the Kullback--Leibler divergence with the true distribution) [@Pozza.Durante.Szabo:2026]. The cleverness of this ratio is that, since the unnormalized posterior (prior and likelihood) appear in both the numerator and the denominator, this amounts to using the posterior density in the skewing factor definition, as the marginal likelihood would cancel out. If the posterior is zero at some value of $\boldsymbol{\theta},$ which is outside the support, then we define $w(\boldsymbol{\theta};\boldsymbol{\theta}_{\text{sym}})=0.5$ to satisfy the properties of $w(\cdot;\cdot).$
+
+While the above gives an approximation to the density, it is sometimes useful to generate samples from the skewed approximating density. Proposition 1 of @Pozza.Durante.Szabo:2026 show that we can generate from the skewed approximation by first sampling a candidate $\boldsymbol{\omega}_0$ from the model with density $g^{\text{sym}}(\cdot; \boldsymbol{\theta}_{\text{sym}})$ and $U \sim \mathsf{unif}(0,1),$ then setting
+\begin{align*}
+\boldsymbol{\theta}_0 = 
+\begin{cases} 
+\boldsymbol{\omega}_0, & 
+U \leq w(\boldsymbol{\omega}_0; \boldsymbol{\theta}_{\text{sym}}) \\
+2\boldsymbol{\theta}_{\text{sym}}-\boldsymbol{\omega}_0, & U > w(\boldsymbol{\omega}_0; \boldsymbol{\theta}_{\text{sym}}).
+\end{cases}
+\end{align*}
 
 ## Automatic differentiation variational inference
 
