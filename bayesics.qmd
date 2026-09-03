@@ -945,7 +945,6 @@ The log likelihood for the full model for $y_i>u$ is
 \begin{align*}
 \ell(\tau, \xi, \zeta_u) &\propto -109 \log \tau + \sum_{i=1}^{109} (1+1/\xi)\log\left(1+\xi\frac{y_i-10}{\tau}\right)_{+} + \\& \quad   109\log \zeta_u + 2058 \log(1-\zeta_u), 
 \end{align*}
-<!-- and, p -->
 Provided that the priors for $(\tau, \xi)$ are independent of those for $\zeta_u,$ the posterior also factorizes as a product, so $\zeta_u$ and $(\tau, \xi)$ are a posteriori independent.
 
 Suppose for now that we set a $\mathsf{beta}(0.5, 0.5)$ prior for $\zeta_u$ and a non-informative prior for the generalized Pareto parameters. 
@@ -1223,11 +1222,11 @@ g4 <- ggplot() +
 
 * Bayesians treat both parameter and observations as random, the former due to uncertainty about the true value. Inference is performed conditional on observed data, and summarized in the posterior.
 * Bayesians specify both a prior for the parameter, and a likelihood specifying the data generating mechanism. It is thus an extension of likelihood-based inference.
-* Information from the prior is updated in light of new data, which is encoded by the likelihood. Sequential updating leads.
-* Under weak conditions on the prior, large-sample behaviour of Bayesian and frequentist.
+* Sequential updating (new likelihood contributions) leads to update of the posterior distribution.
+* Under weak conditions on the prior, the large-sample behaviour of Bayesian and frequentist are equal and the contribution of the likelihood part dominates.
 * Bayesian inference is complicated by the fact that there is more often than not no closed-form expression for the posterior distribution. Evaluation of the normalizing constant, the so-called marginal likelihood, is challenging, especially in high dimensional settings.
 * Rather than hypothesis testing, Bayesian methods rely on the posterior distribution of parameters, or on Bayes factor for model comparisons.
-* The posterior predictive distribution, used for model assessment and prediction, and it has a higher variance than the data generating distribution from the likelihood, due to parameter uncertainty.
+* The posterior predictive distribution is used for model assessment and prediction. It has a higher variance than the data generating distribution from the likelihood, due to parameter uncertainty.
 * Bayesians typically will have approximations to the posterior distribution, or samples drawn from it. 
 * Loss functions can be used to summarize a posterior distribution into a numerical summary of interest, which may vary depending on the objective.
 * Uncertainty is reflected by credible sets or credible intervals, which encode the posterior probability that the true value $\boldsymbol{\theta}$ belongs to the set.
