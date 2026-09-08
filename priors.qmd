@@ -638,10 +638,10 @@ To reduce this dependence, one can add a parameter, taking $\alpha_j = \xi \eta_
 
 ## **Summary**:
 
-* Priors are distributions for the parameters. In multi-parameter models, they can be specified through a joint distribution or assumed independent apriori (which does not translate into independence a posteriori).
+* Priors are distributions for the parameters. In multi-parameter models, they can be specified through a joint distribution or assumed independent a priori (which does not translate into independence a posteriori).
 * Priors are not invariant to reparametrization, except when they are constructed with this property (e.g.,  Jeffrey's prior or penalized-complexity priors).
 * Improper priors may lead to improper posterior.
-* Priors that restrict the domain of $\boldsymbol{\theta}$ will also restrict the posterior. These are useful to avoid regions that are implausible or impossible.
+* Priors that restrict the domain of $\boldsymbol{\theta}$ will also restrict the posterior. These are useful to avoid regions of the parameter space that are implausible or impossible.
 * Physical knowledge of the system can be helpful to specify sensible values of the prior through moment matching.
 * Conjugate priors facilitate derivations, but are mostly chosen for convenience.
 * Generally, the prior has constant weight $\mathrm{O}(1)$, relative to $\mathrm{O}(n)$ for the likelihood. The posterior is thus dominated in most circumstances by the likelihood.
