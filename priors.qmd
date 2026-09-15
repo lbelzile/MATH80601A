@@ -28,7 +28,7 @@ Oftentimes, we will specify independent priors in multiparameter models, but the
 
 At the end of the chapter, students should be able to
 
-- define and distinguish between improper, weak and informative priors.
+- define and distinguish between flat, vague, weak and informative priors.
 - propose conjugate priors for exponential families.
 - assess by using the prior predictive distribution the compatibility of the prior with the model.
 - use moment matching to specify the parameters of a prior distribution.
@@ -37,72 +37,6 @@ At the end of the chapter, students should be able to
 :::
 
 
-## Prior simulation
-
-Expert elicitation is difficult and it is hard to grasp what the impacts of the hyperparameters are. One way to see if the priors are reasonable is to sample values from them and generate new observations, resulting in prior predictive draws.
-
-The prior predictive is
-$\int_{\boldsymbol{\Theta}} f(y_{\text{new}}; \boldsymbol{\theta}) p(\boldsymbol{\theta}) \mathrm{d} \boldsymbol{\theta}$: we can simulate outcomes from it by first drawing parameter values $\boldsymbol{\theta}_0$ from the prior, then sampling new observations from the distribution $f(y_{\text{new}}; \boldsymbol{\theta}_0)$ with those parameters values and keeping only $y_{\text{new}}.$ If there are sensible bounds for the range of the response, we could restrict the prior range and shape until values abide to these.
-
-
-Working with standardized inputs $x_i \mapsto (x_i - \overline{x})/\mathrm{sd}(\boldsymbol{x})$ is useful. For example, in a simple linear regression (with a sole numerical explanatory), the slope is the correlation between standardized explanatory $\mathrm{X}$ and standardized response $Y$ and the intercept should be mean zero. 
-
-:::{#exm-bixi-temp}
-
-Consider the daily number of Bixi bike sharing users for 2017--2019 at the Edouard Montpetit station next to HEC: we can consider a simple linear regression with log counts as a function of temperature,^[If counts are Poisson, then the log transform is variance stabilizing.] 
-$$\log (\texttt{nusers}) \sim \mathsf{Gauss}_{+}\{\beta_0 + \beta_1 (\texttt{temp}-20), \sigma^2\}.$$
-The $\beta_1$ slope measures units in degree Celsius per log number of person.
-
-The hyperparameters depend of course on the units of the analysis, unless one standardizes response variable and explanatories: it is easier to standardize the temperature so that we consider deviations from, say 20$^{\circ}$C, which is not far from the observed mean in the sample. After some tuning, the independent priors $\beta_0 \sim \mathsf{Gauss}(\overline{y}, 0.5^2),$ $\beta_1 \sim \mathsf{Gauss}(0, 0.05^2)$ and $\sigma \sim \mathsf{Exp}(3)$ seem to yield plausible outcomes and relationships.^[One can object to the prior parameters depending on the data, but an alternative would be to model centered data $y-\overline{y},$ in which case the prior for the intercept parameter $\beta_0$ would be zero.]
-
-
-```{r}
-#| eval: true
-#| echo: false
-#| label: fig-bixi
-#| fig-cap: "Prior draws of the linear regressions with observed data superimposed (left), and draws of observations from the prior predictive distribution (in gray) against observed data (right)."
-data(bixi, package = "hecstatmod")
-set.seed(1234)
-nsamp <- 500
-sigma_prior <- rexp(n = nsamp, rate = 3)
-beta0_prior <- rnorm(n = nsamp, 
-                     mean = mean(log(bixi$nusers)), 
-                     sd = 0.5)
-beta1_prior <- rnorm(n = nsamp, mean = 0, sd = 0.05)
-
-xsamp <- sample(bixi$temp, nsamp)
-postpriorsamp <- TruncatedNormal::rtnorm(
-  n = 1, 
-  mu = beta0_prior + (xsamp - 20)*beta1_prior, 
-  sd = sigma_prior, lb = 0, ub = Inf)
-g1 <- 
-  ggplot() +
-  geom_point(data = bixi,
-       mapping = aes(y = log(nusers),
-                     x = temp - 20)) +
-  geom_abline(intercept = beta0_prior,
-              slope = beta1_prior,
-              alpha = 0.1) +
-  scale_y_continuous(limits = c(0,5), expand = c(0,0)) + 
-  labs(x = "temperature - 20 (in Celsius)",
-       y = "", 
-       subtitle = "Log number of Bixi rentals") +
-  theme_classic()
-g2 <- ggplot() +
-  geom_point(data = bixi,
-             mapping = aes(x = temp, y = log(nusers))) + 
-  geom_point(data = data.frame(x = xsamp, y = postpriorsamp),
-             mapping = aes(x = x, y = y), col = "grey") +
-  labs(x = "temperature (in Celsius)",
-       y = "",
-       subtitle = "Simulated and observed number of Bixi rentals (log scale)") +
-  theme_classic()
-g1 + g2
-```
-
-We can draw regression lines from the prior, as in the left panel of @fig-bixi: while some of the negative relationships appear unlikely after seeing the data, the curves all seem to pass somewhere in the cloud of point. By contrast, a silly prior is one that would result in all observations being above or below the regression line, or yield values that are much too large near the endpoints of the explanatory variable. Indeed, given the number of bikes for rental is limited (a docking station has only 20 bikes), it is also sensible to ensure that simulations do not return overly large numbers. The maximum number of daily users in the sample is `r max(bixi$nusers)`, so priors that return simulations with more than 200 (rougly 5.3 on the log scale) are not that plausible. The prior predictive draws can help establish this and the right panel of @fig-bixi shows that, expect for the lack of correlation between temperature and number of users, the simulated values from the prior predictive are plausible even if overdispersed.
-
-:::
 
 
 ## Conjugate priors 
@@ -425,9 +359,10 @@ In multiparameter models, the system isn't invariant to reparametrization if we 
 :::
 
 :::{#exm-jeffreysbinom}
+
 ## Jeffrey's prior for the binomial distribution
 
-Consider the binomial distribution $\mathsf{Bin}(1, \theta)$ with density $f(y; \theta) \propto  \theta^y(1-\theta)^{1-y}\mathbf{1}_{\theta \in [0,1]}.$ The negative of the second derivative of the log likelihood with respect to $p$ is $$\jmath(\theta) = - \partial^2 \ell(\theta; y) / \partial \theta^2 = y/\theta^2 + (1-y)/(1-\theta)^2$$ and since $\mathsf{E}(Y)=\theta,$ the Fisher information is $$\imath(\vartheta) = \mathsf{E}\{\jmath(\theta)\}=1/\theta + 1/(1-\theta) = 1/\{\theta(1-\theta)\}$$
+Consider the binomial distribution $\mathsf{Bin}(1, \theta)$ with density $f(y; \theta) \propto  \theta^y(1-\theta)^{1-y}\mathbf{1}_{\theta \in [0,1]}.$ The negative of the second derivative of the log likelihood with respect to $\theta$ is $$\jmath(\theta) = - \partial^2 \ell(\theta; y) / \partial \theta^2 = y/\theta^2 + (1-y)/(1-\theta)^2$$ and since $\mathsf{E}(Y)=\theta,$ the Fisher information is $$\imath(\theta) = \mathsf{E}\{\jmath(\theta)\}=1/\theta + 1/(1-\theta) = 1/\{\theta(1-\theta)\}$$
 Jeffrey's prior is thus $p(\theta) \propto \theta^{-1/2}(1-\theta)^{-1/2},$ a conjugate Beta prior $\mathsf{beta}(0.5,0.5).$
 
 :::

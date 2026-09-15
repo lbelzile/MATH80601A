@@ -639,7 +639,7 @@ A stochastic process is markovian if it satisfies the Markov property: given the
 
 Let $\{Y_t\}$ is a weakly stationary sequence with mean $\mathsf{E}(Y_t)=\mu$ and $\gamma_h = \mathsf{Cov}(Y_t, Y_{t+h})$. Then, if the autocovariance series is convergent, meaning
 $$\sum_{t=0}^\infty |\gamma_h| < \infty,$$
-then $\{Y_t\}$ is ergodic for the mean and $\overline{Y} \stackrel{\mathrm{p}}{\to} \mu$. In other words, the ergodic theorem is a law of large numbers for stochastic processes that allows for serial dependence between observations, provided the latter is not too large.
+then $\{Y_t\}$ is ergodic for the mean and $\overline{Y} \stackrel{\mathrm{p}}{\to} \mu$. In other words, the ergodic theorem is a law of large numbers for stochastic processes that allows for serial dependence between observations, provided the dependence is not too large.
 
 Ergodicity means that two segments of a time series far enough apart act as independent.
 
@@ -699,16 +699,19 @@ We can run a Markov chain by sampling an initial state $X_0$ at random from $\ma
 ::: {#prp-variance-clt}
 ## Effective sample size
 
-Intuitively, a sample of correlated observations carries less information than an independent sample of draws. If we want to compute sample averages $\overline{Y}_T=(Y_1+ \cdots + Y_T)/T,$ the variance will be 
+Intuitively, a sample of correlated observations carries less information than an independent sample of draws. Suppose that the **unconditional variance** is $\tau^2$. If we want to compute sample averages $\overline{Y}_T=(Y_1+ \cdots + Y_T)/T,$ the variance will be 
 \begin{align*}
 \mathsf{Va}\left(\overline{Y}_T\right) = \frac{1}{T^2}\sum_{t=1}^T \mathsf{Va}(Y_t) + \frac{2}{T^2} \sum_{t=1}^{T-1}\sum_{s = t+1}^T \mathsf{Co}(Y_t, Y_s).
 \end{align*}
 
-In the independent case, the covariance is zero so we get the sum of variances. If the process is stationary, the covariance at lag $k$ are the same regardless of the time index and the variance is some constant, say $\sigma^2$; this allows us to simplify calculations, \begin{align*}
-\mathsf{Va}(\overline{Y}_T) = \sigma^2 \left\{ 1 + \frac{2}{T}\sum_{t=1}^{T-1} (T-t) \mathsf{Cor}(Y_{T-k}, Y_{T})\right\}.
+In the independent case, the covariance is zero so we get the sum of variances. If the process is stationary, the correlation depends only on the lag $k$ and not on $t$ and the variance is constant, so 
+$$\mathsf{Cov}(Y_{t-k}, Y_{t})=$\tau^2$\mathsf{Cor}(Y_{t-k}, Y_{t})=$\tau^2$\rho_k,$$ say. 
+Thus,
+\begin{align*}
+\mathsf{Va}(\overline{Y}_T) = \frac{$\tau^2$}{T} \left\{ 1 + 2\sum_{s=1}^{T-1} \frac{(T-s)}{T}\rho_s\right\}.
 \end{align*} 
-Denote the lag-$k$ autocorrelation $\mathsf{Cor}(Y_{t}, Y_{t+k})=\rho_k.$ Under technical conditions[^mcmc-4], a central limit theorem applies and we get an asymptotic variance for the mean of \begin{align*}
-\lim_{T \to \infty} T\mathsf{Va}\left(\overline{Y}_T\right) = \sigma^2 \left\{1+2\sum_{t=1}^\infty \rho_t\right\}.
+ Under technical conditions[^mcmc-4], a central limit theorem applies and we get an asymptotic variance for the mean of \begin{align*}
+\lim_{T \to \infty} T\mathsf{Va}\left(\overline{Y}_T\right) = $\tau^2$ \left\{1+2\sum_{s=1}^\infty \rho_s\right\}.
 \end{align*} This statement holds only if we start with draws from the stationary distribution, otherwise bets are off.
 
 
@@ -719,7 +722,7 @@ We need the **effective sample size** of our Monte Carlo averages based on a Mar
 
 ## Effective sample size
 
-Loosely speaking, the effective sample size is  the equivalent number of observations if the marginal posterior draws were independent. We define it as
+Loosely speaking, the effective sample size is the equivalent number of observations if the marginal posterior draws were independent. We define it as
 
 $$
 \mathsf{ESS} = \frac{B}{\left\{1+2\sum_{t=1}^\infty \rho_t\right\}}
@@ -728,7 +731,7 @@ where $\rho_t$ is the lag $t$ correlation. The relative effective sample size is
 
 :::
 
-In practice, we replace the unknown autocorrelations by sample estimates and truncate the series in @eq-effective-sample-size at the point where they become negligible --- typically when the consecutive sum of two consecutive becomes negative; see Section 1.4 of the [Stan manual](https://mc-stan.org/docs/reference-manual/effective-sample-size.html) or Section 1.10.2 of @Geyer:2011 for details.
+In practice, we replace the unknown autocorrelations by sample estimates and truncate the series in @eq-effective-sample-size at the point where they become negligible; see Section 1.4 of the [Stan manual](https://mc-stan.org/docs/reference-manual/effective-sample-size.html) or Section 1.10.2 of @Geyer:2011 for details.
 
 
 ### Discrete Markov chains

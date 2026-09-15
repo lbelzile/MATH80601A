@@ -320,19 +320,19 @@ window.Quarto = {
 <p>The Gibbs sampling algorithm builds a Markov chain by iterating through a sequence of conditional distributions. Consider a model with <span class="math inline">\(\boldsymbol{\theta} \in \boldsymbol{\Theta} \subseteq \mathbb{R}^p.\)</span> We consider a single (or <span class="math inline">\(m \leq p\)</span> blocks of parameters), say <span class="math inline">\(\boldsymbol{\theta}^{[j]},\)</span> such that, conditional on the remaining components of the parameter vector <span class="math inline">\(\boldsymbol{\theta}^{-[j]},\)</span> the conditional posterior <span class="math inline">\(p(\boldsymbol{\theta}^{[j]} \mid \boldsymbol{\theta}^{-[j]}, \boldsymbol{y})\)</span> is from a known distribution from which we can simulate draws</p>
 <p>At iteration <span class="math inline">\(t,\)</span> we can update each block in turn: note that the <span class="math inline">\(k\)</span>th block uses the partially updated state <span class="math display">\[\begin{align*}
 \boldsymbol{\theta}^{-[k]\star} = (\boldsymbol{\theta}_{t}^{[1]}, \ldots, \boldsymbol{\theta}_{t}^{[k-1]},\boldsymbol{\theta}_{t-1}^{[k+1]}, \boldsymbol{\theta}_{t-1}^{[m]})
-\end{align*}\]</span> which corresponds to the current value of the parameter vector after the updates. To check the validity of the Gibbs sampler, see the methods proposed in <span class="citation" data-cites="Geweke:2004">Geweke (<a href="references.html#ref-Geweke:2004" role="doc-biblioref">2004</a>)</span>.</p>
+\end{align*}\]</span> which corresponds to the current value of the parameter vector after the updates. To check the validity of the Gibbs sampler, see the methods proposed in <span class="citation" data-cites="Geweke:2004">Geweke (<a href="#ref-Geweke:2004" role="doc-biblioref">2004</a>)</span>.</p>
 <p>The Gibbs sampling can be viewed as a special case of Metropolis–Hastings where the proposal distribution <span class="math inline">\(q\)</span> is <span class="math inline">\(p(\boldsymbol{\theta}^{[j]} \mid \boldsymbol{\theta}^{-[j]\star}, \boldsymbol{y}).\)</span> The particularity is that all proposals get accepted because the log posterior of the partial update, equals the proposal distribution, so <span class="math display">\[\begin{align*}
 R &amp;= \frac{p(\boldsymbol{\theta}_t^{\star} \mid \boldsymbol{y})}{p(\boldsymbol{\theta}_{t-1}\mid \boldsymbol{y})}\frac{p(\boldsymbol{\theta}_{t-1}^{[j]} \mid \boldsymbol{\theta}^{-[j]\star}, \boldsymbol{y})}{p(\boldsymbol{\theta}_t^{[j]\star} \mid \boldsymbol{\theta}^{-[j]\star}, \boldsymbol{y})}
 \\
 &amp;=
 \frac{p(\boldsymbol{\theta}_t^{[j]\star} \mid \boldsymbol{\theta}^{-[j]\star}, \boldsymbol{y})p(\boldsymbol{\theta}^{-[j]\star} \mid \boldsymbol{y})}{p(\boldsymbol{\theta}_{t-1}^{[j]} \mid \boldsymbol{\theta}^{-[j]\star}, \boldsymbol{y})p(\mid \boldsymbol{\theta}^{-[j]\star} \mid  \boldsymbol{y})}\frac{p(\boldsymbol{\theta}_{t-1}^{[j]} \mid \boldsymbol{\theta}^{-[j]\star}, \boldsymbol{y})}{p(\boldsymbol{\theta}_t^{[j]\star} \mid \boldsymbol{\theta}^{-[j]\star}, \boldsymbol{y})} =1.
-\end{align*}\]</span> Regardless of the order (systematic scan or random scan), the procedure remains valid. The Gibbs sampling is thus an automatic algorithm: we only need to derive the conditional posterior distributions of the parameters and run the sampler, and there are no tuning parameter involved. If the parameters are strongly correlated, the changes for each parameter will be incremental and this will lead to slow mixing and large autocorrelation, even if the values drawn are all different. <a href="#fig-Gibbs-steps" class="quarto-xref">Figure&nbsp;<span>6.1</span></a> shows 25 steps from a Gibbs algorithm for a bivariate target.</p>
-<div class="cell">
+\end{align*}\]</span> Regardless of the order (systematic scan or random scan), the procedure remains valid. The Gibbs sampling is thus an automatic algorithm: we only need to derive the conditional posterior distributions of the parameters and run the sampler, and there are no tuning parameter involved. If the parameters are strongly correlated, the changes for each parameter will be incremental and this will lead to slow mixing and large autocorrelation, even if the values drawn are all different. <a href="#fig-Gibbs-steps" class="quarto-xref">Figure&nbsp;<span class="quarto-unresolved-ref">fig-Gibbs-steps</span></a> shows 25 steps from a Gibbs algorithm for a bivariate target.</p>
+<div class="cell" data-layout-align="center">
 <div class="cell-output-display">
-<div id="fig-Gibbs-steps" class="quarto-float quarto-figure quarto-figure-center anchored">
+<div id="fig-Gibbs-steps" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-Gibbs-steps-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="gibbs_files/figure-html/fig-Gibbs-steps-1.png" class="img-fluid figure-img" width="672">
+<img src="gibbs_files/figure-html/fig-Gibbs-steps-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:85.0%">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-Gibbs-steps-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Figure&nbsp;6.1: Sampling trajectory for a bivariate target using Gibbs sampling.
@@ -347,7 +347,7 @@ Figure&nbsp;6.1: Sampling trajectory for a bivariate target using Gibbs sampling
 \boldsymbol{Y}_1 \mid \boldsymbol{Y}_2=\boldsymbol{y}_2 &amp;\sim \mathsf{Gauss}_{k}\left\{ \boldsymbol{\mu}_1 + \boldsymbol{\Sigma}_{12} \boldsymbol{\Sigma}_{22}^{-1}(\boldsymbol{y}_2 - \boldsymbol{\mu}_2), \boldsymbol{\Sigma}_{11} - \boldsymbol{\Sigma}_{12}\boldsymbol{\Sigma}_{22}^{-1}\boldsymbol{\Sigma}_{21}\right\}
 \\&amp;\sim \mathsf{Gauss}_{k}\left\{ \boldsymbol{\mu}_1 -\mathbf{Q}_{11}^{-1}\mathbf{Q}_{12}(\boldsymbol{y}_2 - \boldsymbol{\mu}_2), \mathbf{Q}_{11}^{-1}\right\}.
 \end{align*}\]</span></p>
-<div class="cell">
+<div class="cell" data-layout-align="center">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Create a 20 dimensional equicorrelation</span></span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>d <span class="ot">&lt;-</span> <span class="dv">20</span></span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>Q <span class="ot">&lt;-</span> hecbayes<span class="sc">::</span><span class="fu">equicorrelation</span>(<span class="at">d =</span> d, <span class="at">rho =</span> <span class="fl">0.9</span>, <span class="at">precision =</span> <span class="cn">TRUE</span>)</span>
@@ -370,13 +370,13 @@ Figure&nbsp;6.1: Sampling trajectory for a bivariate target using Gibbs sampling
 <span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>  chains[i,] <span class="ot">&lt;-</span> curr <span class="co"># save values after full round of update</span></span>
 <span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
-<p>As the dimension of the parameter space increases, and as the correlation between components becomes larger, the efficiency of the Gibbs sampler degrades: <a href="#fig-gibbs-normal" class="quarto-xref">Figure&nbsp;<span>6.2</span></a> shows the first component for updating one-parameter at a time for a multivariate Gaussian target in dimensions <span class="math inline">\(d=20\)</span> and <span class="math inline">\(d=3,\)</span> started at four deviation away from the mode. The chain makes smaller steps when there is strong correlation, resulting in an inefficient sampler.</p>
-<div class="cell">
+<p>As the dimension of the parameter space increases, and as the correlation between components becomes larger, the efficiency of the Gibbs sampler degrades: <a href="#fig-gibbs-normal" class="quarto-xref">Figure&nbsp;<span class="quarto-unresolved-ref">fig-gibbs-normal</span></a> shows the first component for updating one-parameter at a time for a multivariate Gaussian target in dimensions <span class="math inline">\(d=20\)</span> and <span class="math inline">\(d=3,\)</span> started at four deviation away from the mode. The chain makes smaller steps when there is strong correlation, resulting in an inefficient sampler.</p>
+<div class="cell" data-layout-align="center">
 <div class="cell-output-display">
-<div id="fig-gibbs-normal" class="quarto-float quarto-figure quarto-figure-center anchored">
+<div id="fig-gibbs-normal" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-gibbs-normal-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="gibbs_files/figure-html/fig-gibbs-normal-1.png" class="img-fluid figure-img" width="672">
+<img src="gibbs_files/figure-html/fig-gibbs-normal-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:85.0%">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-gibbs-normal-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Figure&nbsp;6.2: Trace plots (top) and correlograms (bottom) for the first component of a Gibbs sampler with <span class="math inline">\(d=20\)</span> equicorrelated Gaussian variates with correlation <span class="math inline">\(\rho=0.9\)</span> (left) and <span class="math inline">\(d=3\)</span> with equicorrelation <span class="math inline">\(\rho=0.5\)</span> (right).
@@ -404,7 +404,7 @@ p(\tau \mid \mu, \boldsymbol{y}) &amp; \propto \tau^{-n/2-\alpha-1}\exp\left[-\f
 </div>
 <section id="sec-gibbs-da" class="level2" data-number="6.1">
 <h2 data-number="6.1" class="anchored" data-anchor-id="sec-gibbs-da"><span class="header-section-number">6.1</span> Data augmentation and auxiliary variables</h2>
-<p>In many problems, the likelihood <span class="math inline">\(p(\boldsymbol{y}; \boldsymbol{\theta})\)</span> is intractable or costly to evaluate and auxiliary variables are introduced to simplify calculations, as in the expectation-maximization algorithm. The Bayesian analog is data augmentation <span class="citation" data-cites="Tanner.Wong:1987">(<a href="references.html#ref-Tanner.Wong:1987" role="doc-biblioref">Tanner and Wong 1987</a>)</span>, which we present succinctly: let <span class="math inline">\(\boldsymbol{\theta} \in \Theta\)</span> be a vector of parameters and consider auxiliary variables <span class="math inline">\(\boldsymbol{u} \in \mathbb{R}^k\)</span> such that <span class="math inline">\(\int_{\mathbb{R}^k} p(\boldsymbol{u}, \boldsymbol{\theta}; \boldsymbol{y}) \mathrm{d} \boldsymbol{u} = p(\boldsymbol{\theta}; \boldsymbol{y}),\)</span> i.e., the marginal distribution is that of interest, but evaluation of <span class="math inline">\(p(\boldsymbol{u}, \boldsymbol{\theta}; \boldsymbol{y})\)</span> is cheaper. The data augmentation algorithm consists in running a Markov chain on the augmented state space <span class="math inline">\((\Theta, \mathbb{R}^k),\)</span> simulating in turn from the conditionals <span class="math inline">\(p(\boldsymbol{u}; \boldsymbol{\theta}, \boldsymbol{y})\)</span> and <span class="math inline">\(p(\boldsymbol{\theta}; \boldsymbol{u}, \boldsymbol{y})\)</span> with new variables chosen to simplify the likelihood. If simulation from the conditionals is straightforward, we can also use data augmentation to speed up calculations or improve mixing. For more details and examples, see <span class="citation" data-cites="vanDyk.Meng:2001">Dyk and Meng (<a href="references.html#ref-vanDyk.Meng:2001" role="doc-biblioref">2001</a>)</span> and <span class="citation" data-cites="Hobert:2011">Hobert (<a href="references.html#ref-Hobert:2011" role="doc-biblioref">2011</a>)</span>.</p>
+<p>In many problems, the likelihood <span class="math inline">\(p(\boldsymbol{y}; \boldsymbol{\theta})\)</span> is intractable or costly to evaluate and auxiliary variables are introduced to simplify calculations, as in the expectation-maximization algorithm. The Bayesian analog is data augmentation <span class="citation" data-cites="Tanner.Wong:1987">(<a href="#ref-Tanner.Wong:1987" role="doc-biblioref">Tanner and Wong 1987</a>)</span>, which we present succinctly: let <span class="math inline">\(\boldsymbol{\theta} \in \Theta\)</span> be a vector of parameters and consider auxiliary variables <span class="math inline">\(\boldsymbol{u} \in \mathbb{R}^k\)</span> such that <span class="math inline">\(\int_{\mathbb{R}^k} p(\boldsymbol{u}, \boldsymbol{\theta}; \boldsymbol{y}) \mathrm{d} \boldsymbol{u} = p(\boldsymbol{\theta}; \boldsymbol{y}),\)</span> i.e., the marginal distribution is that of interest, but evaluation of <span class="math inline">\(p(\boldsymbol{u}, \boldsymbol{\theta}; \boldsymbol{y})\)</span> is cheaper. The data augmentation algorithm consists in running a Markov chain on the augmented state space <span class="math inline">\((\Theta, \mathbb{R}^k),\)</span> simulating in turn from the conditionals <span class="math inline">\(p(\boldsymbol{u}; \boldsymbol{\theta}, \boldsymbol{y})\)</span> and <span class="math inline">\(p(\boldsymbol{\theta}; \boldsymbol{u}, \boldsymbol{y})\)</span> with new variables chosen to simplify the likelihood. If simulation from the conditionals is straightforward, we can also use data augmentation to speed up calculations or improve mixing. For more details and examples, see <span class="citation" data-cites="vanDyk.Meng:2001">Dyk and Meng (<a href="#ref-vanDyk.Meng:2001" role="doc-biblioref">2001</a>)</span> and <span class="citation" data-cites="Hobert:2011">Hobert (<a href="#ref-Hobert:2011" role="doc-biblioref">2011</a>)</span>.</p>
 <div id="exm-probit-regression" class="theorem example">
 <p><span class="theorem-title"><strong>Example 6.2 (Probit regression)</strong></span> Consider binary responses <span class="math inline">\(\boldsymbol{Y}_i,\)</span> for which we postulate a probit regression model, <span class="math display">\[\begin{align*}
 p_i = \Pr(Y_i=1) = \Phi(\beta_0 + \beta_1 \mathrm{X}_{i1} + \cdots + \beta_p\mathrm{X}_{ip}),
@@ -418,8 +418,8 @@ Z_i \mid y_i, \boldsymbol{\beta} \sim \begin{cases}
 \mathsf{trunc. Gauss}(\mathbf{x}_i\boldsymbol{\beta},1, -\infty, 0) &amp; y_i =0 \\
 \mathsf{trunc. Gauss}(\mathbf{x}_i\boldsymbol{\beta},1,  0, \infty) &amp; y_i =1.
 \end{cases}
-\end{align*}\]</span> and we can use the algorithms of <a href="montecarlo.html#exm-accept-reject-truncated" class="quarto-xref">Example&nbsp;<span>4.2</span></a> to simulate these.</p>
-<div class="cell">
+\end{align*}\]</span> and we can use the algorithms of <a href="#exm-accept-reject-truncated" class="quarto-xref">Example&nbsp;<span class="quarto-unresolved-ref">exm-accept-reject-truncated</span></a> to simulate these.</p>
+<div class="cell" data-layout-align="center">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>probit_regression <span class="ot">&lt;-</span> <span class="cf">function</span>(y, x, <span class="at">B =</span> <span class="fl">1e4</span>L, <span class="at">burnin =</span> <span class="dv">100</span>){</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  y <span class="ot">&lt;-</span> <span class="fu">as.numeric</span>(y)</span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  n <span class="ot">&lt;-</span> <span class="fu">length</span>(y)</span>
@@ -464,23 +464,23 @@ p(z) &amp;= \int_{0}^{\infty} p(z \mid \lambda) p(\lambda) \mathrm{d} \lambda
 \\&amp;= \frac{1}{2\sigma^2\omega^{1/2}}\exp\left(-\frac{\omega}{\nu}\right)
 \\&amp; = \frac{1}{2\sigma}\exp\left(-\frac{|z-\mu|}{\sigma}\right).
 \end{align*}\]</span> upon recovering the conditional density of <span class="math inline">\(\Xi \mid Z \sim \mathsf{Wald}(\nu, \omega)\)</span> with parameters <span class="math inline">\(\nu=(\sigma|z-\mu|)^{-1}\)</span> and <span class="math inline">\(\omega=\sigma^{-2}\)</span>.</p>
-<p><span class="citation" data-cites="Park.Casella:2008">Park and Casella (<a href="references.html#ref-Park.Casella:2008" role="doc-biblioref">2008</a>)</span> use this hierarchical construction to define the Bayesian LASSO. With a model matrix <span class="math inline">\(\mathbf{X}\)</span> whose columns are standardized to have mean zero and unit standard deviation, we may write <span class="math display">\[\begin{align*}
+<p><span class="citation" data-cites="Park.Casella:2008">Park and Casella (<a href="#ref-Park.Casella:2008" role="doc-biblioref">2008</a>)</span> use this hierarchical construction to define the Bayesian LASSO. With a model matrix <span class="math inline">\(\mathbf{X}\)</span> whose columns are standardized to have mean zero and unit standard deviation, we may write <span class="math display">\[\begin{align*}
 \boldsymbol{Y} \mid \mu, \boldsymbol{\beta}, \sigma^2 &amp;\sim  \mathsf{Gauss}_n(\mu \boldsymbol{1}_n + \mathbf{X}\boldsymbol{\beta}, \sigma^2 \mathbf{I}_n)\\
 \beta_j \mid \sigma^2, \tau_j &amp;\sim \mathsf{Gauss}(0, \sigma^2\tau_j)\\
 \tau_j &amp;\sim \mathsf{expo}(\lambda/2)
-\end{align*}\]</span> With the improper prior <span class="math inline">\(p(\mu, \sigma^2) \propto 1/\sigma^2\)</span> and with <span class="math inline">\(n\)</span> independent and identically distributed Laplace variates, written as a scale mixture, the model is amenable to Gibbs sampling. With <span class="math inline">\(\mathbf{D}^{-1}_{\tau} = \mathrm{diag}(\tau_1^{-1}, \ldots, \tau_p^{-1})\)</span> and <span class="math inline">\(\tilde{\boldsymbol{y}} = \boldsymbol{y} - \overline{y}\mathbf{1}_n\)</span> the centered response vector, we can simulate in turn <span class="citation" data-cites="Park.Casella:2008">(<a href="references.html#ref-Park.Casella:2008" role="doc-biblioref">Park and Casella 2008</a>)</span> <span class="math display">\[\begin{align*}
+\end{align*}\]</span> With the improper prior <span class="math inline">\(p(\mu, \sigma^2) \propto 1/\sigma^2\)</span> and with <span class="math inline">\(n\)</span> independent and identically distributed Laplace variates, written as a scale mixture, the model is amenable to Gibbs sampling. With <span class="math inline">\(\mathbf{D}^{-1}_{\tau} = \mathrm{diag}(\tau_1^{-1}, \ldots, \tau_p^{-1})\)</span> and <span class="math inline">\(\tilde{\boldsymbol{y}} = \boldsymbol{y} - \overline{y}\mathbf{1}_n\)</span> the centered response vector, we can simulate in turn <span class="citation" data-cites="Park.Casella:2008">(<a href="#ref-Park.Casella:2008" role="doc-biblioref">Park and Casella 2008</a>)</span> <span class="math display">\[\begin{align*}
 \mu \mid \sigma^2, \boldsymbol{y} &amp;\sim \mathsf{Gauss}(\overline{y}, \sigma^2/n) \\
 \boldsymbol{\beta} \mid \sigma^2, \boldsymbol{\tau}, \boldsymbol{y} &amp;\sim \mathsf{Gauss}_p\left\{\left(\mathbf{X}^\top\mathbf{X} + \mathbf{D}^{-1}_{\tau}\right)^{-1} \mathbf{X}\widetilde{\boldsymbol{y}}, \sigma^2\left(\mathbf{X}^\top\mathbf{X} + \mathbf{D}^{-1}_{\tau}\right)^{-1}\right\}\\
 \sigma^2 \mid \boldsymbol{\beta}, \boldsymbol{\tau},\boldsymbol{y} &amp;\sim \mathsf{inv. gamma}\left\{ \frac{n-1+p}{2}, \frac{(\widetilde{\boldsymbol{y}}-\mathbf{X}\boldsymbol{\beta})^\top(\widetilde{\boldsymbol{y}}-\mathbf{X}\boldsymbol{\beta}) + \boldsymbol{\beta}^\top\mathbf{D}^{-1}_{\tau} \boldsymbol{\beta}}{2}\right\},\\
 \tau_j^{-1} \mid \boldsymbol{\beta}, \sigma^2 &amp;\sim \mathsf{Wald} \left( \frac{\lambda^{1/2}\sigma}{|\beta_j|}, \lambda\right)
 \end{align*}\]</span> where the last three conditional distributions follow from marginalizing out <span class="math inline">\(\mu.\)</span></p>
-<p>The Bayesian LASSO places a Laplace penalty on the regression coefficients, with lower values of <span class="math inline">\(\lambda\)</span> yielding more shrinkage. <a href="#fig-lasso-traceplot" class="quarto-xref">Figure&nbsp;<span>6.3</span></a> shows a replication of Figure 1 of <span class="citation" data-cites="Park.Casella:2008">Park and Casella (<a href="references.html#ref-Park.Casella:2008" role="doc-biblioref">2008</a>)</span>, fitted to the <code>diabetes</code> data. Note that, contrary to the frequentist setting, none of the posterior draws of <span class="math inline">\(\boldsymbol{\beta}\)</span> are exactly zero.</p>
-<div class="cell">
+<p>The Bayesian LASSO places a Laplace penalty on the regression coefficients, with lower values of <span class="math inline">\(\lambda\)</span> yielding more shrinkage. <a href="#fig-lasso-traceplot" class="quarto-xref">Figure&nbsp;<span class="quarto-unresolved-ref">fig-lasso-traceplot</span></a> shows a replication of Figure 1 of <span class="citation" data-cites="Park.Casella:2008">Park and Casella (<a href="#ref-Park.Casella:2008" role="doc-biblioref">2008</a>)</span>, fitted to the <code>diabetes</code> data. Note that, contrary to the frequentist setting, none of the posterior draws of <span class="math inline">\(\boldsymbol{\beta}\)</span> are exactly zero.</p>
+<div class="cell" data-layout-align="center">
 <div class="cell-output-display">
-<div id="fig-lasso-traceplot" class="quarto-float quarto-figure quarto-figure-center anchored">
+<div id="fig-lasso-traceplot" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-lasso-traceplot-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="gibbs_files/figure-html/fig-lasso-traceplot-1.png" class="img-fluid figure-img" width="672">
+<img src="gibbs_files/figure-html/fig-lasso-traceplot-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:85.0%">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-lasso-traceplot-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Figure&nbsp;6.3: Traceplot of <span class="math inline">\(\beta\)</span> coefficients (penalized maximum likelihood estimates and median aposteriori as a function of the <span class="math inline">\(l_1\)</span> norm of the coefficients, with lower values of the latter corresponding to higher values of the penalty <span class="math inline">\(\lambda.\)</span>
@@ -489,7 +489,7 @@ Figure&nbsp;6.3: Traceplot of <span class="math inline">\(\beta\)</span> coeffic
 </div>
 </div>
 </div>
-<p>Many elliptical distributions can be cast as scale mixture models of spherical or Gaussian variables; see, e.g., Section 10.2 of <span class="citation" data-cites="Albert:2009">Albert (<a href="references.html#ref-Albert:2009" role="doc-biblioref">2009</a>)</span> for a similar derivation with a Student-<span class="math inline">\(t\)</span> distribution.</p>
+<p>Many elliptical distributions can be cast as scale mixture models of spherical or Gaussian variables; see, e.g., Section 10.2 of <span class="citation" data-cites="Albert:2009">Albert (<a href="#ref-Albert:2009" role="doc-biblioref">2009</a>)</span> for a similar derivation with a Student-<span class="math inline">\(t\)</span> distribution.</p>
 </div>
 <div id="exm-mixture" class="theorem example">
 <p><span class="theorem-title"><strong>Example 6.4 (Mixture models)</strong></span> In clustering problems, we can specify that observations arise from a mixture model with a fixed or unknown number of coefficients: the interest lies then in estimating the relative weights of the components, and their location and scale.</p>
@@ -502,7 +502,7 @@ Figure&nbsp;6.3: Traceplot of <span class="math inline">\(\beta\)</span> coeffic
 <p><span class="theorem-title"><strong>Example 6.5 (Mixture model for geyser)</strong></span> We consider a Gaussian mixture model for waiting time between two eruptions of the Old Faithful geyser in Yellowstone. The distribution is of the form <span class="math display">\[\begin{align*}
 f_i(x) = p_i \phi_{1}(x_i; \mu_1, \tau_1^{-1}) + (1-p_i)\phi_{2}(x_i; \mu_2, \tau_2^{-1}).
 \end{align*}\]</span> where <span class="math inline">\(\phi(\cdot; \mu, \tau^{-1})\)</span> is the density function of a Gaussian with mean <span class="math inline">\(\mu\)</span> and precision <span class="math inline">\(\tau.\)</span> We assign conjugate priors with <span class="math inline">\(p_i \sim \mathsf{beta}(a_1, a_2),\)</span> <span class="math inline">\(\mu_j \sim \mathsf{Gauss}(c, d^{-1})\)</span> and <span class="math inline">\(\tau_j \sim \mathsf{gamma}(b_1, b_2).\)</span> For the hyperpriors, we use <span class="math inline">\(a_1=a_2=1,\)</span> <span class="math inline">\(b_1=1, b_2 = 0.1,\)</span> <span class="math inline">\(c = 60,\)</span> and <span class="math inline">\(d = 1/40.\)</span></p>
-<div class="cell">
+<div class="cell" data-layout-align="center">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(faithful)</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="fu">nrow</span>(faithful)</span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>y <span class="ot">&lt;-</span> faithful<span class="sc">$</span>waiting</span>
@@ -541,12 +541,12 @@ f_i(x) = p_i \phi_{1}(x_i; \mu_1, \tau_1^{-1}) + (1-p_i)\phi_{2}(x_i; \mu_2, \ta
 <span id="cb3-36"><a href="#cb3-36" aria-hidden="true" tabindex="-1"></a><span class="co"># Discard initial observations (burn in)</span></span>
 <span id="cb3-37"><a href="#cb3-37" aria-hidden="true" tabindex="-1"></a>theta <span class="ot">&lt;-</span> theta[<span class="sc">-</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">100</span>),]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
-<div class="cell">
+<div class="cell" data-layout-align="center">
 <div class="cell-output-display">
-<div id="fig-density-mixt" class="quarto-float quarto-figure quarto-figure-center anchored">
+<div id="fig-density-mixt" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-density-mixt-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="gibbs_files/figure-html/fig-density-mixt-1.png" class="img-fluid figure-img" width="672">
+<img src="gibbs_files/figure-html/fig-density-mixt-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:85.0%">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-density-mixt-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Figure&nbsp;6.4: One-dimensional density mixture for the Old Faithful data, with histogram of data (left) and posterior density draws (right).
@@ -557,7 +557,7 @@ Figure&nbsp;6.4: One-dimensional density mixture for the Old Faithful data, with
 </div>
 </div>
 <div id="rem-label-switching" class="proof remark">
-<p><span class="proof-title"><em>Remark 6.1</em> (Label switching in mixture models). </span>If we run a MCMC algorithm to sample from a mixture models, the likelihood is invariant to permutation of the group labels, leading to identifiability issues when the chain swaps modes, when running multiple Markov chains with symmetric priors or using tempering algorithms. Two chains may thus reach the same stationary distribution, with group labels swapped. It is sometimes necessary to impose ordering constraints on the mean parameters <span class="math inline">\(\boldsymbol{\mu},\)</span> although this isn’t necessarily easy to generalize beyond the univariate setting. See <span class="citation" data-cites="Jasra.Holmes.Stephens:2005">Jasra et al. (<a href="references.html#ref-Jasra.Holmes.Stephens:2005" role="doc-biblioref">2005</a>)</span> and <span class="citation" data-cites="Stephens:2002">Stephens (<a href="references.html#ref-Stephens:2002" role="doc-biblioref">2002</a>)</span> for more details.</p>
+<p><span class="proof-title"><em>Remark 6.1</em> (Label switching in mixture models). </span>If we run a MCMC algorithm to sample from a mixture models, the likelihood is invariant to permutation of the group labels, leading to identifiability issues when the chain swaps modes, when running multiple Markov chains with symmetric priors or using tempering algorithms. Two chains may thus reach the same stationary distribution, with group labels swapped. It is sometimes necessary to impose ordering constraints on the mean parameters <span class="math inline">\(\boldsymbol{\mu},\)</span> although this isn’t necessarily easy to generalize beyond the univariate setting. See <span class="citation" data-cites="Jasra.Holmes.Stephens:2005">Jasra et al. (<a href="#ref-Jasra.Holmes.Stephens:2005" role="doc-biblioref">2005</a>)</span> and <span class="citation" data-cites="Stephens:2002">Stephens (<a href="#ref-Stephens:2002" role="doc-biblioref">2002</a>)</span> for more details.</p>
 </div>
 <div class="callout callout-style-default callout-important callout-titled">
 <div class="callout-header d-flex align-content-center">
@@ -586,7 +586,7 @@ Figure&nbsp;6.4: One-dimensional density mixture for the Old Faithful data, with
 </div>
 
 
-<div id="refs" class="references csl-bib-body hanging-indent" role="list" style="display: none">
+<div id="refs" class="references csl-bib-body hanging-indent" role="list">
 <div id="ref-Albert:2009" class="csl-entry" role="listitem">
 Albert, Jim. 2009. <em>Bayesian Computation with <span>R</span></em>. 2nd ed. Springer. <a href="https://doi.org/10.1007/978-0-387-92298-0">https://doi.org/10.1007/978-0-387-92298-0</a>.
 </div>
