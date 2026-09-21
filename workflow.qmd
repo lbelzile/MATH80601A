@@ -320,22 +320,10 @@ ggplot() +
 
 :::
 
-<!--
-:::{#prop-power-scaling}
 
-## Sensitivity via power-scaling
-
-TODO add this to notes
-
-@Kallioinen:2023 propose varying the parameters through power scaling: this 
-
-:::
-
--->
 
 For a given problem, there are many different Markov chain Monte Carlo algorithms that one can implement: they will typically be distinguished based on the running time per iteration and the efficiency of the samplers, with algorithms providing realizations of Markov chains with lower autocorrelation being preferred.  The purpose of this section is to review these in turn, and to go over tricks that can improve mixing.
 
--->
 
 <!--
 **Prior to posterior**: prior sensitivity requires to rerun the algorithm with different priors, but it is sometimes feasible in simpler models to simply use a fast Gaussian approximation via the maximum a posteriori, and generate from the latter, to assess the impact of the prior. We can compare posterior density with prior density. The general rule is that parameters far from the data layer are more impacted by the prior choice.
