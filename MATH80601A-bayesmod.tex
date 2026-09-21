@@ -336,15 +336,15 @@
 \theoremstyle{definition}
 \newtheorem{exercise}{Exercise}[chapter]
 \theoremstyle{definition}
-\newtheorem{example}{Example}[chapter]
+\newtheorem{definition}{Definition}[chapter]
 \theoremstyle{plain}
 \newtheorem{proposition}{Proposition}[chapter]
 \theoremstyle{plain}
+\newtheorem{corollary}{Corollary}[chapter]
+\theoremstyle{plain}
 \newtheorem{theorem}{Theorem}[chapter]
 \theoremstyle{definition}
-\newtheorem{definition}{Definition}[chapter]
-\theoremstyle{plain}
-\newtheorem{corollary}{Corollary}[chapter]
+\newtheorem{example}{Example}[chapter]
 \theoremstyle{remark}
 \AtBeginDocument{\renewcommand*{\proofname}{Proof}}
 \newtheorem*{remark}{Remark}
@@ -397,7 +397,7 @@ details.
 These notes are licensed under a
 \href{http://creativecommons.org/licenses/by-nc-sa/4.0/}{Creative
 Commons Attribution-NonCommercial-ShareAlike 4.0 International License}
-and were last compiled on Monday, August 31 2026.
+and were last compiled on Sunday, September 20 2026.
 
 The objective of the course is to provide a hands on introduction to
 Bayesian data analysis. The course will cover the formulation,
@@ -1625,7 +1625,7 @@ i_{\alpha, \alpha} & = n\alpha^{-2}(1 + \gamma^2-2\gamma+\pi^2/6)
 \end{align*}
 
 We can check this result numerically by comparing the expected value of
-the observed information matrix ::: \{.cell\}
+the observed information matrix
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -1666,8 +1666,6 @@ the observed information matrix ::: \{.cell\}
 \end{Shaded}
 
 \end{example}
-
-:::
 
 The joint density function only factorizes for independent data, but an
 alternative sequential decomposition can be helpful. For example, we can
@@ -2728,11 +2726,12 @@ the cutoff for the HDP region.}
   specifying the data generating mechanism. It is thus an extension of
   likelihood-based inference.
 \item
-  Information from the prior is updated in light of new data, which is
-  encoded by the likelihood. Sequential updating leads.
+  Sequential updating (new likelihood contributions) leads to update of
+  the posterior distribution.
 \item
-  Under weak conditions on the prior, large-sample behaviour of Bayesian
-  and frequentist.
+  Under weak conditions on the prior, the large-sample behaviour of
+  Bayesian and frequentist are equal and the contribution of the
+  likelihood part dominates.
 \item
   Bayesian inference is complicated by the fact that there is more often
   than not no closed-form expression for the posterior distribution.
@@ -2742,8 +2741,8 @@ the cutoff for the HDP region.}
   Rather than hypothesis testing, Bayesian methods rely on the posterior
   distribution of parameters, or on Bayes factor for model comparisons.
 \item
-  The posterior predictive distribution, used for model assessment and
-  prediction, and it has a higher variance than the data generating
+  The posterior predictive distribution is used for model assessment and
+  prediction. It has a higher variance than the data generating
   distribution from the likelihood, due to parameter uncertainty.
 \item
   Bayesians typically will have approximations to the posterior
@@ -2806,7 +2805,8 @@ At the end of the chapter, students should be able to
 \begin{itemize}
 \tightlist
 \item
-  define and distinguish between improper, weak and informative priors.
+  define and distinguish between flat, vague, weak and informative
+  priors.
 \item
   propose conjugate priors for exponential families.
 \item
@@ -2820,85 +2820,6 @@ At the end of the chapter, students should be able to
 \end{itemize}
 
 \end{tcolorbox}
-
-\section{Prior simulation}\label{prior-simulation}
-
-Expert elicitation is difficult and it is hard to grasp what the impacts
-of the hyperparameters are. One way to see if the priors are reasonable
-is to sample values from them and generate new observations, resulting
-in prior predictive draws.
-
-The prior predictive is
-\(\int_{\boldsymbol{\Theta}} f(y_{\text{new}}; \boldsymbol{\theta}) p(\boldsymbol{\theta}) \mathrm{d} \boldsymbol{\theta}\):
-we can simulate outcomes from it by first drawing parameter values
-\(\boldsymbol{\theta}_0\) from the prior, then sampling new observations
-from the distribution \(f(y_{\text{new}}; \boldsymbol{\theta}_0)\) with
-those parameters values and keeping only \(y_{\text{new}}.\) If there
-are sensible bounds for the range of the response, we could restrict the
-prior range and shape until values abide to these.
-
-Working with standardized inputs
-\(x_i \mapsto (x_i - \overline{x})/\mathrm{sd}(\boldsymbol{x})\) is
-useful. For example, in a simple linear regression (with a sole
-numerical explanatory), the slope is the correlation between
-standardized explanatory \(\mathrm{X}\) and standardized response \(Y\)
-and the intercept should be mean zero.
-
-\begin{example}[]\protect\hypertarget{exm-bixi-temp}{}\label{exm-bixi-temp}
-
-Consider the daily number of Bixi bike sharing users for 2017--2019 at
-the Edouard Montpetit station next to HEC: we can consider a simple
-linear regression with log counts as a function of
-temperature,\footnote{If counts are Poisson, then the log transform is
-  variance stabilizing.}
-\[\log (\texttt{nusers}) \sim \mathsf{Gauss}_{+}\{\beta_0 + \beta_1 (\texttt{temp}-20), \sigma^2\}.\]
-The \(\beta_1\) slope measures units in degree Celsius per log number of
-person.
-
-The hyperparameters depend of course on the units of the analysis,
-unless one standardizes response variable and explanatories: it is
-easier to standardize the temperature so that we consider deviations
-from, say 20\(^{\circ}\)C, which is not far from the observed mean in
-the sample. After some tuning, the independent priors
-\(\beta_0 \sim \mathsf{Gauss}(\overline{y}, 0.5^2),\)
-\(\beta_1 \sim \mathsf{Gauss}(0, 0.05^2)\) and
-\(\sigma \sim \mathsf{Exp}(3)\) seem to yield plausible outcomes and
-relationships.\footnote{One can object to the prior parameters depending
-  on the data, but an alternative would be to model centered data
-  \(y-\overline{y},\) in which case the prior for the intercept
-  parameter \(\beta_0\) would be zero.}
-
-\begin{figure}[ht!]
-
-\centering{
-
-\pandocbounded{\includegraphics[keepaspectratio]{priors_files/figure-pdf/fig-bixi-1.pdf}}
-
-}
-
-\caption{\label{fig-bixi}Prior draws of the linear regressions with
-observed data superimposed (left), and draws of observations from the
-prior predictive distribution (in gray) against observed data (right).}
-
-\end{figure}%
-
-We can draw regression lines from the prior, as in the left panel of
-Figure~\ref{fig-bixi}: while some of the negative relationships appear
-unlikely after seeing the data, the curves all seem to pass somewhere in
-the cloud of point. By contrast, a silly prior is one that would result
-in all observations being above or below the regression line, or yield
-values that are much too large near the endpoints of the explanatory
-variable. Indeed, given the number of bikes for rental is limited (a
-docking station has only 20 bikes), it is also sensible to ensure that
-simulations do not return overly large numbers. The maximum number of
-daily users in the sample is 68, so priors that return simulations with
-more than 200 (rougly 5.3 on the log scale) are not that plausible. The
-prior predictive draws can help establish this and the right panel of
-Figure~\ref{fig-bixi} shows that, expect for the lack of correlation
-between temperature and number of users, the simulated values from the
-prior predictive are plausible even if overdispersed.
-
-\end{example}
 
 \section{Conjugate priors}\label{conjugate-priors}
 
@@ -3355,10 +3276,10 @@ Consider the binomial distribution \(\mathsf{Bin}(1, \theta)\) with
 density
 \(f(y; \theta) \propto  \theta^y(1-\theta)^{1-y}\mathbf{1}_{\theta \in [0,1]}.\)
 The negative of the second derivative of the log likelihood with respect
-to \(p\) is
+to \(\theta\) is
 \[\jmath(\theta) = - \partial^2 \ell(\theta; y) / \partial \theta^2 = y/\theta^2 + (1-y)/(1-\theta)^2\]
 and since \(\mathsf{E}(Y)=\theta,\) the Fisher information is
-\[\imath(\vartheta) = \mathsf{E}\{\jmath(\theta)\}=1/\theta + 1/(1-\theta) = 1/\{\theta(1-\theta)\}\]
+\[\imath(\theta) = \mathsf{E}\{\jmath(\theta)\}=1/\theta + 1/(1-\theta) = 1/\{\theta(1-\theta)\}\]
 Jeffrey's prior is thus
 \(p(\theta) \propto \theta^{-1/2}(1-\theta)^{-1/2},\) a conjugate Beta
 prior \(\mathsf{beta}(0.5,0.5).\)
@@ -3700,7 +3621,7 @@ the \(\mathsf{inv. gamma}(\epsilon, \epsilon).\)
 \item
   Priors are distributions for the parameters. In multi-parameter
   models, they can be specified through a joint distribution or assumed
-  independent apriori (which does not translate into independence a
+  independent a priori (which does not translate into independence a
   posteriori).
 \item
   Priors are not invariant to reparametrization, except when they are
@@ -3710,8 +3631,8 @@ the \(\mathsf{inv. gamma}(\epsilon, \epsilon).\)
   Improper priors may lead to improper posterior.
 \item
   Priors that restrict the domain of \(\boldsymbol{\theta}\) will also
-  restrict the posterior. These are useful to avoid regions that are
-  implausible or impossible.
+  restrict the posterior. These are useful to avoid regions of the
+  parameter space that are implausible or impossible.
 \item
   Physical knowledge of the system can be helpful to specify sensible
   values of the prior through moment matching.
@@ -3927,7 +3848,7 @@ points from the Gaussian and accept any that falls within the bounds.
 \end{Shaded}
 
 \begin{verbatim}
-[1] 0.34002
+[1] 0.3391
 \end{verbatim}
 
 \begin{Shaded}
@@ -4239,7 +4160,7 @@ more than 9\% for the same Monte Carlo sample size.
 
 \begin{verbatim}
                true         monte carlo importance sampling 
-             0.0625              0.0622              0.0627 
+             0.0625              0.0625              0.0620 
 \end{verbatim}
 
 \begin{Shaded}
@@ -4250,7 +4171,7 @@ more than 9\% for the same Monte Carlo sample size.
 \end{Shaded}
 
 \begin{verbatim}
-[1] 1.087118
+[1] 1.107146
 \end{verbatim}
 
 \begin{figure}[ht!]
@@ -4425,7 +4346,7 @@ Then, if the autocovariance series is convergent, meaning
 for the mean and \(\overline{Y} \stackrel{\mathrm{p}}{\to} \mu\). In
 other words, the ergodic theorem is a law of large numbers for
 stochastic processes that allows for serial dependence between
-observations, provided the latter is not too large.
+observations, provided the dependence is not too large.
 
 Ergodicity means that two segments of a time series far enough apart act
 as independent.
@@ -4491,24 +4412,24 @@ in correlated draws, due to the reliance on the previous observation.
 size]\protect\hypertarget{prp-variance-clt}{}\label{prp-variance-clt}
 
 Intuitively, a sample of correlated observations carries less
-information than an independent sample of draws. If we want to compute
+information than an independent sample of draws. Suppose that the
+\textbf{unconditional variance} is \(\tau^2\). If we want to compute
 sample averages \(\overline{Y}_T=(Y_1+ \cdots + Y_T)/T,\) the variance
 will be \begin{align*}
 \mathsf{Va}\left(\overline{Y}_T\right) = \frac{1}{T^2}\sum_{t=1}^T \mathsf{Va}(Y_t) + \frac{2}{T^2} \sum_{t=1}^{T-1}\sum_{s = t+1}^T \mathsf{Co}(Y_t, Y_s).
 \end{align*}
 
 In the independent case, the covariance is zero so we get the sum of
-variances. If the process is stationary, the covariance at lag \(k\) are
-the same regardless of the time index and the variance is some constant,
-say \(\sigma^2\); this allows us to simplify calculations,
+variances. If the process is stationary, the correlation depends only on
+the lag \(k\) and not on \(t\) and the variance is constant, so
+\[\mathsf{Cov}(Y_{t-k}, Y_{t})=\tau^2\mathsf{Cor}(Y_{t-k}, Y_{t})=\tau^2\rho_k,\]
+say. Thus, \begin{align*}
+\mathsf{Va}(\overline{Y}_T) = \frac{\tau^2}{T} \left\{ 1 + 2\sum_{s=1}^{T-1} \frac{(T-s)}{T}\rho_s\right\}.
+\end{align*} Under technical conditions\footnote{Geometric ergodicity
+  and existence of moments, among other things.}, a central limit
+theorem applies and we get an asymptotic variance for the mean of
 \begin{align*}
-\mathsf{Va}(\overline{Y}_T) = \sigma^2 \left\{ 1 + \frac{2}{T}\sum_{t=1}^{T-1} (T-t) \mathsf{Cor}(Y_{T-k}, Y_{T})\right\}.
-\end{align*} Denote the lag-\(k\) autocorrelation
-\(\mathsf{Cor}(Y_{t}, Y_{t+k})=\rho_k.\) Under technical
-conditions\footnote{Geometric ergodicity and existence of moments, among
-  other things.}, a central limit theorem applies and we get an
-asymptotic variance for the mean of \begin{align*}
-\lim_{T \to \infty} T\mathsf{Va}\left(\overline{Y}_T\right) = \sigma^2 \left\{1+2\sum_{t=1}^\infty \rho_t\right\}.
+\lim_{T \to \infty} T\mathsf{Va}\left(\overline{Y}_T\right) = \tau^2 \left\{1+2\sum_{s=1}^\infty \rho_s\right\}.
 \end{align*} This statement holds only if we start with draws from the
 stationary distribution, otherwise bets are off.
 
@@ -4536,9 +4457,7 @@ it generates negatively correlated draws).
 
 In practice, we replace the unknown autocorrelations by sample estimates
 and truncate the series in Equation~\ref{eq-effective-sample-size} at
-the point where they become negligible --- typically when the
-consecutive sum of two consecutive becomes negative; see Section 1.4 of
-the
+the point where they become negligible; see Section 1.4 of the
 \href{https://mc-stan.org/docs/reference-manual/effective-sample-size.html}{Stan
 manual} or Section 1.10.2 of Geyer (\citeproc{ref-Geyer:2011}{2011}) for
 details.
@@ -5364,7 +5283,7 @@ an penalized complexity prior for \(\sigma \sim \mathsf{Exp}(0.7).\)
 \end{Shaded}
 
 \begin{verbatim}
-[1] 7.650733e-03 5.575424e-05
+[1] 7.650777e-03 5.575433e-05
 \end{verbatim}
 
 \begin{Shaded}
@@ -6631,8 +6550,7 @@ Figure~\ref{fig-loocv-qqplots} shows two examples of these.
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\NormalTok{is\_wgt }\OtherTok{\textless{}{-}} \FunctionTok{exp}\NormalTok{(}\SpecialCharTok{{-}}\NormalTok{loglik\_pt) }\CommentTok{\# log weights}
-\CommentTok{\# importance sampling estimator}
+\CommentTok{\# LOO{-}CV P{-}P plot with importance sampling estimator}
 \NormalTok{ploo }\OtherTok{\textless{}{-}} \FunctionTok{numeric}\NormalTok{(n)}
 \ControlFlowTok{for}\NormalTok{(i }\ControlFlowTok{in} \FunctionTok{seq\_along}\NormalTok{(y))\{}
 \NormalTok{ ploo[i] }\OtherTok{\textless{}{-}} \FunctionTok{weighted.mean}\NormalTok{(}\AttributeTok{x =} \FunctionTok{I}\NormalTok{(postpred[,i] }\SpecialCharTok{\textless{}=}\NormalTok{ y[i]), }\AttributeTok{w =}\NormalTok{ is\_wgt[,i])}
@@ -7524,7 +7442,7 @@ the number of non-zero entries in \(\boldsymbol{\beta}\) over all
 replications. We can likewise compute the posterior probability of the
 number of non-zero components by simply counting the number of non-zero
 coefficients for each posterior draw. Figure~\ref{fig-spike-slab-zero}
-shows the result
+shows the result.
 
 \begin{figure}[ht!]
 
@@ -7694,7 +7612,7 @@ regression coefficients with Gaussian (ridge), double exponential
 One aspect worth mentioning is that the horseshoe prior impacts strongly
 the geometry and leads to slower mixing than the conjugate or
 Student-\(t\) priors: the effective sample size fraction relative to the
-number of samples ranges from 15\% to 100\%, compared to 50\% to 96\%
+number of samples ranges from 13\% to 90\%, compared to 51\% to 100\%
 for the Bayesian LASSO and near-independent draws with the conjugate
 ridge.
 
@@ -8312,7 +8230,7 @@ the parameters using the change of variable formula.
 \end{Shaded}
 
 \begin{verbatim}
-[1] 0.9874671 0.9929791 0.9963883
+[1] 0.9710178 0.9847906 0.9928912
 \end{verbatim}
 
 \begin{Shaded}
@@ -8326,7 +8244,7 @@ the parameters using the change of variable formula.
 \end{Shaded}
 
 \begin{verbatim}
-[1] 0.1727294 0.4049276
+[1] 0.2875416 0.7324307
 \end{verbatim}
 
 \begin{Shaded}
@@ -8343,8 +8261,8 @@ the parameters using the change of variable formula.
 \end{Shaded}
 
 \begin{verbatim}
-       mean          sd 
-0.992721400 0.002303183 
+      mean         sd 
+0.98409439 0.00566568 
 \end{verbatim}
 
 \end{example}
@@ -9504,8 +9422,7 @@ iteration \(t\) and the canonical parameters \begin{align*}
   \end{align*}
 \item
   Compute the normalizing constant, the mean \(\mathsf{E}_{h_i}(Z)\) and
-  the variance \(\mathsf{Va}_{h_i}(Z)\) by numerical integration. :::
-  \{.cell\}
+  the variance \(\mathsf{Va}_{h_i}(Z)\) by numerical integration.
 \end{enumerate}
 
 \begin{Shaded}
@@ -9523,12 +9440,20 @@ iteration \(t\) and the canonical parameters \begin{align*}
 \end{Highlighting}
 \end{Shaded}
 
-::: 6. Back-transform the parameters to get the parameters for
-\(a_i^{(t)} = \mathsf{E}_{h_i}(Z)/\mathsf{Va}_{h_i}(Z) - u/v\) and
-\(b_i^{(t)} = 1/\mathsf{Va}_{h_i}(Z).\) 7. Update the parameters
-\(\boldsymbol{r} \gets \boldsymbol{r}_{-i} + a_i^{(t)}\mathbf{x}_i^\top\)
-and
-\(\mathbf{Q} \gets \mathbf{Q}_{-i} + b_i^{(t)}\mathbf{x}_i^\top\mathbf{x}_i.\)
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{5}
+\tightlist
+\item
+  Back-transform the parameters to get the parameters for
+  \(a_i^{(t)} = \mathsf{E}_{h_i}(Z)/\mathsf{Va}_{h_i}(Z) - u/v\) and
+  \(b_i^{(t)} = 1/\mathsf{Va}_{h_i}(Z).\)
+\item
+  Update the parameters
+  \(\boldsymbol{r} \gets \boldsymbol{r}_{-i} + a_i^{(t)}\mathbf{x}_i^\top\)
+  and
+  \(\mathbf{Q} \gets \mathbf{Q}_{-i} + b_i^{(t)}\mathbf{x}_i^\top\mathbf{x}_i.\)
+\end{enumerate}
 
 In generalized linear models, the linear predictor will always be
 one-dimensional, and more generally, in exponential families, we can get

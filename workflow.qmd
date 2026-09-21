@@ -385,16 +385,6 @@ These steps are repeated $K$ times, yielding $K$ test functions $T_1, \ldots, T_
 
 The target of inference is a functional (i.e., one-dimensional summaries of the chain): we need to have convergence of the latter, but also sufficient effective sample size for our averages to be accurate (at least to two significant digits).
 
-```{r}
-#| label: get-results
-#| eval: true
-#| echo: false
-#| message: false
-#| warning: false
-class(output1) <- class(output2) <- "array"
-ess1 <- floor(coda::effectiveSize(coda::as.mcmc(output1[,1,-1])))
-ess2 <- floor(coda::effectiveSize(coda::as.mcmc(output2[,1,-1])))
-```
 
 
 
@@ -457,6 +447,16 @@ postpred2[b,] <- rpois(
 }
 ```
 
+```{r}
+#| label: get-results
+#| eval: true
+#| echo: false
+#| message: false
+#| warning: false
+class(output1) <- class(output2) <- "array"
+ess1 <- floor(coda::effectiveSize(coda::as.mcmc(output1[,1,-1])))
+ess2 <- floor(coda::effectiveSize(coda::as.mcmc(output2[,1,-1])))
+```
 
 
 To illustrate these, we revisit the model from @exm-randomeffects with a penalized complexity prior for the individual effect $\alpha_i$ and vague normal priors. We also fit a simple Poisson model with only the fixed effect, taking $Y_{ij} \sim \mathsf{Poisson}\{\exp(\beta_j)\}$ with $\beta_j \sim \mathsf{Gauss}(0,100)$. This model has too little variability relative to the observations and fits poorly as is.

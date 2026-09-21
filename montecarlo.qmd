@@ -705,13 +705,13 @@ Intuitively, a sample of correlated observations carries less information than a
 \end{align*}
 
 In the independent case, the covariance is zero so we get the sum of variances. If the process is stationary, the correlation depends only on the lag $k$ and not on $t$ and the variance is constant, so 
-$$\mathsf{Cov}(Y_{t-k}, Y_{t})=$\tau^2$\mathsf{Cor}(Y_{t-k}, Y_{t})=$\tau^2$\rho_k,$$ say. 
+$$\mathsf{Cov}(Y_{t-k}, Y_{t})=\tau^2\mathsf{Cor}(Y_{t-k}, Y_{t})=\tau^2\rho_k,$$ say. 
 Thus,
 \begin{align*}
-\mathsf{Va}(\overline{Y}_T) = \frac{$\tau^2$}{T} \left\{ 1 + 2\sum_{s=1}^{T-1} \frac{(T-s)}{T}\rho_s\right\}.
+\mathsf{Va}(\overline{Y}_T) = \frac{\tau^2}{T} \left\{ 1 + 2\sum_{s=1}^{T-1} \frac{(T-s)}{T}\rho_s\right\}.
 \end{align*} 
- Under technical conditions[^mcmc-4], a central limit theorem applies and we get an asymptotic variance for the mean of \begin{align*}
-\lim_{T \to \infty} T\mathsf{Va}\left(\overline{Y}_T\right) = $\tau^2$ \left\{1+2\sum_{s=1}^\infty \rho_s\right\}.
+Under technical conditions[^mcmc-4], a central limit theorem applies and we get an asymptotic variance for the mean of \begin{align*}
+\lim_{T \to \infty} T\mathsf{Va}\left(\overline{Y}_T\right) = \tau^2 \left\{1+2\sum_{s=1}^\infty \rho_s\right\}.
 \end{align*} This statement holds only if we start with draws from the stationary distribution, otherwise bets are off.
 
 

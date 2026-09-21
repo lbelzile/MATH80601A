@@ -302,11 +302,11 @@ The marginal precision for the Wishart variate are gamma distributed with the sa
 #| label: fig-draws-Wishart
 #| fig-cap: "Prior draws from a bivariate inverse Wishart with identity scale matrix and $\\nu \\in \\{3, 20\\}$ degrees of freedom."
 set.seed(80601)
-prec <- rWishart(n = 1000, df = 3, Sigma = diag(2))
+prec <- stats::rWishart(n = 1000, df = 3, Sigma = diag(2))
 cor_a <- apply(prec, 3, function(x){cov2cor(solve(x))[1,2]})
 var_a <- apply(prec, 3, function(x){solve(x)[1,1]})
 
-prec <- rWishart(n = 1000, df = 20, Sigma = diag(2))
+prec <- stats::rWishart(n = 1000, df = 20, Sigma = diag(2))
 cor_b <- apply(prec, 3, function(x){cov2cor(solve(x))[1,2]})
 var_b <- apply(prec, 3, function(x){solve(x)[1,1]})
 draws <- data.frame(cor = c(cor_a, cor_b),
@@ -381,7 +381,7 @@ dss <- BoomSpikeSlab::lm.spike(
    error.distribution = "student")
 ```
 
-We fit the discrete spike-and-slab to the `diabetes` data, which contains a model matrix of $n=442$ observations with $p=64$ covariates, with an expected number of non-zero component of 1. The result of the MCMC procedure is a matrix of coefficients for $\boldsymbol{\beta}$ plus other model parameters. From the former, we can estimate the probability of an active component by simply counting the number of non-zero entries in $\boldsymbol{\beta}$ over all replications. We can likewise compute the posterior probability of the number of non-zero components by simply counting the number of non-zero coefficients for each posterior draw. @fig-spike-slab-zero shows the result
+We fit the discrete spike-and-slab to the `diabetes` data, which contains a model matrix of $n=442$ observations with $p=64$ covariates, with an expected number of non-zero component of 1. The result of the MCMC procedure is a matrix of coefficients for $\boldsymbol{\beta}$ plus other model parameters. From the former, we can estimate the probability of an active component by simply counting the number of non-zero entries in $\boldsymbol{\beta}$ over all replications. We can likewise compute the posterior probability of the number of non-zero components by simply counting the number of non-zero coefficients for each posterior draw. @fig-spike-slab-zero shows the result.
 
 ```{r}
 #| eval: true

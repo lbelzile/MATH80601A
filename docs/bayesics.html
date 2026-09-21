@@ -328,11 +328,11 @@ window.Quarto = {
 <h2 data-number="2.1" class="anchored" data-anchor-id="probability-and-frequency"><span class="header-section-number">2.1</span> Probability and frequency</h2>
 <p>In classical (frequentist) parametric statistic, we treat observations <span class="math inline">\(\boldsymbol{Y}\)</span> as realizations of a distribution whose parameters <span class="math inline">\(\boldsymbol{\theta}\)</span> are unknown. All of the information about parameters is encoded by the likelihood function.</p>
 <p>The interpretation of probability in the classical statistic is in terms of long run frequency, which is why we term this approach frequentist statistic. Think of a fair die: when we state that values <span class="math inline">\(\{1, \ldots, 6\}\)</span> are equiprobable, we mean that repeatedly tossing the die should result, in large sample, in each outcome being realized roughly <span class="math inline">\(1/6\)</span> of the time (the symmetry of the object also implies that each facet should be equally likely to lie face up). This interpretation also carries over to confidence intervals: a <span class="math inline">\((1-\alpha)\)</span> confidence interval either contains the true parameter value or it doesn’t, so the probability level <span class="math inline">\((1-\alpha)\)</span> is only the long-run proportion of intervals created by the procedure that should contain the true fixed value, not the probability that a single interval contains the true value. This is counter-intuitive to most.</p>
-<p>In practice, the true value of the parameter <span class="math inline">\(\boldsymbol{\theta}\)</span> vector is unknown to the practitioner, thus uncertain: Bayesians would argue that we should treat the latter as a random quantity rather than a fixed constant. Since different people may have different knowledge about these potential values, the prior knowledge is a form of <strong>subjective probability</strong>. For example, if you play cards, one person may have recorded the previous cards that were played, whereas other may not. They thus assign different probability of certain cards being played. In Bayesian inference, we consider <span class="math inline">\(\boldsymbol{\theta}\)</span> as random variables to reflect our lack of knowledge about potential values taken. Italian scientist Bruno de Finetti, who is famous for the claim ``Probability does not exist’’, stated in the preface of <span class="citation" data-cites="deFinetti:1974">Finetti (<a href="#ref-deFinetti:1974" role="doc-biblioref">1974</a>)</span>:</p>
+<p>In practice, the true value of the parameter <span class="math inline">\(\boldsymbol{\theta}\)</span> vector is unknown to the practitioner, thus uncertain: Bayesians would argue that we should treat the latter as a random quantity rather than a fixed constant. Since different people may have different knowledge about these potential values, the prior knowledge is a form of <strong>subjective probability</strong>. For example, if you play cards, one person may have recorded the previous cards that were played, whereas other may not. They thus assign different probability of certain cards being played. In Bayesian inference, we consider <span class="math inline">\(\boldsymbol{\theta}\)</span> as random variables to reflect our lack of knowledge about potential values taken. Italian scientist Bruno de Finetti, who is famous for the claim ``Probability does not exist’’, stated in the preface of <span class="citation" data-cites="deFinetti:1974">Finetti (<a href="references.html#ref-deFinetti:1974" role="doc-biblioref">1974</a>)</span>:</p>
 <blockquote class="blockquote">
 <p>Probabilistic reasoning — always to be understood as subjective — merely stems from our being uncertain about something. It makes no difference whether the uncertainty relates to an unforseeable future, or to an unnoticed past, or to a past doubtfully reported or forgotten: it may even relate to something more or less knowable (by means of a computation, a logical deduction, etc.) but for which we are not willing or able tho make the effort; and so on […] The only relevant thing is uncertainty — the extent of our knowledge and ignorance. The actual fact of whether or not the events considered are in some sense <em>determined</em>, or known by other people, and so on, is of no consequence.</p>
 </blockquote>
-<p>On page 3, de Finetti continues <span class="citation" data-cites="deFinetti:1974">(<a href="#ref-deFinetti:1974" role="doc-biblioref">Finetti 1974</a>)</span></p>
+<p>On page 3, de Finetti continues <span class="citation" data-cites="deFinetti:1974">(<a href="references.html#ref-deFinetti:1974" role="doc-biblioref">Finetti 1974</a>)</span></p>
 <blockquote class="blockquote">
 <p>only subjective probabilities exist — i.e., the degree of belief in the occurrence of an event attributed by a given person at a given instant and with a given set of information.</p>
 </blockquote>
@@ -345,7 +345,7 @@ window.Quarto = {
 \underbracket[0.25pt]{p(\boldsymbol{\theta} \mid \boldsymbol{y})}_{\text{posterior}} = \frac{\overbracket[0.25pt]{p(\boldsymbol{y} \mid \boldsymbol{\theta})}^{\text{likelihood}} \times  \overbracket[0.25pt]{p(\boldsymbol{\theta})}^{\text{prior}}}{\underbracket[0.25pt]{\int p(\boldsymbol{y} \mid \boldsymbol{\theta}) p(\boldsymbol{\theta}) \mathrm{d} \boldsymbol{\theta}}_{\text{marginal likelihood }p(\boldsymbol{y})}}.
 \tag{2.1}\]</span></span></p>
 <p>The posterior <span class="math inline">\(p(\boldsymbol{\theta} \mid \boldsymbol{y})\)</span> is proportional, as a function of <span class="math inline">\(\theta,\)</span> to the product of the likelihood and the prior function.</p>
-<p>For the posterior to be <strong>proper</strong>, we need the product of the prior and the likelihood on the right hand side to be integrable as a function of <span class="math inline">\(\boldsymbol{\theta}\)</span> over the parameter domain <span class="math inline">\(\boldsymbol{\Theta}.\)</span> The integral in the denominator, <span class="math inline">\(p(\boldsymbol{y}) = \mathsf{E}_{\boldsymbol{\theta}}\{p(\boldsymbol{y} \mid \boldsymbol{\theta})\},\)</span>, is termed marginal likelihood or prior predictive distribution: it represents the distribution of the data before data collection, the respective weights being governed by the prior probability of different parameters values. The denominator of <a href="#eq-posterior" class="quarto-xref">Equation&nbsp;<span class="quarto-unresolved-ref">eq-posterior</span></a> is a normalizing constant, making the posterior density integrate to unity. The marginal likelihood plays a central role in Bayesian testing and needs to be estimated should one try to calculate moments of the posterior via analytical approximations. If <span class="math inline">\(\boldsymbol{\theta}\)</span> is low dimensional, numerical integration such as quadrature methods can be used to compute the marginal likelihood.</p>
+<p>For the posterior to be <strong>proper</strong>, we need the product of the prior and the likelihood on the right hand side to be integrable as a function of <span class="math inline">\(\boldsymbol{\theta}\)</span> over the parameter domain <span class="math inline">\(\boldsymbol{\Theta}.\)</span> The integral in the denominator, <span class="math inline">\(p(\boldsymbol{y}) = \mathsf{E}_{\boldsymbol{\theta}}\{p(\boldsymbol{y} \mid \boldsymbol{\theta})\},\)</span>, is termed marginal likelihood or prior predictive distribution: it represents the distribution of the data before data collection, the respective weights being governed by the prior probability of different parameters values. The denominator of <a href="#eq-posterior" class="quarto-xref">Equation&nbsp;<span>2.1</span></a> is a normalizing constant, making the posterior density integrate to unity. The marginal likelihood plays a central role in Bayesian testing and needs to be estimated should one try to calculate moments of the posterior via analytical approximations. If <span class="math inline">\(\boldsymbol{\theta}\)</span> is low dimensional, numerical integration such as quadrature methods can be used to compute the marginal likelihood.</p>
 <p>To fix ideas, we consider next a simple one-parameter model where the marginal likelihood can be computed explicitly.</p>
 <div id="exm-betabinomconjugate" class="theorem example">
 <p><span class="theorem-title"><strong>Example 2.1 (Binomial model with beta prior)</strong></span> Consider a binomial likelihood with probability of success <span class="math inline">\(\theta \in [0,1]\)</span> and <span class="math inline">\(n\)</span> trials, <span class="math inline">\(Y \sim \mathsf{binom}(n, \theta).\)</span> If we take a beta prior, <span class="math inline">\(\theta \sim \mathsf{beta}(\alpha, \beta)\)</span> and observe <span class="math inline">\(y\)</span> successes, the posterior is <span class="math display">\[\begin{align*}
@@ -353,17 +353,17 @@ p(\theta \mid y = y) &amp;\propto \binom{n}{y} \theta^y (1-\theta)^{n-y} \frac{\
 \\&amp;\stackrel{\theta}{\propto} \theta^{y+\alpha-1}(1-\theta)^{n-y+\beta-1}
 \end{align*}\]</span> and is <span class="math display">\[\int_{0}^{1} \theta^{y+\alpha-1}(1-\theta)^{n-y+\beta-1}\mathrm{d} \theta = \frac{\Gamma(y+\alpha)\Gamma(n-y+\beta)}{\Gamma(n+\alpha+\beta)},\]</span> a beta function. Since we need only to keep track of the terms that are function of the parameter <span class="math inline">\(\theta,\)</span> we could recognize directly that the posterior distribution is <span class="math inline">\(\mathsf{beta}(y+\alpha, n-y+\beta)\)</span> and deduce the normalizing constant from there.</p>
 <p>If <span class="math inline">\(Y \sim \mathsf{binom}(n, \theta),\)</span> the expected number of success is <span class="math inline">\(n\theta\)</span> and the expected number of failures <span class="math inline">\(n(1-\theta)\)</span> and so the likelihood contribution, relative to the prior, will dominate as the sample size <span class="math inline">\(n\)</span> grows.</p>
-<p>Another way to see this is to track moments (expectation, variance, etc.) From <a href="#def-beta" class="quarto-xref">Definition&nbsp;<span class="quarto-unresolved-ref">def-beta</span></a>, the posterior mean is <span class="math display">\[\begin{align*}
+<p>Another way to see this is to track moments (expectation, variance, etc.) From <a href="introduction.html#def-beta" class="quarto-xref">Definition&nbsp;<span>1.3</span></a>, the posterior mean is <span class="math display">\[\begin{align*}
 \mathsf{E}(\theta \mid y) = w\frac{y}{n} + (1-w) \frac{\alpha}{\alpha+\beta},
 \qquad w = \frac{n}{n+\alpha + \beta},
 \end{align*}\]</span> a weighted average of the maximum likelihood estimator and the prior mean. We can think of the parameter <span class="math inline">\(\alpha\)</span> (respectively <span class="math inline">\(\beta\)</span>) as representing the fixed prior number of success (resp. failures). The variance term is <span class="math inline">\(\mathrm{O}(n^{-1})\)</span> and, as the sample size increases, the likelihood weight <span class="math inline">\(w\)</span> dominates.</p>
-<p><a href="#fig-betabinom" class="quarto-xref">Figure&nbsp;<span class="quarto-unresolved-ref">fig-betabinom</span></a> shows three different posterior distributions with different beta priors: the first prior, which favors values closer to 1/2, leads to a more peaked posterior density, contrary to the second which is symmetric, but concentrated toward more extreme values near endpoints of the support. The rightmost panel is truncated: as such, the posterior is zero for any value of <span class="math inline">\(\theta\)</span> beyond 1/2 and so the posterior mode may be close to the endpoint of the prior. The influence of such a prior will not necessarily vanish as sample size and should be avoided, unless there are compelling reasons for restricting the domain.</p>
-<div class="cell" data-layout-align="center">
+<p><a href="#fig-betabinom" class="quarto-xref">Figure&nbsp;<span>2.1</span></a> shows three different posterior distributions with different beta priors: the first prior, which favors values closer to 1/2, leads to a more peaked posterior density, contrary to the second which is symmetric, but concentrated toward more extreme values near endpoints of the support. The rightmost panel is truncated: as such, the posterior is zero for any value of <span class="math inline">\(\theta\)</span> beyond 1/2 and so the posterior mode may be close to the endpoint of the prior. The influence of such a prior will not necessarily vanish as sample size and should be avoided, unless there are compelling reasons for restricting the domain.</p>
+<div class="cell">
 <div class="cell-output-display">
-<div id="fig-betabinom" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
+<div id="fig-betabinom" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-betabinom-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="bayesics_files/figure-html/fig-betabinom-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:85.0%">
+<img src="bayesics_files/figure-html/fig-betabinom-1.png" class="img-fluid figure-img" width="672">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-betabinom-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Figure&nbsp;2.1: Scaled binomial likelihood for six successes out of 14 trials, with <span class="math inline">\(\mathsf{beta}(3/2, 3/2)\)</span> prior (left), <span class="math inline">\(\mathsf{beta}(1/4, 1/4)\)</span> (middle) and truncated uniform on <span class="math inline">\([0,1/2]\)</span> (right), with the corresponding posterior distributions.
@@ -382,13 +382,13 @@ Figure&nbsp;2.1: Scaled binomial likelihood for six successes out of 14 trials, 
 <div class="proof remark">
 <p><span class="proof-title"><em>Remark</em>. </span>A density integrates to 1 over the range of possible outcomes, but there is no guarantee that the likelihood function, as a function of <span class="math inline">\(\boldsymbol{\theta},\)</span> integrates to one over the parameter domain <span class="math inline">\(\boldsymbol{\Theta}.\)</span></p>
 <p>For example, the binomial likelihood with <span class="math inline">\(n\)</span> trials and <span class="math inline">\(y\)</span> successes satisfies <span class="math display">\[\int_0^1 \binom{n}{y}\theta^y(1-\theta)^{n-y} \mathrm{d} \theta = \frac{1}{n+1}.\]</span></p>
-<p>Moreover, the binomial distribution is discrete with support <span class="math inline">\(0, \ldots, n,\)</span> whereas the likelihood is continuous as a function of the probability of success, as evidenced by <a href="#fig-binom-massvslik" class="quarto-xref">Figure&nbsp;<span class="quarto-unresolved-ref">fig-binom-massvslik</span></a></p>
-<div class="cell" data-layout-align="center">
+<p>Moreover, the binomial distribution is discrete with support <span class="math inline">\(0, \ldots, n,\)</span> whereas the likelihood is continuous as a function of the probability of success, as evidenced by <a href="#fig-binom-massvslik" class="quarto-xref">Figure&nbsp;<span>2.2</span></a></p>
+<div class="cell">
 <div class="cell-output-display">
-<div id="fig-binom-massvslik" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
+<div id="fig-binom-massvslik" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-binom-massvslik-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="bayesics_files/figure-html/fig-binom-massvslik-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:85.0%">
+<img src="bayesics_files/figure-html/fig-binom-massvslik-1.png" class="img-fluid figure-img" width="672">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-binom-massvslik-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Figure&nbsp;2.2: Binomial mass function (left) and scaled likelihood function (right).
@@ -417,7 +417,7 @@ Consider three models with $Y \mid P^{(i)}=p, \mathcal{M}_i \sim \mathsf{binom}(
 If $n=14,$ but we let instead the number of success varies, the models that put more mass closer to the ratio $y/n$ will be favored. The uniform prior in model $\mathcal{M}_1$ will have a higher Bayes factor than model $\mathcal{M}_2$ or $\mathcal{M}_3$ for values closer to $p=0$ or $p=1,$ but there is mild evidence as shown in @fig-bayesfactor.
 
 
-::: {.cell layout-align="center"}
+::: {.cell}
 
 ```{.r .cell-code}
 # Log of marginal posterior for binomial with beta prior (default is uniform)
@@ -435,9 +435,9 @@ logBF2vs3 <- function(y, n){
 
 
 
-::: {.cell layout-align="center"}
+::: {.cell}
 ::: {.cell-output-display}
-![Log of Bayes factors for comparison of binomial models with $n=14$ trials as a function of the number of successes $n.$ Values larger than zero (on log scale) indicate preference for Model 2.](bayesics_files/figure-html/fig-bayesfactor-1.png){#fig-bayesfactor fig-align='center' width=85%}
+![Log of Bayes factors for comparison of binomial models with $n=14$ trials as a function of the number of successes $n.$ Values larger than zero (on log scale) indicate preference for Model 2.](bayesics_files/figure-html/fig-bayesfactor-1.png){#fig-bayesfactor width=672}
 :::
 :::
 
@@ -448,13 +448,13 @@ logBF2vs3 <- function(y, n){
 <p><span class="theorem-title"><strong>Proposition 2.1 (Sequentiality and Bayesian updating)</strong></span> The likelihood is invariant to the order of the observations if they are independent. Thus, if we consider two blocks of observations <span class="math inline">\(\boldsymbol{y}_1\)</span> and <span class="math inline">\(\boldsymbol{y}_2\)</span> <span class="math display">\[p(\boldsymbol{\theta} \mid \boldsymbol{y}_1, \boldsymbol{y}_2) = p(\boldsymbol{\theta} \mid \boldsymbol{y}_1) p(\boldsymbol{\theta} \mid \boldsymbol{y}_2),\]</span> so it makes no difference if we treat data all at once or in blocks. More generally, for data exhibiting spatial or serial dependence, it makes sense to consider rather the conditional (sequential) decomposition <span class="math display">\[f(\boldsymbol{y}; \boldsymbol{\theta}) = f(\boldsymbol{y}_1; \boldsymbol{\theta}) f(\boldsymbol{y}_2; \boldsymbol{\theta}, \boldsymbol{y}_1) \cdots f(\boldsymbol{y}_n; \boldsymbol{\theta}, \boldsymbol{y}_1, \ldots, \boldsymbol{y}_{n-1})\]</span> where <span class="math inline">\(f(\boldsymbol{y}_k; \boldsymbol{y}_1, \ldots, \boldsymbol{y}_{k-1})\)</span> denotes the conditional density function given observations <span class="math inline">\(\boldsymbol{y}_1, \ldots, \boldsymbol{y}_{k-1}.\)</span></p>
 <p>By Bayes’ rule, we can consider <em>updating</em> the posterior by adding terms to the likelihood, noting that <span class="math display">\[\begin{align*}
 p(\boldsymbol{\theta} \mid \boldsymbol{y}_1, \boldsymbol{y}_2) \propto p(\boldsymbol{y}_2 \mid \boldsymbol{y}_1, \boldsymbol{\theta}) p(\boldsymbol{\theta} \mid \boldsymbol{y}_1)
-\end{align*}\]</span> which amounts to treating the posterior <span class="math inline">\(p(\boldsymbol{\theta} \mid \boldsymbol{y}_1)\)</span> as a prior. If data are exchangeable, the order in which observations are collected and the order of the belief updating is irrelevant to the full posterior. <a href="#fig-sequential" class="quarto-xref">Figure&nbsp;<span class="quarto-unresolved-ref">fig-sequential</span></a> shows how the posterior becomes gradually closer to the scaled likelihood as we increase the sample size, and the posterior mode moves towards the true value of the parameter (here 0.3).</p>
-<div class="cell" data-layout-align="center">
+\end{align*}\]</span> which amounts to treating the posterior <span class="math inline">\(p(\boldsymbol{\theta} \mid \boldsymbol{y}_1)\)</span> as a prior. If data are exchangeable, the order in which observations are collected and the order of the belief updating is irrelevant to the full posterior. <a href="#fig-sequential" class="quarto-xref">Figure&nbsp;<span>2.3</span></a> shows how the posterior becomes gradually closer to the scaled likelihood as we increase the sample size, and the posterior mode moves towards the true value of the parameter (here 0.3).</p>
+<div class="cell">
 <div class="cell-output-display">
-<div id="fig-sequential" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
+<div id="fig-sequential" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-sequential-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="bayesics_files/figure-html/fig-sequential-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:85.0%">
+<img src="bayesics_files/figure-html/fig-sequential-1.png" class="img-fluid figure-img" width="1152">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-sequential-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Figure&nbsp;2.3: Beta posterior and binomial likelihood with a uniform prior for increasing number of observations (from left to right) out of a total of 100 trials.
@@ -467,7 +467,7 @@ Figure&nbsp;2.3: Beta posterior and binomial likelihood with a uniform prior for
 <div id="exm-numericalintegration" class="theorem example">
 <p><span class="theorem-title"><strong>Example 2.3 (Numerical integration)</strong></span> While we can calculate analytically the value of the normalizing constant for the beta-binomial model, we could also for arbitrary priors use numerical integration or Monte Carlo methods in the event the parameter vector <span class="math inline">\(\boldsymbol{\theta}\)</span> is low-dimensional.</p>
 <p>While estimation of the normalizing constant is possible in simple models, the following highlights some challenges that are worth keeping in mind. In a model for discrete data (that is, assigning probability mass to a countable set of outcomes), the terms in the likelihood are probabilities and thus the likelihood becomes smaller as we gather more observations (since we multiply terms between zero or one). The marginal likelihood term becomes smaller and smaller, so it’s reciprocal is big and this can lead to arithmetic underflow.</p>
-<div class="cell" data-layout-align="center">
+<div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>y <span class="ot">&lt;-</span> <span class="dv">6</span>L <span class="co"># number of successes </span></span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="dv">14</span>L <span class="co"># number of trials</span></span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>alpha <span class="ot">&lt;-</span> beta <span class="ot">&lt;-</span> <span class="fl">1.5</span> <span class="co"># prior parameters</span></span>
@@ -476,21 +476,27 @@ Figure&nbsp;2.3: Beta posterior and binomial likelihood with a uniform prior for
 <span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>}</span>
 <span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="fu">integrate</span>(<span class="at">f =</span> unnormalized_posterior,</span>
 <span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>          <span class="at">lower =</span> <span class="dv">0</span>,</span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>          <span class="at">upper =</span> <span class="dv">1</span>)</span>
-<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 0.0000107 with absolute error &lt; 1e-12</span></span>
-<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Compare with known constant</span></span>
-<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="fu">beta</span>(y <span class="sc">+</span> alpha, n <span class="sc">-</span> y <span class="sc">+</span> beta)</span>
-<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 0.0000107</span></span>
-<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a><span class="co"># Monte Carlo integration</span></span>
-<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a><span class="fu">mean</span>(<span class="fu">unnormalized_posterior</span>(<span class="fu">runif</span>(<span class="fl">1e5</span>)))</span>
-<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 0.0000106</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>          <span class="at">upper =</span> <span class="dv">1</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>1.066906e-05 with absolute error &lt; 1e-12</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Compare with known constant</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="fu">beta</span>(y <span class="sc">+</span> alpha, n <span class="sc">-</span> y <span class="sc">+</span> beta)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 1.066906e-05</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Monte Carlo integration</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="fu">mean</span>(<span class="fu">unnormalized_posterior</span>(<span class="fu">runif</span>(<span class="fl">1e5</span>)))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 1.064067e-05</code></pre>
 </div>
 </div>
-<p>When <span class="math inline">\(\boldsymbol{\theta}\)</span> is high-dimensional, the marginal likelihood is intractable. This is one of the main challenges of Bayesian statistics and the popularity and applicability has grown drastically with the development and popularity of numerical algorithms, following the publication of <span class="citation" data-cites="Geman.Geman:1984">Geman and Geman (<a href="#ref-Geman.Geman:1984" role="doc-biblioref">1984</a>)</span> and <span class="citation" data-cites="Gelfand.Smith:1990">Gelfand and Smith (<a href="#ref-Gelfand.Smith:1990" role="doc-biblioref">1990</a>)</span>. Markov chain Monte Carlo methods circumvent the calculation of the denominator by drawing approximate samples from the posterior.</p>
+</div>
+<p>When <span class="math inline">\(\boldsymbol{\theta}\)</span> is high-dimensional, the marginal likelihood is intractable. This is one of the main challenges of Bayesian statistics and the popularity and applicability has grown drastically with the development and popularity of numerical algorithms, following the publication of <span class="citation" data-cites="Geman.Geman:1984">Geman and Geman (<a href="references.html#ref-Geman.Geman:1984" role="doc-biblioref">1984</a>)</span> and <span class="citation" data-cites="Gelfand.Smith:1990">Gelfand and Smith (<a href="references.html#ref-Gelfand.Smith:1990" role="doc-biblioref">1990</a>)</span>. Markov chain Monte Carlo methods circumvent the calculation of the denominator by drawing approximate samples from the posterior.</p>
 <div id="exm-Duke-Amir" class="theorem example">
-<p><span class="theorem-title"><strong>Example 2.4 (Importance of selling format)</strong></span> <span class="citation" data-cites="Duke.Amir:2023">Duke and Amir (<a href="#ref-Duke.Amir:2023" role="doc-biblioref">2023</a>)</span> consider the difference between integrated and sequential format for sales. The <code>sellingformat</code> dataset contains <span class="math inline">\(n=397\)</span> observations split into two groups: quantity-integrated decision (<span class="math inline">\(X_0\)</span> decide the amount to buy) and quantity-sequential (<span class="math inline">\(X=1\)</span>, first select buy, then select the amount). Participants of the study were randomly allocated to either of these two format and their decision, either buy, <code>Y=1</code>, or do not buy <code>Y=0</code>, is recorded.</p>
-<div class="cell" data-layout-align="center">
-<div id="tbl-contingency-sellingformat" class="cell quarto-float quarto-figure quarto-figure-center anchored" data-layout-align="center">
+<p><span class="theorem-title"><strong>Example 2.4 (Importance of selling format)</strong></span> <span class="citation" data-cites="Duke.Amir:2023">Duke and Amir (<a href="references.html#ref-Duke.Amir:2023" role="doc-biblioref">2023</a>)</span> consider the difference between integrated and sequential format for sales. The <code>sellingformat</code> dataset contains <span class="math inline">\(n=397\)</span> observations split into two groups: quantity-integrated decision (<span class="math inline">\(X_0\)</span> decide the amount to buy) and quantity-sequential (<span class="math inline">\(X=1\)</span>, first select buy, then select the amount). Participants of the study were randomly allocated to either of these two format and their decision, either buy, <code>Y=1</code>, or do not buy <code>Y=0</code>, is recorded.</p>
+<div class="cell">
+<div id="tbl-contingency-sellingformat" class="cell quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-tbl figure">
 <figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-contingency-sellingformat-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Table&nbsp;2.1: Aggregated data from Duke and Amir (2023), experiment 1. Number of participants who did not (<code>0</code>) or did buy (<code>1</code>) products as a function of experimental condition.
@@ -525,26 +531,26 @@ Table&nbsp;2.1: Aggregated data from Duke and Amir (2023), experiment 1. Number 
 </div>
 <p>We consider the number of purchased out of the total, treating records as independent Bernoulli observations with a flat (uniform prior).</p>
 <p><strong>Bayes factor</strong>: consider a simple model comparison where the null hypothesis is that the selling format has no impact on the decision to buy or not (no treatment effect). We write <span class="math inline">\(y=\sum_{i=1}^n y_i\)</span> and <span class="math inline">\(y_1 = \sum_{i=1}^n x_iy_i,\)</span> <span class="math inline">\(n_1 = \sum_{i=1}^n x_i\)</span> and <span class="math inline">\(y_0+y_1=y\)</span>, <span class="math inline">\(n_0+n_1=n.\)</span> The subscript indicates the groups <span class="math inline">\(0\)</span> (quantity-integrated) and <span class="math inline">\(1\)</span> (quantity-sequential)$.</p>
-<p>With a uniform prior, the unnormalized posterior for the null model is <span class="math display">\[\mathcal{L}_0(\theta) = \theta^y(1-\theta)^{n-y}\]</span> and that of the alternative model is <span class="math display">\[\mathcal{L}_0(\theta_0, \theta_1) = \theta_0^{y_0}(1-\theta_0)^{n_0-y_0}\theta_1^{y_1}(1-\theta_1)^{n_1-y_1},\]</span> the marginal likelihood is <span class="math inline">\(\mathrm{beta}(y+1, n-y+1)\)</span> (cf. <a href="#exm-bayesfactor" class="quarto-xref">Example&nbsp;<span class="quarto-unresolved-ref">exm-bayesfactor</span></a>) and the Bayes factor is <span class="math inline">\(0.093\)</span>, indicating strong preference for the alternative model, which suggests that there are differences due to present evidence sequentially as opposed to all at once.</p>
+<p>With a uniform prior, the unnormalized posterior for the null model is <span class="math display">\[\mathcal{L}_0(\theta) = \theta^y(1-\theta)^{n-y}\]</span> and that of the alternative model is <span class="math display">\[\mathcal{L}_0(\theta_0, \theta_1) = \theta_0^{y_0}(1-\theta_0)^{n_0-y_0}\theta_1^{y_1}(1-\theta_1)^{n_1-y_1},\]</span> the marginal likelihood is <span class="math inline">\(\mathrm{beta}(y+1, n-y+1)\)</span> (cf. <a href="#exm-bayesfactor" class="quarto-xref">Example&nbsp;<span>2.2</span></a>) and the Bayes factor is <span class="math inline">\(0.093\)</span>, indicating strong preference for the alternative model, which suggests that there are differences due to present evidence sequentially as opposed to all at once.</p>
 <p><strong>Posterior summary</strong>: with a beta-binomial model, the posterior for the probability of buying is <span class="math inline">\(\mathsf{beta}(47, 153)\)</span> for quantity-integrated and <span class="math inline">\(\mathsf{beta}(24, 177)\)</span> for quantity-sequential. We can compute the posterior of the odds ratio, <span class="math display">\[O = \frac{\Pr(Y=1 \mid \texttt{integrated})}{\Pr(Y=0 \mid \texttt{integrated})}\frac{\Pr(Y=0 \mid \texttt{sequential})}{\Pr(Y=1 \mid \texttt{sequential})},\]</span> by simulating independent draws from the posteriors of each condition and computing the odds ratio.</p>
-<div class="cell" data-layout-align="center">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(sellingformat, <span class="at">package =</span> <span class="st">"hecbayes"</span>)</span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>contingency <span class="ot">&lt;-</span> <span class="fu">with</span>(sellingformat, <span class="fu">table</span>(format, purchased))</span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Posterior draws of the parameters</span></span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>post_p_int <span class="ot">&lt;-</span> <span class="fu">rbeta</span>(<span class="at">n =</span> <span class="fl">1e4</span>, <span class="at">shape1 =</span> <span class="dv">47</span>, <span class="at">shape2 =</span> <span class="dv">153</span>)</span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>post_p_seq <span class="ot">&lt;-</span> <span class="fu">rbeta</span>(<span class="at">n =</span> <span class="fl">1e4</span>, <span class="at">shape1 =</span> <span class="dv">24</span>, <span class="at">shape2 =</span> <span class="dv">177</span>)</span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Reparametrization</span></span>
-<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>post_odds_int <span class="ot">&lt;-</span> (post_p_int <span class="sc">/</span> (<span class="dv">1</span> <span class="sc">-</span> post_p_int))</span>
-<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>post_odds_seq <span class="ot">&lt;-</span> (post_p_seq <span class="sc">/</span> (<span class="dv">1</span> <span class="sc">-</span> post_p_seq))</span>
-<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>post_oddsratio <span class="ot">&lt;-</span> post_odds_int <span class="sc">/</span> post_odds_seq</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(sellingformat, <span class="at">package =</span> <span class="st">"hecbayes"</span>)</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>contingency <span class="ot">&lt;-</span> <span class="fu">with</span>(sellingformat, <span class="fu">table</span>(format, purchased))</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Posterior draws of the parameters</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>post_p_int <span class="ot">&lt;-</span> <span class="fu">rbeta</span>(<span class="at">n =</span> <span class="fl">1e4</span>, <span class="at">shape1 =</span> <span class="dv">47</span>, <span class="at">shape2 =</span> <span class="dv">153</span>)</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>post_p_seq <span class="ot">&lt;-</span> <span class="fu">rbeta</span>(<span class="at">n =</span> <span class="fl">1e4</span>, <span class="at">shape1 =</span> <span class="dv">24</span>, <span class="at">shape2 =</span> <span class="dv">177</span>)</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Reparametrization</span></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>post_odds_int <span class="ot">&lt;-</span> (post_p_int <span class="sc">/</span> (<span class="dv">1</span> <span class="sc">-</span> post_p_int))</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>post_odds_seq <span class="ot">&lt;-</span> (post_p_seq <span class="sc">/</span> (<span class="dv">1</span> <span class="sc">-</span> post_p_seq))</span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>post_oddsratio <span class="ot">&lt;-</span> post_odds_int <span class="sc">/</span> post_odds_seq</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
-<p><a href="#fig-post-Duke_Amir" class="quarto-xref">Figure&nbsp;<span class="quarto-unresolved-ref">fig-post-Duke_Amir</span></a> shows the posterior of the probability of buying for each group, and the odds. It is clear that the integrated format leads to much more sales in the experiment, with a posterior ratio exceeding 1 with probability <span class="math inline">\(99.89\%.\)</span></p>
+<p><a href="#fig-post-Duke_Amir" class="quarto-xref">Figure&nbsp;<span>2.4</span></a> shows the posterior of the probability of buying for each group, and the odds. It is clear that the integrated format leads to much more sales in the experiment, with a posterior ratio exceeding 1 with probability <span class="math inline">\(99.89\%.\)</span></p>
 <div class="cell" data-layout-align="center">
 <div class="cell-output-display">
 <div id="fig-post-Duke_Amir" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-post-Duke_Amir-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="bayesics_files/figure-html/fig-post-Duke_Amir-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:85.0%">
+<img src="bayesics_files/figure-html/fig-post-Duke_Amir-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="672">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-post-Duke_Amir-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Figure&nbsp;2.4: Posterior curves per group (left) and odds ratio (right)
@@ -561,21 +567,21 @@ Figure&nbsp;2.4: Posterior curves per group (left) and odds ratio (right)
 p(y_{\text{new}} \mid \boldsymbol{y}) =
 \int_{\Theta} p(y_{\text{new}}  \mid \boldsymbol{\theta}) p(\boldsymbol{\theta} \mid  \boldsymbol{y}) \mathrm{d} \boldsymbol{\theta}
 \end{align*}\]</span> In a simulation context, we generate one new dataset (or observation) for each posterior draw <span class="math inline">\(\boldsymbol{\theta}\)</span> from the posterior <span class="math inline">\(p(\boldsymbol{\theta} \mid  \boldsymbol{y}).\)</span></p>
-<p>Given draws from the posterior distribution, say <span class="math inline">\(\boldsymbol{\theta}_b\)</span> <span class="math inline">\((b=1, \ldots, B),\)</span> we sample from each a new realization from the distribution appearing in the likelihood <span class="math inline">\(p(y_{\text{new}}  \mid \boldsymbol{\theta}_b).\)</span> This is different from the frequentist setting, which fixes the value of the parameter to some estimate <span class="math inline">\(\widehat{\boldsymbol{\theta}}\)</span>; by contrast, the posterior predictive, here a beta-binomial distribution <span class="math inline">\(\mathsf{beta binom}(n, \alpha + y, n - y + \beta),\)</span> carries over the uncertainty so will typically be wider and overdispersed relative to the corresponding binomial model. This can be easily seen from the left-panel of <a href="#fig-betabinompostpred" class="quarto-xref">Figure&nbsp;<span class="quarto-unresolved-ref">fig-betabinompostpred</span></a>, which contrasts the binomial mass function evaluated at the maximum likelihood estimator <span class="math inline">\(\widehat{\theta}=6/14\)</span> with the posterior predictive.</p>
+<p>Given draws from the posterior distribution, say <span class="math inline">\(\boldsymbol{\theta}_b\)</span> <span class="math inline">\((b=1, \ldots, B),\)</span> we sample from each a new realization from the distribution appearing in the likelihood <span class="math inline">\(p(y_{\text{new}}  \mid \boldsymbol{\theta}_b).\)</span> This is different from the frequentist setting, which fixes the value of the parameter to some estimate <span class="math inline">\(\widehat{\boldsymbol{\theta}}\)</span>; by contrast, the posterior predictive, here a beta-binomial distribution <span class="math inline">\(\mathsf{beta binom}(n, \alpha + y, n - y + \beta),\)</span> carries over the uncertainty so will typically be wider and overdispersed relative to the corresponding binomial model. This can be easily seen from the left-panel of <a href="#fig-betabinompostpred" class="quarto-xref">Figure&nbsp;<span>2.5</span></a>, which contrasts the binomial mass function evaluated at the maximum likelihood estimator <span class="math inline">\(\widehat{\theta}=6/14\)</span> with the posterior predictive.</p>
 <div class="exm-betabinompred">
-<div class="cell" data-layout-align="center">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>npost <span class="ot">&lt;-</span> <span class="fl">1e4</span>L</span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Sample draws from the posterior distribution</span></span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>post_samp <span class="ot">&lt;-</span> <span class="fu">rbeta</span>(<span class="at">n =</span> npost, y <span class="sc">+</span> alpha, n <span class="sc">-</span> y <span class="sc">+</span> beta)</span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="co"># For each draw, sample new observation</span></span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>post_pred <span class="ot">&lt;-</span> <span class="fu">rbinom</span>(<span class="at">n =</span> npost, <span class="at">size =</span> n, <span class="at">prob =</span> post_samp)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>npost <span class="ot">&lt;-</span> <span class="fl">1e4</span>L</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Sample draws from the posterior distribution</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>post_samp <span class="ot">&lt;-</span> <span class="fu">rbeta</span>(<span class="at">n =</span> npost, y <span class="sc">+</span> alpha, n <span class="sc">-</span> y <span class="sc">+</span> beta)</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="co"># For each draw, sample new observation</span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>post_pred <span class="ot">&lt;-</span> <span class="fu">rbinom</span>(<span class="at">n =</span> npost, <span class="at">size =</span> n, <span class="at">prob =</span> post_samp)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
-<div class="cell" data-layout-align="center">
+<div class="cell">
 <div class="cell-output-display">
-<div id="fig-betabinompostpred" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
+<div id="fig-betabinompostpred" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-betabinompostpred-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="bayesics_files/figure-html/fig-betabinompostpred-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:85.0%">
+<img src="bayesics_files/figure-html/fig-betabinompostpred-1.png" class="img-fluid figure-img" width="672">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-betabinompostpred-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Figure&nbsp;2.5: Beta-binomial posterior predictive distribution with corresponding binomial mass function evaluated at the maximum likelihood estimator.
@@ -627,15 +633,15 @@ p(y_{\text{new}} \mid \boldsymbol{y}) &amp;= \int_0^\infty \frac{\tau^{1/2}}{(2\
 \\&amp;= \int_{\mathbb{R}} \frac{\partial 2(\upsilon-\theta)}{\partial \upsilon} p(\theta \mid \boldsymbol{y}) \mathrm{d} \theta
 \\&amp; = 2\upsilon - 2 \mathsf{E}(\theta)
 \end{align*}\]</span> which is minimized when <span class="math inline">\(\widehat{\upsilon}=\mathsf{E}_{\Theta \mid \boldsymbol{Y}}(\theta)\)</span>.</p>
-<p>All of these point estimators are central tendency measures, but some may be more adequate depending on the setting as they can correspond to potentially different values, as shown in the left-panel of <a href="#fig-central-moments" class="quarto-xref">Figure&nbsp;<span class="quarto-unresolved-ref">fig-central-moments</span></a>. The choice is application specific: for multimodal distributions, the mode is likely a better choice.</p>
+<p>All of these point estimators are central tendency measures, but some may be more adequate depending on the setting as they can correspond to potentially different values, as shown in the left-panel of <a href="#fig-central-moments" class="quarto-xref">Figure&nbsp;<span>2.6</span></a>. The choice is application specific: for multimodal distributions, the mode is likely a better choice.</p>
 <p>If we know how to evaluate the distribution numerically, we can optimize to find the mode or else return the value for the pointwise evaluation on a grid at which the density achieves it’s maximum. The mean and median would have to be evaluated by numerical integration if there is no closed-form expression for the latter.</p>
 <p>If we have rather a sample from the posterior with associated posterior density values, then we can obtain the mode as the parameter combination with the highest posterior, the median from the value at rank <span class="math inline">\(\lfloor n/2\rfloor\)</span> and the mean through the sample mean of posterior draws.</p>
-<div class="cell" data-layout-align="center">
+<div class="cell">
 <div class="cell-output-display">
-<div id="fig-central-moments" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
+<div id="fig-central-moments" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-central-moments-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="bayesics_files/figure-html/fig-central-moments-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:85.0%">
+<img src="bayesics_files/figure-html/fig-central-moments-1.png" class="img-fluid figure-img" width="672">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-central-moments-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Figure&nbsp;2.6: Point estimators from a right-skewed distribution (left) and from a multimodal distribution (right).
@@ -646,15 +652,15 @@ Figure&nbsp;2.6: Point estimators from a right-skewed distribution (left) and fr
 </div>
 <p>The loss function is often a functional (meaning a one-dimensional summary) from the posterior. The following example shows how it reduces a three-dimensional problem into a single risk measure.</p>
 <div id="exm-loss-extremes" class="theorem example">
-<p><span class="theorem-title"><strong>Example 2.6 (Value-at-risk for Danish insurance losses)</strong></span> In extreme value, we are often interested in assessing the risk of events that are rare enough that they lie beyond the range of observed data. To provide a scientific extrapolation, it often is justified to fit a generalized Pareto distribution to exceedances of <span class="math inline">\(Z=Y-u,\)</span> for some user-specified threshold <span class="math inline">\(u\)</span> which is often taken as a large quantile of the distribution of <span class="math inline">\(Z \sim \mathsf{gen. Pareto}(\tau, \xi);\)</span> see <a href="#def-gen-pareto" class="quarto-xref">Definition&nbsp;<span class="quarto-unresolved-ref">def-gen-pareto</span></a></p>
-<p>Insurance companies provide coverage in exchange for premiums, but need to safeguard themselves against very high claims by buying reinsurance products. These risks are often communicated through the value-at-risk (VaR), a high quantile exceeded with probability <span class="math inline">\(p.\)</span> We model Danish fire insurance claim amounts for inflation-adjusted data collected from January 1980 until December 1990 that are in excess of a million Danish kroner, found in the <code>evir</code> package and analyzed in Example 7.23 of <span class="citation" data-cites="McNeil.Frey.Embrechts:2005">McNeil et al. (<a href="#ref-McNeil.Frey.Embrechts:2005" role="doc-biblioref">2005</a>)</span>. These claims are denoted <span class="math inline">\(Y\)</span> and there are 2167 observations.</p>
+<p><span class="theorem-title"><strong>Example 2.6 (Value-at-risk for Danish insurance losses)</strong></span> In extreme value, we are often interested in assessing the risk of events that are rare enough that they lie beyond the range of observed data. To provide a scientific extrapolation, it often is justified to fit a generalized Pareto distribution to exceedances of <span class="math inline">\(Z=Y-u,\)</span> for some user-specified threshold <span class="math inline">\(u\)</span> which is often taken as a large quantile of the distribution of <span class="math inline">\(Z \sim \mathsf{gen. Pareto}(\tau, \xi);\)</span> see <a href="introduction.html#def-gen-pareto" class="quarto-xref">Definition&nbsp;<span>1.11</span></a></p>
+<p>Insurance companies provide coverage in exchange for premiums, but need to safeguard themselves against very high claims by buying reinsurance products. These risks are often communicated through the value-at-risk (VaR), a high quantile exceeded with probability <span class="math inline">\(p.\)</span> We model Danish fire insurance claim amounts for inflation-adjusted data collected from January 1980 until December 1990 that are in excess of a million Danish kroner, found in the <code>evir</code> package and analyzed in Example 7.23 of <span class="citation" data-cites="McNeil.Frey.Embrechts:2005">McNeil et al. (<a href="references.html#ref-McNeil.Frey.Embrechts:2005" role="doc-biblioref">2005</a>)</span>. These claims are denoted <span class="math inline">\(Y\)</span> and there are 2167 observations.</p>
 <p>We fit a generalized Pareto distribution to exceedances above 10 millions krones, keeping 109 observations or roughly the largest 5% of the original sample. Preliminary analysis shows that we can treat data as roughly independent and identically distributed and goodness-of-fit diagnostics (not shown) for the generalized Pareto suggest that the fit is adequate for all but the three largest observations, which are (somewhat severely) underestimated by the model.</p>
-<div class="cell" data-layout-align="center">
+<div class="cell">
 <div class="cell-output-display">
-<div id="fig-danish" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
+<div id="fig-danish" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-danish-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="bayesics_files/figure-html/fig-danish-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:85.0%">
+<img src="bayesics_files/figure-html/fig-danish-1.png" class="img-fluid figure-img" width="672">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-danish-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Figure&nbsp;2.7: Time series of Danish fire claims exceeding a million krone (left) and posterior samples from the scale <span class="math inline">\(\tau\)</span> and shape <span class="math inline">\(\xi\)</span> of the generalized Pareto model fitted to exceedances above 10 million krone (right).
@@ -667,13 +673,13 @@ Figure&nbsp;2.7: Time series of Danish fire claims exceeding a million krone (le
 \ell(\tau, \xi, \zeta_u) &amp;\propto -109 \log \tau + \sum_{i=1}^{109} (1+1/\xi)\log\left(1+\xi\frac{y_i-10}{\tau}\right)_{+} + \\&amp; \quad   109\log \zeta_u + 2058 \log(1-\zeta_u),
 \end{align*}\]</span> Provided that the priors for <span class="math inline">\((\tau, \xi)\)</span> are independent of those for <span class="math inline">\(\zeta_u,\)</span> the posterior also factorizes as a product, so <span class="math inline">\(\zeta_u\)</span> and <span class="math inline">\((\tau, \xi)\)</span> are a posteriori independent.</p>
 <p>Suppose for now that we set a <span class="math inline">\(\mathsf{beta}(0.5, 0.5)\)</span> prior for <span class="math inline">\(\zeta_u\)</span> and a non-informative prior for the generalized Pareto parameters.</p>
-<p>We consider the modelling of insurance losses exceeding <span class="math inline">\(u=10\)</span> millions krones using a generalized Pareto distribution to the <code>danish</code> fire insurance data with some prior; see <a href="#def-gen-pareto" class="quarto-xref">Definition&nbsp;<span class="quarto-unresolved-ref">def-gen-pareto</span></a> for the model. The model has three parameters: the scale <span class="math inline">\(\tau\)</span>, the shape <span class="math inline">\(\xi\)</span> and the probability of exceeding the threshold <span class="math inline">\(\zeta_u\)</span>.</p>
+<p>We consider the modelling of insurance losses exceeding <span class="math inline">\(u=10\)</span> millions krones using a generalized Pareto distribution to the <code>danish</code> fire insurance data with some prior; see <a href="introduction.html#def-gen-pareto" class="quarto-xref">Definition&nbsp;<span>1.11</span></a> for the model. The model has three parameters: the scale <span class="math inline">\(\tau\)</span>, the shape <span class="math inline">\(\xi\)</span> and the probability of exceeding the threshold <span class="math inline">\(\zeta_u\)</span>.</p>
 <p>Our aim is to evaluate the posterior distribution for the value-at-risk, the <span class="math inline">\(\alpha\)</span> quantile of <span class="math inline">\(Y\)</span> for high values of <span class="math inline">\(\alpha\)</span> and see what point estimator one would obtain depending on our choice of loss function. For any <span class="math inline">\(\alpha &gt; 1-\zeta_u,\)</span> the <span class="math inline">\(q_{\alpha}\)</span> can be written in terms of the generalized Pareto survival function times the probability of exceedance above the threshold, <span class="math display">\[\begin{align*}
 1- \alpha  &amp;= \Pr(Y &gt; q_\alpha \mid Y &gt; u) \Pr(Y &gt; u)
 \\ &amp;= \left(1+\xi \frac{q_{\alpha}-u}{\tau}\right)_{+}^{-1/\xi}\zeta_u
 \end{align*}\]</span> and solving for <span class="math inline">\(q_{\alpha}\)</span> gives <span class="math display">\[\begin{align*}
 q_{\alpha} = u+ \frac{\tau}{\xi} \left\{\left(\frac{\zeta_u}{1-\alpha}\right)^\xi-1\right\}.
-\end{align*}\]</span> We obtained, using tools that will be discussed in <a href="#exm-rust" class="quarto-xref">Example&nbsp;<span class="quarto-unresolved-ref">exm-rust</span></a>, a matrix <code>post_samp</code> that contains exact samples from the posterior distribution of <span class="math inline">\((\tau, \xi, \zeta_u).\)</span> To obtain the posterior distribution of the <span class="math inline">\(\alpha\)</span> quantile, <span class="math inline">\(q_{\alpha},\)</span> it thus suffices to plug in each posterior sample and evaluate the function: the uncertainty is carried over from the simulated values of the parameters to those of the quantile <span class="math inline">\(q_{\alpha}.\)</span> The left panel of <a href="#fig-lossfn" class="quarto-xref">Figure&nbsp;<span class="quarto-unresolved-ref">fig-lossfn</span></a> shows the posterior density estimate of the <span class="math inline">\(\mathsf{VaR}(0.99)\)</span> along with the maximum a posteriori (mode) of the latter.</p>
+\end{align*}\]</span> We obtained, using tools that will be discussed in <a href="montecarlo.html#exm-rust" class="quarto-xref">Example&nbsp;<span>4.3</span></a>, a matrix <code>post_samp</code> that contains exact samples from the posterior distribution of <span class="math inline">\((\tau, \xi, \zeta_u).\)</span> To obtain the posterior distribution of the <span class="math inline">\(\alpha\)</span> quantile, <span class="math inline">\(q_{\alpha},\)</span> it thus suffices to plug in each posterior sample and evaluate the function: the uncertainty is carried over from the simulated values of the parameters to those of the quantile <span class="math inline">\(q_{\alpha}.\)</span> The left panel of <a href="#fig-lossfn" class="quarto-xref">Figure&nbsp;<span>2.8</span></a> shows the posterior density estimate of the <span class="math inline">\(\mathsf{VaR}(0.99)\)</span> along with the maximum a posteriori (mode) of the latter.</p>
 <p>Suppose that we prefer to under-estimate the value-at-risk rather than overestimate: this could be captured by the custom loss function <span class="math display">\[\begin{align*}
 c(q, q_0) =
 \begin{cases}
@@ -682,41 +688,41 @@ c(q, q_0) =
 \end{cases}
 \end{align*}\]</span> For a given value of the value-at-risk <span class="math inline">\(q_0\)</span> evaluated on a grid, we thus compute <span class="math display">\[\begin{align*}
 r(q_0) = \int_{\boldsymbol{\Theta}}c(q(\boldsymbol{\theta}), q_0) p (\boldsymbol{\theta} \mid \boldsymbol{y}) \mathrm{d} \boldsymbol{\theta}
-\end{align*}\]</span> and we seek to minimize the risk, <span class="math inline">\(\widehat{q} =\mathrm{argmin}_{q_0 \in \mathbb{R}_{+}} r(q_0).\)</span> The value returned that minimizes the loss, shown in <a href="#fig-lossfn" class="quarto-xref">Figure&nbsp;<span class="quarto-unresolved-ref">fig-lossfn</span></a>, is to the left of the posterior mean for <span class="math inline">\(q_\alpha.\)</span></p>
-<div class="cell" data-layout-align="center">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Compute value at risk from generalized Pareto distribution quantile fn</span></span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>VaR_post <span class="ot">&lt;-</span> <span class="fu">with</span>(post_samp,   <span class="co"># data frame of posterior draws</span></span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>            revdbayes<span class="sc">::</span><span class="fu">qgp</span>(   <span class="co"># with columns 'probexc', 'scale', 'shape'</span></span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">p =</span> <span class="fl">0.01</span><span class="sc">/</span>probexc, </span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">loc =</span> <span class="dv">10</span>, </span>
-<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">scale =</span> scale, </span>
-<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">shape =</span> shape, </span>
-<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">lower.tail =</span> <span class="cn">FALSE</span>))</span>
-<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Loss function</span></span>
-<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>loss <span class="ot">&lt;-</span> <span class="cf">function</span>(qhat, q){</span>
-<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mean</span>(<span class="fu">ifelse</span>(q <span class="sc">&gt;</span> qhat,</span>
-<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>           <span class="fl">0.5</span><span class="sc">*</span>(<span class="fl">0.99</span><span class="sc">*</span>q<span class="sc">-</span>qhat),</span>
-<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>           <span class="fl">0.75</span><span class="sc">*</span>(qhat<span class="fl">-1.01</span><span class="sc">*</span>q)))</span>
-<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a><span class="co"># Create a grid of values over which to estimate the loss for VaR</span></span>
-<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>nvals <span class="ot">&lt;-</span> <span class="dv">101</span>L</span>
-<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a>VaR_grid <span class="ot">&lt;-</span> <span class="fu">seq</span>(</span>
-<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a>  <span class="at">from =</span> <span class="fu">quantile</span>(VaR_post, <span class="fl">0.01</span>),</span>
-<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a>  <span class="at">to =</span> <span class="fu">quantile</span>(VaR_post, <span class="fl">0.99</span>), </span>
-<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a>  <span class="at">length.out =</span> nvals)</span>
-<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a><span class="co"># Create a container to store results</span></span>
-<span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a>risk <span class="ot">&lt;-</span> <span class="fu">numeric</span>(<span class="at">length =</span> nvals)</span>
-<span id="cb4-23"><a href="#cb4-23" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span>(i <span class="cf">in</span> <span class="fu">seq_len</span>(nvals)){</span>
-<span id="cb4-24"><a href="#cb4-24" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Compute integral (Monte Carlo average over draws)</span></span>
-<span id="cb4-25"><a href="#cb4-25" aria-hidden="true" tabindex="-1"></a> risk[i] <span class="ot">&lt;-</span> <span class="fu">loss</span>(<span class="at">q =</span> VaR_post, <span class="at">qhat =</span> VaR_grid[i])</span>
-<span id="cb4-26"><a href="#cb4-26" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+\end{align*}\]</span> and we seek to minimize the risk, <span class="math inline">\(\widehat{q} =\mathrm{argmin}_{q_0 \in \mathbb{R}_{+}} r(q_0).\)</span> The value returned that minimizes the loss, shown in <a href="#fig-lossfn" class="quarto-xref">Figure&nbsp;<span>2.8</span></a>, is to the left of the posterior mean for <span class="math inline">\(q_\alpha.\)</span></p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Compute value at risk from generalized Pareto distribution quantile fn</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>VaR_post <span class="ot">&lt;-</span> <span class="fu">with</span>(post_samp,   <span class="co"># data frame of posterior draws</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>            revdbayes<span class="sc">::</span><span class="fu">qgp</span>(   <span class="co"># with columns 'probexc', 'scale', 'shape'</span></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">p =</span> <span class="fl">0.01</span><span class="sc">/</span>probexc, </span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">loc =</span> <span class="dv">10</span>, </span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">scale =</span> scale, </span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">shape =</span> shape, </span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">lower.tail =</span> <span class="cn">FALSE</span>))</span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Loss function</span></span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>loss <span class="ot">&lt;-</span> <span class="cf">function</span>(qhat, q){</span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mean</span>(<span class="fu">ifelse</span>(q <span class="sc">&gt;</span> qhat,</span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a>           <span class="fl">0.5</span><span class="sc">*</span>(<span class="fl">0.99</span><span class="sc">*</span>q<span class="sc">-</span>qhat),</span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a>           <span class="fl">0.75</span><span class="sc">*</span>(qhat<span class="fl">-1.01</span><span class="sc">*</span>q)))</span>
+<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a><span class="co"># Create a grid of values over which to estimate the loss for VaR</span></span>
+<span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a>nvals <span class="ot">&lt;-</span> <span class="dv">101</span>L</span>
+<span id="cb9-17"><a href="#cb9-17" aria-hidden="true" tabindex="-1"></a>VaR_grid <span class="ot">&lt;-</span> <span class="fu">seq</span>(</span>
+<span id="cb9-18"><a href="#cb9-18" aria-hidden="true" tabindex="-1"></a>  <span class="at">from =</span> <span class="fu">quantile</span>(VaR_post, <span class="fl">0.01</span>),</span>
+<span id="cb9-19"><a href="#cb9-19" aria-hidden="true" tabindex="-1"></a>  <span class="at">to =</span> <span class="fu">quantile</span>(VaR_post, <span class="fl">0.99</span>), </span>
+<span id="cb9-20"><a href="#cb9-20" aria-hidden="true" tabindex="-1"></a>  <span class="at">length.out =</span> nvals)</span>
+<span id="cb9-21"><a href="#cb9-21" aria-hidden="true" tabindex="-1"></a><span class="co"># Create a container to store results</span></span>
+<span id="cb9-22"><a href="#cb9-22" aria-hidden="true" tabindex="-1"></a>risk <span class="ot">&lt;-</span> <span class="fu">numeric</span>(<span class="at">length =</span> nvals)</span>
+<span id="cb9-23"><a href="#cb9-23" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span>(i <span class="cf">in</span> <span class="fu">seq_len</span>(nvals)){</span>
+<span id="cb9-24"><a href="#cb9-24" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Compute integral (Monte Carlo average over draws)</span></span>
+<span id="cb9-25"><a href="#cb9-25" aria-hidden="true" tabindex="-1"></a> risk[i] <span class="ot">&lt;-</span> <span class="fu">loss</span>(<span class="at">q =</span> VaR_post, <span class="at">qhat =</span> VaR_grid[i])</span>
+<span id="cb9-26"><a href="#cb9-26" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <div class="cell" data-layout-align="center">
 <div class="cell-output-display">
 <div id="fig-lossfn" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-lossfn-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="bayesics_files/figure-html/fig-lossfn-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:85.0%">
+<img src="bayesics_files/figure-html/fig-lossfn-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="672">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-lossfn-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Figure&nbsp;2.8: Posterior density (left) and losses functions for the 0.99 value-at-risk for the Danish fire insurance data. The vertical lines denote point estimates of the quantiles that minimize the loss functions.
@@ -733,27 +739,31 @@ Figure&nbsp;2.8: Posterior density (left) and losses functions for the 0.99 valu
 \Pr(\boldsymbol{\theta} \in \mathcal{S}_\alpha \mid \boldsymbol{Y}=\boldsymbol{y}) = 1-\alpha
 \end{align*}\]</span></p>
 </div>
-<p>These intervals are not unique, as are confidence sets. In the univariate setting, the central or equitailed interval are the most popular, and easily obtained by considering the <span class="math inline">\(\alpha/2, 1-\alpha/2\)</span> quantiles. These are easily obtained from samples by simply taking empirical quantiles. An alternative, highest posterior density credible sets, which may be a set of disjoint intervals obtained by considering the parts of the posterior with the highest density, may be more informative. The top panel <a href="#fig-credible-intervals" class="quarto-xref">Figure&nbsp;<span class="quarto-unresolved-ref">fig-credible-intervals</span></a> shows two extreme cases in which these intervals differ: the distinction for a bimodal mixture distribution, and a even more striking difference for 50% credible intervals for a symmetric beta distribution whose mass lie near the endpoints of the distribution, leading to no overlap between the two intervals.</p>
-<div class="cell" data-layout-align="center">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">2023</span>)</span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>postsamp <span class="ot">&lt;-</span> <span class="fu">rbeta</span>(<span class="at">n =</span> <span class="dv">1000</span>, <span class="at">shape1 =</span> <span class="fl">0.5</span>, <span class="at">shape2 =</span> <span class="fl">0.2</span>)</span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>alpha <span class="ot">&lt;-</span> <span class="fl">0.11</span></span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Compute equitailed interval bounds</span></span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="fu">quantile</span>(postsamp, <span class="at">probs =</span> <span class="fu">c</span>(alpha<span class="sc">/</span><span class="dv">2</span>, <span class="dv">1</span><span class="sc">-</span>alpha<span class="sc">/</span><span class="dv">2</span>))</span>
-<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   5.5%  94.5% </span></span>
-<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 0.0247 1.0000</span></span>
-<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a><span class="fu">qbeta</span>(<span class="at">p =</span> <span class="fu">c</span>(alpha<span class="sc">/</span><span class="dv">2</span>, <span class="dv">1</span><span class="sc">-</span>alpha<span class="sc">/</span><span class="dv">2</span>), <span class="at">shape1 =</span> <span class="fl">0.5</span>, <span class="at">shape2 =</span> <span class="fl">0.2</span>)</span>
-<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 0.0293 1.0000</span></span>
-<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Highest posterior density intervals</span></span>
-<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>hdiD <span class="ot">&lt;-</span> HDInterval<span class="sc">::</span><span class="fu">hdi</span>(<span class="fu">density</span>(postsamp), <span class="at">credMass =</span> <span class="dv">1</span><span class="sc">-</span>alpha, <span class="at">allowSplit =</span> <span class="cn">TRUE</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>These intervals are not unique, as are confidence sets. In the univariate setting, the central or equitailed interval are the most popular, and easily obtained by considering the <span class="math inline">\(\alpha/2, 1-\alpha/2\)</span> quantiles. These are easily obtained from samples by simply taking empirical quantiles. An alternative, highest posterior density credible sets, which may be a set of disjoint intervals obtained by considering the parts of the posterior with the highest density, may be more informative. The top panel <a href="#fig-credible-intervals" class="quarto-xref">Figure&nbsp;<span>2.9</span></a> shows two extreme cases in which these intervals differ: the distinction for a bimodal mixture distribution, and a even more striking difference for 50% credible intervals for a symmetric beta distribution whose mass lie near the endpoints of the distribution, leading to no overlap between the two intervals.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">2023</span>)</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>postsamp <span class="ot">&lt;-</span> <span class="fu">rbeta</span>(<span class="at">n =</span> <span class="dv">1000</span>, <span class="at">shape1 =</span> <span class="fl">0.5</span>, <span class="at">shape2 =</span> <span class="fl">0.2</span>)</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>alpha <span class="ot">&lt;-</span> <span class="fl">0.11</span></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Compute equitailed interval bounds</span></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a><span class="fu">quantile</span>(postsamp, <span class="at">probs =</span> <span class="fu">c</span>(alpha<span class="sc">/</span><span class="dv">2</span>, <span class="dv">1</span><span class="sc">-</span>alpha<span class="sc">/</span><span class="dv">2</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>     5.5%     94.5% 
+0.0246807 0.9999980 </code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">qbeta</span>(<span class="at">p =</span> <span class="fu">c</span>(alpha<span class="sc">/</span><span class="dv">2</span>, <span class="dv">1</span><span class="sc">-</span>alpha<span class="sc">/</span><span class="dv">2</span>), <span class="at">shape1 =</span> <span class="fl">0.5</span>, <span class="at">shape2 =</span> <span class="fl">0.2</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.02925205 0.99999844</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Highest posterior density intervals</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>hdiD <span class="ot">&lt;-</span> HDInterval<span class="sc">::</span><span class="fu">hdi</span>(<span class="fu">density</span>(postsamp), <span class="at">credMass =</span> <span class="dv">1</span><span class="sc">-</span>alpha, <span class="at">allowSplit =</span> <span class="cn">TRUE</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>The equitailed intervals for a known posterior can be obtained directly from the quantile function or via Monte Carlo simply by querying sample quantiles. The HPD region is more complicated to obtain and requires dedicated software, which in the above case may fail to account for the support of the posterior!</p>
-<div class="cell" data-layout-align="center">
+<div class="cell">
 <div class="cell-output-display">
-<div id="fig-credible-intervals" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
+<div id="fig-credible-intervals" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-credible-intervals-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="bayesics_files/figure-html/fig-credible-intervals-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:85.0%">
+<img src="bayesics_files/figure-html/fig-credible-intervals-1.png" class="img-fluid figure-img" width="672">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-credible-intervals-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Figure&nbsp;2.9: Density plots with 89% (top) and 50% (bottom) equitailed or central credible (left) and highest posterior density (right) regions for two data sets, highlighted in grey. The horizontal lign gives the posterior density value determining the cutoff for the HDP region.
@@ -788,7 +798,7 @@ Figure&nbsp;2.9: Density plots with 89% (top) and 50% (bottom) equitailed or cen
 </div>
 
 
-<div id="refs" class="references csl-bib-body hanging-indent" role="list">
+<div id="refs" class="references csl-bib-body hanging-indent" role="list" style="display: none">
 <div id="ref-Duke.Amir:2023" class="csl-entry" role="listitem">
 Duke, Kristen E., and On Amir. 2023. <span>“The Importance of Selling Formats: When Integrating Purchase and Quantity Decisions Increases Sales.”</span> <em>Marketing Science</em> 42 (1): 87–109. <a href="https://doi.org/10.1287/mksc.2022.1364">https://doi.org/10.1287/mksc.2022.1364</a>.
 </div>
