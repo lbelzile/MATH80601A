@@ -105,7 +105,7 @@ Consider $\boldsymbol{Y} \sim \mathsf{Gauss}_d(\boldsymbol{\mu}, \boldsymbol{\Si
 ```{r}
 #| eval: false
 #| echo: true
-# Create a 20 dimensional equicorrelation
+# Create a 20 dimensional equicorrelation matrix
 d <- 20
 Q <- hecbayes::equicorrelation(d = d, rho = 0.9, precision = TRUE)
 B <- 1e4
