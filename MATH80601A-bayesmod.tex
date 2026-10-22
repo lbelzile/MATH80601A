@@ -279,6 +279,21 @@
 \DeclareMathAlphabet{\mathcrl}{U}{rsfs}{m}{n}
 \usepackage{utopia}
 \DeclareMathAlphabet{\mathcal}{OMS}{cmsy}{m}{n}
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{wrapfig}
+\usepackage{float}
+\usepackage{colortbl}
+\usepackage{pdflscape}
+\usepackage{tabularx}
+\usepackage{xltabular}
+\usepackage{threeparttable}
+\usepackage{threeparttablex}
+\usepackage[normalem]{ulem}
+\usepackage{makecell}
+\usepackage{xcolor}
 \makeatletter
 \@ifpackageloaded{tcolorbox}{}{\usepackage[skins,breakable]{tcolorbox}}
 \@ifpackageloaded{fontawesome5}{}{\usepackage{fontawesome5}}
@@ -333,18 +348,18 @@
 \floatname{codelisting}{Listing}
 \newcommand*\listoflistings{\listof{codelisting}{List of Listings}}
 \usepackage{amsthm}
-\theoremstyle{definition}
-\newtheorem{exercise}{Exercise}[chapter]
-\theoremstyle{definition}
-\newtheorem{definition}{Definition}[chapter]
-\theoremstyle{plain}
-\newtheorem{proposition}{Proposition}[chapter]
 \theoremstyle{plain}
 \newtheorem{corollary}{Corollary}[chapter]
 \theoremstyle{plain}
-\newtheorem{theorem}{Theorem}[chapter]
+\newtheorem{proposition}{Proposition}[chapter]
 \theoremstyle{definition}
 \newtheorem{example}{Example}[chapter]
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}[chapter]
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}[chapter]
+\theoremstyle{definition}
+\newtheorem{exercise}{Exercise}[chapter]
 \theoremstyle{remark}
 \AtBeginDocument{\renewcommand*{\proofname}{Proof}}
 \newtheorem*{remark}{Remark}
@@ -397,7 +412,7 @@ details.
 These notes are licensed under a
 \href{http://creativecommons.org/licenses/by-nc-sa/4.0/}{Creative
 Commons Attribution-NonCommercial-ShareAlike 4.0 International License}
-and were last compiled on Sunday, September 20 2026.
+and were last compiled on Wednesday, October 21 2026.
 
 The objective of the course is to provide a hands on introduction to
 Bayesian data analysis. The course will cover the formulation,
@@ -5626,7 +5641,7 @@ Gaussian where \begin{align*}
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\CommentTok{\# Create a 20 dimensional equicorrelation}
+\CommentTok{\# Create a 20 dimensional equicorrelation matrix}
 \NormalTok{d }\OtherTok{\textless{}{-}} \DecValTok{20}
 \NormalTok{Q }\OtherTok{\textless{}{-}}\NormalTok{ hecbayes}\SpecialCharTok{::}\FunctionTok{equicorrelation}\NormalTok{(}\AttributeTok{d =}\NormalTok{ d, }\AttributeTok{rho =} \FloatTok{0.9}\NormalTok{, }\AttributeTok{precision =} \ConstantTok{TRUE}\NormalTok{)}
 \NormalTok{B }\OtherTok{\textless{}{-}} \FloatTok{1e4}
@@ -6242,7 +6257,58 @@ samplers, with algorithms providing realizations of Markov chains with
 lower autocorrelation being preferred. The purpose of this section is to
 review these in turn, and to go over tricks that can improve mixing.
 
---\textgreater{}
+Many such sanity checks can be implemented by means of simulations.
+Consider prior predictive checks: if the prior has a distribution from
+which we can generate, we can obtain prior draws from
+\(p(\boldsymbol{\theta})\), generate data from the prior predictive
+\(p(y \mid \boldsymbol{\theta})\) by simulating new observations from
+the data generating mechanism of the likelihood, and use these to obtain
+prior predictive by removing the likelihood component altogether: the
+draws from the prior predictive should then match posterior draws with
+only the prior.
+
+The ``data-averaged posterior'' is obtained upon noting that
+(\citeproc{ref-Geweke:2004}{Geweke 2004}) \begin{align*}
+p(\boldsymbol{\theta}) = \int \int_{\boldsymbol{\Theta}} p( \boldsymbol{\theta} \mid \boldsymbol{y}) p(\boldsymbol{y} \mid \widetilde{\boldsymbol{\theta}}) p(\widetilde{\boldsymbol{\theta}}) \mathrm{d} \widetilde{\boldsymbol{\theta}} \mathrm{d} \boldsymbol{y}
+\end{align*} by forward sampling first the prior, than data for this
+particular value and obtaining the posterior associated with the latter.
+
+We can test that our sampling algorithm correctly samples from the
+posterior distribution of interest by running the following procedure,
+which is however computationally intensive.
+
+\begin{proposition}[Simulation based
+calibration]\protect\hypertarget{prp-sbc}{}\label{prp-sbc}
+
+Simulation-based calibration (\citeproc{ref-Talts:2020}{Talts et al.
+2020}) proceeds with simulation of the following quantities, in the
+specified order:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  \(\boldsymbol{\theta}_0 \sim p(\boldsymbol{\theta}),\)
+\item
+  \(\boldsymbol{y}_0 \sim p(\boldsymbol{y} \mid \boldsymbol{\theta}_0),\)
+\item
+  \(\boldsymbol{\theta}_1, \ldots, \boldsymbol{\theta}_B \sim p(\boldsymbol{\theta} \mid \boldsymbol{y}_0 ).\)
+\end{enumerate}
+
+Conditional on the simulated \(\boldsymbol{y}\), the distribution of
+\(\boldsymbol{\theta}_0\) is the same as that of
+\(\boldsymbol{\theta}_1, \ldots, \boldsymbol{\theta}_B.\) We do a
+dimension reduction step taking the test function \(t(\cdot)\) to get
+the rank of the prior draw among the posterior ones, breaking ties at
+random if any. In the absence of ties, \begin{align*}
+T = \sum_{b=1}^B \mathrm{I}\{t(\boldsymbol{\theta}_b, \boldsymbol{y}) < t(\boldsymbol{\theta}_0,\boldsymbol{y})\},
+\end{align*}
+
+These steps are repeated \(K\) times, yielding \(K\) test functions
+\(T_1, \ldots, T_K.\) We then test for uniformity using results from
+Säilynoja et al. (\citeproc{ref-Sailynoja:2022}{2022}).
+
+\end{proposition}
 
 The target of inference is a functional (i.e., one-dimensional summaries
 of the chain): we need to have convergence of the latter, but also
@@ -6613,8 +6679,8 @@ are random effects and
 are independent white noise.
 
 We can write \begin{align*}
-\boldsymbol{Y} \mid \mathbf{\beta}, \boldsymbol{B} &\sim \mathsf{Gauss}_n(\mathbf{X}\boldsymbol{\beta} + \mathbf{Z}\boldsymbol{B},  \sigma^2\mathbf{I}_p)\\
-\boldsymbol{Y} \mid \mathbf{\beta} &\sim \mathsf{Gauss}_n(\mathbf{X}\boldsymbol{\beta}, \mathbf{Q}^{-1}),
+\boldsymbol{Y} \mid \boldsymbol{\beta}, \boldsymbol{B} &\sim \mathsf{Gauss}_n(\mathbf{X}\boldsymbol{\beta} + \mathbf{Z}\boldsymbol{B},  \sigma^2\mathbf{I}_p)\\
+\boldsymbol{Y} \mid \boldsymbol{\beta} &\sim \mathsf{Gauss}_n(\mathbf{X}\boldsymbol{\beta}, \mathbf{Q}^{-1}),
 \end{align*} where the second line corresponds to marginalizing out the
 random effects \(\boldsymbol{B}.\) This reduces the number of parameters
 to draw, but the likelihood evaluation is more costly due to
@@ -6983,9 +7049,9 @@ featured prominently in Gelman et al.
 experiments in eight different schools to estimate the effect of
 coaching on SAT-V scores. The data consist of estimated treatment mean
 difference \(y_1, \ldots, y_8\) and their standard errors
-\(\sigma_1, \ldots, s_8\). The data size are large, so the average
-treatment effect (ATE) can be considered Gaussian and the
-school-specific standard errors \(s_j\) are treated as a known quantity.
+\(s_1, \ldots, s_8\). The data size are large, so the average treatment
+effect (ATE) can be considered Gaussian and the school-specific standard
+errors \(s_j\) are treated as a known quantity.
 
 We can devise different Gibbs sampling from this problem. The naive
 Gibbs sampler, which iterates between conditionals of
@@ -6996,8 +7062,8 @@ leads to strong autocorrelation. A better strategy is to marginalize
 over the global mean \(\mu\) and simulate from
 \(p(\boldsymbol{\alpha} \mid \boldsymbol{y}, \boldsymbol{s}^2, \sigma^2_{\alpha})\)
 instead. We get then the conditionals \begin{align*}
-\alpha_i \mid y_i, s_i^2, \sigma^2_{\alpha} &\sim \mathsf{Gauss}\left\{ \left(s^{-2}_i + \sigma^{-2}_{\alpha}\right)^{-1}\frac{y_i}{s^2_j}, \left(s^{-2}_i + \sigma^{-2}_{\alpha}\right)^{-1}\right\}\\
-\mu \mid \boldsymbol{y}, \boldsymbol{s}^2, \boldsymbol{\alpha} & \sim \mathsf{Gauss}\left( s^2_{\mu} \sum_{j=1}^8 \frac{y_i-\alpha_i}{s^2_j}, s^2_{\mu}\right)\\
+\alpha_i \mid y_i, s_i^2, \sigma^2_{\alpha} &\sim \mathsf{Gauss}\left\{ \left(s^{-2}_i + \sigma^{-2}_{\alpha}\right)^{-1}\frac{y_i}{s^2_i}, \left(s^{-2}_i + \sigma^{-2}_{\alpha}\right)^{-1}\right\}\\
+\mu \mid \boldsymbol{y}, \boldsymbol{s}^2, \boldsymbol{\alpha} & \sim \mathsf{Gauss}\left( s^2_{\mu} \sum_{j=1}^8 \frac{y_j-\alpha_j}{s^2_j}, s^2_{\mu}\right)\\
 \sigma^2_{\alpha} \mid \boldsymbol{\alpha} &\sim \mathsf{inv. gamma}\left( \frac{n-1}{2}, \frac{\sum_{j=1}^8 \alpha_j^2}{2}\right)
 \end{align*} where \(s^{-2}_{\mu} =\sum_{j=1}^8 s_j^{-2}.\)
 
@@ -9912,6 +9978,13 @@ Rue, H., and L. Held. 2005. \emph{{G}aussian {M}arkov Random Fields:
 Theory and Applications}. Chapman \& Hall/CRC Monographs on Statistics
 \& Applied Probability. CRC Press.
 
+\bibitem[\citeproctext]{ref-Sailynoja:2022}
+Säilynoja, Teemu, Paul-Christian Bürkner, and Aki Vehtari. 2022.
+{``Graphical Test for Discrete Uniformity and Its Applications in
+Goodness-of-Fit Evaluation and Multiple Sample Comparison.''}
+\emph{Statistics and Computing} 32 (2): 32.
+\url{https://doi.org/10.1007/s11222-022-10090-6}.
+
 \bibitem[\citeproctext]{ref-Sherlock:2013}
 Sherlock, Chris. 2013. {``Optimal Scaling of the Random Walk
 {M}etropolis: General Criteria for the 0.234 Acceptance Rule.''}
@@ -9954,6 +10027,12 @@ Stephens, Matthew. 2002. {``Dealing with Label Switching in Mixture
 Models.''} \emph{Journal of the Royal Statistical Society Series B:
 Statistical Methodology} 62 (4): 795--809.
 \url{https://doi.org/10.1111/1467-9868.00265}.
+
+\bibitem[\citeproctext]{ref-Talts:2020}
+Talts, Sean, Michael Betancourt, Daniel Simpson, Aki Vehtari, and Andrew
+Gelman. 2020. \emph{Validating {B}ayesian Inference Algorithms with
+Simulation-Based Calibration}.
+\url{https://doi.org/10.48550/arXiv.1804.06788}.
 
 \bibitem[\citeproctext]{ref-Tanner.Wong:1987}
 Tanner, Martin A., and Wing Hung Wong. 1987. {``The Calculation of

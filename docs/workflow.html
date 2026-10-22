@@ -392,20 +392,7 @@ Figure&nbsp;7.3: Kernel density estimates of draws from the posterior distributi
 </div>
 </div>
 </div>
-<!--
-:::{#prop-power-scaling}
-
-## Sensitivity via power-scaling
-
-TODO add this to notes
-
-@Kallioinen:2023 propose varying the parameters through power scaling: this 
-
-:::
-
--->
 <p>For a given problem, there are many different Markov chain Monte Carlo algorithms that one can implement: they will typically be distinguished based on the running time per iteration and the efficiency of the samplers, with algorithms providing realizations of Markov chains with lower autocorrelation being preferred. The purpose of this section is to review these in turn, and to go over tricks that can improve mixing.</p>
-<p>–&gt;</p>
 <!--
 **Prior to posterior**: prior sensitivity requires to rerun the algorithm with different priors, but it is sometimes feasible in simpler models to simply use a fast Gaussian approximation via the maximum a posteriori, and generate from the latter, to assess the impact of the prior. We can compare posterior density with prior density. The general rule is that parameters far from the data layer are more impacted by the prior choice.
 -->
@@ -413,46 +400,29 @@ TODO add this to notes
 <!--
 **Generating artificial data**: Some problems and checks relate to models and the correct implementations (of the algorithms). Sometimes, the probabilistic procedure will generate draws, but it's unclear whether our numerical implementation is correct. We can sometimes see this if the output is truly misleading, but it's not always obvious. We can for example generate an "artificial" or fake data set from the model with some fixed parameter inputs to see if we can recover the parameter values used to generate these within some credible set. 
 -->
-<!-- 
-Many such sanity checks can be implemented by means of simulations. Consider prior predictive checks: if the prior has a distribution from which we can generate, we can obtain prior draws from $p(\boldsymbol{\theta})$, generate data from the prior predictive $p(y \mid \boldsymbol{\theta})$ by simulating new observations from the data generating mechanism of the likelihood, and use these to obtain prior predictive by removing the likelihood component altogether: the draws from the prior predictive should then match posterior draws with only the prior. 
-
-The "data-averaged posterior" is obtained upon noting that [@Geweke:2004]
-\begin{align*}
+<p>Many such sanity checks can be implemented by means of simulations. Consider prior predictive checks: if the prior has a distribution from which we can generate, we can obtain prior draws from <span class="math inline">\(p(\boldsymbol{\theta})\)</span>, generate data from the prior predictive <span class="math inline">\(p(y \mid \boldsymbol{\theta})\)</span> by simulating new observations from the data generating mechanism of the likelihood, and use these to obtain prior predictive by removing the likelihood component altogether: the draws from the prior predictive should then match posterior draws with only the prior.</p>
+<p>The “data-averaged posterior” is obtained upon noting that <span class="citation" data-cites="Geweke:2004">(<a href="references.html#ref-Geweke:2004" role="doc-biblioref">Geweke 2004</a>)</span> <span class="math display">\[\begin{align*}
 p(\boldsymbol{\theta}) = \int \int_{\boldsymbol{\Theta}} p( \boldsymbol{\theta} \mid \boldsymbol{y}) p(\boldsymbol{y} \mid \widetilde{\boldsymbol{\theta}}) p(\widetilde{\boldsymbol{\theta}}) \mathrm{d} \widetilde{\boldsymbol{\theta}} \mathrm{d} \boldsymbol{y}
-\end{align*}
-by forward sampling first the prior, than data for this particular value and obtaining the posterior associated with the latter. 
-
-We can test that our sampling algorithm correctly samples from the posterior distribution of interest by running the following procedure, which is however computationally intensive.
-
-
-
-:::{#prp-sbc}
-
-## Simulation based calibration
-
-Simulation-based calibration  [@Talts:2020] proceeds with simulation of the following quantities, in the specified order:
-
-1. $\boldsymbol{\theta}_0 \sim p(\boldsymbol{\theta}),$
-2. $\boldsymbol{y}_0 \sim p(\boldsymbol{y} \mid \boldsymbol{\theta}_0),$
-3. $\boldsymbol{\theta}_1, \ldots, \boldsymbol{\theta}_B \sim p(\boldsymbol{\theta} \mid \boldsymbol{y}_0 ).$
-
-
-Conditional on the simulated $\boldsymbol{y}$, the distribution of $\boldsymbol{\theta}_0$ is the same as that of $\boldsymbol{\theta}_1, \ldots, \boldsymbol{\theta}_B.$ We do a dimension reduction step taking the test function $t(\cdot)$ to get the rank of the prior draw among the posterior ones, breaking ties at random if any. In the absence of ties,
-\begin{align*}
-T = \sum_{b=1}^B \mathrm{I}\{t(\boldsymbol{\theta}_b, \boldsymbol{y}) < t(\boldsymbol{\theta}_0,\boldsymbol{y})\},
-\end{align*}
-
-These steps are repeated $K$ times, yielding $K$ test functions $T_1, \ldots, T_K.$ We then test for uniformity using results from @Sailynoja:2022.
-
-:::
-
--->
+\end{align*}\]</span> by forward sampling first the prior, than data for this particular value and obtaining the posterior associated with the latter.</p>
+<p>We can test that our sampling algorithm correctly samples from the posterior distribution of interest by running the following procedure, which is however computationally intensive.</p>
+<div id="prp-sbc" class="theorem proposition">
+<p><span class="theorem-title"><strong>Proposition 7.1 (Simulation based calibration)</strong></span> Simulation-based calibration <span class="citation" data-cites="Talts:2020">(<a href="references.html#ref-Talts:2020" role="doc-biblioref">Talts et al. 2020</a>)</span> proceeds with simulation of the following quantities, in the specified order:</p>
+<ol type="1">
+<li><span class="math inline">\(\boldsymbol{\theta}_0 \sim p(\boldsymbol{\theta}),\)</span></li>
+<li><span class="math inline">\(\boldsymbol{y}_0 \sim p(\boldsymbol{y} \mid \boldsymbol{\theta}_0),\)</span></li>
+<li><span class="math inline">\(\boldsymbol{\theta}_1, \ldots, \boldsymbol{\theta}_B \sim p(\boldsymbol{\theta} \mid \boldsymbol{y}_0 ).\)</span></li>
+</ol>
+<p>Conditional on the simulated <span class="math inline">\(\boldsymbol{y}\)</span>, the distribution of <span class="math inline">\(\boldsymbol{\theta}_0\)</span> is the same as that of <span class="math inline">\(\boldsymbol{\theta}_1, \ldots, \boldsymbol{\theta}_B.\)</span> We do a dimension reduction step taking the test function <span class="math inline">\(t(\cdot)\)</span> to get the rank of the prior draw among the posterior ones, breaking ties at random if any. In the absence of ties, <span class="math display">\[\begin{align*}
+T = \sum_{b=1}^B \mathrm{I}\{t(\boldsymbol{\theta}_b, \boldsymbol{y}) &lt; t(\boldsymbol{\theta}_0,\boldsymbol{y})\},
+\end{align*}\]</span></p>
+<p>These steps are repeated <span class="math inline">\(K\)</span> times, yielding <span class="math inline">\(K\)</span> test functions <span class="math inline">\(T_1, \ldots, T_K.\)</span> We then test for uniformity using results from <span class="citation" data-cites="Sailynoja:2022">Säilynoja et al. (<a href="references.html#ref-Sailynoja:2022" role="doc-biblioref">2022</a>)</span>.</p>
+</div>
 <p>The target of inference is a functional (i.e., one-dimensional summaries of the chain): we need to have convergence of the latter, but also sufficient effective sample size for our averages to be accurate (at least to two significant digits).</p>
 <p>To illustrate these, we revisit the model from <a href="#exm-randomeffects" class="quarto-xref">Example&nbsp;<span>7.1</span></a> with a penalized complexity prior for the individual effect <span class="math inline">\(\alpha_i\)</span> and vague normal priors. We also fit a simple Poisson model with only the fixed effect, taking <span class="math inline">\(Y_{ij} \sim \mathsf{Poisson}\{\exp(\beta_j)\}\)</span> with <span class="math inline">\(\beta_j \sim \mathsf{Gauss}(0,100)\)</span>. This model has too little variability relative to the observations and fits poorly as is.</p>
 <p>For the Poisson example, the effective sample size for the <span class="math inline">\(\boldsymbol{\beta}\)</span> for the multilevel model is a bit higher than 1000 with <span class="math inline">\(B=5000\)</span> iterations, whereas we have for the simple naive model is <span class="math inline">\(1.028\times 10^{4}\)</span> for <span class="math inline">\(B=10000\)</span> draws, suggesting superefficient sampling. The dependency between <span class="math inline">\(\boldsymbol{\alpha}\)</span> and <span class="math inline">\(\boldsymbol{\beta}\)</span> is responsible for the drop in accuracy.</p>
 <p>The <code>coda</code> (convergence diagnosis and output analysis) <strong>R</strong> package <span class="citation" data-cites="coda">(<a href="references.html#ref-coda" role="doc-biblioref">Plummer et al. 2006</a>)</span> contains many tests. For example, the Geweke <span class="math inline">\(Z\)</span>-score compares the averages for the beginning and the end of the chain: rejection of the null implies lack of convergence, or poor mixing.</p>
 <div id="prp-rhat" class="theorem proposition">
-<p><span class="theorem-title"><strong>Proposition 7.1 (Gelman–Rubin diagnostic)</strong></span> The Gelman–Rubin diagnostic <span class="math inline">\(\widehat{R},\)</span> introduced in <span class="citation" data-cites="Gelman.Rubin:1992">Gelman and Rubin (<a href="references.html#ref-Gelman.Rubin:1992" role="doc-biblioref">1992</a>)</span> and also called potential scale reduction statistic, is obtained by considering the difference between within-chains and between-chains variance. Suppose we run <span class="math inline">\(M\)</span> chains for <span class="math inline">\(B\)</span> iterations, post burn in. Denoting by <span class="math inline">\(\theta_{bm}\)</span> the <span class="math inline">\(b\)</span>th draw of the <span class="math inline">\(m\)</span>th chain, we compute the global average <span class="math inline">\(\overline{\theta} = B^{-1}M^{-1}\sum_{b=1}^B \sum_{m=1}^m \theta_{bm}\)</span> and similarly the chain sample average and variances, respectively <span class="math inline">\(\overline{\theta}_m\)</span> and <span class="math inline">\(\widehat{\sigma}^2_m\)</span> (<span class="math inline">\(m=1, \ldots, M\)</span>). The between-chain variance and within-chain variance estimator are <span class="math display">\[\begin{align*}
+<p><span class="theorem-title"><strong>Proposition 7.2 (Gelman–Rubin diagnostic)</strong></span> The Gelman–Rubin diagnostic <span class="math inline">\(\widehat{R},\)</span> introduced in <span class="citation" data-cites="Gelman.Rubin:1992">Gelman and Rubin (<a href="references.html#ref-Gelman.Rubin:1992" role="doc-biblioref">1992</a>)</span> and also called potential scale reduction statistic, is obtained by considering the difference between within-chains and between-chains variance. Suppose we run <span class="math inline">\(M\)</span> chains for <span class="math inline">\(B\)</span> iterations, post burn in. Denoting by <span class="math inline">\(\theta_{bm}\)</span> the <span class="math inline">\(b\)</span>th draw of the <span class="math inline">\(m\)</span>th chain, we compute the global average <span class="math inline">\(\overline{\theta} = B^{-1}M^{-1}\sum_{b=1}^B \sum_{m=1}^m \theta_{bm}\)</span> and similarly the chain sample average and variances, respectively <span class="math inline">\(\overline{\theta}_m\)</span> and <span class="math inline">\(\widehat{\sigma}^2_m\)</span> (<span class="math inline">\(m=1, \ldots, M\)</span>). The between-chain variance and within-chain variance estimator are <span class="math display">\[\begin{align*}
 \mathsf{Va}_{\text{between}} &amp;= \frac{B}{M-1}\sum_{m=1}^M (\overline{\theta}_m - \overline{\theta})^2\\
 \mathsf{Va}_{\text{within}} &amp;= \frac{1}{M}\sum_{m=1}^M \widehat{\sigma}^2_m
 \end{align*}\]</span> and we can compute <span class="math display">\[\begin{align*}
@@ -562,11 +532,11 @@ Figure&nbsp;7.6: Widely applicable information criterion for the Bayesian LASSO 
 </div>
 <p>Ideally, one would measure the predictive performance using the leave-one-out predictive distribution for observation <span class="math inline">\(i\)</span> given all the rest, <span class="math inline">\(p(y_i \mid \boldsymbol{y}_{-i}),\)</span> to avoid double dipping — the latter is computationally intensive to obtain because it would require running <span class="math inline">\(n\)</span> Markov chains with <span class="math inline">\(n-1\)</span> observations each, but we can get a good approximation using importance sampling, as proposed in eq. 25 of Section 7 of <span class="citation" data-cites="Gelfand.Dey:1994">Gelfand and Dey (<a href="references.html#ref-Gelfand.Dey:1994" role="doc-biblioref">1994</a>)</span>.</p>
 <div id="prp-marginal-pred-checks" class="theorem proposition">
-<p><span class="theorem-title"><strong>Proposition 7.2 (Marginal predictive check)</strong></span> To check the goodness-of-fit, we turn to the posterior predictive distribution. For each posterior draw and each observation, we generate a sample from the posterior predictive, resulting in an <span class="math inline">\(n \times B\)</span> matrix. We can then for each observation <span class="math inline">\(y_i\)</span> compare the latter with the simulated samples <span class="math inline">\(y_{i,b}^{\mathrm{rep}}\)</span> for posterior sample <span class="math inline">\(\boldsymbol{\theta}_b.\)</span> We compute <span class="math inline">\(\Pr(y_i \geq y_{i}^{\mathrm{rep}})\)</span> by Monte Carlo, by looking at the sample proportion that are more extreme. Values close to zero or one may indicate outliers.</p>
+<p><span class="theorem-title"><strong>Proposition 7.3 (Marginal predictive check)</strong></span> To check the goodness-of-fit, we turn to the posterior predictive distribution. For each posterior draw and each observation, we generate a sample from the posterior predictive, resulting in an <span class="math inline">\(n \times B\)</span> matrix. We can then for each observation <span class="math inline">\(y_i\)</span> compare the latter with the simulated samples <span class="math inline">\(y_{i,b}^{\mathrm{rep}}\)</span> for posterior sample <span class="math inline">\(\boldsymbol{\theta}_b.\)</span> We compute <span class="math inline">\(\Pr(y_i \geq y_{i}^{\mathrm{rep}})\)</span> by Monte Carlo, by looking at the sample proportion that are more extreme. Values close to zero or one may indicate outliers.</p>
 </div>
 <p>To avoid double dipping, we can check model adequacy by comparing the leave-one-cross validation predictive draws with the observation.</p>
 <div id="prp-cv-predictive-dens" class="theorem proposition">
-<p><span class="theorem-title"><strong>Proposition 7.3 (Cross-validation predictive density)</strong></span> Consider estimation of the leave-one predictive density under the hypothesis that the likelihood factorizes as <span class="math inline">\(L(\boldsymbol{\theta}; \boldsymbol{y}) = \prod_{i=1}^n f_i(y_i; \boldsymbol{\theta});\)</span> where <span class="math inline">\(f_i\)</span> is the density or mass function of the <span class="math inline">\(i\)</span>th observation. Then, with weights <span class="math display">\[\begin{align*}
+<p><span class="theorem-title"><strong>Proposition 7.4 (Cross-validation predictive density)</strong></span> Consider estimation of the leave-one predictive density under the hypothesis that the likelihood factorizes as <span class="math inline">\(L(\boldsymbol{\theta}; \boldsymbol{y}) = \prod_{i=1}^n f_i(y_i; \boldsymbol{\theta});\)</span> where <span class="math inline">\(f_i\)</span> is the density or mass function of the <span class="math inline">\(i\)</span>th observation. Then, with weights <span class="math display">\[\begin{align*}
 w_i(\boldsymbol{\theta}) = \frac{p(\boldsymbol{\theta} \mid \boldsymbol{y}_{-i})}{p(\boldsymbol{\theta} \mid \boldsymbol{y})} \stackrel{\boldsymbol{\theta}}{\propto} \frac{1}{f_i(y_i; \boldsymbol{\theta})}
 \end{align*}\]</span> we can write the leave-one-out posterior predictive as <span class="math display">\[\begin{align*}
 p(y_i \mid \boldsymbol{y}_{-i}) &amp;= \int_{\boldsymbol{\Theta}} f_i(y_i; \boldsymbol{\theta}) p(\boldsymbol{\theta} \mid \boldsymbol{y}_{-i}) \mathrm{d} \boldsymbol{\theta}
@@ -630,8 +600,8 @@ A simple model, following @Gelman:2006, is to assume the effect size is Gaussian
 \boldsymbol{Y} = \mathbf{X}\boldsymbol{\beta} + \mathbf{Z}\boldsymbol{B} + \boldsymbol{\varepsilon}
 \end{align*}\]</span> where <span class="math inline">\(\mathbf{X}\)</span> is an <span class="math inline">\(n \times p\)</span> design matrix with centered inputs, <span class="math inline">\(\boldsymbol{\beta} \sim \mathsf{Gauss}(\boldsymbol{0}_p, \sigma^2\mathbf{I}_p),\)</span> <span class="math inline">\(\boldsymbol{B}\sim \mathsf{Gauss}_q(\boldsymbol{0}_q, \boldsymbol{\Omega})\)</span> are random effects and <span class="math inline">\(\boldsymbol{\varepsilon} \sim \mathsf{Gauss}_n(\boldsymbol{0}_n, \kappa^2\mathbf{I}_n)\)</span> are independent white noise.</p>
 <p>We can write <span class="math display">\[\begin{align*}
-\boldsymbol{Y} \mid \mathbf{\beta}, \boldsymbol{B} &amp;\sim \mathsf{Gauss}_n(\mathbf{X}\boldsymbol{\beta} + \mathbf{Z}\boldsymbol{B},  \sigma^2\mathbf{I}_p)\\
-\boldsymbol{Y} \mid \mathbf{\beta} &amp;\sim \mathsf{Gauss}_n(\mathbf{X}\boldsymbol{\beta}, \mathbf{Q}^{-1}),
+\boldsymbol{Y} \mid \boldsymbol{\beta}, \boldsymbol{B} &amp;\sim \mathsf{Gauss}_n(\mathbf{X}\boldsymbol{\beta} + \mathbf{Z}\boldsymbol{B},  \sigma^2\mathbf{I}_p)\\
+\boldsymbol{Y} \mid \boldsymbol{\beta} &amp;\sim \mathsf{Gauss}_n(\mathbf{X}\boldsymbol{\beta}, \mathbf{Q}^{-1}),
 \end{align*}\]</span> where the second line corresponds to marginalizing out the random effects <span class="math inline">\(\boldsymbol{B}.\)</span> This reduces the number of parameters to draw, but the likelihood evaluation is more costly due to <span class="math inline">\(\mathbf{Q}^{-1}\)</span>. If, as is often the case, <span class="math inline">\(\boldsymbol{\Omega}^{-1}\)</span> and <span class="math inline">\(\mathbf{Z}\)</span> are sparse matrices, the full precision matrix can be efficiently computed using Shermann–Morisson–Woodbury identity as <span class="math display">\[\begin{align*}
 \mathbf{Q}^{-1} &amp;=   \mathbf{Z}\boldsymbol{\Omega}^{-1}\mathbf{Z}^\top + \kappa^2 \mathbf{I}_n,\\
 \kappa^2\mathbf{Q} &amp; = \mathbf{I}_n - \mathbf{Z} \boldsymbol{G}^{-1} \mathbf{Z}^\top,\\
@@ -639,7 +609,7 @@ A simple model, following @Gelman:2006, is to assume the effect size is Gaussian
 \end{align*}\]</span> Section 3.1 of <span class="citation" data-cites="Nychka:2015">Nychka et al. (<a href="references.html#ref-Nychka:2015" role="doc-biblioref">2015</a>)</span> details efficient ways of calculating the quadratic form involving <span class="math inline">\(\mathbf{Q}\)</span> and it’s determinant.</p>
 </div>
 <div id="prp-pseudo-marginal" class="theorem proposition">
-<p><span class="theorem-title"><strong>Proposition 7.4 (Pseudo marginal)</strong></span> Another option proposed by <span class="citation" data-cites="Andrieu.Roberts:2009">Andrieu and Roberts (<a href="references.html#ref-Andrieu.Roberts:2009" role="doc-biblioref">2009</a>)</span> based on an original idea from <span class="citation" data-cites="Beaumont:2003">Beaumont (<a href="references.html#ref-Beaumont:2003" role="doc-biblioref">2003</a>)</span> relies on pseudo marginalization, where integration is done via Monte Carlo sampling. Specifically, suppose that we are ultimately interested in <span class="math display">\[p(\boldsymbol{\theta})= \int p(\boldsymbol{\theta}, \boldsymbol{z}) \mathrm{d} \boldsymbol{z},\]</span> but that for this purpose we normally sample from both parameters. Given a proposal <span class="math inline">\(\boldsymbol{\theta}\)</span> and <span class="math inline">\(q_1(\boldsymbol{\theta})\)</span> and subsequently <span class="math inline">\(L\)</span> draws once from <span class="math inline">\(q_2(\boldsymbol{z} \mid \boldsymbol{\theta})\)</span> for the nuisance, we can approximate the marginal using, e.g., importance sampling as <span class="math display">\[\begin{align*}
+<p><span class="theorem-title"><strong>Proposition 7.5 (Pseudo marginal)</strong></span> Another option proposed by <span class="citation" data-cites="Andrieu.Roberts:2009">Andrieu and Roberts (<a href="references.html#ref-Andrieu.Roberts:2009" role="doc-biblioref">2009</a>)</span> based on an original idea from <span class="citation" data-cites="Beaumont:2003">Beaumont (<a href="references.html#ref-Beaumont:2003" role="doc-biblioref">2003</a>)</span> relies on pseudo marginalization, where integration is done via Monte Carlo sampling. Specifically, suppose that we are ultimately interested in <span class="math display">\[p(\boldsymbol{\theta})= \int p(\boldsymbol{\theta}, \boldsymbol{z}) \mathrm{d} \boldsymbol{z},\]</span> but that for this purpose we normally sample from both parameters. Given a proposal <span class="math inline">\(\boldsymbol{\theta}\)</span> and <span class="math inline">\(q_1(\boldsymbol{\theta})\)</span> and subsequently <span class="math inline">\(L\)</span> draws once from <span class="math inline">\(q_2(\boldsymbol{z} \mid \boldsymbol{\theta})\)</span> for the nuisance, we can approximate the marginal using, e.g., importance sampling as <span class="math display">\[\begin{align*}
 \widehat{p}(\boldsymbol{\theta}; \boldsymbol{z}) = \frac{1}{L} \sum_{l=1}^L \frac{p(\boldsymbol{\theta}, \boldsymbol{z}_l)}{q_2(\boldsymbol{z}_l, \boldsymbol{\theta})}.
 \end{align*}\]</span> We then run a Markov chain on an augmented state space <span class="math inline">\(\boldsymbol{\Theta} \times \mathcal{Z}^L\)</span>, with Metropolis–Hastings acceptance ratio of <span class="math display">\[\begin{align*}
 \frac{\widehat{p}(\boldsymbol{\theta}^{\star}; \boldsymbol{z}_{1,t}^{\star}, \boldsymbol{z}_{L,t}^{\star})}{
@@ -650,7 +620,7 @@ A simple model, following @Gelman:2006, is to assume the effect size is Gaussian
 <p>The idea of pseudo-marginal extends beyond the user case presented above, as as long as we have an unbiased non-negative estimator of the likelihood <span class="math inline">\(\mathsf{E}\{\widehat{p}(\boldsymbol{\theta})\}=p(\boldsymbol{\theta})\)</span>, even when the likelihood itself is intractable. This is useful for models where we can approximate the likelihood by simulation, like for particle filters. Pseudo marginal MCMC algorithms are notorious for yielding sticky chains.</p>
 </div>
 <div id="prp-blocking" class="theorem proposition">
-<p><span class="theorem-title"><strong>Proposition 7.5 (Blocking)</strong></span> When parameters of the vector <span class="math inline">\(\boldsymbol{\theta}\)</span> that we wish to sample are strongly correlated, it is advisable when possible to simulate them jointly. Because the unnormalized posterior is evaluated at each step conditional on all values, the Markov chain will be making incremental moves and mix slowly if we sample them one step at a time.</p>
+<p><span class="theorem-title"><strong>Proposition 7.6 (Blocking)</strong></span> When parameters of the vector <span class="math inline">\(\boldsymbol{\theta}\)</span> that we wish to sample are strongly correlated, it is advisable when possible to simulate them jointly. Because the unnormalized posterior is evaluated at each step conditional on all values, the Markov chain will be making incremental moves and mix slowly if we sample them one step at a time.</p>
 </div>
 <p>Before showcasing the effect of blocking and joint updates, we present another example of data augmentation using <a href="gibbs.html#exm-probit-regression" class="quarto-xref">Example&nbsp;<span>6.2</span></a>.</p>
 <div id="exm-Tokyo-rainfall" class="theorem example">
@@ -835,10 +805,10 @@ Y_{i} &amp;\sim \mathsf{Gauss}(\mu + \alpha_i, s^2_i) \\
 Y_{i} &amp;\sim \mathsf{Gauss}(\mu + \nu\xi_i, s^2_i) \\
 \xi_i &amp;\sim \mathsf{Gauss}(0, \sigma^2_\xi)
 \end{align*}\]</span> so that <span class="math inline">\(\alpha_j = \nu \xi_j\)</span> and <span class="math inline">\(\sigma_\alpha = |\nu|\sigma_\xi.\)</span> The common parameter <span class="math inline">\(\nu\)</span> controls both the variance and the amplitude of the coefficients.</p>
-<p>Consider the eight school data from Educational Testing Service (ETS), featured prominently in <span class="citation" data-cites="Gelman:2013">Gelman et al. (<a href="references.html#ref-Gelman:2013" role="doc-biblioref">2013</a>)</span>. The data shows results of randomized experiments in eight different schools to estimate the effect of coaching on SAT-V scores. The data consist of estimated treatment mean difference <span class="math inline">\(y_1, \ldots, y_8\)</span> and their standard errors <span class="math inline">\(\sigma_1, \ldots, s_8\)</span>. The data size are large, so the average treatment effect (ATE) can be considered Gaussian and the school-specific standard errors <span class="math inline">\(s_j\)</span> are treated as a known quantity.</p>
+<p>Consider the eight school data from Educational Testing Service (ETS), featured prominently in <span class="citation" data-cites="Gelman:2013">Gelman et al. (<a href="references.html#ref-Gelman:2013" role="doc-biblioref">2013</a>)</span>. The data shows results of randomized experiments in eight different schools to estimate the effect of coaching on SAT-V scores. The data consist of estimated treatment mean difference <span class="math inline">\(y_1, \ldots, y_8\)</span> and their standard errors <span class="math inline">\(s_1, \ldots, s_8\)</span>. The data size are large, so the average treatment effect (ATE) can be considered Gaussian and the school-specific standard errors <span class="math inline">\(s_j\)</span> are treated as a known quantity.</p>
 <p>We can devise different Gibbs sampling from this problem. The naive Gibbs sampler, which iterates between conditionals of <span class="math inline">\(p(\boldsymbol{\alpha} \mid \boldsymbol{y}, \boldsymbol{s}^2, \mu, \sigma^2_{\alpha})\)</span> and <span class="math inline">\(p(\mu \mid \boldsymbol{y}, \boldsymbol{s}^2, \boldsymbol{\alpha})\)</span> leads to strong autocorrelation. A better strategy is to marginalize over the global mean <span class="math inline">\(\mu\)</span> and simulate from <span class="math inline">\(p(\boldsymbol{\alpha} \mid \boldsymbol{y}, \boldsymbol{s}^2, \sigma^2_{\alpha})\)</span> instead. We get then the conditionals <span class="math display">\[\begin{align*}
-\alpha_i \mid y_i, s_i^2, \sigma^2_{\alpha} &amp;\sim \mathsf{Gauss}\left\{ \left(s^{-2}_i + \sigma^{-2}_{\alpha}\right)^{-1}\frac{y_i}{s^2_j}, \left(s^{-2}_i + \sigma^{-2}_{\alpha}\right)^{-1}\right\}\\
-\mu \mid \boldsymbol{y}, \boldsymbol{s}^2, \boldsymbol{\alpha} &amp; \sim \mathsf{Gauss}\left( s^2_{\mu} \sum_{j=1}^8 \frac{y_i-\alpha_i}{s^2_j}, s^2_{\mu}\right)\\
+\alpha_i \mid y_i, s_i^2, \sigma^2_{\alpha} &amp;\sim \mathsf{Gauss}\left\{ \left(s^{-2}_i + \sigma^{-2}_{\alpha}\right)^{-1}\frac{y_i}{s^2_i}, \left(s^{-2}_i + \sigma^{-2}_{\alpha}\right)^{-1}\right\}\\
+\mu \mid \boldsymbol{y}, \boldsymbol{s}^2, \boldsymbol{\alpha} &amp; \sim \mathsf{Gauss}\left( s^2_{\mu} \sum_{j=1}^8 \frac{y_j-\alpha_j}{s^2_j}, s^2_{\mu}\right)\\
 \sigma^2_{\alpha} \mid \boldsymbol{\alpha} &amp;\sim \mathsf{inv. gamma}\left( \frac{n-1}{2}, \frac{\sum_{j=1}^8 \alpha_j^2}{2}\right)
 \end{align*}\]</span> where <span class="math inline">\(s^{-2}_{\mu} =\sum_{j=1}^8 s_j^{-2}.\)</span></p>
 <p>The parameter expansion sampler proceeds in exactly the same way with the same conditionals for <span class="math inline">\(\sigma_{\xi}^2\)</span> and <span class="math inline">\(\boldsymbol{\xi}\)</span> as above; the only additional step is <span class="math display">\[\begin{align*}
@@ -889,6 +859,9 @@ Gelman, Andrew, and Donald B. Rubin. 1992. <span>“Inference from Iterative Sim
 <div id="ref-Gelman:2020" class="csl-entry" role="listitem">
 Gelman, Andrew, Aki Vehtari, Daniel Simpson, et al. 2020. <span>“Bayesian Workflow.”</span> <em>arXiv</em>, ahead of print. https://doi.org/<a href="https://doi.org/10.48550/arXiv.2011.01808">https://doi.org/10.48550/arXiv.2011.01808</a>.
 </div>
+<div id="ref-Geweke:2004" class="csl-entry" role="listitem">
+Geweke, John. 2004. <span>“Getting It Right: Joint Distribution Tests of Posterior Simulators.”</span> <em>Journal of the American Statistical Association</em> 99 (467): 799–804. <a href="https://doi.org/10.1198/016214504000001132">https://doi.org/10.1198/016214504000001132</a>.
+</div>
 <div id="ref-Kitagawa:1987" class="csl-entry" role="listitem">
 Kitagawa, Genshiro. 1987. <span>“Non-<span>G</span>aussian State–Space Modeling of Nonstationary Time Series.”</span> <em>Journal of the American Statistical Association</em> 82 (400): 1032–41. <a href="https://doi.org/10.1080/01621459.1987.10478534">https://doi.org/10.1080/01621459.1987.10478534</a>.
 </div>
@@ -901,11 +874,17 @@ Plummer, Martyn, Nicky Best, Kate Cowles, and Karen Vines. 2006. <span>“<span>
 <div id="ref-Rue.Held:2005" class="csl-entry" role="listitem">
 Rue, H., and L. Held. 2005. <em><span>G</span>aussian <span>M</span>arkov Random Fields: Theory and Applications</em>. Chapman &amp; Hall/CRC Monographs on Statistics &amp; Applied Probability. CRC Press.
 </div>
+<div id="ref-Sailynoja:2022" class="csl-entry" role="listitem">
+Säilynoja, Teemu, Paul-Christian Bürkner, and Aki Vehtari. 2022. <span>“Graphical Test for Discrete Uniformity and Its Applications in Goodness-of-Fit Evaluation and Multiple Sample Comparison.”</span> <em>Statistics and Computing</em> 32 (2): 32. <a href="https://doi.org/10.1007/s11222-022-10090-6">https://doi.org/10.1007/s11222-022-10090-6</a>.
+</div>
 <div id="ref-Spiegelhalter:2014" class="csl-entry" role="listitem">
 Spiegelhalter, David J., Nicola G. Best, Bradley P. Carlin, and Angelika Linde. 2014. <span>“The Deviance Information Criterion: 12 Years On.”</span> <em>Journal of the Royal Statistical Society Series B: Statistical Methodology</em> 76 (3): 485–93. <a href="https://doi.org/10.1111/rssb.12062">https://doi.org/10.1111/rssb.12062</a>.
 </div>
 <div id="ref-Spiegelhalter:2002" class="csl-entry" role="listitem">
 Spiegelhalter, David J., Nicola G. Best, Bradley P. Carlin, and Angelika Van Der Linde. 2002. <span>“Bayesian Measures of Model Complexity and Fit.”</span> <em>Journal of the Royal Statistical Society: Series B (Statistical Methodology)</em> 64 (4): 583–639. <a href="https://doi.org/10.1111/1467-9868.00353">https://doi.org/10.1111/1467-9868.00353</a>.
+</div>
+<div id="ref-Talts:2020" class="csl-entry" role="listitem">
+Talts, Sean, Michael Betancourt, Daniel Simpson, Aki Vehtari, and Andrew Gelman. 2020. <em>Validating <span>B</span>ayesian Inference Algorithms with Simulation-Based Calibration</em>. <a href="https://doi.org/10.48550/arXiv.1804.06788">https://doi.org/10.48550/arXiv.1804.06788</a>.
 </div>
 <div id="ref-Vehtari.Gelman.Gabry:2017" class="csl-entry" role="listitem">
 Vehtari, Aki, Andrew Gelman, and Jonah Gabry. 2017. <span>“Practical <span>B</span>ayesian Model Evaluation Using Leave-One-Out Cross-Validation and <span>WAIC</span>.”</span> <em>Statistics and Computing</em> 27 (5): 1413–32. <a href="https://doi.org/10.1007/s11222-016-9696-4">https://doi.org/10.1007/s11222-016-9696-4</a>.
