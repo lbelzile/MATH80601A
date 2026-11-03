@@ -250,11 +250,11 @@ Let $\boldsymbol{Q}$ by a random $p \times p$ symmetric positive definite  matri
 \begin{align*}
  f(\boldsymbol{Q}) \stackrel{\boldsymbol{Q}}{\propto} |\boldsymbol{Q}|^{(\nu-p-1)/2}\exp\{-\mathrm{tr}(\mathbf{S}^{-1}\boldsymbol{Q})/2\}, \qquad \nu > p-1.
 \end{align*}
-where $|\cdot|$ denotes the determinant of the matrix and $\mathrm{tr}$ the trace operator. The Wishart also arises from considering $n \geq p$ independent and identically distributed mean zero Gaussian vectors $\boldsymbol{Y}_i \sim \mathsf{Gauss}_p(\boldsymbol{0}_p, \mathbf{S}),$ where
+where $|\cdot|$ denotes the determinant of the matrix and $\mathrm{tr}(\cdot)$ the trace operator which gives the sum of diagonal entries of a square matrix. The Wishart also arises from considering $n \geq p$ independent and identically distributed mean zero Gaussian vectors $\boldsymbol{Y}_i \stackrel{\mathrm{iid}}{\sim} \mathsf{Gauss}_p(\boldsymbol{0}_p, \mathbf{S}),$ where
 \begin{align*}
  \sum_{i=1}^{\nu} \boldsymbol{Y}_i\boldsymbol{Y}_i^\top \sim \mathsf{Wishart}_p(\nu, \mathbf{S}).
 \end{align*}
-For prior elicitation, $\nu$ is thus a prior sample size, whereas we can specify $\mathbf{S}$ using the fact that the mean of the Wishart is $\nu \mathbf{S}$; taking an identity matrix is standard. For more mathematical properties, consult Chapter 8 of @Eaton:2007.
+For prior elicitation, $\nu$ is thus a prior sample size, whereas we can specify $\mathbf{S}$ using the fact that the mean of the Wishart is $\nu \mathbf{S}$; taking an identity matrix for $\mathbf{S}$ is standard. For more mathematical properties, consult Chapter 8 of @Eaton:2007.
 
 :::
 
@@ -263,9 +263,9 @@ For prior elicitation, $\nu$ is thus a prior sample size, whereas we can specify
 ## Inverse Wishart
 
 
-Analogous to the relationship between gamma prior for the precision and inverse gamma for the variance, we can also similarly consider a prior for the covariance matrix $\boldsymbol{\Sigma} = \boldsymbol{Q}^{-1}.$ Applying the change of variable formula, we get Jacobian $|\boldsymbol{\Sigma}|^{p+1},$ and so $\boldsymbol{\Sigma}$ is inverse Wishart $\mathsf{inv. Wishart}(\nu, \mathbf{S}^{-1}),$ with density proportional to
+Analogous to the relationship between gamma prior for the precision and inverse gamma for the variance, we can also similarly consider a prior for the covariance matrix $\boldsymbol{\Sigma} = \boldsymbol{Q}^{-1}.$ Applying the change of variable formula, we get the Jacobian of $|\boldsymbol{\Sigma}|^{p+1},$ and so $\boldsymbol{\Sigma}$ follows an inverse Wishart distribution, denoted $\mathsf{inv. Wishart}(\nu, \mathbf{S}^{-1}),$ with density proportional to
 \begin{align*}
- p(\boldsymbol{\Sigma}) \propto |\boldsymbol{\Sigma}|^{-(\nu+p+1)/2} \exp\left\{-\frac{1}{2} \mathrm{tr}\left(\boldsymbol{S}^{-1}\boldsymbol{\Sigma}^{-1}\right)\right\}
+ p(\boldsymbol{\Sigma}) \propto |\boldsymbol{\Sigma}|^{-(\nu+p+1)/2} \exp\left\{-\frac{1}{2} \mathrm{tr}\left(\mathbf{S}^{-1}\boldsymbol{\Sigma}^{-1}\right)\right\}
 \end{align*}
 with expectation $\mathbf{S}^{-1}(\nu-p-1)$ for $\nu > p+1.$
 
@@ -280,11 +280,11 @@ Consider $\boldsymbol{\mu} \sim \mathsf{Gauss}_p(\boldsymbol{\mu}_0, \boldsymbol
 \begin{align*}
  |\boldsymbol{Q}|^{1/2} \exp \left\{ -\frac{1}{2} (\boldsymbol{\mu}-\boldsymbol{\mu}_0)^\top\boldsymbol{Q}(\boldsymbol{\mu}-\boldsymbol{\mu}_0)\right\} |\boldsymbol{Q}|^{(\nu-p-1)/2}\exp\{-\mathrm{tr}(\mathbf{S}^{-1}\boldsymbol{Q})/2\}
 \end{align*}
-and thus $\mathsf{Wishart}_p\{\nu + 1/2, \boldsymbol{S} + (\boldsymbol{\mu}-\boldsymbol{\mu}_0)(\boldsymbol{\mu}-\boldsymbol{\mu}_0)^\top\}.$ To see this, note that a $1 \times 1$ matrix is equal to it's trace, and the trace operator is invariant to cyclic of it's argument, meaning that
+and thus $$\boldsymbol{Q} \mid \boldsymbol{\mu}, \boldsymbol{\mu}_0, \mathbf{S} \sim \mathsf{Wishart}_p\left[\nu + 1, \left\{\mathbf{S}^{-1} + (\boldsymbol{\mu}-\boldsymbol{\mu}_0)(\boldsymbol{\mu}-\boldsymbol{\mu}_0)^\top\right\}^{-1}\right].$$ To see this, note that a $1 \times 1$ matrix is equal to it's trace, and the trace operator is invariant to cyclic of it's argument, meaning that
 \begin{align*}
- (\boldsymbol{\mu}-\boldsymbol{\mu}_0)^\top\boldsymbol{Q}(\boldsymbol{\mu}-\boldsymbol{\mu}_0) = \mathrm{tr}\left\{ \boldsymbol{Q}(\boldsymbol{\mu}-\boldsymbol{\mu}_0)(\boldsymbol{\mu}-\boldsymbol{\mu}_0)^\top\right\}.
+ (\boldsymbol{\mu}-\boldsymbol{\mu}_0)^\top\boldsymbol{Q}(\boldsymbol{\mu}-\boldsymbol{\mu}_0) = \mathrm{tr}\left\{ (\boldsymbol{\mu}-\boldsymbol{\mu}_0)(\boldsymbol{\mu}-\boldsymbol{\mu}_0)^\top\boldsymbol{Q}\right\}.
 \end{align*}
-We then combine elements to get the parameters. This extends naturally to the case of $n$ independent observations, for example linear regression model.
+This extends naturally to the case of $n$ independent observations, for example linear regression model.
 
 :::
 
@@ -311,7 +311,8 @@ cor_b <- apply(prec, 3, function(x){cov2cor(solve(x))[1,2]})
 var_b <- apply(prec, 3, function(x){solve(x)[1,1]})
 draws <- data.frame(cor = c(cor_a, cor_b),
            logvar = log(c(var_a, var_b)),
-           df = factor(paste0("df = ",rep(c(3, 20), each = 1000))))
+           df = factor(paste0("df = ",rep(c(3, 20), each = 1000)))) |>
+  dplyr::mutate(df = relevel(df, ref = "df = 3"))
 ggplot(data = draws,
        mapping = aes(x = cor, y = logvar)) +
   geom_point() +
@@ -355,7 +356,7 @@ where a prior $p(\sigma^2)$ give rise to a Gaussian scale mixtures for the slab.
 \begin{align*}
 p(\boldsymbol{\gamma} \mid \omega) = \prod_{j=1}^n \omega^{\gamma_j} (1-\omega)^{1-\gamma_j}
 \end{align*}
-Apriori, the shared hyperparameters $\omega \in (0,1)$ corresponds to the proportion of the $p$ coefficients $\boldsymbol{\beta}$ that are zero (so $p(1-\omega)$ nonzero coefficients). Alternative priors focus on precentage of explained variance in the regression (via the coefficient of determination $R^2$) and the number of covariates. The prior has typically a strong impact on the posterior, by design.
+Apriori, the shared hyperparameters $\omega \in (0,1)$ corresponds to the proportion of the $p$ coefficients $\boldsymbol{\beta}$ that are zero as there are on average $p(1-\omega)$ non-zero coefficients. Alternative priors focus on precentage of explained variance in the regression (via the coefficient of determination $R^2$) and the number of covariates. The prior has typically a strong impact on the posterior, by design.
 
 :::
 

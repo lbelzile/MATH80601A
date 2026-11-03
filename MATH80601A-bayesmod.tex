@@ -348,18 +348,18 @@
 \floatname{codelisting}{Listing}
 \newcommand*\listoflistings{\listof{codelisting}{List of Listings}}
 \usepackage{amsthm}
-\theoremstyle{plain}
-\newtheorem{corollary}{Corollary}[chapter]
-\theoremstyle{plain}
-\newtheorem{proposition}{Proposition}[chapter]
 \theoremstyle{definition}
 \newtheorem{example}{Example}[chapter]
 \theoremstyle{plain}
+\newtheorem{proposition}{Proposition}[chapter]
+\theoremstyle{plain}
 \newtheorem{theorem}{Theorem}[chapter]
-\theoremstyle{definition}
-\newtheorem{definition}{Definition}[chapter]
+\theoremstyle{plain}
+\newtheorem{corollary}{Corollary}[chapter]
 \theoremstyle{definition}
 \newtheorem{exercise}{Exercise}[chapter]
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}[chapter]
 \theoremstyle{remark}
 \AtBeginDocument{\renewcommand*{\proofname}{Proof}}
 \newtheorem*{remark}{Remark}
@@ -376,6 +376,10 @@
 \usepackage{bookmark}
 \IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
 \urlstyle{same}
+% fallback for those not using the hyperref driver hyperxmp:
+\makeatletter
+\@ifundefined{xmpquote}{\newcommand{\xmpquote}[1]{#1}}{}
+\makeatother
 \hypersetup{
   pdftitle={Bayesian modelling},
   pdfauthor={Léo Belzile},
@@ -412,7 +416,7 @@ details.
 These notes are licensed under a
 \href{http://creativecommons.org/licenses/by-nc-sa/4.0/}{Creative
 Commons Attribution-NonCommercial-ShareAlike 4.0 International License}
-and were last compiled on Wednesday, October 21 2026.
+and were last compiled on mardi, novembre 03 2026.
 
 The objective of the course is to provide a hands on introduction to
 Bayesian data analysis. The course will cover the formulation,
@@ -1032,8 +1036,6 @@ Consider a bivariate distribution for \((Y_1, Y_2)\) supported on
 \(\{1, 2, 3\} \times \{1, 2\},\) whose joint probability mass function
 is given in Table~\ref{tbl-bivardiscrete}
 
-{
-
 \begin{longtable}[]{@{}lrrrr@{}}
 
 \caption{\label{tbl-bivardiscrete}Bivariate mass function with
@@ -1052,8 +1054,6 @@ probability of each outcome for \((Y_1, Y_2).\)}
 total & 0.35 & 0.5 & 0.15 & 1.0 \\
 
 \end{longtable}
-
-}
 
 The marginal distribution of \(Y_1\) is obtain by looking at the total
 probability for each column, as
@@ -2203,8 +2203,6 @@ the amount). Participants of the study were randomly allocated to either
 of these two format and their decision, either buy, \texttt{Y=1}, or do
 not buy \texttt{Y=0}, is recorded.
 
-{
-
 \begin{longtable}[]{@{}lrr@{}}
 
 \caption{\label{tbl-contingency-sellingformat}Aggregated data from Duke
@@ -2224,8 +2222,6 @@ quantity-integrated & 152 & 46 \\
 quantity-sequential & 176 & 23 \\
 
 \end{longtable}
-
-}
 
 We consider the number of purchased out of the total, treating records
 as independent Bernoulli observations with a flat (uniform prior).
@@ -2979,8 +2975,6 @@ by moment matching yields approximately \(\alpha = 1.65\) and
 \(\alpha/\beta = 0.0158\) and \(\alpha/\beta^2=0.0123^2\) and solving
 for the two unknown parameters.
 
-{
-
 \begin{longtable}[]{@{}lrr@{}}
 
 \caption{\label{tbl-upworthy}Number of views, clicks for different
@@ -3000,8 +2994,6 @@ H3 & 3112 & 31 \\
 H4 & 3083 & 9 \\
 
 \end{longtable}
-
-}
 
 \begin{figure}[ht!]
 
@@ -3863,7 +3855,7 @@ points from the Gaussian and accept any that falls within the bounds.
 \end{Shaded}
 
 \begin{verbatim}
-[1] 0.3391
+[1] 0.34024
 \end{verbatim}
 
 \begin{Shaded}
@@ -4175,7 +4167,7 @@ more than 9\% for the same Monte Carlo sample size.
 
 \begin{verbatim}
                true         monte carlo importance sampling 
-             0.0625              0.0625              0.0620 
+             0.0625              0.0623              0.0624 
 \end{verbatim}
 
 \begin{Shaded}
@@ -4186,7 +4178,7 @@ more than 9\% for the same Monte Carlo sample size.
 \end{Shaded}
 
 \begin{verbatim}
-[1] 1.107146
+[1] 1.101936
 \end{verbatim}
 
 \begin{figure}[ht!]
@@ -7309,7 +7301,7 @@ large sample size and uninformative priors.
 
 \centering{
 
-\pandocbounded{\includegraphics[keepaspectratio]{regression_files/figure-pdf/fig-contrasts-1.pdf}}
+\includegraphics[width=0.85\linewidth,height=\textheight,keepaspectratio]{regression_files/figure-pdf/fig-contrasts-1.pdf}
 
 }
 
@@ -7335,17 +7327,18 @@ degrees of freedom and scale \(\mathbf{S}.\) It's density is
 proportional to \begin{align*}
  f(\boldsymbol{Q}) \stackrel{\boldsymbol{Q}}{\propto} |\boldsymbol{Q}|^{(\nu-p-1)/2}\exp\{-\mathrm{tr}(\mathbf{S}^{-1}\boldsymbol{Q})/2\}, \qquad \nu > p-1.
 \end{align*} where \(|\cdot|\) denotes the determinant of the matrix and
-\(\mathrm{tr}\) the trace operator. The Wishart also arises from
+\(\mathrm{tr}(\cdot)\) the trace operator which gives the sum of
+diagonal entries of a square matrix. The Wishart also arises from
 considering \(n \geq p\) independent and identically distributed mean
 zero Gaussian vectors
-\(\boldsymbol{Y}_i \sim \mathsf{Gauss}_p(\boldsymbol{0}_p, \mathbf{S}),\)
+\(\boldsymbol{Y}_i \stackrel{\mathrm{iid}}{\sim} \mathsf{Gauss}_p(\boldsymbol{0}_p, \mathbf{S}),\)
 where \begin{align*}
  \sum_{i=1}^{\nu} \boldsymbol{Y}_i\boldsymbol{Y}_i^\top \sim \mathsf{Wishart}_p(\nu, \mathbf{S}).
 \end{align*} For prior elicitation, \(\nu\) is thus a prior sample size,
 whereas we can specify \(\mathbf{S}\) using the fact that the mean of
-the Wishart is \(\nu \mathbf{S}\); taking an identity matrix is
-standard. For more mathematical properties, consult Chapter 8 of Eaton
-(\citeproc{ref-Eaton:2007}{2007}).
+the Wishart is \(\nu \mathbf{S}\); taking an identity matrix for
+\(\mathbf{S}\) is standard. For more mathematical properties, consult
+Chapter 8 of Eaton (\citeproc{ref-Eaton:2007}{2007}).
 
 \end{proposition}
 
@@ -7355,11 +7348,12 @@ Wishart]\protect\hypertarget{def-inverse-wishart}{}\label{def-inverse-wishart}
 Analogous to the relationship between gamma prior for the precision and
 inverse gamma for the variance, we can also similarly consider a prior
 for the covariance matrix \(\boldsymbol{\Sigma} = \boldsymbol{Q}^{-1}.\)
-Applying the change of variable formula, we get Jacobian
-\(|\boldsymbol{\Sigma}|^{p+1},\) and so \(\boldsymbol{\Sigma}\) is
-inverse Wishart \(\mathsf{inv. Wishart}(\nu, \mathbf{S}^{-1}),\) with
-density proportional to \begin{align*}
- p(\boldsymbol{\Sigma}) \propto |\boldsymbol{\Sigma}|^{-(\nu+p+1)/2} \exp\left\{-\frac{1}{2} \mathrm{tr}\left(\boldsymbol{S}^{-1}\boldsymbol{\Sigma}^{-1}\right)\right\}
+Applying the change of variable formula, we get the Jacobian of
+\(|\boldsymbol{\Sigma}|^{p+1},\) and so \(\boldsymbol{\Sigma}\) follows
+an inverse Wishart distribution, denoted
+\(\mathsf{inv. Wishart}(\nu, \mathbf{S}^{-1}),\) with density
+proportional to \begin{align*}
+ p(\boldsymbol{\Sigma}) \propto |\boldsymbol{\Sigma}|^{-(\nu+p+1)/2} \exp\left\{-\frac{1}{2} \mathrm{tr}\left(\mathbf{S}^{-1}\boldsymbol{\Sigma}^{-1}\right)\right\}
 \end{align*} with expectation \(\mathbf{S}^{-1}(\nu-p-1)\) for
 \(\nu > p+1.\)
 
@@ -7376,14 +7370,13 @@ and \(\boldsymbol{Q} \sim \mathsf{Wishart}_p(\nu, \mathbf{S})\) for
 proportional to \begin{align*}
  |\boldsymbol{Q}|^{1/2} \exp \left\{ -\frac{1}{2} (\boldsymbol{\mu}-\boldsymbol{\mu}_0)^\top\boldsymbol{Q}(\boldsymbol{\mu}-\boldsymbol{\mu}_0)\right\} |\boldsymbol{Q}|^{(\nu-p-1)/2}\exp\{-\mathrm{tr}(\mathbf{S}^{-1}\boldsymbol{Q})/2\}
 \end{align*} and thus
-\(\mathsf{Wishart}_p\{\nu + 1/2, \boldsymbol{S} + (\boldsymbol{\mu}-\boldsymbol{\mu}_0)(\boldsymbol{\mu}-\boldsymbol{\mu}_0)^\top\}.\)
+\[\boldsymbol{Q} \mid \boldsymbol{\mu}, \boldsymbol{\mu}_0, \mathbf{S} \sim \mathsf{Wishart}_p\left[\nu + 1, \left\{\mathbf{S}^{-1} + (\boldsymbol{\mu}-\boldsymbol{\mu}_0)(\boldsymbol{\mu}-\boldsymbol{\mu}_0)^\top\right\}^{-1}\right].\]
 To see this, note that a \(1 \times 1\) matrix is equal to it's trace,
 and the trace operator is invariant to cyclic of it's argument, meaning
 that \begin{align*}
- (\boldsymbol{\mu}-\boldsymbol{\mu}_0)^\top\boldsymbol{Q}(\boldsymbol{\mu}-\boldsymbol{\mu}_0) = \mathrm{tr}\left\{ \boldsymbol{Q}(\boldsymbol{\mu}-\boldsymbol{\mu}_0)(\boldsymbol{\mu}-\boldsymbol{\mu}_0)^\top\right\}.
-\end{align*} We then combine elements to get the parameters. This
-extends naturally to the case of \(n\) independent observations, for
-example linear regression model.
+ (\boldsymbol{\mu}-\boldsymbol{\mu}_0)^\top\boldsymbol{Q}(\boldsymbol{\mu}-\boldsymbol{\mu}_0) = \mathrm{tr}\left\{ (\boldsymbol{\mu}-\boldsymbol{\mu}_0)(\boldsymbol{\mu}-\boldsymbol{\mu}_0)^\top\boldsymbol{Q}\right\}.
+\end{align*} This extends naturally to the case of \(n\) independent
+observations, for example linear regression model.
 
 \end{proposition}
 
@@ -7407,7 +7400,7 @@ but we refrain from pursuing these here.
 
 \centering{
 
-\pandocbounded{\includegraphics[keepaspectratio]{regression_files/figure-pdf/fig-draws-Wishart-1.pdf}}
+\includegraphics[width=0.85\linewidth,height=\textheight,keepaspectratio]{regression_files/figure-pdf/fig-draws-Wishart-1.pdf}
 
 }
 
@@ -7478,11 +7471,11 @@ conjugate prior for \(\gamma_j \sim \mathsf{binom}(1, \omega),\) we get
 p(\boldsymbol{\gamma} \mid \omega) = \prod_{j=1}^n \omega^{\gamma_j} (1-\omega)^{1-\gamma_j}
 \end{align*} Apriori, the shared hyperparameters \(\omega \in (0,1)\)
 corresponds to the proportion of the \(p\) coefficients
-\(\boldsymbol{\beta}\) that are zero (so \(p(1-\omega)\) nonzero
-coefficients). Alternative priors focus on precentage of explained
-variance in the regression (via the coefficient of determination
-\(R^2\)) and the number of covariates. The prior has typically a strong
-impact on the posterior, by design.
+\(\boldsymbol{\beta}\) that are zero as there are on average
+\(p(1-\omega)\) non-zero coefficients. Alternative priors focus on
+precentage of explained variance in the regression (via the coefficient
+of determination \(R^2\)) and the number of covariates. The prior has
+typically a strong impact on the posterior, by design.
 
 \end{definition}
 
@@ -7514,7 +7507,7 @@ shows the result.
 
 \centering{
 
-\pandocbounded{\includegraphics[keepaspectratio]{regression_files/figure-pdf/fig-spike-slab-zero-1.pdf}}
+\includegraphics[width=0.85\linewidth,height=\textheight,keepaspectratio]{regression_files/figure-pdf/fig-spike-slab-zero-1.pdf}
 
 }
 
@@ -7591,7 +7584,7 @@ exponential of the Laplace from Bayesian LASSO and the horseshoe.
 
 \centering{
 
-\pandocbounded{\includegraphics[keepaspectratio]{regression_files/figure-pdf/fig-weights-shrinkage-1.pdf}}
+\includegraphics[width=0.85\linewidth,height=\textheight,keepaspectratio]{regression_files/figure-pdf/fig-weights-shrinkage-1.pdf}
 
 }
 
@@ -7607,7 +7600,7 @@ priors.}
 
 \centering{
 
-\pandocbounded{\includegraphics[keepaspectratio]{regression_files/figure-pdf/fig-shrinkage-1.pdf}}
+\includegraphics[width=0.85\linewidth,height=\textheight,keepaspectratio]{regression_files/figure-pdf/fig-shrinkage-1.pdf}
 
 }
 
@@ -7665,7 +7658,7 @@ intervals.
 
 \centering{
 
-\pandocbounded{\includegraphics[keepaspectratio]{regression_files/figure-pdf/fig-shrinkage-dens-comparison-1.pdf}}
+\includegraphics[width=0.85\linewidth,height=\textheight,keepaspectratio]{regression_files/figure-pdf/fig-shrinkage-dens-comparison-1.pdf}
 
 }
 
@@ -7678,9 +7671,8 @@ regression coefficients with Gaussian (ridge), double exponential
 One aspect worth mentioning is that the horseshoe prior impacts strongly
 the geometry and leads to slower mixing than the conjugate or
 Student-\(t\) priors: the effective sample size fraction relative to the
-number of samples ranges from 13\% to 90\%, compared to 51\% to 100\%
-for the Bayesian LASSO and near-independent draws with the conjugate
-ridge.
+number of samples ranges from 16\% to 90\%, compared to 47\% to 99\% for
+the Bayesian LASSO and near-independent draws with the conjugate ridge.
 
 \end{example}
 
@@ -7920,7 +7912,7 @@ value, as the weights otherwise will be negligible.
 
 \centering{
 
-\pandocbounded{\includegraphics[keepaspectratio]{laplace_files/figure-pdf/fig-bmaweights-1.pdf}}
+\includegraphics[width=0.85\linewidth,height=\textheight,keepaspectratio]{laplace_files/figure-pdf/fig-bmaweights-1.pdf}
 
 }
 
@@ -8014,7 +8006,7 @@ mode of the posterior is
 
 \centering{
 
-\pandocbounded{\includegraphics[keepaspectratio]{laplace_files/figure-pdf/fig-post-gamma-laplace-1.pdf}}
+\includegraphics[width=0.85\linewidth,height=\textheight,keepaspectratio]{laplace_files/figure-pdf/fig-post-gamma-laplace-1.pdf}
 
 }
 
@@ -8092,9 +8084,9 @@ Then, \begin{align*}
 
 Simplification gives the approximation \begin{align*}
 \widehat{\mathsf{E}}_{\Lambda \mid \boldsymbol{Y}}(\Lambda) \approx \frac{\exp(-1)}{s + b} \frac{(n+a)^{n+a+1/2}}{(n+a-1)^{n+a-1/2}}
-\end{align*} which gives \(0.03457,\) whereas the true posterior mean is
-\((n+a)/(s+b) = 0.03457.\) The Laplace approximation is equal to the
-true value up to five significant digits.
+\end{align*} which gives \(0.035,\) whereas the true posterior mean is
+\((n+a)/(s+b) = 0.035.\) The Laplace approximation is equal to the true
+value up to five significant digits.
 
 \end{example}
 
@@ -8267,7 +8259,7 @@ prior for the precision.
 
 \centering{
 
-\pandocbounded{\includegraphics[keepaspectratio]{laplace_files/figure-pdf/fig-stochvol-inla-1.pdf}}
+\includegraphics[width=0.85\linewidth,height=\textheight,keepaspectratio]{laplace_files/figure-pdf/fig-stochvol-inla-1.pdf}
 
 }
 
@@ -8292,29 +8284,13 @@ the parameters using the change of variable formula.
 \CommentTok{\# Compute density, quantiles, etc. via inla.*marginal}
 \DocumentationTok{\#\# approximate 95\% credible interval and marginal post median}
 \NormalTok{INLA}\SpecialCharTok{::}\FunctionTok{inla.qmarginal}\NormalTok{(marg\_phi, }\AttributeTok{p =} \FunctionTok{c}\NormalTok{(}\FloatTok{0.025}\NormalTok{, }\FloatTok{0.5}\NormalTok{, }\FloatTok{0.975}\NormalTok{))}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{verbatim}
-[1] 0.9710178 0.9847906 0.9928912
-\end{verbatim}
-
-\begin{Shaded}
-\begin{Highlighting}[]
+\CommentTok{\#\textgreater{} [1] 0.971 0.985 0.993}
 \CommentTok{\# Change of variable to get variance from precision}
 \NormalTok{marg\_var }\OtherTok{\textless{}{-}}\NormalTok{ INLA}\SpecialCharTok{::}\FunctionTok{inla.tmarginal}\NormalTok{(}
   \AttributeTok{fun =} \ControlFlowTok{function}\NormalTok{(x) \{ }\DecValTok{1} \SpecialCharTok{/}\NormalTok{ x \}, }
   \AttributeTok{marginal =}\NormalTok{ marg\_prec)}
 \NormalTok{INLA}\SpecialCharTok{::}\FunctionTok{inla.qmarginal}\NormalTok{(marg\_var, }\AttributeTok{p =} \FunctionTok{c}\NormalTok{(}\FloatTok{0.025}\NormalTok{, }\FloatTok{0.975}\NormalTok{))}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{verbatim}
-[1] 0.2875416 0.7324307
-\end{verbatim}
-
-\begin{Shaded}
-\begin{Highlighting}[]
+\CommentTok{\#\textgreater{} [1] 0.288 0.732}
 \CommentTok{\# Posterior marginal mean and variance of phi}
 \NormalTok{mom1 }\OtherTok{\textless{}{-}}\NormalTok{ INLA}\SpecialCharTok{::}\FunctionTok{inla.emarginal}\NormalTok{(}
     \AttributeTok{fun =} \ControlFlowTok{function}\NormalTok{(x)\{x\}, }
@@ -8323,13 +8299,10 @@ the parameters using the change of variable formula.
     \AttributeTok{fun =} \ControlFlowTok{function}\NormalTok{(x)\{x}\SpecialCharTok{\^{}}\DecValTok{2}\NormalTok{\}, }
     \AttributeTok{marginal =}\NormalTok{ marg\_phi)}
 \FunctionTok{c}\NormalTok{(}\AttributeTok{mean =}\NormalTok{ mom1, }\AttributeTok{sd =} \FunctionTok{sqrt}\NormalTok{(mom2 }\SpecialCharTok{{-}}\NormalTok{ mom1}\SpecialCharTok{\^{}}\DecValTok{2}\NormalTok{))}
+\CommentTok{\#\textgreater{}    mean      sd }
+\CommentTok{\#\textgreater{} 0.98409 0.00567}
 \end{Highlighting}
 \end{Shaded}
-
-\begin{verbatim}
-      mean         sd 
-0.98409439 0.00566568 
-\end{verbatim}
 
 \end{example}
 
@@ -8358,7 +8331,7 @@ the coefficients, and the default priors for the other parameters.
 
 \centering{
 
-\pandocbounded{\includegraphics[keepaspectratio]{laplace_files/figure-pdf/fig-rainfall-inla-1.pdf}}
+\includegraphics[width=0.85\linewidth,height=\textheight,keepaspectratio]{laplace_files/figure-pdf/fig-rainfall-inla-1.pdf}
 
 }
 
@@ -8480,7 +8453,7 @@ target is supported.
 
 \centering{
 
-\pandocbounded{\includegraphics[keepaspectratio]{variational_files/figure-pdf/fig-klvsrev-1.pdf}}
+\includegraphics[width=0.85\linewidth,height=\textheight,keepaspectratio]{variational_files/figure-pdf/fig-klvsrev-1.pdf}
 
 }
 
@@ -8518,7 +8491,7 @@ quadratic \(ax^2+bx + c\) with \(a>0.\)
 
 \centering{
 
-\pandocbounded{\includegraphics[keepaspectratio]{variational_files/figure-pdf/fig-convex-1.pdf}}
+\includegraphics[width=0.85\linewidth,height=\textheight,keepaspectratio]{variational_files/figure-pdf/fig-convex-1.pdf}
 
 }
 
@@ -8759,7 +8732,7 @@ the dependence and the CAVI approximation is slightly less dispersed.
 
 \centering{
 
-\pandocbounded{\includegraphics[keepaspectratio]{variational_files/figure-pdf/fig-approx-cavi-gauss-1.pdf}}
+\includegraphics[width=0.85\linewidth,height=\textheight,keepaspectratio]{variational_files/figure-pdf/fig-approx-cavi-gauss-1.pdf}
 
 }
 
@@ -8773,7 +8746,7 @@ the conjugate Gaussian-gamma model (left) and CAVI approximation
 
 \centering{
 
-\pandocbounded{\includegraphics[keepaspectratio]{variational_files/figure-pdf/fig-gauss-cavi-margdens-1.pdf}}
+\includegraphics[width=0.85\linewidth,height=\textheight,keepaspectratio]{variational_files/figure-pdf/fig-gauss-cavi-margdens-1.pdf}
 
 }
 
@@ -8916,7 +8889,7 @@ underdispersed relative to the true marginal posterior.
 
 \centering{
 
-\pandocbounded{\includegraphics[keepaspectratio]{variational_files/figure-pdf/fig-elbo-CAVI-probit-1.pdf}}
+\includegraphics[width=0.85\linewidth,height=\textheight,keepaspectratio]{variational_files/figure-pdf/fig-elbo-CAVI-probit-1.pdf}
 
 }
 
