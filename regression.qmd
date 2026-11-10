@@ -438,7 +438,7 @@ g1 + g2
 
 The term was also used in @George.McCulloch:1993, which replaced the prior by a mixture of Gaussians, one of which diffuse and the other with near infinite precision and centered at the origin. The latter is known under the vocable stochastic search variable selection prior  after @George.McCulloch:1997, or more commonly as an instance of **continuous spike-and-slab** prior. Letting $\gamma_j \in [0,1]$ denote the probability of the slab or inclusion of the variable, the independent priors for the regression coefficients are
 \begin{align*}
- \beta_j \mid \gamma_j, \sigma_j^2, \phi^2 \sim  \gamma_j \underbracket[0.25pt]{\mathsf{Gauss}(0, \phi^2)}_{\text{spike}} + (1-\gamma_j) \underbracket[0.25pt]{\mathsf{Gauss}(0, \sigma_j^2\phi^2)}_{\text{slab}}
+ \beta_j \mid \gamma_j, \sigma_j^2, \phi^2 \sim  \gamma_j \underbrace{\mathsf{Gauss}(0, \phi^2)}_{\text{spike}} + (1-\gamma_j) \underbrace{\mathsf{Gauss}(0, \sigma_j^2\phi^2)}_{\text{slab}}
 \end{align*}
 where $\phi^2$ is very nearly zero, e.g., $\phi^2=0.001.$ The construction allows for variable augmentation with mixture indicators and Gibbs sampling, analogous to the Gaussian mixture models but with the variance and mean of one of the cluster for the spike fixed.  However, mixing of the Gibbs sampler Markov chain tends to be poor.
 
