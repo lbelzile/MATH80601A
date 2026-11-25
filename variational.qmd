@@ -681,11 +681,11 @@ g2 + g1
 :::
 
 
-Given the strong requirements for getting tractable conditionals, coordinate-ascent variational inference is mostly useful in ultra high-dimensional settings where Markov chain Monte Carlo algorithms are not viable. This is the case notable for regression models with the discrete spike-and-slab of @def-spike-slab, models for image processing or topic modelling using latent Dirichlet allocations.
+Given the strong requirements for getting tractable conditionals, coordinate-ascent variational inference is mostly useful in ultra high-dimensional settings where Markov chain Monte Carlo algorithms are not viable. This is the case for regression models with the discrete spike-and-slab of @def-spike-slab, models for image processing or topic modelling using latent Dirichlet allocations.
 
 ## Skew-approximations
 
-The Gaussian Laplace, variational and expected propagation approximations typically rely on symmetric approximations to the posterior. A symmetric function $g$ about $\boldsymbol{x}_{\text{sym}}$ is one for which the identity $g(\boldsymbol{x}) = g(2\boldsymbol{x}_{\text{sym}}-\boldsymbol{x}_{\text{sym}})$ for any $\boldsymbol{x}$ in the domain.
+The Gaussian Laplace, variational and expected propagation approximations typically rely on symmetric approximations to the posterior. A symmetric function $g$ about $\boldsymbol{x}_{\text{sym}}$ is one for which the identity $g(\boldsymbol{x}) = g(2\boldsymbol{x}_{\text{sym}}-\boldsymbol{x})$ for any $\boldsymbol{x}$ in the domain.
 
 
 Symmetric approximations perform poorly when the underlying posterior is skewed, as in the example in the right panel of @fig-convex shows. Recent work of @Pozza.Durante.Szabo:2026 show how one can build a skew-symmetric approximation for the posterior $p(\boldsymbol{\theta} \mid \boldsymbol{y})$ from a symmetric one, say $g(\boldsymbol{\theta})$ at the cost of two additional likelihood and prior evaluations for every parameter vector $\boldsymbol{\theta}$ of interest.

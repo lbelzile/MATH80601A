@@ -279,21 +279,6 @@
 \DeclareMathAlphabet{\mathcrl}{U}{rsfs}{m}{n}
 \usepackage{utopia}
 \DeclareMathAlphabet{\mathcal}{OMS}{cmsy}{m}{n}
-\usepackage{booktabs}
-\usepackage{longtable}
-\usepackage{array}
-\usepackage{multirow}
-\usepackage{wrapfig}
-\usepackage{float}
-\usepackage{colortbl}
-\usepackage{pdflscape}
-\usepackage{tabularx}
-\usepackage{xltabular}
-\usepackage{threeparttable}
-\usepackage{threeparttablex}
-\usepackage[normalem]{ulem}
-\usepackage{makecell}
-\usepackage{xcolor}
 \makeatletter
 \@ifpackageloaded{tcolorbox}{}{\usepackage[skins,breakable]{tcolorbox}}
 \@ifpackageloaded{fontawesome5}{}{\usepackage{fontawesome5}}
@@ -358,8 +343,15 @@
 \newtheorem{corollary}{Corollary}[chapter]
 \theoremstyle{definition}
 \newtheorem{exercise}{Exercise}[chapter]
+<<<<<<< HEAD
 \theoremstyle{definition}
 \newtheorem{definition}{Definition}[chapter]
+=======
+\theoremstyle{plain}
+\newtheorem{proposition}{Proposition}[chapter]
+\theoremstyle{plain}
+\newtheorem{corollary}{Corollary}[chapter]
+>>>>>>> 87d6fe9 (Fix typos)
 \theoremstyle{remark}
 \AtBeginDocument{\renewcommand*{\proofname}{Proof}}
 \newtheorem*{remark}{Remark}
@@ -416,7 +408,11 @@ details.
 These notes are licensed under a
 \href{http://creativecommons.org/licenses/by-nc-sa/4.0/}{Creative
 Commons Attribution-NonCommercial-ShareAlike 4.0 International License}
+<<<<<<< HEAD
 and were last compiled on mardi, novembre 03 2026.
+=======
+and were last compiled on Wednesday, November 25 2026.
+>>>>>>> 87d6fe9 (Fix typos)
 
 The objective of the course is to provide a hands on introduction to
 Bayesian data analysis. The course will cover the formulation,
@@ -7884,17 +7880,21 @@ If we use this approximation instead, we get \begin{align*}
 replacing the true information by the evaluation at the MLE. The
 likelihood is \(\mathrm{O}(n),\) the second is \(\mathrm{O}(\log n)\)
 and the other three are \(\mathrm{O}(1).\) If we take the prior to be a
-multivariate Gaussian with mean \(\boldsymbol{\theta}_{\mathrm{MLE}}\)
-and with variance \(\boldsymbol{\imath},\) then the approximation error
-is \(\mathrm{O}(n^{-1/2}),\) whereas the marginal likelihood has error
+multivariate Gaussian with mean
+\(\widehat{\boldsymbol{\theta}}_{\mathrm{MLE}}\) and with variance
+\(\boldsymbol{\imath},\) then the approximation error is
+\(\mathrm{O}(n^{-1/2}),\) whereas the marginal likelihood has error
 \(\mathrm{O}(1)\) if we only keep the first two terms. This gives the
 approximation \begin{align*}
--2\log p(\boldsymbol{y}) \approx \mathsf{BIC} = -2\log p(\boldsymbol{y} \mid \boldsymbol{\theta}) + p\log n
-\end{align*} If the likelihood contribution dominates the posterior, the
-\(\mathsf{BIC}\) approximation will improve with increasing sample size,
-so \(\exp(-\mathsf{BIC}/2)\) is an approximation fo the marginal
-likelihood sometimes used for model comparison in Bayes factor, although
-this derivation shows that the latter neglects the impact of the prior.
+-2\log p(\boldsymbol{y}) \approx \mathsf{BIC} = -2\log p(\boldsymbol{y} \mid \widehat{\boldsymbol{\theta}}_{\mathrm{MLE}}) + p\log n
+\end{align*} since
+\((\boldsymbol{y} \mid \widehat{\boldsymbol{\theta}}_{\mathrm{MLE}})=\ell( \widehat{\boldsymbol{\theta}}_{\mathrm{MLE}}; \boldsymbol{y})\)
+is the log-likelihood evaluated at the MLE. If the likelihood
+contribution dominates the posterior, the \(\mathsf{BIC}\) approximation
+will improve with increasing sample size, so \(\exp(-\mathsf{BIC}/2)\)
+is an approximation for the marginal likelihood sometimes used for model
+comparison in Bayes factor, although this derivation shows that the
+latter neglects the impact of the prior.
 
 \end{corollary}
 
@@ -7998,8 +7998,8 @@ posterior]\protect\hypertarget{exm-gaussian-approx-gamma}{}\label{exm-gaussian-a
 To assess the performance of Laplace approximation, we consider an
 exponential likelihood \(Y_i \mid \lambda \sim \mathsf{expo}(\lambda)\)
 with conjugate gamma prior \(\lambda \sim \mathsf{gamma}(a,b)\). The
-exponential model has information \(i(\lambda)=n/\lambda^2\) and the
-mode of the posterior is
+negative Hessian of the log-posterior with respect to \(\lambda\) is
+\(-h''(\lambda)=(n+a-1)/\lambda^2.\) The mode of the posterior is
 \[\widehat{\lambda}_{\mathrm{MAP}}=\frac{n+a-1}{\sum_{i=1}^n y_i + b}.\]
 
 \begin{figure}[ht!]
@@ -8906,9 +8906,9 @@ density (full line) versus variational approximation (dashed).}
 Given the strong requirements for getting tractable conditionals,
 coordinate-ascent variational inference is mostly useful in ultra
 high-dimensional settings where Markov chain Monte Carlo algorithms are
-not viable. This is the case notable for regression models with the
-discrete spike-and-slab of Definition~\ref{def-spike-slab}, models for
-image processing or topic modelling using latent Dirichlet allocations.
+not viable. This is the case for regression models with the discrete
+spike-and-slab of Definition~\ref{def-spike-slab}, models for image
+processing or topic modelling using latent Dirichlet allocations.
 
 \section{Skew-approximations}\label{skew-approximations}
 
@@ -8916,7 +8916,7 @@ The Gaussian Laplace, variational and expected propagation
 approximations typically rely on symmetric approximations to the
 posterior. A symmetric function \(g\) about
 \(\boldsymbol{x}_{\text{sym}}\) is one for which the identity
-\(g(\boldsymbol{x}) = g(2\boldsymbol{x}_{\text{sym}}-\boldsymbol{x}_{\text{sym}})\)
+\(g(\boldsymbol{x}) = g(2\boldsymbol{x}_{\text{sym}}-\boldsymbol{x})\)
 for any \(\boldsymbol{x}\) in the domain.
 
 Symmetric approximations perform poorly when the underlying posterior is

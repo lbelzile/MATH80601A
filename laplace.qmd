@@ -74,11 +74,12 @@ If we use this approximation instead, we get
 \begin{align*}
  \log p(\boldsymbol{y}) &= \log p(\boldsymbol{y} \mid \widehat{\boldsymbol{\theta}}_{\mathrm{MLE}}) -\frac{p}{2} \log n + \\& \quad  \log p(\widehat{\boldsymbol{\theta}}_{\mathrm{MLE}}) - \frac{1}{2} \log |\boldsymbol{\imath}| + \frac{p}{2} \log(2\pi)  + \mathrm{O}(n^{-1/2})
 \end{align*}
-where the error is now $\mathrm{O}(n^{-1/2})$ due to replacing the true information by the evaluation at the MLE. The likelihood is $\mathrm{O}(n),$ the second is $\mathrm{O}(\log n)$ and the other three are $\mathrm{O}(1).$ If we take the prior to be a multivariate Gaussian with mean $\boldsymbol{\theta}_{\mathrm{MLE}}$ and with variance $\boldsymbol{\imath},$ then the approximation error is $\mathrm{O}(n^{-1/2}),$ whereas the marginal likelihood has error $\mathrm{O}(1)$ if we only keep the first two terms. This gives the approximation
+where the error is now $\mathrm{O}(n^{-1/2})$ due to replacing the true information by the evaluation at the MLE. The likelihood is $\mathrm{O}(n),$ the second is $\mathrm{O}(\log n)$ and the other three are $\mathrm{O}(1).$ If we take the prior to be a multivariate Gaussian with mean $\widehat{\boldsymbol{\theta}}_{\mathrm{MLE}}$ and with variance $\boldsymbol{\imath},$ then the approximation error is $\mathrm{O}(n^{-1/2}),$ whereas the marginal likelihood has error $\mathrm{O}(1)$ if we only keep the first two terms. This gives the approximation
 \begin{align*}
--2\log p(\boldsymbol{y}) \approx \mathsf{BIC} = -2\log p(\boldsymbol{y} \mid \boldsymbol{\theta}) + p\log n
+-2\log p(\boldsymbol{y}) \approx \mathsf{BIC} = -2\log p(\boldsymbol{y} \mid \widehat{\boldsymbol{\theta}}_{\mathrm{MLE}}) + p\log n
 \end{align*}
-If the likelihood contribution dominates the posterior, the $\mathsf{BIC}$ approximation will improve with increasing sample size, so $\exp(-\mathsf{BIC}/2)$ is an approximation fo the marginal likelihood sometimes used for model comparison in Bayes factor, although this derivation shows that the latter neglects the impact of the prior.
+since $(\boldsymbol{y} \mid \widehat{\boldsymbol{\theta}}_{\mathrm{MLE}})=\ell( \widehat{\boldsymbol{\theta}}_{\mathrm{MLE}}; \boldsymbol{y})$ is the log-likelihood evaluated at the MLE. 
+If the likelihood contribution dominates the posterior, the $\mathsf{BIC}$ approximation will improve with increasing sample size, so $\exp(-\mathsf{BIC}/2)$ is an approximation for the marginal likelihood sometimes used for model comparison in Bayes factor, although this derivation shows that the latter neglects the impact of the prior.
 
 
 :::
@@ -181,7 +182,7 @@ The maximizer must be uniquely identified from the data and must not be on bound
 
 ## Gaussian approximations to the posterior
 
-To assess the performance of Laplace approximation, we consider an exponential likelihood $Y_i \mid \lambda \sim \mathsf{expo}(\lambda)$ with conjugate gamma prior $\lambda \sim \mathsf{gamma}(a,b)$. The exponential model  has information $i(\lambda)=n/\lambda^2$ and the mode of the posterior is $$\widehat{\lambda}_{\mathrm{MAP}}=\frac{n+a-1}{\sum_{i=1}^n y_i + b}.$$ 
+To assess the performance of Laplace approximation, we consider an exponential likelihood $Y_i \mid \lambda \sim \mathsf{expo}(\lambda)$ with conjugate gamma prior $\lambda \sim \mathsf{gamma}(a,b)$. The negative Hessian of the log-posterior with respect to $\lambda$ is $-h''(\lambda)=(n+a-1)/\lambda^2.$ The mode of the posterior is $$\widehat{\lambda}_{\mathrm{MAP}}=\frac{n+a-1}{\sum_{i=1}^n y_i + b}.$$ 
 
 ```{r}
 #| label: fig-post-gamma-laplace
@@ -379,8 +380,13 @@ marg_phi <- mod_stochvol$marginals.hyperpar[[2]]
 #| fig-cap: "Marginal densities of precision and autocorrelation parameters from the Gaussian stochastic volatility model."
 g1 <- ggplot(data.frame(inla.smarginal(marg_prec))) +
   geom_line(aes(x, y)) +
-  labs(x = expression(tau), y = "", subtitle = "posterior of precision") + 
-  scale_y_continuous(limits = c(0, NA), expand = expansion()) + 
+  labs(
+    x = expression(tau), 
+    y = "", 
+    subtitle = "posterior of precision") + 
+  scale_y_continuous(
+    limits = c(0, NA), 
+    expand = expansion(add = c(0, 1))) + 
   theme_classic()
 
 g2 <- ggplot(data.frame(inla.smarginal(marg_phi))) +
