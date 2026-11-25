@@ -295,7 +295,7 @@ which gives $`r round(exp(-1)/(s+b) * exp((n+a+0.5)*log(n+a) - (n+a-0.5)*log(n+a
 
 ## Integrated nested Laplace approximation
 
-In many high dimensional models, use of MCMC is prohibitively expensive and fast, yet accurate calculations are important. One class of models whose special structure is particularly amenable to deterministic approximations.
+In many high dimensional models, use of MCMC is prohibitively expensive and fast, yet accurate calculations are important. Hierarchical models with Gaussian effects (including spatial models, Gaussian processes priors, regressions models) admit a special structure that is particularly amenable to deterministic approximations.
 
 Consider a model with response $\boldsymbol{y}$ which depends on covariates $\mathbf{x}$ through a latent Gaussian process; typically the priors on the coefficients $\boldsymbol{\beta} \in \mathbb{R}^p.$ In applications with splines, or space time processes, the prior precision matrix for $\boldsymbol{\beta}$ will be sparse with a Gaussian Markov random field structure. The dimension $p$ can be substantial (several thousands) with a comparably low-dimensional hyperparameter vector $\boldsymbol{\theta} \in \mathbb{R}^m.$ Interest typically then lies in marginal parameters
 \begin{align*}
